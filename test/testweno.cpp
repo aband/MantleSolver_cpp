@@ -1,6 +1,7 @@
 #include <iostream>
-#include "../include/weno_basis.h"
+#include "../include/weno.h"
 #include "../include/integral.h"
+#include "../include/mesh.h"
 
 using namespace std;
 

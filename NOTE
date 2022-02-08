@@ -1,0 +1,12 @@
+How to use VecGetArray with std::vector.
+
+int n;
+Vec x;
+std::vector<PetscScalar> vals;
+vals.resize(n); /* You need to calculate n by other means */
+ierr =
+VecCreateMPIWithArray(PETSC_COMM_WORLD,bs,n,PETSC_DECIDE,vals.data(),&v);CHKERRQ(ierr);
+// Code using v
+ierr = VecDestroy(&v);CHKERRQ(ierr);
+// Code using vals;
+
