@@ -89,7 +89,8 @@ POST_UNINSTALL = :
 bin_PROGRAMS = testweno$(EXEEXT)
 subdir = test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/petsc_simple.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
@@ -100,8 +101,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_testweno_OBJECTS = testweno.$(OBJEXT) \
-	../src/weno/weno_basis.$(OBJEXT) ../src/mesh.$(OBJEXT) \
-	../src/integral.$(OBJEXT)
+	../src/weno/weno_basis.$(OBJEXT) ../src/integral.$(OBJEXT) \
+	../src/mesh.$(OBJEXT)
 testweno_OBJECTS = $(am_testweno_OBJECTS)
 testweno_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -200,6 +201,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 GREP = @GREP@
+HAVE_PETSC = @HAVE_PETSC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -220,6 +222,8 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PETSC_DIR = @PETSC_DIR@
+PETSC_PREFIX = @PETSC_PREFIX@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -268,10 +272,15 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-testweno_SOURCES = testweno.cpp ../src/weno/weno_basis.cpp ../src/mesh.c ../src/integral.c ../include/weno.h ../include/mesh.h
-AM_LDFLAGS = -L${ADOLC_DIR}/lib64 ${PETSC_LIB_BASIC} -L${PETSC_LIB_DIR}  -ladolc -lm
-AM_CPPFLAGS = -DINCLUDE_PETSC $(PETSC_CC_INCLUDES)  ${PETSC_CCPPFLAGS} -I${ADOLC_DIR}/include
-AM_CFLAGS = -O0
+testweno_SOURCES = testweno.cpp ../src/weno/weno_basis.cpp ../src/integral.cpp ../src/mesh.c ../include/weno.h ../include/integral.h ../include/mesh.h
+
+# Add petsc 
+AM_LDFLAGS = -L${ADOLC_DIR}/lib64 -lm -ladolc -lz -fstack-protector \
+	${PETSC_LIB_BASIC} ${PETSC_SNES_LIB} -L${PETSC_LIB_DIR} \
+	-lpetsc -lpthread
+AM_CPPFLAGS = -I${ADOLC_DIR}/include -O0 -DINCLUDE_PETSC \
+	$(PETSC_CC_INCLUDES) ${PETSC_CCPPFLAGS}
+AM_CC = mpicxx
 all: all-am
 
 .SUFFIXES:
@@ -361,9 +370,9 @@ clean-binPROGRAMS:
 ../src/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) ../src/$(DEPDIR)
 	@: > ../src/$(DEPDIR)/$(am__dirstamp)
-../src/mesh.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/integral.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/mesh.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 
 testweno$(EXEEXT): $(testweno_OBJECTS) $(testweno_DEPENDENCIES) $(EXTRA_testweno_DEPENDENCIES) 
@@ -641,7 +650,7 @@ uninstall-am: uninstall-binPROGRAMS
 .PRECIOUS: Makefile
 
 
-include $(PETSC_DIR)/lib/petsc/conf/variables
+include ${PETSC_DIR}/lib/petsc/conf/variables
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

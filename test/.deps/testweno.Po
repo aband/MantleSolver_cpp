@@ -169,7 +169,6 @@ testweno.o: testweno.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/9/bits/mask_array.h \
  /usr/include/c++/9/bits/indirect_array.h ../include/integral.h \
  /usr/include/assert.h ../include/integral.h ../include/mesh.h \
- /home/renpo/system/petsc/include/petscdmda.h \
  /home/renpo/system/petsc/include/petscdm.h \
  /home/renpo/system/petsc/include/petscmat.h \
  /home/renpo/system/petsc/include/petscvec.h \
@@ -240,11 +239,42 @@ testweno.o: testweno.cpp /usr/include/stdc-predef.h \
  /home/renpo/system/petsc/include/petscfetypes.h \
  /home/renpo/system/petsc/include/petscdstypes.h \
  /home/renpo/system/petsc/include/petscdmlabel.h \
+ /home/renpo/system/petsc/include/petscsnes.h \
+ /home/renpo/system/petsc/include/petscksp.h \
+ /home/renpo/system/petsc/include/petscpc.h \
+ /home/renpo/system/petsc/include/petscpctypes.h \
+ /home/renpo/system/petsc/include/petscfvtypes.h \
  /home/renpo/system/petsc/include/petscdmdatypes.h \
+ /home/renpo/system/petsc/include/petsc.h \
+ /home/renpo/system/petsc/include/petscbag.h \
+ /home/renpo/system/petsc/include/petscbt.h \
+ /home/renpo/system/petsc/include/petscctable.h \
+ /home/renpo/system/petsc/include/petscmatlab.h \
+ /home/renpo/system/petsc/include/petscdraw.h \
+ /home/renpo/system/petsc/include/petscsf.h \
+ /home/renpo/system/petsc/include/petscsection.h \
+ /home/renpo/system/petsc/include/petscdmda.h \
  /home/renpo/system/petsc/include/petscpf.h \
  /home/renpo/system/petsc/include/petscao.h \
  /home/renpo/system/petsc/include/petscfe.h \
- /home/renpo/system/petsc/include/petscdt.h
+ /home/renpo/system/petsc/include/petscdt.h \
+ /home/renpo/system/petsc/include/petscdmcomposite.h \
+ /home/renpo/system/petsc/include/petscdmpatch.h \
+ /home/renpo/system/petsc/include/petscdmplex.h \
+ /home/renpo/system/petsc/include/petscdmplextypes.h \
+ /home/renpo/system/petsc/include/petscfv.h \
+ /home/renpo/system/petsc/include/petscdmfield.h \
+ /home/renpo/system/petsc/include/petscdmredundant.h \
+ /home/renpo/system/petsc/include/petscdmshell.h \
+ /home/renpo/system/petsc/include/petscdmsliced.h \
+ /home/renpo/system/petsc/include/petscdmswarm.h \
+ /home/renpo/system/petsc/include/petscdmstag.h \
+ /home/renpo/system/petsc/include/petscdmproduct.h \
+ /home/renpo/system/petsc/include/petscds.h \
+ /home/renpo/system/petsc/include/petsccharacteristic.h \
+ /home/renpo/system/petsc/include/petscts.h \
+ /home/renpo/system/petsc/include/petsctao.h \
+ /home/renpo/system/petsc/include/petsctaolinesearch.h
 
 /usr/include/stdc-predef.h:
 
@@ -682,8 +712,6 @@ testweno.o: testweno.cpp /usr/include/stdc-predef.h \
 
 ../include/mesh.h:
 
-/home/renpo/system/petsc/include/petscdmda.h:
-
 /home/renpo/system/petsc/include/petscdm.h:
 
 /home/renpo/system/petsc/include/petscmat.h:
@@ -838,7 +866,35 @@ testweno.o: testweno.cpp /usr/include/stdc-predef.h \
 
 /home/renpo/system/petsc/include/petscdmlabel.h:
 
+/home/renpo/system/petsc/include/petscsnes.h:
+
+/home/renpo/system/petsc/include/petscksp.h:
+
+/home/renpo/system/petsc/include/petscpc.h:
+
+/home/renpo/system/petsc/include/petscpctypes.h:
+
+/home/renpo/system/petsc/include/petscfvtypes.h:
+
 /home/renpo/system/petsc/include/petscdmdatypes.h:
+
+/home/renpo/system/petsc/include/petsc.h:
+
+/home/renpo/system/petsc/include/petscbag.h:
+
+/home/renpo/system/petsc/include/petscbt.h:
+
+/home/renpo/system/petsc/include/petscctable.h:
+
+/home/renpo/system/petsc/include/petscmatlab.h:
+
+/home/renpo/system/petsc/include/petscdraw.h:
+
+/home/renpo/system/petsc/include/petscsf.h:
+
+/home/renpo/system/petsc/include/petscsection.h:
+
+/home/renpo/system/petsc/include/petscdmda.h:
 
 /home/renpo/system/petsc/include/petscpf.h:
 
@@ -847,3 +903,37 @@ testweno.o: testweno.cpp /usr/include/stdc-predef.h \
 /home/renpo/system/petsc/include/petscfe.h:
 
 /home/renpo/system/petsc/include/petscdt.h:
+
+/home/renpo/system/petsc/include/petscdmcomposite.h:
+
+/home/renpo/system/petsc/include/petscdmpatch.h:
+
+/home/renpo/system/petsc/include/petscdmplex.h:
+
+/home/renpo/system/petsc/include/petscdmplextypes.h:
+
+/home/renpo/system/petsc/include/petscfv.h:
+
+/home/renpo/system/petsc/include/petscdmfield.h:
+
+/home/renpo/system/petsc/include/petscdmredundant.h:
+
+/home/renpo/system/petsc/include/petscdmshell.h:
+
+/home/renpo/system/petsc/include/petscdmsliced.h:
+
+/home/renpo/system/petsc/include/petscdmswarm.h:
+
+/home/renpo/system/petsc/include/petscdmstag.h:
+
+/home/renpo/system/petsc/include/petscdmproduct.h:
+
+/home/renpo/system/petsc/include/petscds.h:
+
+/home/renpo/system/petsc/include/petsccharacteristic.h:
+
+/home/renpo/system/petsc/include/petscts.h:
+
+/home/renpo/system/petsc/include/petsctao.h:
+
+/home/renpo/system/petsc/include/petsctaolinesearch.h:

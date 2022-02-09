@@ -1,10 +1,16 @@
 bin_PROGRAMS = testweno
-testweno_SOURCES = testweno.cpp ../src/weno/weno_basis.cpp ../src/mesh.c ../src/integral.c ../include/weno.h ../include/mesh.h
+testweno_SOURCES = testweno.cpp ../src/weno/weno_basis.cpp ../src/integral.cpp ../src/mesh.c ../include/weno.h ../include/integral.h ../include/mesh.h
 
-include $(PETSC_DIR)/lib/petsc/conf/variables
+AM_LDFLAGS = -L${ADOLC_DIR}/lib64 -lm -ladolc -lz -fstack-protector
 
-AM_LDFLAGS = -L${ADOLC_DIR}/lib64 ${PETSC_LIB_BASIC} -L${PETSC_LIB_DIR}  -ladolc -lm
+AM_CPPFLAGS = -I${ADOLC_DIR}/include -O0
 
-AM_CPPFLAGS  = -DINCLUDE_PETSC $(PETSC_CC_INCLUDES)  ${PETSC_CCPPFLAGS} -I${ADOLC_DIR}/include
+AM_CC = mpicxx
 
-AM_CFLAGS = -O0
+include ${PETSC_DIR}/lib/petsc/conf/variables
+
+# Add petsc 
+
+AM_LDFLAGS +=  ${PETSC_LIB_BASIC} ${PETSC_SNES_LIB} -L${PETSC_LIB_DIR} -lpetsc -lpthread
+
+AM_CPPFLAGS += -DINCLUDE_PETSC $(PETSC_CC_INCLUDES) ${PETSC_CCPPFLAGS}

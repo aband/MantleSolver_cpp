@@ -2,6 +2,7 @@
 #include "../include/weno.h"
 #include "../include/integral.h"
 #include "../include/mesh.h"
+#include <petsc.h>
 
 using namespace std;
 
@@ -34,7 +35,15 @@ double func(valarray<double>& point){
     return sin(point[0])+cos(point[1]);
 }
 
-int main(){
+int main(int argc, char **argv){
+
+    PetscErrorCode ierr;
+    PetscInitialize(&argc, &argv, NULL, NULL);
+
+    DM dm;
+
+    DMCreate(PETSC_COMM_WORLD,&dm);
+
     // valarray has dynamic memory allocation
     int k = 2;
     valarray<double> test(k);

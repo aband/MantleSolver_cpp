@@ -70,10 +70,10 @@ am__make_running_with_option = \
   test $$has_opt = yes
 am__make_dryrun = (target_option=n; $(am__make_running_with_option))
 am__make_keepgoing = (target_option=k; $(am__make_running_with_option))
-pkgdatadir = $(datadir)/testweno
-pkgincludedir = $(includedir)/testweno
-pkglibdir = $(libdir)/testweno
-pkglibexecdir = $(libexecdir)/testweno
+pkgdatadir = $(datadir)/main
+pkgincludedir = $(includedir)/main
+pkglibdir = $(libdir)/main
+pkglibexecdir = $(libexecdir)/main
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 install_sh_DATA = $(install_sh) -c -m 644
 install_sh_PROGRAM = $(install_sh) -c
@@ -89,7 +89,8 @@ POST_UNINSTALL = :
 bin_PROGRAMS = testweno$(EXEEXT)
 subdir = test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/petsc_simple.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
@@ -100,8 +101,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_testweno_OBJECTS = testweno.$(OBJEXT) \
-	../src/weno/weno_basis.$(OBJEXT) ../src/mesh.$(OBJEXT) \
-	../src/integral.$(OBJEXT)
+	../src/weno/weno_basis.$(OBJEXT) ../src/integral.$(OBJEXT) \
+	../src/mesh.$(OBJEXT)
 testweno_OBJECTS = $(am_testweno_OBJECTS)
 testweno_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_$(V))
@@ -192,7 +193,7 @@ CXX = g++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -g -O2
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"testweno\" -DPACKAGE_TARNAME=\"testweno\" -DPACKAGE_VERSION=\"0.1\" -DPACKAGE_STRING=\"testweno\ 0.1\" -DPACKAGE_BUGREPORT=\"chenyu@ices.utexas.edu\" -DPACKAGE_URL=\"\" -DPACKAGE=\"testweno\" -DVERSION=\"0.1\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_MALLOC=1
+DEFS = -DPACKAGE_NAME=\"main\" -DPACKAGE_TARNAME=\"main\" -DPACKAGE_VERSION=\"0.1\" -DPACKAGE_STRING=\"main\ 0.1\" -DPACKAGE_BUGREPORT=\"chenyu@ices.utexas.edu\" -DPACKAGE_URL=\"\" -DHAVE_PETSC=1 -DPACKAGE=\"main\" -DVERSION=\"0.1\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_MALLOC=1
 DEPDIR = .deps
 ECHO_C = 
 ECHO_N = -n
@@ -200,6 +201,7 @@ ECHO_T =
 EGREP = /usr/bin/grep -E
 EXEEXT = 
 GREP = /usr/bin/grep
+HAVE_PETSC = 1
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -212,14 +214,16 @@ LTLIBOBJS =
 MAKEINFO = ${SHELL} /home/renpo/Research/MantleSolver/missing makeinfo
 MKDIR_P = /usr/bin/mkdir -p
 OBJEXT = o
-PACKAGE = testweno
+PACKAGE = main
 PACKAGE_BUGREPORT = chenyu@ices.utexas.edu
-PACKAGE_NAME = testweno
-PACKAGE_STRING = testweno 0.1
-PACKAGE_TARNAME = testweno
+PACKAGE_NAME = main
+PACKAGE_STRING = main 0.1
+PACKAGE_TARNAME = main
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.1
 PATH_SEPARATOR = :
+PETSC_DIR = /home/renpo/system/petsc
+PETSC_PREFIX = /home/renpo/system/petsc
 SET_MAKE = 
 SHELL = /bin/bash
 STRIP = 
@@ -268,10 +272,15 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
-testweno_SOURCES = testweno.cpp ../src/weno/weno_basis.cpp ../src/mesh.c ../src/integral.c ../include/weno.h ../include/mesh.h
-AM_LDFLAGS = -L${ADOLC_DIR}/lib64 ${PETSC_LIB_BASIC} -L${PETSC_LIB_DIR}  -ladolc -lm
-AM_CPPFLAGS = -DINCLUDE_PETSC $(PETSC_CC_INCLUDES)  ${PETSC_CCPPFLAGS} -I${ADOLC_DIR}/include
-AM_CFLAGS = -O0
+testweno_SOURCES = testweno.cpp ../src/weno/weno_basis.cpp ../src/integral.cpp ../src/mesh.c ../include/weno.h ../include/integral.h ../include/mesh.h
+
+# Add petsc 
+AM_LDFLAGS = -L${ADOLC_DIR}/lib64 -lm -ladolc -lz -fstack-protector \
+	${PETSC_LIB_BASIC} ${PETSC_SNES_LIB} -L${PETSC_LIB_DIR} \
+	-lpetsc -lpthread
+AM_CPPFLAGS = -I${ADOLC_DIR}/include -O0 -DINCLUDE_PETSC \
+	$(PETSC_CC_INCLUDES) ${PETSC_CCPPFLAGS}
+AM_CC = mpicxx
 all: all-am
 
 .SUFFIXES:
@@ -361,9 +370,9 @@ clean-binPROGRAMS:
 ../src/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) ../src/$(DEPDIR)
 	@: > ../src/$(DEPDIR)/$(am__dirstamp)
-../src/mesh.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/integral.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/mesh.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 
 testweno$(EXEEXT): $(testweno_OBJECTS) $(testweno_DEPENDENCIES) $(EXTRA_testweno_DEPENDENCIES) 
@@ -641,7 +650,7 @@ uninstall-am: uninstall-binPROGRAMS
 .PRECIOUS: Makefile
 
 
-include $(PETSC_DIR)/lib/petsc/conf/variables
+include ${PETSC_DIR}/lib/petsc/conf/variables
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

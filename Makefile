@@ -69,10 +69,10 @@ am__make_running_with_option = \
   test $$has_opt = yes
 am__make_dryrun = (target_option=n; $(am__make_running_with_option))
 am__make_keepgoing = (target_option=k; $(am__make_running_with_option))
-pkgdatadir = $(datadir)/testweno
-pkgincludedir = $(includedir)/testweno
-pkglibdir = $(libdir)/testweno
-pkglibexecdir = $(libexecdir)/testweno
+pkgdatadir = $(datadir)/main
+pkgincludedir = $(includedir)/main
+pkglibdir = $(libdir)/main
+pkglibexecdir = $(libexecdir)/main
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 install_sh_DATA = $(install_sh) -c -m 644
 install_sh_PROGRAM = $(install_sh) -c
@@ -87,7 +87,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/petsc_simple.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
@@ -213,7 +214,7 @@ CXX = g++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -g -O2
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"testweno\" -DPACKAGE_TARNAME=\"testweno\" -DPACKAGE_VERSION=\"0.1\" -DPACKAGE_STRING=\"testweno\ 0.1\" -DPACKAGE_BUGREPORT=\"chenyu@ices.utexas.edu\" -DPACKAGE_URL=\"\" -DPACKAGE=\"testweno\" -DVERSION=\"0.1\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_MALLOC=1
+DEFS = -DPACKAGE_NAME=\"main\" -DPACKAGE_TARNAME=\"main\" -DPACKAGE_VERSION=\"0.1\" -DPACKAGE_STRING=\"main\ 0.1\" -DPACKAGE_BUGREPORT=\"chenyu@ices.utexas.edu\" -DPACKAGE_URL=\"\" -DHAVE_PETSC=1 -DPACKAGE=\"main\" -DVERSION=\"0.1\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_MALLOC=1
 DEPDIR = .deps
 ECHO_C = 
 ECHO_N = -n
@@ -221,6 +222,7 @@ ECHO_T =
 EGREP = /usr/bin/grep -E
 EXEEXT = 
 GREP = /usr/bin/grep
+HAVE_PETSC = 1
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -233,14 +235,16 @@ LTLIBOBJS =
 MAKEINFO = ${SHELL} /home/renpo/Research/MantleSolver/missing makeinfo
 MKDIR_P = /usr/bin/mkdir -p
 OBJEXT = o
-PACKAGE = testweno
+PACKAGE = main
 PACKAGE_BUGREPORT = chenyu@ices.utexas.edu
-PACKAGE_NAME = testweno
-PACKAGE_STRING = testweno 0.1
-PACKAGE_TARNAME = testweno
+PACKAGE_NAME = main
+PACKAGE_STRING = main 0.1
+PACKAGE_TARNAME = main
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.1
 PATH_SEPARATOR = :
+PETSC_DIR = /home/renpo/system/petsc
+PETSC_PREFIX = /home/renpo/system/petsc
 SET_MAKE = 
 SHELL = /bin/bash
 STRIP = 
