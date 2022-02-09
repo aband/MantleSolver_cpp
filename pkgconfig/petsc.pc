@@ -1,0 +1,19 @@
+prefix=/home/renpo/system/petsc_new/petsc/arch-linux-c-debug
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${prefix}/lib
+ccompiler=/home/renpo/system/petsc_new/petsc/arch-linux-c-debug/bin/mpicc
+cflags_extra=-Wall -Wwrite-strings -Wno-strict-aliasing -Wno-unknown-pragmas -fstack-protector -fvisibility=hidden -g3 -O0
+cflags_dep=-MMD -MP
+ldflag_rpath=-Wl,-rpath,
+cxxcompiler=/home/renpo/system/petsc_new/petsc/arch-linux-c-debug/bin/mpicxx
+cxxflags_extra=-Wall -Wwrite-strings -Wno-strict-aliasing -Wno-unknown-pragmas -fstack-protector -fvisibility=hidden -g -O0  -std=gnu++17
+fcompiler=/home/renpo/system/petsc_new/petsc/arch-linux-c-debug/bin/mpif90
+fflags_extra=-Wall -ffree-line-length-0 -Wno-unused-dummy-argument -g -O0
+
+Name: PETSc
+Description: Library to solve ODEs and algebraic equations
+Version: 3.16.4
+Cflags:   -I${includedir} -I/home/renpo/system/petsc_new/petsc/include
+Libs: -L${libdir} -lpetsc
+Libs.private: -L/home/renpo/system/petsc_new/petsc/arch-linux-c-debug/lib -L/usr/lib/gcc/x86_64-linux-gnu/9 -lflapack -lfblas -lpthread -lm -lX11 -lstdc++ -ldl -lmpifort -lmpi -lgfortran -lm -lgfortran -lm -lgcc_s -lquadmath -lstdc++ -ldl

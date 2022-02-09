@@ -16,9 +16,9 @@ cmake_minimum_required(VERSION 3.1.0)
 
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-# set root of location to find PETSc's pkg-config
 set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH})
-set(ENV{PKG_CONFIG_PATH} ${PETSC}/lib/pkgconfig)
+
+set(ADOLC $ENV{ADOLC_DIR})
 
 # Remove the lines below if you do not wish to have PETSc determine the compilers
 execute_process ( COMMAND pkg-config PETSc --variable=ccompiler COMMAND tr -d '\n' OUTPUT_VARIABLE C_COMPILER)
@@ -35,11 +35,16 @@ endif (FORTRAN_COMPILER)
 
 #  tells CMake to build the application ex1 from the source file ex1.c
 #  this must appear AFTER the compilers are set
+
+#list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+#find_package(ADOLC REQUIRED)
+
 project(test)
 add_executable(test testweno.cpp ../src/integral.cpp ../src/mesh.c ../src/weno/weno_basis.cpp)
 
-include_directories(../include ../src)
+include_directories(../include)
 
 find_package(PkgConfig REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
-target_link_libraries(test PkgConfig::PETSC)
+pkg_search_module(ADOLC REQUIRED IMPORTED_TARGET adolc)
+target_link_libraries(test PkgConfig::PETSC PkgConfig::ADOLC)

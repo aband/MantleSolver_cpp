@@ -1,10 +1,30 @@
 #include <iostream>
+#include <petsc.h>
 #include "../include/weno.h"
 #include "../include/integral.h"
 #include "../include/mesh.h"
-#include <petsc.h>
+
+#include <adolc/adolc.h>
 
 using namespace std;
+
+adouble power(adouble x, int n)
+{
+    adouble z = 1;
+    if (n>0) {
+        int nh = n/2;
+        z = power(x,nh);
+        z *= z;
+        if (2*nh !=n) {z *= x;}
+        return z;
+    } else {
+        if (n==0) {
+            return z;
+        } else {
+            return 1.0/power(x,-n);
+        }
+    }
+}
 
 void testoutput(const valarray<double> test){
     valarray<double> get = test;
