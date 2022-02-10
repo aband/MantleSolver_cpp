@@ -97,7 +97,6 @@ double NumIntegralFace(const vector< valarray<double> >& corner,
         valarray<double> mapped = GaussMapPointsFace(gpf[i],tmp);
         double jac = abs(GaussJacobian(gpf[i],tmp));
         double gw = gwf[i];
-        cout <<"(" << mapped[0]<< "," << mapped[1] <<")" << " " << jac << " " << gw << endl;
         work += jac*gw*(*func)(mapped);
     }
 

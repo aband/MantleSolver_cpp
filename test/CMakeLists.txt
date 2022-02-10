@@ -20,6 +20,8 @@ set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH})
 
 set(ADOLC $ENV{ADOLC_DIR})
 
+# PKG_CONFIG_PATH is set mannually in bashrc
+
 # Remove the lines below if you do not wish to have PETSc determine the compilers
 execute_process ( COMMAND pkg-config PETSc --variable=ccompiler COMMAND tr -d '\n' OUTPUT_VARIABLE C_COMPILER)
 SET(CMAKE_C_COMPILER ${C_COMPILER})
@@ -40,9 +42,9 @@ endif (FORTRAN_COMPILER)
 #find_package(ADOLC REQUIRED)
 
 project(test)
-add_executable(test testweno.cpp ../src/integral.cpp ../src/mesh.c ../src/weno/weno_basis.cpp)
+add_executable(test testweno.cpp ../src/integral.cpp ../src/mesh.c ../src/weno/weno_basis.cpp ../src/output.c ../src/input.cpp)
 
-include_directories(../include)
+include_directories(../include ../src)
 
 find_package(PkgConfig REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)

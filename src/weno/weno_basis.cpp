@@ -4,12 +4,12 @@ double constfunc(valarray<double>&){
     return 1.0;
 }
 
-void CreateWenoBasis(wenomesh &wm){
+void CreateWenoBasis(WenoMesh &wm){
 
-    vector<wenobasis> weno2;
-    vector<wenobasis> weno3;
-    vector<wenobasis> weno4H;
-    vector<wenobasis> weno4V;
+    vector<WenoBasisCoeff> weno2;
+    vector<WenoBasisCoeff> weno3;
+    vector<WenoBasisCoeff> weno4H;
+    vector<WenoBasisCoeff> weno4V;
 
     int M = wm.M;
     int N = wm.N;
@@ -32,10 +32,10 @@ void CreateWenoBasis(wenomesh &wm){
             double h= pow(NumIntegralFace(corner, center, 1.0, constfunc),0.5); 
             
             vector< valarray<int> > order {{-1,-1},{0,-1},{0,0},{-1,0}};
-            wenobasis wb = wenobasis(center, order, 2);
+            WenoBasisCoeff wbc = WenoBasisCoeff(center, order, 2);
             //wb.CreateStencilIntegral();
             //wb.CreateWenoBasisCoeff();
-            weno2.push_back(wb);
+            weno2.push_back(wbc);
         }
     }
 

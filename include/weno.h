@@ -11,7 +11,7 @@
 
 using namespace std;
 
-class wenomesh{
+class WenoMesh{
     public:
         int M, N;
         int ghost;
@@ -23,15 +23,15 @@ class wenomesh{
         /*
          *Initialize class wenomesh with appropriate input.
          */
-        wenomesh(int M, int N, vector <valarray<double> >& lm) :
+        WenoMesh(int M, int N, vector <valarray<double> >& lm) :
                  M(M), N(N), lmesh(lm) {};
 };
 
-class wenobasis{
+class WenoBasisCoeff{
     public:
         // Constructor
-        wenobasis(valarray<double>& point, vector< valarray<int> >& o, int r) : 
-                  center(point), index(o), order(r) {};
+        WenoBasisCoeff(valarray<double>& point, vector< valarray<int> >& o, int r) : 
+                       center(point), index(o), order(r) {};
 
         void CreateStencilIntegral();
         void CreateWenoBasisCoeff();
@@ -48,5 +48,16 @@ class wenobasis{
         vector<double> * stencilintegral;
         vector<double> * coeff;
 };
+
+/*
+ *class SmoothnessIndicator{
+ *
+ *};
+ *
+ *class WenoReconstruction: public WenoMesh, public WenoBasisCoeff, public SmoothnessIndicator{
+ *
+ *};
+ */
+
 
 #endif
