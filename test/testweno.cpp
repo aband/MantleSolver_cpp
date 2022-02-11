@@ -73,6 +73,8 @@ int main(int argc, char **argv){
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processors \n",size);CHKERRQ(ierr);
 
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+
     // valarray has dynamic memory allocation
 /*
  *    int k = 2;
@@ -146,17 +148,22 @@ int main(int argc, char **argv){
     // Uniform or distorted mesh
     int meshtype=0;
     ierr = PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshtype,NULL);CHKERRQ(ierr);
-    switch(meshtype)
-    {
+    switch(meshtype){
         case 0: CreateFullMesh(dm, &fullmesh, &mp); break;
         case 1: LogicRectMesh(dm, &fullmesh, &mp);  break;
         //case 2: TestControlMeshSecond(dmCell,L,H); break;
         //case 3: TestControlMeshThird(dmCell,L,H);  break;
     }
-    //VecView(fullmesh, PETSC_VIEWER_STDOUT_WORLD);
-    //PintFullMesh(dmMesh, &fullmesh);
 
-    cout << "Created full mesh " << endl;
+    int printmesh=0;
+    ierr = PetscOptionsGetInt(NULL,NULL,"-printmesh",&printmesh,NULL);CHKERRQ(ierr);
+    if(printmesh){ 
+        VecView(fullmesh, PETSC_VIEWER_STDOUT_WORLD);
+        PrintFullMesh(dm, &fullmesh);
+    }
+
+    cout << "Created full mesh. To check full mesh, rerun with -printmesh 1 " << endl;
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     // ==========================================================================================================================
 
@@ -173,13 +180,26 @@ int main(int argc, char **argv){
  *
  */
 
-    WenoMesh wm = WenoMesh(M,N,stencilWidth,mesh);
+//    WenoMesh wm = WenoMesh(M,N,stencilWidth,mesh);
 
-    cout << "Stored local mesh into vector container " << endl;
+    cout << "Convert c array of local mesh into vector container c++ " << endl;
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     // ==========================================================================================================================
 
+    
+    // WENO2 stencil and corresponding reconstruction.
+    vector< valarray<int> > stencilindex {{-1,-1},{0,-1},{0,0},{-1,0}};
+    vector<int> order {2,2};
+    vector<int> range {stencilWidth-1,stencilWidth+M+2,
+                       stencilWidth-1,stencilWidth+N+2};
 
+    WenoBasisCoeff * wbc_weno2;
+    wbc_weno2 = new WenoBasisCoeff(M,N,stencilWidth,mesh);
+
+    wbc_weno2->SetStencilInfo(stencilindex,order,range);
+
+    wbc_weno2->GetStencil();
 
     // Destroy Vectors
     VecDestroy(&fullmesh);
