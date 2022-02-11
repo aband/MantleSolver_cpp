@@ -4,40 +4,55 @@ double constfunc(valarray<double>&){
     return 1.0;
 }
 
-void CreateWenoBasis(WenoMesh &wm){
+/*
+ *The following member functions are invariant to different index, and
+ *reconstruction order.
+ */
 
-    vector<WenoBasisCoeff> weno2;
-    vector<WenoBasisCoeff> weno3;
-    vector<WenoBasisCoeff> weno4H;
-    vector<WenoBasisCoeff> weno4V;
+void WenoBasisCoeff::GetStencil(){
 
-    int M = wm.M;
-    int N = wm.N;
-    int ghost = wm.ghost;
+    stencil = new vector< vector< vector< valarray<double> > > >();
+    stencilcenter = new vector< valarray<double> >();
+    stencilh = new vector<double>();
 
-    /*
-     *2nd order weno reconstruction
-     */
-    for (size_t j=ghost-1; j<N+ghost+1; j++){
-        for (size_t i=ghost-1; i<M+ghost+1; i++){
-            valarray<double> center = wm.lmesh[j*(M+2)+i]; 
+    for (int j=jbegin; j<jend; j++){
+    for (int i=ibegin; i<iend; i++){
 
-            vector< valarray<double> > corner;
-            for (auto & p: wm.index){
-                int newi = i+p[0];
-                int newj = j+p[1];
-                corner.push_back(center + wm.lmesh[newj*(M+2)+newi]);
+        // Locate reference center point for each stencil
+        valarray<double> center {0.0,0.0};
+        vector< vector< valarray<double> > > stencilcell;
+
+        for (auto & s: stencilindex){
+            vector< valarray<double> > cellcorner;
+
+            for (auto & c: cornerindex){
+                valarray<double> corner = lmesh[(j+c[1])*(M+2)+(i+c[0])];
+                center += corner/(4.0*(double)order.size()); 
+                cellcorner.push_back(corner);
             }
 
-            double h= pow(NumIntegralFace(corner, center, 1.0, constfunc),0.5); 
-            
-            vector< valarray<int> > order {{-1,-1},{0,-1},{0,0},{-1,0}};
-            WenoBasisCoeff wbc = WenoBasisCoeff(center, order, 2);
-            //wb.CreateStencilIntegral();
-            //wb.CreateWenoBasisCoeff();
-            weno2.push_back(wbc);
+            stencilcell.push_back(cellcorner);
         }
-    }
 
+        double h = pow(NumIntegralFace(stencilcell.at(0),center,1.0,constfunc),0.5);
 
+        stencil->push_back(stencilcell);
+        stencilcenter->push_back(center);  
+        stencilh->push_back(h);
+    }}
+
+}
+
+vector< vector<double> >& WenoBasisCoeff::CreateStencilIntegral(){
+
+    vector< vector<double> > csi;
+
+    return csi;
+}
+
+vector< vector<double> >& WenoBasisCoeff::CreateWenoBasisCoeff(){
+    
+    vector< vector<double> > wbc;
+
+    return wbc;
 }

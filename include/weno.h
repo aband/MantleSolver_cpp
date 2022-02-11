@@ -4,6 +4,7 @@
 #include <vector>
 #include <valarray>
 #include "integral.h"
+
 /*
  *#include "cblas.h"
  *#include "lapacke.h"
@@ -13,51 +14,52 @@ using namespace std;
 
 class WenoMesh{
     public:
-        int M, N;
-        int ghost;
+        /*
+         *Initialize class wenomesh with appropriate input.
+         */
+        WenoMesh(int M, int N, int g, vector <valarray<double> >& lm) :
+                 M(M), N(N), ghost(g), lmesh(lm) {};
+        WenoMesh();
+    protected:
+        int M, N;    // Local mesh size
+        int ghost;   // Ghost layer thickness
         vector< valarray<double> >& lmesh;
         /*
          *Loop inside a single element.
          */
-        vector< valarray<double> > index {{0.0,0.0},{1.0,0.0},{1.0,1.0},{0.0,1.0}};
-        /*
-         *Initialize class wenomesh with appropriate input.
-         */
-        WenoMesh(int M, int N, vector <valarray<double> >& lm) :
-                 M(M), N(N), lmesh(lm) {};
+        vector< valarray<int> > cornerindex {{0,0},{1,0},{1,1},{0,1}};
 };
 
-class WenoBasisCoeff{
+class WenoBasisCoeff : public WenoMesh{
     public:
         // Constructor
-        WenoBasisCoeff(valarray<double>& point, vector< valarray<int> >& o, int r) : 
-                       center(point), index(o), order(r) {};
+        WenoBasisCoeff(vector< valarray<int> >& stencilindex, vector<int>& order, int jbegin, int ibegin, int jend, int iend) : 
+                       stencilindex(stencilindex), order(order), jbegin(jbegin), ibegin(ibegin), jend(jend), iend(iend) {};
 
-        void CreateStencilIntegral();
-        void CreateWenoBasisCoeff();
+        // Get stencil information. Need to be called first!
+        void GetStencil();
+
+        // Create Integral for a given stencil
+        vector< vector<double> >& CreateStencilIntegral();
+
+        // Create weno basis polynomial coefficients based on the given stencil
+        vector< vector<double> >& CreateWenoBasisCoeff();
 
     private:
-        int order;                // WENO restruction order
-        valarray<double>& center; // Restruction reference center point
+        vector<int>& order;       // WENO restruction polynomial order, (xpow, ypow)
          /*
          *Index set used in calculation of the reconstruction is orderred in the
          *following. The members of this vector will be added to the starting index.
          */
-        vector< valarray<int> >& index;     // Index set used in reconstruction
+        vector< valarray<int> >& stencilindex;     // Index set used in reconstruction
 
-        vector<double> * stencilintegral;
-        vector<double> * coeff;
+        int jbegin, jend, ibegin, iend;
+
+        vector< vector< vector< valarray<double> > > > * stencil;
+
+        vector< valarray<double> > * stencilcenter;
+
+        vector<double> * stencilh;
 };
-
-/*
- *class SmoothnessIndicator{
- *
- *};
- *
- *class WenoReconstruction: public WenoMesh, public WenoBasisCoeff, public SmoothnessIndicator{
- *
- *};
- */
-
 
 #endif

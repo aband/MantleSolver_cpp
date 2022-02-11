@@ -156,6 +156,8 @@ int main(int argc, char **argv){
     //VecView(fullmesh, PETSC_VIEWER_STDOUT_WORLD);
     //PintFullMesh(dmMesh, &fullmesh);
 
+    cout << "Created full mesh " << endl;
+
     // ==========================================================================================================================
 
     // Contain defined mesh in vector container.
@@ -171,9 +173,17 @@ int main(int argc, char **argv){
  *
  */
 
+    WenoMesh wm = WenoMesh(M,N,stencilWidth,mesh);
+
+    cout << "Stored local mesh into vector container " << endl;
+
     // ==========================================================================================================================
 
 
+
+    // Destroy Vectors
+    VecDestroy(&fullmesh);
+    DMDestroy(&dm);
 
     return 0;
 }
