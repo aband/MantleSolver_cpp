@@ -20,8 +20,8 @@ extern valarray<double> GaussWeightsFace;
 
 extern vector< valarray<double> > GaussPointsFace;
 
-double NumIntegralFace(const vector< valarray<double> >& corner, 
+double NumIntegralFace(const vector< valarray<double> >& corner, const vector<double>& param,
                        const valarray<double>& center, const double& h, 
-                       double (*func)(valarray<double>& point));
+                       double (*func)(valarray<double>& point, const vector<double>& param));
 
 #endif

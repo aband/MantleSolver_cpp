@@ -1,7 +1,11 @@
 #include "../../include/weno.h"
 
-double constfunc(valarray<double>&){
+double constfunc(valarray<double>& point,const vector<double>& param){
     return 1.0;
+}
+
+double poly(valarray<double>& point,const vector<double>& param){
+    return pow(point[0],param[0])*pow(point[1],param[1]);
 }
 
 /*
@@ -45,26 +49,66 @@ void WenoBasisCoeff::GetStencil(){
 
             stencilcell.push_back(cellcorner);
         }
+        vector <double> Empty;
 
-        double h = pow(NumIntegralFace(stencilcell.at(0),{0.0,0.0},1.0,constfunc),0.5);
+        double h = pow(NumIntegralFace(stencilcell.at(0),Empty,{0.0,0.0},1.0,constfunc),0.5);
 
         stencil->push_back(stencilcell);
         stencilcenter->push_back(scenter);  
         stencilh->push_back(h);
     }}
-
 }
 
-vector< vector<double> >& WenoBasisCoeff::CreateStencilIntegral(){
+void WenoBasisCoeff::CreateWenoBasisCoeff(){
 
-    vector< vector<double> > csi;
+    wenobasiscoeff = new vector< vector< vector<double> > >();
 
-    return csi;
-}
+    for (int i=0; i<stencil->size(); i++){
 
-vector< vector<double> >& WenoBasisCoeff::CreateWenoBasisCoeff(){
-    
-    vector< vector<double> > wbc;
+        vector< vector<double> > stencilcoeff;
+        /*
+         *Get corresponding reference center point and normalize
+         *factor h for each stencil.
+         */
+        valarray<double> center = stencilcenter->at(i);
+        double h = stencilh->at(i);
 
-    return wbc;
+        /*
+         *Preparing parameters for solving linear system
+         *using lapack.
+         */
+        lapack_int n = order[0]*order[1];
+        lapack_int nrhs = 1; 
+        lapack_int lda = n; 
+        lapack_int ldb = nrhs;
+
+        double * a = new double [n*n];
+        double * b = new double [n];
+        lapack_int * p = new int [n];
+
+        // Loop through a single stencil
+        for (int cell=0; cell<stencil->at(i).size(); cell++){
+
+            for (int ypow=0; ypow<order[1]; ypow++){
+            for (int xpow=0; xpow<order[0]; xpow++){
+                vector<double> param {(double)xpow,(double)ypow}; 
+                a[cell] = NumIntegralFace(stencil->at(i).at(cell),param,center,h,poly);     
+            }}
+
+        }
+
+        for (int k=0; k<n; k++){
+            b[k] = a[n*k];
+            int err = LAPACKE_dgesv(LAPACK_ROW_MAJOR,n,nrhs,a,lda,p,b,ldb);
+            if (err){
+                printf("ERROR: Weno Basis Coefficient for order %d, %d. Error type %d \n",
+                       order[0],order[1],err);
+            }
+            vector<double> work;
+            work.assign(b,b+n);
+            stencilcoeff.push_back(work);
+        }
+
+        wenobasiscoeff->push_back(stencilcoeff);
+    }
 }

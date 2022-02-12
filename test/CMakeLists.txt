@@ -20,6 +20,8 @@ set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH})
 
 set(ADOLC $ENV{ADOLC_DIR})
 
+set(LAPACK $ENV{LAPACK_DIR})
+
 # PKG_CONFIG_PATH is set mannually in bashrc
 
 # Remove the lines below if you do not wish to have PETSc determine the compilers
@@ -49,4 +51,5 @@ include_directories(../include ../src)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
 pkg_search_module(ADOLC REQUIRED IMPORTED_TARGET adolc)
-target_link_libraries(test PkgConfig::PETSC PkgConfig::ADOLC)
+pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
+target_link_libraries(test PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE)

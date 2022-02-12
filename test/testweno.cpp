@@ -201,6 +201,8 @@ int main(int argc, char **argv){
 
     wbc_weno2->GetStencil();
 
+    wbc_weno2->CreateWenoBasisCoeff();
+
     // Destroy Vectors
     VecDestroy(&fullmesh);
     DMDestroy(&dm);

@@ -73,9 +73,9 @@ inline double GaussJacobian(valarray<double> ref,
  *  0_______1
  */
 
-double NumIntegralFace(const vector< valarray<double> >& corner, 
+double NumIntegralFace(const vector< valarray<double> >& corner, const vector<double>& param,
                        const valarray<double>& center, const double& h, 
-                       double (*func)(valarray<double>& point)){
+                       double (*func)(valarray<double>& point, const vector<double>& param)){
     double work = 0.0;
 
     vector< valarray<double> > tmp = corner;
@@ -97,7 +97,7 @@ double NumIntegralFace(const vector< valarray<double> >& corner,
         valarray<double> mapped = GaussMapPointsFace(gpf[i],tmp);
         double jac = abs(GaussJacobian(gpf[i],tmp));
         double gw = gwf[i];
-        work += jac*gw*(*func)(mapped);
+        work += jac*gw*(*func)(mapped,param);
     }
 
     return work;

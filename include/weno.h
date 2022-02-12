@@ -3,11 +3,13 @@
 
 #include <vector>
 #include <valarray>
+
 #include "integral.h"
+
+#include "lapacke.h"
 
 /*
  *#include "cblas.h"
- *#include "lapacke.h"
  */
 
 using namespace std;
@@ -42,13 +44,12 @@ class WenoBasisCoeff : public WenoMesh{
         // Get stencil information. Need to be called first!
         void GetStencil();
 
-        // Create Integral for a given stencil
-        vector< vector<double> >& CreateStencilIntegral();
-
         // Create weno basis polynomial coefficients based on the given stencil
-        vector< vector<double> >& CreateWenoBasisCoeff();
+        void CreateWenoBasisCoeff();
 
+    protected:
 
+        vector< vector< vector<double> > > * wenobasiscoeff;
 
     private:
         vector<int> order;       // WENO restruction polynomial order, (xpow, ypow)
@@ -72,6 +73,7 @@ class WenoBasisCoeff : public WenoMesh{
         vector< vector< vector< valarray<double> > > > * stencil;
         vector< valarray<double> > * stencilcenter;
         vector<double> * stencilh;
+
 };
 
 /*
