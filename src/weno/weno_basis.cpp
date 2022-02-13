@@ -78,12 +78,12 @@ void WenoBasisCoeff::CreateWenoBasisCoeff(){
          *using lapack.
          */
         lapack_int n = order[0]*order[1];
-        lapack_int nrhs = 1; 
+        lapack_int nrhs = n; 
         lapack_int lda = n; 
         lapack_int ldb = nrhs;
 
         double * a = new double [n*n];
-        double * b = new double [n];
+        double * b = new double [n*nrhs];
         lapack_int * p = new int [n];
 
         // Loop through a single stencil
@@ -92,23 +92,49 @@ void WenoBasisCoeff::CreateWenoBasisCoeff(){
             for (int ypow=0; ypow<order[1]; ypow++){
             for (int xpow=0; xpow<order[0]; xpow++){
                 vector<double> param {(double)xpow,(double)ypow}; 
-                a[cell] = NumIntegralFace(stencil->at(i).at(cell),param,center,h,poly);     
-            }}
+                a[cell*n + ypow*order[0] + xpow] = NumIntegralFace(stencil->at(i).at(cell),param,center,h,poly);
+            }} 
 
         }
 
-        for (int k=0; k<n; k++){
-            b[k] = a[n*k];
-            int err = LAPACKE_dgesv(LAPACK_ROW_MAJOR,n,nrhs,a,lda,p,b,ldb);
-            if (err){
-                printf("ERROR: Weno Basis Coefficient for order %d, %d. Error type %d \n",
-                       order[0],order[1],err);
-            }
-            vector<double> work;
-            work.assign(b,b+n);
-            stencilcoeff.push_back(work);
+        fill(b,b+n*nrhs,0);
+
+        for (int i =0; i<nrhs; i++){b[i*n+i] = a[n*i];}
+
+        int err = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, p, b, ldb);
+        if (err){
+            printf("ERROR: Weno Basis Coefficient for order %d, %d. Error type %d \n",
+                   order[0],order[1],err);
         }
+        vector<double> work;
+        work.assign(b,b+n*nrhs);
+        stencilcoeff.push_back(work);
 
         wenobasiscoeff->push_back(stencilcoeff);
     }
+}
+
+void WenoBasisCoeff::PrintStencil(){
+
+    printf("The total number of stencil is %ld \n",stencil->size());
+    printf("The number of cell of each stencil is %ld \n",stencil->at(0).size());
+
+    for (int s=0; s<stencil->size(); s++){
+        for (auto & cell: stencil->at(s)){
+            for (auto & corner: cell){
+                printf("(%.2f,%.2f),  ",corner[0],corner[1]);
+            } cout << endl;
+        } cout << endl;
+    } cout << endl;
+}
+
+void WenoBasisCoeff::PrintWenoBasisCoeff(){
+
+    for (int s=0; s<wenobasiscoeff->size(); s++){
+         for (auto & cell: wenobasiscoeff->at(s)){
+             for (auto & coeff: cell){
+                 printf("coeff = %.4f ", coeff);
+             } cout << endl;
+         } cout << endl;
+    } cout << endl;
 }

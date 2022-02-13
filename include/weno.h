@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <valarray>
+#include <algorithm>
 
 #include "integral.h"
 
@@ -46,6 +47,12 @@ class WenoBasisCoeff : public WenoMesh{
 
         // Create weno basis polynomial coefficients based on the given stencil
         void CreateWenoBasisCoeff();
+
+        // Print out calculated weno basis coefficients for testing
+        void PrintWenoBasisCoeff();
+
+        // Print out assigned stencil for a weno basis 
+        void PrintStencil();
 
     protected:
 

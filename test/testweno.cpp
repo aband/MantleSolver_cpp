@@ -120,7 +120,7 @@ int main(int argc, char **argv){
 
     // Start testing mesh function
     // Initializing problem size with 3X3
-    int M = 3, N = 3;
+    int M = 2, N = 2;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
@@ -189,12 +189,13 @@ int main(int argc, char **argv){
 
     
     // WENO2 stencil and corresponding reconstruction.
+    WenoBasisCoeff * wbc_weno2;
+
     vector< valarray<int> > stencilindex {{-1,-1},{0,-1},{0,0},{-1,0}};
     vector<int> order {2,2};
     vector<int> range {stencilWidth-1,stencilWidth+M+2,
                        stencilWidth-1,stencilWidth+N+2};
 
-    WenoBasisCoeff * wbc_weno2;
     wbc_weno2 = new WenoBasisCoeff(M,N,stencilWidth,mesh);
 
     wbc_weno2->SetStencilInfo(stencilindex,order,range);
@@ -202,6 +203,10 @@ int main(int argc, char **argv){
     wbc_weno2->GetStencil();
 
     wbc_weno2->CreateWenoBasisCoeff();
+
+    wbc_weno2->PrintWenoBasisCoeff();
+
+//    wbc_weno2->PrintStencil();
 
     // Destroy Vectors
     VecDestroy(&fullmesh);
