@@ -83,13 +83,20 @@ class WenoBasisCoeff : public WenoMesh{
 
 };
 
-/*
- *class WenoReconstruction : public WenoBasisCoeff{
- *    public:
- *        WenoReconstruction();
- *
- *
- *}
- */
+class SmoothnessIndicator : public WenoMesh{
+    public:
+        SmoothnessIndicator(int M, int N, int g, vector <valarray<double> >& lm) :
+                            WenoMesh(M, N, g, lm) {};
+
+
+}
+
+class WenoReconstruction : public WenoBasisCoeff{
+    public:
+        WenoReconstruction(int M, int N, int g, vector <valarray<double> >& lm) :
+                           WenoBasisCoeff(M, N, g, lm) {};
+
+
+}
 
 #endif

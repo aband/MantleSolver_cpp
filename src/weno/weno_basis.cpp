@@ -132,9 +132,12 @@ void WenoBasisCoeff::PrintWenoBasisCoeff(){
 
     for (int s=0; s<wenobasiscoeff->size(); s++){
          for (auto & cell: wenobasiscoeff->at(s)){
-             for (auto & coeff: cell){
-                 printf("coeff = %.4f ", coeff);
-             } cout << endl;
+             int n = order[0]*order[1];
+             cell.resize(n,n);
+             for (int j=0; j<n; j++){
+             for (int i=0; i<n; i++){
+                 printf("coeff = %.4f ", cell[i*n+j]);
+             } cout << endl;}cout<< endl;
          } cout << endl;
     } cout << endl;
 }

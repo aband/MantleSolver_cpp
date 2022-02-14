@@ -120,7 +120,7 @@ int main(int argc, char **argv){
 
     // Start testing mesh function
     // Initializing problem size with 3X3
-    int M = 2, N = 2;
+    int M = 3, N = 3;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
