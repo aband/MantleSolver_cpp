@@ -5,13 +5,17 @@
 #include <valarray>
 #include <algorithm>
 
+#include "lapacke.h"
 #include "integral.h"
 
-#include "lapacke.h"
-
 /*
- *#include "cblas.h"
+ *Define data types using in this code.
  */
+using point        = valarray<double>;
+using point_index  = valarray<int>;
+using index_set    = vector<point_index>;
+using cell_corners = vector<point>;
+using stencil      = vector<cell_corners>;
 
 using namespace std;
 
@@ -20,83 +24,67 @@ class WenoMesh{
         /*
          *Initialize class wenomesh with appropriate input.
          */
-        WenoMesh(int M, int N, int g, vector <valarray<double> >& lm) :
+        WenoMesh(int M, int N, int g, vector< point >& lm) :
                  M(M), N(N), ghost(g), lmesh(lm) {};
 
     protected:
         int M, N;    // Local mesh size
         int ghost;   // Ghost layer thickness
-        vector< valarray<double> >& lmesh;
+        vector< point >& lmesh;
         /*
          *Loop inside a single element.
          */
-        vector< valarray<int> > cornerindex {{0,0},{1,0},{1,1},{0,1}};
+        vector< point_index > corner_index {{0,0},{1,0},{1,1},{0,1}};
 };
 
-class WenoBasisCoeff : public WenoMesh{
+class WenoStencil : public WenoMesh{
     public:
-        // Constructor
-        WenoBasisCoeff(int M, int N, int g, vector <valarray<double> >& lm) :
-                       WenoMesh(M, N, g, lm) {};
+        WenoStencil(int M, int N, int g, vector< point >& lm) : 
+                    WenoMesh(M, N, g, lm) {};
 
-        void SetStencilInfo(vector< valarray<int> >& stencilindex, 
-                            vector<int>& order, vector<int>& range);
+        void GetStencilInfo(index_set& input_index_set, point_index& input_target_cell,
+                            vector<int>& input_order);   
 
-        // Get stencil information. Need to be called first!
-        void GetStencil();
+        void SetUpStencil();
 
-        // Create weno basis polynomial coefficients based on the given stencil
-        void CreateWenoBasisCoeff();
-
-        // Print out calculated weno basis coefficients for testing
-        void PrintWenoBasisCoeff();
-
-        // Print out assigned stencil for a weno basis 
-        void PrintStencil();
+        void PrintSingleStencil();
 
     protected:
-
-        vector< vector< vector<double> > > * wenobasiscoeff;
-
-    private:
-        vector<int> order;       // WENO restruction polynomial order, (xpow, ypow)
-         /*
+        vector<int> polynomial_order;       // WENO restruction polynomial order, (xpow, ypow)
+        /*
          *Index set used in calculation of the reconstruction is orderred in the
          *following. The members of this vector will be added to the starting index.
          */
-        vector< valarray<int> > stencilindex;     // Index set used in reconstruction
-
+        index_set index_set_stencil;     // Index set used in reconstruction
         /*
-         *range of index that include start index and end index of i and j.
-         *ibegin,iend,jbegin,jend.
+         *The cell targeted for reconstruction.
          */
-        vector<int> range;
-
+        point_index target_cell;
         /*
-         *Stencil contains four corners of each cell within the defined
-         *stencil. Center point is defined by averaging out all points
-         *in stencil.
+         *Reference center point of the targeted cell.
          */
-        vector< vector< vector< valarray<double> > > > * stencil;
-        vector< valarray<double> > * stencilcenter;
-        vector<double> * stencilh;
-
+        point center;
+        /*
+         *Scale factor for each stencil.
+         */
+        double h;
+        /*
+         *Four corners of the target cell.
+         */
+        cell_corners target_cell_corners;
 };
 
-class SmoothnessIndicator : public WenoMesh{
+class WenoBasisCoeffStencil : public WenoStencil{
     public:
-        SmoothnessIndicator(int M, int N, int g, vector <valarray<double> >& lm) :
-                            WenoMesh(M, N, g, lm) {};
+        WenoBasisCoeffStencil(int M, int N, int g, vector< point >& lm) : 
+                              WenoStencil(M, N, g, lm) {};
 
+        void CreateBasisCoeff();
 
-}
+        void PrintBasisCoeff();
 
-class WenoReconstruction : public WenoBasisCoeff{
-    public:
-        WenoReconstruction(int M, int N, int g, vector <valarray<double> >& lm) :
-                           WenoBasisCoeff(M, N, g, lm) {};
-
-
-}
+    protected:
+        double * wenobasiscoeff;
+};
 
 #endif

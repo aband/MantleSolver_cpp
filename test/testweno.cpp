@@ -189,24 +189,42 @@ int main(int argc, char **argv){
 
     
     // WENO2 stencil and corresponding reconstruction.
-    WenoBasisCoeff * wbc_weno2;
 
-    vector< valarray<int> > stencilindex {{-1,-1},{0,-1},{0,0},{-1,0}};
-    vector<int> order {2,2};
-    vector<int> range {stencilWidth-1,stencilWidth+M+2,
-                       stencilWidth-1,stencilWidth+N+2};
+/*
+ *    vector< valarray<int> > stencilindex2 {{-1,-1},{0,-1},{0,0},{-1,0}};
+ *    vector<int> order2 {2,2};
+ *    vector<int> range2 {stencilWidth-1,stencilWidth+M+2,
+ *                        stencilWidth-1,stencilWidth+N+2};
+ *
+ *    // WENO3 stencil and corresponding reconstruction
+ *    vector< valarray<int> > stencilindex3 {{-1,-1},{0,-1},{1,-1},
+ *                                           {-1, 0},{0, 0},{1, 0},
+ *                                           {-1, 1},{0, 1},{1, 1}};
+ *    vector<int> order3 {3,3};
+ *    vector<int> range3 {stencilWidth-1,stencilWidth+M+1,
+ *                        stencilWidth-1,stencilWidth+N+2};
+ *
+ */
 
-    wbc_weno2 = new WenoBasisCoeff(M,N,stencilWidth,mesh);
+    WenoBasisCoeffStencil * wbcs;
 
-    wbc_weno2->SetStencilInfo(stencilindex,order,range);
+    wbcs = new WenoBasisCoeffStencil(M,N,stencilWidth,mesh);
 
-    wbc_weno2->GetStencil();
+//    index_set input_index_set {{0,0},{1,0},{1,1},{0,1}};
 
-    wbc_weno2->CreateWenoBasisCoeff();
+    index_set input_index_set {{-1,-1},{0,-1},{1,-1},
+                               {-1, 0},{0, 0},{1, 0},
+                               {-1, 1},{0, 1},{1, 1}};
 
-    wbc_weno2->PrintWenoBasisCoeff();
+    point_index test {stencilWidth,stencilWidth};
+    vector<int> order {3,3};
 
-//    wbc_weno2->PrintStencil();
+    wbcs->GetStencilInfo(input_index_set,test,order); 
+    wbcs->SetUpStencil(); 
+    wbcs->PrintSingleStencil();
+
+    wbcs->CreateBasisCoeff();
+    wbcs->PrintBasisCoeff();
 
     // Destroy Vectors
     VecDestroy(&fullmesh);
