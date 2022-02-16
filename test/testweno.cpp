@@ -55,9 +55,10 @@ inline valarray<double> testoutput2(valarray<double> test){
     return gettest;
 }
 
-double func(valarray<double>& point){
+double func(valarray<double>& point, const vector<double>& param){
     //return point[0]*point[0];
-    return sin(point[0])+cos(point[1]);
+    //return sin(point[0])+cos(point[1]);
+    return point[0]+point[1];
 }
 
 int main(int argc, char **argv){
@@ -116,6 +117,12 @@ int main(int argc, char **argv){
  *
  */
 
+/*
+ *    vector<double> Empty;
+ *    vector< valarray<double> > corner {{0.0},{1.0/3.0,0.0},{1.0/3.0,1.0/3.0},{0.0,1.0/3.0}};
+ *    cout << NumIntegralFace(corner,Empty,{0.0,0.0},1.0,func) << endl;
+ *
+ */
     // ==========================================================================================================================
 
     // Start testing mesh function
@@ -187,7 +194,19 @@ int main(int argc, char **argv){
 
     // ==========================================================================================================================
 
-    
+    DM dmu;
+
+    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, 2, NULL, NULL, &dmu);CHKERRQ(ierr);
+    ierr = DMSetFromOptions(dmu);               CHKERRQ(ierr);
+    ierr = DMSetUp(dmu);                        CHKERRQ(ierr);
+
+    Vec globalu;
+    ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
+
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+
+    VecView(globalu,PETSC_VIEWER_STDOUT_WORLD);
+
     // WENO2 stencil and corresponding reconstruction.
 
 /*
@@ -228,6 +247,7 @@ int main(int argc, char **argv){
 
     // Destroy Vectors
     VecDestroy(&fullmesh);
+    VecDestroy(&globalu);
     DMDestroy(&dm);
 
     return 0;

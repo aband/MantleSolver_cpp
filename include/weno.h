@@ -72,6 +72,9 @@ class WenoStencil : public WenoMesh{
          *Four corners of the target cell.
          */
         cell_corners target_cell_corners;
+
+    private:
+
 };
 
 class WenoBasisCoeffStencil : public WenoStencil{
@@ -85,6 +88,14 @@ class WenoBasisCoeffStencil : public WenoStencil{
 
     protected:
         double * wenobasiscoeff;
+};
+
+class WenoSmoothnessIndicator : public WenoStencil{
+    public:
+        WenoSmoothnessIndicator(int M, int N, int g, vector< point >& lm) : 
+                                WenoStencil(M, N, g, lm) {};
+
+
 };
 
 #endif
