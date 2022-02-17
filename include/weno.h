@@ -17,6 +17,11 @@ using index_set    = vector<point_index>;
 using cell_corners = vector<point>;
 using stencil      = vector<cell_corners>;
 
+/*
+ *The number of variable will not always be zero.
+ */
+using solution = vector<double>;
+
 using namespace std;
 
 class WenoMesh{
@@ -94,7 +99,6 @@ class WenoSmoothnessIndicator : public WenoStencil{
     public:
         WenoSmoothnessIndicator(int M, int N, int g, vector< point >& lm) : 
                                 WenoStencil(M, N, g, lm) {};
-
 
 };
 

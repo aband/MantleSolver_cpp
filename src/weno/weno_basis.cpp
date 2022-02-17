@@ -4,7 +4,7 @@ double constfunc(valarray<double>& point,const vector<double>& param){
     return 1.0;
 }
 
-double poly(valarray<double>& point,const vector<double>& param){
+double poly(valarray<double>& point, const vector<int>& param){
     return pow(point[0],param[0])*pow(point[1],param[1]);
 }
 
@@ -37,8 +37,7 @@ void WenoStencil::SetUpStencil(){
         center += corner/4.0;
     }
 
-    vector <double> Empty;
-    h = pow(NumIntegralFace(target_cell_corners,Empty,{0.0,0.0},1.0,constfunc),0.5);
+    h = pow(NumIntegralFace(target_cell_corners,{0.0},{0.0,0.0},1.0,constfunc),0.5);
 }
 
 void WenoStencil::PrintSingleStencil(){
@@ -73,7 +72,6 @@ void WenoBasisCoeffStencil::CreateBasisCoeff(){
      for (int cell=0; cell<index_set_stencil.size(); cell++){
          for (int ypow=0; ypow<polynomial_order[1]; ypow++){
          for (int xpow=0; xpow<polynomial_order[0]; xpow++){
-             vector<double> param{(double)xpow, (double)ypow};
              cell_corners work;
              for (auto & c: corner_index){
                  int stencilj = target_cell[1]+index_set_stencil[cell][1]+c[1];
@@ -81,7 +79,7 @@ void WenoBasisCoeffStencil::CreateBasisCoeff(){
 
                  work.push_back(lmesh[stencilj*totali+stencili]);
              }
-             a[cell*n+ypow*polynomial_order[0]+xpow] = NumIntegralFace(work,param,center,h,poly);
+             a[cell*n+ypow*polynomial_order[0]+xpow] = NumIntegralFace(work,{xpow,ypow},center,h,poly);
          }}
      }
      fill(b,b+n*nrhs,0);

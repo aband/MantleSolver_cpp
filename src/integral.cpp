@@ -103,6 +103,36 @@ double NumIntegralFace(const vector< valarray<double> >& corner, const vector<do
     return work;
 }
 
+double NumIntegralFace(const vector< valarray<double> >& corner, const vector<int>& param,
+                       const valarray<double>& center, const double& h, 
+                       double (*func)(valarray<double>& point, const vector<int>& param)){
+    double work = 0.0;
+
+    vector< valarray<double> > tmp = corner;
+    /*
+     *Transform original corner coordinates with given
+     *parameter h and center point. If transform, pass
+     *in h=1.0 and center point as (0.0,0.0).
+     */
+    for (auto & p : tmp){
+        p -= center;
+        p = p/h; 
+    }
+
+    // Gauss Quadrature
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector< valarray<double> >& gpf = GaussPointsFace;
+
+    for (size_t i=0; i<gpf.size(); i++){
+        valarray<double> mapped = GaussMapPointsFace(gpf[i],tmp);
+        double jac = abs(GaussJacobian(gpf[i],tmp));
+        double gw = gwf[i];
+        work += jac*gw*(*func)(mapped,param);
+    }
+
+    return work;
+}
+
 /*
  *Edge Integral will be added later
  */
