@@ -20,7 +20,7 @@ using stencil      = vector<cell_corners>;
 /*
  *The number of variable will not always be zero.
  */
-using solution = vector<double>;
+using solution = double;
 
 using namespace std;
 
@@ -29,14 +29,14 @@ class WenoMesh{
         /*
          *Initialize class wenomesh with appropriate input.
          */
-        WenoMesh(int M, int N, int g, vector< point >& lm, vector<solution>& lsol) :
+        WenoMesh(int M, int N, int g, vector< point >& lm, solution**& lsol) :
                  M(M), N(N), ghost(g), lmesh(lm), lsol(lsol) {};
 
     protected:
         int M, N;    // Local mesh size
         int ghost;   // Ghost layer thickness
         vector< point >& lmesh;
-        vector<solution>& lsol;
+        solution**& lsol;
         /*
          *Loop inside a single element.
          */
@@ -45,7 +45,7 @@ class WenoMesh{
 
 class WenoStencil : public WenoMesh{
     public:
-        WenoStencil(int M, int N, int g, vector< point >& lm, vector<solution>& lsol) : 
+        WenoStencil(int M, int N, int g, vector< point >& lm, solution**& lsol) : 
                     WenoMesh(M, N, g, lm, lsol) {};
 
         void GetStencilInfo(index_set& input_index_set, point_index& input_target_cell,
@@ -83,10 +83,24 @@ class WenoStencil : public WenoMesh{
 
 };
 
-class WenoBasisCoeffStencil : public WenoStencil{
+class WenoSmoothnessIndicator : public WenoStencil{
     public:
-        WenoBasisCoeffStencil(int M, int N, int g, vector< point >& lm, vector<solution>& lsol) : 
-                              WenoStencil(M, N, g, lm, lsol) {};
+        WenoSmoothnessIndicator(int M, int N, int g, vector< point >& lm, solution**& lsol) : 
+                                WenoStencil(M, N, g, lm, lsol) {};
+
+        void CreateSmoothnessIndicator(double eta);
+
+    protected:
+        double a = 0.0;
+
+    private:
+        double sigma = 0.0;
+};
+
+class WenoBasisCoeffStencil : public WenoSmoothnessIndicator{
+    public:
+        WenoBasisCoeffStencil(int M, int N, int g, vector< point >& lm, solution**& lsol) : 
+                              WenoSmoothnessIndicator(M, N, g, lm, lsol) {};
 
         /*
          *Create Coefficients for basis polynomials for each given stencil.
@@ -98,20 +112,6 @@ class WenoBasisCoeffStencil : public WenoStencil{
     protected:
         double * wenobasiscoeff;
 
-};
-
-class WenoSmoothnessIndicator : public WenoStencil{
-    public:
-        WenoSmoothnessIndicator(int M, int N, int g, vector< point >& lm, vector<solution>& lsol) : 
-                                WenoStencil(M, N, g, lm, lsol) {};
-
-        void CreateSmoothnessIndicator();
-
-    protected:
-        double a = 0.0;
-
-    private:
-        double sigma = 0.0;
 };
 
 #endif

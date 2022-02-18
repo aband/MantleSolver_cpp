@@ -205,9 +205,15 @@ int main(int argc, char **argv){
 
     SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
-    vector< vector<double> > sol;
+    Vec localu; 
+    DMCreateLocalVector(dmu, &localu);
 
-    ReadSolutionLocal(dmu,&globalu,sol);
+    DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, localu);
+    DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, localu);
+
+    // It can be changed later to not be double
+    solution  ** lu;
+    DMDAVecGetArray(dmu, localu, &lu);
 
     // WENO2 stencil and corresponding reconstruction.
 
@@ -227,29 +233,32 @@ int main(int argc, char **argv){
  *
  */
 
-/*
- *    WenoBasisCoeffStencil * wbcs;
- *
- *    wbcs = new WenoBasisCoeffStencil(M,N,stencilWidth,mesh);
- *
- *    index_set input_index_set {{-1,-1},{0,-1},{1,-1},
- *                               {-1, 0},{0, 0},{1, 0},
- *                               {-1, 1},{0, 1},{1, 1}};
- *
- *    point_index test {stencilWidth,stencilWidth};
- *    vector<int> order {3,3};
- *
- *    wbcs->GetStencilInfo(input_index_set,test,order);
- *    wbcs->SetUpStencil();
- *    wbcs->PrintSingleStencil();
- *
- *    wbcs->CreateBasisCoeff();
- *    wbcs->PrintBasisCoeff();
- *
- */
+    WenoBasisCoeffStencil * wbcs;
+
+    wbcs = new WenoBasisCoeffStencil(M,N,stencilWidth,mesh,lu);
+
+    index_set input_index_set {{-1,-1},{0,-1},{1,-1},
+                               {-1, 0},{0, 0},{1, 0},
+                               {-1, 1},{0, 1},{1, 1}};
+
+    point_index test {stencilWidth,stencilWidth};
+    vector<int> order {3,3};
+
+    wbcs->GetStencilInfo(input_index_set,test,order);
+    wbcs->SetUpStencil();
+    //wbcs->PrintSingleStencil();
+
+    wbcs->CreateBasisCoeff();
+    //wbcs->PrintBasisCoeff();
+
+    wbcs->CreateSmoothnessIndicator(2.0);
+
+    DMDAVecRestoreArray(dmu, localu, &lu);
+
     // Destroy Vectors
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);
+    VecDestroy(&localu);
     DMDestroy(&dm);
 
     return 0;

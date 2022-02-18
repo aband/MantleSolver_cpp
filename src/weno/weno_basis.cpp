@@ -101,3 +101,17 @@ void WenoBasisCoeffStencil::PrintBasisCoeff(){
         printf("coeff = %.4f ",wenobasiscoeff[i*n+j]);
     }cout<<endl;}
 }
+
+void WenoSmoothnessIndicator::CreateSmoothnessIndicator(double eta){
+
+    for (auto & cell: index_set_stencil){
+        int target_i = target_cell[0]-ghost;
+        int target_j = target_cell[1]-ghost;
+        sigma += pow(lsol[target_j][target_i] - lsol[target_j+cell[1]][target_i+cell[0]],2) ;
+    }
+
+    sigma *= 1.0/(double)(index_set_stencil.size()-1);
+
+    sigma = pow(sigma, eta);
+    cout << sigma << endl;
+}
