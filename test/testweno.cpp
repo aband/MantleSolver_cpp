@@ -189,7 +189,7 @@ int main(int argc, char **argv){
 
 //    WenoMesh wm = WenoMesh(M,N,stencilWidth,mesh);
 
-    cout << "Convert c array of local mesh into vector container c++ " << endl;
+    cout << "Converted c array of local mesh into vector container c++ " << endl;
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     // ==========================================================================================================================
@@ -205,7 +205,9 @@ int main(int argc, char **argv){
 
     SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
-    VecView(globalu,PETSC_VIEWER_STDOUT_WORLD);
+    vector< vector<double> > sol;
+
+    ReadSolutionLocal(dmu,&globalu,sol);
 
     // WENO2 stencil and corresponding reconstruction.
 
@@ -225,26 +227,26 @@ int main(int argc, char **argv){
  *
  */
 
-    WenoBasisCoeffStencil * wbcs;
-
-    wbcs = new WenoBasisCoeffStencil(M,N,stencilWidth,mesh);
-
-//    index_set input_index_set {{0,0},{1,0},{1,1},{0,1}};
-
-    index_set input_index_set {{-1,-1},{0,-1},{1,-1},
-                               {-1, 0},{0, 0},{1, 0},
-                               {-1, 1},{0, 1},{1, 1}};
-
-    point_index test {stencilWidth,stencilWidth};
-    vector<int> order {3,3};
-
-    wbcs->GetStencilInfo(input_index_set,test,order); 
-    wbcs->SetUpStencil(); 
-    wbcs->PrintSingleStencil();
-
-    wbcs->CreateBasisCoeff();
-    wbcs->PrintBasisCoeff();
-
+/*
+ *    WenoBasisCoeffStencil * wbcs;
+ *
+ *    wbcs = new WenoBasisCoeffStencil(M,N,stencilWidth,mesh);
+ *
+ *    index_set input_index_set {{-1,-1},{0,-1},{1,-1},
+ *                               {-1, 0},{0, 0},{1, 0},
+ *                               {-1, 1},{0, 1},{1, 1}};
+ *
+ *    point_index test {stencilWidth,stencilWidth};
+ *    vector<int> order {3,3};
+ *
+ *    wbcs->GetStencilInfo(input_index_set,test,order);
+ *    wbcs->SetUpStencil();
+ *    wbcs->PrintSingleStencil();
+ *
+ *    wbcs->CreateBasisCoeff();
+ *    wbcs->PrintBasisCoeff();
+ *
+ */
     // Destroy Vectors
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);

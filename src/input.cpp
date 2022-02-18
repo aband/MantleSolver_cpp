@@ -12,7 +12,7 @@ double constfun2(valarray<double>& point,const vector<double>& param){
 
 PetscErrorCode ReadMeshPortion(DM dm, Vec *fullmesh, vector< valarray<double> >& mesh){
 
-    PetscErrorCode  ierr;
+    PetscErrorCode    ierr;
     Vec      fmesh = *fullmesh;  
     Vec      lmesh; 
     Point    **localmesh;
@@ -37,6 +37,34 @@ PetscErrorCode ReadMeshPortion(DM dm, Vec *fullmesh, vector< valarray<double> >&
 
     ierr = DMDAVecRestoreArray(dm, lmesh, &localmesh); CHKERRQ(ierr);
     ierr = DMRestoreLocalVector(dm, &lmesh);           CHKERRQ(ierr);
+
+    PetscFunctionReturn(0);
+}
+
+//This is a temperaroy function convert C style array to C++ style container
+PetscErrorCode ReadSolutionLocal(DM dmu, Vec *globalu, vector< vector<double> >& sol){
+
+    PetscErrorCode    ierr;
+    Vec      gu = *globalu;
+    Vec      lu;
+    double   **localu; 
+    PetscInt xs,ys,xm,ym,M,N,stencilwidth;
+    PetscFunctionBeginUser;
+
+    ierr = DMGetLocalVector(dmu, &lu);                      CHKERRQ(ierr);
+    ierr = DMGlobalToLocalBegin(dmu, gu, INSERT_VALUES, lu);CHKERRQ(ierr); 
+    ierr = DMGlobalToLocalEnd(dmu, gu, INSERT_VALUES, lu);  CHKERRQ(ierr);
+    ierr = DMDAVecGetArray(dmu, lu, &localu);               CHKERRQ(ierr);
+
+    for (int j=ys-stencilwidth; j<ys+ym+stencilwidth; j++){
+    for (int i=xs-stencilwidth; i<xs+xm+stencilwidth; i++){
+         // This is specified for 2 dimension
+         vector<double> target(localu[j][i],1);
+         sol.push_back(target);
+    }}
+
+    ierr = DMDAVecRestoreArray(dmu, lu, &localu); CHKERRQ(ierr);
+    ierr = DMRestoreLocalVector(dmu, &lu);           CHKERRQ(ierr);
 
     PetscFunctionReturn(0);
 }
