@@ -180,15 +180,6 @@ int main(int argc, char **argv){
     
     ReadMeshPortion(dm, &fullmesh, mesh);
 
-/*
- *    for (auto & i: mesh){
- *        cout << "(" << i[0] << "," << i[1] << ")" << endl;
- *    }
- *
- */
-
-//    WenoMesh wm = WenoMesh(M,N,stencilWidth,mesh);
-
     cout << "Converted c array of local mesh into vector container c++ " << endl;
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
@@ -215,43 +206,27 @@ int main(int argc, char **argv){
     solution  ** lu;
     DMDAVecGetArray(dmu, localu, &lu);
 
-    // WENO2 stencil and corresponding reconstruction.
+    /*
+     *Initialize code by calling WenoMesh
+     */
+    const WenoMesh * wm = new WenoMesh(M,N,stencilWidth,mesh,lu);
 
-/*
- *    vector< valarray<int> > stencilindex2 {{-1,-1},{0,-1},{0,0},{-1,0}};
- *    vector<int> order2 {2,2};
- *    vector<int> range2 {stencilWidth-1,stencilWidth+M+2,
- *                        stencilWidth-1,stencilWidth+N+2};
- *
- *    // WENO3 stencil and corresponding reconstruction
- *    vector< valarray<int> > stencilindex3 {{-1,-1},{0,-1},{1,-1},
- *                                           {-1, 0},{0, 0},{1, 0},
- *                                           {-1, 1},{0, 1},{1, 1}};
- *    vector<int> order3 {3,3};
- *    vector<int> range3 {stencilWidth-1,stencilWidth+M+1,
- *                        stencilWidth-1,stencilWidth+N+2};
- *
- */
-
-    WenoBasisCoeffStencil * wbcs;
-
-    wbcs = new WenoBasisCoeffStencil(M,N,stencilWidth,mesh,lu);
-
+    point_index input_target_cell {stencilWidth,stencilWidth};
+    vector<int> input_order {3,3};
     index_set input_index_set {{-1,-1},{0,-1},{1,-1},
                                {-1, 0},{0, 0},{1, 0},
                                {-1, 1},{0, 1},{1, 1}};
 
-    point_index test {stencilWidth,stencilWidth};
-    vector<int> order {3,3};
+    WenoPrepare * wp = new WenoPrepare(input_index_set,input_target_cell,input_order);
 
-    wbcs->GetStencilInfo(input_index_set,test,order);
-    wbcs->SetUpStencil();
-    //wbcs->PrintSingleStencil();
+    wp->SetUpStencil(wm);
+    //wp->PrintSingleStencil();
+    wp->CreateBasisCoeff(wm);
+    //wp->PrintBasisCoeff();
+    wp->CreateSmoothnessIndicator(wm,2.0);
 
-    wbcs->CreateBasisCoeff();
-    //wbcs->PrintBasisCoeff();
 
-    wbcs->CreateSmoothnessIndicator(2.0);
+
 
     DMDAVecRestoreArray(dmu, localu, &lu);
 

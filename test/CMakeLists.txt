@@ -44,7 +44,7 @@ endif (FORTRAN_COMPILER)
 #find_package(ADOLC REQUIRED)
 
 project(test)
-add_executable(test testweno.cpp ../src/integral.cpp ../src/mesh.c ../src/weno/weno_basis.cpp ../src/output.c ../src/input.cpp)
+add_executable(test testweno.cpp ../src/integral.cpp ../src/mesh.c ../src/weno/newweno_basis.cpp ../src/output.c ../src/input.cpp)
 
 include_directories(../include ../src)
 

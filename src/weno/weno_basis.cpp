@@ -1,4 +1,4 @@
-#include "../../include/weno.h"
+#include "../../include/newweno.h"
 
 double constfunc(valarray<double>& point,const vector<double>& param){
     return 1.0;
@@ -13,18 +13,10 @@ double poly(valarray<double>& point, const vector<int>& param){
  *reconstruction order.
  */
 
-void WenoStencil::GetStencilInfo(index_set& input_index_set, point_index& input_target_cell,
-                                 vector<int>& input_order){
+void WenoStencil::SetUpStencil(const WenoMesh*& wm){
 
-    polynomial_order  = input_order; 
-    index_set_stencil = input_index_set;
-    target_cell       = input_target_cell;
-
-}
-
-void WenoStencil::SetUpStencil(){
-
-    int totali = M+2*ghost;
+    // Unpack parameters carried by WenoMesh
+    int totali = wm->M+2*wm->ghost;
 
     center = {0.0,0.0};
     /*
@@ -32,7 +24,7 @@ void WenoStencil::SetUpStencil(){
      *Calculate center point at the same time.
      */
     for (auto & c: corner_index){
-        point corner =  lmesh[(target_cell[1]+c[1])*totali+target_cell[0]+c[0]]; 
+        point corner =  wm->lmesh[(target_cell[1]+c[1])*totali+target_cell[0]+c[0]]; 
         target_cell_corners.push_back(corner);
         center += corner/4.0;
     }
@@ -53,9 +45,9 @@ void WenoStencil::PrintSingleStencil(){
 
 }
 
-void WenoBasisCoeffStencil::CreateBasisCoeff(){
+void WenoPrepare::CreateBasisCoeff(const WenoMesh*& wm){
   
-     int totali = M+2*ghost;
+     int totali = wm->M+2*wm->ghost;
 
     /*
      *Set up linear system for solving Basis coefficients.
@@ -77,7 +69,7 @@ void WenoBasisCoeffStencil::CreateBasisCoeff(){
                  int stencilj = target_cell[1]+index_set_stencil[cell][1]+c[1];
                  int stencili = target_cell[0]+index_set_stencil[cell][0]+c[0];
 
-                 work.push_back(lmesh[stencilj*totali+stencili]);
+                 work.push_back(wm->lmesh[stencilj*totali+stencili]);
              }
              a[cell*n+ypow*polynomial_order[0]+xpow] = NumIntegralFace(work,{xpow,ypow},center,h,poly);
          }}
@@ -94,7 +86,7 @@ void WenoBasisCoeffStencil::CreateBasisCoeff(){
      wenobasiscoeff = b;
 }
 
-void WenoBasisCoeffStencil::PrintBasisCoeff(){
+void WenoPrepare::PrintBasisCoeff(){
     int n = polynomial_order[0]*polynomial_order[1];
     for (int j=0; j<n; j++){
     for (int i=0; i<n; i++){
@@ -102,16 +94,30 @@ void WenoBasisCoeffStencil::PrintBasisCoeff(){
     }cout<<endl;}
 }
 
-void WenoSmoothnessIndicator::CreateSmoothnessIndicator(double eta){
+void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double eta){
 
     for (auto & cell: index_set_stencil){
-        int target_i = target_cell[0]-ghost;
-        int target_j = target_cell[1]-ghost;
-        sigma += pow(lsol[target_j][target_i] - lsol[target_j+cell[1]][target_i+cell[0]],2) ;
+        int target_i = target_cell[0]-wm->ghost;
+        int target_j = target_cell[1]-wm->ghost;
+        sigma += pow(wm->lsol[target_j][target_i] - wm->lsol[target_j+cell[1]][target_i+cell[0]],2) ;
     }
 
     sigma *= 1.0/(double)(index_set_stencil.size()-1);
 
     sigma = pow(sigma, eta);
-    cout << sigma << endl;
+}
+
+// Define a reconstruction method
+solution WenoReconstruction(index_set& StencilLarge, vector<index_set>& StencilSmall, WenoMesh*& wm,
+                            point_index target, const vector<int>& Sorder, const vector<int>& Lorder,
+                            point target_point){
+
+    solution reconst;
+
+    // For small stencils
+    vector< WenoPrepare* > SmallBasisCoeff;
+    vector< WenoPrepare* > SmallSigma;
+
+
+    return reconst;
 }
