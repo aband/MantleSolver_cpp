@@ -211,22 +211,30 @@ int main(int argc, char **argv){
      */
     const WenoMesh * wm = new WenoMesh(M,N,stencilWidth,mesh,lu);
 
-    point_index input_target_cell {stencilWidth,stencilWidth};
-    vector<int> input_order {3,3};
-    index_set input_index_set {{-1,-1},{0,-1},{1,-1},
-                               {-1, 0},{0, 0},{1, 0},
-                               {-1, 1},{0, 1},{1, 1}};
+    /*
+     *Test the center point of the entire domain because it is fixed.
+     *In order to get a fixed point, M and N should be odd numbers.
+     */
+    point_index input_target_cell {stencilWidth+M/2,stencilWidth+N/2};
+    vector<int> Lorder {3,3};
+    vector<int> Sorder {2,2};
+    index_set StencilLarge {{-1,-1},{0,-1},{1,-1},
+                            {-1, 0},{0, 0},{1, 0},
+                            {-1, 1},{0, 1},{1, 1}};
 
-    WenoPrepare * wp = new WenoPrepare(input_index_set,input_target_cell,input_order);
+    vector<index_set> StencilSmall;
+    StencilSmall.push_back({{-1,-1},{ 0,-1},{ 0, 0},{-1, 0}});
+    StencilSmall.push_back({{ 0,-1},{ 1,-1},{ 1, 0},{ 0, 0}});
+    StencilSmall.push_back({{ 0, 0},{ 1, 0},{ 1, 1},{ 0, 1}});
+    StencilSmall.push_back({{-1, 0},{ 0, 0},{ 0, 1},{-1, 1 }});
+
+    WenoPrepare * wp = new WenoPrepare(StencilLarge, input_target_cell, Lorder);
 
     wp->SetUpStencil(wm);
     //wp->PrintSingleStencil();
-    wp->CreateBasisCoeff(wm);
-    //wp->PrintBasisCoeff();
-    wp->CreateSmoothnessIndicator(wm,2.0);
 
-
-
+    // Define an instance for 3,2 reconstruction
+    cout << WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, wp->center) << endl;
 
     DMDAVecRestoreArray(dmu, localu, &lu);
 

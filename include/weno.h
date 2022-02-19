@@ -51,7 +51,12 @@ class WenoStencil{
 
         void PrintSingleStencil();
 
+        /*
+         *Reference center point of the targeted cell.
+         */
+        point center;
     protected:
+
         vector<int> polynomial_order;       // WENO restruction polynomial order, (xpow, ypow)
         /*
          *Index set used in calculation of the reconstruction is orderred in the
@@ -63,14 +68,6 @@ class WenoStencil{
          */
         point_index target_cell;
         /*
-         *Reference center point of the targeted cell.
-         */
-        point center;
-        /*
-         *Scale factor for each stencil.
-         */
-        double h;
-        /*
          *Four corners of the target cell.
          */
         cell_corners target_cell_corners;
@@ -79,7 +76,10 @@ class WenoStencil{
          *Loop inside a single element.
          */
         vector< point_index > corner_index {{0,0},{1,0},{1,1},{0,1}};
-
+        /*
+         *Scale factor for each stencil.
+         */
+        double h;
 };
 
 class WenoPrepare : public WenoStencil{
@@ -90,14 +90,27 @@ class WenoPrepare : public WenoStencil{
 
         void CreateBasisCoeff(const WenoMesh*& wm);
 
-        void CreateSmoothnessIndicator(const WenoMesh*& wm, double eta);
+        void CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, double Theta);
 
         void PrintBasisCoeff();
 
-    protected:
-        double sigma = 0.0;
+        /*
+         *Define parameters
+         */
 
+        double omega = 0.0;
         double * wenobasiscoeff;
+
+    private:
+
+        double sigma = 0.0;
+        double epsilon_0 = 0.5;
 };
+
+// Define independent functions
+solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSmall,const WenoMesh*& wm,
+                          point_index& target, vector<int>& Sorder, vector<int>& Lorder,
+                          point target_point);
+
 
 #endif

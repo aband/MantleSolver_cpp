@@ -1,4 +1,4 @@
-#include "../../include/newweno.h"
+#include "../../include/weno.h"
 
 double constfunc(valarray<double>& point,const vector<double>& param){
     return 1.0;
@@ -94,7 +94,7 @@ void WenoPrepare::PrintBasisCoeff(){
     }cout<<endl;}
 }
 
-void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double eta){
+void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, double Theta){
 
     for (auto & cell: index_set_stencil){
         int target_i = target_cell[0]-wm->ghost;
@@ -105,19 +105,112 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double eta){
     sigma *= 1.0/(double)(index_set_stencil.size()-1);
 
     sigma = pow(sigma, eta);
+
+    omega = 1.0/pow(sigma+epsilon_0*h,(double)max(polynomial_order[0],polynomial_order[1])/Theta);
 }
 
 // Define a reconstruction method
-solution WenoReconstruction(index_set& StencilLarge, vector<index_set>& StencilSmall, WenoMesh*& wm,
-                            point_index target, const vector<int>& Sorder, const vector<int>& Lorder,
-                            point target_point){
+solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSmall,const WenoMesh*& wm,
+                          point_index& target, vector<int>& Sorder, vector<int>& Lorder,
+                          point target_point){
 
     solution reconst;
 
-    // For small stencils
-    vector< WenoPrepare* > SmallBasisCoeff;
-    vector< WenoPrepare* > SmallSigma;
+    /*
+     *Create parameters and corresponding containers
+     */
+    double Theta = 2.0;
+    
+    vector< WenoPrepare* > swp;
+    vector<double> omega;
 
+    int r = max(Lorder[0],Lorder[1]);
+    int s = max(Sorder[0],Sorder[1]);
+
+    double etas = ceil((max(r-s,s)+Theta)/2.0);
+    double etal = ceil((r-s+Theta)/2.0);
+
+    vector <double> swork;
+    double lwork;
+
+    int target_i = target[0] - wm->ghost;
+    int target_j = target[1] - wm->ghost;
+
+    /*
+     *For small stencil
+     */
+    for (auto & is: StencilSmall){
+        WenoPrepare * wp = new WenoPrepare(is,target,Sorder);
+        wp->SetUpStencil(wm);
+        wp->CreateBasisCoeff(wm);
+
+        wp->CreateSmoothnessIndicator(wm,etas,Theta);
+        omega.push_back(wp->omega);
+        swp.push_back(wp);
+    }
+
+    /*
+     *For large stencils
+     */
+    WenoPrepare * lwp = new WenoPrepare(StencilLarge,target,Lorder);
+    lwp->SetUpStencil(wm);
+    lwp->CreateBasisCoeff(wm);
+    lwp->CreateSmoothnessIndicator(wm,etal,Theta);
+
+    /*
+     *Create weighting based on smoothness indicators
+     */
+    double omega_m = *max_element(omega.begin(),omega.end());    
+
+    double sum = accumulate(omega.begin(), omega.end(), decltype(omega)::value_type(0));
+    sum = sum/omega_m;
+
+    vector <double> sweight;
+    for (int i=0; i<swp.size(); i++){
+        sweight.push_back(omega[i]/omega_m*(1-lwp->omega/omega_m)/sum);
+    }
+
+    double lweight = 1.0 - accumulate(sweight.begin(), sweight.end(), decltype(sweight)::value_type(0));
+
+    // Now calculate reconstruction with caluclated weightings.
+    reconst = 0.0; 
+
+    /*
+     *Calcualte basis function evaluated at the given target point.
+     */
+    int sn = Sorder[0]*Sorder[1];
+    for (auto & wp: swp){
+
+        double work = 0.0;
+        for (int p=0; p<sn; p++){
+            for(int ypow=0; ypow<Sorder[1]; ypow++){
+            for(int xpow=0; xpow<Sorder[0]; xpow++){
+                int o = ypow*Sorder[0]+xpow;
+                work += wm->lsol[target_j][target_i]*
+                        wp->wenobasiscoeff[o*sn+p]*
+                        poly(target_point,{xpow,ypow});
+            }}
+        }
+        swork.push_back(work);
+
+    }
+
+    int ln = Lorder[0]*Lorder[1];
+    for (int p=0; p<ln; p++){
+        for(int ypow=0; ypow<Lorder[1]; ypow++){
+        for(int xpow=0; xpow<Lorder[0]; xpow++){
+            int o = ypow*Lorder[0]+xpow;
+            lwork += wm->lsol[target_j][target_i]*
+                     lwp->wenobasiscoeff[o*sn+p]*
+                     poly(target_point,{xpow,ypow});
+        }}
+    }
+
+    // Calculate the reconstruction value
+    for (int i=0; i<sweight.size(); i++){
+        reconst += sweight.at(i)*swork.at(i); 
+    }
+    reconst += lweight*lwork;
 
     return reconst;
 }
