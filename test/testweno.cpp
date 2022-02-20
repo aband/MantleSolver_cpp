@@ -57,8 +57,8 @@ inline valarray<double> testoutput2(valarray<double> test){
 
 double func(valarray<double>& point, const vector<double>& param){
     //return point[0]*point[0];
-    //return sin(point[0])+cos(point[1]);
-    return point[0]+point[1];
+    return sin(point[0])+cos(point[1]);
+    //return point[0]+point[1];
 }
 
 int main(int argc, char **argv){
@@ -233,8 +233,10 @@ int main(int argc, char **argv){
     wp->SetUpStencil(wm);
     //wp->PrintSingleStencil();
 
+    printf("\nThe target point is (%.2f, %.2f), the exact value is %f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
+
     // Define an instance for 3,2 reconstruction
-    cout << WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, wp->center) << endl;
+    cout <<"Weno (3,2) reconstruction value : " << WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, wp->center) << endl;
 
     DMDAVecRestoreArray(dmu, localu, &lu);
 

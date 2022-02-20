@@ -201,7 +201,7 @@ solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSma
         for(int xpow=0; xpow<Lorder[0]; xpow++){
             int o = ypow*Lorder[0]+xpow;
             lwork += wm->lsol[target_j][target_i]*
-                     lwp->wenobasiscoeff[o*sn+p]*
+                     lwp->wenobasiscoeff[o*ln+p]*
                      poly(target_point,{xpow,ypow});
         }}
     }
