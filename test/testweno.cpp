@@ -56,7 +56,7 @@ inline valarray<double> testoutput2(valarray<double> test){
 }
 
 double func(valarray<double>& point, const vector<double>& param){
-    //return point[0]*point[0];
+    //return pow(point[0],2);
     return sin(point[0])+cos(point[1]);
     //return point[0]+point[1];
 }
@@ -180,8 +180,8 @@ int main(int argc, char **argv){
     
     ReadMeshPortion(dm, &fullmesh, mesh);
 
-    cout << "Converted c array of local mesh into vector container c++ " << endl;
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    //cout << "Converted c array of local mesh into vector container c++ " << endl;
+    //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     // ==========================================================================================================================
 
@@ -233,10 +233,14 @@ int main(int argc, char **argv){
     wp->SetUpStencil(wm);
     //wp->PrintSingleStencil();
 
-    printf("\nThe target point is (%.2f, %.2f), the exact value is %f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
+    printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
 
     // Define an instance for 3,2 reconstruction
-    cout <<"Weno (3,2) reconstruction value : " << WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, wp->center) << endl;
+    solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, wp->center);
+
+    printf("The reconstructed value at the given point is %.12f \n", u);
+
+    printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
 
     DMDAVecRestoreArray(dmu, localu, &lu);
 

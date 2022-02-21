@@ -133,9 +133,6 @@ solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSma
     vector <double> swork;
     double lwork;
 
-    int target_i = target[0] - wm->ghost;
-    int target_j = target[1] - wm->ghost;
-
     /*
      *For small stencil
      */
@@ -161,6 +158,7 @@ solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSma
      *Create weighting based on smoothness indicators
      */
     double omega_m = *max_element(omega.begin(),omega.end());    
+    omega_m = max(omega_m,lwp->omega);
 
     double sum = accumulate(omega.begin(), omega.end(), decltype(omega)::value_type(0));
     sum = sum/omega_m;
@@ -171,6 +169,10 @@ solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSma
     }
 
     double lweight = 1.0 - accumulate(sweight.begin(), sweight.end(), decltype(sweight)::value_type(0));
+
+    // Linear weights
+    //sweight = {0.25,0.25,0.25,0.25};
+    //lweight = 0.0;
 
     // Now calculate reconstruction with caluclated weightings.
     reconst = 0.0; 
@@ -183,26 +185,33 @@ solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSma
 
         double work = 0.0;
         for (int p=0; p<sn; p++){
+            int target_i = target[0] - wm->ghost + wp->index_set_stencil[p][0];
+            int target_j = target[1] - wm->ghost + wp->index_set_stencil[p][1];
+
             for(int ypow=0; ypow<Sorder[1]; ypow++){
             for(int xpow=0; xpow<Sorder[0]; xpow++){
                 int o = ypow*Sorder[0]+xpow;
+                point target = (target_point-wp->center)/wp->h;
                 work += wm->lsol[target_j][target_i]*
                         wp->wenobasiscoeff[o*sn+p]*
-                        poly(target_point,{xpow,ypow});
+                        poly(target,{xpow,ypow});
             }}
         }
         swork.push_back(work);
-
     }
 
     int ln = Lorder[0]*Lorder[1];
     for (int p=0; p<ln; p++){
+        int target_i = target[0] - wm->ghost + lwp->index_set_stencil[p][0];
+        int target_j = target[1] - wm->ghost + lwp->index_set_stencil[p][1];
+
         for(int ypow=0; ypow<Lorder[1]; ypow++){
         for(int xpow=0; xpow<Lorder[0]; xpow++){
             int o = ypow*Lorder[0]+xpow;
+            point target = (target_point-lwp->center)/lwp->h;
             lwork += wm->lsol[target_j][target_i]*
                      lwp->wenobasiscoeff[o*ln+p]*
-                     poly(target_point,{xpow,ypow});
+                     poly(target,{xpow,ypow});
         }}
     }
 

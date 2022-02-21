@@ -55,14 +55,19 @@ class WenoStencil{
          *Reference center point of the targeted cell.
          */
         point center;
-    protected:
-
-        vector<int> polynomial_order;       // WENO restruction polynomial order, (xpow, ypow)
+        /*
+         *Scale factor for each stencil.
+         */
+        double h;
         /*
          *Index set used in calculation of the reconstruction is orderred in the
          *following. The members of this vector will be added to the starting index.
          */
         index_set index_set_stencil;     // Index set used in reconstruction
+
+    protected:
+
+        vector<int> polynomial_order;       // WENO restruction polynomial order, (xpow, ypow)
         /*
          *The cell targeted for reconstruction.
          */
@@ -76,10 +81,6 @@ class WenoStencil{
          *Loop inside a single element.
          */
         vector< point_index > corner_index {{0,0},{1,0},{1,1},{0,1}};
-        /*
-         *Scale factor for each stencil.
-         */
-        double h;
 };
 
 class WenoPrepare : public WenoStencil{
