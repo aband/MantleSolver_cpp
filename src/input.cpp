@@ -116,8 +116,8 @@ PetscErrorCode SimpleInitialValue(DM dm, DM dmu, Vec *fullmesh, Vec *globalu,
 
         vector<double> Empty;
 
-        double result = NumIntegralFace(cell,Empty,{0.0,0.0},1.0,func); 
         double area = NumIntegralFace(cell,Empty,{0.0,0.0},1.0,constfun2);
+        double result = NumIntegralFace(cell,{pow(area,0.5)},{0.0,0.0},1.0,func); 
 
         localu[j][i] = result/area;
     }}

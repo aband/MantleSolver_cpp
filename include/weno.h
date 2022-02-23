@@ -102,13 +102,16 @@ class WenoPrepare : public WenoStencil{
         double omega = 0.0;
         double * wenobasiscoeff;
 
+        double sigma = 0.0;
     private:
 
-        double sigma = 0.0;
         double epsilon_0 = 0.5;
 };
 
 // Define independent functions
+solution WenoReconstStencil(vector<int>& order, point_index& target, point target_point,
+                            WenoPrepare*& wp,const WenoMesh*& wm);
+
 solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSmall,const WenoMesh*& wm,
                           point_index& target, vector<int>& Sorder, vector<int>& Lorder,
                           point target_point);

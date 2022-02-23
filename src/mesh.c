@@ -120,12 +120,12 @@ PetscErrorCode LogicRectMesh(DM dm, Vec *fullmesh, MeshParam * mp){
     ierr = PetscRandomCreate(PETSC_COMM_WORLD,&rndx);CHKERRQ(ierr);
     ierr = PetscRandomCreate(PETSC_COMM_WORLD,&rndy);CHKERRQ(ierr);
 
-    ierr = PetscRandomSetInterval(rndx,-0.3*hx,0.3*hx);  CHKERRQ(ierr);
+    ierr = PetscRandomSetInterval(rndx,-0.3*hx,0.3*hx)    ;CHKERRQ(ierr);
     ierr = PetscRandomSetSeed(rndx,(unsigned long)seconds);CHKERRQ(ierr);
-    ierr = PetscRandomSetFromOptions(rndx);                CHKERRQ(ierr);
-    ierr = PetscRandomSetInterval(rndy,-0.3*hy,0.3*hy);  CHKERRQ(ierr);
+    ierr = PetscRandomSetFromOptions(rndx)                ;CHKERRQ(ierr);
+    ierr = PetscRandomSetInterval(rndy,-0.3*hy,0.3*hy)    ;CHKERRQ(ierr);
     ierr = PetscRandomSetSeed(rndy,(unsigned long)seconds);CHKERRQ(ierr);
-    ierr = PetscRandomSetFromOptions(rndy);                CHKERRQ(ierr);
+    ierr = PetscRandomSetFromOptions(rndy)                ;CHKERRQ(ierr);
 
     for (int j=ys; j<ys+ym; j++){
     for (int i=xs; i<xs+xm; i++){

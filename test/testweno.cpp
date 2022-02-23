@@ -56,9 +56,14 @@ inline valarray<double> testoutput2(valarray<double> test){
 }
 
 double func(valarray<double>& point, const vector<double>& param){
-    //return pow(point[0],2);
-    return sin(point[0])+cos(point[1]);
-    //return point[0]+point[1];
+	 if (point[0]<0.50-param[0]){
+		  return sin(point[0])+cos(point[1]);
+	 } else {
+		  return sin(point[0])+cos(point[1])+10;
+		  //return exp(point[0]+point[1]);
+	 }
+
+    //return sin(point[0])+cos(point[1]);
 }
 
 int main(int argc, char **argv){
@@ -229,18 +234,29 @@ int main(int argc, char **argv){
     StencilSmall.push_back({{-1, 0},{ 0, 0},{ 0, 1},{-1, 1 }});
 
     WenoPrepare * wp = new WenoPrepare(StencilLarge, input_target_cell, Lorder);
-
     wp->SetUpStencil(wm);
-    //wp->PrintSingleStencil();
+//    wp->PrintSingleStencil();
+    wp->CreateBasisCoeff(wm);
+//    wp->PrintBasisCoeff();
 
-    printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
+/*
+ *    for (auto & s: StencilSmall){
+ *        WenoPrepare * swp = new WenoPrepare(s,input_target_cell,Sorder);
+ *        swp->SetUpStencil(wm);
+ *        swp->CreateBasisCoeff(wm);
+ *        swp->CreateSmoothnessIndicator(wm,2.0,2.0);
+ *        cout << swp->sigma << endl;
+ *    }
+ *
+ */
+	 printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
 
-    // Define an instance for 3,2 reconstruction
-    solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, wp->center);
+	 // Define an instance for 3,2 reconstruction
+	 solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, {0.5,0.5});
 
-    printf("The reconstructed value at the given point is %.12f \n", u);
+	 printf("The reconstructed value at the given point is %.12f \n", u);
 
-    printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
+	 printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
 
     DMDAVecRestoreArray(dmu, localu, &lu);
 

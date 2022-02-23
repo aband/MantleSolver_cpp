@@ -99,7 +99,7 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, dou
     for (auto & cell: index_set_stencil){
         int target_i = target_cell[0]-wm->ghost;
         int target_j = target_cell[1]-wm->ghost;
-        sigma += pow(wm->lsol[target_j][target_i] - wm->lsol[target_j+cell[1]][target_i+cell[0]],2) ;
+        sigma += pow(wm->lsol[target_j][target_i] - wm->lsol[target_j+cell[1]][target_i+cell[0]],2);
     }
 
     sigma *= 1.0/(double)(index_set_stencil.size()-1);
@@ -107,6 +107,29 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, dou
     sigma = pow(sigma, eta);
 
     omega = 1.0/pow(sigma+epsilon_0*pow(h,Theta),(double)max(polynomial_order[0],polynomial_order[1])/Theta);
+}
+
+solution WenoReconstStencil(vector<int>& order, point_index& target, point target_point,
+                            WenoPrepare*& wp,const WenoMesh*& wm){
+
+    solution reconst = 0.0;
+
+    int n = order[0]*order[1];
+    for (int p=0; p<n; p++){
+        int target_i = target[0] - wm->ghost + wp->index_set_stencil[p][0];
+        int target_j = target[1] - wm->ghost + wp->index_set_stencil[p][1];
+
+        for (int ypow = 0; ypow<order[1]; ypow++){
+        for (int xpow = 0; xpow<order[0]; xpow++){
+            int o = ypow*order[0] + xpow;
+            point target = (target_point - wp->center)/wp->h;
+            reconst += wm->lsol[target_j][target_i] *
+                       wp->wenobasiscoeff[o*n+p] *
+                       poly(target,{xpow,ypow});
+        }}
+    }
+
+    return reconst;
 }
 
 // Define a reconstruction method
@@ -180,48 +203,17 @@ solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSma
     /*
      *Calcualte basis function evaluated at the given target point.
      */
-    int sn = Sorder[0]*Sorder[1];
     for (auto & wp: swp){
-
-        double work = 0.0;
-        for (int p=0; p<sn; p++){
-            int target_i = target[0] - wm->ghost + wp->index_set_stencil[p][0];
-            int target_j = target[1] - wm->ghost + wp->index_set_stencil[p][1];
-
-            for(int ypow=0; ypow<Sorder[1]; ypow++){
-            for(int xpow=0; xpow<Sorder[0]; xpow++){
-                int o = ypow*Sorder[0]+xpow;
-                point target = (target_point-wp->center)/wp->h;
-                work += wm->lsol[target_j][target_i]*
-                        wp->wenobasiscoeff[o*sn+p]*
-                        poly(target,{xpow,ypow});
-            }}
-        }
-        swork.push_back(work);
+        swork.push_back(WenoReconstStencil(Sorder,target,target_point,wp,wm));
     }
 
-    int ln = Lorder[0]*Lorder[1];
-    for (int p=0; p<ln; p++){
-        int target_i = target[0] - wm->ghost + lwp->index_set_stencil[p][0];
-        int target_j = target[1] - wm->ghost + lwp->index_set_stencil[p][1];
-
-        for(int ypow=0; ypow<Lorder[1]; ypow++){
-        for(int xpow=0; xpow<Lorder[0]; xpow++){
-            int o = ypow*Lorder[0]+xpow;
-            point target = (target_point-lwp->center)/lwp->h;
-            lwork += wm->lsol[target_j][target_i]*
-                     lwp->wenobasiscoeff[o*ln+p]*
-                     poly(target,{xpow,ypow});
-        }}
-    }
+    lwork = WenoReconstStencil(Lorder,target,target_point,lwp,wm);
 
     // Calculate the reconstruction value
     for (int i=0; i<sweight.size(); i++){
         reconst += sweight.at(i)*swork.at(i); 
     }
     reconst += lweight*lwork;
-
-    printf("\nWeights for small stencils are : %f %f %f %f, and weight for large stencil is %f. \n",sweight.at(0),sweight.at(1),sweight.at(2),sweight.at(3),lweight);
 
     return reconst;
 }
