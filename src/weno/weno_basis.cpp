@@ -37,11 +37,11 @@ void WenoStencil::PrintSingleStencil(){
     printf("The target cell index is (%d,%d) \n", target_cell[0], target_cell[1]);
     printf("The four corners are : \n");
     for (auto & c: target_cell_corners){
-        printf("(%.2f,%.2f)  ",c[0],c[1]);
+        printf("(%.5f,%.5f)  ",c[0],c[1]);
     } cout<<endl;
-    printf("The center of the target cell is (%.2f,%.2f) \n",center[0],center[1]);
+    printf("The center of the target cell is (%.5f,%.5f) \n",center[0],center[1]);
 
-    printf("The area is %.3f \n",h*h);
+    printf("The area is %.12f \n",h*h);
 
 }
 
@@ -106,7 +106,7 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, dou
 
     sigma = pow(sigma, eta);
 
-    omega = 1.0/pow(sigma+epsilon_0*h,(double)max(polynomial_order[0],polynomial_order[1])/Theta);
+    omega = 1.0/pow(sigma+epsilon_0*pow(h,Theta),(double)max(polynomial_order[0],polynomial_order[1])/Theta);
 }
 
 // Define a reconstruction method
@@ -220,6 +220,8 @@ solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSma
         reconst += sweight.at(i)*swork.at(i); 
     }
     reconst += lweight*lwork;
+
+    printf("\nWeights for small stencils are : %f %f %f %f, and weight for large stencil is %f. \n",sweight.at(0),sweight.at(1),sweight.at(2),sweight.at(3),lweight);
 
     return reconst;
 }
