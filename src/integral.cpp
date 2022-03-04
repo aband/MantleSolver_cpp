@@ -64,6 +64,20 @@ inline double GaussJacobian(valarray<double> ref,
     return jac; 
 }
 
+inline valarray<double> UnitNormal(const vector< valarray<double> >& corner,double len){
+    /*
+     *The function calculates the unit outer normal vector on a given edge/face(later)
+     */
+    valarray<double> work;
+   
+    work = corner[1]-corner[0];
+    work = work.cshift(1);
+    work[1] = -work[1];
+    work = work/len;
+
+    return work;
+}
+
 /*
  *The numbering order for each cell/element is fixed as
  *  3_______2
@@ -76,6 +90,9 @@ inline double GaussJacobian(valarray<double> ref,
 double NumIntegralFace(const vector< valarray<double> >& corner, const vector<double>& param,
                        const valarray<double>& center, const double& h, 
                        double (*func)(valarray<double>& point, const vector<double>& param)){
+
+    assert(corner.size() == 4);
+
     double work = 0.0;
 
     vector< valarray<double> > tmp = corner;
@@ -106,6 +123,9 @@ double NumIntegralFace(const vector< valarray<double> >& corner, const vector<do
 double NumIntegralFace(const vector< valarray<double> >& corner, const vector<int>& param,
                        const valarray<double>& center, const double& h, 
                        double (*func)(valarray<double>& point, const vector<int>& param)){
+
+    assert(corner.size() == 4);
+ 
     double work = 0.0;
 
     vector< valarray<double> > tmp = corner;
@@ -137,9 +157,30 @@ double NumIntegralFace(const vector< valarray<double> >& corner, const vector<in
  *Edge Integral will be added later
  */
 
-/*
- *double NumIntegralEdge(const valarray<double>){
- *
- *
- *}
- */
+double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<int>& param,
+                       double (*funcX)(valarray<double>& point, const vector<int>& param), 
+                       double (*funcY)(valarray<double>& point, const vector<int>& param)){
+
+    assert(corner.size() == 2);
+
+    double work = 0.0;
+     
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    valarray<double> vec = corner[1]-corner[0];
+    vec *= vec;
+    double len = sqrt(vec.sum()); 
+
+    valarray<double> norm = UnitNormal(corner,len);
+
+    for (int g=0; g< 3; g++){
+        valarray<double> mapped = GaussMapPointsEdge({gpe[g]},corner);
+        printf("The mapped gauss points on the edge are (%f,%f) \n",mapped[0],mapped[1]);
+        work += gwe[g] * (funcX(mapped,param)*norm[0] + funcY(mapped,param)*norm[1]);
+    }
+ 
+    work *= len/2.0; 
+
+    return work;
+}

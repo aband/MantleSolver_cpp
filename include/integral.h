@@ -32,5 +32,8 @@ double NumIntegralFace(const vector< valarray<double> >& corner, const vector<in
                        const valarray<double>& center, const double& h, 
                        double (*func)(valarray<double>& point, const vector<int>& param));
 
+double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<int>& param,
+                       double (*funcX)(valarray<double>& point, const vector<int>& param),
+                       double (*funcY)(valarray<double>& point, const vector<int>& param));
 
 #endif

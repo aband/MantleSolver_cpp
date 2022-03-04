@@ -12,7 +12,6 @@ double poly(valarray<double>& point, const vector<int>& param){
  *The following member functions are invariant to different index, and
  *reconstruction order.
  */
-
 void WenoStencil::SetUpStencil(const WenoMesh*& wm){
 
     // Unpack parameters carried by WenoMesh

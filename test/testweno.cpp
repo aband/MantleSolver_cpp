@@ -66,6 +66,16 @@ double func(valarray<double>& point, const vector<double>& param){
     //return sin(point[0])+cos(point[1]);
 }
 
+double funcX(valarray<double>& point, const vector<int>& param){
+
+    return 1;
+}
+
+double funcY(valarray<double>& point, const vector<int>& param){
+
+    return 1;
+}
+
 int main(int argc, char **argv){
 
     // Initializing petsc function
@@ -257,6 +267,47 @@ int main(int argc, char **argv){
 	 printf("The reconstructed value at the given point is %.12f \n", u);
 
 	 printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
+
+/*
+ *    // L2 norm for error analysis
+ *    const valarray<double>& gwf = GaussWeightsFace;
+ *    const vector< valarray<double> >& gpf = GaussPointsFace;
+ *
+ *    solution sum;
+ *    for (int j=stencilWidth; j<N+stencilWidth; j++){
+ *    for (int i=stencilWidth; i<M+stencilWidth; i++){
+ *        solution work = 0.0;
+ *        vector<valarray<double>> corner;
+ *        corner.push_back(mesh[j*(2*stencilWidth+M)+i]);
+ *        corner.push_back(mesh[j*(2*stencilWidth+M)+i+1]);
+ *        corner.push_back(mesh[(j+1)*(2*stencilWidth+M)+i+1]);
+ *        corner.push_back(mesh[(j+1)*(2*stencilWidth+M)+i]);
+ *        valarray<double> center;
+ *        for (auto & c: corner){
+ *            center += c/4.0;
+ *        }
+ *        point_index target {j,i};
+ *        for (int k=0; k<gpf.size(); k++){
+ *            valarray<double> mapped = GaussMapPointsFace(gpf[i],corner);
+ *            const point tmp = mapped;
+ *            double jac = abs(GaussJacobian(gpf[i],corner));
+ *            double gw = gwf[i];
+ *            work += jac*gw*pow((*func)(mapped,{center[0],center[1]})-WenoPointReconst(StencilLarge, StencilSmall, wm, target, Sorder, Lorder, mapped),2);
+ *        }
+ *        sum += work;
+ *    }}
+ *
+ *    cout << endl << "L2 norm is calculated as : " << pow(sum,0.5) << endl;
+ *
+ */
+
+    // Test Numintegral on the edge
+    vector<point> edge_corner = {{0,0},{1,1}};
+
+    double numint_edge = NumIntegralEdge(edge_corner,{0},funcX,funcY);
+
+    cout << "Numerical Integral on the given edge " << numint_edge << endl;
+
 
     DMDAVecRestoreArray(dmu, localu, &lu);
 
