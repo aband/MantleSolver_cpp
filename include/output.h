@@ -9,4 +9,6 @@
 
 PetscErrorCode PrintFullMesh(DM dmMesh, Vec * fullmesh);
 
+PetscErrorCode DrawPressure(DM dmu, Vec * globalu);
+
 #endif

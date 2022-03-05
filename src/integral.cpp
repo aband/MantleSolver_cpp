@@ -64,7 +64,7 @@ inline double GaussJacobian(valarray<double> ref,
     return jac; 
 }
 
-inline valarray<double> UnitNormal(const vector< valarray<double> >& corner,double len){
+valarray<double> UnitNormal(const vector< valarray<double> >& corner,double len){
     /*
      *The function calculates the unit outer normal vector on a given edge/face(later)
      */
@@ -76,6 +76,13 @@ inline valarray<double> UnitNormal(const vector< valarray<double> >& corner,doub
     work = work/len;
 
     return work;
+}
+
+double length(const vector< valarray<double> >& corner){
+
+    valarray<double> vec = corner[1]-corner[0];
+    vec *= vec;
+    return sqrt(vec.sum()); 
 }
 
 /*
@@ -168,9 +175,7 @@ double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<in
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
 
-    valarray<double> vec = corner[1]-corner[0];
-    vec *= vec;
-    double len = sqrt(vec.sum()); 
+    double len = length(corner);
 
     valarray<double> norm = UnitNormal(corner,len);
 
@@ -184,3 +189,30 @@ double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<in
 
     return work;
 }
+
+double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<double>& param,
+                       double (*funcX)(valarray<double>& point, const vector<double>& param), 
+                       double (*funcY)(valarray<double>& point, const vector<double>& param)){
+
+    assert(corner.size() == 2);
+
+    double work = 0.0;
+     
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    double len = length(corner);
+
+    valarray<double> norm = UnitNormal(corner,len);
+
+    for (int g=0; g< 3; g++){
+        valarray<double> mapped = GaussMapPointsEdge({gpe[g]},corner);
+        printf("The mapped gauss points on the edge are (%f,%f) \n",mapped[0],mapped[1]);
+        work += gwe[g] * (funcX(mapped,param)*norm[0] + funcY(mapped,param)*norm[1]);
+    }
+ 
+    work *= len/2.0; 
+
+    return work;
+}
+

@@ -20,6 +20,10 @@ extern valarray<double> GaussWeightsFace;
 
 extern vector< valarray<double> > GaussPointsFace;
 
+valarray<double> UnitNormal(const vector< valarray<double> >& corner, double len);
+
+double length(const vector< valarray<double> >& corner);
+
 /*
  *Define numerical integral function with function
  *overloading in c++.
@@ -36,4 +40,7 @@ double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<in
                        double (*funcX)(valarray<double>& point, const vector<int>& param),
                        double (*funcY)(valarray<double>& point, const vector<int>& param));
 
+double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<double>& param,
+                       double (*funcX)(valarray<double>& point, const vector<double>& param),
+                       double (*funcY)(valarray<double>& point, const vector<int>& param));
 #endif

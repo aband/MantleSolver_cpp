@@ -1,8 +1,11 @@
 #include <iostream>
 #include <petsc.h>
-#include "../include/weno.h"
-#include "../include/integral.h"
-#include "../include/input.h"
+#include "weno.h"
+#include "integral.h"
+#include "input.h"
+#include "flux.h"
+
+#include "func.h"
 
 #include <adolc/adolc.h>
 
@@ -209,7 +212,9 @@ int main(int argc, char **argv){
     Vec globalu;
     ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
 
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    // Initialize with oblique data for Burgers equation
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,Initial_Condition);
 
     Vec localu; 
     DMCreateLocalVector(dmu, &localu);
@@ -230,25 +235,25 @@ int main(int argc, char **argv){
      *Test the center point of the entire domain because it is fixed.
      *In order to get a fixed point, M and N should be odd numbers.
      */
-    point_index input_target_cell {stencilWidth+M/2,stencilWidth+N/2};
-    vector<int> Lorder {3,3};
-    vector<int> Sorder {2,2};
-    index_set StencilLarge {{-1,-1},{0,-1},{1,-1},
-                            {-1, 0},{0, 0},{1, 0},
-                            {-1, 1},{0, 1},{1, 1}};
-
-    vector<index_set> StencilSmall;
-    StencilSmall.push_back({{-1,-1},{ 0,-1},{ 0, 0},{-1, 0}});
-    StencilSmall.push_back({{ 0,-1},{ 1,-1},{ 1, 0},{ 0, 0}});
-    StencilSmall.push_back({{ 0, 0},{ 1, 0},{ 1, 1},{ 0, 1}});
-    StencilSmall.push_back({{-1, 0},{ 0, 0},{ 0, 1},{-1, 1 }});
-
-    WenoPrepare * wp = new WenoPrepare(StencilLarge, input_target_cell, Lorder);
-    wp->SetUpStencil(wm);
-//    wp->PrintSingleStencil();
-    wp->CreateBasisCoeff(wm);
-//    wp->PrintBasisCoeff();
-
+/*
+ *    point_index input_target_cell {stencilWidth+M/2,stencilWidth+N/2};
+ *    vector<int> Lorder {3,3};
+ *    vector<int> Sorder {2,2};
+ *    index_set StencilLarge {{-1,-1},{0,-1},{1,-1},
+ *                            {-1, 0},{0, 0},{1, 0},
+ *                            {-1, 1},{0, 1},{1, 1}};
+ *
+ *    vector<index_set> StencilSmall;
+ *    StencilSmall.push_back({{-1,-1},{ 0,-1},{ 0, 0},{-1, 0}});
+ *    StencilSmall.push_back({{ 0,-1},{ 1,-1},{ 1, 0},{ 0, 0}});
+ *    StencilSmall.push_back({{ 0, 0},{ 1, 0},{ 1, 1},{ 0, 1}});
+ *    StencilSmall.push_back({{-1, 0},{ 0, 0},{ 0, 1},{-1, 1 }});
+ *
+ *    WenoPrepare * wp = new WenoPrepare(StencilLarge, input_target_cell, Lorder);
+ *    wp->SetUpStencil(wm);
+ *    wp->CreateBasisCoeff(wm);
+ *
+ */
 /*
  *    for (auto & s: StencilSmall){
  *        WenoPrepare * swp = new WenoPrepare(s,input_target_cell,Sorder);
@@ -259,15 +264,17 @@ int main(int argc, char **argv){
  *    }
  *
  */
-	 printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
-
-	 // Define an instance for 3,2 reconstruction
-	 solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, {0.5,0.5});
-
-	 printf("The reconstructed value at the given point is %.12f \n", u);
-
-	 printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
-
+/*
+ *    printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
+ *
+ *    // Define an instance for 3,2 reconstruction
+ *    solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, {0.5,0.5});
+ *
+ *    printf("The reconstructed value at the given point is %.12f \n", u);
+ *
+ *    printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
+ *
+ */
 /*
  *    // L2 norm for error analysis
  *    const valarray<double>& gwf = GaussWeightsFace;
@@ -302,12 +309,29 @@ int main(int argc, char **argv){
  */
 
     // Test Numintegral on the edge
-    vector<point> edge_corner = {{0,0},{1,1}};
+/*
+ *    vector<point> edge_corner = {{0,0},{1,1}};
+ *
+ *    double numint_edge = NumIntegralEdge(edge_corner,{0},funcX,funcY);
+ *
+ *    cout << "Numerical Integral on the given edge " << numint_edge << endl;
+ *
+ */
 
-    double numint_edge = NumIntegralEdge(edge_corner,{0},funcX,funcY);
+    // test for 2D Burgers equation
+    // Explicit time progression for simplicity
+    DrawPressure(dmu, &globalu);   
 
-    cout << "Numerical Integral on the given edge " << numint_edge << endl;
+    double T = 0.5;
+    double dt = 0.001;
+    double currentT = 0.0;
 
+    while(currentT < T){
+        currentT += dt;
+    }
+
+
+    // ============================================================
 
     DMDAVecRestoreArray(dmu, localu, &lu);
 
