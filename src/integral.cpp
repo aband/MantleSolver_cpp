@@ -37,8 +37,8 @@ inline valarray<double> GaussMapPointsFace(valarray<double> ref,
     return mapped;
 }
 
-inline valarray<double> GaussMapPointsEdge(valarray<double> ref,
-                                           const vector< valarray<double> >& corner){
+valarray<double> GaussMapPointsEdge(valarray<double> ref,
+                                    const vector< valarray<double> >& corner){
     assert(corner.size()==2);
 
     valarray<double> mid = (corner[0]+corner[1])/2.0;
@@ -207,7 +207,6 @@ double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<do
 
     for (int g=0; g< 3; g++){
         valarray<double> mapped = GaussMapPointsEdge({gpe[g]},corner);
-        printf("The mapped gauss points on the edge are (%f,%f) \n",mapped[0],mapped[1]);
         work += gwe[g] * (funcX(mapped,param)*norm[0] + funcY(mapped,param)*norm[1]);
     }
  
@@ -215,4 +214,3 @@ double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<do
 
     return work;
 }
-

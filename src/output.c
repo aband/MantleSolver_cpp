@@ -43,7 +43,7 @@ PetscErrorCode DrawPressure(DM dmu, Vec * globalu){
     ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
     ierr = DMDAGetInfo(dmu, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
 
-    FILE *f = fopen("Initial.data","w");
+    FILE *f = fopen("Pressure.data","w");
 
     ierr = DMGetLocalVector(dmu, &lu); CHKERRQ(ierr); 
     ierr = DMGlobalToLocalBegin(dmu,fu,INSERT_VALUES,lu); CHKERRQ(ierr);

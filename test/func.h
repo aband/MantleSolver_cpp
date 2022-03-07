@@ -6,10 +6,10 @@
 
 using namespace std;
 
-double funcF(double t, valarray<double>& target, double u);
-double funcG(double t, valarray<double>& target, double u);
-double dfuncF(double t, valarray<double>& target, double u);
-double dfuncG(double t, valarray<double>& target, double u);
+double funcF(valarray<double>& target, const vector<double>& param);
+double funcG(valarray<double>& target, const vector<double>& param);
+double dfuncF(valarray<double>& target, const vector<double>& param);
+double dfuncG(valarray<double>& target, const vector<double>& param);
 
 double Initial_Condition(valarray<double>& target, const vector<double>& param);
 

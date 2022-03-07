@@ -3,24 +3,24 @@
 /*
  *Define functions used in calculation here
  */
-double funcF(double t, valarray<double> target, double u){
+double funcX(valarray<double> target, const vector<double>& param){
 
-    return u*u/2;
+    return param[0]*param[0]/2;
 }
 
-double funcG(double t, valarray<double> target, double u){
+double funcY(valarray<double> target, const vector<double>& param){
 
-    return u*u/2;
+    return param[0]*param[0]/2;
 }
 
-double dfuncF(double t, valarray<double> target, double u){
+double dfuncX(valarray<double> target, const vector<double>& param){
 
-    return u;
+    return param[0];
 }
 
-double dfuncG(double t, valarray<double> target, double u){
+double dfuncY(valarray<double> target, const vector<double>& param){
 
-    return u;
+    return param[0];
 }
 
 double Initial_Condition(valarray<double>& target, const vector<double>& param){

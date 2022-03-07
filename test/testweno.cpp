@@ -69,14 +69,24 @@ double func(valarray<double>& point, const vector<double>& param){
     //return sin(point[0])+cos(point[1]);
 }
 
-double funcX(valarray<double>& point, const vector<int>& param){
+double funcX(valarray<double>& target, const vector<double>& param){
 
-    return 1;
+    return param[0]*param[0]/2;
 }
 
-double funcY(valarray<double>& point, const vector<int>& param){
+double funcY(valarray<double>& target, const vector<double>& param){
 
-    return 1;
+    return param[0]*param[0]/2;
+}
+
+double dfuncX(valarray<double>& target, const vector<double>& param){
+
+    return param[0];
+}
+
+double dfuncY(valarray<double>& target, const vector<double>& param){
+
+    return param[0];
 }
 
 int main(int argc, char **argv){
@@ -205,7 +215,7 @@ int main(int argc, char **argv){
 
     DM dmu;
 
-    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, 2, NULL, NULL, &dmu);CHKERRQ(ierr);
+    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, 2, NULL, NULL, &dmu);CHKERRQ(ierr);
     ierr = DMSetFromOptions(dmu);               CHKERRQ(ierr);
     ierr = DMSetUp(dmu);                        CHKERRQ(ierr);
 
@@ -318,20 +328,61 @@ int main(int argc, char **argv){
  *
  */
 
+    Vec solu;
+    solution ** localsolu;
+    VecDuplicate(globalu, &solu);
+    VecCopy(globalu,solu);
+
+    DMDAVecGetArray(dmu,solu,&localsolu);
+
+    vector<int> Lorder {3,3};
+    vector<int> Sorder {2,2};
+    index_set StencilLarge {{-1,-1},{0,-1},{1,-1},
+                            {-1, 0},{0, 0},{1, 0},
+                            {-1, 1},{0, 1},{1, 1}};
+
+    vector<index_set> StencilSmall;
+    StencilSmall.push_back({{-1,-1},{ 0,-1},{ 0, 0},{-1, 0}});
+    StencilSmall.push_back({{ 0,-1},{ 1,-1},{ 1, 0},{ 0, 0}});
+    StencilSmall.push_back({{ 0, 0},{ 1, 0},{ 1, 1},{ 0, 1}});
+    StencilSmall.push_back({{-1, 0},{ 0, 0},{ 0, 1},{-1, 1 }});
+
     // test for 2D Burgers equation
     // Explicit time progression for simplicity
     DrawPressure(dmu, &globalu);   
 
     double T = 0.5;
-    double dt = 0.001;
     double currentT = 0.0;
+
+    // Spectial case
+    double h = 1.0/((double)M*(double)N);
+
+    double dt = 0.1;
+
+    PetscInt       xs,ys,xm,ym;
+    ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
 
     while(currentT < T){
         currentT += dt;
+        const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,localsolu);
+        for (int j=ys; j<ys+ym; j++){
+        for (int i=xs; i<xs+xm; i++){
+            for (int pos = 0; pos<4; pos++){
+                point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
+                localsolu[j][i] += dt/h * pow(-1,pos+1)*TotalFlux(wm,pos,currentT, StencilLarge,
+                                                           StencilSmall, target, Sorder, Lorder,
+                                                           funcX, funcY, dfuncX, dfuncY);
+            }
+        }}
+        delete currentwm;
+        currentwm = NULL;
     }
 
-
     // ============================================================
+
+    DMDAVecRestoreArray(dmu,solu,&localsolu);
+
+    DrawPressure(dmu,&solu);
 
     DMDAVecRestoreArray(dmu, localu, &lu);
 
