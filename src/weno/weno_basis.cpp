@@ -108,6 +108,69 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, dou
     omega = 1.0/pow(sigma+epsilon_0*pow(h,Theta),(double)max(polynomial_order[0],polynomial_order[1])/Theta);
 }
 
+/*
+ *Construct a object containing necessary information for a
+ *single reconstruction at a target cell.
+ */
+WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
+                         index_set& StencilLarge, vector<int>& input_Lorder,
+                         vector<index_set>& StencilSmall, vector<int>& input_Sorder){
+
+    target_cell = target;
+
+    Lorder = input_Lorder; 
+    Sorder = input_Sorder; 
+
+    r = max(Lorder[0],Lorder[1]);
+    s = max(Sorder[0],Sorder[1]);
+
+    etas = ceil((max(r-s,s)+Theta)/2.0);
+    etal = ceil((r-s+Theta)/2.0);
+
+    lwp = new WenoPrepare(StencilLarge, target, Lorder);
+    lwp->SetUpStencil(wm);
+    lwp->CreateBasisCoeff(wm);
+    lwp->CreateSmoothnessIndicator(wm,etal,Theta);
+
+    swp = new wpPtr[StencilSmall.size()]; 
+
+    for (int s=0; s<StencilSmall.size(); s++){
+        swp[s] = new WenoPrepare(StencilSmall[s], target, Sorder);
+        swp[s]->SetUpStencil(wm);
+        swp[s]->CreateBasisCoeff(wm);
+        swp[s]->CreateSmoothnessIndicator(wm,etas,Theta);
+    }
+
+}
+
+void WenoReconst::CreateCoefficients(){
+
+    vector<double> omega;
+    omega.push_back(lwp->omega);
+    for (int s=0; s<StencilSmall.size(); s++){
+        omega.push_back(swp[s]->omega);
+    }
+
+    /*
+     *Create weighting based on smoothness indicators
+     */
+    double omega_m = *max_element(omega.begin(),omega.end());    
+    omega_m = max(omega_m,lwp->omega);
+
+    double sum = accumulate(omega.begin(), omega.end(), decltype(omega)::value_type(0));
+    sum = sum/omega_m;
+
+    double sum_sweight = 0.0;
+
+    sweight = new double[StencilSmall.size()];
+    for (int k=0; k<StencilSmall.size(); k++){
+        sweight[k] = omega[k]/omega_m*(1-lwp->omega/omega_m)/sum;
+        sum_sweight += sweight[k];
+    }
+
+    lweight = 1.0 - sum_sweight;
+}
+
 solution WenoReconstStencil(vector<int>& order, point_index& target, point target_point,
                             WenoPrepare*& wp,const WenoMesh*& wm){
 
@@ -129,6 +192,26 @@ solution WenoReconstStencil(vector<int>& order, point_index& target, point targe
     }
 
     return reconst;
+}
+
+solution WenoReconst::PointReconstruction(const WenoMesh*& wm, point target_point){
+
+    solution work = 0.0;
+
+    vector <double> swork;
+
+    for (int s=0; s<StencilSmall.size(); s++){
+        swork.push_back(WenoReconstStencil(Sorder, target_cell, target_point, swp[s], wm));
+    }
+
+    double lwork = WenoReconstStencil(Lorder, target_cell, target_point, lwp, wm);
+
+    for (int s=0; s<StencilSmall.size(); s++){
+        work += sweight[s]*swork[s];
+    }
+    work += lweight*lwork;
+
+    return work;
 }
 
 // Define a reconstruction method
@@ -215,4 +298,11 @@ solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSma
     reconst += lweight*lwork;
 
     return reconst;
+}
+
+solution * WenoReconstructionLocal(WenoPrepare**& lwp, WenoPrepare**& swp){
+
+    solution * test;
+
+    return test;
 }

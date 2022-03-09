@@ -18,6 +18,7 @@ using index_set    = vector<point_index>;
 using cell_corners = vector<point>;
 using stencil      = vector<cell_corners>;
 
+
 /*
  *The number of variable will not always be zero.
  */
@@ -46,6 +47,8 @@ class WenoStencil{
                     polynomial_order(input_order), 
                     index_set_stencil(input_index_set), 
                     target_cell(input_target_cell) {};
+
+        ~WenoStencil() {};
 
         void SetUpStencil(const WenoMesh*& wm);
 
@@ -89,6 +92,12 @@ class WenoPrepare : public WenoStencil{
                     vector<int>& input_order) : 
                     WenoStencil(input_index_set,input_target_cell,input_order) {};
 
+        ~WenoPrepare() {delete wenobasiscoeff;};
+
+        /*
+         *Please do not call following functions directly.
+         *They are designed to test reconstruction for one point.
+         */
         void CreateBasisCoeff(const WenoMesh*& wm);
 
         void CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, double Theta);
@@ -98,17 +107,55 @@ class WenoPrepare : public WenoStencil{
         /*
          *Define parameters
          */
-
         double omega = 0.0;
         double * wenobasiscoeff;
-
         double sigma = 0.0;
     private:
 
         double epsilon_0 = 0.5;
 };
 
+class WenoReconst {
+    public:
+        WenoReconst(point_index& target, const WenoMesh*& wm,
+                    index_set& StencilLarge, vector<int>& Lorder,
+                    vector<index_set>& StencilSmall, vector<int>& Sorder);
+       
+        ~WenoReconst(){
+            delete lwp;
+            for (int s=0; s<StencilSmall.size(); s++){
+                delete swp[s];
+            }
+            delete swp;
+            delete sweight;
+        }; 
 
+        void CreateCoefficients();
+
+        solution PointReconstruction(const WenoMesh*& m, point target_point);
+
+    private:
+        point_index target_cell;
+        index_set StencilLarge;
+        vector<index_set> StencilSmall;
+
+        vector<int> Lorder;
+        vector<int> Sorder;
+
+        typedef WenoPrepare* wpPtr;
+
+        wpPtr lwp;
+        wpPtr * swp;
+
+        int r,s;
+        double etas, etal;
+
+        double Theta = 2.0;
+
+        double * sweight;
+        double lweight;
+
+};
 
 // Define independent functions
 solution WenoReconstStencil(vector<int>& order, point_index& target, point target_point,
@@ -117,6 +164,9 @@ solution WenoReconstStencil(vector<int>& order, point_index& target, point targe
 solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSmall, const WenoMesh*& wm,
                           point_index& target, vector<int>& Sorder, vector<int>& Lorder,
                           point target_point);
+
+
+solution * WenoReconstructionLocal(WenoPrepare**& lwp, WenoPrepare**& swp);
 
 
 #endif

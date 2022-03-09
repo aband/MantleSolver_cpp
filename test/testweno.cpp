@@ -362,21 +362,46 @@ int main(int argc, char **argv){
     PetscInt       xs,ys,xm,ym;
     ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
 
-    while(currentT < T){
-        currentT += dt;
-        const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,localsolu);
-        for (int j=ys; j<ys+ym; j++){
-        for (int i=xs; i<xs+xm; i++){
-            for (int pos = 0; pos<4; pos++){
-                point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
-                localsolu[j][i] += dt/h * pow(-1,pos+1)*TotalFlux(wm,pos,currentT, StencilLarge,
-                                                           StencilSmall, target, Sorder, Lorder,
-                                                           funcX, funcY, dfuncX, dfuncY);
-            }
-        }}
-        delete currentwm;
-        currentwm = NULL;
+/*
+ *    while(currentT < T){
+ *        currentT += dt;
+ *        const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,localsolu);
+ *        for (int j=ys; j<ys+ym; j++){
+ *        for (int i=xs; i<xs+xm; i++){
+ *            for (int pos = 0; pos<4; pos++){
+ *                point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
+ *                localsolu[j][i] += dt/h * pow(-1,pos+1)*TotalFlux(wm,pos,currentT, StencilLarge,
+ *                                                           StencilSmall, target, Sorder, Lorder,
+ *                                                           funcX, funcY, dfuncX, dfuncY);
+ *            }
+ *        }}
+ *        delete currentwm;
+ *        currentwm = NULL;
+ *    }
+ *
+ */
+    // Create array of weno prepare object
+    // First determine how many stencils we need locally
+    int StencilNum = (M+2)*(N+2);
+
+    typedef WenoReconst*  wrPtr;
+
+    wrPtr * wr_23 = new wrPtr[StencilNum];
+
+    for (int s=0; s<StencilNum; s++){
+        int j=s/(M+2);
+        int i=s%(M+2);
+        point_index target {i-1+wm->ghost, j-1+wm->ghost};
+        wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder);
+        wr_23[s]->CreateCoefficients();
     }
+
+
+
+    for (int s=0; s<StencilNum; s++){
+        delete wr_23[s];
+    }
+    delete wr_23;
 
     // ============================================================
 
