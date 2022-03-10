@@ -18,7 +18,6 @@ using index_set    = vector<point_index>;
 using cell_corners = vector<point>;
 using stencil      = vector<cell_corners>;
 
-
 /*
  *The number of variable will not always be zero.
  */
@@ -132,7 +131,7 @@ class WenoReconst {
 
         void CreateCoefficients();
 
-        solution PointReconstruction(const WenoMesh*& m, point target_point);
+        solution PointReconstruction(const WenoMesh*& wm, point target_point);
 
     private:
         point_index target_cell;

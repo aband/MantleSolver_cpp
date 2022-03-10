@@ -357,29 +357,11 @@ int main(int argc, char **argv){
     // Spectial case
     double h = 1.0/((double)M*(double)N);
 
-    double dt = 0.1;
+    double dt = 0.4*h;
 
     PetscInt       xs,ys,xm,ym;
     ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
 
-/*
- *    while(currentT < T){
- *        currentT += dt;
- *        const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,localsolu);
- *        for (int j=ys; j<ys+ym; j++){
- *        for (int i=xs; i<xs+xm; i++){
- *            for (int pos = 0; pos<4; pos++){
- *                point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
- *                localsolu[j][i] += dt/h * pow(-1,pos+1)*TotalFlux(wm,pos,currentT, StencilLarge,
- *                                                           StencilSmall, target, Sorder, Lorder,
- *                                                           funcX, funcY, dfuncX, dfuncY);
- *            }
- *        }}
- *        delete currentwm;
- *        currentwm = NULL;
- *    }
- *
- */
     // Create array of weno prepare object
     // First determine how many stencils we need locally
     int StencilNum = (M+2)*(N+2);
@@ -397,13 +379,29 @@ int main(int argc, char **argv){
     }
 
 
+	 while(currentT < T){
+		  currentT += dt;
+		  const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,localsolu);
+		  for (int j=ys; j<ys+ym; j++){
+		  for (int i=xs; i<xs+xm; i++){
+				for (int pos = 0; pos<4; pos++){
+					 point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
+					 localsolu[j][i] += dt/h * pow(-1,pos+1)*TotalFlux(wm,pos,currentT, target, wr_23, 
+																			         funcX, funcY, dfuncX, dfuncY);
+				}
+		  }}
+		  delete currentwm;
+		  currentwm = NULL;
+	 }
+
+    // ========================================================================== 
 
     for (int s=0; s<StencilNum; s++){
         delete wr_23[s];
     }
     delete wr_23;
 
-    // ============================================================
+    // ==========================================================================
 
     DMDAVecRestoreArray(dmu,solu,&localsolu);
 

@@ -116,10 +116,13 @@ PetscErrorCode SimpleInitialValue(DM dm, DM dmu, Vec *fullmesh, Vec *globalu,
 
         vector<double> Empty;
 
-        double area = NumIntegralFace(cell,Empty,{0.0,0.0},1.0,constfun2);
-        double result = NumIntegralFace(cell,{pow(area,0.5)},{0.0,0.0},1.0,func); 
+        valarray<double> center = (cell[0]+cell[1]+cell[2]+cell[3])/4.0;
 
-        localu[j][i] = result/area;
+        //double area = NumIntegralFace(cell,Empty,{0.0,0.0},1.0,constfun2);
+        //double result = NumIntegralFace(cell,{pow(area,0.5)},{0.0,0.0},1.0,func); 
+
+        //localu[j][i] = result/area;
+        localu[j][i] = func(center,Empty);
     }}
 
     // Missing boundary condition

@@ -5,6 +5,8 @@
 #include <vector>
 #include <valarray>
 #include <petsc.h>
+#include <numeric>
+
 #include "integral.h"
 
 extern "C"{
