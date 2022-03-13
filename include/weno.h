@@ -129,6 +129,8 @@ class WenoReconst {
             delete sweight;
         }; 
 
+        void CheckBasisCoeff();
+
         void CreateCoefficients();
 
         solution PointReconstruction(const WenoMesh*& wm, point target_point);
@@ -163,9 +165,4 @@ solution WenoReconstStencil(vector<int>& order, point_index& target, point targe
 solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSmall, const WenoMesh*& wm,
                           point_index& target, vector<int>& Sorder, vector<int>& Lorder,
                           point target_point);
-
-
-solution * WenoReconstructionLocal(WenoPrepare**& lwp, WenoPrepare**& swp);
-
-
 #endif

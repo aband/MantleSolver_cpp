@@ -59,14 +59,15 @@ inline valarray<double> testoutput2(valarray<double> test){
 }
 
 double func(valarray<double>& point, const vector<double>& param){
-	 if (point[0]<0.50-param[0]){
-		  return sin(point[0])+cos(point[1]);
-	 } else {
-		  return sin(point[0])+cos(point[1])+10;
-		  //return exp(point[0]+point[1]);
-	 }
+//	 if (point[0]<0.50-param[0]){
+//		  return sin(point[0])+cos(point[1]);
+//	 } else {
+//		  return sin(point[0])+cos(point[1])+10;
+//		  //return exp(point[0]+point[1]);
+//	 }
 
     //return sin(point[0])+cos(point[1]);
+    return point[0]*point[0];
 }
 
 double funcX(valarray<double>& target, const vector<double>& param){
@@ -222,9 +223,9 @@ int main(int argc, char **argv){
     Vec globalu;
     ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
 
-    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
     // Initialize with oblique data for Burgers equation
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,Initial_Condition);
 
     Vec localu; 
     DMCreateLocalVector(dmu, &localu);
@@ -274,17 +275,7 @@ int main(int argc, char **argv){
  *    }
  *
  */
-/*
- *    printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
- *
- *    // Define an instance for 3,2 reconstruction
- *    solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, {0.5,0.5});
- *
- *    printf("The reconstructed value at the given point is %.12f \n", u);
- *
- *    printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
- *
- */
+
 /*
  *    // L2 norm for error analysis
  *    const valarray<double>& gwf = GaussWeightsFace;
@@ -357,7 +348,7 @@ int main(int argc, char **argv){
     // Spectial case
     double h = 1.0/((double)M*(double)N);
 
-    double dt = 0.4*h;
+    double dt = 0.4*1.0/(double)M;
 
     PetscInt       xs,ys,xm,ym;
     ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
@@ -378,21 +369,60 @@ int main(int argc, char **argv){
         wr_23[s]->CreateCoefficients();
     }
 
+    // Test with new weno reconst object
+    solution u_reconst = wr_23[(N/2+1)*(M+2)+(M/2+1)]->PointReconstruction(wm, {0.5,0.5});
 
-	 while(currentT < T){
-		  currentT += dt;
-		  const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,localsolu);
-		  for (int j=ys; j<ys+ym; j++){
-		  for (int i=xs; i<xs+xm; i++){
-				for (int pos = 0; pos<4; pos++){
-					 point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
-					 localsolu[j][i] += dt/h * pow(-1,pos+1)*TotalFlux(wm,pos,currentT, target, wr_23, 
-																			         funcX, funcY, dfuncX, dfuncY);
-				}
-		  }}
-		  delete currentwm;
-		  currentwm = NULL;
+    wr_23[(N/2+1)*(M+2)+(M/2+1)]->CheckBasisCoeff();
+
+
+    point ref {0.5,0.5};
+
+    cout << endl << "The exact value of the given point (0.5,0.5) is : " << func(ref,{0.0}) << endl;
+
+    cout << endl << "The reconstruction of the point (0.5,0.5) is : " << u_reconst << endl;
+
+    // Benchmark calculation
+	 point_index input_target_cell {stencilWidth+M/2,stencilWidth+N/2};
+ 
+    WenoPrepare * wp = new WenoPrepare(StencilLarge, input_target_cell, Lorder);
+    wp->SetUpStencil(wm);
+    wp->CreateBasisCoeff(wm);
+
+	 for (auto & s: StencilSmall){
+		  WenoPrepare * swp = new WenoPrepare(s,input_target_cell,Sorder);
+		  swp->SetUpStencil(wm);
+		  swp->CreateBasisCoeff(wm);
+		  swp->CreateSmoothnessIndicator(wm,2.0,2.0);
+		  cout << swp->sigma << endl;
 	 }
+
+	 printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
+
+	 // Define an instance for 3,2 reconstruction
+	 solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, {0.5,0.5});
+
+	 printf("The reconstructed value at the given point is %.12f \n", u);
+
+	 printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
+
+
+	 /*
+	  *while(currentT < T){
+	  *    currentT += dt;
+     *    // Update weno mesh object with new solution propogation through time
+	  *    const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,localsolu);
+	  *    for (int j=ys; j<ys+ym; j++){
+	  *    for (int i=xs; i<xs+xm; i++){
+	  *        for (int pos = 0; pos<4; pos++){
+	  *            point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
+	  *            localsolu[j][i] += dt/h * pow(-1,pos+1)*TotalFlux(wm, pos, currentT, target, wr_23,
+	  *                                                              funcX, funcY, dfuncX, dfuncY);
+	  *        }
+	  *    }}
+	  *    delete currentwm;
+	  *    currentwm = NULL;
+	  *}
+	  */
 
     // ========================================================================== 
 

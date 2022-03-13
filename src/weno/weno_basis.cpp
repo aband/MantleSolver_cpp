@@ -171,6 +171,11 @@ void WenoReconst::CreateCoefficients(){
     lweight = 1.0 - sum_sweight;
 }
 
+void WenoReconst::CheckBasisCoeff(){
+    printf("Basis polynomial on large stencil : \n");
+    lwp->PrintBasisCoeff();
+} 
+
 solution WenoReconstStencil(vector<int>& order, point_index& target, point target_point,
                             WenoPrepare*& wp,const WenoMesh*& wm){
 
@@ -298,11 +303,4 @@ solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSma
     reconst += lweight*lwork;
 
     return reconst;
-}
-
-solution * WenoReconstructionLocal(WenoPrepare**& lwp, WenoPrepare**& swp){
-
-    solution * test;
-
-    return test;
 }
