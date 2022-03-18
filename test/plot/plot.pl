@@ -6,20 +6,20 @@ set title "Burger's equation with Oblique Initial Condition"
 reset
 set contour
 unset surface
-set cntrparam level incremental -1.0, 0.6, 1.0
+set cntrparam level incremental -1.0, 0.5, 1.0
 
 set view map
 
 set dgrid3d 100,100,4
 
 set table 'contour.data'
-splot 'build/Pressure.data' matrix
+splot 'Pressure.data' matrix
 unset table
 
 unset contour
 set surface 
 set table 'grid.data'
-splot 'build/Pressure.data' matrix
+splot 'Pressure.data' matrix
 unset table
 
 reset

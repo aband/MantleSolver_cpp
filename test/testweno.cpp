@@ -67,7 +67,7 @@ double func(valarray<double>& point, const vector<double>& param){
 //	 }
 
     //return sin(point[0])+cos(point[1]);
-    return point[0]*point[0];
+    return point[0]*point[0] + point[1]*point[1];
 }
 
 double funcX(valarray<double>& target, const vector<double>& param){
@@ -170,8 +170,8 @@ int main(int argc, char **argv){
     ierr = DMSetUp(dm);                        CHKERRQ(ierr);
     ierr = DMCreateGlobalVector(dm, &fullmesh);CHKERRQ(ierr); 
 
-    double L = 1.0, H = 1.0;
-    double xstart = 0.0, ystart = 0.0;
+    double L = 3.0, H = 3.0;
+    double xstart = -1.0, ystart = -1.0;
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
 
@@ -212,120 +212,6 @@ int main(int argc, char **argv){
     //cout << "Converted c array of local mesh into vector container c++ " << endl;
     //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-    // ==========================================================================================================================
-
-    DM dmu;
-
-    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, 2, NULL, NULL, &dmu);CHKERRQ(ierr);
-    ierr = DMSetFromOptions(dmu);               CHKERRQ(ierr);
-    ierr = DMSetUp(dmu);                        CHKERRQ(ierr);
-
-    Vec globalu;
-    ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
-
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
-    // Initialize with oblique data for Burgers equation
-    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-
-    Vec localu; 
-    DMCreateLocalVector(dmu, &localu);
-
-    DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, localu);
-    DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, localu);
-
-    // It can be changed later to not be double
-    solution  ** lu;
-    DMDAVecGetArray(dmu, localu, &lu);
-
-    /*
-     *Initialize code by calling WenoMesh
-     */
-    const WenoMesh * wm = new WenoMesh(M,N,stencilWidth,mesh,lu);
-
-    /*
-     *Test the center point of the entire domain because it is fixed.
-     *In order to get a fixed point, M and N should be odd numbers.
-     */
-/*
- *    point_index input_target_cell {stencilWidth+M/2,stencilWidth+N/2};
- *    vector<int> Lorder {3,3};
- *    vector<int> Sorder {2,2};
- *    index_set StencilLarge {{-1,-1},{0,-1},{1,-1},
- *                            {-1, 0},{0, 0},{1, 0},
- *                            {-1, 1},{0, 1},{1, 1}};
- *
- *    vector<index_set> StencilSmall;
- *    StencilSmall.push_back({{-1,-1},{ 0,-1},{ 0, 0},{-1, 0}});
- *    StencilSmall.push_back({{ 0,-1},{ 1,-1},{ 1, 0},{ 0, 0}});
- *    StencilSmall.push_back({{ 0, 0},{ 1, 0},{ 1, 1},{ 0, 1}});
- *    StencilSmall.push_back({{-1, 0},{ 0, 0},{ 0, 1},{-1, 1 }});
- *
- *    WenoPrepare * wp = new WenoPrepare(StencilLarge, input_target_cell, Lorder);
- *    wp->SetUpStencil(wm);
- *    wp->CreateBasisCoeff(wm);
- *
- */
-/*
- *    for (auto & s: StencilSmall){
- *        WenoPrepare * swp = new WenoPrepare(s,input_target_cell,Sorder);
- *        swp->SetUpStencil(wm);
- *        swp->CreateBasisCoeff(wm);
- *        swp->CreateSmoothnessIndicator(wm,2.0,2.0);
- *        cout << swp->sigma << endl;
- *    }
- *
- */
-
-/*
- *    // L2 norm for error analysis
- *    const valarray<double>& gwf = GaussWeightsFace;
- *    const vector< valarray<double> >& gpf = GaussPointsFace;
- *
- *    solution sum;
- *    for (int j=stencilWidth; j<N+stencilWidth; j++){
- *    for (int i=stencilWidth; i<M+stencilWidth; i++){
- *        solution work = 0.0;
- *        vector<valarray<double>> corner;
- *        corner.push_back(mesh[j*(2*stencilWidth+M)+i]);
- *        corner.push_back(mesh[j*(2*stencilWidth+M)+i+1]);
- *        corner.push_back(mesh[(j+1)*(2*stencilWidth+M)+i+1]);
- *        corner.push_back(mesh[(j+1)*(2*stencilWidth+M)+i]);
- *        valarray<double> center;
- *        for (auto & c: corner){
- *            center += c/4.0;
- *        }
- *        point_index target {j,i};
- *        for (int k=0; k<gpf.size(); k++){
- *            valarray<double> mapped = GaussMapPointsFace(gpf[i],corner);
- *            const point tmp = mapped;
- *            double jac = abs(GaussJacobian(gpf[i],corner));
- *            double gw = gwf[i];
- *            work += jac*gw*pow((*func)(mapped,{center[0],center[1]})-WenoPointReconst(StencilLarge, StencilSmall, wm, target, Sorder, Lorder, mapped),2);
- *        }
- *        sum += work;
- *    }}
- *
- *    cout << endl << "L2 norm is calculated as : " << pow(sum,0.5) << endl;
- *
- */
-
-    // Test Numintegral on the edge
-/*
- *    vector<point> edge_corner = {{0,0},{1,1}};
- *
- *    double numint_edge = NumIntegralEdge(edge_corner,{0},funcX,funcY);
- *
- *    cout << "Numerical Integral on the given edge " << numint_edge << endl;
- *
- */
-
-    Vec solu;
-    solution ** localsolu;
-    VecDuplicate(globalu, &solu);
-    VecCopy(globalu,solu);
-
-    DMDAVecGetArray(dmu,solu,&localsolu);
-
     vector<int> Lorder {3,3};
     vector<int> Sorder {2,2};
     index_set StencilLarge {{-1,-1},{0,-1},{1,-1},
@@ -338,6 +224,84 @@ int main(int argc, char **argv){
     StencilSmall.push_back({{ 0, 0},{ 1, 0},{ 1, 1},{ 0, 1}});
     StencilSmall.push_back({{-1, 0},{ 0, 0},{ 0, 1},{-1, 1 }});
 
+    // Test with new weno reconst object
+/*
+ *    solution u_reconst = wr_23[(N/2+1)*(M+2)+(M/2+1)]->PointReconstruction(wm, {0.5,0.5});
+ *
+ *    point ref {0.5,0.5};
+ *
+ *    cout << endl << "The exact value of the given point (0.5,0.5) is : " << func(ref,{0.0}) << endl;
+ *
+ *    cout << endl << "The reconstruction of the point (0.5,0.5) is : " << u_reconst << endl;
+ *
+ */
+/*
+ *    // Benchmark calculation
+ *    point_index input_target_cell {stencilWidth+M/2,stencilWidth+N/2};
+ *
+ *    WenoPrepare * wp = new WenoPrepare(StencilLarge, input_target_cell, Lorder);
+ *    wp->SetUpStencil(wm);
+ *    wp->CreateBasisCoeff(wm);
+ *
+ *    for (auto & s: StencilSmall){
+ *        WenoPrepare * swp = new WenoPrepare(s,input_target_cell,Sorder);
+ *        swp->SetUpStencil(wm);
+ *        swp->CreateBasisCoeff(wm);
+ *        swp->CreateSmoothnessIndicator(wm,2.0,2.0);
+ *        cout << swp->sigma << endl;
+ *    }
+ *
+ *    printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
+ *
+ *    // Define an instance for 3,2 reconstruction
+ *    solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, {0.5,0.5});
+ *
+ *    printf("The reconstructed value at the given point is %.12f \n", u);
+ *
+ *    printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
+ *
+ */
+
+    // ==========================================================================================================================
+
+    DM dmu;
+
+    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_PERIODIC, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, 2, NULL, NULL, &dmu);CHKERRQ(ierr);
+    ierr = DMSetFromOptions(dmu);               CHKERRQ(ierr);
+    ierr = DMSetUp(dmu);                        CHKERRQ(ierr);
+
+    Vec globalu;
+    ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
+
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    // Initialize with oblique data for Burgers equation 
+    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+
+    Vec localu; 
+    DMGetLocalVector(dmu, &localu);
+
+    DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, localu);
+    DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, localu);
+
+    // It can be changed later to not be double
+    solution  ** lu;
+    DMDAVecGetArray(dmu, localu, &lu);
+
+    // Test Numintegral on the edge
+/*
+ *    vector<point> edge_corner = {{0,0},{1,1}};
+ *
+ *    double numint_edge = NumIntegralEdge(edge_corner,{0},funcX,funcY);
+ *
+ *    cout << "Numerical Integral on the given edge " << numint_edge << endl;
+ *
+ */
+
+    /*
+     *Initialize code by calling WenoMesh
+     */
+    const WenoMesh * wm = new WenoMesh(M,N,stencilWidth,mesh,lu);
+
     // test for 2D Burgers equation
     // Explicit time progression for simplicity
     DrawPressure(dmu, &globalu);   
@@ -346,9 +310,9 @@ int main(int argc, char **argv){
     double currentT = 0.0;
 
     // Spectial case
-    double h = 1.0/((double)M*(double)N);
+    double h = 9.0/((double)M*(double)N);
 
-    double dt = 0.4*1.0/(double)M;
+    double dt = 0.2*3.0/(double)M;
 
     PetscInt       xs,ys,xm,ym;
     ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
@@ -369,62 +333,43 @@ int main(int argc, char **argv){
         wr_23[s]->CreateCoefficients();
     }
 
-    // Test with new weno reconst object
-    solution u_reconst = wr_23[(N/2+1)*(M+2)+(M/2+1)]->PointReconstruction(wm, {0.5,0.5});
+    DMDAVecRestoreArray(dmu,localu,&lu);
 
-    wr_23[(N/2+1)*(M+2)+(M/2+1)]->CheckBasisCoeff();
+    solution ** gu;
 
+	 while(currentT < T){
+		  currentT += dt;
+		  cout << "Current time is : " << currentT << endl;
 
-    point ref {0.5,0.5};
+		  DMDAVecGetArray(dmu, globalu, &gu);
 
-    cout << endl << "The exact value of the given point (0.5,0.5) is : " << func(ref,{0.0}) << endl;
+        Vec llu;
+        DMGetLocalVector(dmu, &llu);
+        DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, llu);
+        DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, llu);
 
-    cout << endl << "The reconstruction of the point (0.5,0.5) is : " << u_reconst << endl;
+        DMDAVecGetArray(dmu, llu, &lu);
 
-    // Benchmark calculation
-	 point_index input_target_cell {stencilWidth+M/2,stencilWidth+N/2};
- 
-    WenoPrepare * wp = new WenoPrepare(StencilLarge, input_target_cell, Lorder);
-    wp->SetUpStencil(wm);
-    wp->CreateBasisCoeff(wm);
+		  // Update weno mesh object with new solution propogation through time
+		  const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,lu);
+		  for (int j=ys+3; j<ys+ym-3; j++){
+		  for (int i=xs+3; i<xs+xm-3; i++){
+				for (int pos = 0; pos<4; pos++){
+					 point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
+					 gu[j][i] -= dt/h * TotalFlux(currentwm, pos, currentT, target, wr_23,
+															funcX, funcY, dfuncX, dfuncY);
+				}
+		  }}
 
-	 for (auto & s: StencilSmall){
-		  WenoPrepare * swp = new WenoPrepare(s,input_target_cell,Sorder);
-		  swp->SetUpStencil(wm);
-		  swp->CreateBasisCoeff(wm);
-		  swp->CreateSmoothnessIndicator(wm,2.0,2.0);
-		  cout << swp->sigma << endl;
+        DMDAVecRestoreArray(dmu, llu, &lu);
+        DMRestoreLocalVector(dmu, &llu); 
+
+		  DMDAVecRestoreArray(dmu, globalu, &gu);
+
+		  delete currentwm;
 	 }
 
-	 printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
-
-	 // Define an instance for 3,2 reconstruction
-	 solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, {0.5,0.5});
-
-	 printf("The reconstructed value at the given point is %.12f \n", u);
-
-	 printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
-
-
-	 /*
-	  *while(currentT < T){
-	  *    currentT += dt;
-     *    // Update weno mesh object with new solution propogation through time
-	  *    const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,localsolu);
-	  *    for (int j=ys; j<ys+ym; j++){
-	  *    for (int i=xs; i<xs+xm; i++){
-	  *        for (int pos = 0; pos<4; pos++){
-	  *            point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
-	  *            localsolu[j][i] += dt/h * pow(-1,pos+1)*TotalFlux(wm, pos, currentT, target, wr_23,
-	  *                                                              funcX, funcY, dfuncX, dfuncY);
-	  *        }
-	  *    }}
-	  *    delete currentwm;
-	  *    currentwm = NULL;
-	  *}
-	  */
-
-    // ========================================================================== 
+    // ==========================================================================
 
     for (int s=0; s<StencilNum; s++){
         delete wr_23[s];
@@ -433,16 +378,11 @@ int main(int argc, char **argv){
 
     // ==========================================================================
 
-    DMDAVecRestoreArray(dmu,solu,&localsolu);
-
-    DrawPressure(dmu,&solu);
-
-    DMDAVecRestoreArray(dmu, localu, &lu);
+    DrawPressure(dmu,&globalu);
 
     // Destroy Vectors
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);
-    VecDestroy(&localu);
     DMDestroy(&dm);
 
     return 0;

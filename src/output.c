@@ -50,8 +50,8 @@ PetscErrorCode DrawPressure(DM dmu, Vec * globalu){
     ierr = DMGlobalToLocalEnd(dmu,fu,INSERT_VALUES,lu); CHKERRQ(ierr);
     ierr = DMDAVecGetArrayRead(dmu,lu,&localu); CHKERRQ(ierr);
 
-    for (int j=ys+2; j<ys+ym-2; j++){
-    for (int i=xs+2; i<xs+xm-2; i++){
+    for (int j=ys+ym/4; j<ys+ym-ym/4; j++){
+    for (int i=xs+ym/4; i<xs+xm-ym/4; i++){
         fprintf(f,"%f ",localu[j][i]);
     }fprintf(f,"\n");}
 
