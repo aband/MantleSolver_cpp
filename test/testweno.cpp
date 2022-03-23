@@ -333,6 +333,10 @@ int main(int argc, char **argv){
         wr_23[s]->CreateCoefficients();
     }
 
+    // Define two types of 4-3 weno reconstruction
+    wrPtr * wr_43_h = new wrPtr[StencilNum];
+    wrPtr * wr_43_v = new wrPtr[StencilNum];
+
     DMDAVecRestoreArray(dmu,localu,&lu);
 
     solution ** gu;

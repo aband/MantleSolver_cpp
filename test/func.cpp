@@ -25,24 +25,62 @@ double dfuncY(valarray<double> target, const vector<double>& param){
 
 double Initial_Condition(valarray<double>& target, const vector<double>& param){
 
-	 if (target[0]<0.5 && target[1]<0.5){
-		  return 0.5;
-	 } else if (target[0]>0.5 && target[1]<0.5){
-		  return 0.8;
-	 } else if (target[0]<0.5 && target[1]>0.5){
-		  return -0.2;
-	 } else {
-		  return -1.0;
-	 }
-
+/*
+ *    if (target[0]<0.5 && target[1]<0.5){
+ *        return 0.5;
+ *    } else if (target[0]>0.5 && target[1]<0.5){
+ *        return 0.8;
+ *    } else if (target[0]<0.5 && target[1]>0.5){
+ *        return -0.2;
+ *    } else {
+ *        return -1.0;
+ *    }
+ *
+ */
 
 /*
  *    // Diagnol testing
- *    if (target[0]+target[1]<2){
+ *    if (target[0]+target[1]<1){
  *        return 0.5;
  *    }else {
  *        return 1.0;
  *    }
  *
  */
+
+	 /*
+	  *if (target[0]<0.5 && target[1]>0.5){
+	  *    return -1.0;
+	  *} else if (target[0]+target[1]<1){
+	  *    return -0.5;
+	  *} else {
+	  *    return 1.0;
+	  *}
+	  */
+
+/*
+ *    if (target[0]<0.5 && target[1]>0.5){
+ *        return -1.0;
+ *    } else if (target[0]+target[1]<1){
+ *        return 1.0;
+ *    }
+ *
+ */
+
+
+	 if (target[0]<0.0 && target[1]<0.0){
+		  return 0.5;
+	 } else if (target[0]<1.0 && target[0]>0.0 && target[1]<1.0 && target[1]>0.0){
+        return 0.5;
+    } else if (target[0]>1.0 && target[1]>1.0){
+        return 0.5;
+    } else if (target[0]>0.0 && target[1]<1.0){
+        return -0.5;
+    } else if (target[0]>1.0 && target[1]<1.0){
+        return -0.5;
+    } else {
+        return 1.5;
+    }
+
 }
+
