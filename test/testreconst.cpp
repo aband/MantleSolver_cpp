@@ -12,28 +12,9 @@
 extern "C"{
 #include "mesh.h"
 #include "output.h"
-//#include "hdf5.h"
 }
 
 using namespace std;
-
-adouble power(adouble x, int n)
-{
-    adouble z = 1;
-    if (n>0) {
-        int nh = n/2;
-        z = power(x,nh);
-        z *= z;
-        if (2*nh !=n) {z *= x;}
-        return z;
-    } else {
-        if (n==0) {
-            return z;
-        } else {
-            return 1.0/power(x,-n);
-        }
-    }
-}
 
 void testoutput(const valarray<double> test){
     valarray<double> get = test;
@@ -60,52 +41,41 @@ inline valarray<double> testoutput2(valarray<double> test){
 }
 
 double func(valarray<double>& point, const vector<double>& param){
-//	 if (point[0]<0.50-param[0]){
-//		  return sin(point[0])+cos(point[1]);
-//	 } else {
-//		  return sin(point[0])+cos(point[1])+10;
-//		  //return exp(point[0]+point[1]);
-//	 }
-
-    //return sin(point[0])+cos(point[1]);
-    return point[0]*point[0] + point[1]*point[1];
-}
-
-double funcX(valarray<double>& target, const vector<double>& param){
-
-	 return param[0]*param[0]/2;
-    //return param[0];
-}
-
-double funcY(valarray<double>& target, const vector<double>& param){
-
-	return param[0]*param[0]/2;
-   //return param[0];
-}
-
-double dfuncX(valarray<double>& target, const vector<double>& param){
-
-	 return param[0];
-    //return 1.0;
-}
-
-double dfuncY(valarray<double>& target, const vector<double>& param){
-
-	 return param[0];
-    //return 1.0;
+/*
+ *    if (point[0]<0.50){
+ *        return sin(point[0])+cos(point[1]);
+ *    } else {
+ *        return sin(point[0])+cos(point[1])+10;
+ *        //return exp(point[0]+point[1]);
+ *    }
+ *
+ */
+	 return sin(point[0]+point[1])+cos(exp(point[1]));
+    //return point[0]*point[0] + point[1]*point[1];
 }
 
 /*
- *PetscErrorCode FormRHSFunction(TS ts, PetscReal t, Vec solution, ){
+ *double funcX(valarray<double>& target, const vector<double>& param){
  *
+ *    return param[0]*param[0]/2;
  *}
  *
- *PetscErrorCode FormRHSJacobian(){
+ *double funcY(valarray<double>& target, const vector<double>& param){
  *
- *
+ *    return param[0]*param[0]/2;
  *}
+ *
+ *double dfuncX(valarray<double>& target, const vector<double>& param){
+ *
+ *    return param[0];
+ *}
+ *
+ *double dfuncY(valarray<double>& target, const vector<double>& param){
+ *
+ *    return param[0];
+ *}
+ *
  */
-
 int main(int argc, char **argv){
 
     // Initializing petsc function
@@ -240,8 +210,20 @@ int main(int argc, char **argv){
     StencilSmall.push_back({{ 0, 0},{ 1, 0},{ 1, 1},{ 0, 1}});
     StencilSmall.push_back({{-1, 0},{ 0, 0},{ 0, 1},{-1, 1 }});
 
-    // Test with new weno reconst object
 /*
+ *    typedef WenoReconst*  wrPtr;
+ *
+ *    wrPtr * wr_23 = new wrPtr[StencilNum];
+ *
+ *    for (int s=0; s<StencilNum; s++){
+ *        int j=s/(M+2);
+ *        int i=s%(M+2);
+ *        point_index target {i-1+wm->ghost, j-1+wm->ghost};
+ *        wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder);
+ *        wr_23[s]->CreateCoefficients();
+ *    }
+ *
+ *    // Test with new weno reconst object
  *    solution u_reconst = wr_23[(N/2+1)*(M+2)+(M/2+1)]->PointReconstruction(wm, {0.5,0.5});
  *
  *    point ref {0.5,0.5};
@@ -249,30 +231,6 @@ int main(int argc, char **argv){
  *    cout << endl << "The exact value of the given point (0.5,0.5) is : " << func(ref,{0.0}) << endl;
  *
  *    cout << endl << "The reconstruction of the point (0.5,0.5) is : " << u_reconst << endl;
- *
- *    // Benchmark calculation
- *    point_index input_target_cell {stencilWidth+M/2,stencilWidth+N/2};
- *
- *    WenoPrepare * wp = new WenoPrepare(StencilLarge, input_target_cell, Lorder);
- *    wp->SetUpStencil(wm);
- *    wp->CreateBasisCoeff(wm);
- *
- *    for (auto & s: StencilSmall){
- *        WenoPrepare * swp = new WenoPrepare(s,input_target_cell,Sorder);
- *        swp->SetUpStencil(wm);
- *        swp->CreateBasisCoeff(wm);
- *        swp->CreateSmoothnessIndicator(wm,2.0,2.0);
- *        cout << swp->sigma << endl;
- *    }
- *
- *    printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
- *
- *    // Define an instance for 3,2 reconstruction
- *    solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, {0.5,0.5});
- *
- *    printf("The reconstructed value at the given point is %.12f \n", u);
- *
- *    printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
  *
  */
 
@@ -287,15 +245,10 @@ int main(int argc, char **argv){
     Vec globalu;
     ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
 
-    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
     // Initialize with oblique data for Burgers equation 
-    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,func);
 
-/*
- *    Vec solution;
- *    VecDuplicate(globalu,&solution);
- *
- */
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
 
@@ -306,32 +259,10 @@ int main(int argc, char **argv){
     solution  ** lu;
     DMDAVecGetArray(dmu, localu, &lu);
 
-    // Test Numintegral on the edge
-/*
- *    vector<point> edge_corner = {{0,0},{1,1}};
- *
- *    double numint_edge = NumIntegralEdge(edge_corner,{0},funcX,funcY);
- *
- *    cout << "Numerical Integral on the given edge " << numint_edge << endl;
- *
- */
-
     /*
      *Initialize code by calling WenoMesh
      */
     const WenoMesh * wm = new WenoMesh(M,N,stencilWidth,mesh,lu);
-
-    // test for 2D Burgers equation
-    // Explicit time progression for simplicity
-    DrawPressure(dmu, &globalu);   
-
-    double T = 0.5;
-    double currentT = 0.0;
-
-    // Spectial case
-    double h = 9.0/((double)M*(double)N);
-
-    double dt = 0.2*3.0/(double)M;
 
     PetscInt       xs,ys,xm,ym;
     ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
@@ -340,100 +271,33 @@ int main(int argc, char **argv){
     // First determine how many stencils we need locally
     int StencilNum = (M+2)*(N+2);
 
-    typedef WenoReconst*  wrPtr;
+	 // Benchmark calculation
+    WenoReconst * wr_23;
 
-    wrPtr * wr_23 = new wrPtr[StencilNum];
+    point_index target_index = {N/2+wm->ghost ,M/2+wm->ghost};
 
-    for (int s=0; s<StencilNum; s++){
-        int j=s/(M+2);
-        int i=s%(M+2);
-        point_index target {i-1+wm->ghost, j-1+wm->ghost};
-        wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder);
-        wr_23[s]->CreateNewWeights();
-        //wr_23[s]->CreateCoefficients();
-    }
+    wr_23 = new WenoReconst(target_index,wm,StencilLarge,Lorder,StencilSmall,Sorder);
+    wr_23->CreateNewWeights();
+    //wr_23->CreateCoefficients();
+    wr_23->CheckWeights();
+    
+	 point target_point = {0.5, 0.5}; 
 
-    // Define two types of 4-3 weno reconstruction
-    // wrPtr * wr_43_h = new wrPtr[StencilNum];
-    // wrPtr * wr_43_v = new wrPtr[StencilNum];
+	 printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", target_point[0], target_point[1], func(target_point,{0.0}));
+
+	 // Define an instance for 3,2 reconstruction
+
+    solution u = wr_23->PointReconstruction(wm, {0.5,0.5});
+
+	 printf("The reconstructed value at the given point is %.12f \n", u);
+
+	 printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(target_point,{0.0})));
+
+    delete wr_23;
 
     DMDAVecRestoreArray(dmu,localu,&lu);
  
-    // Explicit Time stepping
-	 solution ** gu;
-
-	 while(currentT < T){
-		  currentT += dt;
-		  cout << "Current time is : " << currentT << endl;
-
-		  DMDAVecGetArray(dmu, globalu, &gu);
-
-		  Vec llu;
-		  DMGetLocalVector(dmu, &llu);
-		  DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, llu);
-		  DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, llu);
-
-		  DMDAVecGetArray(dmu, llu, &lu);
-
-		  // Update weno mesh object with new solution propogation through time
-		  const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,lu);
-		  for (int j=ys+3; j<ys+ym-3; j++){
-		  for (int i=xs+3; i<xs+xm-3; i++){
-				for (int pos = 0; pos<4; pos++){
-					 point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
-					 gu[j][i] -= dt/h * TotalFlux(currentwm, pos, currentT, target, wr_23,
-															funcX, funcY, dfuncX, dfuncY);
-				}
-		  }}
-
-		  DMDAVecRestoreArray(dmu, llu, &lu);
-		  DMRestoreLocalVector(dmu, &llu);
-
-		  DMDAVecRestoreArray(dmu, globalu, &gu);
-
-		  delete currentwm;
-	 }
-
-    // Time stepping with TS function in Petsc
-/*
- *    TS ts;
- *    TSCreate(PETSC_COMM_WORLD, &ts);
- *    TSSetProblemType(ts, TS_NONLINEAR);
- *    TSSetSolution(ts, globalu);
- *
- *    Mat A;
- *    MatCreate(PETSC_COMM_WORLD,&A);
- *    MatSetSizes(A,PETSC_DECIDE,PETSC_DECIDE,M*N,M*N);
- *    MatSetFromOptions(A);
- *    MatSetUp(A);
- *
- *    // Set time stepping type
- *    TSSetType(ts,TSBEULER);
- *
- *    // Set initial time and time interval
- *    TSSetInitialTimeStep(ts, 0.0, dt);
- *
- *    TSSetRHSFunction(ts,solution,FormRHSFunction,&apptx);
- *
- *    TSSetRHSJacobian(ts,A,A,FormRHSJacobian,&apptx);
- *
- */
-//    TSSetDuration(ts, 5000, 0.5);
-
-//    TSSetMaxTime(ts, 0.5);
-
     // ==========================================================================
-
-    for (int s=0; s<StencilNum; s++){
-        delete wr_23[s];
-    }
-    delete wr_23;
-
-    // ==========================================================================
-
-    DrawPressure(dmu,&globalu);
-
-    hdf5output(dmu,&globalu);
 
     // Destroy Vectors
     VecDestroy(&fullmesh);

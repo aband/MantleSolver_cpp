@@ -35,14 +35,8 @@ solution LaxFriedrichsFlux(const WenoMesh*& wm, int pos, double t, WenoReconst**
     u_in = wr[index_in]->PointReconstruction(wm, target_point);
     u_out = wr[index_out]->PointReconstruction(wm, target_point);
 
-//    cout << endl << "The edge position is : " << pos << endl;
-
-//    cout << endl << "u_in is " << u_in << " u_out is " << u_out << endl;
-
     // Compute fluxand stabilization parameter
     flux = (funcX(target_point,{u_in}) + funcX(target_point,{u_out}))*norm[0] + (funcY(target_point,{u_in}) + funcY(target_point,{u_out}))*norm[1];
-
-//    cout << endl << "The corresponding flux is : " << flux << endl;
 
     double alphaLF = max( pow( pow(dfuncX(target_point,{u_in}),2)  + pow(dfuncY(target_point,{u_in}),2 ),0.5) , 
                           pow( pow(dfuncX(target_point,{u_out}),2) + pow(dfuncY(target_point,{u_out}),2),0.5) );
@@ -164,5 +158,3 @@ solution TotalFlux(const WenoMesh*& wm, int pos, double t,
 
     return work;
 }
-
-

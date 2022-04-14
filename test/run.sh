@@ -4,9 +4,9 @@ cd build
 cmake ..
 make
 #./test -meshtype 1 -M 2 -N 2 -printmesh 0
-#./test -meshtype 0 -M 60 -N 60
-./test -meshtype 0 -M 120 -N 120
-#./test -meshtype 0 -M 65 -N 65
-#./test -meshtype 0 -M 129 -N 129
-#./test -meshtype 1 -M 257 -N 257
-#./test -meshtype 1 -M 513 -N 513
+#./test -meshtype 0 -M 16 -N 16
+#./test -meshtype 0 -M 32 -N 32
+./test -meshtype 0 -M 10 -N 10
+#./test -meshtype 0 -M 128 -N 128
+#./test -meshtype 0 -M 256 -N 256
+#./test -meshtype 0 -M 512 -N 512

@@ -101,14 +101,27 @@ class WenoPrepare : public WenoStencil{
 
         void CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, double Theta);
 
+        void CreateNewSmoothnessIndicator(const WenoMesh*& wm, double gamma, double Theta);
+
         void PrintBasisCoeff();
 
         /*
          *Define parameters
          */
-        double omega = 0.0;
         double * wenobasiscoeff;
+
+        /*
+         *Reused for both smoothness indicator and
+         *new smoothness indicator
+         */
+        double omega = 0.0;
         double sigma = 0.0;
+        
+        /*
+         *Used for new smoothness indicator only
+         */
+        double omega_0 = 0.0;
+        double omega_hat = 0.0;
     private:
 
         double epsilon_0 = 0.5;
@@ -129,11 +142,21 @@ class WenoReconst {
             delete sweight;
         }; 
 
+        void CreateCoefficients();
         void CheckBasisCoeff();
 
-        void CreateCoefficients();
+        void CreateNewWeights();
+        void CheckWeights();
+
+        // Create corresponding derivative for a specific stencil
+        void CreateQuasiDerivative(vector<int>& order, point_index& target, point target_point,
+                                   int currentStencilIndex,
+                                   WenoPrepare*& wp, const WenoMesh*& wm, double weight);
 
         solution PointReconstruction(const WenoMesh*& wm, point target_point);
+
+        double * sweight;
+        double lweight;
 
     private:
         point_index target_cell;
@@ -153,8 +176,10 @@ class WenoReconst {
 
         double Theta = 2.0;
 
-        double * sweight;
-        double lweight;
+        int maxStencilIndex;
+
+        // Differentiate weno reconstruction with respect to u
+        double * deriv = new double[StencilLarge.size()];
 
 };
 
