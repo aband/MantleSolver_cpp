@@ -330,7 +330,7 @@ int main(int argc, char **argv){
         int i=s%(M+2);
         point_index target {i-1+wm->ghost, j-1+wm->ghost};
         wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder);
-        wr_23[s]->CreateCoefficients();
+        wr_23[s]->CreateNewWeights();
     }
 
     // Define two types of 4-3 weno reconstruction
@@ -383,6 +383,8 @@ int main(int argc, char **argv){
     // ==========================================================================
 
     DrawPressure(dmu,&globalu);
+
+    hdf5output(dmu,&globalu);
 
     // Destroy Vectors
     VecDestroy(&fullmesh);

@@ -100,6 +100,7 @@ class WenoPrepare : public WenoStencil{
         void CreateBasisCoeff(const WenoMesh*& wm);
 
         void CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, double Theta);
+        void CreateSmoothnessIndicator(const WenoMesh*& wm, double gamma, double Theta, double omega_l);
 
         void PrintBasisCoeff();
 
@@ -109,6 +110,11 @@ class WenoPrepare : public WenoStencil{
         double omega = 0.0;
         double * wenobasiscoeff;
         double sigma = 0.0;
+
+        // Additional parameters for new smoothness indicator
+        double sigma2 = 0.0;
+        double omega_0   = 0.0;
+        double omega_hat = 0.0;
     private:
 
         double epsilon_0 = 0.5;
@@ -131,7 +137,8 @@ class WenoReconst {
 
         void CheckBasisCoeff();
 
-        void CreateCoefficients();
+        void CreateWeights();
+        void CreateNewWeights();
 
         solution PointReconstruction(const WenoMesh*& wm, point target_point);
 

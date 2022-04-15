@@ -22,6 +22,8 @@ set(ADOLC $ENV{ADOLC_DIR})
 
 set(LAPACK $ENV{LAPACK_DIR})
 
+set(HDF5 $ENV{HDF5_DIR}/CMakeFiles)
+
 # PKG_CONFIG_PATH is set mannually in bashrc
 
 # Remove the lines below if you do not wish to have PETSc determine the compilers
@@ -44,7 +46,7 @@ endif (FORTRAN_COMPILER)
 #find_package(ADOLC REQUIRED)
 
 project(test)
-add_executable(test testweno.cpp func.cpp ../src/integral.cpp ../src/weno/flux.cpp ../src/mesh.c ../src/weno/weno_basis.cpp ../src/output.c ../src/input.cpp)
+add_executable(test testweno.cpp func.cpp ../src/integral.cpp ../src/weno/flux.cpp ../src/mesh.c ../src/weno/weno_basis.cpp ../src/output.c ../src/input.cpp ../src/hdf5_io.c)
 
 include_directories(../include ../src)
 
@@ -52,4 +54,5 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
 pkg_search_module(ADOLC REQUIRED IMPORTED_TARGET adolc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
-target_link_libraries(test PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE)
+pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
+target_link_libraries(test PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE PkgConfig::HDF5)

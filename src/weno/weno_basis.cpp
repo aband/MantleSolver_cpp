@@ -108,6 +108,21 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, dou
     omega = 1.0/pow(sigma+epsilon_0*pow(h,Theta),(double)max(polynomial_order[0],polynomial_order[1])/Theta);
 }
 
+void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double gamma, double Theta, double omega_l){
+
+    omega_0 = omega_l;
+
+    for (auto & cell: index_set_stencil){
+        int target_i = target_cell[0]-wm->ghost;
+        int target_j = target_cell[1]-wm->ghost;
+        sigma2 += pow(wm->lsol[target_j][target_i] - wm->lsol[target_j+cell[1]][target_i+cell[0]],2);
+    }
+    sigma2 *= 1.0/(double)(index_set_stencil.size()-1);
+    sigma2 = pow(sigma2,gamma/2.0);
+
+    omega_hat = omega_l/(sigma2+pow(h,Theta));
+}
+
 /*
  *Construct a object containing necessary information for a
  *single reconstruction at a target cell.
@@ -131,6 +146,7 @@ WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
     lwp->SetUpStencil(wm);
     lwp->CreateBasisCoeff(wm);
     lwp->CreateSmoothnessIndicator(wm,etal,Theta);
+    lwp->CreateSmoothnessIndicator(wm,4,Theta,0.5);
 
     swp = new wpPtr[StencilSmall.size()]; 
 
@@ -139,11 +155,12 @@ WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
         swp[s]->SetUpStencil(wm);
         swp[s]->CreateBasisCoeff(wm);
         swp[s]->CreateSmoothnessIndicator(wm,etas,Theta);
+        swp[s]->CreateSmoothnessIndicator(wm,4,Theta,0.125);
     }
 
 }
 
-void WenoReconst::CreateCoefficients(){
+void WenoReconst::CreateWeights(){
 
     vector<double> omega;
     omega.push_back(lwp->omega);
@@ -164,11 +181,32 @@ void WenoReconst::CreateCoefficients(){
 
     sweight = new double[StencilSmall.size()];
     for (int k=0; k<StencilSmall.size(); k++){
-        sweight[k] = omega[k]/omega_m*(1-lwp->omega/omega_m)/sum;
+        sweight[k] = omega[k+1]/omega_m*(1-lwp->omega/omega_m)/sum;
         sum_sweight += sweight[k];
     }
 
     lweight = 1.0 - sum_sweight;
+}
+
+void WenoReconst::CreateNewWeights(){
+    vector<double> omega_tilde;
+
+    omega_tilde.push_back(lwp->omega_hat);
+    for (int s=0; s<StencilSmall.size(); s++){
+        omega_tilde.push_back(swp[s]->omega_hat);
+    }
+
+    double sum = accumulate(omega_tilde.begin(), omega_tilde.end(), decltype(omega_tilde)::value_type(0));
+    for (auto & o: omega_tilde){
+        o /= sum;
+    }
+  
+    sweight = new double[StencilSmall.size()];
+    lweight = 1.0;
+    for (int k=0; k<StencilSmall.size(); k++){
+        sweight[k] = omega_tilde[k+1]*pow(1.0 - omega_tilde[0]/lwp->omega_0,2);
+        lweight -= sweight[k];
+    }
 }
 
 void WenoReconst::CheckBasisCoeff(){
@@ -217,90 +255,4 @@ solution WenoReconst::PointReconstruction(const WenoMesh*& wm, point target_poin
     work += lweight*lwork;
 
     return work;
-}
-
-// Define a reconstruction method
-solution WenoPointReconst(index_set& StencilLarge, vector<index_set>& StencilSmall,const WenoMesh*& wm,
-                          point_index& target, vector<int>& Sorder, vector<int>& Lorder,
-                          point target_point){
-
-    solution reconst;
-
-    /*
-     *Create parameters and corresponding containers
-     */
-    double Theta = 2.0;
-    
-    vector< WenoPrepare* > swp;
-    vector<double> omega;
-
-    int r = max(Lorder[0],Lorder[1]);
-    int s = max(Sorder[0],Sorder[1]);
-
-    double etas = ceil((max(r-s,s)+Theta)/2.0);
-    double etal = ceil((r-s+Theta)/2.0);
-
-    vector <double> swork;
-    double lwork;
-
-    /*
-     *For small stencil
-     */
-    for (auto & is: StencilSmall){
-        WenoPrepare * wp = new WenoPrepare(is,target,Sorder);
-        wp->SetUpStencil(wm);
-        wp->CreateBasisCoeff(wm);
-
-        wp->CreateSmoothnessIndicator(wm,etas,Theta);
-        omega.push_back(wp->omega);
-        swp.push_back(wp);
-    }
-
-    /*
-     *For large stencils
-     */
-    WenoPrepare * lwp = new WenoPrepare(StencilLarge,target,Lorder);
-    lwp->SetUpStencil(wm);
-    lwp->CreateBasisCoeff(wm);
-    lwp->CreateSmoothnessIndicator(wm,etal,Theta);
-
-    /*
-     *Create weighting based on smoothness indicators
-     */
-    double omega_m = *max_element(omega.begin(),omega.end());    
-    omega_m = max(omega_m,lwp->omega);
-
-    double sum = accumulate(omega.begin(), omega.end(), decltype(omega)::value_type(0));
-    sum = sum/omega_m;
-
-    vector <double> sweight;
-    for (int i=0; i<swp.size(); i++){
-        sweight.push_back(omega[i]/omega_m*(1-lwp->omega/omega_m)/sum);
-    }
-
-    double lweight = 1.0 - accumulate(sweight.begin(), sweight.end(), decltype(sweight)::value_type(0));
-
-    // Linear weights
-    //sweight = {0.25,0.25,0.25,0.25};
-    //lweight = 0.0;
-
-    // Now calculate reconstruction with caluclated weightings.
-    reconst = 0.0; 
-
-    /*
-     *Calcualte basis function evaluated at the given target point.
-     */
-    for (auto & wp: swp){
-        swork.push_back(WenoReconstStencil(Sorder,target,target_point,wp,wm));
-    }
-
-    lwork = WenoReconstStencil(Lorder,target,target_point,lwp,wm);
-
-    // Calculate the reconstruction value
-    for (int i=0; i<sweight.size(); i++){
-        reconst += sweight.at(i)*swork.at(i); 
-    }
-    reconst += lweight*lwork;
-
-    return reconst;
 }
