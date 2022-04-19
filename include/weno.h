@@ -101,6 +101,7 @@ class WenoPrepare : public WenoStencil{
 
         void CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, double Theta);
         void CreateSmoothnessIndicator(const WenoMesh*& wm, double gamma, double Theta, double omega_l);
+        void CreateSmoothnessIndicator(const WenoMesh*& wm, solution** lsol, double gamma, double Theta, double omega_l);
 
         void PrintBasisCoeff();
 
@@ -135,10 +136,14 @@ class WenoReconst {
             delete sweight;
         }; 
 
+        void WenoUpdate(const WenoMesh*& wm, solution** lsol);
+
         void CheckBasisCoeff();
 
         void CreateWeights();
         void CreateNewWeights();
+
+        void CheckWeights();
 
         solution PointReconstruction(const WenoMesh*& wm, point target_point);
 

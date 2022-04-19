@@ -33,6 +33,7 @@ solution LaxFriedrichsFlux(const WenoMesh*& wm, int pos, double t, WenoReconst**
     int index_out = (neighbor[1]-wm->ghost+1)*(wm->M+2)+(neighbor[0]-wm->ghost+1);
 
     u_in = wr[index_in]->PointReconstruction(wm, target_point);
+
     u_out = wr[index_out]->PointReconstruction(wm, target_point);
 
 //    cout << endl << "The edge position is : " << pos << endl;
@@ -44,8 +45,12 @@ solution LaxFriedrichsFlux(const WenoMesh*& wm, int pos, double t, WenoReconst**
 
 //    cout << endl << "The corresponding flux is : " << flux << endl;
 
-    double alphaLF = max( pow( pow(dfuncX(target_point,{u_in}),2)  + pow(dfuncY(target_point,{u_in}),2 ),0.5) , 
-                          pow( pow(dfuncX(target_point,{u_out}),2) + pow(dfuncY(target_point,{u_out}),2),0.5) );
+    // Local Lax-Friedrichs scheme
+    double alphaLF = max( fabs(dfuncX(target_point,{u_in})*norm[0] + dfuncY(target_point,{u_in})*norm[1]) , 
+                          fabs(dfuncX(target_point,{u_in})*norm[0] + dfuncY(target_point,{u_in})*norm[1]) );
+
+    // Global Lax-Friedrichs scheme
+    alphaLF = 1.0;
 
     flux = 0.5 * (flux - alphaLF*(u_out-u_in));
 

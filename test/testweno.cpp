@@ -358,12 +358,24 @@ int main(int argc, char **argv){
 		  const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,lu);
 		  for (int j=ys+3; j<ys+ym-3; j++){
 		  for (int i=xs+3; i<xs+xm-3; i++){
+			   point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
 				for (int pos = 0; pos<4; pos++){
-					 point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
 					 gu[j][i] -= dt/h * TotalFlux(currentwm, pos, currentT, target, wr_23,
 															funcX, funcY, dfuncX, dfuncY);
 				}
+        //int indexs = (j+1)*(M+2)+(i+1);
+        //wr_23[indexs]->CheckWeights();
 		  }}
+
+
+    for (int s=0; s<StencilNum; s++){
+        int j=s/(M+2);
+        int i=s%(M+2);
+        point_index target {i-1+wm->ghost, j-1+wm->ghost};
+        //wr_23[s] = new WenoReconst(target, currentwm, StencilLarge, Lorder, StencilSmall, Sorder);
+        wr_23[s]->WenoUpdate(currentwm, lu);
+        wr_23[s]->CreateNewWeights();
+    }
 
         DMDAVecRestoreArray(dmu, llu, &lu);
         DMRestoreLocalVector(dmu, &llu); 
