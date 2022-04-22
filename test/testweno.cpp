@@ -137,10 +137,12 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
             f[j][i] = lu[j][i];
         } else {
             point_index target {i-xs+user->ghost, j-ys+user->ghost};
+            double temp = 0.0;
             for (int pos = 0; pos<4; pos++){
-                f[j][i] = -1.0/user->h * TotalFlux(currentwm, pos, time, target, wr, 
+                temp -= 1.0/user->h * TotalFlux(currentwm, pos, time, target, wr, 
                                                    funcX, funcY, dfuncX, dfuncY); 
             }
+            f[j][i] = temp;
         }
     }}
 
@@ -412,48 +414,50 @@ int main(int argc, char **argv){
 
     DMDAVecRestoreArray(dmu,localu,&lu);
 
-	 solution ** gu;
-
-	 while(currentT < T){
-		  currentT += dt;
-		  cout << "Current time is : " << currentT << endl;
-
-		  DMDAVecGetArray(dmu, globalu, &gu);
-
-		  Vec llu;
-		  DMGetLocalVector(dmu, &llu);
-		  DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, llu);
-		  DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, llu);
-
-		  DMDAVecGetArray(dmu, llu, &lu);
-
-		  //Update weno mesh object with new solution propogation through time
-		  const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,lu);
-		  for (int j=ys+3; j<ys+ym-3; j++){
-		  for (int i=xs+3; i<xs+xm-3; i++){
-				point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
-				for (int pos = 0; pos<4; pos++){
-					 gu[j][i] -= dt/h * TotalFlux(wm, pos, currentT, target, wr_23,
-															funcX, funcY, dfuncX, dfuncY);
-				}
-		  }}
-
-
-	 for (int s=0; s<StencilNum; s++){
-		  int j=s/(M+2);
-		  int i=s%(M+2);
-		  point_index target {i-1+wm->ghost, j-1+wm->ghost};
-		  //wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder);
-		  wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder, wr_23[s]);
-		  wr_23[s]->CreateNewWeights();
-	 }
-
-		  DMDAVecRestoreArray(dmu, llu, &lu);
-		  DMRestoreLocalVector(dmu, &llu);
-
-		  DMDAVecRestoreArray(dmu, globalu, &gu);
-
-	 }
+/*
+ *    solution ** gu;
+ *
+ *    while(currentT < T){
+ *        currentT += dt;
+ *        cout << "Current time is : " << currentT << endl;
+ *
+ *        DMDAVecGetArray(dmu, globalu, &gu);
+ *
+ *        Vec llu;
+ *        DMGetLocalVector(dmu, &llu);
+ *        DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, llu);
+ *        DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, llu);
+ *
+ *        DMDAVecGetArray(dmu, llu, &lu);
+ *
+ *        //Update weno mesh object with new solution propogation through time
+ *        const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,lu);
+ *        for (int j=ys+3; j<ys+ym-3; j++){
+ *        for (int i=xs+3; i<xs+xm-3; i++){
+ *            point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
+ *            for (int pos = 0; pos<4; pos++){
+ *                gu[j][i] -= dt/h * TotalFlux(wm, pos, currentT, target, wr_23,
+ *                                             funcX, funcY, dfuncX, dfuncY);
+ *            }
+ *        }}
+ *
+ *
+ *    for (int s=0; s<StencilNum; s++){
+ *        int j=s/(M+2);
+ *        int i=s%(M+2);
+ *        point_index target {i-1+wm->ghost, j-1+wm->ghost};
+ *        //wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder);
+ *        wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder, wr_23[s]);
+ *        wr_23[s]->CreateNewWeights();
+ *    }
+ *
+ *        DMDAVecRestoreArray(dmu, llu, &lu);
+ *        DMRestoreLocalVector(dmu, &llu);
+ *
+ *        DMDAVecRestoreArray(dmu, globalu, &gu);
+ *
+ *    }
+ */
 
 	 // Time stepping with TS object
     TS   ts;
@@ -489,7 +493,7 @@ int main(int argc, char **argv){
     cout << "Time stepping started." << endl;
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-	 //TSSolve(ts,globalu);
+	 TSSolve(ts,globalu);
 
     // ==========================================================================
 
