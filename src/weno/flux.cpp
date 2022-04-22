@@ -33,7 +33,6 @@ solution LaxFriedrichsFlux(const WenoMesh*& wm, int pos, double t, WenoReconst**
     int index_out = (neighbor[1]-wm->ghost+1)*(wm->M+2)+(neighbor[0]-wm->ghost+1);
 
     u_in = wr[index_in]->PointReconstruction(wm, target_point);
-
     u_out = wr[index_out]->PointReconstruction(wm, target_point);
 
 //    cout << endl << "The edge position is : " << pos << endl;
@@ -68,6 +67,7 @@ solution TotalFlux(const WenoMesh*& wm, int pos, double t,
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
 
+
     cell_corners corner;
     int totali = wm->M+2*wm->ghost;
 
@@ -81,7 +81,7 @@ solution TotalFlux(const WenoMesh*& wm, int pos, double t,
         valarray<double> mapped = GaussMapPointsEdge({gpe[g]},corner);
         work += gwe[g] * LaxFriedrichsFlux(wm, pos, t, wr, mapped, target, funcX, funcY, dfuncX, dfuncY);
     }
-   
+
     work *= len/2.0; 
 
     return work;

@@ -123,21 +123,6 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double gamma, d
     omega_hat = omega_l/(sigma2+pow(h,Theta));
 }
 
-void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, solution** lsol, double gamma, double Theta, double omega_l){
-
-    omega_0 = omega_l;
-
-    for (auto & cell: index_set_stencil){
-        int target_i = target_cell[0]-wm->ghost;
-        int target_j = target_cell[1]-wm->ghost;
-        sigma2 += pow(lsol[target_j][target_i] - lsol[target_j+cell[1]][target_i+cell[0]],2);
-    }
-    sigma2 *= 1.0/(double)(index_set_stencil.size()-1);
-    sigma2 = pow(sigma2,gamma/2.0);
-
-    omega_hat = omega_l/(sigma2+pow(h,Theta));
-}
-
 /*
  *Construct a object containing necessary information for a
  *single reconstruction at a target cell.
@@ -178,14 +163,51 @@ WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
 
 }
 
-void WenoReconst::WenoUpdate(const WenoMesh*& wm, solution** lsol){
+WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
+                         index_set& StencilLargeIndex, vector<int>& input_Lorder,
+                         vector<index_set>& StencilSmallIndex, vector<int>& input_Sorder,
+                         WenoReconst*& wr){
 
-    //lwp->CreateSmoothnessIndicator(wm,etal,Theta);
-    lwp->CreateSmoothnessIndicator(wm, lsol,4,Theta,0.5);
+    target_cell = target;
+
+    Lorder = input_Lorder; 
+    Sorder = input_Sorder; 
+
+    r = max(Lorder[0],Lorder[1]);
+    s = max(Sorder[0],Sorder[1]);
+
+    StencilLarge = StencilLargeIndex;    
+    StencilSmall = StencilSmallIndex;
+
+    etas = ceil((max(r-s,s)+Theta)/2.0);
+    etal = ceil((r-s+Theta)/2.0);
+
+    lwp = new WenoPrepare(StencilLarge, target, Lorder);
+    lwp->SetUpStencil(wm);
+    lwp->wenobasiscoeff = wr->lwp->wenobasiscoeff;
+    lwp->CreateSmoothnessIndicator(wm,etal,Theta);
+    lwp->CreateSmoothnessIndicator(wm,4,Theta,0.5);
+
+    swp = new wpPtr[StencilSmall.size()]; 
 
     for (int s=0; s<StencilSmall.size(); s++){
-        //swp[s]->CreateSmoothnessIndicator(wm,etas,Theta);
-        swp[s]->CreateSmoothnessIndicator(wm, lsol,4,Theta,0.125);
+        swp[s] = new WenoPrepare(StencilSmall[s], target, Sorder);
+        swp[s]->SetUpStencil(wm);
+        swp[s]->wenobasiscoeff = wr->swp[s]->wenobasiscoeff;
+        swp[s]->CreateSmoothnessIndicator(wm,etas,Theta);
+        swp[s]->CreateSmoothnessIndicator(wm,4,Theta,0.125);
+    }
+
+}
+
+void WenoReconst::WenoUpdate(const WenoMesh*& wm){
+
+    lwp->CreateSmoothnessIndicator(wm,etal,Theta);
+    lwp->CreateSmoothnessIndicator(wm,4,Theta,0.5);
+
+    for (int s=0; s<StencilSmall.size(); s++){
+        swp[s]->CreateSmoothnessIndicator(wm,etas,Theta);
+        swp[s]->CreateSmoothnessIndicator(wm,4,Theta,0.125);
     }
 
 }
@@ -242,6 +264,10 @@ void WenoReconst::CreateNewWeights(){
 void WenoReconst::CheckBasisCoeff(){
     printf("Basis polynomial on large stencil : \n");
     lwp->PrintBasisCoeff();
+    printf("Basis polynomial on Small stencil : \n");
+    for(int s=0; s<StencilSmall.size(); s++){
+        swp[s]->PrintBasisCoeff();
+    }
 } 
 
 void WenoReconst::CheckWeights(){

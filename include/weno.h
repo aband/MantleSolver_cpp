@@ -101,7 +101,6 @@ class WenoPrepare : public WenoStencil{
 
         void CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, double Theta);
         void CreateSmoothnessIndicator(const WenoMesh*& wm, double gamma, double Theta, double omega_l);
-        void CreateSmoothnessIndicator(const WenoMesh*& wm, solution** lsol, double gamma, double Theta, double omega_l);
 
         void PrintBasisCoeff();
 
@@ -126,7 +125,13 @@ class WenoReconst {
         WenoReconst(point_index& target, const WenoMesh*& wm,
                     index_set& StencilLarge, vector<int>& Lorder,
                     vector<index_set>& StencilSmall, vector<int>& Sorder);
-       
+     
+        // Create new wr object with old one 
+        WenoReconst(point_index& target, const WenoMesh*& wm,
+                    index_set& StencilLarge, vector<int>& Lorder,
+                    vector<index_set>& StencilSmall, vector<int>& Sorder,
+                    WenoReconst*& wr);
+
         ~WenoReconst(){
             delete lwp;
             for (int s=0; s<StencilSmall.size(); s++){
@@ -136,7 +141,7 @@ class WenoReconst {
             delete sweight;
         }; 
 
-        void WenoUpdate(const WenoMesh*& wm, solution** lsol);
+        void WenoUpdate(const WenoMesh*& wm);
 
         void CheckBasisCoeff();
 

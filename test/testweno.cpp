@@ -90,6 +90,125 @@ double dfuncY(valarray<double>& target, const vector<double>& param){
     return param[0];
 }
 
+typedef struct{
+    DM dm;
+    WenoReconst ** wr;
+    vector< valarray<double> > mesh;
+    int ghost;
+    double h;
+    vector<int> Lorder;
+    vector<int> Sorder;
+    index_set StencilLarge;
+    vector<index_set> StencilSmall;
+} Ctx;
+
+PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
+
+    PetscErrorCode ierr;
+    Ctx *user = (Ctx*)ctx;
+    DM  dm = (DM)user->dm;
+    PetscInt M,N,xs,ys,xm,ym,stencilwidth;
+    PetscFunctionBeginUser;
+
+    WenoReconst ** wr = user->wr;
+
+    ierr = DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL);                                                CHKERRQ(ierr);
+    ierr = DMDAGetInfo(dm, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
+
+    // Get local vector
+    Vec localu;
+    DMGetLocalVector(dm, &localu);
+
+    DMGlobalToLocalBegin(dm, U, INSERT_VALUES, localu);
+    DMGlobalToLocalEnd(dm, U, INSERT_VALUES, localu);
+
+    // It can be changed later to not be double
+    solution  ** lu;
+    DMDAVecGetArray(dm, localu, &lu);
+
+    solution ** f;
+    DMDAVecGetArray(dm, F, &f);
+
+    const WenoMesh * currentwm = new WenoMesh(M,N,user->ghost,user->mesh,lu);
+
+    for (int j=ys; j<ys+ym; j++){
+    for (int i=xs; i<xs+ym; i++){
+        if (j<ys+3 || i<xs+3 || j>ys+ym-4 || i>xs+xm-4){
+            f[j][i] = lu[j][i];
+        } else {
+            point_index target {i-xs+user->ghost, j-ys+user->ghost};
+            for (int pos = 0; pos<4; pos++){
+                f[j][i] = -1.0/user->h * TotalFlux(currentwm, pos, time, target, wr, 
+                                                   funcX, funcY, dfuncX, dfuncY); 
+            }
+        }
+    }}
+
+    int StencilNum = (M+2)*(N+2);
+
+    for (int s=0; s<StencilNum; s++){
+        int j=s/(M+2);
+        int i=s%(M+2);
+        point_index target {i-1+user->ghost, j-1+user->ghost};
+        //wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder);
+        wr[s] = new WenoReconst(target, currentwm, user->StencilLarge, user->Lorder, user->StencilSmall, user->Sorder, wr[s]);
+        wr[s]->CreateNewWeights();
+    }
+
+    DMDAVecRestoreArray(dm, F, &f);
+    DMDAVecRestoreArray(dm, localu, &lu);
+    DMRestoreLocalVector(dm, &localu);
+
+    PetscFunctionReturn(0); 
+}
+
+/*
+ *PetscErrorCode FormIFunction(TS ts, PetscReal time, Vec U, Vec Udot, Vec F, void * ctx){
+ *
+ *    PetscErrorCode ierr;
+ *    Ctx *user = (Ctx*)ctx;
+ *    DM  dm = (DM)user->dm;
+ *    PetscInt i,j,M,N,xs,ys,xm,ym;
+ *    PetscFunctionBeginUser;
+ *
+ *    ierr = DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL);                                                CHKERRQ(ierr);
+ *    ierr = DMDAGetInfo(dm, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
+ *
+ *    // Get local vector
+ *    Vec localu;
+ *    DMGetLocalVector(dm, &localu);
+ *
+ *    DMGlobalToLocalBegin(dmu, U, INSERT_VALUES, localu);
+ *    DMGlobalToLocalEnd(dmu, U, INSERT_VALUES, localu);
+ *
+ *    // It can be changed later to not be double
+ *    solution  ** lu;
+ *    DMDAVecGetArray(dm, localu, &lu);
+ *
+ *    solution ** f;
+ *    solution ** udot;
+ *    DMDAVecGetArray(dm, F, &f);
+ *    DMDAVecGetArray(dm, Udot, &udot);
+ *
+ *
+ *    for (int j=ys+3; j<ys+ym-3; j++){
+ *    for (int i=xs+3; i<xs+xm-3; i++){
+ *        point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
+ *        for (int pos = 0; pos<4; pos++){
+ *            f[j][i] -= dt/h * TotalFlux(wm, pos, currentT, target, wr_23,
+ *                                        funcX, funcY, dfuncX, dfuncY);
+ *        }
+ *    }}
+ *
+ *    DMDAVecRestoreArray(dm, Udot, &udot);
+ *    DMDAVecRestoreArray(dm, F, &f);
+ *    DMDAVecRestoreArray(dm, localu, &lu);
+ *    DMRestoreLocalVector(dm, &localu);
+ *
+ *    PetscFunctionReturn(0);
+ *}
+ */
+
 int main(int argc, char **argv){
 
     // Initializing petsc function
@@ -103,55 +222,9 @@ int main(int argc, char **argv){
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processors \n",size);CHKERRQ(ierr);
 
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-    // valarray has dynamic memory allocation
-/*
- *    int k = 2;
- *    valarray<double> test(k);
- *
- *    test[0] = 1.0;
- *    test[1] = 2.0;
- *
- *    vector< valarray<int> > index { {-1,0,}, {-1,-1}, {0,1}, {1,0} };
- *
- *    wenobasis * work;
- *
- *    work = new wenobasis(test,index,2);
- *
- *    testoutput(test);
- *
- *    valarray<double> duplicate = testoutput2(test);
- *    duplicate = duplicate*duplicate;
- *
- *    // Test for integral function
- *    vector< valarray<double> > corner {{0.0},{1,0.0},{1.5,1.5},{0.0,1}};
- *    valarray<double> center {0.0,0.0};
- *    double h = 1.0;
- *
- *    double result = NumIntegralFace(corner,center,h,func);
- *
- */
-//    cout << result << endl;
-	 /*
-     *cout << duplicate[0] << endl;
-     *cout << test[0] << endl;
-     *cout << index[0][0] << endl;
-	  */
-/*
- *    cout << work[0].center[0] << work[0].center[1] << endl;
- *    for (auto & i: index){
- *        cout << i[0] << i[1] << endl;
- *    }
- *
- */
 
-/*
- *    vector<double> Empty;
- *    vector< valarray<double> > corner {{0.0},{1.0/3.0,0.0},{1.0/3.0,1.0/3.0},{0.0,1.0/3.0}};
- *    cout << NumIntegralFace(corner,Empty,{0.0,0.0},1.0,func) << endl;
- *
- */
     // ==========================================================================================================================
 
     // Start testing mesh function
@@ -198,8 +271,8 @@ int main(int argc, char **argv){
         PrintFullMesh(dm, &fullmesh);
     }
 
-    cout << "Created full mesh. To check full mesh, rerun with -printmesh 1 " << endl;
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    cout << "Mesh Created. To check full mesh, rerun with -printmesh 1 " << endl;
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     // ==========================================================================================================================
 
@@ -339,7 +412,7 @@ int main(int argc, char **argv){
 
     DMDAVecRestoreArray(dmu,localu,&lu);
 
-    solution ** gu;
+	 solution ** gu;
 
 	 while(currentT < T){
 		  currentT += dt;
@@ -347,43 +420,76 @@ int main(int argc, char **argv){
 
 		  DMDAVecGetArray(dmu, globalu, &gu);
 
-        Vec llu;
-        DMGetLocalVector(dmu, &llu);
-        DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, llu);
-        DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, llu);
+		  Vec llu;
+		  DMGetLocalVector(dmu, &llu);
+		  DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, llu);
+		  DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, llu);
 
-        DMDAVecGetArray(dmu, llu, &lu);
+		  DMDAVecGetArray(dmu, llu, &lu);
 
-		  // Update weno mesh object with new solution propogation through time
+		  //Update weno mesh object with new solution propogation through time
 		  const WenoMesh * currentwm = new WenoMesh(M,N,stencilWidth,mesh,lu);
 		  for (int j=ys+3; j<ys+ym-3; j++){
 		  for (int i=xs+3; i<xs+xm-3; i++){
-			   point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
+				point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
 				for (int pos = 0; pos<4; pos++){
-					 gu[j][i] -= dt/h * TotalFlux(currentwm, pos, currentT, target, wr_23,
+					 gu[j][i] -= dt/h * TotalFlux(wm, pos, currentT, target, wr_23,
 															funcX, funcY, dfuncX, dfuncY);
 				}
-        //int indexs = (j+1)*(M+2)+(i+1);
-        //wr_23[indexs]->CheckWeights();
 		  }}
 
 
-    for (int s=0; s<StencilNum; s++){
-        int j=s/(M+2);
-        int i=s%(M+2);
-        point_index target {i-1+wm->ghost, j-1+wm->ghost};
-        //wr_23[s] = new WenoReconst(target, currentwm, StencilLarge, Lorder, StencilSmall, Sorder);
-        wr_23[s]->WenoUpdate(currentwm, lu);
-        wr_23[s]->CreateNewWeights();
-    }
+	 for (int s=0; s<StencilNum; s++){
+		  int j=s/(M+2);
+		  int i=s%(M+2);
+		  point_index target {i-1+wm->ghost, j-1+wm->ghost};
+		  //wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder);
+		  wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder, wr_23[s]);
+		  wr_23[s]->CreateNewWeights();
+	 }
 
-        DMDAVecRestoreArray(dmu, llu, &lu);
-        DMRestoreLocalVector(dmu, &llu); 
+		  DMDAVecRestoreArray(dmu, llu, &lu);
+		  DMRestoreLocalVector(dmu, &llu);
 
 		  DMDAVecRestoreArray(dmu, globalu, &gu);
 
-		  delete currentwm;
 	 }
+
+	 // Time stepping with TS object
+    TS   ts;
+    SNES snes;
+    Ctx  ctx;
+
+    // Set up ctx data
+    ctx.dm = dmu;
+    ctx.wr = wr_23;
+    ctx.h = h;
+    ctx.Lorder = Lorder;
+    ctx.Sorder = Sorder;
+    ctx.StencilLarge = StencilLarge;
+    ctx.StencilSmall = StencilSmall;
+    ctx.mesh = mesh; 
+    ctx.ghost = stencilWidth;
+
+    TSCreate(PETSC_COMM_WORLD, &ts);
+    TSSetProblemType(ts,TS_NONLINEAR);
+    TSSetType(ts, TSEULER);
+
+    TSSetMaxTime(ts,T);
+    TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
+    TSSetDM(ts,dmu);
+
+    // Customize nonlinear lu[j][i]    
+    TSGetSNES(ts,&snes);
+    TSSetTimeStep(ts,dt);
+	 TSSetSolution(ts,globalu);
+
+	 TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
+
+    cout << "Time stepping started." << endl;
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+
+	 //TSSolve(ts,globalu);
 
     // ==========================================================================
 
@@ -402,6 +508,8 @@ int main(int argc, char **argv){
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);
     DMDestroy(&dm);
+    TSDestroy(&ts);
+
 
     return 0;
 }
