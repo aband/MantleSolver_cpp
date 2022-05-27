@@ -200,4 +200,3 @@ PetscErrorCode ObliqueBurgers(DM dm, DM dmu, Vec *fullmesh, Vec *globalu,
     PetscFunctionReturn(0);
 
 }
-

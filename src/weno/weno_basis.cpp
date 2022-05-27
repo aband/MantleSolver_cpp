@@ -67,7 +67,6 @@ void WenoPrepare::CreateBasisCoeff(const WenoMesh*& wm){
              for (auto & c: corner_index){
                  int stencilj = target_cell[1]+index_set_stencil[cell][1]+c[1];
                  int stencili = target_cell[0]+index_set_stencil[cell][0]+c[0];
-
                  work.push_back(wm->lmesh[stencilj*totali+stencili]);
              }
              a[cell*n+ypow*polynomial_order[0]+xpow] = NumIntegralFace(work,{xpow,ypow},center,h,poly);
@@ -108,6 +107,7 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, dou
     omega = 1.0/pow(sigma+epsilon_0*pow(h,Theta),(double)max(polynomial_order[0],polynomial_order[1])/Theta);
 }
 
+// This is the correct function to use
 void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double gamma, double Theta, double omega_l){
 
     omega_0 = omega_l;
@@ -120,7 +120,57 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double gamma, d
     sigma2 *= 1.0/(double)(index_set_stencil.size()-1);
     sigma2 = pow(sigma2,gamma/2.0);
 
-    omega_hat = omega_l/(sigma2+pow(h,Theta));
+    omega_hat = omega_l/(sigma2+epsilon_0*pow(h,Theta));
+
+    Theta_l = Theta;
+    gamma_l = gamma;
+}
+
+void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, int c, double gamma, double Theta, double omega_l){
+
+    omega_0 = omega_l;
+
+    index_set temp_index_set;
+
+    temp_index_set.assign(index_set_stencil.begin(),index_set_stencil.end());
+
+    // Erase center cell out of index set
+    temp_index_set.erase(temp_index_set.begin()+c);
+
+    int totali = wm->M + 2*wm->ghost; 
+
+    for (auto & cell: temp_index_set){
+        int target_i = target_cell[0]-wm->ghost;
+        int target_j = target_cell[1]-wm->ghost;
+
+        point p0 = {0.0,0.0};
+        point p1 = {0.0,0.0};
+        for (auto & c: corner_index){
+            int t0 = target_cell[0]+c[0];
+            int t1 = target_cell[1]+c[1];
+
+            p0 += wm->lmesh[t1*totali+t0]/4.0;
+
+            t0 = t0+cell[0];
+            t1 = t1+cell[1];
+
+            p1 += wm->lmesh[t1*totali+t0]/4.0;
+        }
+
+        p0 = (p0-p1)*(p0-p1);
+
+        double work = wm->lsol[target_j][target_i] - wm->lsol[target_j+cell[1]][target_i+cell[0]];
+
+        sigma2 += pow(work*h,2)/p0.sum();
+    }
+    sigma2 *= 1.0/(double)(index_set_stencil.size()-1);
+    sigma2 = pow(sigma2,gamma);
+
+    omega_hat = omega_l/(sigma2+epsilon_0*pow(h/10.0,Theta));
+
+    Theta_l = Theta;
+    gamma_l = gamma;
+
 }
 
 /*
@@ -129,7 +179,8 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double gamma, d
  */
 WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
                          index_set& StencilLargeIndex, vector<int>& input_Lorder,
-                         vector<index_set>& StencilSmallIndex, vector<int>& input_Sorder){
+                         vector<index_set>& StencilSmallIndex, vector<int>& input_Sorder,
+                         int center_indexl, vector<int> center_indexs){
 
     target_cell = target;
 
@@ -142,23 +193,31 @@ WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
     StencilLarge = StencilLargeIndex;    
     StencilSmall = StencilSmallIndex;
 
+    cil = center_indexl;
+    cis = center_indexs;
+
+    Theta = (double)s;
+    gamma = Theta + (double)s;
+
     etas = ceil((max(r-s,s)+Theta)/2.0);
     etal = ceil((r-s+Theta)/2.0);
 
     lwp = new WenoPrepare(StencilLarge, target, Lorder);
     lwp->SetUpStencil(wm);
     lwp->CreateBasisCoeff(wm);
-    lwp->CreateSmoothnessIndicator(wm,etal,Theta);
-    lwp->CreateSmoothnessIndicator(wm,4,Theta,0.5);
+    //lwp->CreateSmoothnessIndicator(wm,etal,Theta);
+    //lwp->CreateSmoothnessIndicator(wm,r/2+1,r,0.5);
+    lwp->CreateSmoothnessIndicator(wm,cil,r/2+1,r,0.5);
 
     swp = new wpPtr[StencilSmall.size()]; 
 
-    for (int s=0; s<StencilSmall.size(); s++){
-        swp[s] = new WenoPrepare(StencilSmall[s], target, Sorder);
-        swp[s]->SetUpStencil(wm);
-        swp[s]->CreateBasisCoeff(wm);
-        swp[s]->CreateSmoothnessIndicator(wm,etas,Theta);
-        swp[s]->CreateSmoothnessIndicator(wm,4,Theta,0.125);
+    for (int e=0; e<StencilSmall.size(); e++){
+        swp[e] = new WenoPrepare(StencilSmall[e], target, Sorder);
+        swp[e]->SetUpStencil(wm);
+        swp[e]->CreateBasisCoeff(wm);
+        //swp[e]->CreateSmoothnessIndicator(wm,etas,Theta);
+        //swp[e]->CreateSmoothnessIndicator(wm,s/2+1,s,0.125);
+        swp[e]->CreateSmoothnessIndicator(wm,cis[e],s/2+1,s,0.125);
     }
 
 }
@@ -166,6 +225,7 @@ WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
 WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
                          index_set& StencilLargeIndex, vector<int>& input_Lorder,
                          vector<index_set>& StencilSmallIndex, vector<int>& input_Sorder,
+                         int center_indexl, vector<int> center_indexs,
                          WenoReconst*& wr){
 
     target_cell = target;
@@ -182,36 +242,46 @@ WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
     etas = ceil((max(r-s,s)+Theta)/2.0);
     etal = ceil((r-s+Theta)/2.0);
 
+    cil = center_indexl;
+    cis = center_indexs;
+
+    Theta = (double)s;
+    gamma = Theta + (double)s; 
+
     lwp = new WenoPrepare(StencilLarge, target, Lorder);
     lwp->SetUpStencil(wm);
     lwp->wenobasiscoeff = wr->lwp->wenobasiscoeff;
-    lwp->CreateSmoothnessIndicator(wm,etal,Theta);
-    lwp->CreateSmoothnessIndicator(wm,4,Theta,0.5);
+    //lwp->CreateSmoothnessIndicator(wm,etal,Theta);
+    //lwp->CreateSmoothnessIndicator(wm,r/2+1,r,0.5);
+    lwp->CreateSmoothnessIndicator(wm,cil,r/2+1,r,0.5);
 
     swp = new wpPtr[StencilSmall.size()]; 
 
-    for (int s=0; s<StencilSmall.size(); s++){
-        swp[s] = new WenoPrepare(StencilSmall[s], target, Sorder);
-        swp[s]->SetUpStencil(wm);
-        swp[s]->wenobasiscoeff = wr->swp[s]->wenobasiscoeff;
-        swp[s]->CreateSmoothnessIndicator(wm,etas,Theta);
-        swp[s]->CreateSmoothnessIndicator(wm,4,Theta,0.125);
+    for (int e=0; e<StencilSmall.size(); e++){
+        swp[e] = new WenoPrepare(StencilSmall[e], target, Sorder);
+        swp[e]->SetUpStencil(wm);
+        swp[e]->wenobasiscoeff = wr->swp[e]->wenobasiscoeff;
+        //swp[e]->CreateSmoothnessIndicator(wm,etas,Theta);
+        //swp[e]->CreateSmoothnessIndicator(wm,s/2+1,s,0.125);
+        swp[e]->CreateSmoothnessIndicator(wm,cis[e],s/2+1,s,0.125);
     }
 
 }
 
-void WenoReconst::WenoUpdate(const WenoMesh*& wm){
-
-    lwp->CreateSmoothnessIndicator(wm,etal,Theta);
-    lwp->CreateSmoothnessIndicator(wm,4,Theta,0.5);
-
-    for (int s=0; s<StencilSmall.size(); s++){
-        swp[s]->CreateSmoothnessIndicator(wm,etas,Theta);
-        swp[s]->CreateSmoothnessIndicator(wm,4,Theta,0.125);
-    }
-
-}
-
+/*
+ *void WenoReconst::WenoUpdate(const WenoMesh*& wm){
+ *
+ *    //lwp->CreateSmoothnessIndicator(wm,etal,Theta);
+ *    lwp->CreateSmoothnessIndicator(wm,gamma,Theta,0.5);
+ *
+ *    for (int s=0; s<StencilSmall.size(); s++){
+ *        //swp[s]->CreateSmoothnessIndicator(wm,etas,Theta);
+ *        swp[s]->CreateSmoothnessIndicator(wm,gamma,Theta,0.125);
+ *    }
+ *
+ *}
+ *
+ */
 void WenoReconst::CreateWeights(){
 
     vector<double> omega;
@@ -261,12 +331,34 @@ void WenoReconst::CreateNewWeights(){
     }
 }
 
+void WenoReconst::CreateNewWeights2(){
+
+    vector<double> omega_tilde;
+
+    omega_tilde.push_back(lwp->omega_hat);
+    for (int s=0; s<StencilSmall.size(); s++){
+        omega_tilde.push_back(swp[s]->omega_hat);
+    }
+
+    double sum = accumulate(omega_tilde.begin(), omega_tilde.end(), decltype(omega_tilde)::value_type(0));
+    for (auto & o: omega_tilde){
+        o /= sum;
+    }
+  
+    sweight = new double[StencilSmall.size()];
+    for (int k=0; k<StencilSmall.size(); k++){
+        sweight[k] = omega_tilde[k+1];
+    }
+    lweight = omega_tilde[0];
+}
+
 void WenoReconst::CheckBasisCoeff(){
     printf("Basis polynomial on large stencil : \n");
     lwp->PrintBasisCoeff();
     printf("Basis polynomial on Small stencil : \n");
     for(int s=0; s<StencilSmall.size(); s++){
         swp[s]->PrintBasisCoeff();
+        cout << endl;
     }
 } 
 

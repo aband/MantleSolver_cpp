@@ -101,6 +101,7 @@ class WenoPrepare : public WenoStencil{
 
         void CreateSmoothnessIndicator(const WenoMesh*& wm, double eta, double Theta);
         void CreateSmoothnessIndicator(const WenoMesh*& wm, double gamma, double Theta, double omega_l);
+        void CreateSmoothnessIndicator(const WenoMesh*& wm, int c, double gamma, double Theta, double omega_l);
 
         void PrintBasisCoeff();
 
@@ -115,21 +116,26 @@ class WenoPrepare : public WenoStencil{
         double sigma2 = 0.0;
         double omega_0   = 0.0;
         double omega_hat = 0.0;
+        double Theta_l;
+        double gamma_l;
+
     private:
 
-        double epsilon_0 = 0.5;
+        double epsilon_0 = 10e-3;
 };
 
 class WenoReconst {
     public:
         WenoReconst(point_index& target, const WenoMesh*& wm,
                     index_set& StencilLarge, vector<int>& Lorder,
-                    vector<index_set>& StencilSmall, vector<int>& Sorder);
+                    vector<index_set>& StencilSmall, vector<int>& Sorder,
+                    int center_indexl, vector<int> center_indexs);
      
         // Create new wr object with old one 
         WenoReconst(point_index& target, const WenoMesh*& wm,
                     index_set& StencilLarge, vector<int>& Lorder,
                     vector<index_set>& StencilSmall, vector<int>& Sorder,
+                    int center_indexl, vector<int> center_indexs,
                     WenoReconst*& wr);
 
         ~WenoReconst(){
@@ -145,12 +151,18 @@ class WenoReconst {
 
         void CheckBasisCoeff();
 
+        // Different ways of creating weights
         void CreateWeights();
         void CreateNewWeights();
+        void CreateNewWeights2();
 
         void CheckWeights();
 
         solution PointReconstruction(const WenoMesh*& wm, point target_point);
+
+        double * CreateSmoothnessIndDerivative(const WenoMesh*& wm, point target_point);
+
+        double * CreateWenoDerivative(const WenoMesh*& wm, point target_point);
 
     private:
         point_index target_cell;
@@ -159,6 +171,9 @@ class WenoReconst {
 
         vector<int> Lorder;
         vector<int> Sorder;
+
+        int cil;
+        vector<int> cis;
 
         typedef WenoPrepare* wpPtr;
 
@@ -169,10 +184,13 @@ class WenoReconst {
         double etas, etal;
 
         double Theta = 2.0;
+        double gamma = 4.0;
 
         double * sweight;
         double lweight;
 
+        vector<double *> omega_deriv_swp;
+        double * omega_deriv_lwp;
 };
 
 // Define independent functions

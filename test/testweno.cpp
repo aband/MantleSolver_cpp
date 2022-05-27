@@ -59,15 +59,15 @@ inline valarray<double> testoutput2(valarray<double> test){
 }
 
 double func(valarray<double>& point, const vector<double>& param){
-//	 if (point[0]<0.50-param[0]){
-//		  return sin(point[0])+cos(point[1]);
-//	 } else {
-//		  return sin(point[0])+cos(point[1])+10;
-//		  //return exp(point[0]+point[1]);
-//	 }
+	 if (point[0]<0.50-param[0]){
+		  return sin(point[0])+cos(point[1]);
+	 } else {
+		  return sin(point[0])+cos(point[1])+10;
+		  //return exp(point[0]+point[1]);
+	 }
 
     //return sin(point[0])+cos(point[1]);
-    return point[0]*point[0] + point[1]*point[1];
+    //return point[0]*point[0] + point[1]*point[1];
 }
 
 double funcX(valarray<double>& target, const vector<double>& param){
@@ -100,6 +100,8 @@ typedef struct{
     vector<int> Sorder;
     index_set StencilLarge;
     vector<index_set> StencilSmall;
+    int center_indexl;
+    vector<int> center_indexs;
 } Ctx;
 
 PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
@@ -133,14 +135,14 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
 
     for (int j=ys; j<ys+ym; j++){
     for (int i=xs; i<xs+ym; i++){
-        if (j<ys+3 || i<xs+3 || j>ys+ym-4 || i>xs+xm-4){
+        if (j<4 || i<4 || j>N-6 || i>M-6){
             f[j][i] = lu[j][i];
         } else {
             point_index target {i-xs+user->ghost, j-ys+user->ghost};
             double temp = 0.0;
             for (int pos = 0; pos<4; pos++){
                 temp -= 1.0/user->h * TotalFlux(currentwm, pos, time, target, wr, 
-                                                   funcX, funcY, dfuncX, dfuncY); 
+                                                funcX, funcY, dfuncX, dfuncY); 
             }
             f[j][i] = temp;
         }
@@ -152,9 +154,8 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
         int j=s/(M+2);
         int i=s%(M+2);
         point_index target {i-1+user->ghost, j-1+user->ghost};
-        //wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder);
-        wr[s] = new WenoReconst(target, currentwm, user->StencilLarge, user->Lorder, user->StencilSmall, user->Sorder, wr[s]);
-        wr[s]->CreateNewWeights();
+        wr[s] = new WenoReconst(target, currentwm, user->StencilLarge, user->Lorder, user->StencilSmall, user->Sorder, user->center_indexl, user->center_indexs, wr[s]);
+        wr[s]->CreateNewWeights2();
     }
 
     DMDAVecRestoreArray(dm, F, &f);
@@ -165,12 +166,11 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
 }
 
 /*
- *PetscErrorCode FormIFunction(TS ts, PetscReal time, Vec U, Vec Udot, Vec F, void * ctx){
- *
- *    PetscErrorCode ierr;
+ *PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void * ctx){
+ *    PetscErrorCode    ierr;
  *    Ctx *user = (Ctx*)ctx;
  *    DM  dm = (DM)user->dm;
- *    PetscInt i,j,M,N,xs,ys,xm,ym;
+ *    PetscInt M,N,xs,ys,xm,ym,stencilwidth;
  *    PetscFunctionBeginUser;
  *
  *    ierr = DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL);                                                CHKERRQ(ierr);
@@ -180,30 +180,56 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
  *    Vec localu;
  *    DMGetLocalVector(dm, &localu);
  *
- *    DMGlobalToLocalBegin(dmu, U, INSERT_VALUES, localu);
- *    DMGlobalToLocalEnd(dmu, U, INSERT_VALUES, localu);
+ *    DMGlobalToLocalBegin(dm, U, INSERT_VALUES, localu);
+ *    DMGlobalToLocalEnd(dm, U, INSERT_VALUES, localu);
  *
  *    // It can be changed later to not be double
  *    solution  ** lu;
  *    DMDAVecGetArray(dm, localu, &lu);
  *
- *    solution ** f;
- *    solution ** udot;
- *    DMDAVecGetArray(dm, F, &f);
- *    DMDAVecGetArray(dm, Udot, &udot);
+ *    const WenoMesh * currentwm = new WenoMesh(M,N,user->ghost,user->mesh,lu);
  *
+ *    int ns = user->Lorder[0]*user->Lorder[1];
  *
- *    for (int j=ys+3; j<ys+ym-3; j++){
- *    for (int i=xs+3; i<xs+xm-3; i++){
- *        point_index target {i-xs+wm->ghost,j-ys+wm->ghost};
- *        for (int pos = 0; pos<4; pos++){
- *            f[j][i] -= dt/h * TotalFlux(wm, pos, currentT, target, wr_23,
- *                                        funcX, funcY, dfuncX, dfuncY);
+ *    for (int j=ys; j<ys+ym; j++){
+ *    for (int i=xs; i<xs+xm; i++){
+ *        MatStencil row, col[ns];
+ *        row.i=i; row.j = j;
+ *        if (j<4 || i<4 || j>N-6 || i>M-6){
+ *            col[0].i = i; col[0].j = j; val[0] = 1.0;
+ *            nc++;
+ *        } else {
+ *            point_index target {i-xs+user->ghost, j-ys+user->ghost};
+ *
+ *            double * df = new double [ns];
+ *
+ *            for (int pos=0; pos<4; pow++){
+ *                double * tempdf = FLuxDerivative(currentwm,pos,time,target,wr,
+ *                                                 funcX,funcY,dfuncX,dfuncY);
+ *                for (int e=0; e<ns; e++){
+ *                    df[e] += -1.0/user->h * tempdf[e];
+ *                }
+ *            }
+ *
+ *            // Assign stencil values
+ *            for (int e=0; e<ns; e++){
+ *                col[e].i = i+user->StencilLarge[e][0];
+ *                col[e].j = j+user->StencilLarge[e][1];
+ *            }
+ *            nc++;
+ *
  *        }
+ *        MatSetValuesStencil(Jpre, 1, &row, ns, col, df, ADD_VALUES);
  *    }}
  *
- *    DMDAVecRestoreArray(dm, Udot, &udot);
- *    DMDAVecRestoreArray(dm, F, &f);
+ *    MatAssemblyBegin(Jp, MAT_FINAL_ASSEMBLY);
+ *    MatAssemblyEnd(Jp, MAT_FINAL_ASSEMBLY);
+ *
+ *    if (J != Jp){
+ *        MatAssemblyBegin(J,MAT_FINAL_ASSEMBLY);
+ *        MatAssemblyEnd(J,MAT_FINAL_ASSEMBLY);
+ *    }
+ *
  *    DMDAVecRestoreArray(dm, localu, &lu);
  *    DMRestoreLocalVector(dm, &localu);
  *
@@ -293,62 +319,57 @@ int main(int argc, char **argv){
                             {-1, 0},{0, 0},{1, 0},
                             {-1, 1},{0, 1},{1, 1}};
 
+    int center_indexl = 4;
+
     vector<index_set> StencilSmall;
     StencilSmall.push_back({{-1,-1},{ 0,-1},{ 0, 0},{-1, 0}});
     StencilSmall.push_back({{ 0,-1},{ 1,-1},{ 1, 0},{ 0, 0}});
     StencilSmall.push_back({{ 0, 0},{ 1, 0},{ 1, 1},{ 0, 1}});
     StencilSmall.push_back({{-1, 0},{ 0, 0},{ 0, 1},{-1, 1 }});
 
-    // Test with new weno reconst object
-/*
- *    solution u_reconst = wr_23[(N/2+1)*(M+2)+(M/2+1)]->PointReconstruction(wm, {0.5,0.5});
- *
- *    point ref {0.5,0.5};
- *
- *    cout << endl << "The exact value of the given point (0.5,0.5) is : " << func(ref,{0.0}) << endl;
- *
- *    cout << endl << "The reconstruction of the point (0.5,0.5) is : " << u_reconst << endl;
- *
- */
-/*
- *    // Benchmark calculation
- *    point_index input_target_cell {stencilWidth+M/2,stencilWidth+N/2};
- *
- *    WenoPrepare * wp = new WenoPrepare(StencilLarge, input_target_cell, Lorder);
- *    wp->SetUpStencil(wm);
- *    wp->CreateBasisCoeff(wm);
- *
- *    for (auto & s: StencilSmall){
- *        WenoPrepare * swp = new WenoPrepare(s,input_target_cell,Sorder);
- *        swp->SetUpStencil(wm);
- *        swp->CreateBasisCoeff(wm);
- *        swp->CreateSmoothnessIndicator(wm,2.0,2.0);
- *        cout << swp->sigma << endl;
- *    }
- *
- *    printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", wp->center[0], wp->center[1], func(wp->center,{0.0}));
- *
- *    // Define an instance for 3,2 reconstruction
- *    solution u = WenoPointReconst(StencilLarge, StencilSmall, wm, input_target_cell, Sorder, Lorder, {0.5,0.5});
- *
- *    printf("The reconstructed value at the given point is %.12f \n", u);
- *
- *    printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(wp->center,{0.0})));
- *
- */
+    vector<int> center_indexs = {2,3,0,1};
+
+    // Define (5,3) reconstruction
+    vector<int> Lorder5 {5,5};
+    vector<int> Sorder3 {3,3};
+
+    index_set StencilLarge5 {{-2,-2},{-1,-2},{0 ,-2},{1 ,-2},{2 ,-2},
+                             {-2,-1},{-1,-1},{0 ,-1},{1 ,-1},{2 ,-1},
+                             {-2, 0},{-1, 0},{0 , 0},{1 , 0},{2 , 0},
+                             {-2, 1},{-1, 1},{0 , 1},{1 , 1},{2 , 1},
+                             {-2, 2},{-1, 2},{0 , 2},{1 , 2},{2 , 2}};
+
+    int center_indexl5 = 4;
+
+    vector<index_set> StencilSmall3;
+    StencilSmall3.push_back({{-2,-2},{-1,-2},{0 ,-2},
+                             {-2,-1},{-1,-1},{0 ,-1},
+                             {-2, 0},{-1, 0},{0 , 0}});
+    StencilSmall3.push_back({{0 ,-2},{1 ,-2},{2 ,-2},
+                             {0 ,-1},{1 ,-1},{2 ,-1},
+                             {0 , 0},{1 , 0},{2 , 0}});
+    StencilSmall3.push_back({{0 , 0},{1 , 0},{2 , 0},
+                             {0 , 1},{1 , 1},{2 , 1},
+                             {0 , 2},{1 , 2},{2 , 2}});
+    StencilSmall3.push_back({{-2, 0},{-1, 0},{0 , 0},
+                             {-2, 1},{-1, 1},{0 , 1},
+                             {-2, 2},{-1, 2},{0 , 2}});
+
+    vector<int> center_indexs3 = {8,6,0,2};
 
     // ==========================================================================================================================
 
     DM dmu;
 
-    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_PERIODIC, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, 2, NULL, NULL, &dmu);CHKERRQ(ierr);
+    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_PERIODIC, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, 3, NULL, NULL, &dmu);CHKERRQ(ierr);
     ierr = DMSetFromOptions(dmu);               CHKERRQ(ierr);
     ierr = DMSetUp(dmu);                        CHKERRQ(ierr);
 
     Vec globalu;
     ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
 
-    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+
     // Initialize with oblique data for Burgers equation 
     ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
 
@@ -362,20 +383,32 @@ int main(int argc, char **argv){
     solution  ** lu;
     DMDAVecGetArray(dmu, localu, &lu);
 
-    // Test Numintegral on the edge
-/*
- *    vector<point> edge_corner = {{0,0},{1,1}};
- *
- *    double numint_edge = NumIntegralEdge(edge_corner,{0},funcX,funcY);
- *
- *    cout << "Numerical Integral on the given edge " << numint_edge << endl;
- *
- */
-
     /*
      *Initialize code by calling WenoMesh
      */
     const WenoMesh * wm = new WenoMesh(M,N,stencilWidth,mesh,lu);
+
+    // Test weno reconstruction
+/*
+ *    point_index target_index_test {N/2+wm->ghost, M/2+wm->ghost};
+ *
+ *    WenoReconst * wr_53_test;
+ *
+ *    wr_53_test = new WenoReconst(target_index_test,wm,StencilLarge5,Lorder5,StencilSmall3,Sorder3);
+ *    wr_53_test->CreateNewWeights();
+ *    point target_point_test = {0.5,0.5};
+ *
+ *    printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", target_point_test[0], target_point_test[1], func(target_point_test,{0.0}));
+ *
+ *    solution u = wr_53_test->PointReconstruction(wm, {0.5,0.5});
+ *
+ *    printf("The reconstructed value at the given point is %.12f \n", u);
+ *
+ *    printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(target_point_test,{0.0})));
+ *
+ *    delete wr_53_test;
+ *
+ */
 
     // test for 2D Burgers equation
     // Explicit time progression for simplicity
@@ -385,7 +418,7 @@ int main(int argc, char **argv){
     double currentT = 0.0;
 
     // Spectial case
-    double h = 9.0/((double)M*(double)N);
+    double h = (L*H)/((double)M*(double)N);
 
     double dt = 0.2*3.0/(double)M;
 
@@ -398,19 +431,42 @@ int main(int argc, char **argv){
 
     typedef WenoReconst*  wrPtr;
 
-    wrPtr * wr_23 = new wrPtr[StencilNum];
+/*
+ *    wrPtr * wr_23 = new wrPtr[StencilNum];
+ *
+ *    for (int s=0; s<StencilNum; s++){
+ *        int j=s/(M+2);
+ *        int i=s%(M+2);
+ *        point_index target {i-1+wm->ghost, j-1+wm->ghost};
+ *        wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder, center_indexl, center_indexs);
+ *        wr_23[s]->CreateNewWeights2();
+ *    }
+ *
+ */
 
-    for (int s=0; s<StencilNum; s++){
-        int j=s/(M+2);
-        int i=s%(M+2);
-        point_index target {i-1+wm->ghost, j-1+wm->ghost};
-        wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder);
-        wr_23[s]->CreateNewWeights();
-    }
+    point_index target {wm->ghost,wm->ghost};
+
+    wrPtr wr_23 = new WenoReconst(target,wm,StencilLarge,Lorder,StencilSmall,Sorder,center_indexl,center_indexs);
+    wr_23->CheckBasisCoeff();
 
     // Define two types of 4-3 weno reconstruction
-    wrPtr * wr_43_h = new wrPtr[StencilNum];
-    wrPtr * wr_43_v = new wrPtr[StencilNum];
+/*
+ *    wrPtr * wr_53 = new wrPtr[StencilNum];
+ *
+ *    for (int s=0; s<StencilNum; s++){
+ *        int j=s/(M+2);
+ *        int i=s%(M+2);
+ *        point_index target {i-1+wm->ghost, j-1+wm->ghost};
+ *        wr_53[s] = new WenoReconst(target, wm, StencilLarge5, Lorder5, StencilSmall3, Sorder3);
+ *        wr_53[s]->CreateNewWeights();
+ *        //wr_53[s]->CheckBasisCoeff();
+ *        //wr_53[s]->CheckWeights();
+ *    }
+ *
+ */
+
+    cout << "Weno Preparation completed." << endl;
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     DMDAVecRestoreArray(dmu,localu,&lu);
 
@@ -459,49 +515,60 @@ int main(int argc, char **argv){
  *    }
  */
 
-	 // Time stepping with TS object
-    TS   ts;
-    SNES snes;
-    Ctx  ctx;
-
-    // Set up ctx data
-    ctx.dm = dmu;
-    ctx.wr = wr_23;
-    ctx.h = h;
-    ctx.Lorder = Lorder;
-    ctx.Sorder = Sorder;
-    ctx.StencilLarge = StencilLarge;
-    ctx.StencilSmall = StencilSmall;
-    ctx.mesh = mesh; 
-    ctx.ghost = stencilWidth;
-
-    TSCreate(PETSC_COMM_WORLD, &ts);
-    TSSetProblemType(ts,TS_NONLINEAR);
-    TSSetType(ts, TSEULER);
-
-    TSSetMaxTime(ts,T);
-    TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
-    TSSetDM(ts,dmu);
-
-    // Customize nonlinear lu[j][i]    
-    TSGetSNES(ts,&snes);
-    TSSetTimeStep(ts,dt);
-	 TSSetSolution(ts,globalu);
-
-	 TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
-
-    cout << "Time stepping started." << endl;
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
-
-	 TSSolve(ts,globalu);
-
-    // ==========================================================================
-
-    for (int s=0; s<StencilNum; s++){
-        delete wr_23[s];
-    }
-    delete wr_23;
-
+/*
+ *    // Time stepping with TS object
+ *    TS   ts;
+ *    SNES snes;
+ *    Ctx  ctx;
+ *
+ *    // Set up ctx data
+ *    ctx.wr = wr_23;
+ *    ctx.Lorder = Lorder;
+ *    ctx.Sorder = Sorder;
+ *    ctx.StencilLarge = StencilLarge;
+ *    ctx.StencilSmall = StencilSmall;
+ *    ctx.mesh = mesh;
+ *    ctx.ghost = stencilWidth;
+ *    ctx.h = h;
+ *    ctx.dm = dmu;
+ *    ctx.center_indexl = center_indexl;
+ *    ctx.center_indexs = center_indexs;
+ *
+ *    TSCreate(PETSC_COMM_WORLD, &ts);
+ *    TSSetProblemType(ts,TS_NONLINEAR);
+ *    TSSetType(ts, TSEULER);
+ *
+ *    TSSetMaxTime(ts,T);
+ *    TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
+ *    TSSetDM(ts,dmu);
+ *
+ *    // Customize nonlinear lu[j][i]
+ *    TSGetSNES(ts,&snes);
+ *    TSSetTimeStep(ts,dt);
+ *    TSSetSolution(ts,globalu);
+ *
+ *    TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
+ *
+ *    cout << "Time stepping started." << endl;
+ *    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+ *
+ *    TSSolve(ts,globalu);
+ *
+ *    // ==========================================================================
+ *
+ *    for (int s=0; s<StencilNum; s++){
+ *        delete wr_23[s];
+ *    }
+ *    delete wr_23;
+ *
+ */
+/*
+ *    for (int s=0; s<StencilNum; s++){
+ *        delete wr_53[s];
+ *    }
+ *    delete wr_53;
+ *
+ */
     // ==========================================================================
 
     DrawPressure(dmu,&globalu);
@@ -512,7 +579,7 @@ int main(int argc, char **argv){
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);
     DMDestroy(&dm);
-    TSDestroy(&ts);
+//    TSDestroy(&ts);
 
 
     return 0;
