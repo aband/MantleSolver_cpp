@@ -117,6 +117,7 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, double gamma, d
         int target_j = target_cell[1]-wm->ghost;
         sigma2 += pow(wm->lsol[target_j][target_i] - wm->lsol[target_j+cell[1]][target_i+cell[0]],2);
     }
+
     sigma2 *= 1.0/(double)(index_set_stencil.size()-1);
     sigma2 = pow(sigma2,gamma/2.0);
 
@@ -170,7 +171,6 @@ void WenoPrepare::CreateSmoothnessIndicator(const WenoMesh*& wm, int c, double g
 
     Theta_l = Theta;
     gamma_l = gamma;
-
 }
 
 /*
@@ -206,8 +206,8 @@ WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
     lwp->SetUpStencil(wm);
     lwp->CreateBasisCoeff(wm);
     //lwp->CreateSmoothnessIndicator(wm,etal,Theta);
-    //lwp->CreateSmoothnessIndicator(wm,r/2+1,r,0.5);
-    lwp->CreateSmoothnessIndicator(wm,cil,r/2+1,r,0.5);
+    lwp->CreateSmoothnessIndicator(wm,r/2+1,r,0.5);
+    //lwp->CreateSmoothnessIndicator(wm,cil,r/2+1,r,0.5);
 
     swp = new wpPtr[StencilSmall.size()]; 
 
@@ -216,8 +216,8 @@ WenoReconst::WenoReconst(point_index& target, const WenoMesh*& wm,
         swp[e]->SetUpStencil(wm);
         swp[e]->CreateBasisCoeff(wm);
         //swp[e]->CreateSmoothnessIndicator(wm,etas,Theta);
-        //swp[e]->CreateSmoothnessIndicator(wm,s/2+1,s,0.125);
-        swp[e]->CreateSmoothnessIndicator(wm,cis[e],s/2+1,s,0.125);
+        swp[e]->CreateSmoothnessIndicator(wm,s/2+1,s,0.125);
+        //swp[e]->CreateSmoothnessIndicator(wm,cis[e],s/2+1,s,0.125);
     }
 
 }

@@ -59,15 +59,18 @@ inline valarray<double> testoutput2(valarray<double> test){
 }
 
 double func(valarray<double>& point, const vector<double>& param){
-	 if (point[0]<0.50-param[0]){
-		  return sin(point[0])+cos(point[1]);
-	 } else {
-		  return sin(point[0])+cos(point[1])+10;
-		  //return exp(point[0]+point[1]);
-	 }
-
-    //return sin(point[0])+cos(point[1]);
+/*
+ *    if (point[0]<0.50-param[0]){
+ *        return sin(point[0])+cos(point[1]);
+ *    } else {
+ *        return sin(point[0])+cos(point[1])+10;
+ *        //return exp(point[0]+point[1]);
+ *    }
+ *
+ */
+    return sin(point[0])+cos(point[1]);
     //return point[0]*point[0] + point[1]*point[1];
+    //return 0.5;
 }
 
 double funcX(valarray<double>& target, const vector<double>& param){
@@ -371,7 +374,8 @@ int main(int argc, char **argv){
     //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     // Initialize with oblique data for Burgers equation 
-    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -389,26 +393,31 @@ int main(int argc, char **argv){
     const WenoMesh * wm = new WenoMesh(M,N,stencilWidth,mesh,lu);
 
     // Test weno reconstruction
-/*
- *    point_index target_index_test {N/2+wm->ghost, M/2+wm->ghost};
- *
- *    WenoReconst * wr_53_test;
- *
- *    wr_53_test = new WenoReconst(target_index_test,wm,StencilLarge5,Lorder5,StencilSmall3,Sorder3);
- *    wr_53_test->CreateNewWeights();
- *    point target_point_test = {0.5,0.5};
- *
- *    printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", target_point_test[0], target_point_test[1], func(target_point_test,{0.0}));
- *
- *    solution u = wr_53_test->PointReconstruction(wm, {0.5,0.5});
- *
- *    printf("The reconstructed value at the given point is %.12f \n", u);
- *
- *    printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(target_point_test,{0.0})));
- *
- *    delete wr_53_test;
- *
- */
+	 point_index target_index_test {N/2+wm->ghost, M/2+wm->ghost};
+
+	 WenoReconst * wr_test;
+
+	 /*
+	  *wr_53_test = new WenoReconst(target_index_test,wm,StencilLarge5,Lorder5,StencilSmall3,Sorder3);
+	  *wr_53_test->CreateNewWeights();
+	  */
+	 wr_test = new WenoReconst(target_index_test,wm,StencilLarge,Lorder,StencilSmall,Sorder,center_indexl,center_indexs);
+	 wr_test->CreateNewWeights2();
+
+    wr_test->CheckWeights();
+
+	 point target_point_test = {0.5,0.5};
+
+	 printf("\nThe target point is (%.2f, %.2f), the exact value is %.12f \n \n", target_point_test[0], target_point_test[1], func(target_point_test,{0.0}));
+
+	 solution u = wr_test->PointReconstruction(wm, {0.5,0.5});
+
+	 printf("The reconstructed value at the given point is %.12f \n", u);
+
+	 printf("\nThe error measured at this point : %.12f \n\n",abs(u-func(target_point_test,{0.0})));
+
+	 delete wr_test;
+
 
     // test for 2D Burgers equation
     // Explicit time progression for simplicity
@@ -444,10 +453,10 @@ int main(int argc, char **argv){
  *
  */
 
-    point_index target {wm->ghost,wm->ghost};
+ //   point_index target {wm->ghost,wm->ghost};
 
-    wrPtr wr_23 = new WenoReconst(target,wm,StencilLarge,Lorder,StencilSmall,Sorder,center_indexl,center_indexs);
-    wr_23->CheckBasisCoeff();
+  //  wrPtr wr_23 = new WenoReconst(target,wm,StencilLarge,Lorder,StencilSmall,Sorder,center_indexl,center_indexs);
+  //  wr_23->CheckBasisCoeff();
 
     // Define two types of 4-3 weno reconstruction
 /*

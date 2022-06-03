@@ -17,7 +17,7 @@ extern "C"{
 using namespace std;
 
 double func(valarray<double>& point, const vector<double>& param){
-	 if (point[0]<0.50-param[0]){
+	 if (point[0]<0.50){
 		  return sin(point[0])+cos(point[1]);
 	 } else {
 		  return sin(point[0])+cos(point[1])+10;
@@ -26,6 +26,8 @@ double func(valarray<double>& point, const vector<double>& param){
 
     //return sin(point[0])+cos(point[1]);
     //return point[0]*point[0] + point[1]*point[1];
+    //return 0.5;
+    //return point[0] + point[1];
 }
 
 double funcX(valarray<double>& target, const vector<double>& param){
@@ -50,7 +52,7 @@ double dfuncY(valarray<double>& target, const vector<double>& param){
 
 typedef struct{
     DM dm;
-    WenoReconst ** wr;
+    WenoReconstruction ** wr;
     vector< valarray<double> > mesh;
     int ghost;
     double h;
@@ -289,7 +291,8 @@ int main(int argc, char **argv){
     //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     // Initialize with oblique data for Burgers equation 
-    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -335,17 +338,103 @@ int main(int argc, char **argv){
 
     // The code can handle 1D 2D and 3D
 	 // Right now, 2D is the only part finished
-    int range[2] = {-1,1};
-    point_index target {1,2};
 
-    WenoStencil * ws = new WenoStencil(&mi,range,range,target);
+    // Create an instance for a weno reconstruction
+    vector<int *> rangex;
+    vector<int *> rangey;
+
+    int range[2] = {-1,1};
+    int range1[2] = {0,1};
+    int range2[2] = {-1,0};
+    int range3[2] = {-2,2};
+
+    int range4[2] = {-2,0};
+    int range5[2] = {0,2};
+
+    // Weno5
+	 rangex.push_back(range3);
+	 rangey.push_back(range3);
+
+	 rangex.push_back(range4);
+	 rangey.push_back(range4);
+
+	 rangex.push_back(range4);
+	 rangey.push_back(range5);
+
+	 rangex.push_back(range5);
+	 rangey.push_back(range4);
+
+	 rangex.push_back(range5);
+	 rangey.push_back(range5);
+
+	 // Weno3
+	 rangex.push_back(range);
+	 rangey.push_back(range);
+
+    // Weno2
+	 rangex.push_back(range2);
+	 rangey.push_back(range2);
+
+	 rangex.push_back(range1);
+	 rangey.push_back(range2);
+
+	 rangex.push_back(range1);
+	 rangey.push_back(range1);
+
+	 rangex.push_back(range2);
+	 rangey.push_back(range1);
+
+    vector<double> linWeights {25.0,9.0,9.0,9.0,9.0,9.0,4.0,4.0,4.0,4.0};
+//    vector<double> linWeights {9.0,4.0,4.0,4.0,4.0};
+//    vector<double> linWeights {1.0};
+
+    typedef WenoReconstruction*  wrPtr;
+
+    // For testing
+
+    int stencil_sum = (M+2)*(N+2);
+
+/*
+ *    wrPtr * wr = new wrPtr[stencil_sum];
+ *
+ *    for (int s=0; s<stencil_sum; s++){
+ *        int shiftj = s/(M+2)-1;
+ *        int shifti = s%(M+2)-1;
+ *        valarray<int> target = {shifti, shiftj};
+ *        wr[s] = new WenoReconstruction(&mi,linWeights,rangex,rangey,target);
+ *        wr[s]->ComputeNonlinWeights(&mi);
+ *    }
+ *
+ */
+
+    valarray<int> target = {M/2,N/2};
+
+    wrPtr wr = new WenoReconstruction(&mi,linWeights,rangex,rangey,target);
+    wr->ComputeNonlinWeights(&mi);
+
+    valarray<double> p = {0.5,0.5};
+
+    printf("Global size M = %d, N = %d \n", M, N);
+
+    //wr->CheckSigma();
+
+    //wr->CheckPolynBasis();
+
+    wr->CheckStencils();
+
+    wr->CheckSmoothnessIndicator();
+
+    // Jiang and Shu classicial sigma
+    wr->CheckNonlinWeights();
+
+    cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(&mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(&mi,p)) <<  endl;    
 
     //ws->CheckWenoStencil();
-    ws->PrintBasisPolyn();
+    //ws->PrintBasisPolyn();
+    //ws->CheckSigma();
 
     // Create array of weno prepare object
     // First determine how many stencils we need locally
-    cout << "Weno Preparation completed." << endl;
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     DMDAVecRestoreArray(dmu,localu,&lu);
@@ -402,6 +491,7 @@ int main(int argc, char **argv){
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);
     DMDestroy(&dm);
+    DMDestroy(&dmu);
     //TSDestroy(&ts);
 
     return 0;

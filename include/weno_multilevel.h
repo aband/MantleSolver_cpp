@@ -45,32 +45,32 @@ typedef struct {
 template <class T>
 class myStencil{
     public:
-        myStencil(size_t x): X(x), stencilSize(x) {};
-        myStencil(size_t x, size_t y): X(x), Y(y), stencilSize(x*y) {};
-        myStencil(size_t x, size_t y, size_t z): X(x), Y(y), Z(z), stencilSize(x*y*z) {};
+        myStencil(size_t x): x_(x), stencilSize_(x) {};
+        myStencil(size_t x, size_t y): x_(x), y_(y), stencilSize_(x*y) {};
+        myStencil(size_t x, size_t y, size_t z): x_(x), y_(y), z_(z), stencilSize_(x*y*z) {};
 
-        void CreateStencil() {stencil.resize(stencilSize);}
+        void CreateStencil() {stencil_.resize(stencilSize_);}
 
         T &operator()(size_t i){
-            return stencil[i];
+            return stencil_[i];
         }
 
         T &operator()(size_t i, size_t j){
-            return stencil[i+j*X];
+            return stencil_[i+j*x_];
         }
 
         T &operator()(size_t i, size_t j, size_t k){
-            return stencil[i+j*X+k*X*Y];
+            return stencil_[i+j*x_+k*x_*y_];
         }
 
-        vector<T> GetStencil() {return stencil;}
+        vector<T> GetStencil() {return stencil_;}
 
     private:
-        size_t X;
-        size_t Y;
-        size_t Z; 
-        size_t stencilSize;
-        vector<T> stencil;
+        size_t x_;
+        size_t y_;
+        size_t z_; 
+        size_t stencilSize_;
+        vector<T> stencil_;
 };
 
 /*
@@ -83,36 +83,27 @@ class WenoStencil{
         WenoStencil(MeshInfo* mi, const int rangex[2], const int rangey[2],
                                   const int rangez[2], point_index& target);
 
-        ~WenoStencil() {delete polyn;};
-
-        // Create coefficients for basis polynomials and
-        // corresponding coefficients for derivative of 
-        // basis polynomials. 
-        void CreateBasisPolyn(MeshInfo* mi);
-
-        // Create smoothness indicator at the very beginning
-        void CreateSigma(MeshInfo*& mi);   // Classical Jiang and Shu Smoothness Indicator
+        ~WenoStencil() {delete polyn; /*for (int k=0; k<stencil_size; k++){delete sigma[k];}*/ delete sigma;};
 
         // Update smoothness indicator after each time step
-        void UpdateSigma(MeshInfo*& mi);
+        double ComputeSmoothnessIndicator(MeshInfo* mi);
+        double ComputeSmoothnessIndicator_Simple(MeshInfo* mi);
+
+        double Geth() {return h;};
+
+        point GetCenter() {return stencil_center;};
 
         // Check computed results
         void CheckWenoStencil();
         void PrintBasisPolyn();
+        void CheckSigma();
 
-    private:
+        // ======================================
+        point_index targetCell_;
 
-        double * CreateBasisPolynDeriv(int xdegree, int ydegree, int k);
-
-        point stencil_center;
-
-        vector<point> center_cell_corners;
+        point_index targetVertx_;
 
         int stencil_size;
-
-        void GenerateStencil(int dim, vector<point_index>& range, point_index& target);
-
-        double h;
 
         // Basis polynomial order
         vector<int> polyn_order;
@@ -123,30 +114,70 @@ class WenoStencil{
         // Coefficients of basis polynomial based on given stencil and order.
         double * polyn;
 
+    private:
+        // Create coefficients for basis polynomials and
+        // corresponding coefficients for derivative of 
+        // basis polynomials. 
+        void CreateBasisPolyn(MeshInfo*& mi);
+
+        // Create smoothness indicator at the very beginning
+        void CreateSigma(MeshInfo*& mi);   // Classical Jiang and Shu Smoothness Indicator
+
+        // Create arbitrary derivative of a given tensor product basis polynomial
+        double * CreateBasisPolynDeriv(int xdegree, int ydegree, int k);
+
+        /*
+         *parameters
+         */
+        point stencil_center;
+
+        vector<point> center_cell_corners;
+
+        double h;
+
         // Smoothness indicator.
-        double sigma;
+        double * sigma;
 };
 
-class WenoReconst{
+class WenoReconstruction{
     public:
-        WenoReconst(vector< const int* >& index_ranges);
+        WenoReconstruction(MeshInfo* mi, vector<double>& linWeights, vector<int *>& rangex, vector<int *>& rangey, point_index& target);
 
-        ~WenoReconst();
+        ~WenoReconstruction();
 
-        void GetLinearWeights();
+        void ComputeNonlinWeights(MeshInfo* mi);
 
-        void CreateNonlinWeights();
+        double WenoReconstStencil(MeshInfo* mi, WenoStencil*& ws, point& target);
 
-        double PointReconstruction();
+        double PointValueReconstruction(MeshInfo* mi, point& target);
+
+        // Check parameters
+        void CheckSigma();
+
+        void CheckNonlinWeights();
+
+        void CheckStencils();
+
+        void CheckSmoothnessIndicator();
+
+        void CheckPolynBasis();
 
     private:
 
-        double * lin_weight;
+        vector<double> linWeights_;
 
-        double * omega;
+        vector<int *> rangex_;
+        vector<int *> rangey_;
 
-        double * nonln_weight;
+        point_index target_; 
 
+        vector<WenoStencil*> ws;
+
+        vector<double> omega;
+
+        vector<double> nonlinWeights_;
+
+        vector<double> sigma_;
 };
 
 #endif

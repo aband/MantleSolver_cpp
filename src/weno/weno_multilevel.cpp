@@ -61,7 +61,7 @@ WenoStencil::WenoStencil(MeshInfo* mi,const int rangex[2], point_index& target){
 
     assert(target.size() == 1);
 	 // Shift target point index with ghost region
-    int targetx = target[0] -1 + mi->ghost_vertx[0];
+    int targetx = target[0] + mi->ghost_vertx[0];
 
     int orderx = rangex[1]-rangex[0]+1;
 
@@ -97,14 +97,18 @@ WenoStencil::WenoStencil(MeshInfo* mi,const int rangex[2], point_index& target){
     }
 
     //h = pow(NumIntegralFace(center_cell_corners,{0.0},{0.0,0.0},1.0,constfunc),0.5);
+
+    // Restore target cell and vertex index
+    targetCell_ = target;
+    targetVertx_ = {targetx};
 }
 
 WenoStencil::WenoStencil(MeshInfo* mi,const int rangex[2], const int rangey[2], point_index& target){
 
     assert(target.size() == 2);
 	 // Shift target point index with ghost region
-    int targetx = target[0] -1 + mi->ghost_vertx[0];
-    int targety = target[1] -1 + mi->ghost_vertx[1];
+    int targetx = target[0] + mi->ghost_vertx[0];
+    int targety = target[1] + mi->ghost_vertx[1];
 
     int orderx = rangex[1]-rangex[0]+1;
     int ordery = rangey[1]-rangey[0]+1;
@@ -144,17 +148,21 @@ WenoStencil::WenoStencil(MeshInfo* mi,const int rangex[2], const int rangey[2], 
 
     h = pow(NumIntegralFace(center_cell_corners,{0.0},{0.0,0.0},1.0,constfunc),0.5);
 
+    // Restore target cell and vertex index
+    targetCell_ = target;
+    targetVertx_ = {targetx,targety};
+
     CreateBasisPolyn(mi); 
-    CreateSigma(mi);;
+    CreateSigma(mi);
 }
 
 WenoStencil::WenoStencil(MeshInfo* mi,const int rangex[2], const int rangey[2], const int rangez[2], point_index& target){
 
     assert(target.size() == 3);
 	 // Shift target point index with ghost region
-    int targetx = target[0] -1 + mi->ghost_vertx[0];
-    int targety = target[1] -1 + mi->ghost_vertx[1];
-    int targetz = target[2] -1 + mi->ghost_vertx[2];
+    int targetx = target[0] + mi->ghost_vertx[0];
+    int targety = target[1] + mi->ghost_vertx[1];
+    int targetz = target[2] + mi->ghost_vertx[2];
 
     int orderx = rangex[1]-rangex[0]+1;
     int ordery = rangey[1]-rangey[0]+1;
@@ -198,6 +206,9 @@ WenoStencil::WenoStencil(MeshInfo* mi,const int rangex[2], const int rangey[2], 
 
     //h = pow(NumIntegralFace(center_cell_corners,{0.0},{0.0,0.0},1.0,constfunc),0.5);
 
+    // Restore target cell and vertex index
+    targetCell_ = target;
+    targetVertx_ = {targetx, targety, targetz};
 }
 
 void WenoStencil::CheckWenoStencil(){
@@ -216,7 +227,7 @@ void WenoStencil::CheckWenoStencil(){
 // ==================================================================
 
 // 2D Case ==========================================================
-void WenoStencil::CreateBasisPolyn(MeshInfo* mi){
+void WenoStencil::CreateBasisPolyn(MeshInfo*& mi){
 
     int fullx = mi->localsize[0]+2*mi->ghost_vertx[0];
 
@@ -267,7 +278,7 @@ double * WenoStencil::CreateBasisPolynDeriv(int xdegree, int ydegree, int k){
     for (int i=xdegree; i<polyn_order[0]; i++){
         int shiftj = j-ydegree;
         int shifti = i-xdegree;
-        product[shiftj*(polyn_order[0])+shifti] = polyn[k*stencil_size + i+j*polyn_order[0]];
+        product[shiftj*(polyn_order[0])+shifti] = polyn[k + (i+j*polyn_order[0])*stencil_size];
     }}
 
     for (int j=0; j<polyn_order[1]; j++){
@@ -282,29 +293,90 @@ double * WenoStencil::CreateBasisPolynDeriv(int xdegree, int ydegree, int k){
 
 void WenoStencil::CreateSigma(MeshInfo*& mi){
 
-    CreateBasisPolynDeriv(1,0,0);
+    // Create an empty pointer for sigma
+    sigma = new double [stencil_size*stencil_size]();
 
-    double * sum = new double [stencil_size*stencil_size]();
+    int fullx = mi->localsize[0]+2*mi->ghost_vertx[0];
 
+    // Get integral domain
+    vector< point > work; 
+    for (auto & corner: mi->corner_index_2D){
+        int vertxj = targetVertx_[1] + corner[1];
+        int vertxi = targetVertx_[0] + corner[0];
+        work.push_back(mi->lmesh[vertxj*fullx+vertxi]);
+    }
 
+    for (int alpha=1; alpha<stencil_size; alpha++){
+        int ydegree = alpha/polyn_order[0];
+        int xdegree = alpha%polyn_order[0];
 
-/*
- *    for (int q = 0; q<polyn_order[1]; q++){
- *    for (int p = 0; p<polyn_order[0]; p++){
- *        double * Dpq = CreateBasisPolynDeriv(p,q,p,q);
- *        for (int q_prime=0; q_prime<polyn_order[1]; q_prime++){
- *        for (int p_prime=0; p_prime<polyn_order[0]; p_prime++){
- *            double * Dpq_prime = CreateBasisPolynDeriv(p_prime,q_prime,p_prime,q_prime);
- *        }}
- *    }}
- *
- */
+        for (int i = 0; i<stencil_size; i++){
+            double * Dpq = CreateBasisPolynDeriv(xdegree,ydegree,i);
+
+            for (int i_prime=0; i_prime<stencil_size; i_prime++){
+                double * Dpq_prime = CreateBasisPolynDeriv(xdegree,ydegree,i_prime);
+
+                for (int a=0; a<stencil_size; a++){ 
+                for (int b=0; b<stencil_size; b++){
+                    int ypow1 = a/polyn_order[0]; int xpow1 = a%polyn_order[0];
+                    int ypow2 = b/polyn_order[0]; int xpow2 = b%polyn_order[0];
+
+                    sigma[i_prime+i*stencil_size] += Dpq[a]*Dpq_prime[b]*
+                                      NumIntegralFace(work,{xpow1+xpow2,ypow1+ypow2},stencil_center,h,poly);
+                }}
+                delete Dpq_prime;
+            }
+            delete Dpq;
+        }
+    }
+
 }
 
+double WenoStencil::ComputeSmoothnessIndicator(MeshInfo* mi){
 
-// 3D Case ==========================================================
+    double smoothIndi = 0.0;
 
-// ==================================================================
+    for (int pq=0; pq<stencil_size; pq++){
+        valarray <int> cellpq = stencil_index_set[pq];
+        cellpq[1] -= mi->ghost_vertx[1];
+        cellpq[0] -= mi->ghost_vertx[0];
+
+        for (int pq_prime=0; pq_prime<stencil_size; pq_prime++){
+            valarray <int> cellpq_prime = stencil_index_set[pq_prime];
+            cellpq_prime[1] -= mi->ghost_vertx[1];
+            cellpq_prime[0] -= mi->ghost_vertx[0];
+
+            smoothIndi += mi->localval[cellpq[1]][cellpq[0]]*
+                          mi->localval[cellpq_prime[1]][cellpq_prime[0]]*
+                          sigma[pq_prime+pq*stencil_size];
+        }
+    }
+
+    return smoothIndi;
+}
+
+double WenoStencil::ComputeSmoothnessIndicator_Simple(MeshInfo* mi){
+    double smoothIndi = 0.0;
+
+    for (auto & cell: stencil_index_set){
+        valarray<int> shift = cell;
+        shift[0] -= mi->ghost_vertx[0];
+        shift[1] -= mi->ghost_vertx[1];
+
+        smoothIndi += pow(mi->localval[targetCell_[1]][targetCell_[0]]- mi->localval[shift[1]][shift[0]],2);
+    }
+
+    smoothIndi *= 1.0/(double)(stencil_size - 1);
+
+    return smoothIndi;
+}
+
+void WenoStencil::CheckSigma(){
+        for (int p=0; p<stencil_size; p++){
+        for (int q=0; q<stencil_size; q++){
+            cout << sigma[q+p*stencil_size] << "  ";
+        }cout<<endl;}
+}
 
 void WenoStencil::PrintBasisPolyn(){
     int n = polyn_order[0]*polyn_order[1];
@@ -313,3 +385,137 @@ void WenoStencil::PrintBasisPolyn(){
         printf("coeff = %.4f ",polyn[i+j*n]);
     }cout<<endl;}
 }
+
+// Weno Reconstruction ==============================================
+WenoReconstruction::WenoReconstruction(MeshInfo* mi, vector<double>& linWeights, vector<int *>& rangex, vector<int *>& rangey, point_index& target){
+
+    assert(rangex.size()==rangey.size());
+    assert(linWeights.size()==rangex.size());
+
+    double sumlinWeights=0.0;
+
+    for (auto & w: linWeights){
+        sumlinWeights += w;
+    }
+
+    typedef WenoStencil * wsptr;
+
+    for (int i=0; i<linWeights.size(); i++){
+        linWeights_.push_back(linWeights[i]/sumlinWeights);
+        // Create corresponding wenostencils
+        wsptr singlews= new WenoStencil(mi,rangex[i],rangey[i],target);
+        ws.push_back(singlews);
+    }
+
+    rangex_ = rangex;
+    rangey_ = rangey;
+
+    target_ = target;
+}
+
+void WenoReconstruction::ComputeNonlinWeights(MeshInfo* mi){
+    for(auto & singlews: ws){
+        sigma_.push_back(singlews->ComputeSmoothnessIndicator(mi));
+        //sigma_.push_back(singlews->ComputeSmoothnessIndicator_Simple(mi));
+    }
+
+    for (int i=0; i<sigma_.size(); i++){
+        int eta = max(ws[i]->polyn_order[0],ws[i]->polyn_order[1]);
+        omega.push_back(linWeights_[i]/pow(sigma_[i]+ws[i]->Geth()/5.0,eta));
+    }
+
+    double sum_omega = accumulate(omega.begin(), omega.end(), decltype(omega)::value_type(0));
+
+    for (auto & o: omega){ 
+        nonlinWeights_.push_back(o/sum_omega);
+    }
+
+}
+
+double WenoReconstruction::WenoReconstStencil(MeshInfo* mi, WenoStencil*& ws, point& target){
+
+    double reconVal=0.0;
+
+    for (int p=0; p<ws->stencil_size; p++){
+        valarray<int> t = ws->stencil_index_set[p];
+        t[0] = t[0] - mi->ghost_vertx[0];
+        t[1] = t[1] - mi->ghost_vertx[1];
+        for (int ypow=0; ypow<ws->polyn_order[1]; ypow++){
+        for (int xpow=0; xpow<ws->polyn_order[0]; xpow++){
+            int o = ypow*ws->polyn_order[0] + xpow;
+            point shifted = (target-ws->GetCenter())/ws->Geth(); 
+            reconVal += mi->localval[t[1]][t[0]] * 
+                        poly(shifted,{xpow,ypow}) * 
+                        ws->polyn[o*ws->stencil_size+p]; 
+        }}
+    }
+
+    return reconVal;
+}
+
+double WenoReconstruction::PointValueReconstruction(MeshInfo* mi, point& target){
+
+    double reconVal=0.0;
+
+    for(int i=0; i<ws.size(); i++){
+        reconVal += nonlinWeights_[i]*WenoReconstStencil(mi, ws[i], target);
+    }
+
+    return reconVal; 
+} 
+
+// Check calculated parameters
+void WenoReconstruction::CheckSigma(){
+    for (int i=0; i<ws.size(); i++){
+
+        ws[i]->CheckSigma();
+        cout << endl;
+
+    }cout << endl;
+}
+
+void WenoReconstruction::CheckSmoothnessIndicator(){
+    cout << "Smooth Indicat:    ";
+    for (int i=0; i<ws.size(); i++){
+
+        printf("%9f  ",sigma_[i]); 
+
+    }cout << endl;
+}
+
+void WenoReconstruction::CheckPolynBasis(){
+    for (int i=0; i<ws.size(); i++){
+
+        ws[i]->PrintBasisPolyn();
+        cout << endl;
+
+    }cout << endl;
+}
+
+
+
+void WenoReconstruction::CheckStencils(){
+    for (int i=0; i<ws.size(); i++){
+        printf("[%2d,%2d]    " ,rangex_[i][0],rangex_[i][1]);
+    } cout << endl;
+    for (int i=0; i<ws.size(); i++){
+        printf("[%2d,%2d]    " ,rangey_[i][0],rangey_[i][1]);
+    } cout << endl;
+
+}
+
+void WenoReconstruction::CheckNonlinWeights(){
+
+    cout << "Nonlin Weights:    ";
+
+    for (int i=0; i<ws.size(); i++){
+
+        printf("%9f  ",nonlinWeights_[i]); 
+
+    } cout << endl; 
+}
+
+// ==================================================================
+
+// 3D Case ==========================================================
+

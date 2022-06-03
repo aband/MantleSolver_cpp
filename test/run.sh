@@ -4,7 +4,20 @@ cd build
 cmake ..
 make
 
-./multilevel_weno
+echo " "
+echo -n "Multilevel Weno"
+echo " "
+./multilevel_weno -M 20 -N 20
+./multilevel_weno -M 40 -N 40
+./multilevel_weno -M 80 -N 80
+./multilevel_weno -M 160 -N 160
+
+#echo " "
+#echo -n "Original Weno"
+#echo " "
+#./original_weno -meshtype 0 -M 20 -N 20
+#./original_weno -meshtype 0 -M 40 -N 40
+
 #./original_weno
 #./original_weno -meshtype 0 -M 60 -N 60
 #./original_weno -meshtype 0 -M 150 -N 150
