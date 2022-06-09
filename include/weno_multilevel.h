@@ -83,11 +83,15 @@ class WenoStencil{
         WenoStencil(MeshInfo* mi, const int rangex[2], const int rangey[2],
                                   const int rangez[2], point_index& target);
 
-        ~WenoStencil() {delete polyn; /*for (int k=0; k<stencil_size; k++){delete sigma[k];}*/ delete sigma;};
+        ~WenoStencil() {delete polyn; /*for (int k=0; k<stencil_size; k++){delete sigma[k];}*/ delete sigma;
+                        for (int k=0; k<stencil_size; k++){delete polynderiv_[k];}delete [] polynderiv_;};
 
         // Update smoothness indicator after each time step
         double ComputeSmoothnessIndicator(MeshInfo* mi);
         double ComputeSmoothnessIndicator_Simple(MeshInfo* mi);
+
+        double ComputeSmoothnessIndicator(const MeshInfo& mi);
+        double ComputeSmoothnessIndicator_Simple(const MeshInfo& mi);
 
         double Geth() {return h;};
 
@@ -124,7 +128,10 @@ class WenoStencil{
         void CreateSigma(MeshInfo*& mi);   // Classical Jiang and Shu Smoothness Indicator
 
         // Create arbitrary derivative of a given tensor product basis polynomial
+        void CreatePolynDerivMulti();
         double * CreateBasisPolynDeriv(int xdegree, int ydegree, int k);
+
+        void CheckPolynDerivMulti();
 
         /*
          *parameters
@@ -137,19 +144,24 @@ class WenoStencil{
 
         // Smoothness indicator.
         double * sigma;
+
+        // Multiplication coefficient matrix of polynomial derivatives
+        int ** polynderiv_;
 };
 
 class WenoReconstruction{
     public:
         WenoReconstruction(MeshInfo* mi, vector<double>& linWeights, vector<int *>& rangex, vector<int *>& rangey, point_index& target);
 
-        ~WenoReconstruction();
+        ~WenoReconstruction() {delete omega_; delete sigma_; delete nonlinWeights_; for (int i=0; i<linWeights_.size(); i++){delete ws[i];} delete [] ws;};
 
-        void ComputeNonlinWeights(MeshInfo* mi);
+        void ComputeNonlinWeights(const MeshInfo& mi);
 
         double WenoReconstStencil(MeshInfo* mi, WenoStencil*& ws, point& target);
 
         double PointValueReconstruction(MeshInfo* mi, point& target);
+
+        double Geth();
 
         // Check parameters
         void CheckSigma();
@@ -171,13 +183,15 @@ class WenoReconstruction{
 
         point_index target_; 
 
-        vector<WenoStencil*> ws;
+        WenoStencil** ws;
 
-        vector<double> omega;
+        double * omega_ = new double [linWeights_.size()]();
 
-        vector<double> nonlinWeights_;
+        double * nonlinWeights_ = new double [linWeights_.size()]();
 
-        vector<double> sigma_;
+        double * NonLinWeights_ = new double [linWeights_.size()]();
+
+        double * sigma_ = new double [linWeights_.size()]();
 };
 
 #endif

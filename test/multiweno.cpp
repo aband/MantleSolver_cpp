@@ -3,7 +3,7 @@
 #include "weno_multilevel.h"
 #include "integral.h"
 #include "input.h"
-//#include "flux.h"
+#include "flux_multilevel.h"
 
 #include "func.h"
 
@@ -53,80 +53,68 @@ double dfuncY(valarray<double>& target, const vector<double>& param){
 typedef struct{
     DM dm;
     WenoReconstruction ** wr;
-    vector< valarray<double> > mesh;
-    int ghost;
-    double h;
-    vector<int> Lorder;
-    vector<int> Sorder;
-    index_set StencilLarge;
-    vector<index_set> StencilSmall;
-    int center_indexl;
-    vector<int> center_indexs;
+    MeshInfo* mi;
+    int stencil_count;
 } Ctx;
 
-/*
- *PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
- *
- *    PetscErrorCode ierr;
- *    Ctx *user = (Ctx*)ctx;
- *    DM  dm = (DM)user->dm;
- *    PetscInt M,N,xs,ys,xm,ym,stencilwidth;
- *    PetscFunctionBeginUser;
- *
- *    WenoReconst ** wr = user->wr;
- *
- *    ierr = DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL);                                                CHKERRQ(ierr);
- *    ierr = DMDAGetInfo(dm, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
- *
- *    // Get local vector
- *    Vec localu;
- *    DMGetLocalVector(dm, &localu);
- *
- *    DMGlobalToLocalBegin(dm, U, INSERT_VALUES, localu);
- *    DMGlobalToLocalEnd(dm, U, INSERT_VALUES, localu);
- *
- *    // It can be changed later to not be double
- *    solution  ** lu;
- *    DMDAVecGetArray(dm, localu, &lu);
- *
- *    solution ** f;
- *    DMDAVecGetArray(dm, F, &f);
- *
- *    const WenoMesh * currentwm = new WenoMesh(M,N,user->ghost,user->mesh,lu);
- *
- *    for (int j=ys; j<ys+ym; j++){
- *    for (int i=xs; i<xs+ym; i++){
- *        if (j<4 || i<4 || j>N-6 || i>M-6){
- *            f[j][i] = lu[j][i];
- *        } else {
- *            point_index target {i-xs+user->ghost, j-ys+user->ghost};
- *            double temp = 0.0;
- *            for (int pos = 0; pos<4; pos++){
- *                temp -= 1.0/user->h * TotalFlux(currentwm, pos, time, target, wr,
- *                                                funcX, funcY, dfuncX, dfuncY);
- *            }
- *            f[j][i] = temp;
- *        }
- *    }}
- *
- *    int StencilNum = (M+2)*(N+2);
- *
- *    for (int s=0; s<StencilNum; s++){
- *        int j=s/(M+2);
- *        int i=s%(M+2);
- *        point_index target {i-1+user->ghost, j-1+user->ghost};
- *        wr[s] = new WenoReconst(target, currentwm, user->StencilLarge, user->Lorder, user->StencilSmall, user->Sorder, user->center_indexl, user->center_indexs, wr[s]);
- *        wr[s]->CreateNewWeights2();
- *    }
- *
- *    DMDAVecRestoreArray(dm, F, &f);
- *    DMDAVecRestoreArray(dm, localu, &lu);
- *    DMRestoreLocalVector(dm, &localu);
- *
- *    PetscFunctionReturn(0);
- *}
- *
- */
+PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
+
+	 PetscErrorCode ierr;
+	 Ctx *user = (Ctx*)ctx;
+	 DM  dm = (DM)user->dm;
+	 PetscInt M,N,xs,ys,xm,ym,stencilwidth;
+	 PetscFunctionBeginUser;
+
+	 WenoReconstruction ** wr = user->wr;
+
+	 ierr = DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL);                                                CHKERRQ(ierr);
+	 ierr = DMDAGetInfo(dm, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
+
+	 // Get local vector
+	 Vec localu;
+	 DMGetLocalVector(dm, &localu);
+
+	 DMGlobalToLocalBegin(dm, U, INSERT_VALUES, localu);
+	 DMGlobalToLocalEnd(dm, U, INSERT_VALUES, localu);
+
+	 // It can be changed later to not be double
+	 double  ** lu;
+	 DMDAVecGetArray(dm, localu, &lu);
+
+	 double ** f;
+	 DMDAVecGetArray(dm, F, &f);
+
+    user->mi->localval = lu;
+
+    // Calculate corresponding non linear weights
+    for (int s=0; s<user->stencil_count; s++){
+		  wr[s]->ComputeNonlinWeights(*(user->mi));
+    }
+
+    int offset = 1;
+
+	 for (int j=ys; j<ys+ym; j++){
+	 for (int i=xs; i<xs+ym; i++){
+		  if (j<offset || i<offset || j>N-offset || i>M-offset){
+				f[j][i] = lu[j][i];
+		  } else {
+				point_index target {i-xs+user->mi->ghost_vertx[0], j-ys+user->mi->ghost_vertx[1]};
+				double temp = 0.0;
+				for (int pos = 0; pos<4; pos++){
+					 temp -= 1.0/wr[(j-ys+1)*(xm+2)+(i-xs+1)]->Geth() 
+                        * TotalFlux(user->mi, pos, time, target, wr, funcX, funcY, dfuncX, dfuncY);
+				}
+				f[j][i] = temp;
+		  }
+	 }}
+
+	 DMDAVecRestoreArray(dm, F, &f);
+	 DMDAVecRestoreArray(dm, localu, &lu);
+	 DMRestoreLocalVector(dm, &localu);
+
+	 PetscFunctionReturn(0);
+}
+
 /*
  *PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void * ctx){
  *    PetscErrorCode    ierr;
@@ -291,8 +279,8 @@ int main(int argc, char **argv){
     //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     // Initialize with oblique data for Burgers equation 
-    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -352,21 +340,23 @@ int main(int argc, char **argv){
     int range5[2] = {0,2};
 
     // Weno5
-	 rangex.push_back(range3);
-	 rangey.push_back(range3);
-
-	 rangex.push_back(range4);
-	 rangey.push_back(range4);
-
-	 rangex.push_back(range4);
-	 rangey.push_back(range5);
-
-	 rangex.push_back(range5);
-	 rangey.push_back(range4);
-
-	 rangex.push_back(range5);
-	 rangey.push_back(range5);
-
+/*
+ *    rangex.push_back(range3);
+ *    rangey.push_back(range3);
+ *
+ *    rangex.push_back(range4);
+ *    rangey.push_back(range4);
+ *
+ *    rangex.push_back(range4);
+ *    rangey.push_back(range5);
+ *
+ *    rangex.push_back(range5);
+ *    rangey.push_back(range4);
+ *
+ *    rangex.push_back(range5);
+ *    rangey.push_back(range5);
+ *
+ */
 	 // Weno3
 	 rangex.push_back(range);
 	 rangey.push_back(range);
@@ -384,60 +374,72 @@ int main(int argc, char **argv){
 	 rangex.push_back(range2);
 	 rangey.push_back(range1);
 
-    vector<double> linWeights {25.0,9.0,9.0,9.0,9.0,9.0,4.0,4.0,4.0,4.0};
-//    vector<double> linWeights {9.0,4.0,4.0,4.0,4.0};
-//    vector<double> linWeights {1.0};
+//    vector<double> linWeights {25.0,9.0,9.0,9.0,9.0,9.0,4.0,4.0,4.0,4.0};
+    vector<double> linWeights {4.0,1.0,1.0,1.0,1.0};
 
     typedef WenoReconstruction*  wrPtr;
 
     // For testing
 
-    int stencil_sum = (M+2)*(N+2);
+    int stencil_count = (M+2)*(N+2);
 
+	 // Convergence test
 /*
- *    wrPtr * wr = new wrPtr[stencil_sum];
+ *    valarray<int> test_target {M/2,N/2};
  *
- *    for (int s=0; s<stencil_sum; s++){
- *        int shiftj = s/(M+2)-1;
- *        int shifti = s%(M+2)-1;
- *        valarray<int> target = {shifti, shiftj};
- *        wr[s] = new WenoReconstruction(&mi,linWeights,rangex,rangey,target);
- *        wr[s]->ComputeNonlinWeights(&mi);
- *    }
+ *    wrPtr wr_test = new WenoReconstruction(&mi,linWeights,rangex,rangey,test_target);
+ *    wr_test->ComputeNonlinWeights(&mi);
+ *    wr_test->ComputeNonlinWeights(&mi);
+ *    wr_test->ComputeNonlinWeights(&mi);
+ *    wr_test->ComputeNonlinWeights(&mi);
  *
+ *    valarray<double> p = {0.5,0.5};
+ *
+ *    printf("Global size M = %d, N = %d \n", M, N);
+ *
+ *    //wr_test->CheckSigma();
+ *
+ *    //wr_test->CheckPolynBasis();
+ *
+ *    wr_test->CheckStencils();
+ *
+ *    wr_test->CheckSmoothnessIndicator();
+ *
+ *    // Jiang and Shu classicial sigma
+ *    wr_test->CheckNonlinWeights();
+ *
+ *    cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr_test->PointValueReconstruction(&mi,p) << "  Error : " << abs(func(p,{0.0})-wr_test->PointValueReconstruction(&mi,p)) <<  endl;
+ *
+ *    //ws->CheckWenoStencil();
+ *    //ws->PrintBasisPolyn();
+ *    //ws->CheckSigma();
+ *
+ *    // Create array of weno prepare object
+ *    // First determine how many stencils we need locally
+ *    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
  */
 
-    valarray<int> target = {M/2,N/2};
+	 wrPtr * wr = new wrPtr[stencil_count];
 
-    wrPtr wr = new WenoReconstruction(&mi,linWeights,rangex,rangey,target);
-    wr->ComputeNonlinWeights(&mi);
+	 for (int s=0; s<stencil_count; s++){
+		  int shiftj = s/(M+2)-1;
+		  int shifti = s%(M+2)-1;
+		  valarray<int> target = {shifti, shiftj};
+		  wr[s] = new WenoReconstruction(&mi,linWeights,rangex,rangey,target);
+        //wr[s]->ComputeNonlinWeights(&mi);
+	 }
 
-    valarray<double> p = {0.5,0.5};
+    // Calculate corresponding non linear weights
+    for (int s=0; s<stencil_count; s++){
+		  wr[s]->ComputeNonlinWeights(mi);
+    }
+    // Calculate corresponding non linear weights
+    for (int s=0; s<stencil_count; s++){
+		  wr[s]->ComputeNonlinWeights(mi);
+    }
 
-    printf("Global size M = %d, N = %d \n", M, N);
 
-    //wr->CheckSigma();
 
-    //wr->CheckPolynBasis();
-
-    wr->CheckStencils();
-
-    wr->CheckSmoothnessIndicator();
-
-    // Jiang and Shu classicial sigma
-    wr->CheckNonlinWeights();
-
-    cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(&mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(&mi,p)) <<  endl;    
-
-    //ws->CheckWenoStencil();
-    //ws->PrintBasisPolyn();
-    //ws->CheckSigma();
-
-    // Create array of weno prepare object
-    // First determine how many stencils we need locally
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
-
-    DMDAVecRestoreArray(dmu,localu,&lu);
 
 	 // Time stepping with TS object
     TS   ts;
@@ -445,54 +447,47 @@ int main(int argc, char **argv){
     Ctx  ctx;
 
     // Set up ctx data
-/*
- *    ctx.wr = wr_23;
- *    ctx.Lorder = Lorder;
- *    ctx.Sorder = Sorder;
- *    ctx.StencilLarge = StencilLarge;
- *    ctx.StencilSmall = StencilSmall;
- *    ctx.mesh = mesh;
- *    ctx.ghost = stencilWidth;
- *    ctx.h = h;
- *    ctx.dm = dmu;
- *    ctx.center_indexl = center_indexl;
- *    ctx.center_indexs = center_indexs;
- *
- */
-/*
- *    TSCreate(PETSC_COMM_WORLD, &ts);
- *    TSSetProblemType(ts,TS_NONLINEAR);
- *    TSSetType(ts, TSEULER);
- *
- *    TSSetMaxTime(ts,T);
- *    TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
- *    TSSetDM(ts,dmu);
- *
- *    // Customize nonlinear lu[j][i]
- *    TSGetSNES(ts,&snes);
- *    TSSetTimeStep(ts,dt);
- *    TSSetSolution(ts,globalu);
- *
- *    TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
- *
- */
-//    cout << "Time stepping started." << endl;
-//    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+	 ctx.wr = wr;
+	 ctx.dm = dmu;
+    ctx.mi = &mi;
+    ctx.stencil_count = stencil_count;
+
+	 TSCreate(PETSC_COMM_WORLD, &ts);
+	 TSSetProblemType(ts,TS_NONLINEAR);
+	 TSSetType(ts, TSEULER);
+
+	 TSSetMaxTime(ts,T);
+	 TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
+	 TSSetDM(ts,dmu);
+
+	 // Customize nonlinear lu[j][i]
+	 TSGetSNES(ts,&snes);
+	 TSSetTimeStep(ts,dt);
+	 TSSetSolution(ts,globalu);
+
+	 TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
+
+    cout << "Time stepping started." << endl;
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
 	 //TSSolve(ts,globalu);
 
+    cout << "reach here " << endl;
+
     // ==========================================================================
 
-//    DrawPressure(dmu,&globalu);
+    DMDAVecRestoreArray(dmu,localu,&lu);
 
-//    hdf5output(dmu,&globalu);
+    DrawPressure(dmu,&globalu);
+
+    hdf5output(dmu,&globalu);
 
     // Destroy Vectors
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);
     DMDestroy(&dm);
     DMDestroy(&dmu);
-    //TSDestroy(&ts);
+    TSDestroy(&ts);
 
     return 0;
 }
