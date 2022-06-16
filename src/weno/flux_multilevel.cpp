@@ -1,6 +1,6 @@
 #include "../include/flux_multilevel.h"
 
-double LaxFriedrichsFlux(MeshInfo* mi, int pos, double t, WenoReconstruction**& wr,
+double LaxFriedrichsFlux(const MeshInfo& mi, int pos, double t, WenoReconstruction**& wr,
                          point& target_point, point_index& target_index,
                          double (*funcX)(valarray<double>& point, const vector<double>& param),
                          double (*funcY)(valarray<double>& point, const vector<double>& param),
@@ -13,7 +13,7 @@ double LaxFriedrichsFlux(MeshInfo* mi, int pos, double t, WenoReconstruction**& 
     point_index neighbor;
     points_set corner;
 
-    int fulllocalx = mi->localsize[0]+2*mi->ghost_vertx[0];
+    int fulllocalx = mi.localsize[0]+2*mi.ghost_vertx[0];
 
     // Define Operation set
     int addi[4] = {-1,0,1,0};
@@ -23,19 +23,19 @@ double LaxFriedrichsFlux(MeshInfo* mi, int pos, double t, WenoReconstruction**& 
 
     neighbor = {target_index[0]+addi[pos], target_index[1]+addj[pos]};
  
-    corner.push_back(mi->lmesh[(target_index[1]+corner_rotate[pos][1])*fulllocalx + 
+    corner.push_back(mi.lmesh[(target_index[1]+corner_rotate[pos][1])*fulllocalx + 
                                 target_index[0]+corner_rotate[pos][0]]);
-    corner.push_back(mi->lmesh[(target_index[1]+corner_rotate[(pos+1)%4][1])*fulllocalx + 
+    corner.push_back(mi.lmesh[(target_index[1]+corner_rotate[(pos+1)%4][1])*fulllocalx + 
                                 target_index[0]+corner_rotate[(pos+1)%4][0]]);
 
     double len = length(corner);
     point norm = UnitNormal(corner,len);
 
     // Transform target cell index to weno reconstruction index
-    int index_in = (target_index[1]-mi->ghost_vertx[1]+1)*(mi->localsize[0]+2)+
-                   (target_index[0]-mi->ghost_vertx[0]+1);
-    int index_out = (neighbor[1]-mi->ghost_vertx[1]+1)*(mi->localsize[0]+2)+
-                    (neighbor[0]-mi->ghost_vertx[0]+1);
+    int index_in = (target_index[1]-mi.ghost_vertx[1]+1)*(mi.localsize[0]+2)+
+                   (target_index[0]-mi.ghost_vertx[0]+1);
+    int index_out = (neighbor[1]-mi.ghost_vertx[1]+1)*(mi.localsize[0]+2)+
+                    (neighbor[0]-mi.ghost_vertx[0]+1);
 
     u_in = wr[index_in]->PointValueReconstruction(mi, target_point);
     u_out = wr[index_out]->PointValueReconstruction(mi, target_point);
@@ -57,7 +57,7 @@ double LaxFriedrichsFlux(MeshInfo* mi, int pos, double t, WenoReconstruction**& 
     return flux;
 }
 
-double TotalFlux(MeshInfo* mi, int pos, double t,
+double TotalFlux(const MeshInfo& mi, int pos, double t,
                  point_index& target_index, WenoReconstruction**& wr,
                  double (*funcX)(valarray<double>& point, const vector<double>& param),
                  double (*funcY)(valarray<double>& point, const vector<double>& param),
@@ -71,12 +71,12 @@ double TotalFlux(MeshInfo* mi, int pos, double t,
 
     points_set corner;
 
-    int fulllocalx = mi->localsize[0]+2*mi->ghost_vertx[0];
+    int fulllocalx = mi.localsize[0]+2*mi.ghost_vertx[0];
 
     int corner_rotate[4][2] = {{0,1},{0,0},{1,0},{1,1}};
-    corner.push_back(mi->lmesh[(target_index[1]+corner_rotate[pos][1])*fulllocalx + 
+    corner.push_back(mi.lmesh[(target_index[1]+corner_rotate[pos][1])*fulllocalx + 
                                 target_index[0]+corner_rotate[pos][0]]);
-    corner.push_back(mi->lmesh[(target_index[1]+corner_rotate[(pos+1)%4][1])*fulllocalx + 
+    corner.push_back(mi.lmesh[(target_index[1]+corner_rotate[(pos+1)%4][1])*fulllocalx + 
                                 target_index[0]+corner_rotate[(pos+1)%4][0]]);
 
     double len = length(corner);

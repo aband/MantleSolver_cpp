@@ -2,9 +2,11 @@
 #define WENO_MULTILEVEL_H_
 
 #include <vector>
+#include <array>
 #include <valarray>
 #include <algorithm>
 #include <numeric>
+#include <memory>
 
 #include "lapacke.h"
 #include "integral.h"
@@ -78,13 +80,13 @@ class myStencil{
  */
 class WenoStencil{
     public:
-        WenoStencil(MeshInfo* mi, const int rangex[2], point_index& target);
-        WenoStencil(MeshInfo* mi, const int rangex[2], const int rangey[2], point_index& target);
-        WenoStencil(MeshInfo* mi, const int rangex[2], const int rangey[2],
-                                  const int rangez[2], point_index& target);
+        WenoStencil(const MeshInfo& mi, const int rangex[2], point_index& target);
+        WenoStencil(const MeshInfo& mi, const int rangex[2], const int rangey[2], point_index& target);
+        WenoStencil(const MeshInfo& mi, const int rangex[2], const int rangey[2],
+                                        const int rangez[2], point_index& target);
 
-        ~WenoStencil() {delete polyn; /*for (int k=0; k<stencil_size; k++){delete sigma[k];}*/ delete sigma;
-                        for (int k=0; k<stencil_size; k++){delete polynderiv_[k];}delete [] polynderiv_;};
+        ~WenoStencil() {delete [] polyn; delete [] sigma;}
+                   //     for (int k=0; k<stencil_size; k++){delete polynderiv_[k];}delete [] polynderiv_;};
 
         // Update smoothness indicator after each time step
         double ComputeSmoothnessIndicator(MeshInfo* mi);
@@ -122,10 +124,10 @@ class WenoStencil{
         // Create coefficients for basis polynomials and
         // corresponding coefficients for derivative of 
         // basis polynomials. 
-        void CreateBasisPolyn(MeshInfo*& mi);
+        void CreateBasisPolyn(const MeshInfo& mi);
 
         // Create smoothness indicator at the very beginning
-        void CreateSigma(MeshInfo*& mi);   // Classical Jiang and Shu Smoothness Indicator
+        void CreateSigma(const MeshInfo& mi);   // Classical Jiang and Shu Smoothness Indicator
 
         // Create arbitrary derivative of a given tensor product basis polynomial
         void CreatePolynDerivMulti();
@@ -151,15 +153,17 @@ class WenoStencil{
 
 class WenoReconstruction{
     public:
-        WenoReconstruction(MeshInfo* mi, vector<double>& linWeights, vector<int *>& rangex, vector<int *>& rangey, point_index& target);
+        WenoReconstruction(const MeshInfo& mi, vector<double>& linWeights, vector<int *>& rangex, vector<int *>& rangey, point_index& target);
 
-        ~WenoReconstruction() {delete omega_; delete sigma_; delete nonlinWeights_; for (int i=0; i<linWeights_.size(); i++){delete ws[i];} delete [] ws;};
+        ~WenoReconstruction() {//for (int i=0; i<linWeights_.size(); i++){delete ws[i];} 
+                               //delete ws;
+                               }
 
         void ComputeNonlinWeights(const MeshInfo& mi);
 
-        double WenoReconstStencil(MeshInfo* mi, WenoStencil*& ws, point& target);
+        double WenoReconstStencil(const MeshInfo& mi, WenoStencil*& ws, point& target);
 
-        double PointValueReconstruction(MeshInfo* mi, point& target);
+        double PointValueReconstruction(const MeshInfo& mi, point& target);
 
         double Geth();
 
@@ -185,13 +189,9 @@ class WenoReconstruction{
 
         WenoStencil** ws;
 
-        double * omega_ = new double [linWeights_.size()]();
-
-        double * nonlinWeights_ = new double [linWeights_.size()]();
-
-        double * NonLinWeights_ = new double [linWeights_.size()]();
-
-        double * sigma_ = new double [linWeights_.size()]();
+        vector<double> sigma_;
+        vector<double> omega_;
+        vector<double> NonLinWeights_;
 };
 
 #endif

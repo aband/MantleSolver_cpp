@@ -53,7 +53,7 @@ double dfuncY(valarray<double>& target, const vector<double>& param){
 typedef struct{
     DM dm;
     WenoReconstruction ** wr;
-    MeshInfo* mi;
+    MeshInfo mi;
     int stencil_count;
 } Ctx;
 
@@ -84,11 +84,11 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
 	 double ** f;
 	 DMDAVecGetArray(dm, F, &f);
 
-    user->mi->localval = lu;
+    user->mi.localval = lu;
 
     // Calculate corresponding non linear weights
     for (int s=0; s<user->stencil_count; s++){
-		  wr[s]->ComputeNonlinWeights(*(user->mi));
+		  wr[s]->ComputeNonlinWeights(user->mi);
     }
 
     int offset = 1;
@@ -98,7 +98,7 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
 		  if (j<offset || i<offset || j>N-offset || i>M-offset){
 				f[j][i] = lu[j][i];
 		  } else {
-				point_index target {i-xs+user->mi->ghost_vertx[0], j-ys+user->mi->ghost_vertx[1]};
+				point_index target {i-xs+user->mi.ghost_vertx[0], j-ys+user->mi.ghost_vertx[1]};
 				double temp = 0.0;
 				for (int pos = 0; pos<4; pos++){
 					 temp -= 1.0/wr[(j-ys+1)*(xm+2)+(i-xs+1)]->Geth() 
@@ -202,7 +202,6 @@ int main(int argc, char **argv){
 
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-
     // ==========================================================================================================================
 
     // Start testing mesh function
@@ -279,8 +278,8 @@ int main(int argc, char **argv){
     //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     // Initialize with oblique data for Burgers equation 
-    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -340,23 +339,21 @@ int main(int argc, char **argv){
     int range5[2] = {0,2};
 
     // Weno5
-/*
- *    rangex.push_back(range3);
- *    rangey.push_back(range3);
- *
- *    rangex.push_back(range4);
- *    rangey.push_back(range4);
- *
- *    rangex.push_back(range4);
- *    rangey.push_back(range5);
- *
- *    rangex.push_back(range5);
- *    rangey.push_back(range4);
- *
- *    rangex.push_back(range5);
- *    rangey.push_back(range5);
- *
- */
+	 rangex.push_back(range3);
+	 rangey.push_back(range3);
+
+	 rangex.push_back(range4);
+	 rangey.push_back(range4);
+
+	 rangex.push_back(range4);
+	 rangey.push_back(range5);
+
+	 rangex.push_back(range5);
+	 rangey.push_back(range4);
+
+	 rangex.push_back(range5);
+	 rangey.push_back(range5);
+
 	 // Weno3
 	 rangex.push_back(range);
 	 rangey.push_back(range);
@@ -374,8 +371,8 @@ int main(int argc, char **argv){
 	 rangex.push_back(range2);
 	 rangey.push_back(range1);
 
-//    vector<double> linWeights {25.0,9.0,9.0,9.0,9.0,9.0,4.0,4.0,4.0,4.0};
-    vector<double> linWeights {4.0,1.0,1.0,1.0,1.0};
+    vector<double> linWeights {25.0,9.0,9.0,9.0,9.0,9.0,4.0,4.0,4.0,4.0};
+//    vector<double> linWeights {4.0,1.0,1.0,1.0,1.0};
 
     typedef WenoReconstruction*  wrPtr;
 
@@ -383,111 +380,93 @@ int main(int argc, char **argv){
 
     int stencil_count = (M+2)*(N+2);
 
-	 // Convergence test
+    valarray<double> p = {0.5,0.5};
+
+    valarray<int> test_target = {M/2,N/2}; 
+    wrPtr wr = new WenoReconstruction(mi, linWeights, rangex, rangey, test_target);
+
+    wr->ComputeNonlinWeights(mi);
+
+    //wr->CheckSigma();
+    //wr->CheckPolynBasis();
+    wr->CheckSmoothnessIndicator();
+    wr->CheckNonlinWeights();
+
+    cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(mi,p)) <<  endl;
+
+    delete wr;
+
 /*
- *    valarray<int> test_target {M/2,N/2};
+ *    wrPtr * wr = new wrPtr[stencil_count];
  *
- *    wrPtr wr_test = new WenoReconstruction(&mi,linWeights,rangex,rangey,test_target);
- *    wr_test->ComputeNonlinWeights(&mi);
- *    wr_test->ComputeNonlinWeights(&mi);
- *    wr_test->ComputeNonlinWeights(&mi);
- *    wr_test->ComputeNonlinWeights(&mi);
+ *    for (int s=0; s<stencil_count; s++){
+ *        int shiftj = s/(M+2)-1;
+ *        int shifti = s%(M+2)-1;
+ *        valarray<int> target = {shifti, shiftj};
+ *        wr[s] = new WenoReconstruction(&mi,linWeights,rangex,rangey,target);
+ *        //wr[s]->ComputeNonlinWeights(&mi);
+ *    }
  *
- *    valarray<double> p = {0.5,0.5};
+ *    // Calculate corresponding non linear weights
+ *    for (int s=0; s<stencil_count; s++){
+ *        wr[s].ComputeNonlinWeights(mi);
+ *    }
+ *    // Calculate corresponding non linear weights
+ *    for (int s=0; s<stencil_count; s++){
+ *        wr[s].ComputeNonlinWeights(mi);
+ *    }
  *
- *    printf("Global size M = %d, N = %d \n", M, N);
- *
- *    //wr_test->CheckSigma();
- *
- *    //wr_test->CheckPolynBasis();
- *
- *    wr_test->CheckStencils();
- *
- *    wr_test->CheckSmoothnessIndicator();
- *
- *    // Jiang and Shu classicial sigma
- *    wr_test->CheckNonlinWeights();
- *
- *    cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr_test->PointValueReconstruction(&mi,p) << "  Error : " << abs(func(p,{0.0})-wr_test->PointValueReconstruction(&mi,p)) <<  endl;
- *
- *    //ws->CheckWenoStencil();
- *    //ws->PrintBasisPolyn();
- *    //ws->CheckSigma();
- *
- *    // Create array of weno prepare object
- *    // First determine how many stencils we need locally
- *    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
  */
 
-	 wrPtr * wr = new wrPtr[stencil_count];
-
-	 for (int s=0; s<stencil_count; s++){
-		  int shiftj = s/(M+2)-1;
-		  int shifti = s%(M+2)-1;
-		  valarray<int> target = {shifti, shiftj};
-		  wr[s] = new WenoReconstruction(&mi,linWeights,rangex,rangey,target);
-        //wr[s]->ComputeNonlinWeights(&mi);
-	 }
-
-    // Calculate corresponding non linear weights
-    for (int s=0; s<stencil_count; s++){
-		  wr[s]->ComputeNonlinWeights(mi);
-    }
-    // Calculate corresponding non linear weights
-    for (int s=0; s<stencil_count; s++){
-		  wr[s]->ComputeNonlinWeights(mi);
-    }
-
-
-
-
 	 // Time stepping with TS object
-    TS   ts;
-    SNES snes;
-    Ctx  ctx;
-
-    // Set up ctx data
-	 ctx.wr = wr;
-	 ctx.dm = dmu;
-    ctx.mi = &mi;
-    ctx.stencil_count = stencil_count;
-
-	 TSCreate(PETSC_COMM_WORLD, &ts);
-	 TSSetProblemType(ts,TS_NONLINEAR);
-	 TSSetType(ts, TSEULER);
-
-	 TSSetMaxTime(ts,T);
-	 TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
-	 TSSetDM(ts,dmu);
-
-	 // Customize nonlinear lu[j][i]
-	 TSGetSNES(ts,&snes);
-	 TSSetTimeStep(ts,dt);
-	 TSSetSolution(ts,globalu);
-
-	 TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
-
-    cout << "Time stepping started." << endl;
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
-
-	 //TSSolve(ts,globalu);
-
-    cout << "reach here " << endl;
-
-    // ==========================================================================
-
-    DMDAVecRestoreArray(dmu,localu,&lu);
-
-    DrawPressure(dmu,&globalu);
-
-    hdf5output(dmu,&globalu);
-
+/*
+ *    TS   ts;
+ *    SNES snes;
+ *    Ctx  ctx;
+ *
+ *    // Set up ctx data
+ *    ctx.wr = wr;
+ *    ctx.dm = dmu;
+ *    ctx.mi = &mi;
+ *    ctx.stencil_count = stencil_count;
+ *
+ *    TSCreate(PETSC_COMM_WORLD, &ts);
+ *    TSSetProblemType(ts,TS_NONLINEAR);
+ *    TSSetType(ts, TSEULER);
+ *
+ *    TSSetMaxTime(ts,T);
+ *    TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
+ *    TSSetDM(ts,dmu);
+ *
+ *    // Customize nonlinear lu[j][i]
+ *    TSGetSNES(ts,&snes);
+ *    TSSetTimeStep(ts,dt);
+ *    TSSetSolution(ts,globalu);
+ *
+ *    TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
+ *
+ *    cout << "Time stepping started." << endl;
+ *    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+ *
+ *    //TSSolve(ts,globalu);
+ *
+ *    cout << "reach here " << endl;
+ *
+ *    // ==========================================================================
+ *
+ *    DMDAVecRestoreArray(dmu,localu,&lu);
+ *
+ *    DrawPressure(dmu,&globalu);
+ *
+ *    hdf5output(dmu,&globalu);
+ *
+ */
     // Destroy Vectors
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);
     DMDestroy(&dm);
     DMDestroy(&dmu);
-    TSDestroy(&ts);
+//    TSDestroy(&ts);
 
     return 0;
 }
