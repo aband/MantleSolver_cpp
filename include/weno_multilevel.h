@@ -187,7 +187,7 @@ class WenoReconstruction{
 
         point_index target_; 
 
-        WenoStencil** ws;
+        vector<WenoStencil *> ws;
 
         vector<double> sigma_;
         vector<double> omega_;

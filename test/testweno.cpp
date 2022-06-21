@@ -136,9 +136,11 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
 
     const WenoMesh * currentwm = new WenoMesh(M,N,user->ghost,user->mesh,lu);
 
+    int offset = 4;
+
     for (int j=ys; j<ys+ym; j++){
     for (int i=xs; i<xs+ym; i++){
-        if (j<4 || i<4 || j>N-6 || i>M-6){
+        if (j<offset || i<offset || j>N-offset || i>M-offset){
             f[j][i] = lu[j][i];
         } else {
             point_index target {i-xs+user->ghost, j-ys+user->ghost};
@@ -147,6 +149,7 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
                 temp -= 1.0/user->h * TotalFlux(currentwm, pos, time, target, wr, 
                                                 funcX, funcY, dfuncX, dfuncY); 
             }
+				cout << j << " " << i << " The flux is : " << temp << " h : " << user->h<<  endl;
             f[j][i] = temp;
         }
     }}
@@ -374,8 +377,8 @@ int main(int argc, char **argv){
     //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     // Initialize with oblique data for Burgers equation 
-    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -423,7 +426,7 @@ int main(int argc, char **argv){
     // Explicit time progression for simplicity
     DrawPressure(dmu, &globalu);   
 
-    double T = 0.5;
+    double T = 0.01;
     double currentT = 0.0;
 
     // Spectial case
@@ -440,18 +443,16 @@ int main(int argc, char **argv){
 
     typedef WenoReconst*  wrPtr;
 
-/*
- *    wrPtr * wr_23 = new wrPtr[StencilNum];
- *
- *    for (int s=0; s<StencilNum; s++){
- *        int j=s/(M+2);
- *        int i=s%(M+2);
- *        point_index target {i-1+wm->ghost, j-1+wm->ghost};
- *        wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder, center_indexl, center_indexs);
- *        wr_23[s]->CreateNewWeights2();
- *    }
- *
- */
+	 wrPtr * wr_23 = new wrPtr[StencilNum];
+
+	 for (int s=0; s<StencilNum; s++){
+		  int j=s/(M+2);
+		  int i=s%(M+2);
+		  point_index target {i-1+wm->ghost, j-1+wm->ghost};
+		  wr_23[s] = new WenoReconst(target, wm, StencilLarge, Lorder, StencilSmall, Sorder, center_indexl, center_indexs);
+		  wr_23[s]->CreateNewWeights2();
+	 }
+
 
  //   point_index target {wm->ghost,wm->ghost};
 
@@ -524,53 +525,51 @@ int main(int argc, char **argv){
  *    }
  */
 
-/*
- *    // Time stepping with TS object
- *    TS   ts;
- *    SNES snes;
- *    Ctx  ctx;
- *
- *    // Set up ctx data
- *    ctx.wr = wr_23;
- *    ctx.Lorder = Lorder;
- *    ctx.Sorder = Sorder;
- *    ctx.StencilLarge = StencilLarge;
- *    ctx.StencilSmall = StencilSmall;
- *    ctx.mesh = mesh;
- *    ctx.ghost = stencilWidth;
- *    ctx.h = h;
- *    ctx.dm = dmu;
- *    ctx.center_indexl = center_indexl;
- *    ctx.center_indexs = center_indexs;
- *
- *    TSCreate(PETSC_COMM_WORLD, &ts);
- *    TSSetProblemType(ts,TS_NONLINEAR);
- *    TSSetType(ts, TSEULER);
- *
- *    TSSetMaxTime(ts,T);
- *    TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
- *    TSSetDM(ts,dmu);
- *
- *    // Customize nonlinear lu[j][i]
- *    TSGetSNES(ts,&snes);
- *    TSSetTimeStep(ts,dt);
- *    TSSetSolution(ts,globalu);
- *
- *    TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
- *
- *    cout << "Time stepping started." << endl;
- *    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
- *
- *    TSSolve(ts,globalu);
- *
- *    // ==========================================================================
- *
- *    for (int s=0; s<StencilNum; s++){
- *        delete wr_23[s];
- *    }
- *    delete wr_23;
- *
- */
+	 // Time stepping with TS object
+	 TS   ts;
+	 SNES snes;
+	 Ctx  ctx;
+
+	 // Set up ctx data
+	 ctx.wr = wr_23;
+	 ctx.Lorder = Lorder;
+	 ctx.Sorder = Sorder;
+	 ctx.StencilLarge = StencilLarge;
+	 ctx.StencilSmall = StencilSmall;
+	 ctx.mesh = mesh;
+	 ctx.ghost = stencilWidth;
+	 ctx.h = h;
+	 ctx.dm = dmu;
+	 ctx.center_indexl = center_indexl;
+	 ctx.center_indexs = center_indexs;
+
+	 TSCreate(PETSC_COMM_WORLD, &ts);
+	 TSSetProblemType(ts,TS_NONLINEAR);
+	 TSSetType(ts, TSEULER);
+
+	 TSSetMaxTime(ts,T);
+	 TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
+	 TSSetDM(ts,dmu);
+
+	 // Customize nonlinear lu[j][i]
+	 TSGetSNES(ts,&snes);
+	 TSSetTimeStep(ts,dt);
+	 TSSetSolution(ts,globalu);
+
+	 TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
+
+	 cout << "Time stepping started." << endl;
+	 cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+
+	 TSSolve(ts,globalu);
+
+	 // ==========================================================================
+
+	 for (int s=0; s<StencilNum; s++){
+		  delete wr_23[s];
+	 }
+	 delete wr_23;
+
 /*
  *    for (int s=0; s<StencilNum; s++){
  *        delete wr_53[s];

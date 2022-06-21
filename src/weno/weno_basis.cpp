@@ -384,6 +384,7 @@ solution WenoReconstStencil(vector<int>& order, point_index& target, point targe
         for (int xpow = 0; xpow<order[0]; xpow++){
             int o = ypow*order[0] + xpow;
             point target = (target_point - wp->center)/wp->h;
+            //printf("(%d, %d), %3f ",target_i,target_j,wm->lsol[target_j][target_i]);
             reconst += wm->lsol[target_j][target_i] *
                        wp->wenobasiscoeff[o*n+p] *
                        poly(target,{xpow,ypow});

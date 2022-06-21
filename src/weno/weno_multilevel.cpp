@@ -446,15 +446,17 @@ WenoReconstruction::WenoReconstruction(const MeshInfo& mi, vector<double>& linWe
     sigma_.resize(linWeights.size());
     fill(sigma_.begin(),sigma_.end(),0.0);
 
+    ws.resize(linWeights.size());
+
     double sumlinWeights=0.0;
 
     for (auto & w: linWeights){
         sumlinWeights += w;
     }
 
-    typedef WenoStencil * wsptr;
+//    typedef WenoStencil * wsptr;
 
-    ws = new wsptr [linWeights.size()]; 
+//    ws = new wsptr [linWeights.size()]; 
 
     for (int i=0; i<linWeights.size(); i++){
         linWeights_.push_back(linWeights[i]/sumlinWeights);
@@ -501,6 +503,7 @@ double WenoReconstruction::WenoReconstStencil(const MeshInfo& mi, WenoStencil*& 
         for (int xpow=0; xpow<ws->polyn_order[0]; xpow++){
             int o = ypow*ws->polyn_order[0] + xpow;
             point shifted = (target-ws->GetCenter())/ws->Geth(); 
+            //printf("(%d, %d), %3f ",t[0],t[1],mi.localval[t[1]][t[0]]);
             reconVal += mi.localval[t[1]][t[0]] * 
                         poly(shifted,{xpow,ypow}) * 
                         ws->polyn[o*ws->stencil_size+p]; 
