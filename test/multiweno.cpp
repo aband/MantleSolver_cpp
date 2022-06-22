@@ -104,7 +104,7 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
 					 temp -= 1.0/(wr[(j-ys+1)*(xm+2)+(i-xs+1)]->Geth()*wr[(j-ys+1)*(xm+2)+(i-xs+1)]->Geth())
                         * TotalFlux(user->mi, pos, time, target, wr, funcX, funcY, dfuncX, dfuncY);
 				}
-				f[j][i] += temp;
+				f[j][i] = temp;
 		  }
 	 }}
 
@@ -339,42 +339,42 @@ int main(int argc, char **argv){
     int range5[2] = {0,2};
 
     // Weno5
-	 rangex.push_back(range3);
-	 rangey.push_back(range3);
-
-	 rangex.push_back(range4);
-	 rangey.push_back(range4);
-
-	 rangex.push_back(range4);
-	 rangey.push_back(range5);
-
-	 rangex.push_back(range5);
-	 rangey.push_back(range4);
-
-	 rangex.push_back(range5);
-	 rangey.push_back(range5);
-
-	 // Weno3
 /*
- *    rangex.push_back(range);
- *    rangey.push_back(range);
+ *    rangex.push_back(range3);
+ *    rangey.push_back(range3);
  *
- *    // Weno2
- *    rangex.push_back(range2);
- *    rangey.push_back(range2);
+ *    rangex.push_back(range4);
+ *    rangey.push_back(range4);
  *
- *    rangex.push_back(range1);
- *    rangey.push_back(range2);
+ *    rangex.push_back(range4);
+ *    rangey.push_back(range5);
  *
- *    rangex.push_back(range1);
- *    rangey.push_back(range1);
+ *    rangex.push_back(range5);
+ *    rangey.push_back(range4);
  *
- *    rangex.push_back(range2);
- *    rangey.push_back(range1);
+ *    rangex.push_back(range5);
+ *    rangey.push_back(range5);
  *
  */
+	 // Weno3
+	 rangex.push_back(range);
+	 rangey.push_back(range);
+
+	 // Weno2
+	 rangex.push_back(range2);
+	 rangey.push_back(range2);
+
+	 rangex.push_back(range1);
+	 rangey.push_back(range2);
+
+	 rangex.push_back(range1);
+	 rangey.push_back(range1);
+
+	 rangex.push_back(range2);
+	 rangey.push_back(range1);
+
 //    vector<double> linWeights {25.0,9.0,9.0,9.0,9.0,9.0,4.0,4.0,4.0,4.0};
-    vector<double> linWeights {4.0,1.0,1.0,1.0,1.0};
+    vector<double> linWeights {16.0,1.0,1.0,1.0,1.0};
 
 // =====================================================================================================================
 
