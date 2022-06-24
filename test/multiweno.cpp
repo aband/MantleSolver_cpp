@@ -7,7 +7,7 @@
 
 #include "func.h"
 
-#include <adolc/adolc.h>
+//#include <adolc/adolc.h>
 
 extern "C"{
 #include "mesh.h"
@@ -308,11 +308,16 @@ int main(int argc, char **argv){
 
     /*
      *Pack mesh and solution variables.
+     * Can write a function later with input of dm and dmu
+	  * packing the required variables automatically.
      */
     MeshInfo mi;
     mi.dim = 2;
     mi.localsize.push_back(xm);
     mi.localsize.push_back(ym);
+    mi.localstart.push_back(xs);
+    mi.localstart.push_back(ys);
+
     mi.globalsize.push_back(M);
     mi.globalsize.push_back(N);
     mi.ghost_cell.push_back(cell_ghost);

@@ -87,3 +87,14 @@ PetscErrorCode hdf5output(DM dmu, Vec * globalu){
 
     PetscFunctionReturn(0);
 }
+
+// Parallel hdf5 output
+PetscErrorCode phdf5output(DM dmu, Vec * globalu){
+
+    PetscErrorCode    ierr;
+    PetscFunctionBeginUser;
+
+
+
+    PetscFunctionReturn(0);
+}

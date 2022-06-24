@@ -382,8 +382,8 @@ double WenoStencil::ComputeSmoothnessIndicator(const MeshInfo& mi){
             cellpq_prime[1] -= mi.ghost_vertx[1];
             cellpq_prime[0] -= mi.ghost_vertx[0];
 
-            smoothIndi += mi.localval[cellpq[1]][cellpq[0]]*
-                          mi.localval[cellpq_prime[1]][cellpq_prime[0]]*
+            smoothIndi += mi.localval[mi.localstart[1]+cellpq[1]][mi.localstart[0]+cellpq[0]]*
+                          mi.localval[mi.localstart[1]+cellpq_prime[1]][mi.localstart[0]+cellpq_prime[0]]*
                           sigma[pq_prime+pq*stencil_size];
         }
     }
@@ -398,7 +398,8 @@ double WenoStencil::ComputeSmoothnessIndicator_Simple(const MeshInfo& mi){
         valarray<int> shift = cell;
         shift[0] -= mi.ghost_vertx[0];
         shift[1] -= mi.ghost_vertx[1];
-        smoothIndi += pow(mi.localval[targetCell_[1]][targetCell_[0]]- mi.localval[shift[1]][shift[0]],2);
+        smoothIndi += pow(mi.localval[mi.localstart[1]+targetCell_[1]][mi.localstart[1]+targetCell_[0]]- 
+                                      mi.localval[mi.localstart[1]+shift[1]][mi.localstart[0]+shift[0]],2);
     }
 
     smoothIndi *= 1.0/(double)(stencil_size - 1);
@@ -504,7 +505,7 @@ double WenoReconstruction::WenoReconstStencil(const MeshInfo& mi, WenoStencil*& 
             int o = ypow*ws->polyn_order[0] + xpow;
             point shifted = (target-ws->GetCenter())/ws->Geth(); 
             //printf("(%d, %d), %3f ",t[0],t[1],mi.localval[t[1]][t[0]]);
-            reconVal += mi.localval[t[1]][t[0]] * 
+            reconVal += mi.localval[mi.localstart[1]+t[1]][mi.localstart[0]+t[0]] * 
                         poly(shifted,{xpow,ypow}) * 
                         ws->polyn[o*ws->stencil_size+p]; 
         }}

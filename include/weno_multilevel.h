@@ -28,6 +28,7 @@ typedef struct {
     int dim;
 
     vector<int> localsize;   // Local chunck size without ghost layer
+    vector<int> localstart;
     vector<int> globalsize;  // global chunck size without ghost layer
     vector<int> ghost_cell;  // size of ghost layer of cell
     vector<int> ghost_vertx; // size of ghost layer of node
