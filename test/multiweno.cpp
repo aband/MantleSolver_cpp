@@ -411,8 +411,7 @@ int main(int argc, char **argv){
 
     // For testing
 
-    int stencil_count = (M+2)*(N+2);
- 
+    int stencil_count = (xm+2)*(ym+2);
 
 	 //wrPtr * wr = new wrPtr[stencil_count];
 
