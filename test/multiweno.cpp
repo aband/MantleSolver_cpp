@@ -198,7 +198,7 @@ int main(int argc, char **argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processors \n",size);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
 
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
@@ -278,8 +278,8 @@ int main(int argc, char **argv){
     //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     // Initialize with oblique data for Burgers equation 
-    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -381,14 +381,14 @@ int main(int argc, char **argv){
 //    vector<double> linWeights {25.0,9.0,9.0,9.0,9.0,9.0,4.0,4.0,4.0,4.0};
     vector<double> linWeights {16.0,1.0,1.0,1.0,1.0};
 
+	 int stencil_count = (xm+2)*(ym+2);
+
 // =====================================================================================================================
 
 /*
  *    typedef WenoReconstruction*  wrPtr;
  *
  *    // For testing
- *
- *    int stencil_count = (M+2)*(N+2);
  *
  *    valarray<double> p = {0.5,0.5};
  *
@@ -397,26 +397,24 @@ int main(int argc, char **argv){
  *
  *    wr->ComputeNonlinWeights(mi);
  *
+ *    //wr->CheckSigma();
+ *    //wr->CheckPolynBasis();
+ *    wr->CheckStencils();
+ *    wr->CheckSmoothnessIndicator();
+ *    wr->CheckNonlinWeights();
+ *
+ *    cout << "Local size: " << xm << " " << ym << endl;
+ *    cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(mi,p)) <<  endl;
+ *    cout << endl;
+ *    delete wr;
  */
-    //wr->CheckSigma();
-    //wr->CheckPolynBasis();
-    //wr->CheckSmoothnessIndicator();
-    //wr->CheckNonlinWeights();
-
-    //cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(mi,p)) <<  endl;
-
-//    delete wr;
 
 // ======================================================================================================================
 
-    // For testing
-
-    int stencil_count = (xm+2)*(ym+2);
-
 	 //wrPtr * wr = new wrPtr[stencil_count];
 
-    vector<WenoReconstruction *> wr;
-    wr.resize(stencil_count);
+	 vector<WenoReconstruction *> wr;
+	 wr.resize(stencil_count);
 
 	 for (int s=0; s<stencil_count; s++){
 		  int shiftj = s/(M+2)-1;

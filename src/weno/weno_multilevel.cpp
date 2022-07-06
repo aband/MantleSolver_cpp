@@ -163,7 +163,7 @@ WenoStencil::WenoStencil(const MeshInfo& mi,const int rangex[2], const int range
 
     CreatePolynDerivMulti();
     CreateBasisPolyn(mi); 
-    CreateSigma(mi);
+//    CreateSigma(mi);
 
 }
 
@@ -407,13 +407,41 @@ double WenoStencil::ComputeSmoothnessIndicator_Simple(const MeshInfo& mi){
     return smoothIndi;
 }
 
-/*
- *double WenoStencil::ComputeSmoothnessIndicator_Polyn(MeshInfo* mi){
- *
- *
- *
- *}
- */
+double WenoStencil::ComputeSmoothnessIndicator_Polyn(const MeshInfo& mi, int k){
+    double smoothIndi = 0.0;
+
+    // rearrange basis polynomial coefficients
+    vector<double> tensorcoeff(k*k);
+    fill(tensorcoeff.begin(),tensorcoeff.end(),0.0); 
+
+    for (int p=0; p<stencil_size; p++){
+        // Loop through all basis polynomials in one stencil
+        valarray<int> t = stencil_index_set[p];
+        t[0] -= mi.ghost_vertx[0];
+        t[1] -= mi.ghost_vertx[1];
+        for (int ypow=0; ypow<polyn_order[1]; ypow++){
+        for (int xpow=0; xpow<polyn_order[0]; xpow++){
+            int o = ypow*polyn_order[0] + xpow;
+            tensorcoeff[ypow*k+xpow] += mi.localval[mi.localstart[1]+t[1]][mi.localstart[0]+t[0]] * 
+                                        polyn[o*stencil_size + p];
+        }}
+ 
+    }
+
+    for (int i=1; i<k*k; i++){
+        int l = i/k; int m = i%k;
+        for (int j=i; j<k*k; j++){
+            int r = j/k; int s = j%k;
+                smoothIndi += tensorcoeff[j]*tensorcoeff[j] * 
+                              factorial(r,r-l)*factorial(r,r-l) *
+                              factorial(s,s-m)*factorial(s,s-m) * 
+                              pow(2*(double)(r-l)+1.0,-1) * 
+                              pow(2*(double)(s-m)+1.0,-1);
+        }
+    }
+
+    return smoothIndi;
+}
 
 void WenoStencil::CheckSigma(){
         for (int p=0; p<stencil_size; p++){
@@ -474,8 +502,9 @@ WenoReconstruction::WenoReconstruction(const MeshInfo& mi, vector<double>& linWe
 void WenoReconstruction::ComputeNonlinWeights(const MeshInfo& mi){
 
     for (int i=0; i<linWeights_.size(); i++){
-        sigma_[i] = ws[i]->ComputeSmoothnessIndicator(mi);
+        //sigma_[i] = ws[i]->ComputeSmoothnessIndicator(mi);
         //sigma_[i] = ws[i]->ComputeSmoothnessIndicator_Simple(mi);
+		  sigma_[i] = ws[i]->ComputeSmoothnessIndicator_Polyn(mi,5);
     }
 
     double sum_omega = 0.0;

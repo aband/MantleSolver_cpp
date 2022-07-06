@@ -90,11 +90,9 @@ class WenoStencil{
                    //     for (int k=0; k<stencil_size; k++){delete polynderiv_[k];}delete [] polynderiv_;};
 
         // Update smoothness indicator after each time step
-        double ComputeSmoothnessIndicator(MeshInfo* mi);
-        double ComputeSmoothnessIndicator_Simple(MeshInfo* mi);
-
         double ComputeSmoothnessIndicator(const MeshInfo& mi);
         double ComputeSmoothnessIndicator_Simple(const MeshInfo& mi);
+        double ComputeSmoothnessIndicator_Polyn(const MeshInfo& mi, int k);
 
         double Geth() {return h;};
 
