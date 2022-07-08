@@ -25,20 +25,18 @@ double dfuncY(valarray<double> target, const vector<double>& param){
 
 double Initial_Condition(valarray<double>& target, const vector<double>& param){
 
-/*
- *    // Oblique problem
- *
- *    if (target[0]<0.5 && target[1]<0.5){
- *        return 0.5;
- *    } else if (target[0]>0.5 && target[1]<0.5){
- *        return 0.8;
- *    } else if (target[0]<0.5 && target[1]>0.5){
- *        return -0.2;
- *    } else {
- *        return -1.0;
- *    }
- *
- */
+	 // Oblique problem
+
+	 if (target[0]<0.5 && target[1]<0.5){
+		  return 0.5;
+	 } else if (target[0]>0.5 && target[1]<0.5){
+		  return 0.8;
+	 } else if (target[0]<0.5 && target[1]>0.5){
+		  return -0.2;
+	 } else {
+		  return -1.0;
+	 }
+
 
 /*
  *    // Diagnol testing
@@ -87,7 +85,7 @@ double Initial_Condition(valarray<double>& target, const vector<double>& param){
  *
  */
 
-    return sin(10*(target[0]+target[1]));
+//    return sin(10*(target[0]+target[1]));
 }
 
 

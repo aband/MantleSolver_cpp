@@ -278,8 +278,8 @@ int main(int argc, char **argv){
     //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     // Initialize with oblique data for Burgers equation 
-    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
