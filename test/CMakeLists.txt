@@ -16,13 +16,16 @@ cmake_minimum_required(VERSION 3.1.0)
 
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH})
+#set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH}/lib/pkgconfig)
 
-set(ADOLC $ENV{ADOLC_DIR})
+set(PETSC $ENV{CMAKE_PC})
+
+#set(ADOLC $ENV{ADOLC_DIR})
 
 set(LAPACK $ENV{LAPACK_DIR})
 
-set(HDF5 $ENV{HDF5_DIR}/CMakeFiles)
+#set(HDF5 $ENV{HDF5_DIR}/CMakeFiles)
+set(HDF5 $ENV{HDF5_CMAKE})
 
 # PKG_CONFIG_PATH is set mannually in bashrc
 
@@ -53,8 +56,8 @@ include_directories(../include ../src)
 
 find_package(PkgConfig REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
-pkg_search_module(ADOLC REQUIRED IMPORTED_TARGET adolc)
+#pkg_search_module(ADOLC REQUIRED IMPORTED_TARGET adolc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
 pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
 ##target_link_libraries(original_weno PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE PkgConfig::HDF5)
-target_link_libraries(multilevel_weno PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE PkgConfig::HDF5)
+target_link_libraries(multilevel_weno PkgConfig::PETSC PkgConfig::LAPACKE PkgConfig::HDF5)

@@ -94,6 +94,10 @@ PetscErrorCode phdf5output(DM dmu, Vec * globalu){
     PetscErrorCode    ierr;
     PetscFunctionBeginUser;
 
+    Vec      fu, lu;
+    PetscInt xs,ys,xm,ym,M,N,stencilwidth;
+    double   **localu;
+
 
 
     PetscFunctionReturn(0);

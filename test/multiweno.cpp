@@ -460,9 +460,9 @@ int main(int argc, char **argv){
 
 	 DMDAVecRestoreArray(dmu,localu,&lu);
 
-	 DrawPressure(dmu,&globalu);
+//	 DrawPressure(dmu,&globalu);
 
-	 hdf5output(dmu,&globalu);
+//	 hdf5output(dmu,&globalu);
 
 	 // Destroy Vectors
     VecDestroy(&fullmesh);
