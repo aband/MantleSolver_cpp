@@ -1,6 +1,6 @@
 // IO with hdf5 file format
 #include "output.h"
-#include <phdf5.h>
+#include "phdf5.h"
 
 #define H5FILE_NAME "data.h5"
 
@@ -116,8 +116,18 @@ PetscErrorCode phdf5output(DM dmu, Vec * globalu){
     acc_tpl1 = H5Pcreate(H5P_FILE_ACCESS);
     assert(acc_tpl1 != FAIL);
 
-    ret = H5Pset_fapl_mpio(acc_tpl1, comm, info);
+    ret = H5Pset_fapl_mpio(acc_tpl1, PETSC_COMM_PETSC_COMM_WORLD, MPI_INFO_NULL);
     assert(ret != FAIL);
+
+    // Create the file collectively
+    fid1 = H5Fcreate(H5FILE_NAME, H5F_ACC_TRUNC, H5P_DEFAULT, acc_tpl1);
+    assert(fid != FAIL);
+
+    // Release file-access template
+    ret = H5Pclose(acc_tpl1);
+    assert(ret != FAIL);
+
+
 
     PetscFunctionReturn(0);
 }

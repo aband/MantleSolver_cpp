@@ -25,7 +25,7 @@ set(PETSC $ENV{CMAKE_PC})
 set(LAPACK $ENV{LAPACK_DIR})
 
 #set(HDF5 $ENV{HDF5_DIR}/CMakeFiles)
-#set(HDF5 $ENV{HDF5_CMAKE})
+set(HDF5 $ENV{CMAKE_PC})
 
 # PKG_CONFIG_PATH is set mannually in bashrc
 
@@ -50,7 +50,7 @@ endif (FORTRAN_COMPILER)
 
 project(test)
 #add_executable(original_weno testweno.cpp func.cpp ../src/integral.cpp ../src/weno/flux.cpp ../src/mesh.c ../src/weno/weno_basis.cpp ../src/output.c ../src/input.cpp ../src/hdf5_io.c)
-add_executable(multilevel_weno multiweno.cpp func.cpp ../src/integral.cpp ../src/mesh.c ../src/weno/weno_multilevel.cpp ../src/output.c ../src/input.cpp ../src/weno/flux_multilevel.cpp)
+add_executable(multilevel_weno multiweno.cpp func.cpp ../src/integral.cpp ../src/mesh.c ../src/weno/weno_multilevel.cpp ../src/output.c ../src/input.cpp ../src/weno/flux_multilevel.cpp ../src/hdf5_io.c)
 
 include_directories(../include ../src)
 
@@ -58,6 +58,6 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
 #pkg_search_module(ADOLC REQUIRED IMPORTED_TARGET adolc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
-#pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
+pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
 ##target_link_libraries(original_weno PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE PkgConfig::HDF5)
-target_link_libraries(multilevel_weno PkgConfig::PETSC PkgConfig::LAPACKE)
+target_link_libraries(multilevel_weno PkgConfig::PETSC PkgConfig::LAPACKE PkgConfig::HDF5)
