@@ -56,6 +56,7 @@ int * polynDeriv(int xdegree, int ydegree, int xhigh, int yhigh){
     return multiplier;
 }
 
+// Weno process 
 // =========================================================================================
 WenoStencil::WenoStencil(const MeshInfo& mi,const int rangex[2], point_index& target){
 
@@ -610,4 +611,7 @@ void WenoReconstruction::CheckNonlinWeights(){
 // ==================================================================
 
 // 3D Case ==========================================================
+
+// ==================================================================
+
 

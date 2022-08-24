@@ -4,7 +4,7 @@
  *Define Modified Bernardi-Raugel basis function
  */
 
-double r(Element& elem, point& x)
+double r(MFE_Element& elem, point& x)
 {
     Vector2D x0, x1, x2, x3;
            

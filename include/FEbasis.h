@@ -3,6 +3,7 @@
 
 
 #include <vector>
+#include <set>
 #include <array>
 #include <valarray>
 #include <algorithm>
@@ -15,11 +16,10 @@
 
 using namespace std;
 
-using point        = valarray<double>;
-using point_index  = valarray<int>;
-using index_set    = vector<point_index>;
-using points_set   = vector<point>;
-using stencil      = vector<points_set>;
+using vertex         = valarray<double>;
+using vertexIndex    = valarray<int>;
+using vertexSet      = set<vertex>;
+using vertexIndexSet = set<vertexIndex>;
 
 using namespace std;
 
@@ -28,18 +28,21 @@ typedef struct {
 
 }
 
-class Element{
+class MFE_Element{
     public:
-        Element();
+        MFE_Element();
 
     private:
-        vector<point> corner;
+        // corners forming the element
+        vertexSet corners_;
 
-        vector<point> mid;
-        vector<point> unit_normal;
-        vector<point> unit_tang;
+        vertexSet edgeMids_;
+        vertexSet edgeUnitNormal_;
+        vertexSet edgeUnitTang_;
 
-        
+        vertexSet diagNormal_; 
+
+
 
 };
 
