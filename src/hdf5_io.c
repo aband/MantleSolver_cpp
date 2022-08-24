@@ -1,8 +1,10 @@
 // IO with hdf5 file format
 #include "output.h"
-#include "hdf5.h"
+#include <phdf5.h>
 
 #define H5FILE_NAME "data.h5"
+
+#define H5_HAVE_PARALLEL 1
 
 PetscErrorCode hdf5output(DM dmu, Vec * globalu){
 
@@ -87,6 +89,9 @@ PetscErrorCode hdf5output(DM dmu, Vec * globalu){
 
     PetscFunctionReturn(0);
 }
+/*
+ * The following code is inspired by phdf5example.c from HDF5 group.
+ */
 
 // Parallel hdf5 output
 PetscErrorCode phdf5output(DM dmu, Vec * globalu){
@@ -98,7 +103,21 @@ PetscErrorCode phdf5output(DM dmu, Vec * globalu){
     PetscInt xs,ys,xm,ym,M,N,stencilwidth;
     double   **localu;
 
+    // Initialize hdf5 data file 
+    hid_t    fid1;
+    hid_t    acc_tpl1;
+    hid_t    xfer_plist;
+    hid_t    sidl;
+    hid_t    file_dataspace;
+    hid_t    mem_dataspace;
 
+    herr_t   ret;
+
+    acc_tpl1 = H5Pcreate(H5P_FILE_ACCESS);
+    assert(acc_tpl1 != FAIL);
+
+    ret = H5Pset_fapl_mpio(acc_tpl1, comm, info);
+    assert(ret != FAIL);
 
     PetscFunctionReturn(0);
 }
