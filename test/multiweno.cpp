@@ -462,7 +462,7 @@ int main(int argc, char **argv){
 
 	 DrawPressure(dmu,&globalu);
 
-	 hdf5output(dmu,&globalu);
+	 //hdf5output(dmu,&globalu);
 
 	 // Destroy Vectors
     VecDestroy(&fullmesh);
