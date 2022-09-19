@@ -612,11 +612,43 @@ void WenoReconstruction::CheckNonlinWeights(){
  *Compute derivatives of a given reconstruction.
  */
 
-vector<double> WenoReconstruction::DerivativeWenoReconst(const MeshInfo& mi, WenoStencil*& ws, point& target){
-    vector<double> derivVal = 0.0;
+vector<double> WenoReconstruction::DerivativeWenoReconstStencil(const MeshInfo& mi, WenoStencil*& ws, point& target){
 
+    vector<double> derivValStencil;
+    derivValStencil.resize(ws->stencil_size,0.0);
 
+    for (int p=0; p<ws->stencil_size; p++){
+        for (int ypow=0; ypow<ws->polyn_order[1]; ypow++){
+        for (int xpow=0; xpow<ws->polyn_order[0]; xpow++){
+            int o = ypow*ws->polyn_order[0] + xpow;
+            point shifted = (target-ws->GetCenter())/ws->Geth(); 
+            derivValStencil[p] += poly(shifted,{xpow,ypow}) * 
+                                  ws->polyn[o*ws->stencil_size+p]; 
+        }}
+    }
 
+    return derivValStencil;
+}
+
+int WenoReconstruction::StencilIndexMap(int StencilIndex, int localIndex){
+    valarray<int> local = ws[StencilIndex]->stencil_index_set[localIndex]; 
+    valarray<int> startIndex = ws[0]->stencil_index_set[0];
+
+    int startLocalIndex = startIndex[1]*ws[0]->polyn_order[0] + startIndex[0];
+
+    return local[1]*ws[0]->polyn_order[0]+local[0] - startLocalIndex;
+}
+
+vector<double> WenoReconstruction::PseudoDerivativeWenoReconst(const MeshInfo& mi, point& target){
+    vector<double> derivVal;
+    derivVal.resize(ws[0]->stencil_size,0.0);
+   
+    for (int i=0; i<linWeights_.size(); i++){
+        vector<double> derivValStencil = DerivativeWenoReconstStencil(mi, ws[i], target);
+        for (int k=0; k<ws[i]->stencil_size; k++){
+            derivVal[StencilIndexMap(i,k)] += NonLinWeights_[i] * derivValStencil[k];
+        }
+    }
 
     return derivVal;
 }

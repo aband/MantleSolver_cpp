@@ -10,7 +10,7 @@ echo " "
 
 #./multilevel_weno -M 20 -N 20 
 #./multilevel_weno -M 20 -N 20
-#./multilevel_weno -M 40 -N 40
+./multilevel_weno -M 40 -N 40
 #./multilevel_weno -M 80 -N 80
 #./multilevel_weno -M 160 -N 160
 

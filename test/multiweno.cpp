@@ -20,7 +20,7 @@ double func(valarray<double>& point, const vector<double>& param){
 	 if (point[0]<0.50){
 		  return sin(point[0])+cos(point[1]);
 	 } else {
-		  return sin(point[0])+cos(point[1])+10;
+		  return sin(point[0])+cos(point[1]);
 		  //return exp(point[0]+point[1]);
 	 }
 
@@ -279,8 +279,8 @@ int main(int argc, char **argv){
     //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     // Initialize with oblique data for Burgers equation 
-    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -386,43 +386,46 @@ int main(int argc, char **argv){
 
 // =====================================================================================================================
 
-/*
- *    typedef WenoReconstruction*  wrPtr;
- *
- *    // For testing
- *
- *    valarray<double> p = {0.5,0.5};
- *
- *    valarray<int> test_target = {M/2,N/2};
- *    wrPtr wr = new WenoReconstruction(mi, linWeights, rangex, rangey, test_target);
- *
- *    wr->ComputeNonlinWeights(mi);
- *
- *    //wr->CheckSigma();
- *    //wr->CheckPolynBasis();
- *    wr->CheckStencils();
- *    wr->CheckSmoothnessIndicator();
- *    wr->CheckNonlinWeights();
- *
- *    cout << "Local size: " << xm << " " << ym << endl;
- *    cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(mi,p)) <<  endl;
- *    cout << endl;
- *    delete wr;
- */
+
+    typedef WenoReconstruction*  wrPtr;
+
+    // For testing
+
+    valarray<double> p = {0.5,0.5};
+
+    valarray<int> test_target = {M/2,N/2};
+    wrPtr wr = new WenoReconstruction(mi, linWeights, rangex, rangey, test_target);
+
+    wr->ComputeNonlinWeights(mi);
+
+    //wr->CheckSigma();
+    //wr->CheckPolynBasis();
+    wr->CheckStencils();
+    wr->CheckSmoothnessIndicator();
+    wr->CheckNonlinWeights();
+
+    vector<double> deriv = wr->PseudoDerivativeWenoReconst(mi, p);
+
+    cout << "Local size: " << xm << " " << ym << endl;
+    cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(mi,p)) <<  endl;
+    cout << " Number of Derivative values: " << deriv.size() << deriv[0] << " " << deriv[1] << " " << deriv[2] << " " << deriv[3] << " " 
+                                                             << deriv[4] << " " << deriv[5] << " " << deriv[6] << " " << deriv[7] << " " << deriv[8] << endl;
+    cout << endl;
+    delete wr;
 
 // ======================================================================================================================
 
 	 //wrPtr * wr = new wrPtr[stencil_count];
 
-	 vector<WenoReconstruction *> wr;
-	 wr.resize(stencil_count);
+	 //vector<WenoReconstruction *> wr;
+	 //wr.resize(stencil_count);
 
-	 for (int s=0; s<stencil_count; s++){
-		  int shiftj = s/(M+2)-1;
-		  int shifti = s%(M+2)-1;
-		  valarray<int> target = {shifti, shiftj};
-		  wr[s] = new WenoReconstruction(mi,linWeights,rangex,rangey,target);
-	 }
+	 //for (int s=0; s<stencil_count; s++){
+//		  int shiftj = s/(M+2)-1;
+//		  int shifti = s%(M+2)-1;
+//		  valarray<int> target = {shifti, shiftj};
+//		  wr[s] = new WenoReconstruction(mi,linWeights,rangex,rangey,target);
+//	 }
 
 	 // Time stepping with TS object
 	 TS   ts;
@@ -430,10 +433,10 @@ int main(int argc, char **argv){
 	 Ctx  ctx;
 
 	 // Set up ctx data
-	 ctx.wr = wr;
-	 ctx.dm = dmu;
-	 ctx.mi = mi;
-	 ctx.stencil_count = stencil_count;
+//	 ctx.wr = wr;
+//	 ctx.dm = dmu;
+//	 ctx.mi = mi;
+//	 ctx.stencil_count = stencil_count;
 
 	 TSCreate(PETSC_COMM_WORLD, &ts);
 	 TSSetProblemType(ts,TS_NONLINEAR);
@@ -453,7 +456,7 @@ int main(int argc, char **argv){
 	 cout << "Time stepping started." << endl;
 	 cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-	 TSSolve(ts,globalu);
+//	 TSSolve(ts,globalu);
 
 	 cout << "Time stepping ended." << endl;
 

@@ -160,11 +160,12 @@ class WenoReconstruction{
 
         void ComputeNonlinWeights(const MeshInfo& mi);
 
-        double WenoReconstStencil(const MeshInfo& mi, WenoStencil*& ws, point& target);
-
         double PointValueReconstruction(const MeshInfo& mi, point& target);
 
         double Geth();
+
+        // Compute derivative as a reconstruction
+        vector<double> PseudoDerivativeWenoReconst(const MeshInfo& mi, point& target);
 
         // Check parameters
         void CheckSigma();
@@ -191,6 +192,14 @@ class WenoReconstruction{
         vector<double> sigma_;
         vector<double> omega_;
         vector<double> NonLinWeights_;
+
+        // Compute point value reconstruction for each stencil
+        double WenoReconstStencil(const MeshInfo& mi, WenoStencil*& ws, point& target);
+
+        // Compute derivative for each stencil
+        vector<double> DerivativeWenoReconstStencil(const MeshInfo& mi, WenoStencil*& ws, point& target);
+        int StencilIndexMap(int StencilIndex, int localIndex);
+
 };
 
 #endif
