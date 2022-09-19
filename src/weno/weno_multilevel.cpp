@@ -608,6 +608,19 @@ void WenoReconstruction::CheckNonlinWeights(){
     } cout << endl; 
 }
 
+/*
+ *Compute derivatives of a given reconstruction.
+ */
+
+vector<double> WenoReconstruction::DerivativeWenoReconst(const MeshInfo& mi, WenoStencil*& ws, point& target){
+    vector<double> derivVal = 0.0;
+
+
+
+
+    return derivVal;
+}
+
 // ==================================================================
 
 // 3D Case ==========================================================

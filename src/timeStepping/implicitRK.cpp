@@ -7,7 +7,7 @@ typedef struct{
     int stencil_count;
 } Ctx;
 
-PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void * ctx){
+PetscErrorCode FormJacobianSNES(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void * ctx){
     PetscErrorCode    ierr;
     PetscFunctionBeginUser;
 
@@ -29,7 +29,8 @@ PetscErrorCode ImplicitRungeKutta(const vector<double>& c,
 
     assert(std::accumulate(bT.begin(), bT.end(), decltype(bT)::value_type(0)) == 1.0);
 
-    TS   ts;
+    // Solving the first linear system z - kron(A,I) F(z) = 0 first.
+
     SNES snes;
     Ctx  ctx; 
 
@@ -38,15 +39,12 @@ PetscErrorCode ImplicitRungeKutta(const vector<double>& c,
     ctx.mi = mi;
     ctx.stencil_count = stencil_count;
 
-
     Mat iRK;
     ierr = MatCreateBAIJ(PETSC_COMM_WORLD, size, PETSC_DECIDE, PETSC_DECIDE, 
-                         totalStage*matSize, totalStage*matSize, 0, NULL, 1, NULL,  &iRK);
+                         totalStage*matSize, totalStage*matSize, 0, NULL, 1, NULL, &iRK);CHKERRQ(ierr);
 
-
+    ierr = SNESSetJacobian(snes, iRK, iRK, FormJacobianSNES, &ctx);CHKERRQ(ierr);
 
 
     PetscFunctionReturn(0);
 }
-
-
