@@ -639,6 +639,11 @@ int WenoReconstruction::StencilIndexMap(int StencilIndex, int localIndex){
     return local[1]*ws[0]->polyn_order[0]+local[0] - startLocalIndex;
 }
 
+/*
+ * Calculate pseudo derivative for computing Jacobian without compute dertivatives of 
+ * nonlinear weights.
+ */
+
 vector<double> WenoReconstruction::PseudoDerivativeWenoReconst(const MeshInfo& mi, point& target){
     vector<double> derivVal;
     derivVal.resize(ws[0]->stencil_size,0.0);
@@ -649,6 +654,16 @@ vector<double> WenoReconstruction::PseudoDerivativeWenoReconst(const MeshInfo& m
             derivVal[StencilIndexMap(i,k)] += NonLinWeights_[i] * derivValStencil[k];
         }
     }
+
+    return derivVal;
+}
+
+/*
+ * Calculate full derivative for computing Jacobian
+ */
+
+vector<double> WenoReconstruction::DerivativeWenoReconst(const MeshInfo& mi, point& target){
+    vector<double> derivVal;
 
     return derivVal;
 }
