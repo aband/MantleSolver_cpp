@@ -3,7 +3,9 @@
 
 #include<numeric>
 #include<assert>
+#include<algorithm>
 #include<petsc.h>
+
 
 
 #endif
