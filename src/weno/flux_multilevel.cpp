@@ -101,12 +101,12 @@ vector<double> DerivativeLaxFriedrichFlux(const MeshInfo& mi, int pos, double t,
     
     vector<double> work;
 
-    int stencilSizeX = wr[0]->rangex_[0][1] - wr[0]->rangex_[0][0]+1;
-    int stencilSizeY = wr[0]->rangey_[0][1] - wr[0]->rangey_[0][0]+1;
+    int stencilSizeX = wr[0]->rangex_[0][1] - wr[0]->rangex_[0][0] + 1;
+    int stencilSizeY = wr[0]->rangey_[0][1] - wr[0]->rangey_[0][0] + 1;
 
     int derivativeSize = (stencilSizeX+2)*(stencilSizeY+2);
 
-    work.resize(derivativeSize);
+    work.resize(derivativeSize,0.0);
 
     point_index  neighbor;
 
@@ -126,12 +126,30 @@ vector<double> DerivativeLaxFriedrichFlux(const MeshInfo& mi, int pos, double t,
 
     double len = length(corner);
 
-    // =========================================================================================
+    // Transform target cell index to weno reconstruction index
+    int index_in = (target_index[1]-mi.ghost_vertx[1]+1)*(mi.localsize[0]+2)+
+                   (target_index[0]-mi.ghost_vertx[0]+1);
+    int index_out = (neighbor[1]-mi.ghost_vertx[1]+1)*(mi.localsize[0]+2)+
+                    (neighbor[0]-mi.ghost_vertx[0]+1);
+
+    int neighborSet[4][2] = {{},{},{},{}};
 
     // Loop through gauss points
     for (int g=0; g<3; g++){
         valarray<double> mapped = GaussMapPointsEdge({gpe[g]},corner);
-        vector<double> deriv = wr->PseudoDerivativeWenoReconst(mi, p); 
+        vector<double> derivIn  = wr[index_in]->PseudoDerivativeWenoReconst(mi, mapped);
+        vector<double> derivOut = wr[index_out]->PseudoDerivativeWenoReconst(mi, mapped);
+        assert(derivIn.size() == derivOut.size());
+        for (int s=0; s<derivIn.size(); s++){
+            int localix = i%stencilSizeX;
+            int localiy = i/stencilSizeX;
+
+            int indexIn  = (localiy + 1)*(stencilSizeX+2) + localix+1;
+            int indexOut =  
+
+            work[indexIn] += derivIn[i];
+            work[indexOut] += derivOut[i];
+        }
     }
 
     return work;
