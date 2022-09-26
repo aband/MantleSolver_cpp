@@ -90,3 +90,49 @@ double TotalFlux(const MeshInfo& mi, int pos, double t,
 
     return work;
 }
+
+// Create Derivative for a single Lax-Friedrich type flux for Jacobian
+vector<double> DerivativeLaxFriedrichFlux(const MeshInfo& mi, int pos, double t,
+                                          point_index& target_index, vector<WenoReconstruction*>& wr,
+                                          double (*funcX)(valarray<double>& point, const vector<double>& param),
+                                          double (*funcY)(valarray<double>& point, const vector<double>& param),
+                                          double (*dfuncX)(valarray<double>& point, const vector<double>& param),
+                                          double (*dfuncY)(valarray<double>& point, const vector<double>& param)){
+    
+    vector<double> work;
+
+    int stencilSizeX = wr[0]->rangex_[0][1] - wr[0]->rangex_[0][0]+1;
+    int stencilSizeY = wr[0]->rangey_[0][1] - wr[0]->rangey_[0][0]+1;
+
+    int derivativeSize = (stencilSizeX+2)*(stencilSizeY+2);
+
+    work.resize(derivativeSize);
+
+    point_index  neighbor;
+
+    // Copy gauss points and weights
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    points_set corner;
+
+    int fulllocalx = mi.localsize[0]+2*mi.ghost_vertx[0];
+
+    int corner_rotate[4][2] = {{0,1},{0,0},{1,0},{1,1}};
+    corner.push_back(mi.lmesh[(target_index[1]+corner_rotate[pos][1])*fulllocalx + 
+                                target_index[0]+corner_rotate[pos][0]]);
+    corner.push_back(mi.lmesh[(target_index[1]+corner_rotate[(pos+1)%4][1])*fulllocalx + 
+                                target_index[0]+corner_rotate[(pos+1)%4][0]]);
+
+    double len = length(corner);
+
+    // =========================================================================================
+
+    // Loop through gauss points
+    for (int g=0; g<3; g++){
+        valarray<double> mapped = GaussMapPointsEdge({gpe[g]},corner);
+        vector<double> deriv = wr->PseudoDerivativeWenoReconst(mi, p); 
+    }
+
+    return work;
+}

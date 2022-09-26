@@ -84,8 +84,23 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
     PetscErrorCode    ierr;
     PetscFunctionBeginUser;
 
-    for (int i=0; i< ; i++){
+/*
+ *
+ * Set up necessary variables for computation of jacobian
+ *
+ */
+    int M = size of U;  
 
+    int layer = length of ghost layer;
+
+    // assume periodic boundary condition
+    for (int i=0; i<M; i++){
+        if (i<layer || i>M-layer){
+            // The situation where periodic boundary condition kicks in
+
+        } else {
+            vector<double> 
+        }
     }
 
 
