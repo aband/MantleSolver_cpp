@@ -95,11 +95,12 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
 
     // assume periodic boundary condition
     for (int i=0; i<M; i++){
+        vector<double> deriv = DerivativeLaxFriedrichFlux(user->mi, time, target, wr, funcX, funcY, dfuncX, dfuncY);   
         if (i<layer || i>M-layer){
             // The situation where periodic boundary condition kicks in
 
         } else {
-            vector<double> 
+           
         }
     }
 

@@ -608,6 +608,14 @@ void WenoReconstruction::CheckNonlinWeights(){
     } cout << endl; 
 }
 
+int WenoReconstruction::GetStencilSizeX(){
+    return rangex_[0][1] - rangex_[0][0] + 1;
+}
+
+int WenoReconstruction::GetStencilSizeY(){
+    return rangey_[0][1] - rangey_[0][0] + 1;
+}
+
 /*
  *Compute derivatives of a given reconstruction.
  */
@@ -662,11 +670,13 @@ vector<double> WenoReconstruction::PseudoDerivativeWenoReconst(const MeshInfo& m
  * Calculate full derivative for computing Jacobian
  */
 
-vector<double> WenoReconstruction::DerivativeWenoReconst(const MeshInfo& mi, point& target){
-    vector<double> derivVal;
-
-    return derivVal;
-}
+/*
+ *vector<double> WenoReconstruction::DerivativeWenoReconst(const MeshInfo& mi, point& target){
+ *    vector<double> derivVal;
+ *
+ *    return derivVal;
+ *}
+ */
 
 // ==================================================================
 

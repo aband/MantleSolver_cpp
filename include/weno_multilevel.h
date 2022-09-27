@@ -162,10 +162,14 @@ class WenoReconstruction{
 
         double PointValueReconstruction(const MeshInfo& mi, point& target);
 
-        double Geth();
-
         // Compute derivative as a reconstruction
         vector<double> PseudoDerivativeWenoReconst(const MeshInfo& mi, point& target);
+
+        // Get private parameters
+        double Geth();
+
+        int GetStencilSizeX();
+        int GetStencilSizeY();
 
         // Check parameters
         void CheckSigma();

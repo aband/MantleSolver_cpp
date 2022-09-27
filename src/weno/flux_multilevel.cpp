@@ -92,64 +92,92 @@ double TotalFlux(const MeshInfo& mi, int pos, double t,
 }
 
 // Create Derivative for a single Lax-Friedrich type flux for Jacobian
-vector<double> DerivativeLaxFriedrichFlux(const MeshInfo& mi, int pos, double t,
-                                          point_index& target_index, vector<WenoReconstruction*>& wr,
-                                          double (*funcX)(valarray<double>& point, const vector<double>& param),
-                                          double (*funcY)(valarray<double>& point, const vector<double>& param),
-                                          double (*dfuncX)(valarray<double>& point, const vector<double>& param),
-                                          double (*dfuncY)(valarray<double>& point, const vector<double>& param)){
+vector<double> DeriveLaxFriedrichFlux(const MeshInfo& mi, double t,
+                                      point_index& target_index, vector<WenoReconstruction*>& wr,
+                                      double (*funcX)(valarray<double>& point, const vector<double>& param),
+                                      double (*funcY)(valarray<double>& point, const vector<double>& param),
+                                      double (*dfuncX)(valarray<double>& point, const vector<double>& param),
+                                      double (*dfuncY)(valarray<double>& point, const vector<double>& param)){
     
     vector<double> work;
-
-    int stencilSizeX = wr[0]->rangex_[0][1] - wr[0]->rangex_[0][0] + 1;
-    int stencilSizeY = wr[0]->rangey_[0][1] - wr[0]->rangey_[0][0] + 1;
-
-    int derivativeSize = (stencilSizeX+2)*(stencilSizeY+2);
-
-    work.resize(derivativeSize,0.0);
-
-    point_index  neighbor;
 
     // Copy gauss points and weights
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
 
-    points_set corner;
+    int stencilSizeX = wr[0]->GetStencilSizeX();
+    int stencilSizeY = wr[0]->GetStencilSizeY();
+
+    int derivativeSize = (stencilSizeX+2)*(stencilSizeY+2);
+
+    work.resize(derivativeSize,0.0);
+
+    int shiftSet[4][2] = {{-1,0},{0,-1},{1,0},{0,1}};
 
     int fulllocalx = mi.localsize[0]+2*mi.ghost_vertx[0];
 
     int corner_rotate[4][2] = {{0,1},{0,0},{1,0},{1,1}};
-    corner.push_back(mi.lmesh[(target_index[1]+corner_rotate[pos][1])*fulllocalx + 
-                                target_index[0]+corner_rotate[pos][0]]);
-    corner.push_back(mi.lmesh[(target_index[1]+corner_rotate[(pos+1)%4][1])*fulllocalx + 
-                                target_index[0]+corner_rotate[(pos+1)%4][0]]);
 
-    double len = length(corner);
+    // Define Operation set
+    int addi[4] = {-1,0,1,0};
+    int addj[4] = {0,-1,0,1};
 
-    // Transform target cell index to weno reconstruction index
-    int index_in = (target_index[1]-mi.ghost_vertx[1]+1)*(mi.localsize[0]+2)+
-                   (target_index[0]-mi.ghost_vertx[0]+1);
-    int index_out = (neighbor[1]-mi.ghost_vertx[1]+1)*(mi.localsize[0]+2)+
-                    (neighbor[0]-mi.ghost_vertx[0]+1);
+    // Global Lax-Friedrichs scheme 
+    double alphaLF = 1.0;
 
-    int neighborSet[4][2] = {{},{},{},{}};
+    // Loop through four edges
+    for (int pos=0; pos<4; pos++){
 
-    // Loop through gauss points
-    for (int g=0; g<3; g++){
-        valarray<double> mapped = GaussMapPointsEdge({gpe[g]},corner);
-        vector<double> derivIn  = wr[index_in]->PseudoDerivativeWenoReconst(mi, mapped);
-        vector<double> derivOut = wr[index_out]->PseudoDerivativeWenoReconst(mi, mapped);
-        assert(derivIn.size() == derivOut.size());
-        for (int s=0; s<derivIn.size(); s++){
-            int localix = i%stencilSizeX;
-            int localiy = i/stencilSizeX;
+        point_index  neighbor;
+        neighbor = {target_index[0]+addi[pos], target_index[1]+addj[pos]};
 
-            int indexIn  = (localiy + 1)*(stencilSizeX+2) + localix+1;
-            int indexOut =  
+        points_set corner;
+        corner.push_back(mi.lmesh[(target_index[1]+corner_rotate[pos][1])*fulllocalx + 
+                                   target_index[0]+corner_rotate[pos][0]]);
+        corner.push_back(mi.lmesh[(target_index[1]+corner_rotate[(pos+1)%4][1])*fulllocalx + 
+                                   target_index[0]+corner_rotate[(pos+1)%4][0]]);
 
-            work[indexIn] += derivIn[i];
-            work[indexOut] += derivOut[i];
+        double len = length(corner);
+
+        point norm = UnitNormal(corner,len);
+
+        // Transform target cell index to weno reconstruction index
+        int index_in = (target_index[1]-mi.ghost_vertx[1]+1)*(mi.localsize[0]+2)+
+                       (target_index[0]-mi.ghost_vertx[0]+1);
+        int index_out = (neighbor[1]-mi.ghost_vertx[1]+1)*(mi.localsize[0]+2)+
+                        (neighbor[0]-mi.ghost_vertx[0]+1);
+
+        // Loop through gauss points
+        for (int g=0; g<3; g++){
+            valarray<double> mapped = GaussMapPointsEdge({gpe[g]},corner);
+            vector<double> derivIn  = wr[index_in]->PseudoDerivativeWenoReconst(mi, mapped);
+            vector<double> derivOut = wr[index_out]->PseudoDerivativeWenoReconst(mi, mapped);
+            assert(derivIn.size() == derivOut.size());
+
+            double u_in = wr[index_in]->PointValueReconstruction(mi, mapped);
+            double u_out = wr[index_out]->PointValueReconstruction(mi, mapped);
+
+            for (int s=0; s<derivIn.size(); s++){
+                int localix = s%stencilSizeX;
+                int localiy = s/stencilSizeX;
+
+                int derivIndexIn  = (localiy + 1)*(stencilSizeX+2) + localix+1;
+                int derivIndexOut = (localiy + 1 + shiftSet[pos][1])*(stencilSizeX+2) + 
+                                     localix+1 + shiftSet[pos][0];
+
+                work[derivIndexIn] += 0.5*derivIn[s]*(dfuncX(mapped,{u_in})*norm[0] + 
+                                                      dfuncY(mapped,{u_in})*norm[1] +
+                                                      alphaLF * 1.0)
+                                      *gwe[g]*len/2.0;
+
+                work[derivIndexOut] += 0.5*derivOut[s]*(dfuncX(mapped,{u_out})*norm[0] + 
+                                                        dfuncY(mapped,{u_out})*norm[1] -
+                                                        alphaLF * 1.0)
+                                      *gwe[g]*len/2.0;
+
+            }
         }
+
     }
 
     return work;

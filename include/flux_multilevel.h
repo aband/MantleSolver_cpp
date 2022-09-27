@@ -17,4 +17,11 @@ double TotalFlux(const MeshInfo& mi, int pos, double t,
                  double (*dfuncX)(valarray<double>& point, const vector<double>& param),
                  double (*dfuncY)(valarray<double>& point, const vector<double>& param));
 
+vector<double> DerivLaxFriedrichFlux(const MeshInfo& mi, double t,
+                                     point_index& target_index, vector<WenoReconstruction*>& wr,
+                                     double (*funcX)(valarray<double>& point, const vector<double>& param),
+                                     double (*funcY)(valarray<double>& point, const vector<double>& param),
+                                     double (*dfuncX)(valarray<double>& point, const vector<double>& param),
+                                     double (*dfuncY)(valarray<double>& point, const vector<double>& param));
+
 #endif
