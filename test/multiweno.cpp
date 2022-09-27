@@ -420,6 +420,12 @@ int main(int argc, char **argv){
 	 //vector<WenoReconstruction *> wr;
 	 //wr.resize(stencil_count);
 
+/*
+ *
+ * !!! shouldn't be doing this. Each process should only keep its share.
+ *
+ */
+
 	 //for (int s=0; s<stencil_count; s++){
 //		  int shiftj = s/(M+2)-1;
 //		  int shifti = s%(M+2)-1;

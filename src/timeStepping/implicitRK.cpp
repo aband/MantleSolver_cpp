@@ -89,20 +89,35 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
  * Set up necessary variables for computation of jacobian
  *
  */
-    int M = size of U;  
+    get M and N; 
 
     int layer = length of ghost layer;
 
-    // assume periodic boundary condition
-    for (int i=0; i<M; i++){
-        vector<double> deriv = DerivativeLaxFriedrichFlux(user->mi, time, target, wr, funcX, funcY, dfuncX, dfuncY);   
-        if (i<layer || i>M-layer){
-            // The situation where periodic boundary condition kicks in
+    int rstart, rend;
 
-        } else {
-           
+    get global index for stencil : stencilIndex. 
+
+    MatGetOwnershipRange(J, &rstart, &rend);
+    // assume periodic boundary condition
+    for (int row = rstart; row<rend; row++){
+        int vertxx = row%M;
+        int vertxy = row/M;
+        point_index target {vertxx+user->mi.ghost_vertx[0], 
+                            vertxy+user->mi.ghost_vertx[1]};
+ 
+        vector<double> deriv = DerivativeLaxFriedrichFlux(user->mi, time, target, wr, funcX, funcY, dfuncX, dfuncY); 
+
+        for (int d=0; d<deriv.size(); d++){
+            // Define placement of elements
+            PetscInt col = stencilIndex[d];
+            PetscScalar val = deriv[d];
+            ierr = MatSetValue(A,row,col,val,ADD_VALUES) ; CHKERRQ(ierr);
         }
     }
+
+
+    ierr = MatAssemblyBegin();
+
 
 
     PetscFunctionReturn(0);
