@@ -1,11 +1,32 @@
-#ifndef FLUX_MULTILEVEL_H_
-#define FLUX_MULTILEVEL_H_
+#ifndef IMPLICITRK_H_
+#define IMPLICITRK_H_
 
 #include<numeric>
-#include<assert>
+#include<assert.h>
 #include<algorithm>
 #include<petsc.h>
 
+#include "weno_multilevel.h"
+#include "flux_multilevel.h"
+#include "integral.h"
+#include "lapacke.h"
 
+extern "C"{
+#include "mesh.h"
+}
+
+#include "../test/func.h"
+
+
+typedef struct{
+    DM dm;
+    vector<WenoReconstruction *> wr;
+    MeshInfo mi;
+    int stencil_count;
+} Ctx;
+
+PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx);
+
+PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void * ctx);
 
 #endif

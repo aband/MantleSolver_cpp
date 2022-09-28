@@ -1,11 +1,5 @@
 // Parallel implicit Runge Kutta based upon Petsc
-
-typedef struct{
-    DM dm;
-    vector<WenoReconstruction *> wr;
-    MeshInfo mi;
-    int stencil_count;
-} Ctx;
+#include "../../include/implicitRK.h"
 
 // Form function using pure transport flux
 // the pointer to totalflux function should be
@@ -68,6 +62,77 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
     PetscFunctionReturn(0);
 }
 
+PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void * ctx){
+
+    PetscErrorCode    ierr;
+    Ctx *user = (Ctx*)ctx;
+    DM  dm = (DM)user->dm;
+    PetscInt M,N,xs,ys,xm,ym,stencilwidth;
+    PetscFunctionBeginUser;
+
+/*
+ * Set up necessary variables for computation of jacobian
+ */
+    vector<WenoReconstruction*>& wr = user->wr;
+
+    ierr = DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL);                                                CHKERRQ(ierr);
+    ierr = DMDAGetInfo(dm, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
+
+    // Get local vector
+    Vec localu;
+    DMGetLocalVector(dm, &localu);
+
+    DMGlobalToLocalBegin(dm, U, INSERT_VALUES, localu);
+    DMGlobalToLocalEnd(dm, U, INSERT_VALUES, localu);
+
+    // It can be changed later to not be double
+    double  ** lu;
+    DMDAVecGetArray(dm, localu, &lu);
+
+    user->mi.localval = lu;
+
+    // Update corresponding non linear weights
+    for (int s=0; s<user->stencil_count; s++){
+        wr[s]->ComputeNonlinWeights(user->mi);
+    }
+
+    int rstart, rend;
+
+    index_set gIndex = wr[0]->GetGlobalCellIndexStencil(user->mi);
+
+    MatGetOwnershipRange(J, &rstart, &rend);
+    // assume periodic boundary condition
+    for (int row = rstart; row<rend; row++){
+        int vertxx = row%M;
+        int vertxy = row/M;
+        point_index target {vertxx+user->mi.ghost_vertx[0], 
+                            vertxy+user->mi.ghost_vertx[1]};
+ 
+        vector<double> deriv = DerivLaxFriedrichFlux(user->mi, time, target, wr, funcX, funcY, dfuncX, dfuncY); 
+
+        for (int d=0; d<deriv.size(); d++){
+            // Define placement of elements
+            PetscInt col = gIndex[d][1]*M + gIndex[d][0];
+
+            PetscScalar val = deriv[d];
+            ierr = MatSetValue(J,row,col,val,ADD_VALUES) ; CHKERRQ(ierr);
+        }
+    }
+
+    ierr = MatAssemblyBegin(J,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+    ierr = MatAssemblyEnd(J,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+
+    if (AJ != A){
+        ierr = MatAssemblyBegin(AJ);CHKERRQ(ierr);
+        ierr = MatAssemblyEnd(AJ);CHKERRQ(ierr);
+    }
+
+    ierr = DMDAVecRestoreArray(dm, localu, &lu);CHKERRQ(ierr);
+    ierr = DMRestoreLocalVector(dm, &localu);CHKERRQ(ierr);
+
+    PetscFunctionReturn(0);
+}
+
 PetscErrorCode FormJacobianIRK(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void * ctx){
 
     PetscErrorCode    ierr;
@@ -79,54 +144,10 @@ PetscErrorCode FormJacobianIRK(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void
     PetscFunctionReturn(0);
 }
 
-PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void * ctx){
-
-    PetscErrorCode    ierr;
-    PetscFunctionBeginUser;
-
-/*
- *
- * Set up necessary variables for computation of jacobian
- *
- */
-    get M and N; 
-
-    int layer = length of ghost layer;
-
-    int rstart, rend;
-
-    get global index for stencil : stencilIndex. 
-
-    MatGetOwnershipRange(J, &rstart, &rend);
-    // assume periodic boundary condition
-    for (int row = rstart; row<rend; row++){
-        int vertxx = row%M;
-        int vertxy = row/M;
-        point_index target {vertxx+user->mi.ghost_vertx[0], 
-                            vertxy+user->mi.ghost_vertx[1]};
- 
-        vector<double> deriv = DerivativeLaxFriedrichFlux(user->mi, time, target, wr, funcX, funcY, dfuncX, dfuncY); 
-
-        for (int d=0; d<deriv.size(); d++){
-            // Define placement of elements
-            PetscInt col = stencilIndex[d];
-            PetscScalar val = deriv[d];
-            ierr = MatSetValue(A,row,col,val,ADD_VALUES) ; CHKERRQ(ierr);
-        }
-    }
-
-
-    ierr = MatAssemblyBegin();
-
-
-
-    PetscFunctionReturn(0);
-}
-
 PetscErrorCode MPIImplicitRungeKutta(const vector<double>& c, 
                                   const vector<double>& bT, 
                                   const vector<double>& A,
-                                  int totalStage;
+                                  int totalStage,
                                   double h, double T, 
                                   void * ctx){
 
@@ -134,7 +155,7 @@ PetscErrorCode MPIImplicitRungeKutta(const vector<double>& c,
     PetscMPIInt       size, rank;
     PetscFunctionBeginUser;            
 
-    assert(std::accumulate(bT.begin(), bT.end(), decltype(bT)::value_type(0)) == 1.0);
+    //assert(std::accumulate(bT.begin(), bT.end(), decltype(bT)::value_type(0)) == 1.0);
     assert(A.size() == totalStage*totalStage);
 
     // Convert vector to array
@@ -146,7 +167,7 @@ PetscErrorCode MPIImplicitRungeKutta(const vector<double>& c,
     double *inverseA = new double[LWORK];
 
     copy(A.begin(), A.end(), arrayA); 
-    dgetri(&N, arrayA, &N, IPIV, inverseA, &LWORK, &ierr);
+    //dgetri(&N, arrayA, &N, IPIV, inverseA, &LWORK, &ierr);
     assert(ierr == 0);
 
     // Get MPI Info
@@ -156,14 +177,14 @@ PetscErrorCode MPIImplicitRungeKutta(const vector<double>& c,
     // Solving the first linear system z - kron(A,I) F(z) = 0 first.
     SNES snes;
 
-    int totalSize = totalStage*matSize;
+    //int totalSize = totalStage*matSize;
 
     Mat iRK;
-    ierr = MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
-                        totalSize, totalSize, , NULL, 1, NULL, &iRK);CHKERRQ(ierr);
+    //ierr = MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
+    //                    totalSize, totalSize, , NULL, 1, NULL, &iRK);CHKERRQ(ierr);
 
 
-    ierr = SNESSetJacobian(snes, iRK, iRK, FormJacobianSNES, &ctx);CHKERRQ(ierr);
+    //ierr = SNESSetJacobian(snes, iRK, iRK, FormJacobianSNES, &ctx);CHKERRQ(ierr);
     
     // Delete declared dynamic memory array
     // Be careful with deleting array
@@ -192,7 +213,7 @@ PetscErrorCode MPIPseudoImplicitEuler(int fullSize, double h, double T, void * c
     Mat iEuler;
     Vec U;
 
-    int localSize = PetscFloorReal(FullSize / size); 
+    int localSize = PetscFloorReal(fullSize / size); 
 
     if (size == rank){
         localSize = fullSize - localSize*(size-1);
@@ -200,9 +221,9 @@ PetscErrorCode MPIPseudoImplicitEuler(int fullSize, double h, double T, void * c
 
     // MPI size should be larger than max polynomial order
 
-    ierr = VecCreateMPIWithArray(); CHKRRQ(ierr);
+    //ierr = VecCreateMPIWithArray(); CHKERRQ(ierr);
 
-    ierr = MatCreateAIJ(PETSC_COMM_WORLD, localsize, ); CHKERRQ(ierr);
+    //ierr = MatCreateAIJ(PETSC_COMM_WORLD, localsize, ); CHKERRQ(ierr);
 
 
     PetscFunctionReturn(0);
@@ -215,9 +236,13 @@ PetscErrorCode MPIImplicitEuler(double h, double T, void * ctx){
     PetscFunctionReturn(0);
 }
 
-// A sequential function used to calculate implicit euler
-// time stepping for reference
-PetscErrorCode SeqImplicitEuler(){
+/*
+ * A sequential function used to calculate implicit euler
+ * time stepping for reference. Implicit Euler can be done
+ * with the help of time stepping onject TS.
+ */
+
+PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, int xorder, int yorder){
 
     PetscErrorCode    ierr;
     PetscMPIInt       size, rank;
@@ -229,8 +254,54 @@ PetscErrorCode SeqImplicitEuler(){
 
     assert(size == 1); // This should be a sequential code
 
+    // Create weno reconstruction class
+    vector<WenoReconstruction *> wr;
+    wr.resize(stencil_count); // Should be local stencil count instead of global count
     
+    for (int s=0; s<stencil_count; s++){
+        int shiftj = s/(M+2)-1;
+        int shifti = s%(M+2)-1;
+        valarray<int> target = {shifti, shiftj};
+        wr[s] = new WenoReconstruction(mi,linWeights,rangex,rangey,target);
+    }
+
+    // Set up time stepping
+    TS   ts;
+    SNES snes;
+    Ctx  ctx;
+
+    // Time stepping with TS object
+    ctx.wr = wr;
+    ctx.dm = dmu;
+    ctx.mi = mi;
+    ctx.stencil_count = stencil_count;
+
+	 TSCreate(PETSC_COMM_WORLD, &ts);
+	 TSSetProblemType(ts,TS_NONLINEAR);
+	 TSSetType(ts, TSEULER);
+
+	 TSSetMaxTime(ts,T);
+	 TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
+	 TSSetDM(ts,dmu);
+
+	 // Customize nonlinear lu[j][i]
+	 TSGetSNES(ts,&snes);
+	 TSSetTimeStep(ts,dt);
+	 TSSetSolution(ts,globalu);
+
+	 TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
+
+	 cout << "Time stepping started." << endl;
+	 cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+
+//	 TSSolve(ts,globalu);
+
+	 cout << "Time stepping ended." << endl;
+
+	 // ==========================================================================
+
+
+
 
     PetscFunctionReturn(0);
 }
-

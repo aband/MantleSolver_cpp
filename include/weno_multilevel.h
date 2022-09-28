@@ -171,6 +171,8 @@ class WenoReconstruction{
         int GetStencilSizeX();
         int GetStencilSizeY();
 
+        index_set GetGlobalCellIndexStencil(const MeshInfo& mi);        
+
         // Check parameters
         void CheckSigma();
 

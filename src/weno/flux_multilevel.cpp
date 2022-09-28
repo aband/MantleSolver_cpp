@@ -92,12 +92,12 @@ double TotalFlux(const MeshInfo& mi, int pos, double t,
 }
 
 // Create Derivative for a single Lax-Friedrich type flux for Jacobian
-vector<double> DeriveLaxFriedrichFlux(const MeshInfo& mi, double t,
-                                      point_index& target_index, vector<WenoReconstruction*>& wr,
-                                      double (*funcX)(valarray<double>& point, const vector<double>& param),
-                                      double (*funcY)(valarray<double>& point, const vector<double>& param),
-                                      double (*dfuncX)(valarray<double>& point, const vector<double>& param),
-                                      double (*dfuncY)(valarray<double>& point, const vector<double>& param)){
+vector<double> DerivLaxFriedrichFlux(const MeshInfo& mi, double t,
+                                     point_index& target_index, vector<WenoReconstruction*>& wr,
+                                     double (*funcX)(valarray<double>& point, const vector<double>& param),
+                                     double (*funcY)(valarray<double>& point, const vector<double>& param),
+                                     double (*dfuncX)(valarray<double>& point, const vector<double>& param),
+                                     double (*dfuncY)(valarray<double>& point, const vector<double>& param)){
     
     vector<double> work;
 

@@ -3,22 +3,22 @@
 /*
  *Define functions used in calculation here
  */
-double funcX(valarray<double> target, const vector<double>& param){
+double funcX(valarray<double>& target, const vector<double>& param){
 
     return param[0]*param[0]/2;
 }
 
-double funcY(valarray<double> target, const vector<double>& param){
+double funcY(valarray<double>& target, const vector<double>& param){
 
     return param[0]*param[0]/2;
 }
 
-double dfuncX(valarray<double> target, const vector<double>& param){
+double dfuncX(valarray<double>& target, const vector<double>& param){
 
     return param[0];
 }
 
-double dfuncY(valarray<double> target, const vector<double>& param){
+double dfuncY(valarray<double>& target, const vector<double>& param){
 
     return param[0];
 }

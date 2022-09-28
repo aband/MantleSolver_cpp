@@ -616,6 +616,21 @@ int WenoReconstruction::GetStencilSizeY(){
     return rangey_[0][1] - rangey_[0][0] + 1;
 }
 
+//Fetch the global index for cells in the largest 
+//stencil for the calculation of derivatives.
+
+index_set WenoReconstruction::GetGlobalCellIndexStencil(const MeshInfo& mi){
+
+    index_set work;
+   
+    for (int i=0; i<ws[0]->stencil_index_set.size(); i++){
+        work.push_back({ws[0]->stencil_index_set[i][0] - mi.ghost_vertx[0],
+                        ws[0]->stencil_index_set[i][1] - mi.ghost_vertx[1]});
+    }
+
+    return work;
+}
+
 /*
  *Compute derivatives of a given reconstruction.
  */

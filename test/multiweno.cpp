@@ -4,6 +4,8 @@
 #include "integral.h"
 #include "input.h"
 #include "flux_multilevel.h"
+#include "implicitRK.h"
+
 
 #include "func.h"
 
@@ -30,26 +32,27 @@ double func(valarray<double>& point, const vector<double>& param){
     //return point[0] + point[1];
 }
 
-double funcX(valarray<double>& target, const vector<double>& param){
+//double funcX(valarray<double>& target, const vector<double>& param){
 
-    return param[0]*param[0]/2;
-}
+//    return param[0]*param[0]/2;
+//}
 
-double funcY(valarray<double>& target, const vector<double>& param){
+//double funcY(valarray<double>& target, const vector<double>& param){
 
-    return param[0]*param[0]/2;
-}
+//    return param[0]*param[0]/2;
+//}
 
-double dfuncX(valarray<double>& target, const vector<double>& param){
+//double dfuncX(valarray<double>& target, const vector<double>& param){
 
-    return param[0];
-}
+//    return param[0];
+//}
 
-double dfuncY(valarray<double>& target, const vector<double>& param){
+//double dfuncY(valarray<double>& target, const vector<double>& param){
 
-    return param[0];
-}
+//    return param[0];
+//}
 
+/*
 typedef struct{
     DM dm;
     vector<WenoReconstruction *> wr;
@@ -114,79 +117,7 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
 
 	 PetscFunctionReturn(0);
 }
-
-
-/*
- *PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void * ctx){
- *    PetscErrorCode    ierr;
- *    Ctx *user = (Ctx*)ctx;
- *    DM  dm = (DM)user->dm;
- *    PetscInt M,N,xs,ys,xm,ym,stencilwidth;
- *    PetscFunctionBeginUser;
- *
- *    ierr = DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL);                                                CHKERRQ(ierr);
- *    ierr = DMDAGetInfo(dm, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
- *
- *    // Get local vector
- *    Vec localu;
- *    DMGetLocalVector(dm, &localu);
- *
- *    DMGlobalToLocalBegin(dm, U, INSERT_VALUES, localu);
- *    DMGlobalToLocalEnd(dm, U, INSERT_VALUES, localu);
- *
- *    // It can be changed later to not be double
- *    solution  ** lu;
- *    DMDAVecGetArray(dm, localu, &lu);
- *
- *    const WenoMesh * currentwm = new WenoMesh(M,N,user->ghost,user->mesh,lu);
- *
- *    int ns = user->Lorder[0]*user->Lorder[1];
- *
- *    for (int j=ys; j<ys+ym; j++){
- *    for (int i=xs; i<xs+xm; i++){
- *        MatStencil row, col[ns];
- *        row.i=i; row.j = j;
- *        if (j<4 || i<4 || j>N-6 || i>M-6){
- *            col[0].i = i; col[0].j = j; val[0] = 1.0;
- *            nc++;
- *        } else {
- *            point_index target {i-xs+user->ghost, j-ys+user->ghost};
- *
- *            double * df = new double [ns];
- *
- *            for (int pos=0; pos<4; pow++){
- *                double * tempdf = FLuxDerivative(currentwm,pos,time,target,wr,
- *                                                 funcX,funcY,dfuncX,dfuncY);
- *                for (int e=0; e<ns; e++){
- *                    df[e] += -1.0/user->h * tempdf[e];
- *                }
- *            }
- *
- *            // Assign stencil values
- *            for (int e=0; e<ns; e++){
- *                col[e].i = i+user->StencilLarge[e][0];
- *                col[e].j = j+user->StencilLarge[e][1];
- *            }
- *            nc++;
- *
- *        }
- *        MatSetValuesStencil(Jpre, 1, &row, ns, col, df, ADD_VALUES);
- *    }}
- *
- *    MatAssemblyBegin(Jp, MAT_FINAL_ASSEMBLY);
- *    MatAssemblyEnd(Jp, MAT_FINAL_ASSEMBLY);
- *
- *    if (J != Jp){
- *        MatAssemblyBegin(J,MAT_FINAL_ASSEMBLY);
- *        MatAssemblyEnd(J,MAT_FINAL_ASSEMBLY);
- *    }
- *
- *    DMDAVecRestoreArray(dm, localu, &lu);
- *    DMRestoreLocalVector(dm, &localu);
- *
- *    PetscFunctionReturn(0);
- *}
- */
+*/
 
 int main(int argc, char **argv){
 
@@ -406,10 +337,18 @@ int main(int argc, char **argv){
 
     vector<double> deriv = wr->PseudoDerivativeWenoReconst(mi, p);
 
+    index_set testIndex = wr->GetGlobalCellIndexStencil(mi);
+
     cout << "Local size: " << xm << " " << ym << endl;
     cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(mi,p)) <<  endl;
     cout << " Number of Derivative values: " << deriv.size() << deriv[0] << " " << deriv[1] << " " << deriv[2] << " " << deriv[3] << " " 
                                                              << deriv[4] << " " << deriv[5] << " " << deriv[6] << " " << deriv[7] << " " << deriv[8] << endl;
+    cout << " Center cell index is :"  << M/2 << " "<< N/2 << endl;
+
+    for (auto & ind : testIndex){
+        cout << ind[0] << " " << ind[1] << endl;
+    }
+
     cout << endl;
     delete wr;
 
