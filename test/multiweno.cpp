@@ -6,7 +6,6 @@
 #include "flux_multilevel.h"
 #include "implicitRK.h"
 
-
 #include "func.h"
 
 //#include <adolc/adolc.h>
@@ -263,7 +262,7 @@ int main(int argc, char **argv){
     // The code can handle 1D 2D and 3D
 	 // Right now, 2D is the only part finished
 
-    // Create an instance for a weno reconstruction
+   // Create an instance for a weno reconstruction
     vector<int *> rangex;
     vector<int *> rangey;
 
@@ -324,7 +323,7 @@ int main(int argc, char **argv){
 
     valarray<double> p = {0.5,0.5};
 
-    valarray<int> test_target = {M/2,N/2};
+    valarray<int> test_target = {M+1,N/2};
     wrPtr wr = new WenoReconstruction(mi, linWeights, rangex, rangey, test_target);
 
     wr->ComputeNonlinWeights(mi);
@@ -341,9 +340,9 @@ int main(int argc, char **argv){
 
     cout << "Local size: " << xm << " " << ym << endl;
     cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(mi,p)) <<  endl;
-    cout << " Number of Derivative values: " << deriv.size() << deriv[0] << " " << deriv[1] << " " << deriv[2] << " " << deriv[3] << " " 
-                                                             << deriv[4] << " " << deriv[5] << " " << deriv[6] << " " << deriv[7] << " " << deriv[8] << endl;
-    cout << " Center cell index is :"  << M/2 << " "<< N/2 << endl;
+    //cout << " Number of Derivative values: " << deriv.size() << deriv[0] << " " << deriv[1] << " " << deriv[2] << " " << deriv[3] << " " 
+    //                                                         << deriv[4] << " " << deriv[5] << " " << deriv[6] << " " << deriv[7] << " " << deriv[8] << endl;
+    //cout << " Center cell index is :"  << M/2 << " "<< N/2 << endl;
 
     for (auto & ind : testIndex){
         cout << ind[0] << " " << ind[1] << endl;
@@ -372,16 +371,17 @@ int main(int argc, char **argv){
 //		  wr[s] = new WenoReconstruction(mi,linWeights,rangex,rangey,target);
 //	 }
 
+/*
 	 // Time stepping with TS object
 	 TS   ts;
 	 SNES snes;
 	 Ctx  ctx;
 
 	 // Set up ctx data
-//	 ctx.wr = wr;
-//	 ctx.dm = dmu;
-//	 ctx.mi = mi;
-//	 ctx.stencil_count = stencil_count;
+	 ctx.wr = wr;
+	 ctx.dm = dmu;
+	 ctx.mi = mi;
+	 ctx.stencil_count = stencil_count;
 
 	 TSCreate(PETSC_COMM_WORLD, &ts);
 	 TSSetProblemType(ts,TS_NONLINEAR);
@@ -401,11 +401,19 @@ int main(int argc, char **argv){
 	 cout << "Time stepping started." << endl;
 	 cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-//	 TSSolve(ts,globalu);
+	 TSSolve(ts,globalu);
 
 	 cout << "Time stepping ended." << endl;
 
+*/
+
 	 // ==========================================================================
+
+    // Implicit Euler iteration
+
+    DrawPressure(dmu, &globalu);
+
+    SeqImplicitEuler(stencil_count, linWeights, rangex, rangey, mi, dmu, T, dt,globalu);
 
 	 DMDAVecRestoreArray(dmu,localu,&lu);
 
@@ -418,7 +426,7 @@ int main(int argc, char **argv){
     VecDestroy(&globalu);
     DMDestroy(&dm);
     DMDestroy(&dmu);
-    TSDestroy(&ts);
+    //TSDestroy(&ts);
 
     return 0;
 }

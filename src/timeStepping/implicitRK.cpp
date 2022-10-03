@@ -98,33 +98,48 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
 
     int rstart, rend;
 
-    index_set gIndex = wr[0]->GetGlobalCellIndexStencil(user->mi);
 
     MatGetOwnershipRange(J, &rstart, &rend);
+
     // assume periodic boundary condition
     for (int row = rstart; row<rend; row++){
+
+        index_set gIndex = wr[row]->GetGlobalCellIndexStencil(user->mi);
+
         int vertxx = row%M;
         int vertxy = row/M;
+
         point_index target {vertxx+user->mi.ghost_vertx[0], 
                             vertxy+user->mi.ghost_vertx[1]};
- 
+
         vector<double> deriv = DerivLaxFriedrichFlux(user->mi, time, target, wr, funcX, funcY, dfuncX, dfuncY); 
 
         for (int d=0; d<deriv.size(); d++){
             // Define placement of elements
-            PetscInt col = gIndex[d][1]*M + gIndex[d][0];
+            // Periodic boundary for now
+
+            PetscInt col = (gIndex[d][1]*M + gIndex[d][0] + M*N)%(M*N);
 
             PetscScalar val = deriv[d];
+
+            //if (col  == row){
+            //    val = 1.0 - deriv[d];
+            //} else {
+            //    val = -1.0 * deriv[d];
+            //}
+
             ierr = MatSetValue(J,row,col,val,ADD_VALUES) ; CHKERRQ(ierr);
+
         }
+
     }
 
     ierr = MatAssemblyBegin(J,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
     ierr = MatAssemblyEnd(J,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
 
-    if (AJ != A){
-        ierr = MatAssemblyBegin(AJ);CHKERRQ(ierr);
-        ierr = MatAssemblyEnd(AJ);CHKERRQ(ierr);
+    if (J != Jp){
+        ierr = MatAssemblyBegin(Jp, MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+        ierr = MatAssemblyEnd(Jp, MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
     }
 
     ierr = DMDAVecRestoreArray(dm, localu, &lu);CHKERRQ(ierr);
@@ -242,7 +257,7 @@ PetscErrorCode MPIImplicitEuler(double h, double T, void * ctx){
  * with the help of time stepping onject TS.
  */
 
-PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, int xorder, int yorder){
+PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, vector<int *>& rangex, vector<int *>& rangey, MeshInfo& mi, DM dmu, double T, double dt, Vec globalu){
 
     PetscErrorCode    ierr;
     PetscMPIInt       size, rank;
@@ -253,6 +268,9 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, i
     MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
 
     assert(size == 1); // This should be a sequential code
+
+    PetscInt M,N,xs,ys,xm,ym,stencilwidth;
+    ierr = DMDAGetInfo(dmu, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
 
     // Create weno reconstruction class
     vector<WenoReconstruction *> wr;
@@ -276,9 +294,14 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, i
     ctx.mi = mi;
     ctx.stencil_count = stencil_count;
 
+    Mat A;
+    MatCreate(PETSC_COMM_WORLD, &A);
+    MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N);
+    MatSetUp(A);
+
 	 TSCreate(PETSC_COMM_WORLD, &ts);
 	 TSSetProblemType(ts,TS_NONLINEAR);
-	 TSSetType(ts, TSEULER);
+	 TSSetType(ts, TSBEULER);
 
 	 TSSetMaxTime(ts,T);
 	 TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
@@ -291,17 +314,16 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, i
 
 	 TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
 
+    TSSetRHSJacobian(ts, A, A, FormJacobianIEULER, &ctx);
+
 	 cout << "Time stepping started." << endl;
 	 cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-//	 TSSolve(ts,globalu);
+	 TSSolve(ts,globalu);
 
 	 cout << "Time stepping ended." << endl;
 
 	 // ==========================================================================
-
-
-
 
     PetscFunctionReturn(0);
 }

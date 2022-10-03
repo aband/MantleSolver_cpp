@@ -622,11 +622,12 @@ int WenoReconstruction::GetStencilSizeY(){
 index_set WenoReconstruction::GetGlobalCellIndexStencil(const MeshInfo& mi){
 
     index_set work;
-   
-    for (int i=0; i<ws[0]->stencil_index_set.size(); i++){
-        work.push_back({ws[0]->stencil_index_set[i][0] - mi.ghost_vertx[0],
-                        ws[0]->stencil_index_set[i][1] - mi.ghost_vertx[1]});
-    }
+
+    for (int j=0; j<ws[0]->polyn_order[0]+2; j++){
+    for (int i=0; i<ws[0]->polyn_order[0]+2; i++){
+        work.push_back({ws[0]->stencil_index_set[0][0] - mi.ghost_vertx[0] + i-1,
+                        ws[0]->stencil_index_set[0][1] - mi.ghost_vertx[1] + j-1});
+    }}
 
     return work;
 }
