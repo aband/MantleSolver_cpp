@@ -1,6 +1,32 @@
 // Parallel implicit Runge Kutta based upon Petsc
 #include "../../include/implicitRK.h"
 
+PetscErrorCode DrawMat(Mat V, char * myfile)
+{
+    PetscFunctionBeginUser;
+
+    FILE *f = fopen(myfile,"w");
+
+    if (f == NULL){
+        printf("Error opening file !\n");
+        exit(1);
+    }
+
+    int mm,nn;
+    MatGetSize(V,&nn,&mm);
+
+    for (int j=nn-1; j>0; j--){
+    for (int i=0; i<mm; i++){
+        double a;
+        MatGetValues(V,1,&j,1,&i,&a);
+        fprintf(f,"%f ",a);
+    }fprintf(f,"\n ");}
+
+    fclose(f);
+
+    PetscFunctionReturn(0);
+}
+
 // Form function using pure transport flux
 // the pointer to totalflux function should be
 // reconsidered
@@ -98,13 +124,14 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
 
     int rstart, rend;
 
-
     MatGetOwnershipRange(J, &rstart, &rend);
 
     // assume periodic boundary condition
     for (int row = rstart; row<rend; row++){
 
-        index_set gIndex = wr[row]->GetGlobalCellIndexStencil(user->mi);
+        int nWr = (row/M+1)*(M+2) + (row%M)+1;
+
+        index_set gIndex = wr[nWr]->GetGlobalCellIndexStencil(user->mi);
 
         int vertxx = row%M;
         int vertxy = row/M;
@@ -120,7 +147,7 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
 
             PetscInt col = (gIndex[d][1]*M + gIndex[d][0] + M*N)%(M*N);
 
-            PetscScalar val = deriv[d];
+            PetscScalar val = -1.0*deriv[d];
 
             //if (col  == row){
             //    val = 1.0 - deriv[d];
@@ -144,6 +171,9 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
 
     ierr = DMDAVecRestoreArray(dm, localu, &lu);CHKERRQ(ierr);
     ierr = DMRestoreLocalVector(dm, &localu);CHKERRQ(ierr);
+
+    char file[] = "matrix.data";
+    DrawMat(J, file);
 
     PetscFunctionReturn(0);
 }

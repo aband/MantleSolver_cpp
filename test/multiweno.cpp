@@ -323,7 +323,7 @@ int main(int argc, char **argv){
 
     valarray<double> p = {0.5,0.5};
 
-    valarray<int> test_target = {M+1,N/2};
+    valarray<int> test_target = {M/2,N/2};
     wrPtr wr = new WenoReconstruction(mi, linWeights, rangex, rangey, test_target);
 
     wr->ComputeNonlinWeights(mi);
@@ -344,11 +344,11 @@ int main(int argc, char **argv){
     //                                                         << deriv[4] << " " << deriv[5] << " " << deriv[6] << " " << deriv[7] << " " << deriv[8] << endl;
     //cout << " Center cell index is :"  << M/2 << " "<< N/2 << endl;
 
-    for (auto & ind : testIndex){
-        cout << ind[0] << " " << ind[1] << endl;
-    }
+    //for (auto & ind : testIndex){
+    //    cout << ind[0] << " " << ind[1] << endl;
+    //}
 
-    cout << endl;
+    //cout << endl;
     delete wr;
 
 // ======================================================================================================================
@@ -410,8 +410,6 @@ int main(int argc, char **argv){
 	 // ==========================================================================
 
     // Implicit Euler iteration
-
-    DrawPressure(dmu, &globalu);
 
     SeqImplicitEuler(stencil_count, linWeights, rangex, rangey, mi, dmu, T, dt,globalu);
 
