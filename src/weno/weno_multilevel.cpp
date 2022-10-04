@@ -164,7 +164,7 @@ WenoStencil::WenoStencil(const MeshInfo& mi,const int rangex[2], const int range
 
     CreatePolynDerivMulti();
     CreateBasisPolyn(mi); 
-//    CreateSigma(mi);
+    CreateSigma(mi);
 
 }
 
@@ -512,7 +512,7 @@ void WenoReconstruction::ComputeNonlinWeights(const MeshInfo& mi){
 
     for (int i=0; i<linWeights_.size(); i++){
         int eta = max(ws[i]->polyn_order[0],ws[i]->polyn_order[1]);
-        omega_[i] = linWeights_[i]/pow(sigma_[i]+ws[i]->Geth()/5.0,eta);
+        omega_[i] = linWeights_[i]/pow(sigma_[i]+pow(ws[i]->Geth(),2.0),eta);
         sum_omega += omega_[i];
     }
 

@@ -8,10 +8,10 @@ echo " "
 echo -n "Multilevel Weno"
 echo " "
 
-./multilevel_weno -M 4 -N 4
-#./multilevel_weno -M 40 -N 40
-#./multilevel_weno -M 80 -N 80
-#./multilevel_weno -M 160 -N 160
+./multilevel_weno -M 80 -N 80
+./multilevel_weno -M 160 -N 160
+./multilevel_weno -M 320 -N 320
+./multilevel_weno -M 640 -N 640
 
 #echo " "
 #echo -n "Original Weno"

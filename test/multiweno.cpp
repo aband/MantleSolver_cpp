@@ -18,17 +18,17 @@ extern "C"{
 using namespace std;
 
 double func(valarray<double>& point, const vector<double>& param){
-	 if (point[0]<0.50){
-		  return sin(point[0])+cos(point[1]);
-	 } else {
-		  return sin(point[0])+cos(point[1]);
-		  //return exp(point[0]+point[1]);
-	 }
+//	 if (point[0]<0.50){
+//		  return point[0]*point[0];
+//	 } else {
+//		  return point[0]*point[0];
+//	 }
 
-    //return sin(point[0])+cos(point[1]);
+    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
     //return point[0]*point[0] + point[1]*point[1];
     //return 0.5;
     //return point[0] + point[1];
+
 }
 
 //double funcX(valarray<double>& target, const vector<double>& param){
@@ -411,7 +411,7 @@ int main(int argc, char **argv){
 
     // Implicit Euler iteration
 
-    SeqImplicitEuler(stencil_count, linWeights, rangex, rangey, mi, dmu, T, dt,globalu);
+    //SeqImplicitEuler(stencil_count, linWeights, rangex, rangey, mi, dmu, T, dt,globalu);
 
 	 DMDAVecRestoreArray(dmu,localu,&lu);
 

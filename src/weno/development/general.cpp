@@ -1,3 +1,4 @@
+#include "general.h"
 
 // Couple of constant functions
 double constfunc(valarray<double>& point,const vector<double>& param){
