@@ -209,8 +209,8 @@ int main(int argc, char **argv){
     //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     // Initialize with oblique data for Burgers equation 
-    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -411,7 +411,7 @@ int main(int argc, char **argv){
 
     // Implicit Euler iteration
 
-    //SeqImplicitEuler(stencil_count, linWeights, rangex, rangey, mi, dmu, T, dt,globalu);
+    SeqImplicitEuler(stencil_count, linWeights, rangex, rangey, mi, dmu, T, dt,globalu);
 
 	 DMDAVecRestoreArray(dmu,localu,&lu);
 

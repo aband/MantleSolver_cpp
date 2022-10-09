@@ -324,10 +324,15 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, v
     ctx.mi = mi;
     ctx.stencil_count = stencil_count;
 
+    // Allocate space for Jacobian computation
     Mat A;
     MatCreate(PETSC_COMM_WORLD, &A);
     MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N);
     MatSetUp(A);
+
+    // Set up snes
+    SNESCreate(PETSC_COMM_WORLD, &snes);
+    SNESSetType(snes, SNESNGMRES);
 
 	 TSCreate(PETSC_COMM_WORLD, &ts);
 	 TSSetProblemType(ts,TS_NONLINEAR);
