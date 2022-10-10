@@ -64,12 +64,13 @@ PetscErrorCode FormFunction(TS ts, PetscReal time, Vec U, Vec F, void * ctx){
         wr[s]->ComputeNonlinWeights(user->mi);
     }
 
-    int offset = 4;
+    int offset = user->offset;
 
     for (int j=ys; j<ys+ym; j++){
     for (int i=xs; i<xs+ym; i++){
         if (j<offset || i<offset || j>N-offset || i>M-offset){
-            f[j][i] = lu[j][i];
+            //f[j][i] = lu[j][i];
+            f[j][i] = 0.0;
         } else {
             point_index target {i-xs+user->mi.ghost_vertx[0], j-ys+user->mi.ghost_vertx[1]};
             double temp = 0.0;
@@ -117,6 +118,8 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
 
     user->mi.localval = lu;
 
+    int offset = user->offset;
+
     // Update corresponding non linear weights
     for (int s=0; s<user->stencil_count; s++){
         wr[s]->ComputeNonlinWeights(user->mi);
@@ -129,7 +132,10 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
     // assume periodic boundary condition
     for (int row = rstart; row<rend; row++){
 
-        int nWr = (row/M+1)*(M+2) + (row%M)+1;
+        int originj = row/M;
+        int origini = row%M;
+
+        int nWr = ((originj-ys)+1)*(xm+2) + origini-xs+1;
 
         index_set gIndex = wr[nWr]->GetGlobalCellIndexStencil(user->mi);
 
@@ -139,23 +145,29 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
         point_index target {vertxx+user->mi.ghost_vertx[0], 
                             vertxy+user->mi.ghost_vertx[1]};
 
-        vector<double> deriv = DerivLaxFriedrichFlux(user->mi, time, target, wr, funcX, funcY, dfuncX, dfuncY); 
+        if (originj<offset || origini<offset || originj>N-offset || origini>M-offset){
 
-        for (int d=0; d<deriv.size(); d++){
-            // Define placement of elements
-            // Periodic boundary for now
+            ierr = MatSetValue(J,row,row,0.0,ADD_VALUES);CHKERRQ(ierr); 
 
-            PetscInt col = (gIndex[d][1]*M + gIndex[d][0] + M*N)%(M*N);
+        } else {
 
-            PetscScalar val = -1.0*deriv[d];
+            vector<double> deriv = DerivLaxFriedrichFlux(user->mi, time, target, wr, funcX, funcY, dfuncX, dfuncY); 
 
-            //if (col  == row){
-            //    val = 1.0 - deriv[d];
-            //} else {
-            //    val = -1.0 * deriv[d];
-            //}
+            for (int d=0; d<deriv.size(); d++){
+                // Define placement of elements
+                // Periodic boundary for now
 
-            ierr = MatSetValue(J,row,col,val,ADD_VALUES) ; CHKERRQ(ierr);
+                PetscInt col = (gIndex[d][1]*M + gIndex[d][0] + M*N)%(M*N);
+
+                PetscScalar val = -1.0/pow(wr[nWr]->Geth(),2.0) *deriv[d];
+
+                //if (originj == 5 && origini == 5){
+                //    cout << "( " << row << " " << col << " )" << endl;
+                //    cout << val << endl;
+                //}
+
+                ierr = MatSetValue(J,row,col,val,ADD_VALUES) ; CHKERRQ(ierr);
+            }
 
         }
 
@@ -300,6 +312,8 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, v
     assert(size == 1); // This should be a sequential code
 
     PetscInt M,N,xs,ys,xm,ym,stencilwidth;
+
+    ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL);                                                CHKERRQ(ierr);
     ierr = DMDAGetInfo(dmu, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
 
     // Create weno reconstruction class
@@ -307,8 +321,8 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, v
     wr.resize(stencil_count); // Should be local stencil count instead of global count
     
     for (int s=0; s<stencil_count; s++){
-        int shiftj = s/(M+2)-1;
-        int shifti = s%(M+2)-1;
+        int shiftj = s/(xm+2)-1;
+        int shifti = s%(xm+2)-1;
         valarray<int> target = {shifti, shiftj};
         wr[s] = new WenoReconstruction(mi,linWeights,rangex,rangey,target);
     }
@@ -323,6 +337,7 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, v
     ctx.dm = dmu;
     ctx.mi = mi;
     ctx.stencil_count = stencil_count;
+    ctx.offset = 4;
 
     // Allocate space for Jacobian computation
     Mat A;
@@ -350,6 +365,8 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, v
 	 TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
 
     TSSetRHSJacobian(ts, A, A, FormJacobianIEULER, &ctx);
+
+    TSSetMaxSNESFailures(ts, 10);
 
 	 cout << "Time stepping started." << endl;
 	 cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;

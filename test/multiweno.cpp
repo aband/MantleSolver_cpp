@@ -339,7 +339,7 @@ int main(int argc, char **argv){
     index_set testIndex = wr->GetGlobalCellIndexStencil(mi);
 
     cout << "Local size: " << xm << " " << ym << endl;
-    cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(mi,p)) <<  endl;
+    //cout << "Function value: " << func(p,{0.0}) << "  Reconst value : " << wr->PointValueReconstruction(mi,p) << "  Error : " << abs(func(p,{0.0})-wr->PointValueReconstruction(mi,p)) <<  endl;
     //cout << " Number of Derivative values: " << deriv.size() << deriv[0] << " " << deriv[1] << " " << deriv[2] << " " << deriv[3] << " " 
     //                                                         << deriv[4] << " " << deriv[5] << " " << deriv[6] << " " << deriv[7] << " " << deriv[8] << endl;
     //cout << " Center cell index is :"  << M/2 << " "<< N/2 << endl;
@@ -365,8 +365,8 @@ int main(int argc, char **argv){
  */
 
 	 //for (int s=0; s<stencil_count; s++){
-//		  int shiftj = s/(M+2)-1;
-//		  int shifti = s%(M+2)-1;
+//		  int shiftj = s/(xm+2)-1;
+//		  int shifti = s%(xm+2)-1;
 //		  valarray<int> target = {shifti, shiftj};
 //		  wr[s] = new WenoReconstruction(mi,linWeights,rangex,rangey,target);
 //	 }

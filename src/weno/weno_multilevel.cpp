@@ -164,7 +164,7 @@ WenoStencil::WenoStencil(const MeshInfo& mi,const int rangex[2], const int range
 
     CreatePolynDerivMulti();
     CreateBasisPolyn(mi); 
-    CreateSigma(mi);
+    //CreateSigma(mi);
 
 }
 
