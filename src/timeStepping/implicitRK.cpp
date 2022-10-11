@@ -105,6 +105,8 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
     ierr = DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL);                                                CHKERRQ(ierr);
     ierr = DMDAGetInfo(dm, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
 
+    //VecView(U,PETSC_VIEWER_STDOUT_WORLD);
+
     // Get local vector
     Vec localu;
     DMGetLocalVector(dm, &localu);
@@ -147,9 +149,13 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
 
         if (originj<offset || origini<offset || originj>N-offset || origini>M-offset){
 
-            ierr = MatSetValue(J,row,row,0.0,ADD_VALUES);CHKERRQ(ierr); 
+						  ierr = MatSetValue(J,row,row,0.0,INSERT_VALUES);CHKERRQ(ierr); 
 
         } else {
+
+            ierr = MatAssemblyBegin(J,MAT_FLUSH_ASSEMBLY);CHKERRQ(ierr);
+            ierr = MatAssemblyEnd(J,MAT_FLUSH_ASSEMBLY);CHKERRQ(ierr);
+
 
             vector<double> deriv = DerivLaxFriedrichFlux(user->mi, time, target, wr, funcX, funcY, dfuncX, dfuncY); 
 
@@ -161,13 +167,14 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
 
                 PetscScalar val = -1.0/pow(wr[nWr]->Geth(),2.0) *deriv[d];
 
-                //if (originj == 5 && origini == 5){
-                //    cout << "( " << row << " " << col << " )" << endl;
-                //    cout << val << endl;
-                //}
+                    //cout << "( " << row << " " << col << " )" << endl;
+                    //cout << val << endl;
 
-                ierr = MatSetValue(J,row,col,val,ADD_VALUES) ; CHKERRQ(ierr);
+                ierr = MatSetValue(J,row,col,val,INSERT_VALUES) ; CHKERRQ(ierr);
             }
+
+            ierr = MatAssemblyBegin(J,MAT_FLUSH_ASSEMBLY);CHKERRQ(ierr);
+            ierr = MatAssemblyEnd(J,MAT_FLUSH_ASSEMBLY);CHKERRQ(ierr);
 
         }
 
@@ -186,6 +193,7 @@ PetscErrorCode FormJacobianIEULER(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, v
 
     char file[] = "matrix.data";
     DrawMat(J, file);
+    //MatView(J,PETSC_VIEWER_STDOUT_WORLD);
 
     PetscFunctionReturn(0);
 }
@@ -347,7 +355,7 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, v
 
     // Set up snes
     SNESCreate(PETSC_COMM_WORLD, &snes);
-    SNESSetType(snes, SNESNGMRES);
+    //SNESSetType(snes, SNESNGMRES);
 
 	 TSCreate(PETSC_COMM_WORLD, &ts);
 	 TSSetProblemType(ts,TS_NONLINEAR);
@@ -362,16 +370,19 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, v
 	 TSSetTimeStep(ts,dt);
 	 TSSetSolution(ts,globalu);
 
-	 TSSetRHSFunction(ts, globalu, FormFunction, &ctx);
+	 TSSetRHSFunction(ts, NULL, FormFunction, &ctx);
 
     TSSetRHSJacobian(ts, A, A, FormJacobianIEULER, &ctx);
 
-    TSSetMaxSNESFailures(ts, 10);
+    //TSSetMaxSNESFailures(ts, 50);
+
+    //TSSetTolerances(ts, 1.e-3, NULL, 1.e-3, NULL);
 
 	 cout << "Time stepping started." << endl;
 	 cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
 	 TSSolve(ts,globalu);
+    //TSStep(ts);
 
 	 cout << "Time stepping ended." << endl;
 

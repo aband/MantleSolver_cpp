@@ -274,6 +274,8 @@ int main(int argc, char **argv){
     int range4[2] = {-2,0};
     int range5[2] = {0,2};
 
+    int range0[2] = {0,0};
+
     // Weno5
 /*
  *    rangex.push_back(range3);
@@ -309,14 +311,20 @@ int main(int argc, char **argv){
 	 rangex.push_back(range2);
 	 rangey.push_back(range1);
 
+    //rangex.push_back(range0);
+    //rangey.push_back(range0);
+
+
 //    vector<double> linWeights {25.0,9.0,9.0,9.0,9.0,9.0,4.0,4.0,4.0,4.0};
     vector<double> linWeights {16.0,1.0,1.0,1.0,1.0};
+    //vector<double> linWeights {1.0};
+
 
 	 int stencil_count = (xm+2)*(ym+2);
 
 // =====================================================================================================================
 
-
+/*
     typedef WenoReconstruction*  wrPtr;
 
     // For testing
@@ -350,28 +358,24 @@ int main(int argc, char **argv){
 
     //cout << endl;
     delete wr;
+*/
 
 // ======================================================================================================================
 
 	 //wrPtr * wr = new wrPtr[stencil_count];
 
-	 //vector<WenoReconstruction *> wr;
-	 //wr.resize(stencil_count);
-
 /*
- *
- * !!! shouldn't be doing this. Each process should only keep its share.
- *
- */
+	 vector<WenoReconstruction *> wr;
+	 wr.resize(stencil_count);
 
-	 //for (int s=0; s<stencil_count; s++){
-//		  int shiftj = s/(xm+2)-1;
-//		  int shifti = s%(xm+2)-1;
-//		  valarray<int> target = {shifti, shiftj};
-//		  wr[s] = new WenoReconstruction(mi,linWeights,rangex,rangey,target);
-//	 }
+	 for (int s=0; s<stencil_count; s++){
+		  int shiftj = s/(xm+2)-1;
+		  int shifti = s%(xm+2)-1;
+		  valarray<int> target = {shifti, shiftj};
+		  wr[s] = new WenoReconstruction(mi,linWeights,rangex,rangey,target);
+	 }
 
-/*
+
 	 // Time stepping with TS object
 	 TS   ts;
 	 SNES snes;
