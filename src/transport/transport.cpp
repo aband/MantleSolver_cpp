@@ -20,15 +20,11 @@ TransportCell::TransportCell(const MeshInfo& mi, point_index& cellIndex){
 TransportCell::GetAdvStencil(vector<int *> rangex, vector<int *> rangey){
     advRangex_ = rangex;
     advRangey_ = rangey;
-
-
 }
 
 TransportCell::GetDiffStencil(vector<int *> rangex, vector<int *> rangey){
     diffRangex_ = rangex;
     diffRangey_ = rangey;
-
-
 }
 
 TransportCell::PrepareWenoReconstruction(const MeshInfo& mi){
@@ -67,7 +63,7 @@ Transport::SeparateBoundary(const MeshInfo& mi){
         if (WithinBoundary(currenti, currentj)){
             Onboundary.push_back({i,j});
         } else {
-            InsideCell.push_back({i,j});
+            InteriorCell.push_back({i,j});
         }
  
     }}

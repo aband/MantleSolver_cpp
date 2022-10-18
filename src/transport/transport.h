@@ -46,7 +46,7 @@ class Transport{
 
         index_set Onboundary;
 
-        index_set InsideCell; 
+        index_set InteriorCell; 
 
 };
 
