@@ -8,6 +8,7 @@
 // Cell index represents global cell index
 TransportCell::TransportCell(const MeshInfo& mi, point_index& cellIndex){
 
+    // Make sure it is 2D problem
     assert(cell.size() == 2);
 
     cellIndex_ = cell;
@@ -17,7 +18,23 @@ TransportCell::TransportCell(const MeshInfo& mi, point_index& cellIndex){
 
 }
 
+
+TransportCell::GetAdvStencil(vector<int>& order){
+
+
+}
+
+TransportCell::GetAdvStencil(vector<int>& order){
+
+
+}
+
 TransportCell::GetAdvStencil(vector<int *> rangex, vector<int *> rangey){
+
+    // Clear vector of stencils first
+    advRangex_.clear();
+    advRangey_.clear();
+
     advRangex_ = rangex;
     advRangey_ = rangey;
 }
@@ -35,9 +52,6 @@ TransportCell::PrepareWenoReconstruction(const MeshInfo& mi){
 }
 
 // =========================================================================
-
-
-
 Transport::DetermineBoundarylayer(){
 
 
@@ -70,14 +84,4 @@ Transport::SeparateBoundary(const MeshInfo& mi){
 
 }
 
-Transport::SetupAdvFluxReconstructionInfo(const meshinfo& mi, vector<double>& linweights, point_index& target){
 
-    advWr.push_back(new WenoReconstruction(mi,linWeights,advRangex,advRangey,target)); 
-
-}
-
-Transport::SetupDiffFluxReconstructionInfo(const meshinfo& mi, vector<double>& linweights, point_index& target){
-
-    advWr.push_back(new WenoReconstruction(mi,linWeights,diffRangex,diffRangey,target));
-
-}
