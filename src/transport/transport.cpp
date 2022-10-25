@@ -18,17 +18,6 @@ TransportCell::TransportCell(const MeshInfo& mi, point_index& cellIndex){
 
 }
 
-
-TransportCell::GetAdvStencil(vector<int>& order){
-
-
-}
-
-TransportCell::GetAdvStencil(vector<int>& order){
-
-
-}
-
 TransportCell::GetAdvStencil(vector<int *> rangex, vector<int *> rangey){
 
     // Clear vector of stencils first
@@ -40,6 +29,11 @@ TransportCell::GetAdvStencil(vector<int *> rangex, vector<int *> rangey){
 }
 
 TransportCell::GetDiffStencil(vector<int *> rangex, vector<int *> rangey){
+
+    // Clear vector of stencils first
+    diffRangex_.clear();
+    diffRangey_.clear();
+
     diffRangex_ = rangex;
     diffRangey_ = rangey;
 }
@@ -52,11 +46,6 @@ TransportCell::PrepareWenoReconstruction(const MeshInfo& mi){
 }
 
 // =========================================================================
-Transport::DetermineBoundarylayer(){
-
-
-}
-
 Transport::WithinBoundary(int i, int j){
 
     if (i<0+blayer_ || i>mi.globalsize[0]-blayer_ || j<0+blayer_ || j>mi.globalsize[1]-blayer_){
@@ -64,6 +53,23 @@ Transport::WithinBoundary(int i, int j){
     } else {
         return false;
     }
+
+}
+
+Transport::FindBoundary(const MeshInfo& mi){
+
+    for (int j=mi.localsize[1]-mi.ghost_cell[1]; j<mi.localsize[1]+mi.ghost_cell[1];j++){
+    for (int i=mi.localsize[0]-mi.ghost_cell[0]; i<mi.localsize[0]+mi.ghost_cell[0];i++){
+
+        valarray<int> currentCell = {i,j};
+
+        if (WithinBoundary(i,j)) {
+            Onboundary_.push_back(currentCell);
+        } else {
+            InteriorCell_.push_back(currentCell); 
+        } 
+
+    }}
 
 }
 

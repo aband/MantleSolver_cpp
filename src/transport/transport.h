@@ -44,17 +44,19 @@ class TransportCell{
 
 class Transport{
     public:
-        Transport(const MeshInfo &mi, point_index& cell);
+        Transport();
         ~Transport();
 
     private:
-        int blayer_;
+        int blayer_ = 1;
 
         bool WithinBoundary(int i, int j); 
 
-        index_set Onboundary;
+        index_set Onboundary_;
 
-        index_set InteriorCell; 
+        index_set InteriorCell_; 
+
+        void FindBoundary(const MeshInfo& mi);
 
 };
 
