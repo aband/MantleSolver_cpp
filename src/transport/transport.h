@@ -5,59 +5,46 @@
 
 enum boundaryType {none = 0, inflow = 1, outflow = 2};
 
-// Define transport per cell
 class TransportCell{
     public:
-        TransportCell(cosnt MeshInfo& mi, point_index& cell);
+        TransportCell(const MeshInfo& mi, point_index& cellIndex);
         ~TransportCell();
 
-        GetAdvStencil(vector<int>& order);
-        GetAdvStencil(vector<int *> rangex, vector<int *> rangey);
-
-        GetDiffStencil(vector<int>& order);
-        GetDiffStencil(vector<int *> rangex, vector<int *> rangey);
-
     private:
-        // Starting vertx index for this cell
-        point_index cellIndex_;
-        int startVertx_[2];
+        // The prefix local and global are 
+        // referring to parallel local and global
+        point_index localCellIndex_;
+        int localCellIndexFlat_;
 
-        // Indicate type of boundary
-        boundaryType boundaryType_ = none;
+        point_index localCellIndexGhost_;
+        int localCellIndexFlatGhost_;
 
-        // Define a master stencil
-        vector<int *>  advRangex_;
-        vector<int *>  advRangey_;
+        point_index globalCellIndex_;
+        int globalCellIndexFlat_;
 
-        vector<int *>  diffRangex_;
-        vector<int *>  diffRangey_;
+        int[4] localEdgeIndex_;
+        int[4] globalEdgeIndex_;
 
-        // Define weno stencils for reconstruction
-        WenoReconstruction * advWr_;
-        WenoReconstruction * diffWr_;
-
-        // Functions used for flux computation
-        double ComputeAdvectionFlux(const MeshInfo& mi);
-
-        double ComputeDiffusionFlux(const MeshInfo& mi);
 }
 
+// Define transport per cell
 class Transport{
     public:
         Transport();
         ~Transport();
 
     private:
+
+        vector<WenoReconstruction *> advWr_;
+        vector<WenoReconstruction *> diffwr_;
+
         int blayer_ = 1;
 
-        bool WithinBoundary(int i, int j); 
+        bool WithinBoundary_(int i, int j); 
 
-        index_set Onboundary_;
+        vector< pair<point_index,boundaryType> > ID_;
 
-        index_set InteriorCell_; 
-
-        void FindBoundary(const MeshInfo& mi);
-
+        void CreateID_(const MeshInfo& mi);
 };
 
 #endif

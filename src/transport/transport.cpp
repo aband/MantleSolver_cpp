@@ -4,48 +4,44 @@
 
 #include "../../include/transport.h"
 
-// Initialize a transport object with respect to a given index number of cell
-// Cell index represents global cell index
 TransportCell::TransportCell(const MeshInfo& mi, point_index& cellIndex){
 
-    // Make sure it is 2D problem
-    assert(cell.size() == 2);
+    assert(cellIndex.size() == mi.ghost_vertx.size());
 
-    cellIndex_ = cell;
+    // Local cell index without considering ghost layers
+    localCellIndex_ = cellIndex;
+    localCellIndexFlat_ = localCellIndex_[1]*mi.localsize[0] + localCellIndex_[0];
 
-    startVertx_[0] = cell[0] + mi.ghost_vertx[0];
-    startVertx_[1] = cell[1] + mi.ghost_vertx[1];
+    // local cell index considering ghost layers
+    localCellIndexGhost_[0] = localCellIndex_[0] + mi.ghost_cell[0];
+    localCellIndexGhost_[1] = localCellIndex_[1] + mi.ghost_cell[1];
+    localCellIndexGhostFlat_ = localCellIndexGhost_[0] * (mi.localsize[0]+2*mi.ghost_cell[0]) +
+                               localCellIndexGhost_[1];
+  
+    // global cell index
+    globalCellIndex_[0] = localCellIndex_[0] + mi.localstart[0]; 
+    globalCellIndex_[1] = localCellIndex_[1] + mi.localstart[1]; 
+    globalCellIndexFlat_ = globalCellIndex[1]*mi.globalsize[0] + globalCellIndex[0];
 
-}
+    // local edge index
+      
 
-TransportCell::GetAdvStencil(vector<int *> rangex, vector<int *> rangey){
 
-    // Clear vector of stencils first
-    advRangex_.clear();
-    advRangey_.clear();
-
-    advRangex_ = rangex;
-    advRangey_ = rangey;
-}
-
-TransportCell::GetDiffStencil(vector<int *> rangex, vector<int *> rangey){
-
-    // Clear vector of stencils first
-    diffRangex_.clear();
-    diffRangey_.clear();
-
-    diffRangex_ = rangex;
-    diffRangey_ = rangey;
-}
-
-TransportCell::PrepareWenoReconstruction(const MeshInfo& mi){
-
-    advWr_ = new WenoReconstruction(mi,advLinWeights,advRangex_,advRangey_,cellIndex_);;
-    diffWr_ = new WenoReconstruction(mi,diffLinWeights,diffRangex_,diffRangey_,cellIndex_);;
 
 }
 
-// =========================================================================
+// ========================================================================
+
+Transport::Transport(){
+
+
+}
+
+Transport::~Transport(){
+
+}
+
+
 Transport::WithinBoundary(int i, int j){
 
     if (i<0+blayer_ || i>mi.globalsize[0]-blayer_ || j<0+blayer_ || j>mi.globalsize[1]-blayer_){

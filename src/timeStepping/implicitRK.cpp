@@ -326,7 +326,7 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, v
 
     // Create weno reconstruction class
     vector<WenoReconstruction *> wr;
-    wr.resize(stencil_count); // Should be local stencil count instead of global count
+    wr.resize(stencil_count); // It is local stencil count
     
     for (int s=0; s<stencil_count; s++){
         int shiftj = s/(xm+2)-1;

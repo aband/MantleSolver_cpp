@@ -33,6 +33,9 @@ typedef struct {
     vector<int> ghost_cell;  // size of ghost layer of cell
     vector<int> ghost_vertx; // size of ghost layer of node
 
+    int globalEdgeVerticalNumber;
+    int localEdgeVerticalNumber;
+
     vector< point > lmesh; 
  
     double** localval;
