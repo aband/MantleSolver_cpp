@@ -17,16 +17,29 @@ TransportCell::TransportCell(const MeshInfo& mi, point_index& cellIndex){
     localCellIndexGhost_[1] = localCellIndex_[1] + mi.ghost_cell[1];
     localCellIndexGhostFlat_ = localCellIndexGhost_[0] * (mi.localsize[0]+2*mi.ghost_cell[0]) +
                                localCellIndexGhost_[1];
-  
     // global cell index
     globalCellIndex_[0] = localCellIndex_[0] + mi.localstart[0]; 
     globalCellIndex_[1] = localCellIndex_[1] + mi.localstart[1]; 
     globalCellIndexFlat_ = globalCellIndex[1]*mi.globalsize[0] + globalCellIndex[0];
 
     // local edge index
-      
+    localNVertiEdge_ = mi.localsize[0] + 1;
+    localNHoriEdge_ = mi.localsize[0];
 
+    globalNVertiEdge_ = mi.globalsize[0] + 1;
+    globalNHoriEdge_ = mi.globalsize[0];
 
+    localEdgeIndex_[0] = localCellIndex_[1]*localNHoriEdge_ + localCellIndex_[0];
+    localEdgeIndex_[2] = (localCellIndex_[1]+1)*localNHoriEdge_ + localCellIndex_[0];
+
+    localEdgeIndex_[1] = localCellIndex_[1]*localNVertiEdge_ + localCellIndex_[0] + 1;
+    localEdgeIndex_[3] = localCellIndex_[1]*localNVertiEdge_ + localCellIndex_[0];
+
+    globalEdgeIndex_[0] = globalCellIndex_[1]*globalNHoriEdge_ + globalCellIndex_[0];
+    globalEdgeIndex_[2] = (globalCellIndex_[1]+1)*globalNHoriEdge_ + globalCellIndex_[0];
+
+    globalEdgeIndex_[1] = globalCellIndex_[1]*globalNVertiEdge_ + globalCellIndex_[0] + 1;
+    globalEdgeIndex_[3] = globalCellIndex_[1]*globalNVertiEdge_ + globalCellIndex_[0];
 
 }
 

@@ -22,8 +22,18 @@ class TransportCell{
         point_index globalCellIndex_;
         int globalCellIndexFlat_;
 
+        // Number of vertical edges and horizontal edges per local row
+        int localNVertiEdge_;
+        int localNHoriEdge_;
+
+        // Number of vertical edges and horizontal edges per global row
+        int globalNVertiEdge_;
+        int globalNHoriEdge_;
+
         int[4] localEdgeIndex_;
         int[4] globalEdgeIndex_;
+
+        // Boundary condition
 
 }
 

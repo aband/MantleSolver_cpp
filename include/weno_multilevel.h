@@ -33,8 +33,13 @@ typedef struct {
     vector<int> ghost_cell;  // size of ghost layer of cell
     vector<int> ghost_vertx; // size of ghost layer of node
 
-    int globalEdgeVerticalNumber;
-    int localEdgeVerticalNumber;
+    // Horizontal edges first than vertical edges
+    int globalEdgeHorizontalSum;
+    int localEdgeHorizontalSum;
+
+    // starting at 0 (has not stacked on horizontal edges yet)
+    int globalEdgeVerticalSum;
+    int localEdgeVerticalSum;
 
     vector< point > lmesh; 
  
@@ -197,6 +202,8 @@ class WenoReconstruction{
         point_index target_; 
 
         vector<WenoStencil *> ws;
+
+        double epsi_ = 1.0;
 
         vector<double> sigma_;
         vector<double> omega_;

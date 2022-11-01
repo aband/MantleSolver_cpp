@@ -13,15 +13,15 @@ set view map
 set dgrid3d 100,100,4
 
 set table 'contour.data'
-#splot 'build/Pressure.data' matrix
-splot 'Pressure.data' matrix
+splot 'build/Pressure.data' matrix
+#splot 'Pressure.data' matrix
 unset table
 
 unset contour
 set surface 
 set table 'grid.data'
-#splot 'build/Pressure.data' matrix
-splot 'Pressure.data' matrix
+splot 'build/Pressure.data' matrix
+#splot 'Pressure.data' matrix
 unset table
 
 reset

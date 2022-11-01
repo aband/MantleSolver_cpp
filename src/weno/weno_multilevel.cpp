@@ -508,6 +508,7 @@ void WenoReconstruction::ComputeNonlinWeights(const MeshInfo& mi){
 		  sigma_[i] = ws[i]->ComputeSmoothnessIndicator_Polyn(mi,5);
     }
 
+/*
     double sum_omega = 0.0;
 
     for (int i=0; i<linWeights_.size(); i++){
@@ -519,6 +520,24 @@ void WenoReconstruction::ComputeNonlinWeights(const MeshInfo& mi){
     for (int i=0; i<linWeights_.size(); i++){
         NonLinWeights_[i] = omega_[i]/sum_omega;
     }
+*/
+
+    // New nonlinear weights
+    double sum_omega = 0.0;
+
+    for (int i=0; i<linWeights_.size(); i++){
+        int ri = max(ws[i]->polyn_order[0],ws[i]->polyn_order[1]);
+        omega_[i] = linWeights_[i] * pow((sigma_[i] + epsi_*ws[i]->Geth())/
+                                         (sigma_[i] + epsi_*pow(ws[i]->Geth(),2.0)) ,ri) *
+                                     pow(epsi_*ws[i]->Geth()/
+                                         (sigma_[i] + epsi_*ws[i]->Geth()), 1.0);
+        sum_omega += omega_[i];
+    }
+
+    for (int i=0; i<linWeights_.size(); i++){
+        NonLinWeights_[i] = omega_[i]/sum_omega;
+    }
+
 
 } 
 
