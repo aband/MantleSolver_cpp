@@ -232,7 +232,7 @@ int main(int argc, char **argv){
     // Spectial case
     double dx = (L*H)/((double)M*(double)N);
 
-    double dt = 2.0*3.0/(double)M;
+    double dt = 0.8*3.0/(double)M;
 
     PetscInt       xs,ys,xm,ym;
     ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);

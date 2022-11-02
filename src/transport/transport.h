@@ -3,12 +3,16 @@
 
 #include "weno_multilevel.h"
 
-enum boundaryType {none = 0, inflow = 1, outflow = 2};
+enum boundaryType {inflow, outflow};
+enum edgeIndex {West, South, East, North};
 
 class TransportCell{
     public:
         TransportCell(const MeshInfo& mi, point_index& cellIndex);
         ~TransportCell();
+
+        // Indicate if the given cell is on boundary
+        bool boundaryflag;
 
     private:
         // The prefix local and global are 
@@ -33,28 +37,31 @@ class TransportCell{
         int[4] localEdgeIndex_;
         int[4] globalEdgeIndex_;
 
-        // Boundary condition
+        // Boundary information stores which edge is on the boundary and 
+        // the corresponding boundary type: inflow or outflow
+        vector<pair <int, boundaryType>> boundaryInfo_;
+
+        bool withinBoundary_(const MeshInfo& mi); 
+
+        void identifyBoundary_(double * horieffVel, double * vertEffVel);
 
 }
 
 // Define transport per cell
 class Transport{
     public:
-        Transport();
+        Transport(const MeshInfo& mi);
         ~Transport();
 
     private:
+        // vector holding cell index of boundary cells and interior cells
+        vector< transportCell *> onboundarycell_;
+        vector< transportCell *> interiorcell_;
 
+        // vector holding reconstruction method of advective flux and diffusion flux
         vector<WenoReconstruction *> advWr_;
         vector<WenoReconstruction *> diffwr_;
 
-        int blayer_ = 1;
-
-        bool WithinBoundary_(int i, int j); 
-
-        vector< pair<point_index,boundaryType> > ID_;
-
-        void CreateID_(const MeshInfo& mi);
 };
 
 #endif
