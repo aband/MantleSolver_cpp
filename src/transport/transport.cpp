@@ -129,6 +129,36 @@ TransportCell::withinBoundary_(const MeshInfo& mi){
 
 }
 
+// The problem of selecting stencils is that 
+TransportCell::selectAdvStencil(){
+    if (boundaryflag){
+        for (auto & e : boundaryInfo_){
+            switch(e.first){
+                case West:
+                   advStencilSelection_.insert(1);
+                   advStencilSelection_.insert(2);
+                case South:
+                   advStencilSelection_.insert(2);
+                   advStencilSelection_.insert(3);
+                case East:
+                   advStencilSelection_.insert(0);
+                   advStencilSelection_.insert(3);
+                case North:
+                   advStencilSelection_.insert(0);
+                   advStencilSelection_.insert(1);
+                default :
+                   printf("Invalid boundary flag number \n"); 
+            }
+        }
+    }
+}
+
+TransportCell::selectDiffStencil(){
+    if (boundaryflag){
+
+    } 
+}
+
 // ========================================================================
 
 Transport::Transport(const MeshInfo& mi){
@@ -140,11 +170,8 @@ Transport::Transport(const MeshInfo& mi){
 
         transportCell * tmpPtr = new transportCell(mi, cid);
 
-        if (tmpPtr->boundaryflag){
-            onboundarycell_.push_back(tmpPtr); 
-        } else {
-            interiorcell_.push_back(tmpPtr);
-        }
+        // Boundary information is stored inside the cell class
+        localcells_.push_back(tmpPtr);
 
     }}
 
@@ -153,60 +180,105 @@ Transport::Transport(const MeshInfo& mi){
 Transport::~Transport(){
 
     // delete vectors of pointers
-    for (auto ptr : onboundarycell_){
+    // transport cells
+    for (auto ptr : localcells_){
         delete ptr;
     }
-    onboundarycell_.clear();
+    localcells_.clear();
 
-    for (auto ptr : interiorcell_){
-        delete ptr;
-    }
-    interiorcell_.clear();
-
+    // weno reconstruction class
     for (auto ptr: advWr_){
         delete ptr; 
     }
     advWr_.clear();
 
-    for (auto ptr: diffWr_){
+    for (auto ptr: diffhoriWr_){
         delete ptr; 
     }
-    diffWr_.clear();
+    diffhoriWr_.clear();
+
+    for (auto ptr: diffvertwr_){
+        delete ptr;
+    }
+    diffvertwr_.clear();
+
+    // weno stencils
+    for (auto ptr: advRangex_){
+        delete ptr;
+    }
+    advRangex_.clear();
 
 }
 
-Transport::FindBoundary(const MeshInfo& mi){
+/*
+ *Transport::FindBoundary(const MeshInfo& mi){
+ *
+ *    for (int j=mi.localsize[1]-mi.ghost_cell[1]; j<mi.localsize[1]+mi.ghost_cell[1];j++){
+ *    for (int i=mi.localsize[0]-mi.ghost_cell[0]; i<mi.localsize[0]+mi.ghost_cell[0];i++){
+ *
+ *        valarray<int> currentCell = {i,j};
+ *
+ *        if (WithinBoundary(i,j)) {
+ *            Onboundary_.push_back(currentCell);
+ *        } else {
+ *            InteriorCell_.push_back(currentCell);
+ *        }
+ *
+ *    }}
+ *
+ *}
+ *
+ *
+ *  //Separate boundary cells with inner cells
+ *Transport::SeparateBoundary(const MeshInfo& mi){
+ *
+ *    for (int j=0; j<mi.localsize[1]; j++){
+ *    for (int i=0; i<mi.localsize[0]; i++){
+ *        int currenti = cell_[0] + i;
+ *        int currentj = cell_[1] + j;
+ *        if (WithinBoundary(currenti, currentj)){
+ *            Onboundary.push_back({i,j});
+ *        } else {
+ *            InteriorCell.push_back({i,j});
+ *        }
+ *
+ *    }}
+ *
+ *}
+ *
+ */
 
-    for (int j=mi.localsize[1]-mi.ghost_cell[1]; j<mi.localsize[1]+mi.ghost_cell[1];j++){
-    for (int i=mi.localsize[0]-mi.ghost_cell[0]; i<mi.localsize[0]+mi.ghost_cell[0];i++){
+Transport::GetAdvWenoStencils(vector<int *>& rangex, vector<int *>& rangey){
 
-        valarray<int> currentCell = {i,j};
-
-        if (WithinBoundary(i,j)) {
-            Onboundary_.push_back(currentCell);
-        } else {
-            InteriorCell_.push_back(currentCell); 
-        } 
-
-    }}
+    advRangex_ = rangex;
+    advRangex_ = rangey;
 
 }
 
-// Separate boundary cells with inner cells
-Transport::SeparateBoundary(const MeshInfo& mi){
+Transport::GetDiffHoriWenoStencils(vector<int *>& rangex, vector<int *>& rangey){
 
-    for (int j=0; j<mi.localsize[1]; j++){
-    for (int i=0; i<mi.localsize[0]; i++){
-        int currenti = cell_[0] + i;
-        int currentj = cell_[1] + j;
-        if (WithinBoundary(currenti, currentj)){
-            Onboundary.push_back({i,j});
-        } else {
-            InteriorCell.push_back({i,j});
-        }
+    diffHoriRangex_ = rangex;
+    diffHoriRangey_ = rangey;
  
-    }}
+}
+
+Transport::GetDiffVertWenoStencils(vector<int *>& rangex, vector<int *>& rangey){
+
+    diffVertRangex_ = rangex;
+    diffVertRangey_ = rangey;
 
 }
 
+Transport::CreateWenoReconstruction(const MeshInfo& mi){
 
+    for (auto cell : localcells_){
+
+        SelectStencils(cell);
+
+        WenoReconstruction * tmpPtr = new WenoReconstruction(mi, linWeights); 
+
+        advWr_.push_back(tmpPtr); 
+    
+    }
+
+}

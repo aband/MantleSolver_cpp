@@ -45,6 +45,26 @@ class TransportCell{
 
         void identifyBoundary_(double * horieffVel, double * vertEffVel);
 
+        // Reconstruction stencls selection
+        // Mark index ordering of stencils
+        // This method of selection can only be applied to fixed stencil ordering
+
+        /* advective flux stencil ordering
+         * 3  2
+         * 0  1
+         */ 
+
+        /*
+         * diffusive flux stencil ordering
+         *
+         *
+         */
+
+        void selectAdvStencil();
+        void selectDiffStencil();
+
+        unordered_set<int> advStencilSelection_;
+        vector<int* > diffStencilSelection_;
 }
 
 // Define transport per cell
@@ -54,14 +74,22 @@ class Transport{
         ~Transport();
 
     private:
+
+        vector<int *> advRangex_;
+        vector<int *> advRangey_;
+
+        vector<int *> diffHoriRangex_;
+        vector<int *> diffHoriRangey_;
+        vector<int *> diffVertRangex_;
+        vector<int *> diffVertRangey_;
+
         // vector holding cell index of boundary cells and interior cells
-        vector< transportCell *> onboundarycell_;
-        vector< transportCell *> interiorcell_;
+        vector< transportCell *> localcells_;
 
         // vector holding reconstruction method of advective flux and diffusion flux
         vector<WenoReconstruction *> advWr_;
-        vector<WenoReconstruction *> diffwr_;
-
+        vector<WenoReconstruction *> diffhoriwr_;
+        vector<WenoReconstruction *> diffvertwr_;
 };
 
 #endif

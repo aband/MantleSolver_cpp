@@ -2,6 +2,9 @@
 #define WENO_MULTILEVEL_H_
 
 #include <vector>
+#include <pair>
+#include <set>
+#include <unordered_set>
 #include <array>
 #include <valarray>
 #include <algorithm>
