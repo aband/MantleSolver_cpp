@@ -14,6 +14,8 @@ class TransportCell{
         // Indicate if the given cell is on boundary
         bool boundaryflag;
 
+        point_index GetLocalAdvWenoIndex();
+
     private:
         // The prefix local and global are 
         // referring to parallel local and global
@@ -60,10 +62,10 @@ class TransportCell{
          *
          */
 
-        void selectAdvStencil();
-        void selectDiffStencil();
+        void selectAdvStencil_();
+        void selectDiffStencil_();
 
-        unordered_set<int> advStencilSelection_;
+        unordered_set<int> advStencilSelection_({0,1,2,3,4});
         vector<int* > diffStencilSelection_;
 }
 
@@ -83,10 +85,16 @@ class Transport{
         vector<int *> diffVertRangex_;
         vector<int *> diffVertRangey_;
 
+        vector<double> SelectLinWeights_(TransportCell cell);
+        vector<int *> SelectStencilx_(Transport Cell);
+        vector<int *> SelectStencilx_(Transport Cell);
+
         // vector holding cell index of boundary cells and interior cells
-        vector< transportCell *> localcells_;
+        vector< TransportCell *> localcells_;
 
         // vector holding reconstruction method of advective flux and diffusion flux
+        void CreateWenoReconstruction_(const MeshInfo& mi);
+
         vector<WenoReconstruction *> advWr_;
         vector<WenoReconstruction *> diffhoriwr_;
         vector<WenoReconstruction *> diffvertwr_;

@@ -61,7 +61,12 @@ TransportCell::TransportCell(const MeshInfo& mi, point_index& cellIndex){
 
 }
 
-TransportCell::identifyBoundary_(double * horiEffVel, double * vertEffVel){
+point_index GetLocalAdvWenoIndex(){
+    // returns an index for local weno vectors
+
+}
+
+void TransportCell::identifyBoundary_(double * horiEffVel, double * vertEffVel){
 
     // Find which edges are on the boundary
     // Identify boundry types at the same time
@@ -118,7 +123,7 @@ TransportCell::identifyBoundary_(double * horiEffVel, double * vertEffVel){
 
 }
 
-TransportCell::withinBoundary_(const MeshInfo& mi){
+bool TransportCell::withinBoundary_(const MeshInfo& mi){
 
     if (globalCellIndex_[0]==0 || globalCellIndex_[0]==mi.globalsize[0]-1 || 
         globalCellIndex_[1]==0 || globalCellIndex_[1]==mi.globalsize[1]-1 ){
@@ -129,23 +134,24 @@ TransportCell::withinBoundary_(const MeshInfo& mi){
 
 }
 
-// The problem of selecting stencils is that 
-TransportCell::selectAdvStencil(){
+// Selecting 3,2 stencils only 
+void TransportCell::selectAdvStencil_(){
     if (boundaryflag){
+        advStencilSelection_.clear();
         for (auto & e : boundaryInfo_){
             switch(e.first){
                 case West:
-                   advStencilSelection_.insert(1);
                    advStencilSelection_.insert(2);
+                   advStencilSelection_.insert(3);
                 case South:
-                   advStencilSelection_.insert(2);
                    advStencilSelection_.insert(3);
+                   advStencilSelection_.insert(4);
                 case East:
-                   advStencilSelection_.insert(0);
-                   advStencilSelection_.insert(3);
-                case North:
-                   advStencilSelection_.insert(0);
                    advStencilSelection_.insert(1);
+                   advStencilSelection_.insert(4);
+                case North:
+                   advStencilSelection_.insert(1);
+                   advStencilSelection_.insert(2);
                 default :
                    printf("Invalid boundary flag number \n"); 
             }
@@ -153,7 +159,7 @@ TransportCell::selectAdvStencil(){
     }
 }
 
-TransportCell::selectDiffStencil(){
+void TransportCell::selectDiffStencil_(){
     if (boundaryflag){
 
     } 
@@ -210,72 +216,48 @@ Transport::~Transport(){
 
 }
 
-/*
- *Transport::FindBoundary(const MeshInfo& mi){
- *
- *    for (int j=mi.localsize[1]-mi.ghost_cell[1]; j<mi.localsize[1]+mi.ghost_cell[1];j++){
- *    for (int i=mi.localsize[0]-mi.ghost_cell[0]; i<mi.localsize[0]+mi.ghost_cell[0];i++){
- *
- *        valarray<int> currentCell = {i,j};
- *
- *        if (WithinBoundary(i,j)) {
- *            Onboundary_.push_back(currentCell);
- *        } else {
- *            InteriorCell_.push_back(currentCell);
- *        }
- *
- *    }}
- *
- *}
- *
- *
- *  //Separate boundary cells with inner cells
- *Transport::SeparateBoundary(const MeshInfo& mi){
- *
- *    for (int j=0; j<mi.localsize[1]; j++){
- *    for (int i=0; i<mi.localsize[0]; i++){
- *        int currenti = cell_[0] + i;
- *        int currentj = cell_[1] + j;
- *        if (WithinBoundary(currenti, currentj)){
- *            Onboundary.push_back({i,j});
- *        } else {
- *            InteriorCell.push_back({i,j});
- *        }
- *
- *    }}
- *
- *}
- *
- */
-
-Transport::GetAdvWenoStencils(vector<int *>& rangex, vector<int *>& rangey){
+void Transport::GetAdvWenoStencils(vector<int *>& rangex, vector<int *>& rangey){
 
     advRangex_ = rangex;
     advRangex_ = rangey;
 
 }
 
-Transport::GetDiffHoriWenoStencils(vector<int *>& rangex, vector<int *>& rangey){
+void Transport::GetDiffHoriWenoStencils(vector<int *>& rangex, vector<int *>& rangey){
 
     diffHoriRangex_ = rangex;
     diffHoriRangey_ = rangey;
  
 }
 
-Transport::GetDiffVertWenoStencils(vector<int *>& rangex, vector<int *>& rangey){
+void Transport::GetDiffVertWenoStencils(vector<int *>& rangex, vector<int *>& rangey){
 
     diffVertRangex_ = rangex;
     diffVertRangey_ = rangey;
 
 }
 
-Transport::CreateWenoReconstruction(const MeshInfo& mi){
+vector<double> Transport::SelectAdvLinWeights(const TransportCell& cell){
+
+    vector<double> selectedWeights;
+    for (auto s: advStencilSelection_){
+        selectedWeights.push_back(s);
+    }
+    return selectedWeights;
+}
+
+
+void Transport::CreateWenoReconstruction_(const MeshInfo& mi){
 
     for (auto cell : localcells_){
 
-        SelectStencils(cell);
+        vector<double> selectedadvlinweights = SelectAdvLinWeights(cell);
+        vector<int *>  selectedrangex     = SelectStencilx(cell);
+        vector<int *>  selectedrangey     = SelectStencily(cell);
 
-        WenoReconstruction * tmpPtr = new WenoReconstruction(mi, linWeights); 
+        WenoReconstruction * tmpPtr = new WenoReconstruction(mi, linWeights, 
+                                                             selectedrangex, selectedrangey, 
+                                                             cell->GetLocalCellIndexGhost()); 
 
         advWr_.push_back(tmpPtr); 
     
