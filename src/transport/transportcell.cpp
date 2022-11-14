@@ -18,10 +18,11 @@ TransportCell::TransportCell(const MeshInfo& mi, point_index& cellIndex){
     globalCellIndex_[1] = localCellIndex_[1] + mi.localstart[1]; 
     globalCellIndexFlat_ = globalCellIndex[1]*mi.globalsize[0] + globalCellIndex[0];
 
-    // local edge index
+    // how many vertical and horizontal edges locally
     localNVertiEdge_ = mi.localsize[0] + 1;
     localNHoriEdge_ = mi.localsize[0];
 
+    // how many vertical and horizontal edges globally
     globalNVertiEdge_ = mi.globalsize[0] + 1;
     globalNHoriEdge_ = mi.globalsize[0];
 
@@ -42,7 +43,7 @@ TransportCell::TransportCell(const MeshInfo& mi, point_index& cellIndex){
     globalEdgeIndex_[0] = globalCellIndex_[1]*globalNVertiEdge_ + globalCellIndex_[0] + 1;
     globalEdgeIndex_[2] = globalCellIndex_[1]*globalNVertiEdge_ + globalCellIndex_[0];
 
-    // Assign boundary information
+    // Assign simple boundary information
     if (withinBoundary_()) {
 
         boundaryflag = true;
