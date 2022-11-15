@@ -6,8 +6,10 @@ M = N+1;
 % Change a here
 a = 200; k = 1;
 
-fexact = @(x) 24/a*(k/a)^3 + 24/a*(k/a)^2*x + 12/a*(k/a)*x.^2 + 4/a*x.^3 + ...
-              (1 - 24/a*(k/a)^3 - 24/a*(k/a)^2 - 12/a*(k/a) - 4/a)/exp(a/k) * exp(a/k.*x);
+%fexact = @(x) 24/a*(k/a)^3 + 24/a*(k/a)^2*x + 12/a*(k/a)*x.^2 + 4/a*x.^3 + ...
+%              (1 - 24/a*(k/a)^3 - 24/a*(k/a)^2 - 12/a*(k/a) - 4/a)/exp(a/k) * exp(a/k.*x);
+
+fexact = @(x) 1/(exp(a/k)-1) * (exp(a/k.*x) - 1);
 
 % Define Gauss quadrature points and weights
 gp = [-sqrt(3/5),0.0,sqrt(3/5)];
