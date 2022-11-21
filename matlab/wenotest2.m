@@ -1,9 +1,9 @@
 function wenotest2(totLength, totTime, iMax, nMax, plotUBar, runType, fluxFcn)
 
-stencil = [ [-2,2]; [-2,0]; [-1,1]; [0,2]; [0,0] ];
-linWgt  = [ 1/2 1/8 1/8 1/8 1/8];
-%stencil = [ [-2,0]; [-1,1]; [0,2] ];
-%linWgt  = [ 1/3 1/3 1/3];
+%stencil = [ [-2,2]; [-2,0]; [-1,1]; [0,2]; [0,0] ];
+%linWgt  = [ 1/2 1/8 1/8 1/8 1/8];
+stencil = [ [-1,1]; [-1,0]; [0,1] ];
+linWgt  = [ 1/3 1/3 1/3];
 %stencil = [ [-2,2]];
 %linWgt  = [ 1 ];
 
@@ -18,7 +18,7 @@ for s=1:nStencils
     stencilDegree = stencil(s,2) - stencil(s,1) + 1;
     switch stencilDegree
         case 1
-        %case 2
+        case 2
         case 3
         case 5
         %case 7
@@ -273,7 +273,9 @@ function [uL,uR] = reconstructionLR(iMax,dx,uBar,stencil,linWgt)
         r = stencil(s,2) - stencil(s,1) + 1;
         basePolynCoeff(s,1:r,1:r) = polyn(stencil(s,:));
     end
-    
+   
+    basePolynCoeff
+
     for i=1:1:iMax
 
         iLLL = 1 + mod(i-4,iMax);
