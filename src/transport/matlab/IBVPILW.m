@@ -87,9 +87,39 @@ alpha = 0.5;
 beta  = 1.5; 
 
 % Inverse Lax-Wendroff scheme modefied for WENO finite 
-% volume scheme
+% volume scheme, everything the same as NoGhostCell, expect
+% replacing fixed boundary values with ILW approximation
+figure, set(gcf)
+%set(gca,'nextplot','replacechildren');
+%filename = "ILW,a=" + num2str(a) +".avi";
+%v = VideoWriter(filename);
+%open(v);
+for time = 1:NT
+    currentT = time*dt;
 
 
+
+
+    % exact solution
+    %plot(linspace(0,1,100),fexact(linspace(0,1,100),currentT),'-')
+    %plot(linspace(0,1,100),fexact(a,k,linspace(0,1,100),currentT),'-')
+	 %hold on
+    % Computational solution
+    %plot(cell(1:end),uBarCurrent(1:end),'o');
+    %[t,s] = title(['The Peclet number is ',num2str(Pe), ', CFL = ',num2str(CFL) ]);
+	 %s.FontAngle = 'italic';
+	 %legend({'Exact solution','Numerical solution'},'Location','northwest');
+ 
+    %axis([0 1 -1 1])
+
+    %frame = getframe(gcf);
+	 %writeVideo(v,frame);
+
+	 %pause(0.0001)
+
+    %hold off
+
+    %errorLnorm(2,uBarCurrent,a,k,x,currentT,1:N)
 
 
 end
