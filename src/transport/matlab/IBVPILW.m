@@ -1,4 +1,4 @@
-function [] = IBVPNoGhostCell(N,a,k)
+function [] = IBVPILW(N,a,k)
 
 % Define vertex number
 M = N + 1;
@@ -13,7 +13,7 @@ sol = zeros(size(cell));
 
 % Define convection and diffusion coefficients
 % A convection dominated convection-diffusion problem
-%a = 20; k = 1;
+%a = 1; k = 1;
 Pe = a/k;
 
 % Gauss quadrature points and weights
@@ -43,9 +43,21 @@ linWgt32  = [3,1,1];
 stencil32L = [[0,2];[0,1];[0,0]];
 linWgt32L  = [3,2,1];
 
+stencil32R = [[-2,0];[-1,0];[0,0]];
+linWgt32R  = [3,2,1];
+
 % Weno (4,3) reconstruction for diffusive flux
 stencil43 = [[-2,1];[-2,0];[-1,1]];
 linWgt43  = [4,1,1]; 
+
+stencil43L = [[0,3];[0,2];[0,1];[0,0]];
+linWgt43L  = [4,1,1,1]; 
+
+stencil43LL = [[-1,2];[-1,1];[0,2]];
+linWgt43LL  = [4,1,1]; 
+
+stencil43R = [[-3,0];[-2,0];[-1,0];[0,0]];
+linWgt43R  = [4,1,1,1]; 
 
 % Define exact solution, initial and boundary conditions
 % change it later for different conditions
@@ -53,8 +65,8 @@ linWgt43  = [4,1,1];
 
 %init = @(x) sin(x);
 
-boundaryL = @(t) exp(-k*t)*sin(-1-a*t);
-boundaryR = @(t) exp(-k*t)*sin( 1-a*t);
+%boundaryL = @(t) exp(-k*t)*sin(-1-a*t);
+%boundaryR = @(t) exp(-k*t)*sin( 1-a*t);
 
 % Attach two small cells outside of the boundary
 % In order to match with the physics boundary, following flow solver,
@@ -74,67 +86,11 @@ diffRu = zeros(M,4);
 alpha = 0.5; 
 beta  = 1.5; 
 
-% Time propogation and plotting
-% Forward Eurlar time propogation
-figure, set(gcf)
-set(gca,'nextplot','replacechildren');
-filename = "GhostCell,a=" + num2str(a) +".avi";
-v = VideoWriter(filename);
-open(v);
-for time = 1:NT
-    currentT = time*dt;
+% Inverse Lax-Wendroff scheme modefied for WENO finite 
+% volume scheme
 
-    %bVL = boundaryL(currentT);
-    %bVR = boundaryR(currentT);
 
-    [bVL,bVR] = boundary(a,k,currentT);
 
-    uBarCurrent = [bVL,bVL,uBarCurrent,bVR,bVR];
-
-    % Update interior cells first 
-    for s = 3:N+2
-        uLp = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s-1, 0.5,-0.5,1); 
-        uLm = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s  ,-0.5,-0.5,1);
-        uRm = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s  , 0.5,-0.5,1);
-        uRp = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s+1,-0.5,-0.5,1); 
-
-        hatX = [-1*beta,-1*alpha,alpha,beta];
-
-        ruL = multiLWENO1D(x,h,uBarCurrent,stencil43,linWgt43,s  ,hatX,0.0,2);
-        ruR = multiLWENO1D(x,h,uBarCurrent,stencil43,linWgt43,s+1,hatX,0.0,2);
-
-        uBarNext(s-2) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
-                                               totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
-
-    end
-
-    % Update current uBar with next uBar
-    uBarCurrent = uBarNext;
-
-    % exact solution
-    %plot(linspace(0,1,100),fexact(linspace(0,1,100),currentT),'-')
-    plot(linspace(0,1,100),fexact(a,k,linspace(0,1,100),currentT),'-')
-	 hold on
-    % Computational solution
-    plot(cell(1:end),uBarCurrent(1:end),'o');
-    [t,s] = title(['The Peclet number is ',num2str(Pe), ', CFL = ',num2str(CFL) ]);
-	 s.FontAngle = 'italic';
-	 legend({'Exact solution','Numerical solution'},'Location','northwest');
- 
-    axis([0 1 -1 1])
-
-    frame = getframe(gcf);
-	 writeVideo(v,frame);
-
-	 pause(0.0001)
-
-    hold off
-
-    %errorLnorm(2,uBarCurrent,a,k,x,currentT,1:N)
-
-end
-
-close(v);
 
 end
 

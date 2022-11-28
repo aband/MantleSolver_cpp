@@ -88,7 +88,11 @@ beta  = 1.5;
 
 % Time propogation and plotting
 % Forward Eurlar time propogation
-figure
+figure, set(gcf)
+set(gca,'nextplot','replacechildren');
+filename = "NoGhostCell,a=" + num2str(a) +".avi";
+v = VideoWriter(filename);
+open(v);
 for time = 1:NT
     currentT = time*dt;
 
@@ -195,6 +199,12 @@ for time = 1:NT
 	 legend({'Exact solution','Numerical solution'},'Location','northwest');
  
     axis([0 1 -1 1])
+
+    frame = getframe(gcf);
+	 writeVideo(v,frame);
+
+    %errorLnorm(2,uBarCurrent,a,k,x,currentT,1:N)
+
     pause(0.0001)
     hold off
 

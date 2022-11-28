@@ -15,7 +15,7 @@ if order == 0
         err = err + gaussWt(g)*abs(fexact(a,k,gPt,t)-uBar);
     end
 
-    err = max(err);
+    err = max(err(index));
 
 else
     % Return L-order norm
@@ -28,7 +28,7 @@ else
         err = err + gaussWt(g)*abs(fexact(a,k,gPt,t)-uBar).^order;
     end
 
-    err = sum(err).^(1/order);
+    err = sum(err(index)).^(1/order);
 
 end
 
