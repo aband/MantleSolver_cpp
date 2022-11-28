@@ -74,13 +74,16 @@ diffRu = zeros(M,4);
 alpha = 0.5; 
 beta  = 1.5; 
 
+basepolyncoeff32 = basePolynCoeff(stencil32,-0.5);
+basepolyncoeff43 = basePolynCoeff(stencil43, 0.0);
+
 % Time propogation and plotting
 % Forward Eurlar time propogation
-figure, set(gcf)
-set(gca,'nextplot','replacechildren');
-filename = "GhostCell,a=" + num2str(a) +".avi";
-v = VideoWriter(filename);
-open(v);
+figure, set(gcf);
+%set(gca,'nextplot','replacechildren');
+%filename = "GhostCell,a=" + num2str(a) +".avi";
+%v = VideoWriter(filename);
+%open(v);
 for time = 1:NT
     currentT = time*dt;
 
@@ -93,15 +96,15 @@ for time = 1:NT
 
     % Update interior cells first 
     for s = 3:N+2
-        uLp = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s-1, 0.5,-0.5,1); 
-        uLm = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s  ,-0.5,-0.5,1);
-        uRm = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s  , 0.5,-0.5,1);
-        uRp = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s+1,-0.5,-0.5,1); 
+        uLp = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s-1, 0.5,1); 
+        uLm = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s  ,-0.5,1);
+        uRm = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s  , 0.5,1);
+        uRp = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s+1,-0.5,1); 
 
         hatX = [-1*beta,-1*alpha,alpha,beta];
 
-        ruL = multiLWENO1D(x,h,uBarCurrent,stencil43,linWgt43,s  ,hatX,0.0,2);
-        ruR = multiLWENO1D(x,h,uBarCurrent,stencil43,linWgt43,s+1,hatX,0.0,2);
+        ruL = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s  ,hatX,2);
+        ruR = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s+1,hatX,2);
 
         uBarNext(s-2) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
                                                totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
@@ -110,23 +113,25 @@ for time = 1:NT
 
     % Update current uBar with next uBar
     uBarCurrent = uBarNext;
-
+    
+    clf;
     % exact solution
     %plot(linspace(0,1,100),fexact(linspace(0,1,100),currentT),'-')
-    plot(linspace(0,1,100),fexact(a,k,linspace(0,1,100),currentT),'-')
+    plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
 	 hold on
     % Computational solution
     plot(cell(1:end),uBarCurrent(1:end),'o');
-    [t,s] = title(['The Peclet number is ',num2str(Pe), ', CFL = ',num2str(CFL) ]);
+    [t,s] = title(['The Peclet number is ',num2str(Pe), ', CFL = ',num2str(CFL), ', Time = ',num2str(currentT) ]);
 	 s.FontAngle = 'italic';
 	 legend({'Exact solution','Numerical solution'},'Location','northwest');
  
-    axis([0 1 -1 1])
+    axis([-1 1 -1 1])
 
-    frame = getframe(gcf);
-	 writeVideo(v,frame);
+    %frame = getframe(gcf);
+	 %writeVideo(v,frame);
 
-	 pause(0.0001)
+	 %pause(0.0001)
+    drawnow;
 
     hold off
 
@@ -134,7 +139,7 @@ for time = 1:NT
 
 end
 
-close(v);
+%close(v);
 
 end
 

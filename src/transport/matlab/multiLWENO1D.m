@@ -1,17 +1,17 @@
 % 1D Point-wise multi level weno reconstruction
 
-function [ru] = multiLWENO1D(x,dx,uBar,stencil,linWgt,targetCell,hatX,centerShift,smoothIndShift)
+function [ru] = multiLWENO1D(basepolyncoeff,dx,uBar,stencil,linWgt,targetCell,hatX,smoothIndShift)
 
 nStencils = size(stencil,1);
 
-maxR = max(stencil(:,2)-stencil(:,1)+1);
-basepolyncoeff = zeros(nStencils,maxR,maxR);
+%maxR = max(stencil(:,2)-stencil(:,1)+1);
+%basepolyncoeff = zeros(nStencils,maxR,maxR);
 
 r = zeros(nStencils,1);
 
 for s = 1:nStencils
    r(s) = stencil(s,2) - stencil(s,1) + 1;
-   basepolyncoeff(s,1:r(s),1:r(s)) = basePolynCoeff(stencil(s,:),centerShift);
+%   basepolyncoeff(s,1:r(s),1:r(s)) = basePolynCoeff(stencil(s,:),centerShift);
 end
 
 % when smoothIndShift = 1, cell center type reconstruction
