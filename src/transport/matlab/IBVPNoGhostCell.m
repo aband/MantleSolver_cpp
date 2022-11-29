@@ -77,6 +77,7 @@ dt    = Tmax/NTmax;
 CFL = a*dt/h;
 
 NT    = NTmax;
+%NT    = 100;
 
 uBarCurrent = uBar;
 uBarNext = uBar;
@@ -86,13 +87,25 @@ diffRu = zeros(M,4);
 alpha = 0.5; 
 beta  = 1.5; 
 
+% Calculate base polynomial coefficients in advance
+basepolyncoeff32 = basePolynCoeff(stencil32,-0.5);
+basepolyncoeff43 = basePolynCoeff(stencil43, 0.0);
+
+basepolyncoeff32L = basePolynCoeff(stencil32L,-0.5);
+basepolyncoeff43L = basePolynCoeff(stencil43L, 0.0);
+basepolyncoeff43LL = basePolynCoeff(stencil43LL, 0.0);
+
+basepolyncoeff32R = basePolynCoeff(stencil32R,-0.5);
+basepolyncoeff43R = basePolynCoeff(stencil43R, 0.0);
+basepolyncoeff43R2 = basePolynCoeff(stencil43R, -1.0);
+
 % Time propogation and plotting
 % Forward Eurlar time propogation
 figure, set(gcf)
-set(gca,'nextplot','replacechildren');
-filename = "NoGhostCell,a=" + num2str(a) +".avi";
-v = VideoWriter(filename);
-open(v);
+%set(gca,'nextplot','replacechildren');
+%filename = "NoGhostCell,a=" + num2str(a) +".avi";
+%v = VideoWriter(filename);
+%open(v);
 for time = 1:NT
     currentT = time*dt;
 
@@ -103,15 +116,15 @@ for time = 1:NT
 
     % Update interior cells first 
     for s = 3:N-2
-        uLp = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s-1, 0.5,-0.5,1); 
-        uLm = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s  ,-0.5,-0.5,1);
-        uRm = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s  , 0.5,-0.5,1);
-        uRp = multiLWENO1D(x,h,uBarCurrent,stencil32,linWgt32,s+1,-0.5,-0.5,1); 
+        uLp = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s-1, 0.5,1); 
+        uLm = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s  ,-0.5,1);
+        uRm = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s  , 0.5,1);
+        uRp = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s+1,-0.5,1); 
 
         hatX = [-1*beta,-1*alpha,alpha,beta];
 
-        ruL = multiLWENO1D(x,h,uBarCurrent,stencil43,linWgt43,s  ,hatX,0.0,2);
-        ruR = multiLWENO1D(x,h,uBarCurrent,stencil43,linWgt43,s+1,hatX,0.0,2);
+        ruL = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s  ,hatX,2);
+        ruR = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s+1,hatX,2);
 
         uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
                                                totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
@@ -121,50 +134,50 @@ for time = 1:NT
     % Treat boundary without assigning ghost cells
     % Left boundary cell
     s = 1;     
-    uLp = bVL;
-    uLm = multiLWENO1D(x,h,uBarCurrent,stencil32L,linWgt32L,1,-0.5,-0.5,1);
-    uRm = multiLWENO1D(x,h,uBarCurrent,stencil32L,linWgt32L,1, 0.5,-0.5,1);
-    uRp = multiLWENO1D(x,h,uBarCurrent,stencil32 ,linWgt32 ,2,-0.5,-0.5,1);
+    uLp = bVL
+    uLm = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1,-0.5,1)
+    uRm = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1, 0.5,1);
+    uRp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,2,-0.5,1);
 
     hatX = [alpha,beta];
-    ruL = multiLWENO1D(x,h,uBarCurrent,stencil43L ,linWgt43L ,s,hatX,0.0,1);
+    ruL = multiLWENO1D(basepolyncoeff43L,h,uBarCurrent,stencil43L ,linWgt43L ,s,hatX,1);
     ruL = [bVL,bVL,ruL];
 
     hatX = [-1*alpha,alpha,beta];
-    ruR = multiLWENO1D(x,h,uBarCurrent,stencil43LL,linWgt43LL,s+1,hatX,0.0,2);
+    ruR = multiLWENO1D(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s+1,hatX,2);
     ruR = [bVL,ruR];
 
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
                                            totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
 
     s = 2; % The second cell
-    uLp = multiLWENO1D(x,h,uBarCurrent,stencil32L,linWgt32L,s-1, 0.5,-0.5,1); 
-    uLm = multiLWENO1D(x,h,uBarCurrent,stencil32 ,linWgt32 ,s  ,-0.5,-0.5,1);
-    uRm = multiLWENO1D(x,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,-0.5,1);
-    uRp = multiLWENO1D(x,h,uBarCurrent,stencil32 ,linWgt32 ,s+1,-0.5,-0.5,1); 
+    uLp = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,s-1, 0.5,1); 
+    uLm = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s  ,-0.5,1);
+    uRm = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,1);
+    uRp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s+1,-0.5,1); 
 
     hatX = [-1*alpha,alpha,beta];
-    ruL = multiLWENO1D(x,h,uBarCurrent,stencil43LL,linWgt43LL,s,hatX,0.0,2);
+    ruL = multiLWENO1D(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s,hatX,2);
     ruL = [bVL,ruL];
    
     hatX = [-1*beta,-1*alpha,alpha,beta];
-    ruR = multiLWENO1D(x,h,uBarCurrent,stencil43,linWgt43,s+1,hatX,0.0,2);
+    ruR = multiLWENO1D(basepolyncoeff43  ,h,uBarCurrent,stencil43  ,linWgt43  ,s+1,hatX,2);
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
                                            totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
 
     % Right boundary cell  
     s = N;
-    uLp = multiLWENO1D(x,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,-0.5,1); 
-    uLm = multiLWENO1D(x,h,uBarCurrent,stencil32R,linWgt32R,s  ,-0.5,-0.5,1);
-    uRm = multiLWENO1D(x,h,uBarCurrent,stencil32R,linWgt32R,s  , 0.5,-0.5,1);
+    uLp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,1); 
+    uLm = multiLWENO1D(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s  ,-0.5,1);
+    uRm = multiLWENO1D(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s  , 0.5,1);
     uRp = bVR; 
 
     hatX = [-1*beta,-1*alpha,alpha];
-    ruL = multiLWENO1D(x,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,0.0,2);
+    ruL = multiLWENO1D(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,2);
     ruL = [ruL,bVR];
 
     hatX = [-1*beta,-1*alpha];
-    ruR = multiLWENO1D(x,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,-1.0,1);
+    ruR = multiLWENO1D(basepolyncoeff43R2,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,1);
     ruR = [ruR,bVR,bVR];
 
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
@@ -172,16 +185,16 @@ for time = 1:NT
 
     % The second last cell
     s = N-1;
-    uLp = multiLWENO1D(x,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,-0.5,1); 
-    uLm = multiLWENO1D(x,h,uBarCurrent,stencil32 ,linWgt32 ,s  ,-0.5,-0.5,1);
-    uRm = multiLWENO1D(x,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,-0.5,1);
-    uRp = multiLWENO1D(x,h,uBarCurrent,stencil32R,linWgt32R,s+1,-0.5,-0.5,1); 
+    uLp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,1); 
+    uLm = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s  ,-0.5,1);
+    uRm = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,1);
+    uRp = multiLWENO1D(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s+1,-0.5,1); 
 
     hatX = [-1*beta,-1*alpha,alpha,beta];
-    ruL = multiLWENO1D(x,h,uBarCurrent,stencil43,linWgt43,s,hatX,0.0,2);
+    ruL = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s,hatX,2);
 
     hatX = [-1*beta,-1*alpha,alpha];
-    ruR = multiLWENO1D(x,h,uBarCurrent,stencil43R,linWgt43R,s+1,hatX,0.0,2);
+    ruR = multiLWENO1D(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s+1,hatX,2);
     ruR = [ruR,bVR];
 
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
@@ -191,24 +204,30 @@ for time = 1:NT
     uBarCurrent = uBarNext;
 
     % exact solution
-    plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
-	 hold on
-    plot(cell(1:end),uBarCurrent(1:end),'o');
-    [t,s] = title(['The Peclet number is ',num2str(Pe), ', CFL = ',num2str(CFL) ]);
-	 s.FontAngle = 'italic';
-	 legend({'Exact solution','Numerical solution'},'Location','northwest');
+	 if mod(time,50) == 0
+        clf;
+        plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
+	     hold on
+        plot(cell(1:end),uBarCurrent(1:end),'o');
+        [t,s] = title(['The Peclet number is ',num2str(Pe), ', CFL = ',num2str(CFL) ,', Time = ', num2str(currentT)]);
+	     s.FontAngle = 'italic';
+	     legend({'Exact solution','Numerical solution'},'Location','northwest');
  
-    axis([0 1 -1 1])
+        axis([-1 1 -1 1])
 
-    frame = getframe(gcf);
-	 writeVideo(v,frame);
+        %frame = getframe(gcf);
+	     %writeVideo(v,frame);
 
-    %errorLnorm(2,uBarCurrent,a,k,x,currentT,1:N)
+        %errorLnorm(2,uBarCurrent,a,k,x,currentT,1:N)
 
-    pause(0.0001)
-    hold off
+        %pause(0.0001)
+	     drawnow;
+        hold off
+    end
 
 end
+
+%close(v);
 
 end
 

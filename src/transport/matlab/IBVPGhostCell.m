@@ -113,27 +113,28 @@ for time = 1:NT
 
     % Update current uBar with next uBar
     uBarCurrent = uBarNext;
-    
-    clf;
-    % exact solution
-    %plot(linspace(0,1,100),fexact(linspace(0,1,100),currentT),'-')
-    plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
-	 hold on
-    % Computational solution
-    plot(cell(1:end),uBarCurrent(1:end),'o');
-    [t,s] = title(['The Peclet number is ',num2str(Pe), ', CFL = ',num2str(CFL), ', Time = ',num2str(currentT) ]);
-	 s.FontAngle = 'italic';
-	 legend({'Exact solution','Numerical solution'},'Location','northwest');
+   
+    if mod(time,50) == 0
+        clf;
+        % exact solution
+        plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
+	     hold on
+        % Computational solution
+        plot(cell(1:end),uBarCurrent(1:end),'o');
+        [t,s] = title(['The Peclet number is ',num2str(Pe), ', CFL = ',num2str(CFL), ', Time = ',num2str(currentT) ]);
+	     s.FontAngle = 'italic';
+	     legend({'Exact solution','Numerical solution'},'Location','northwest');
  
-    axis([-1 1 -1 1])
+        axis([-1 1 -1 1])
 
-    %frame = getframe(gcf);
-	 %writeVideo(v,frame);
+        %frame = getframe(gcf);
+	     %writeVideo(v,frame);
 
-	 %pause(0.0001)
-    drawnow;
+	     %pause(0.0001)
+        drawnow;
 
-    hold off
+        hold off
+    end
 
     %errorLnorm(2,uBarCurrent,a,k,x,currentT,1:N)
 
