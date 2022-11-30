@@ -79,11 +79,13 @@ basepolyncoeff43 = basePolynCoeff(stencil43, 0.0);
 
 % Time propogation and plotting
 % Forward Eurlar time propogation
-figure, set(gcf);
+%figure, set(gcf);
 %set(gca,'nextplot','replacechildren');
 %filename = "GhostCell,a=" + num2str(a) +".avi";
 %v = VideoWriter(filename);
 %open(v);
+clf;
+drawnow;
 for time = 1:NT
     currentT = time*dt;
 
@@ -114,14 +116,15 @@ for time = 1:NT
     % Update current uBar with next uBar
     uBarCurrent = uBarNext;
    
-    if mod(time,50) == 0
+    if mod(time,500) == 0
         clf;
         % exact solution
         plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
 	     hold on
         % Computational solution
         plot(cell(1:end),uBarCurrent(1:end),'o');
-        [t,s] = title(['The Peclet number is ',num2str(Pe), ', CFL = ',num2str(CFL), ', Time = ',num2str(currentT) ]);
+        [t,s] = title(['Pe = ',num2str(Pe), ', CFL = ',num2str(CFL), ', Time = ',num2str(currentT) ,...
+                       ', N = ',num2str(N)]);
 	     s.FontAngle = 'italic';
 	     legend({'Exact solution','Numerical solution'},'Location','northwest');
  

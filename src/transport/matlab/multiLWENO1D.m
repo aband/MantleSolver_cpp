@@ -46,28 +46,30 @@ end
 end
 
 % Calculate base polynomial coefficients with a shift from center 
-function [sol] = basePolynCoeff(stencil,center)
-    r = stencil(2) - stencil(1) + 1;
-
-    M = zeros(r,r);
-    for j = 1:r
-        xLeft  = stencil(1) + j - 1 + center;
-        xRight = stencil(1) + j + center;
-    
-        for p=1:r
-            M(j,p) = xRight^p/p - xLeft^p/p;
-        end
-    end
-
-    sol = zeros(r,r);
-    
-    for k = 1:r
-        B = zeros(r,1);
-        B(k) = 1;
-        sol(k,:) = M\B;
-    end
-end
-
+%{
+ {function [sol] = basePolynCoeff(stencil,center)
+ {    r = stencil(2) - stencil(1) + 1;
+ {
+ {    M = zeros(r,r);
+ {    for j = 1:r
+ {        xLeft  = stencil(1) + j - 1 + center;
+ {        xRight = stencil(1) + j + center;
+ {
+ {        for p=1:r
+ {            M(j,p) = xRight^p/p - xLeft^p/p;
+ {        end
+ {    end
+ {
+ {    sol = zeros(r,r);
+ {
+ {    for k = 1:r
+ {        B = zeros(r,1);
+ {        B(k) = 1;
+ {        sol(k,:) = M\B;
+ {    end
+ {end
+ {
+ %}
 function [ru] = polynEval(p,coeff,s,uBarStencil,r)
 
    % p is relative coordinate (x-x0)/dx

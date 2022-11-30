@@ -70,14 +70,14 @@ linWgt43R  = [4,1,1,1];
 
 % Attach two small cells outside of the boundary
 % In order to match with the physics boundary, following flow solver,
-NTmax = 2000*a;
+NTmax = 1000*a;
 Tmax  = 0.5;
 dt    = Tmax/NTmax;
 
 CFL = a*dt/h;
 
 NT    = NTmax;
-%NT    = 100;
+NT    = 1;
 
 uBarCurrent = uBar;
 uBarNext = uBar;
@@ -101,11 +101,13 @@ basepolyncoeff43R2 = basePolynCoeff(stencil43R, -1.0);
 
 % Time propogation and plotting
 % Forward Eurlar time propogation
-figure, set(gcf)
+%figure, set(gcf)
 %set(gca,'nextplot','replacechildren');
 %filename = "NoGhostCell,a=" + num2str(a) +".avi";
 %v = VideoWriter(filename);
 %open(v);
+clf;
+drawnow;
 for time = 1:NT
     currentT = time*dt;
 
@@ -134,8 +136,8 @@ for time = 1:NT
     % Treat boundary without assigning ghost cells
     % Left boundary cell
     s = 1;     
-    uLp = bVL
-    uLm = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1,-0.5,1)
+    uLp = bVL;
+    uLm = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1,-0.5,1);
     uRm = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1, 0.5,1);
     uRp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,2,-0.5,1);
 
@@ -149,6 +151,18 @@ for time = 1:NT
 
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
                                            totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
+
+    disp('1');
+
+    uLp
+	 uLm
+	 ruL
+	 uRp
+	 uRm
+	 ruR
+
+    %totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) 
+    %totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1)
 
     s = 2; % The second cell
     uLp = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,s-1, 0.5,1); 
@@ -183,6 +197,18 @@ for time = 1:NT
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
                                            totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
 
+    disp('N');
+
+    uLp
+	 uLm
+	 ruL
+	 uRp
+	 uRm
+	 ruR
+
+    %totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) 
+    %totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1)
+
     % The second last cell
     s = N-1;
     uLp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,1); 
@@ -204,12 +230,13 @@ for time = 1:NT
     uBarCurrent = uBarNext;
 
     % exact solution
-	 if mod(time,50) == 0
+	 if mod(time,1000) == 0
         clf;
         plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
 	     hold on
         plot(cell(1:end),uBarCurrent(1:end),'o');
-        [t,s] = title(['The Peclet number is ',num2str(Pe), ', CFL = ',num2str(CFL) ,', Time = ', num2str(currentT)]);
+        [t,s] = title(['Pe =  ',num2str(Pe), ', CFL = ',num2str(CFL) ,', Time = ', num2str(currentT)...
+                       ', N = ',num2str(N)]);
 	     s.FontAngle = 'italic';
 	     legend({'Exact solution','Numerical solution'},'Location','northwest');
  
