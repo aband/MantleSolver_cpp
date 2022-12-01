@@ -265,7 +265,7 @@ end
 function [fu] = advectionFunc(a,u)
 
     % Linear advection case
-    fu = u;
+    fu = a*u;
 
 end
 
@@ -288,5 +288,5 @@ function [flux] = totalFlux(a, k, uP, uM, alpha, beta, ru, n)
     % Compute total flux consisting advection and diffusion flux
     % flux = au - kdu
     % n denotes the normal direction
-    flux = (a*LaxFriedrich(a,uP,uM) - k*diffFlux(alpha,beta,ru))*n; 
+    flux = (1*LaxFriedrich(a,uP,uM) - k*diffFlux(alpha,beta,ru))*n; 
 end
