@@ -125,10 +125,10 @@ for time = 1:NT
 end
 
 % ======================================================================
-function [fu] = advectionFunc(u)
+function [fu] = advectionFunc(a*u)
 
     % Linear advection case
-    fu = u;
+    fu = a*u;
 
 end
 

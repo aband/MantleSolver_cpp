@@ -70,7 +70,7 @@ linWgt43R  = [4,1,1,1];
 
 % Attach two small cells outside of the boundary
 % In order to match with the physics boundary, following flow solver,
-NTmax = 1000*a;
+NTmax = 50*a;
 Tmax  = 0.5;
 dt    = Tmax/NTmax;
 
