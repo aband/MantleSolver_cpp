@@ -97,21 +97,43 @@ for time = 1:NT
     uBarCurrent = [bVL,bVL,uBarCurrent,bVR,bVR];
 
     % Update interior cells first 
-    for s = 3:N+2
-        uLp = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s-1, 0.5,1); 
-        uLm = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s  ,-0.5,1);
-        uRm = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s  , 0.5,1);
-        uRp = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s+1,-0.5,1); 
+%{
+ {    for s = 3:N+2
+ {        uLp = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s-1, 0.5,1);
+ {        uLm = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s  ,-0.5,1);
+ {        uRm = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s  , 0.5,1);
+ {        uRp = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s+1,-0.5,1);
+ {
+ {        hatX = [-1*beta,-1*alpha,alpha,beta];
+ {
+ {        ruL = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s  ,hatX,2);
+ {        ruR = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s+1,hatX,2);
+ {
+ {        uBarNext(s-2) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
+ {                                                 totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
+ {
+ {    end
+ {
+ %}
+    ruL = zeros(N+1,1);
+	 ruR = zeros(N+1,1);
+
+    dru = zeros(N+1,4);
+
+    for s = 1:N+1
+        ruR(s) = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s+1, 0.5,1); 
+        ruL(s) = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s+2,-0.5,1);
 
         hatX = [-1*beta,-1*alpha,alpha,beta];
 
-        ruL = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s  ,hatX,2);
-        ruR = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s+1,hatX,2);
+        dru(s,:) = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s  ,hatX,2);
 
-        uBarNext(s-2) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
-                                               totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
+        %uBarNext(s) = uBarCurrent(s+1) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
+        %                                         totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
 
     end
+
+
 
     % Update current uBar with next uBar
     uBarCurrent = uBarNext;
@@ -148,16 +170,16 @@ end
 end
 
 % ======================================================================
-function [fu] = advectionFunc(u)
+function [fu] = advectionFunc(a,u)
 
     % Linear advection case
-    fu = u;
+    fu = a*u;
 
 end
 
 function [flux] = LaxFriedrich(a, uP, uM)
 
-    flux = 0.5*(advectionFunc(uP) + advectionFunc(uM) - a*(uP-uM));
+    flux = 0.5*(advectionFunc(a,uP) + advectionFunc(a,uM) - a*(uP-uM));
 
 end
 

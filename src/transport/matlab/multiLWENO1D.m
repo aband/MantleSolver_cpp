@@ -99,6 +99,25 @@ end
  {end
  {
  %}
+
+function [coeff] = polynDerCoeff(stencil,polyncoeff,hatX,ell)
+    % Precalculate derivative coefficients for Jiang-Shu smoothness indicator
+
+    r = stencil(2) - stencil(1) + 1;
+
+    n = size(hatX,1);
+
+    coeff = zeros(k,n);
+
+    for k=1:r
+        for p = 1+ell:r
+            coeff(k,:) = coeff(k,:) + ...
+                         polyncoeff(k,p)*hatX.^(p-1-ell)*factorial(p-1)/factorial(p-1-ell);
+        end
+    end
+
+end
+
 function [val] = polynEvalDer(ell, hatX, basePolynCoeff, uBarStencil, stencil)
     % hatX is relative coordinate x/dx
 

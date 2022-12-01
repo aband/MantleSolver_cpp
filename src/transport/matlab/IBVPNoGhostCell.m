@@ -77,7 +77,6 @@ dt    = Tmax/NTmax;
 CFL = a*dt/h;
 
 NT    = NTmax;
-NT    = 1;
 
 uBarCurrent = uBar;
 uBarNext = uBar;
@@ -152,15 +151,17 @@ for time = 1:NT
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
                                            totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
 
-    disp('1');
-
-    uLp
-	 uLm
-	 ruL
-	 uRp
-	 uRm
-	 ruR
-
+%{
+ {    disp('1');
+ {
+ {    uLp
+ {    uLm
+ {    ruL
+ {    uRp
+ {    uRm
+ {    ruR
+ {
+ %}
     %totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) 
     %totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1)
 
@@ -197,15 +198,17 @@ for time = 1:NT
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
                                            totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
 
-    disp('N');
-
-    uLp
-	 uLm
-	 ruL
-	 uRp
-	 uRm
-	 ruR
-
+%{
+ {    disp('N');
+ {
+ {    uLp
+ {    uLm
+ {    ruL
+ {    uRp
+ {    uRm
+ {    ruR
+ {
+ %}
     %totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) 
     %totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1)
 
@@ -230,7 +233,7 @@ for time = 1:NT
     uBarCurrent = uBarNext;
 
     % exact solution
-	 if mod(time,1000) == 0
+	 if mod(time,100) == 0
         clf;
         plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
 	     hold on
@@ -259,7 +262,7 @@ end
 end
 
 % ======================================================================
-function [fu] = advectionFunc(u)
+function [fu] = advectionFunc(a,u)
 
     % Linear advection case
     fu = u;
@@ -268,7 +271,7 @@ end
 
 function [flux] = LaxFriedrich(a, uP, uM)
 
-    flux = 0.5*(advectionFunc(uP) + advectionFunc(uM) - a*(uP-uM));
+    flux = 0.5*(advectionFunc(a,uP) + advectionFunc(a,uM) - abs(a)*(uP-uM));
 
 end
 
