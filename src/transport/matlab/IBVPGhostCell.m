@@ -139,17 +139,17 @@ for time = 1:NT
  % Update current uBar with next uBar
     uBarCurrent = uBarNext;
    
-    if mod(time,100) == 0
+    %if mod(time,100) == 0
         clf;
         % exact solution
-        plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
-	     hold on
+        %plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
+	     %hold on
         % Computational solution
         plot(cell(1:end),uBarCurrent(1:end),'o');
         [t,s] = title(['Pe = ',num2str(Pe), ', CFL = ',num2str(CFL), ', Time = ',num2str(currentT) ,...
                        ', N = ',num2str(N)]);
 	     s.FontAngle = 'italic';
-	     legend({'Exact solution','Numerical solution'},'Location','northwest');
+	     %legend({'Exact solution','Numerical solution'},'Location','northwest');
  
         axis([-1 1 -1 1])
 
@@ -159,8 +159,8 @@ for time = 1:NT
 	     %pause(0.0001)
         drawnow;
 
-        hold off
-    end
+        %hold off
+    %end
 
     %errorLnorm(2,uBarCurrent,a,k,x,currentT,1:N)
 

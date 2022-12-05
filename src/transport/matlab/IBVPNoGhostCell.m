@@ -144,26 +144,20 @@ for time = 1:NT
     ruL = multiLWENO1D(basepolyncoeff43L,h,uBarCurrent,stencil43L ,linWgt43L ,s,hatX,1);
     ruL = [bVL,bVL,ruL];
 
-    hatX = [-1*alpha,alpha,beta];
+    %hatX = [-1*alpha,alpha,beta];
+    %ruR = multiLWENO1D(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s+1,hatX,2);
+    %ruR = [bVL,ruR];
+
+    hatX = [-1*beta,-1*alpha,alpha,beta]/beta;
     ruR = multiLWENO1D(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s+1,hatX,2);
-    ruR = [bVL,ruR];
 
-    uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
-                                           totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
+    %leftflux = totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1);
+    leftflux = -20.0; 
 
-%{
- {    disp('1');
- {
- {    uLp
- {    uLm
- {    ruL
- {    uRp
- {    uRm
- {    ruR
- {
- %}
-    %totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) 
-    %totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1)
+	 rightflux = totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1);
+
+    uBarNext(s) = uBarCurrent(s) - dt/h * (leftflux +...
+                                           rightflux);
 
     s = 2; % The second cell
     uLp = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,s-1, 0.5,1); 
@@ -171,10 +165,13 @@ for time = 1:NT
     uRm = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,1);
     uRp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s+1,-0.5,1); 
 
-    hatX = [-1*alpha,alpha,beta];
+    %hatX = [-1*alpha,alpha,beta];
+    %ruL = multiLWENO1D(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s,hatX,2);
+    %ruL = [bVL,ruL];
+
+    hatX = [-1*beta,-1*alpha,alpha,beta]/beta;
     ruL = multiLWENO1D(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s,hatX,2);
-    ruL = [bVL,ruL];
-   
+
     hatX = [-1*beta,-1*alpha,alpha,beta];
     ruR = multiLWENO1D(basepolyncoeff43  ,h,uBarCurrent,stencil43  ,linWgt43  ,s+1,hatX,2);
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
@@ -187,30 +184,24 @@ for time = 1:NT
     uRm = multiLWENO1D(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s  , 0.5,1);
     uRp = bVR; 
 
-    hatX = [-1*beta,-1*alpha,alpha];
+    %hatX = [-1*beta,-1*alpha,alpha];
+    %ruL = multiLWENO1D(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,2);
+    %ruL = [ruL,bVR];
+
+    hatX = [-1*beta,-1*alpha,alpha,beta]/beta;
     ruL = multiLWENO1D(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,2);
-    ruL = [ruL,bVR];
 
     hatX = [-1*beta,-1*alpha];
     ruR = multiLWENO1D(basepolyncoeff43R2,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,1);
     ruR = [ruR,bVR,bVR];
 
-    uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
-                                           totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
+    leftfluxN = totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1);
+    
+	 rightfluxN = totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1);
+    %rightfluxN = 20;
 
-%{
- {    disp('N');
- {
- {    uLp
- {    uLm
- {    ruL
- {    uRp
- {    uRm
- {    ruR
- {
- %}
-    %totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) 
-    %totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1)
+    uBarNext(s) = uBarCurrent(s) - dt/h * (leftfluxN +...
+                                           rightfluxN);
 
     % The second last cell
     s = N-1;
@@ -222,9 +213,12 @@ for time = 1:NT
     hatX = [-1*beta,-1*alpha,alpha,beta];
     ruL = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s,hatX,2);
 
-    hatX = [-1*beta,-1*alpha,alpha];
+    %hatX = [-1*beta,-1*alpha,alpha];
+    %ruR = multiLWENO1D(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s+1,hatX,2);
+    %ruR = [ruR,bVR];
+
+    hatX = [-1*beta,-1*alpha,alpha,beta]/beta;
     ruR = multiLWENO1D(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s+1,hatX,2);
-    ruR = [ruR,bVR];
 
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1) +...
                                            totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
@@ -233,15 +227,15 @@ for time = 1:NT
     uBarCurrent = uBarNext;
 
     % exact solution
-	 if mod(time,100) == 0
+	 %if mod(time,100) == 0
         clf;
-        plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
-	     hold on
+        %plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
+	     %hold on
         plot(cell(1:end),uBarCurrent(1:end),'o');
         [t,s] = title(['Pe =  ',num2str(Pe), ', CFL = ',num2str(CFL) ,', Time = ', num2str(currentT)...
                        ', N = ',num2str(N)]);
 	     s.FontAngle = 'italic';
-	     legend({'Exact solution','Numerical solution'},'Location','northwest');
+	     %legend({'Exact solution','Numerical solution'},'Location','northwest');
  
         axis([-1 1 -1 1])
 
@@ -252,8 +246,8 @@ for time = 1:NT
 
         %pause(0.0001)
 	     drawnow;
-        hold off
-    end
+        %hold off
+    %end
 
 end
 
