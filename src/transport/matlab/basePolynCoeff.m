@@ -35,5 +35,3 @@ function [sol] = polyn(stencil,center)
         sol(k,:) = M\B;
     end
 end
-
-

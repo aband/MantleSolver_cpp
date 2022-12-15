@@ -1,22 +1,20 @@
 % 1D Point-wise multi level weno reconstruction
 
-function [ru] = multiLWENO1D(basepolyncoeff,dx,uBar,stencil,linWgt,targetCell,hatX,smoothIndShift)
+function [ru] = multiLWENO1D(basepolyncoeff,dx,uBar,stencil,linWgt,targetCell,hatX,smoothIndShift,x)
 
 nStencils = size(stencil,1);
-
-%maxR = max(stencil(:,2)-stencil(:,1)+1);
-%basepolyncoeff = zeros(nStencils,maxR,maxR);
 
 r = zeros(nStencils,1);
 
 for s = 1:nStencils
    r(s) = stencil(s,2) - stencil(s,1) + 1;
-%   basepolyncoeff(s,1:r(s),1:r(s)) = basePolynCoeff(stencil(s,:),centerShift);
 end
+
+dx = x(targetCell+1) - x(targetCell);
 
 % when smoothIndShift = 1, cell center type reconstruction
 % when smoothIndShift = 2, vertx center type reconstruction
-sigma = classicSmoothnessIndSwitch(uBar,stencil,targetCell,basepolyncoeff,smoothIndShift);
+sigma = classicSmoothnessIndSwitch(uBar,stencil,targetCell,basepolyncoeff,smoothIndShift,x);
 
 eta_bias = zeros(nStencils,1);
 
@@ -52,30 +50,6 @@ end
 end
 
 % Calculate base polynomial coefficients with a shift from center 
-%{
- {function [sol] = basePolynCoeff(stencil,center)
- {    r = stencil(2) - stencil(1) + 1;
- {
- {    M = zeros(r,r);
- {    for j = 1:r
- {        xLeft  = stencil(1) + j - 1 + center;
- {        xRight = stencil(1) + j + center;
- {
- {        for p=1:r
- {            M(j,p) = xRight^p/p - xLeft^p/p;
- {        end
- {    end
- {
- {    sol = zeros(r,r);
- {
- {    for k = 1:r
- {        B = zeros(r,1);
- {        B(k) = 1;
- {        sol(k,:) = M\B;
- {    end
- {end
- {
- %}
 function [ru] = polynEval(p,coeff,s,uBarStencil,r)
 
    % p is relative coordinate (x-x0)/dx
@@ -89,22 +63,6 @@ function [ru] = polynEval(p,coeff,s,uBarStencil,r)
    end
 
 end
-
-%{
- {function [val] = polynEval(hatX, basePolynCoeff, uBarStencil, stencil)
- {    % hatX is relative coordinate x/dx
- {
- {    r = stencil(2) - stencil(1) + 1;
- {
- {    val = zeros(length(hatX));
- {    for k=1:r
- {        for p = 1:r
- {            val = val + uBarStencil(k) * basePolynCoeff(k,p)*hatX.^(p-1);
- {        end
- {    end
- {end
- {
- %}
 
 function [coeff] = polynDerCoeff(stencil,polyncoeff,hatX,ell)
     % Precalculate derivative coefficients for Jiang-Shu smoothness indicator
@@ -138,7 +96,7 @@ function [val] = polynEvalDer(ell, hatX, basePolynCoeff, uBarStencil, stencil)
     end
 end
 
-function [sigma] = classicSmoothnessIndSwitch(uBar, stencil, ic, basepolyncoeff, s)
+function [sigma] = classicSmoothnessIndSwitch(uBar, stencil, ic, basepolyncoeff, s, x)
 
     % Create Jiang-Shu Smoothness indicator
     % Shift integral domain with intgShift
@@ -150,7 +108,10 @@ function [sigma] = classicSmoothnessIndSwitch(uBar, stencil, ic, basepolyncoeff,
             sigma = classicSmoothnessInd(uBar,stencil,ic,basepolyncoeff,1);
         case 2
             sigma = classicSmoothnessInd(uBar,stencil,ic,basepolyncoeff,1);
-            sigma = sigma + classicSmoothnessInd(uBar,stencil,ic,basepolyncoeff,-1);
+            ratio = abs(x(ic)-x(ic-1))/abs(x(ic+1)-x(ic));
+            sigma = sigma + classicSmoothnessInd(uBar,stencil,ic,basepolyncoeff,-1*ratio);
+        case 3
+            sigma = classicSmoothnessInd(uBar,stencil,ic,basepolyncoeff,0);
         otherwise
             disp("Invalid type for smoothness indicator"); 
     end

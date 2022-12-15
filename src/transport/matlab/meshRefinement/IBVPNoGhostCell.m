@@ -6,7 +6,15 @@ M = N + 1;
 % Define right hand side
 startP = -1;
 endP = 1;
-x = linspace(startP,endP,M);
+
+
+refinement = 20;
+href = 0.2/refinement;
+x = [linspace(-1,-0.8,refinement),linspace(-0.8+href,0.8-href,M-2*refinement),linspace(0.8,1,refinement)];
+
+%x = linspace(startP,endP,M)
+%size(x)
+
 h = (endP-startP)/N;
 cell = linspace(startP,endP,N);
 sol = zeros(size(cell));
@@ -87,24 +95,33 @@ alpha = 0.5;
 beta  = 1.5; 
 
 % Calculate base polynomial coefficients in advance
-basepolyncoeff32 = basePolynCoeff(stencil32,-0.5);
-basepolyncoeff43 = basePolynCoeff(stencil43, 0.0);
+nStencils32 = size(stencil32,1);
+nStencils43 = size(stencil43,1); 
 
-basepolyncoeff32L = basePolynCoeff(stencil32L,-0.5);
-basepolyncoeff43L = basePolynCoeff(stencil43L, 0.0);
-basepolyncoeff43LL = basePolynCoeff(stencil43LL, 0.0);
+maxR32 = max(stencil32(:,2)-stencil32(:,1)+1);
+maxR43 = max(stencil43(:,2)-stencil43(:,1)+1);
 
-basepolyncoeff32R = basePolynCoeff(stencil32R,-0.5);
-basepolyncoeff43R = basePolynCoeff(stencil43R, 0.0);
-basepolyncoeff43R2 = basePolynCoeff(stencil43R, -1.0);
+basepolyncoeff32All = zeros(N-2,nStencils32,maxR32,maxR32);
+basepolyncoeff43All = zeros(N-3,nStencils43,maxR43,maxR43);
+
+basepolyncoeff32All(1,:,:,:) = basePolynRefine(2,stencil32,-0.5,x);
+
+for s = 3:N-1
+    basepolyncoeff32All(s-1,:,:,:) = basePolynRefine(s,stencil32,-0.5,x);
+    basepolyncoeff43All(s-2,:,:,:) = basePolynRefine(s,stencil43, 0.0,x);
+end
+
+basepolyncoeff32L = basePolynRefine(1,stencil32L,-0.5,x);
+basepolyncoeff43L = basePolynRefine(1,stencil43L, 0.0,x);
+basepolyncoeff43LL = basePolynRefine(2,stencil43LL, 0.0,x);
+
+basepolyncoeff32R = basePolynRefine(N,stencil32R,-0.5,x);
+basepolyncoeff43R = basePolynRefine(N,stencil43R, 0.0,x);
+basepolyncoeff43RR = basePolynRefine(N,stencil43R, -1.0,x);
 
 % Time propogation and plotting
 % Forward Eurlar time propogation
-%figure, set(gcf)
-%set(gca,'nextplot','replacechildren');
-%filename = "NoGhostCell,a=" + num2str(a) +".avi";
-%v = VideoWriter(filename);
-%open(v);
+
 clf;
 drawnow;
 for time = 1:NT
@@ -117,15 +134,15 @@ for time = 1:NT
 
     % Update interior cells first 
     for s = 3:N-2
-        uLp = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s-1, 0.5,1); 
-        uLm = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s  ,-0.5,1);
-        uRm = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s  , 0.5,1);
-        uRp = multiLWENO1D(basepolyncoeff32,h,uBarCurrent,stencil32,linWgt32,s+1,-0.5,1); 
+        uLp = multiLWENORefine(reshape(basepolyncoeff32All(s-2,:,:,:),nStencils32,maxR32,maxR32),h,uBarCurrent,stencil32,linWgt32,s-1, 0.5,3,x); 
+        uLm = multiLWENORefine(reshape(basepolyncoeff32All(s-1,:,:,:),nStencils32,maxR32,maxR32),h,uBarCurrent,stencil32,linWgt32,s  ,-0.5,3,x);
+        uRm = multiLWENORefine(reshape(basepolyncoeff32All(s-1,:,:,:),nStencils32,maxR32,maxR32),h,uBarCurrent,stencil32,linWgt32,s  , 0.5,3,x);
+        uRp = multiLWENORefine(reshape(basepolyncoeff32All(s,:,:,:),nStencils32,maxR32,maxR32),h,uBarCurrent,stencil32,linWgt32,s+1,-0.5,3,x); 
 
         hatX = [-1*beta,-1*alpha,alpha,beta];
 
-        ruL = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s  ,hatX,2);
-        ruR = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s+1,hatX,2);
+        ruL = multiLWENORefine(reshape(basepolyncoeff43All(s-2,:,:,:),nStencils43,maxR43,maxR43),h,uBarCurrent,stencil43,linWgt43,s  ,hatX,2,x);
+        ruR = multiLWENORefine(reshape(basepolyncoeff43All(s-1,:,:,:),nStencils43,maxR43,maxR43),h,uBarCurrent,stencil43,linWgt43,s+1,hatX,2,x);
 
         uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLm,uLp,alpha*h,beta*h,ruL,-1) +...
                                                totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
@@ -136,20 +153,20 @@ for time = 1:NT
     % Left boundary cell
     s = 1;     
     uLp = bVL;
-    uLm = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1,-0.5,1);
-    uRm = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1, 0.5,1);
-    uRp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,2,-0.5,1);
+    uLm = multiLWENORefine(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1,-0.5,3,x);
+    uRm = multiLWENORefine(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1, 0.5,3,x);
+    uRp = multiLWENORefine(reshape(basepolyncoeff32All(1,:,:,:),nStencils32,maxR32,maxR32), h,uBarCurrent,stencil32 ,linWgt32 ,2,-0.5,1,x);
 
     hatX = [alpha,beta];
-    ruL = multiLWENO1D(basepolyncoeff43L,h,uBarCurrent,stencil43L ,linWgt43L ,s,hatX,1);
+    ruL = multiLWENORefine(basepolyncoeff43L,h,uBarCurrent,stencil43L ,linWgt43L ,s,hatX,1,x);
     ruL = [bVL,bVL,ruL];
 
     %hatX = [-1*alpha,alpha,beta];
-    %ruR = multiLWENO1D(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s+1,hatX,2);
+    %ruR = multiLWENORefine(reshape(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s+1,hatX,2);
     %ruR = [bVL,ruR];
 
     hatX = [-1*beta,-1*alpha,alpha,beta]/beta;
-    ruR = multiLWENO1D(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s+1,hatX,2);
+    ruR = multiLWENORefine(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s+1,hatX,2,x);
 
     %leftflux = totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1);
     leftflux = -80.0; 
@@ -160,40 +177,40 @@ for time = 1:NT
                                            rightflux);
 
     s = 2; % The second cell
-    uLp = multiLWENO1D(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,s-1, 0.5,1); 
-    uLm = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s  ,-0.5,1);
-    uRm = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,1);
-    uRp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s+1,-0.5,1);
+    uLp = multiLWENORefine(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,s-1, 0.5,3,x); 
+    uLm = multiLWENORefine(reshape(basepolyncoeff32All(1,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s  ,-0.5,1,x);
+    uRm = multiLWENORefine(reshape(basepolyncoeff32All(1,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,1,x);
+    uRp = multiLWENORefine(reshape(basepolyncoeff32All(2,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s+1,-0.5,1,x);
 
     %hatX = [-1*alpha,alpha,beta];
-    %ruL = multiLWENO1D(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s,hatX,2);
+    %ruL = multiLWENORefine(reshape(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s,hatX,2);
     %ruL = [bVL,ruL];
 
     hatX = [-1*beta,-1*alpha,alpha,beta]/beta;
-    ruL = multiLWENO1D(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s,hatX,2);
+    ruL = multiLWENORefine(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s,hatX,2,x);
 
     hatX = [-1*beta,-1*alpha,alpha,beta];
-    ruR = multiLWENO1D(basepolyncoeff43  ,h,uBarCurrent,stencil43  ,linWgt43  ,s+1,hatX,2);
+    ruR = multiLWENORefine(reshape(basepolyncoeff43All(s-1,:,:,:),nStencils43,maxR43,maxR43)  ,h,uBarCurrent,stencil43  ,linWgt43  ,s+1,hatX,2,x);
 
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLm,uLp,alpha*h,beta*h,ruL,-1) +...
                                            totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
 
     % Right boundary cell  
     s = N;
-    uLp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,1); 
-    uLm = multiLWENO1D(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s  ,-0.5,1);
-    uRm = multiLWENO1D(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s  , 0.5,1);
+    uLp = multiLWENORefine(reshape(basepolyncoeff32All(s-2,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,3,x); 
+    uLm = multiLWENORefine(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s  ,-0.5,3,x);
+    uRm = multiLWENORefine(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s  , 0.5,3,x);
     uRp = bVR; 
 
     %hatX = [-1*beta,-1*alpha,alpha];
-    %ruL = multiLWENO1D(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,2);
+    %ruL = multiLWENORefine(reshape(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,2);
     %ruL = [ruL,bVR];
 
     hatX = [-1*beta,-1*alpha,alpha,beta]/beta;
-    ruL = multiLWENO1D(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,2);
+    ruL = multiLWENORefine(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,2,x);
 
     hatX = [-1*beta,-1*alpha];
-    ruR = multiLWENO1D(basepolyncoeff43R2,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,1);
+    ruR = multiLWENORefine(basepolyncoeff43RR,h,uBarCurrent,stencil43R,linWgt43R,s,hatX,1,x);
     ruR = [ruR,bVR,bVR];
 
     leftfluxN = totalFlux(a,k,uLm,uLp,alpha*h,beta*h,ruL,-1);
@@ -206,20 +223,20 @@ for time = 1:NT
 
     % The second last cell
     s = N-1;
-    uLp = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,1); 
-    uLm = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s  ,-0.5,1);
-    uRm = multiLWENO1D(basepolyncoeff32 ,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,1);
-    uRp = multiLWENO1D(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s+1,-0.5,1); 
+    uLp = multiLWENORefine(reshape(basepolyncoeff32All(s-2,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,3,x); 
+    uLm = multiLWENORefine(reshape(basepolyncoeff32All(s-1,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s  ,-0.5,3,x);
+    uRm = multiLWENORefine(reshape(basepolyncoeff32All(s-1,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,3,x);
+    uRp = multiLWENORefine(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s+1,-0.5,3,x); 
 
     hatX = [-1*beta,-1*alpha,alpha,beta];
-    ruL = multiLWENO1D(basepolyncoeff43,h,uBarCurrent,stencil43,linWgt43,s,hatX,2);
+    ruL = multiLWENORefine(reshape(basepolyncoeff43All(s-2,:,:,:),nStencils43,maxR43,maxR43),h,uBarCurrent,stencil43,linWgt43,s,hatX,2,x);
 
     %hatX = [-1*beta,-1*alpha,alpha];
-    %ruR = multiLWENO1D(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s+1,hatX,2);
+    %ruR = multiLWENORefine(reshape(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s+1,hatX,2);
     %ruR = [ruR,bVR];
 
     hatX = [-1*beta,-1*alpha,alpha,beta]/beta;
-    ruR = multiLWENO1D(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s+1,hatX,2);
+    ruR = multiLWENORefine(basepolyncoeff43R,h,uBarCurrent,stencil43R,linWgt43R,s+1,hatX,2,x);
 
     uBarNext(s) = uBarCurrent(s) - dt/h * (totalFlux(a,k,uLm,uLp,alpha*h,beta*h,ruL,-1) +...
                                            totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1));
@@ -238,7 +255,7 @@ for time = 1:NT
 	     s.FontAngle = 'italic';
 	     %legend({'Exact solution','Numerical solution'},'Location','northwest');
  
-        %axis([-1 1 -1 1])
+        axis([-1 1 -0.1 1.1])
 
         %frame = getframe(gcf);
 	     %writeVideo(v,frame);
@@ -252,8 +269,8 @@ for time = 1:NT
     %end
 
 end
-
 %close(v);
+
 
 end
 
