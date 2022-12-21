@@ -20,7 +20,7 @@ eta_bias = zeros(nStencils,1);
 
 hatWgt = linWgt;
 
-eps0 = 1.0;
+eps0 = 0.0001;
 
 for s = 1:nStencils
    hatWgt(s) = linWgt(s) / (sigma(s) + eps0*dx^2)^r(s) ...

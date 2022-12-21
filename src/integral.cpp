@@ -105,7 +105,7 @@ double NumIntegralFace(const vector< valarray<double> >& corner, const vector<do
     vector< valarray<double> > tmp = corner;
     /*
      *Transform original corner coordinates with given
-     *parameter h and center point. If transform, pass
+     *parameter h and center point. If no transform, pass
      *in h=1.0 and center point as (0.0,0.0).
      */
     for (auto & p : tmp){
@@ -138,7 +138,7 @@ double NumIntegralFace(const vector< valarray<double> >& corner, const vector<in
     vector< valarray<double> > tmp = corner;
     /*
      *Transform original corner coordinates with given
-     *parameter h and center point. If transform, pass
+     *parameter h and center point. If no transform, pass
      *in h=1.0 and center point as (0.0,0.0).
      */
     for (auto & p : tmp){
