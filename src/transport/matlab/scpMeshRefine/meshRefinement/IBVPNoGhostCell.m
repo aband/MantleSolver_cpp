@@ -1,4 +1,4 @@
-function [] = IBVPNoGhostCell(N,a,k,CFL,refine)
+function [] = IBVPNoGhostCell(N,a,k,CFL,refine,threshold)
 
 % Define vertex number
 M = N + 1;
@@ -7,17 +7,31 @@ M = N + 1;
 startP = -1;
 endP = 1;
 
-refinement = refine;
-href = 0.1/refinement;
-x = [linspace(-1,-0.8,refinement),linspace(-0.8+href,0.8-href,M-2*refinement),linspace(0.8,1,refinement)];
+if refine
 
-%x = linspace(startP,endP,M)
+%refinement = refine;
+%href = threshold/refinement;
+%refinestart = -1+threshold;
+%refineend   = 1-threshold;
+%x = [linspace(-1,refinestart,refinement),linspace(refinestart+href,refineend-href,M-2*refinement),linspace(refineend,1,refinement)];
+
+x = generateMesh(threshold,N);
+
+M = length(x);
+N = M-1;
+
+else
+x = linspace(startP,endP,M)
 %size(x)
+
+end
+
 
 h = (endP-startP)/N;
 %cell = linspace(startP,endP,N);
 cell = (x(1:end-1)+x(2:end))/2;
 sol = zeros(size(cell));
+
 
 % Define convection and diffusion coefficients
 % A convection dominated convection-diffusion problem
@@ -128,6 +142,12 @@ basepolyncoeff43RR = basePolynRefine(N,stencil43R, -1.0,x);
 
 H = diff(x);
 
+threshold = 0.05;
+
+basex = x;
+
+refineLevel = 4;
+
 clf;
 drawnow;
 for time = 1:NT
@@ -138,8 +158,28 @@ for time = 1:NT
 
     [bVL,bVR] = boundary(a,k,currentT);
 
+    % Locate shock location
+    loc = (uBarCurrent<(1-threshold)).*(uBarCurrent>threshold);
+    locStart = find(loc,1,'first');
+    addM = sum(loc);
+
+    if addM == 0
+				refinedx = basex;
+
+	 else
+        % Refine base grid with the information of shock location 
+        refinedM = refineLevel*addM;
+        refinedx = [x(1:locStart),linspace(x(locStart),x(locStart+addM),addM*refineLevel+1),x((locStart+addM):end)];
+
+    end
+
+    refinedCell = (refinedx(1:end-1)+refinedx(2:end))/2;
+
+    sample = ones(size(refinedCell))/2;
+
     % Update interior cells first 
     for s = 3:N-2
+        h = H(s);
         uLp = multiLWENORefine(reshape(basepolyncoeff32All(s-2,:,:,:),nStencils32,maxR32,maxR32),h,uBarCurrent,stencil32,linWgt32,s-1, 0.5,3,x); 
         uLm = multiLWENORefine(reshape(basepolyncoeff32All(s-1,:,:,:),nStencils32,maxR32,maxR32),h,uBarCurrent,stencil32,linWgt32,s  ,-0.5,3,x);
         uRm = multiLWENORefine(reshape(basepolyncoeff32All(s-1,:,:,:),nStencils32,maxR32,maxR32),h,uBarCurrent,stencil32,linWgt32,s  , 0.5,3,x);
@@ -157,7 +197,8 @@ for time = 1:NT
 
     % Treat boundary without assigning ghost cells
     % Left boundary cell
-    s = 1;     
+    s = 1;
+    h = H(s);
     uLp = bVL;
     uLm = multiLWENORefine(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1,-0.5,3,x);
     uRm = multiLWENORefine(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,1, 0.5,3,x);
@@ -174,8 +215,8 @@ for time = 1:NT
     hatX = [-1*beta,-1*alpha,alpha,beta]/beta;
     ruR = multiLWENORefine(basepolyncoeff43LL,h,uBarCurrent,stencil43LL,linWgt43LL,s+1,hatX,2,x);
 
-    %leftflux = totalFlux(a,k,uLp,uLm,alpha*h,beta*h,ruL,-1);
-    leftflux = -80.0; 
+    leftflux = totalFlux(a,k,uLm,uLp,alpha*h,beta*h,ruL,-1);
+    %leftflux = -80.0; 
 
 	 rightflux = totalFlux(a,k,uRp,uRm,alpha*h,beta*h,ruR, 1);
 
@@ -183,6 +224,7 @@ for time = 1:NT
                                            rightflux);
 
     s = 2; % The second cell
+    h = H(s);
     uLp = multiLWENORefine(basepolyncoeff32L,h,uBarCurrent,stencil32L,linWgt32L,s-1, 0.5,3,x); 
     uLm = multiLWENORefine(reshape(basepolyncoeff32All(1,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s  ,-0.5,1,x);
     uRm = multiLWENORefine(reshape(basepolyncoeff32All(1,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,1,x);
@@ -203,6 +245,7 @@ for time = 1:NT
 
     % Right boundary cell  
     s = N;
+	 h = H(s);
     uLp = multiLWENORefine(reshape(basepolyncoeff32All(s-2,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,3,x); 
     uLm = multiLWENORefine(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s  ,-0.5,3,x);
     uRm = multiLWENORefine(basepolyncoeff32R,h,uBarCurrent,stencil32R,linWgt32R,s  , 0.5,3,x);
@@ -229,6 +272,7 @@ for time = 1:NT
 
     % The second last cell
     s = N-1;
+	 h = H(s);
     uLp = multiLWENORefine(reshape(basepolyncoeff32All(s-2,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s-1, 0.5,3,x); 
     uLm = multiLWENORefine(reshape(basepolyncoeff32All(s-1,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s  ,-0.5,3,x);
     uRm = multiLWENORefine(reshape(basepolyncoeff32All(s-1,:,:,:),nStencils32,maxR32,maxR32) ,h,uBarCurrent,stencil32 ,linWgt32 ,s  , 0.5,3,x);
@@ -256,15 +300,20 @@ for time = 1:NT
         %plot(linspace(-1,1,100),fexact(a,k,linspace(-1,1,100),currentT),'-')
 	     %hold on
         plot(cell(1:end),uBarCurrent(1:end),'o');
+		  %hold on
+		  %plot(refinedCell,sample,'*');
+		  %hold off
         [t,s] = title(['Pe =  ',num2str(Pe), ', CFL = ',num2str(CFL) ,', Time = ', num2str(currentT)...
                        ', N = ',num2str(N)]);
 	     s.FontAngle = 'italic';
 	     %legend({'Exact solution','Numerical solution'},'Location','northwest');
  
-        axis([-1 1 -0.1 1.1])
+        axis([-1 1 -1.1 1.1])
 
         %frame = getframe(gcf);
 	     %writeVideo(v,frame);
+
+
 
         %errorLnorm(2,uBarCurrent,a,k,x,currentT,1:N)
 

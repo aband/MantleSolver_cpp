@@ -2,27 +2,24 @@ function [basepolyncoeff32All, basepolyncoeff43All] = createStencilPolyn(grid)
 
 N = length(grid)-1;
 
-stencil32 = [[-1,1]; [-1,0]; [0,1]];
-linWgt32  = [3,1,1];
-
-stencil32L = [[0,2];[0,1];[0,0]];
-linWgt32L  = [3,2,1];
-
-stencil32R = [[-2,0];[-1,0];[0,0]];
-linWgt32R  = [3,2,1];
-
-% Weno (4,3) reconstruction for diffusive flux
-stencil43 = [[-2,1];[-2,0];[-1,1];[0,0]];
-linWgt43  = [4,1,1,1]; 
-
-stencil43L = [[0,3];[0,2];[0,1];[0,0]];
-linWgt43L  = [4,1,1,1]; 
-
-stencil43LL = [[-1,2];[-1,1];[0,2];[0,0]];
-linWgt43LL  = [4,1,1,1]; 
-
-stencil43R = [[-3,0];[-2,0];[-1,0];[0,0]];
-linWgt43R  = [4,1,1,1]; 
+global stencil32
+global linWgt32  
+global stencil32L
+global linWgt32L 
+global stencil32R 
+global linWgt32R  
+global stencil43
+global linWgt43  
+global stencil43L 
+global linWgt43L  
+global stencil43LL
+global linWgt43LL  
+global stencil43R
+global linWgt43R   
+global nStencils32
+global nStencils43 
+global maxR32 
+global maxR43 
 
 % Create stencil polynomials with given grid information
 
