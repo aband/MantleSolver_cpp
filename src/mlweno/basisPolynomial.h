@@ -1,5 +1,3 @@
-#ifndef GENERAL_H_
-#define GENERAL_H_
 
 double constfunc(valarray<double>& point,const vector<double>& param);
 
@@ -13,4 +11,14 @@ int factorial(int top, int bottom);
 
 int factorial(int top);
 
-#endif
+
+
+class basisPolynomial {
+
+private:
+
+int polyn_degree; 
+
+
+
+};
