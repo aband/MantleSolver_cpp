@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <numeric>
 #include <memory>
+#include <cstdlib>
+#include <type_traits>
 
 #include "lapacke.h"
 #include "integral.h"
@@ -52,7 +54,25 @@ typedef struct {
     const indiceSet edgeCorner   {{0}, {1}};
     const indiceSet FaceCorner   {{0,0},{1,0},{1,1},{0,1}};
     const indiceSet VolumeCorner {{0,0,0},{1,0,0},{1,1,0},{0,1,0},
-                                     {0,0,1},{1,0,1},{1,1,1},{0,1,1}};
+                                  {0,0,1},{1,0,1},{1,1,1},{0,1,1}};
 } MeshInfo;
+
+// Generic auxiliary functions
+// Function return constant value
+double constFunc(valarray<double>& point,const vector<double>& param);
+
+double constFunc(valarray<double>& point,const vector<double>& param, double c);
+
+double constFunc();
+
+double constFunc(double c);
+
+// Funcstions calculate factorials
+int factorial(int top, int bottom);
+
+int factorial(int top);
+
+// Evaluation of polynomial using Horner's method
+double polyEval(double x, double * coef, int degree);
 
 #endif

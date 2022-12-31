@@ -1,3 +1,0 @@
-/home/renpo/Research/MantleSolver/src/mlweno/testConv/build/CMakeFiles/test.dir
-/home/renpo/Research/MantleSolver/src/mlweno/testConv/build/CMakeFiles/edit_cache.dir
-/home/renpo/Research/MantleSolver/src/mlweno/testConv/build/CMakeFiles/rebuild_cache.dir

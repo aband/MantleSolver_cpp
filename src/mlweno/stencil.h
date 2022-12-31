@@ -15,9 +15,12 @@ namespace MLWENO {
     template <class T>
     class stencil{
         public:
-            stencil(size_t I):                     I_(I), stencilSize_(I) {};
-            stencil(size_t I, size_t J):           I_(I), J_(J), stencilSize_(I*J) {};
-            stencil(size_t I, size_t J, size_t K): I_(I), J_(J), K_(K), stencilSize_(I*J*K) {};
+            stencil() {};
+            stencil(size_t I):                     I_(I), stencilSize_(I) {stencil_.resize(stencilSize_);};
+            stencil(size_t I, size_t J):           I_(I), J_(J), stencilSize_(I*J) {stencil_.resize(stencilSize_);};
+            stencil(size_t I, size_t J, size_t K): I_(I), J_(J), K_(K), stencilSize_(I*J*K) {stencil_.resize(stencilSize_);};
+
+            void SetStencil(size_t I, size_t J) {I_ = I; J_ = J; stencilSize_ = I*J; stencil_.resize(stencilSize_);}
 
             void CreateStencil() {stencil_.resize(stencilSize_);}
 
@@ -35,7 +38,7 @@ namespace MLWENO {
 
             const vector<T> GetStencil() {return stencil_;}
 
-            ~stencil();
+            ~stencil() {};
 
         private:
             size_t I_;
