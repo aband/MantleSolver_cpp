@@ -20,9 +20,16 @@ namespace MLWENO {
             stencil(size_t I, size_t J):           I_(I), J_(J), stencilSize_(I*J) {stencil_.resize(stencilSize_);};
             stencil(size_t I, size_t J, size_t K): I_(I), J_(J), K_(K), stencilSize_(I*J*K) {stencil_.resize(stencilSize_);};
 
+            ~stencil() {};
+
             void SetStencil(size_t I, size_t J) {I_ = I; J_ = J; stencilSize_ = I*J; stencil_.resize(stencilSize_);}
 
             void CreateStencil() {stencil_.resize(stencilSize_);}
+
+            const int getSize() const {return stencilSize_;};
+
+            const int getI() const {return I_;};
+            const int getJ() const {return J_;};
 
             T &operator()(size_t i){
                 return stencil_[i];
@@ -36,9 +43,11 @@ namespace MLWENO {
                 return stencil_[i+j*I_+k*I_*J_];
             }
 
-            const vector<T> GetStencil() {return stencil_;}
+            const vector<T>& GetStencil() const {return stencil_;}
 
-            ~stencil() {};
+            // Call it when T is pointer
+            void clearPtr() {if (std::is_pointer<T>::value){
+                              std::for_each(stencil_.begin(),stencil_.end(),delete_pointed_to<T>);}}
 
         private:
             size_t I_;

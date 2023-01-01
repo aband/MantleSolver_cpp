@@ -38,7 +38,11 @@ namespace MLWENO {
 
 
         private:
-    
+            vector<int[2]> stencilSize_;
+            int stencilSizeMax_[2] {-1,-1};
+            vector<int[2]> shift_;
+
+   
     }
 
 }

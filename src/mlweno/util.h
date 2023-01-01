@@ -17,11 +17,18 @@
 #include "integral.h"
 #include <assert.h>
 
+#include <petsc.h>
+
 using vertex = valarray<double>;
 using indice = valarray<int>;
 
 using vertexSet = vector<valarray<double>>;
 using indiceSet = vector<valarray<double>>;
+
+template <typename T>
+void delete_pointed_to(T const ptr){
+    delete ptr;
+}
 
 /*
  *Containing essential information about mesh.
@@ -36,6 +43,8 @@ typedef struct {
     vector<int> MPIglobalSize;        // global chunck size without ghost layer
     vector<int> cellGhostLayerSize;   // size of ghost layer of cell
     vector<int> vertexGhostLayerSize; // size of ghost layer of node
+
+    vector<int> MPIlocalSizeFull;     // Local chunk size including ghost layer
 
     // Horizontal edges first than vertical edges
     int MPIglobalHoriEdgeSize;
@@ -52,8 +61,8 @@ typedef struct {
 
     // Corner index within a single element
     const indiceSet edgeCorner   {{0}, {1}};
-    const indiceSet FaceCorner   {{0,0},{1,0},{1,1},{0,1}};
-    const indiceSet VolumeCorner {{0,0,0},{1,0,0},{1,1,0},{0,1,0},
+    const indiceSet faceCorner   {{0,0},{1,0},{1,1},{0,1}};
+    const indiceSet volumeCorner {{0,0,0},{1,0,0},{1,1,0},{0,1,0},
                                   {0,0,1},{1,0,1},{1,1,1},{0,1,1}};
 } MeshInfo;
 

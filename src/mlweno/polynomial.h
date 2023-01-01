@@ -37,19 +37,21 @@ namespace MLWENO{
 
         public:
             stencilPolynomial() {};
-            stencilPolynomial(const MeshInfo& mi, const vertex& center);
+            stencilPolynomial(const indice& start, const vertex& center, 
+                              const vector<indice>& targetCell, const MeshInfo& mi);
             ~stencilPolynomial() {};
 
-            void SetStencilPolynomials(const vector<stencil <indice>>& stencilIndice);
+            void SetStencilPolynomials(const MeshInfo& mi,
+                                       const vector<stencil <indice>>& stencilIndice);
 
         private:
 
             vertex center_;
+            indice start_;
+            vector<indice> targetCell_;
+            double scale_ = -1.0;
 
-            int stencilSize_[2];
-            double scale_;
-
-            stencil <basisPolynomial *> stencilPolyn_();
+            vector<stencil <basisPolynomial*>> stencilPolyn_;
     };
 
 // End of using name space MLWENO

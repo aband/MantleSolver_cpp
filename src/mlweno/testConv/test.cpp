@@ -5,6 +5,7 @@
 #include "stencil.h"
 #include "util.h"
 #include "polynomial.h"
+#include "input.h"
 //#include <adolc/adolc.h>
 
 extern "C"{
@@ -14,20 +15,152 @@ extern "C"{
 
 using namespace std;
 
+double func(vertex& point, const vector<double>& param){
+//	 if (point[0]<0.50){
+//		  return point[0]*point[0];
+//	 } else {
+//		  return point[0]*point[0];
+//	 }
+
+    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
+    //return point[0]*point[0] + point[1]*point[1];
+    //return 0.5;
+    //return point[0] + point[1];
+
+}
+
 int main(int argc, char **argv){
 
-    double coef[6] = {0.5,0.4,12,1,0.01,5};
+    // Initializing petsc function
+    PetscErrorCode ierr;
+    PetscMPIInt   size,rank;
+    PetscInitialize(&argc, &argv, NULL, NULL);
 
-    int maxDegree[2] = {2,3};
+    MPI_Init(NULL,NULL);
+    MPI_Comm_size(PETSC_COMM_WORLD,&size);
+    MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    //cout << polyEval(2.5, coef, 2) << endl;
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
+
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+
+    // ==========================================================================================================================
+
+    // Start testing mesh function
+    // Initializing problem size with 3X3
+    int M = 3, N = 3;
+    ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
+
+    // Create data management object
+    DM    dm;
+    Vec   fullmesh;
+    const int stencilWidth = 5;
+
+    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidth, NULL, NULL, &dm);CHKERRQ(ierr);
+    ierr = DMSetFromOptions(dm);               CHKERRQ(ierr);
+    ierr = DMSetUp(dm);                        CHKERRQ(ierr);
+    ierr = DMCreateGlobalVector(dm, &fullmesh);CHKERRQ(ierr); 
+
+    double L = 2.0, H = 2.0;
+    double xstart = -1.0, ystart = -1.0;
+    ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
+    ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
+
+    MeshParam mp;
+    mp.xstart = xstart;
+    mp.ystart = ystart;
+    mp.L = L;
+    mp.H = H;
+
+    // Uniform or distorted mesh
+    int meshtype=0;
+    ierr = PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshtype,NULL);CHKERRQ(ierr);
+    switch(meshtype){
+        case 0: CreateFullMesh(dm, &fullmesh, &mp); break;
+        case 1: LogicRectMesh(dm, &fullmesh, &mp);  break;
+        //case 2: TestControlMeshSecond(dmCell,L,H); break;
+        //case 3: TestControlMeshThird(dmCell,L,H);  break;
+    }
+
+    int printmesh=0;
+    ierr = PetscOptionsGetInt(NULL,NULL,"-printmesh",&printmesh,NULL);CHKERRQ(ierr);
+    if(printmesh){ 
+        VecView(fullmesh, PETSC_VIEWER_STDOUT_WORLD);
+        PrintFullMesh(dm, &fullmesh);
+    }
+
+    cout << "Mesh Created. To check full mesh, rerun with -printmesh 1 " << endl;
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+
+    // ==========================================================================================================================
+
+    // Contain defined mesh in vector container.
+    // and verify it.
+    vector< valarray<double> > mesh;
+    
+    ReadMeshPortion(dm, &fullmesh, mesh);
+
+    //cout << "Converted c array of local mesh into vector container c++ " << endl;
+    //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+
+    // ====================================================================================================================================
+
+    DM dmu;
+
+    int cell_ghost = 3;
+
+    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_PERIODIC, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, cell_ghost, NULL, NULL, &dmu);CHKERRQ(ierr);
+    ierr = DMSetFromOptions(dmu);               CHKERRQ(ierr);
+    ierr = DMSetUp(dmu);                        CHKERRQ(ierr);
+
+    Vec globalu;
+    ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
+
+    // Initialize with oblique data for Burgers equation 
+    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+
+    Vec localu; 
+    DMGetLocalVector(dmu, &localu);
+
+    DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, localu);
+    DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, localu);
+
+    // It can be changed later to not be double
+    double ** lu;
+    DMDAVecGetArray(dmu, localu, &lu);
+
+    // ====================================================================================================================================
+
+    // test for 2D Burgers equation
+    // Explicit time progression for simplicity
+    // DrawPressure(dmu, &globalu);   
+
+    //double T = 0.5;
+    //double currentT = 0.0;
+
+    // Spectial case
+    //double dx = (L*H)/((double)M*(double)N);
+
+    //double dt = 0.8*3.0/(double)M;
+
+    //PetscInt       xs,ys,xm,ym;
+    //ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
+
+    // Create MeshInfo object
+
+   
 
 
-    MLWENO::stencil <MLWENO::basisPolynomial *> stencilPoly(2,2);
+    // ====================================================================================================================================
+    // Clear used objects
+    DMDAVecRestoreArray(dmu,localu,&lu);
 
-    stencilPoly(1,1) = new MLWENO::basisPolynomial(maxDegree, coef);
-
-    cout << stencilPoly(1,1)->eval(0.5,0.6) << endl;
+    VecDestroy(&fullmesh);
+    VecDestroy(&globalu);
+    DMDestroy(&dm);
+    DMDestroy(&dmu);
 
     return 0;
 }
