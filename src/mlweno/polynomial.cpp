@@ -62,6 +62,9 @@ double basisPolynomial::eval(double x, double y) const {
     return polyEval(y,ycoef,maxDegree_[1]-1);
 }
 
+
+
+
 void basisPolynomial::printCoef() const {
     for (int i=0; i<maxDegree_[0]*maxDegree_[1]; i++){
         cout << coef_[i] << "  " ;

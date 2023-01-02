@@ -95,4 +95,7 @@ int factorial(int top);
 // Evaluation of polynomial using Horner's method
 double polyEval(double x, double * coef, int degree);
 
+// Compute factorial coefficient for polynomial derivatives
+void polynDerMulti(int der, int max, int * multiplier);
+
 #endif

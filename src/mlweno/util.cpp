@@ -87,6 +87,16 @@ double polyEval(double x, double * coef, int degree){
 
 }
 
+// Compute factorial coefficient for polynomial derivatives
+void polynDerMulti(int der, int max, int * multiplier){
+    assert(der<max || der==max);
+
+    for (int i=0; i<max-der; i++){
+        multiplier[i] = factorial(der+i,i);
+    }
+
+}
+
 // Assign values to MeshInfo object
 void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
 

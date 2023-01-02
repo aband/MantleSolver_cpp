@@ -24,7 +24,8 @@ namespace MLWENO{
             double operator() (vertex P) const {return eval(P);};
 
             // Evaluation of derivative value for a given polynomial
-            double evalDer();
+            double der(int derX, int derY, double x, double y) const;
+            double der(int derX, int derY, vertex P) const {return der(derX, derY, P[0], P[1]);};
 
             // Print coefficients out
             void printCoef() const; 
@@ -57,6 +58,10 @@ namespace MLWENO{
             // Check basis polynomial coefficients
             void printCoef();
             void printCoef(int s);
+
+            // Create polynomial smoothness indicator
+            void CreateSmoothIndicMultip(const MeshInfo& mi);
+            void EvalSmoothIndic(const MeshInfo& mi);
 
         private:
 
