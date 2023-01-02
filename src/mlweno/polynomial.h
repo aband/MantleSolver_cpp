@@ -26,6 +26,9 @@ namespace MLWENO{
             // Evaluation of derivative value for a given polynomial
             double evalDer();
 
+            // Print coefficients out
+            void printCoef() const; 
+
         private:
 
             int maxDegree_[2] = {-1,-1}; 
@@ -44,10 +47,16 @@ namespace MLWENO{
             void SetStencilPolynomials(const MeshInfo& mi,
                                        const vector<stencil <indice>>& stencilIndice);
 
+            const double GetScale() const {return scale_;}; 
+
+            void printCoef();
+ 
+            void printCoef(int i);
+
         private:
 
-            vertex center_;
-            indice start_;
+            vertex center_ = {0.0,0.0};
+            indice start_ = {-1,-1};
             vector<indice> targetCell_;
             double scale_ = -1.0;
 

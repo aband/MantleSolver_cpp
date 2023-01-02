@@ -35,16 +35,25 @@ void delete_pointed_to(T const ptr){
  */
 typedef struct {
 
+    // In the case, Cell and Vertex are maintained by same global size
+    // They will still be stored separately for clearification.
+
     int dim;                 // Total number of dimensions
 
-    vector<int> MPIlocalSize;         // Local chunck size without ghost layer
-    indice MPIlocalStart;             // The starting vertex index for MPI local part
+    vector<int> MPIlocalCellSize;         // Local chunk size of cell without ghost layer
+    vector<int> MPIlocalVertexSize;       // Local chunk size of vertex without ghost layer
 
-    vector<int> MPIglobalSize;        // global chunck size without ghost layer
-    vector<int> cellGhostLayerSize;   // size of ghost layer of cell
-    vector<int> vertexGhostLayerSize; // size of ghost layer of node
+    indice MPIlocalCellStart;             // The starting cell index for MPI local part
+    indice MPIlocalVertexStart;           // The starting vertex index for MPI local part
 
-    vector<int> MPIlocalSizeFull;     // Local chunk size including ghost layer
+    vector<int> MPIglobalCellSize;        // global chunk size of cell without ghost layer
+    vector<int> MPIglobalVertexSize;      // global chunk size of vertex without ghost layer
+
+    int cellGhostLayerSize;   // size of ghost layer of cell
+    int vertexGhostLayerSize; // size of ghost layer of node
+
+    vector<int> MPIlocalCellSizeFull;     // Local chunk size of cells including ghost layer
+    vector<int> MPIlocalVertexSizeFull;   // Local chunk size of vertex including ghost layer 
 
     // Horizontal edges first than vertical edges
     int MPIglobalHoriEdgeSize;
@@ -57,7 +66,7 @@ typedef struct {
     // Containing all the local mesh vertex points here  
     vertexSet lmesh; 
  
-    // double** localVals;
+    double** localVals;
 
     // Corner index within a single element
     const indiceSet edgeCorner   {{0}, {1}};
@@ -65,6 +74,8 @@ typedef struct {
     const indiceSet volumeCorner {{0,0,0},{1,0,0},{1,1,0},{0,1,0},
                                   {0,0,1},{1,0,1},{1,1,1},{0,1,1}};
 } MeshInfo;
+
+void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu);
 
 // Generic auxiliary functions
 // Function return constant value

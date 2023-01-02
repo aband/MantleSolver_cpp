@@ -8,4 +8,4 @@ echo " "
 echo -n "Convergence Test Built!"
 echo " "
 
-valgrind ./test 
+./test

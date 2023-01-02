@@ -149,9 +149,32 @@ int main(int argc, char **argv){
     //ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
 
     // Create MeshInfo object
+    MeshInfo mi; 
+    AssignValuesMeshInfo(mi,dm,dmu); 
 
-   
+    mi.lmesh = mesh;
 
+    indice start = {1,1};
+    vector<indice> targetCell;
+    targetCell.push_back({0,0}); 
+    vertex center = {0.0,0.0};
+
+    MLWENO::stencil<indice> third(3,3);
+
+    for (int j=0; j<3; j++){
+    for (int i=0; i<3; i++){
+        third(i,j) = {i-1,j-1};
+    }}
+
+    vector<MLWENO::stencil<indice>> stencilIndice;
+
+    stencilIndice.push_back(third);
+
+    MLWENO::stencilPolynomial* sp = new MLWENO::stencilPolynomial(start,center,targetCell,mi);
+
+    sp->SetStencilPolynomials(mi, stencilIndice);
+
+    sp->printCoef(); 
 
     // ====================================================================================================================================
     // Clear used objects

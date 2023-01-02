@@ -62,9 +62,16 @@ double basisPolynomial::eval(double x, double y) const {
     return polyEval(y,ycoef,maxDegree_[1]-1);
 }
 
+void basisPolynomial::printCoef() const {
+    for (int i=0; i<maxDegree_[0]*maxDegree_[1]; i++){
+        cout << coef_[i] << "  " ;
+    }cout << endl;
+}
+
 // ================================================================================
 stencilPolynomial::stencilPolynomial(const indice& start, const vertex& center, 
                                      const vector<indice>& targetCell, const MeshInfo& mi){
+
 
     start_[0] = start[0];
     start_[1] = start[1];
@@ -79,16 +86,18 @@ stencilPolynomial::stencilPolynomial(const indice& start, const vertex& center,
     }
 
     // Compute scale
-    double scale = 0.0;
+    scale_ = 0.0;
     for (auto & cell: targetCell){
         vector<vertex> work;
         for (auto & c: mi.faceCorner){
-            int sj = start[1]+cell[1]+c[1];
-            int si = start[0]+cell[0]+c[0];
-            work.push_back(mi.lmesh[sj*mi.MPIlocalSizeFull.at(0)+si]);
+            int sj = start[1]+cell[1]+c[1] + mi.vertexGhostLayerSize;
+            int si = start[0]+cell[0]+c[0] + mi.vertexGhostLayerSize;
+            work.push_back(mi.lmesh[sj*mi.MPIlocalVertexSizeFull.at(0)+si]);
         }
+        scale_ += NumIntegralFace(work, {0,0}, {0.0,0.0}, 1.0, constFunc); 
     }
 
+    scale_ = pow(scale_,0.5); 
 }
 
 void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi, 
@@ -113,15 +122,17 @@ void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi,
 
         for (int cell = 0; cell<n; cell++){
             // Cell indice  
-            indice currentCell = start_ + siNow(n);
-            for (int r = 0; r<n; r++){
-                vector<vertex> work;
-                for (auto & c: mi.faceCorner){
-                    int sj = currentCell[1] + c[1];
-                    int si = currentCell[0] + c[0];
+            indice currentCell = start_ + siNow(cell);
 
-                    work.push_back(mi.lmesh[sj*mi.MPIlocalSizeFull.at(0)+si]);
-                }
+            vector<vertex> work;
+            for (auto & c: mi.faceCorner){
+                int sj = currentCell[1] + c[1] + mi.vertexGhostLayerSize;
+                int si = currentCell[0] + c[0] + mi.vertexGhostLayerSize;
+
+                work.push_back(mi.lmesh[sj*mi.MPIlocalVertexSizeFull.at(0)+si]);
+            }
+
+            for (int r = 0; r<n; r++){
                 int xpow = r%stencilIndice[s].getI();
                 int ypow = r/stencilIndice[s].getI();
                 a[cell*n + r] = NumIntegralFace(work, {xpow,ypow}, center_, scale_, basePoly);
@@ -153,9 +164,27 @@ void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi,
             delete [] tmpcoef;
         }
 
+        stencilPolyn_[s] = singleStencilPolyn;
+
         delete [] a;
         delete [] b;
         delete [] p;
     }
 
+}
+
+void stencilPolynomial::printCoef() {
+    for (auto & sbp: stencilPolyn_){
+        for (int s=0; s<sbp.getSize(); s++){
+            sbp(s)->printCoef();
+        }
+    }
+}
+
+void stencilPolynomial::printCoef(int i) {
+    assert(i < stencilPolyn_.size());
+    stencil <basisPolynomial*> tmpsbp = stencilPolyn_[i];
+    for (int s=0; s<tmpsbp.getSize(); s++){
+        tmpsbp(s)->printCoef();
+    }
 }
