@@ -42,20 +42,20 @@ namespace MLWENO{
             stencilPolynomial() {};
             stencilPolynomial(const indice& start, const vertex& center, 
                               const vector<indice>& targetCell, const MeshInfo& mi);
-            ~stencilPolynomial() {};
+            ~stencilPolynomial() {stencilPolyn_.clearPtr();};
 
             void SetStencilPolynomials(const MeshInfo& mi,
                                        const stencil <indice>& stencilIndice);
 
             const double GetScale() const {return scale_;}; 
 
-            double eval(int s, double x, double y) const;
-            double eval(int s, vertex P) const {return eval(s,P[0],P[1]);};
-            double operator() (int s, double x, double y) const {return eval(s,x,y);};
-            double operator() (int s, vertex P) const {return eval(s,P);};
+            double eval(double x, double y) const;
+            double eval(vertex P) const {return eval(P[0],P[1]);};
+            double operator() (double x, double y) const {return eval(x,y);};
+            double operator() (vertex P) const {return eval(P);};
 
+            // Check basis polynomial coefficients
             void printCoef();
- 
             void printCoef(int s);
 
         private:

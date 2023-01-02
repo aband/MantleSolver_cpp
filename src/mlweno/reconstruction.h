@@ -34,15 +34,22 @@ namespace MLWENO {
     class Reconstruction {
 
         public:
-            Reconstruction
+            Reconstruction(){};
+            ~Reconstruction(){};
 
+            void AddStencil(int[2] stencilSize, int[2] shift) {stencilSize_.push_back(stencilSize);
+                                                               shift_.push_hack(shift);};
+
+            void UpdateStencilSizeMax(int[2] max) {stencilSizeMax_[0] = max[0]; 
+                                                   stencilSizeMax_[1] = max[1];};
 
         private:
             vector<int[2]> stencilSize_;
             int stencilSizeMax_[2] {-1,-1};
             vector<int[2]> shift_;
 
-   
+            vector<stencil <indice>> stenilIndice_;
+            vector<stencilPolynomial> stncilPolyn_;
     }
 
 }

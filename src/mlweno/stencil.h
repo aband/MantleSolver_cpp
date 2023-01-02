@@ -66,7 +66,7 @@ namespace MLWENO {
 
             // Call it when T is pointer
             void clearPtr() {if (std::is_pointer<T>::value){
-                              std::for_each(stencil_.begin(),stencil_.end(),delete_pointed_to<T>);}}
+                                 std::for_each(stencil_.begin(),stencil_.end(),delete_pointed_to<T>);}}
 
         private:
             size_t I_;

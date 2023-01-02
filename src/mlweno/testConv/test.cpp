@@ -156,7 +156,8 @@ int main(int argc, char **argv){
 
     indice start = {1,1};
     vector<indice> targetCell;
-    targetCell.push_back({0,0}); 
+    targetCell.push_back({0,0});
+    //targetCell.push_back({1,0}); 
     vertex center = {0.0,0.0};
 
     MLWENO::stencil<indice> third(3,3);
@@ -166,12 +167,20 @@ int main(int argc, char **argv){
         third(i,j) = {i-1,j-1};
     }}
 
+    MLWENO::stencil<indice> second(2,2);
+
+    for (int j=0; j<2; j++){
+    for (int i=0; i<2; i++){
+        second(i,j) = {i,j};
+    }}
+
     MLWENO::stencilPolynomial* sp = new MLWENO::stencilPolynomial(start,center,targetCell,mi);
 
-    sp->SetStencilPolynomials(mi, third);
+    sp->SetStencilPolynomials(mi, second);
 
     sp->printCoef(); 
-
+    
+    cout << sp->eval(0.0,0.0) << " " <<func(center,{1,1}) << endl;
 
     // ====================================================================================================================================
     // Clear used objects

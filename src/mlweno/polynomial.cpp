@@ -166,9 +166,12 @@ void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi,
 
 }
 
-double stencilPolynomial::eval(int s, double x, double y) const{
-    assert(s<stencilPolyn_.getSize());
-    return stencilPolyn_(s)->eval(x,y);
+double stencilPolynomial::eval(double x, double y) const{
+    double work = 0.0;
+    for (int s=0; s<stencilPolyn_.getSize(); s++){
+        work += stencilPolyn_(s)->eval(x,y);
+    }
+    return work;
 }
 
 void stencilPolynomial::printCoef() {
@@ -181,5 +184,3 @@ void stencilPolynomial::printCoef(int s) {
     assert(s < stencilPolyn_.getSize());
     stencilPolyn_(s)->printCoef();
 }
-
-
