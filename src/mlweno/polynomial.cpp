@@ -101,90 +101,85 @@ stencilPolynomial::stencilPolynomial(const indice& start, const vertex& center,
 }
 
 void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi, 
-                                              const vector<stencil <indice>>& stencilIndice){
+                                              const stencil <indice>& stencilIndice){
 
-    stencilPolyn_.resize(stencilIndice.size()); 
 
-    // Iteration through stencils of indices
-    for (int s=0; s<stencilIndice.size(); s++) {
+    stencil<indice> siNow = stencilIndice;
 
-        stencil <indice> siNow = stencilIndice[s];
+    // Setup linear system for computing basis polynomials 
+    lapack_int n    = siNow.getSize();
+    lapack_int nrhs = n;
+    lapack_int lda  = n;
+    lapack_int ldb  = nrhs;
 
-        // Setup linear system for computing basis polynomials 
-        lapack_int n    = siNow.getSize();
-        lapack_int nrhs = n;
-        lapack_int lda  = n;
-        lapack_int ldb  = nrhs;
+    double * a = new double [n*n] ();
+    double * b = new double [n*nrhs] ();
+    lapack_int * p = new int [n] ();
 
-        double * a = new double [n*n] ();
-        double * b = new double [n*nrhs] ();
-        lapack_int * p = new int [n] ();
+    for (int cell = 0; cell<n; cell++){
+        // Cell indice  
+        indice currentCell = start_ + siNow(cell);
 
-        for (int cell = 0; cell<n; cell++){
-            // Cell indice  
-            indice currentCell = start_ + siNow(cell);
+        vector<vertex> work;
+        for (auto & c: mi.faceCorner){
+            int sj = currentCell[1] + c[1] + mi.vertexGhostLayerSize;
+            int si = currentCell[0] + c[0] + mi.vertexGhostLayerSize;
 
-            vector<vertex> work;
-            for (auto & c: mi.faceCorner){
-                int sj = currentCell[1] + c[1] + mi.vertexGhostLayerSize;
-                int si = currentCell[0] + c[0] + mi.vertexGhostLayerSize;
-
-                work.push_back(mi.lmesh[sj*mi.MPIlocalVertexSizeFull.at(0)+si]);
-            }
-
-            for (int r = 0; r<n; r++){
-                int xpow = r%stencilIndice[s].getI();
-                int ypow = r/stencilIndice[s].getI();
-                a[cell*n + r] = NumIntegralFace(work, {xpow,ypow}, center_, scale_, basePoly);
-            }
-        }
-        fill(b,b+n*nrhs,0);
-        for (int i=0; i<nrhs; i++) {b[i*n+i]=a[n*i];}
-
-        int err = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, p, b, ldb);
-
-        int maxDegree[2] = {siNow.getI(),siNow.getJ()};
-
-        if (err){
-            printf("ERROR: Weno Basis Coefficient for order %d, %d. Error type %d \n",
-                     maxDegree[0],maxDegree[1],err);
+            work.push_back(mi.lmesh[sj*mi.MPIlocalVertexSizeFull.at(0)+si]);
         }
 
-        stencil <basisPolynomial*> singleStencilPolyn(n);
-
-        for (int p=0; p<n; p++){
-            double * tmpcoef = new double [n]();
-           
-            for (int r=0; r<n; r++){
-                tmpcoef[r] = b[r*n+p];
-            }
-
-            singleStencilPolyn(p) = new basisPolynomial(maxDegree, tmpcoef);
-
-            delete [] tmpcoef;
+        for (int r = 0; r<n; r++){
+            int xpow = r%siNow.getI();
+            int ypow = r/siNow.getI();
+            a[cell*n + r] = NumIntegralFace(work, {xpow,ypow}, center_, scale_, basePoly);
         }
+    }
+    fill(b,b+n*nrhs,0);
+    for (int i=0; i<nrhs; i++) {b[i*n+i]=a[n*i];}
 
-        stencilPolyn_[s] = singleStencilPolyn;
+    int err = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, p, b, ldb);
 
-        delete [] a;
-        delete [] b;
-        delete [] p;
+    int maxDegree[2] = {siNow.getI(),siNow.getJ()};
+
+    if (err){
+        printf("ERROR: Weno Basis Coefficient for order %d, %d. Error type %d \n",
+                 maxDegree[0],maxDegree[1],err);
     }
 
+    stencilPolyn_.SetStencil(siNow.getI(),siNow.getJ());
+
+    for (int p=0; p<n; p++){
+        double * tmpcoef = new double [n]();
+       
+        for (int r=0; r<n; r++){
+            tmpcoef[r] = b[r*n+p];
+        }
+
+        stencilPolyn_(p) = new basisPolynomial(maxDegree, tmpcoef);
+
+        delete [] tmpcoef;
+    }
+
+    delete [] a;
+    delete [] b;
+    delete [] p;
+
+}
+
+double stencilPolynomial::eval(int s, double x, double y) const{
+    assert(s<stencilPolyn_.getSize());
+    return stencilPolyn_(s)->eval(x,y);
 }
 
 void stencilPolynomial::printCoef() {
-    for (auto & sbp: stencilPolyn_){
-        for (int s=0; s<sbp.getSize(); s++){
-            sbp(s)->printCoef();
-        }
+    for (int s =0; s<stencilPolyn_.getSize(); s++){
+        stencilPolyn_(s)->printCoef();
     }
 }
 
-void stencilPolynomial::printCoef(int i) {
-    assert(i < stencilPolyn_.size());
-    stencil <basisPolynomial*> tmpsbp = stencilPolyn_[i];
-    for (int s=0; s<tmpsbp.getSize(); s++){
-        tmpsbp(s)->printCoef();
-    }
+void stencilPolynomial::printCoef(int s) {
+    assert(s < stencilPolyn_.getSize());
+    stencilPolyn_(s)->printCoef();
 }
+
+

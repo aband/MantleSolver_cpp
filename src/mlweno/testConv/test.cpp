@@ -166,15 +166,12 @@ int main(int argc, char **argv){
         third(i,j) = {i-1,j-1};
     }}
 
-    vector<MLWENO::stencil<indice>> stencilIndice;
-
-    stencilIndice.push_back(third);
-
     MLWENO::stencilPolynomial* sp = new MLWENO::stencilPolynomial(start,center,targetCell,mi);
 
-    sp->SetStencilPolynomials(mi, stencilIndice);
+    sp->SetStencilPolynomials(mi, third);
 
     sp->printCoef(); 
+
 
     // ====================================================================================================================================
     // Clear used objects

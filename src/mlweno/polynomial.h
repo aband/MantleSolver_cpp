@@ -45,13 +45,18 @@ namespace MLWENO{
             ~stencilPolynomial() {};
 
             void SetStencilPolynomials(const MeshInfo& mi,
-                                       const vector<stencil <indice>>& stencilIndice);
+                                       const stencil <indice>& stencilIndice);
 
             const double GetScale() const {return scale_;}; 
 
+            double eval(int s, double x, double y) const;
+            double eval(int s, vertex P) const {return eval(s,P[0],P[1]);};
+            double operator() (int s, double x, double y) const {return eval(s,x,y);};
+            double operator() (int s, vertex P) const {return eval(s,P);};
+
             void printCoef();
  
-            void printCoef(int i);
+            void printCoef(int s);
 
         private:
 
@@ -60,7 +65,7 @@ namespace MLWENO{
             vector<indice> targetCell_;
             double scale_ = -1.0;
 
-            vector<stencil <basisPolynomial*>> stencilPolyn_;
+            stencil <basisPolynomial*> stencilPolyn_;
     };
 
 // End of using name space MLWENO
