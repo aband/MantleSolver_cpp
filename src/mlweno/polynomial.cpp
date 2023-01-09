@@ -197,10 +197,18 @@ void stencilPolynomial::EvalSmoothIndic(const MeshInfo& mi, const stencil <indic
         SetCollapsePolyn_(mi, stencilIndice);
     } 
 
+    // Initialize smoothness Indicator
+    smoothnessIndic_ = 0.0;
+
     // ===================================
 
     for (int i=1; i<collapsePolyn_.getSize(); i++){
-        int l = ; 
+        int l = i/collapsePolyn_.getI(); int m = i%collapsePolyn_.getI(); 
+        for (int j=i; j<collapsePolyn_getSize(); j++){
+            int r = j/collapsePolyn_getI(); int s = j%collapsePolyn_getI();
+
+
+        }
     }
 
 }

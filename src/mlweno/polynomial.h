@@ -77,6 +77,8 @@ namespace MLWENO{
             void SetCollapsePolyn_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
             basisPolynomial* collapsePolyn_ = nullptr;
 
+            double smoothnessIndic_ = -1;
+
     };
 
 // End of using name space MLWENO
