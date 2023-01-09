@@ -17,6 +17,8 @@ namespace MLWENO{
             void setMaxDegree(const int maxDegree[2]);
             void setCoef(double* coef);
 
+            double* getCoef() const;
+
             // Evaluation of point value for a given polynomial
             double eval(double x, double y) const;
             double eval(vertex P) const {return eval(P[0],P[1]);};
@@ -43,25 +45,25 @@ namespace MLWENO{
             stencilPolynomial() {};
             stencilPolynomial(const indice& start, const vertex& center, 
                               const vector<indice>& targetCell, const MeshInfo& mi);
-            ~stencilPolynomial() {stencilPolyn_.clearPtr();};
+            ~stencilPolynomial() {stencilPolyn_.clearPtr();smindMultip_.clearPtr();
+                                  delete [] collapsePolyn_;};
 
             void SetStencilPolynomials(const MeshInfo& mi,
                                        const stencil <indice>& stencilIndice);
 
             const double GetScale() const {return scale_;}; 
 
-            double eval(double x, double y) const;
-            double eval(vertex P) const {return eval(P[0],P[1]);};
-            double operator() (double x, double y) const {return eval(x,y);};
-            double operator() (vertex P) const {return eval(P);};
+            double eval(const double x, const double y) const;
+            double eval(const vertex& P) const {return eval(P[0],P[1]);};
+            double operator() (const double x, const double y) const {return eval(x,y);};
+            double operator() (const vertex& P) const {return eval(P);};
 
             // Check basis polynomial coefficients
             void printCoef();
             void printCoef(int s);
 
             // Create polynomial smoothness indicator
-            void CreateSmoothIndicMultip(const MeshInfo& mi);
-            void EvalSmoothIndic(const MeshInfo& mi);
+            void EvalSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice) const;
 
         private:
 
@@ -71,6 +73,10 @@ namespace MLWENO{
             double scale_ = -1.0;
 
             stencil <basisPolynomial*> stencilPolyn_;
+
+            void SetCollapsePolyn_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
+            basisPolynomial* collapsePolyn_ = nullptr;
+
     };
 
 // End of using name space MLWENO

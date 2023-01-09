@@ -178,9 +178,9 @@ int main(int argc, char **argv){
 
     sp->SetStencilPolynomials(mi, second);
 
-    sp->printCoef(); 
+    //sp->printCoef(); 
     
-    cout << sp->eval(0.0,0.0) << " " <<func(center,{1,1}) << endl;
+    //cout << sp->eval(0.0,0.0) << " " <<func(center,{1,1}) << endl;
 
     // ====================================================================================================================================
     // Clear used objects

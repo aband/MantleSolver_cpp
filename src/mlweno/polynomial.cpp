@@ -62,8 +62,13 @@ double basisPolynomial::eval(double x, double y) const {
     return polyEval(y,ycoef,maxDegree_[1]-1);
 }
 
-
-
+double* basisPolynomial::getCoef() const{
+    double * coef = new double [maxDegree_[0]*maxDegree_[1]] ();
+    for (int i=0; i<maxDegree_[0]*maxDegree_[1]; i++){
+        coef[i] = coef_[i];
+    }
+    return coef;
+} 
 
 void basisPolynomial::printCoef() const {
     for (int i=0; i<maxDegree_[0]*maxDegree_[1]; i++){
@@ -166,6 +171,37 @@ void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi,
     delete [] a;
     delete [] b;
     delete [] p;
+
+}
+
+void stencilPolynomial::SetCollapsePolyn_(const MeshInfo& mi, const stencil <indice>& stencilIndice) {
+    stencil<indice> siNow = stencilIndice;
+    double * tmpcoef = new double [stencilPolyn_.getSize()]();
+    for (int i=0; i<stencilPolyn_.getSize(); i++){
+        double * tmp = stencilPolyn_(i)->getCoef();
+        indice currentCell = start_ + siNow(i);
+
+        for (int j=0; j<stencilPolyn_.getSize(); j++){
+            tmpcoef[j] += tmp[j]*mi.localval[currentCell[j]][currentCell[i]];
+        }
+        delete [] tmp;
+    }
+    int maxDegree[2] = {stencilPolyn_.getI(),stencilPolyn_.getJ()};
+    collapsePolyn_ = new basisPolynomial(maxDegree,tmpcoef);
+    delete [] tmpcoef;
+} 
+
+void stencilPolynomial::EvalSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice) const{
+ 
+    if (collapsePolyn_ == nullptr){
+        SetCollapsePolyn_(mi, stencilIndice);
+    } 
+
+    // ===================================
+
+    for (int i=1; i<collapsePolyn_.getSize(); i++){
+        int l = ; 
+    }
 
 }
 
