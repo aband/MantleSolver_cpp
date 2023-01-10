@@ -70,6 +70,13 @@ double* basisPolynomial::getCoef() const{
     return coef;
 } 
 
+double basisPolynomial::getCoef(int i) const{
+    assert(coef_ != nullptr); 
+
+    return coef_[i];  
+
+}
+
 void basisPolynomial::printCoef() const {
     for (int i=0; i<maxDegree_[0]*maxDegree_[1]; i++){
         cout << coef_[i] << "  " ;
@@ -174,6 +181,10 @@ void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi,
 
 }
 
+void stencilPolynomial::SetCollapsePolyn(const MeshInfo& mi, const stencil <indice>& stencilIndice) {
+    SetCollapsePolyn_(mi,stencilIndice);
+}
+
 void stencilPolynomial::SetCollapsePolyn_(const MeshInfo& mi, const stencil <indice>& stencilIndice) {
     stencil<indice> siNow = stencilIndice;
     double * tmpcoef = new double [stencilPolyn_.getSize()]();
@@ -182,7 +193,7 @@ void stencilPolynomial::SetCollapsePolyn_(const MeshInfo& mi, const stencil <ind
         indice currentCell = start_ + siNow(i);
 
         for (int j=0; j<stencilPolyn_.getSize(); j++){
-            tmpcoef[j] += tmp[j]*mi.localval[currentCell[j]][currentCell[i]];
+            tmpcoef[j] += tmp[j]*mi.localVals[currentCell[j]][currentCell[i]];
         }
         delete [] tmp;
     }
@@ -191,7 +202,7 @@ void stencilPolynomial::SetCollapsePolyn_(const MeshInfo& mi, const stencil <ind
     delete [] tmpcoef;
 } 
 
-void stencilPolynomial::EvalSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice) const{
+void stencilPolynomial::EvalSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice){
  
     if (collapsePolyn_ == nullptr){
         SetCollapsePolyn_(mi, stencilIndice);
@@ -202,15 +213,17 @@ void stencilPolynomial::EvalSmoothIndic(const MeshInfo& mi, const stencil <indic
 
     // ===================================
 
-    for (int i=1; i<collapsePolyn_.getSize(); i++){
-        int l = i/collapsePolyn_.getI(); int m = i%collapsePolyn_.getI(); 
-        for (int j=i; j<collapsePolyn_getSize(); j++){
-            int r = j/collapsePolyn_getI(); int s = j%collapsePolyn_getI();
-
+    for (int i=1; i<collapsePolyn_->getSize(); i++){
+        int l = i/collapsePolyn_->getI(); int m = i%collapsePolyn_->getI(); 
+        for (int j=i; j<collapsePolyn_->getSize(); j++){
+            int r = j/collapsePolyn_->getI(); int s = j%collapsePolyn_->getI();
+            smoothnessIndic_ += pow(collapsePolyn_->getCoef(j) * 
+                                factorial(r,r-l) * factorial(s,s-m),2) *
+                                pow(2*(double)(r-l)+1.0,-1)*
+                                pow(2*(double)(s-m)+1.0,-1);
 
         }
     }
-
 }
 
 double stencilPolynomial::eval(double x, double y) const{

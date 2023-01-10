@@ -152,7 +152,9 @@ int main(int argc, char **argv){
     MeshInfo mi; 
     AssignValuesMeshInfo(mi,dm,dmu); 
 
+    // Assign local mesh and local values to mi
     mi.lmesh = mesh;
+    mi.localVals = lu;
 
     indice start = {1,1};
     vector<indice> targetCell;

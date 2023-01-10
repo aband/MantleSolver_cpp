@@ -19,6 +19,14 @@ namespace MLWENO{
 
             double* getCoef() const;
 
+            // Return the size of the polynomial
+            int getSize() const {return maxDegree_[0]*maxDegree_[1];};
+
+            // Return the size of degree x as I
+            int getI() const {return maxDegree_[0];};
+            // Return the size of degree y as J
+            int getJ() const {return maxDegree_[1];};
+
             // Evaluation of point value for a given polynomial
             double eval(double x, double y) const;
             double eval(vertex P) const {return eval(P[0],P[1]);};
@@ -31,6 +39,8 @@ namespace MLWENO{
 
             // Print coefficients out
             void printCoef() const; 
+
+            double getCoef(int i) const;
 
         private:
 
@@ -45,7 +55,7 @@ namespace MLWENO{
             stencilPolynomial() {};
             stencilPolynomial(const indice& start, const vertex& center, 
                               const vector<indice>& targetCell, const MeshInfo& mi);
-            ~stencilPolynomial() {stencilPolyn_.clearPtr();smindMultip_.clearPtr();
+            ~stencilPolynomial() {stencilPolyn_.clearPtr();
                                   delete [] collapsePolyn_;};
 
             void SetStencilPolynomials(const MeshInfo& mi,
@@ -62,8 +72,11 @@ namespace MLWENO{
             void printCoef();
             void printCoef(int s);
 
+            // Set collapse polynomial
+            void SetCollapsePolyn(const MeshInfo& mi, const stencil <indice>& stencilIndice);
+
             // Create polynomial smoothness indicator
-            void EvalSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice) const;
+            void EvalSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
         private:
 
