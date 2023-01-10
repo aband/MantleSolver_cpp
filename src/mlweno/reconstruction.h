@@ -8,10 +8,9 @@
  *3. max polynomial order
  *
  *What happens in the class of Reconstruction:
- *1. Compute smoothenss indicator
- *2. Compute non linear weights
- *3. Compute reconstruction values
- *4. Compute derivatives of reconstruction values
+ *1. Compute non linear weights
+ *2. Compute reconstruction values
+ *3. Compute derivatives of reconstruction values
  */
 
 #include <vector>
@@ -31,24 +30,27 @@
 
 namespace MLWENO {
 
-    class Reconstruction {
+    class reconstruction {
 
         public:
-            Reconstruction(){};
-            ~Reconstruction(){};
+            reconstruction(){};
+            reconstruction(int[2] stencilSize, int[2] shift) {AddStencil(stencilSize, shift);};
+            ~reconstruction(){};
 
-            void AddStencil(int[2] stencilSize, int[2] shift) {stencilSize_.push_back(stencilSize);
-                                                               shift_.push_hack(shift);};
-
-            void UpdateStencilSizeMax(int[2] max) {stencilSizeMax_[0] = max[0]; 
-                                                   stencilSizeMax_[1] = max[1];};
+            void AddStencil(int[2] stencilSize, int[2] shift);
+            void AddStencil(vector<int[2]> stencilSizes, vector<int[2]> shifts);
 
         private:
             vector<int[2]> stencilSize_;
-            int stencilSizeMax_[2] {-1,-1};
+            
+            void UpdateStencilSizeMax_(int[2] newStencilSize);
+
+            int stencilSizeMax_[2] {0,0};
             vector<int[2]> shift_;
 
-            vector<stencil <indice>> stenilIndice_;
+            int stencilNum_ = 0;
+
+            vector<stencil <indice>> * stenilIndice_ = nullptr;
             vector<stencilPolynomial> stncilPolyn_;
     }
 
