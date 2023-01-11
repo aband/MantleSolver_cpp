@@ -13,20 +13,7 @@
  *3. Compute derivatives of reconstruction values
  */
 
-#include <vector>
-#include <pair>
-#include <set>
-#include <unordered_set>
-#include <array>
-#include <valarray>
-#include <algorithm>
-#include <numeric>
-#include <memory>
-
-#include "lapacke.h"
-#include "integral.h"
-#include <assert.h>
-
+#include "polynomial.h"
 
 namespace MLWENO {
 
@@ -34,25 +21,26 @@ namespace MLWENO {
 
         public:
             reconstruction(){};
-            reconstruction(int[2] stencilSize, int[2] shift) {AddStencil(stencilSize, shift);};
+            reconstruction(int* stencilSize, indice shift) {AddStencil(stencilSize, shift);};
+            reconstruction(vector<int*> stencilSizes, vector<indice> shifts) {AddStencil(stencilSizes,shifts);};
             ~reconstruction(){};
 
-            void AddStencil(int[2] stencilSize, int[2] shift);
-            void AddStencil(vector<int[2]> stencilSizes, vector<int[2]> shifts);
+            void AddStencil(int* stencilSize, indice shift);
+            void AddStencil(vector<int*> stencilSizes, vector<indice> shifts);
 
         private:
-            vector<int[2]> stencilSize_;
+            vector<int*> stencilSize_;
             
-            void UpdateStencilSizeMax_(int[2] newStencilSize);
+            void UpdateStencilSizeMax_(int* newStencilSize);
 
             int stencilSizeMax_[2] {0,0};
-            vector<int[2]> shift_;
+            vector<indice> shift_;
 
             int stencilNum_ = 0;
 
-            vector<stencil <indice>> * stenilIndice_ = nullptr;
-            vector<stencilPolynomial> stncilPolyn_;
-    }
+            vector<stencil <indice>> stencilIndice_;
+            vector<stencilPolynomial> stencilPolyn_;
+    };
 
 }
 #endif

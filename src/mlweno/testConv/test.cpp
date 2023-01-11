@@ -6,6 +6,7 @@
 #include "util.h"
 #include "polynomial.h"
 #include "input.h"
+#include "reconstruction.h"
 //#include <adolc/adolc.h>
 
 extern "C"{
@@ -183,6 +184,9 @@ int main(int argc, char **argv){
     //sp->printCoef(); 
     
     //cout << sp->eval(0.0,0.0) << " " <<func(center,{1,1}) << endl;
+
+    // Test class of reconstruction
+    MLWENO::reconstruction * rptr = new MLWENO::reconstruction();
 
     // ====================================================================================================================================
     // Clear used objects

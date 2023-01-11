@@ -46,7 +46,7 @@ endif (FORTRAN_COMPILER)
 #find_package(ADOLC REQUIRED)
 
 project(test)
-add_executable(test test.cpp ../../integral.cpp ../../mesh.c ../polynomial.cpp ../util.cpp ../../input.cpp ../../output.c)
+add_executable(test test.cpp ../../integral.cpp ../../mesh.c ../polynomial.cpp ../util.cpp ../../input.cpp ../../output.c ../reconstruction.cpp)
 
 include_directories(../../../include ../../../src/mlweno)
 
