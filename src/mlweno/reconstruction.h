@@ -14,6 +14,7 @@
  */
 
 #include "polynomial.h"
+#include <iomanip>
 
 namespace MLWENO {
 
@@ -21,12 +22,19 @@ namespace MLWENO {
 
         public:
             reconstruction(){};
+            reconstruction(vector<stencil <indice>> stencilIndice) {};
             reconstruction(int* stencilSize, indice shift) {AddStencil(stencilSize, shift);};
             reconstruction(vector<int*> stencilSizes, vector<indice> shifts) {AddStencil(stencilSizes,shifts);};
             ~reconstruction(){};
 
             void AddStencil(int* stencilSize, indice shift);
             void AddStencil(vector<int*> stencilSizes, vector<indice> shifts);
+
+            void Create
+
+            void PrintStencils() const;
+
+            void Clear();
 
         private:
             vector<int*> stencilSize_;

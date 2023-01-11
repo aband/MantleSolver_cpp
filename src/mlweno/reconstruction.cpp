@@ -21,7 +21,7 @@ void reconstruction::AddStencil(int* stencilSize, indice shift) {
     UpdateStencilSizeMax_(stencilSize);
 
     // Create stencil Indice according to the information
-    stencil <indice> siNow;
+    stencil <indice> siNow(stencilSize[0],stencilSize[1]);
 
     for (int j=0; j<stencilSize[1]; j++){
     for (int i=0; i<stencilSize[0]; i++){
@@ -42,5 +42,33 @@ void reconstruction::AddStencil(vector<int*> stencilSizes, vector<indice> shifts
     for (int i=0; i<stencilSizes.size(); i++){
         AddStencil(stencilSizes[i], shifts[i]); 
     }
+
+}
+
+void reconstruction::PrintStencils() const {
+
+    for (int s=0; s<stencilIndice_.size(); s++){
+        stencil <indice> siNow = stencilIndice_[s];
+        for (int j=0; j<siNow.getJ(); j++){
+        for (int i=0; i<siNow.getI(); i++){
+            indice iNow = siNow(i,j);
+            cout << std::setw(2) << "(" << iNow[0] << "," << iNow[1] << ") " ;
+        } cout << endl;}
+        cout << endl;
+    }
+
+}
+
+void reconstruction::Clear() {
+
+    shift_.clear(); 
+
+    stencilSizeMax_[0] = 0;
+    stencilSizeMax_[1] = 0;
+
+    stencilNum_ = 0;
+
+    stencilIndice_.clear();
+    stencilPolyn_.clear();
 
 }

@@ -188,6 +188,32 @@ int main(int argc, char **argv){
     // Test class of reconstruction
     MLWENO::reconstruction * rptr = new MLWENO::reconstruction();
 
+    int stencilSize[2] = {3,3};
+    indice shift = {-1,-1};
+
+    rptr->AddStencil(stencilSize, shift);
+
+    stencilSize[0] = 2;
+    stencilSize[1] = 2;
+
+    rptr->AddStencil(stencilSize, shift);
+
+    shift = {0,0};
+
+    rptr->AddStencil(stencilSize, shift);
+   
+    shift = {-1,0};
+
+    rptr->AddStencil(stencilSize, shift);
+
+    shift = {0,-1};
+
+    rptr->AddStencil(stencilSize, shift);
+
+
+
+    rptr->PrintStencils();
+
     // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);
