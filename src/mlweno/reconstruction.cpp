@@ -45,7 +45,20 @@ void reconstruction::AddStencil(vector<int*> stencilSizes, vector<indice> shifts
 
 }
 
+void reconstruction::CreateStencilPolynomials(const indice& start,              const vertex& center,
+                                              const vector<indice>& targetCell, const MeshInfo& mi) {
+
+    stencilPolyn_.resize(stencilIndice_.size()); 
+
+    for (int s=0; s<stencilIndice_.size(); s++){
+        stencilPolyn_[s] = new stencilPolynomial(start, center, targetCell, mi); 
+    }
+
+}
+
 void reconstruction::PrintStencils() const {
+
+    cout << "Stencil details ... " << endl;
 
     for (int s=0; s<stencilIndice_.size(); s++){
         stencil <indice> siNow = stencilIndice_[s];
@@ -55,6 +68,13 @@ void reconstruction::PrintStencils() const {
             cout << std::setw(2) << "(" << iNow[0] << "," << iNow[1] << ") " ;
         } cout << endl;}
         cout << endl;
+    }
+
+    cout << "Stencil polynomials ..." << endl;
+
+    for (int s=0; s<stencilPolyn_.size(); s++){
+        cout << s <<endl;
+        stencilPolyn_[s]->printCoef();
     }
 
 }
@@ -69,6 +89,10 @@ void reconstruction::Clear() {
     stencilNum_ = 0;
 
     stencilIndice_.clear();
-    stencilPolyn_.clear();
 
+    for (auto ptr : stencilPolyn_){
+        delete ptr;
+    }
+
+    stencilPolyn_.clear();
 }

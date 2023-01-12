@@ -30,7 +30,8 @@ namespace MLWENO {
             void AddStencil(int* stencilSize, indice shift);
             void AddStencil(vector<int*> stencilSizes, vector<indice> shifts);
 
-            void Create
+            void CreateStencilPolynomials(const indice& start,              const vertex& center,
+                                          const vector<indice>& targetCell, const MeshInfo& mi);
 
             void PrintStencils() const;
 
@@ -47,7 +48,7 @@ namespace MLWENO {
             int stencilNum_ = 0;
 
             vector<stencil <indice>> stencilIndice_;
-            vector<stencilPolynomial> stencilPolyn_;
+            vector<stencilPolynomial*> stencilPolyn_;
     };
 
 }

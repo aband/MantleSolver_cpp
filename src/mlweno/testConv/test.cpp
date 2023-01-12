@@ -210,7 +210,7 @@ int main(int argc, char **argv){
 
     rptr->AddStencil(stencilSize, shift);
 
-
+    rptr->CreateStencilPolynomials(start, center, targetCell, mi);
 
     rptr->PrintStencils();
 
