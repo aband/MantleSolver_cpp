@@ -199,6 +199,8 @@ int main(int argc, char **argv){
 
     rptr->Eval(mi);
 
+
+
     //rptr->PrintStencils();
 
     rptr->Clear();
