@@ -14,7 +14,6 @@
  */
 
 #include "polynomial.h"
-#include <iomanip>
 
 namespace MLWENO {
 
@@ -33,8 +32,12 @@ namespace MLWENO {
             void CreateStencilPolynomials(const indice& start,              const vertex& center,
                                           const vector<indice>& targetCell, const MeshInfo& mi);
 
-            void PrintStencils() const;
+            void AddStencilPolynomials(const indice& start,              const vertex& center,
+                                       const vector<indice>& targetCell, const MeshInfo& mi);
 
+            double Eval(const MeshInfo& mi);
+
+            void PrintStencils() const;
             void Clear();
 
         private:
@@ -49,7 +52,14 @@ namespace MLWENO {
 
             vector<stencil <indice>> stencilIndice_;
             vector<stencilPolynomial*> stencilPolyn_;
-    };
 
+            void ComputeNonLinWgts_(const MeshInfo& mi);
+            void ComputeSmoothnessIndicatorPolyn_(const MeshInfo& mi);
+
+            vector<double> linWgts_;
+            vector<double> nonLinWgts_;
+
+            vector<double> smoothnessIndicPolyn_;
+    };
 }
 #endif

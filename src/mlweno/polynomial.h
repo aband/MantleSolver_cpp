@@ -75,9 +75,8 @@ namespace MLWENO{
             // Set collapse polynomial
             void SetCollapsePolyn(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
-            // Create polynomial smoothness indicator
-            void EvalSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice);
-
+            double GetSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice);
+             
         private:
 
             vertex center_ = {0.0,0.0};
@@ -90,8 +89,9 @@ namespace MLWENO{
             void SetCollapsePolyn_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
             basisPolynomial* collapsePolyn_ = nullptr;
 
+            // Create polynomial smoothness indicator
+            void EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
             double smoothnessIndic_ = -1;
-
     };
 
 // End of using name space MLWENO

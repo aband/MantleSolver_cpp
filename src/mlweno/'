@@ -68,11 +68,8 @@ void reconstruction::AddStencilPolynomials(const indice& start,              con
 
     assert(currentSize < stencilIndice_.size());
 
-    for (int i=currentSize; i<stencilIndice_.size(); i++){
-        stencilPolyn_.push_back(new stencilPolynomial(start, center, targetCell, mi));
-        stencilPolyn_[i]->SetStencilPolynomials(mi, stencilIndice_[i]);
-        linWgts_.push_back(1.0);
-        nonLinWgts_.push_back(1.0);
+    for (int i=currentSize; ){
+
     }
 
 }
@@ -119,28 +116,4 @@ void reconstruction::Clear() {
 
     linWgts_.clear();
     nonLinWgts_.clear();
-}
-
-void reconstruction::ComputeSmoothnessIndicatorPolyn_(const MeshInfo& mi) {
-
-    smoothnessIndicPolyn_.resize(stencilIndice_.size());
-
-    for (int s=0; s<stencilIndice_.size(); s++) {
-        smoothnessIndicPolyn_[s] = stencilPolyn_[s]->GetSmoothIndic(mi, stencilIndice_[s]);
-    }
-}
-
-void reconstruction::ComputeNonLinWgts_(const MeshInfo& mi){
-
-    ComputeSmoothnessIndicatorPolyn_(mi);
-
- 
-
-}
-
-double reconstruction::Eval(const MeshInfo& mi){
-
-    ComputeNonLinWgts_(mi);
-
-    return 0;
 }

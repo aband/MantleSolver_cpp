@@ -12,6 +12,7 @@
 #include <memory>
 #include <cstdlib>
 #include <type_traits>
+#include <iomanip>
 
 #include "lapacke.h"
 #include "integral.h"

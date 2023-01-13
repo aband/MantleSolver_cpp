@@ -79,7 +79,7 @@ double basisPolynomial::getCoef(int i) const{
 
 void basisPolynomial::printCoef() const {
     for (int i=0; i<maxDegree_[0]*maxDegree_[1]; i++){
-        cout << coef_[i] << "  " ;
+        cout << std::setprecision(5)<< coef_[i] << "  " ;
     }cout << endl;
 }
 
@@ -202,8 +202,8 @@ void stencilPolynomial::SetCollapsePolyn_(const MeshInfo& mi, const stencil <ind
     delete [] tmpcoef;
 } 
 
-void stencilPolynomial::EvalSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice){
- 
+void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice){
+
     if (collapsePolyn_ == nullptr){
         SetCollapsePolyn_(mi, stencilIndice);
     } 
@@ -224,6 +224,14 @@ void stencilPolynomial::EvalSmoothIndic(const MeshInfo& mi, const stencil <indic
 
         }
     }
+}
+
+double stencilPolynomial::GetSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice){
+    if (smoothnessIndic_ == -1) {
+        EvalSmoothIndic_(mi, stencilIndice);
+    }
+
+    return smoothnessIndic_;
 }
 
 double stencilPolynomial::eval(double x, double y) const{
