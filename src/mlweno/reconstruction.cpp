@@ -111,11 +111,9 @@ void reconstruction::Clear() {
 
     stencilIndice_.clear();
 
-    for (auto ptr : stencilPolyn_){
-        delete ptr;
-    }
-
     stencilPolyn_.clear();
+
+    smoothnessIndicPolyn_.clear();
 
     linWgts_.clear();
     nonLinWgts_.clear();
@@ -143,4 +141,12 @@ double reconstruction::Eval(const MeshInfo& mi){
     ComputeNonLinWgts_(mi);
 
     return 0;
+}
+
+void reconstruction::PrintSmoothnessIndic() const{
+
+    for (int s=0; s<smoothnessIndicPolyn_.size(); s++){
+        cout << smoothnessIndicPolyn_[s] << endl;
+    }
+
 }

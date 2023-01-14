@@ -35,6 +35,8 @@ namespace MLWENO {
             void AddStencilPolynomials(const indice& start,              const vertex& center,
                                        const vector<indice>& targetCell, const MeshInfo& mi);
 
+            void PrintSmoothnessIndic() const;
+
             double Eval(const MeshInfo& mi);
 
             void PrintStencils() const;

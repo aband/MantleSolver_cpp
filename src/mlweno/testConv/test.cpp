@@ -17,13 +17,13 @@ extern "C"{
 using namespace std;
 
 double func(vertex& point, const vector<double>& param){
-//	 if (point[0]<0.50){
-//		  return point[0]*point[0];
-//	 } else {
-//		  return point[0]*point[0];
-//	 }
+	 if (point[0]<-1.0/3.0){
+		  return point[0]*point[0]+point[1]*point[1];
+	 } else {
+		  return point[0]*point[0]*point[1]*point[1] + 1.0;
+	 }
 
-    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
+    //return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
     //return point[0]*point[0] + point[1]*point[1];
     //return 0.5;
     //return point[0] + point[1];
@@ -199,7 +199,7 @@ int main(int argc, char **argv){
 
     rptr->Eval(mi);
 
-
+    rptr->PrintSmoothnessIndic();
 
     //rptr->PrintStencils();
 
