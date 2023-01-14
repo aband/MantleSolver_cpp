@@ -100,6 +100,63 @@ void reconstruction::PrintStencils() const {
 
 }
 
+void reconstruction::ComputeSmoothnessIndicatorPolyn_(const MeshInfo& mi) {
+
+    smoothnessIndicPolyn_.resize(stencilIndice_.size());
+
+    for (int s=0; s<stencilIndice_.size(); s++) {
+        smoothnessIndicPolyn_[s] = stencilPolyn_[s]->GetSmoothIndic(mi, stencilIndice_[s]);
+    }
+}
+
+void reconstruction::ComputeNonLinWgts_(const MeshInfo& mi){
+
+    ComputeSmoothnessIndicatorPolyn_(mi);
+
+    if (etaBias_.empty()) {etaBias_.resize(stencilPolyn_.size());std::fill(etaBias_.begin(),etaBias_.end(),0);};
+    if (scale_ == -1) {scale_ = stencilPolyn_[0]->GetScale();};
+
+    // Compute non linear WENO weights 
+    nonLinWgts_.resize(stencilPolyn_.size());
+    double sum = 0.0;
+    for (int i=0; i<stencilPolyn_.size(); i++){
+        nonLinWgts_[i] = linWgts_[i] / pow(smoothnessIndicPolyn_[i] + eps0_*scale_*scale_, 
+                                           max(stencilPolyn_[i]->GetOrderX(),stencilPolyn_[i]->GetOrderY())) * 
+                                       pow(eps0_*scale_ / (smoothnessIndicPolyn_[i] + eps0_*scale_), etaBias_[i]);
+
+        sum += nonLinWgts_[i];
+    }
+
+    std::transform(nonLinWgts_.begin(), nonLinWgts_.end(), nonLinWgts_.begin(), [sum](double x){return x/sum;});
+
+}
+
+double reconstruction::Eval(double x, double y) const{
+    assert(nonLinWgts_.empty() == 0);
+
+    double work = 0.0;
+    // Already calculated Nonlinear weights
+    for (int i=0; i<stencilPolyn_.size(); i++){
+        work+=nonLinWgts_[i]*stencilPolyn_[i]->eval(x,y); 
+    }
+
+    return work;
+}
+
+void reconstruction::PrintSmoothnessIndic() const{
+
+    for (int s=0; s<smoothnessIndicPolyn_.size(); s++){
+        cout << smoothnessIndicPolyn_[s] << endl;
+    }
+
+}
+
+void reconstruction::PrintNonLinWgts() const{
+    for (int s=0; s<nonLinWgts_.size(); s++){
+        cout << nonLinWgts_[s] << endl;
+    }
+}
+
 void reconstruction::Clear() {
 
     shift_.clear(); 
@@ -119,34 +176,4 @@ void reconstruction::Clear() {
     nonLinWgts_.clear();
 }
 
-void reconstruction::ComputeSmoothnessIndicatorPolyn_(const MeshInfo& mi) {
 
-    smoothnessIndicPolyn_.resize(stencilIndice_.size());
-
-    for (int s=0; s<stencilIndice_.size(); s++) {
-        smoothnessIndicPolyn_[s] = stencilPolyn_[s]->GetSmoothIndic(mi, stencilIndice_[s]);
-    }
-}
-
-void reconstruction::ComputeNonLinWgts_(const MeshInfo& mi){
-
-    ComputeSmoothnessIndicatorPolyn_(mi);
-
- 
-
-}
-
-double reconstruction::Eval(const MeshInfo& mi){
-
-    ComputeNonLinWgts_(mi);
-
-    return 0;
-}
-
-void reconstruction::PrintSmoothnessIndic() const{
-
-    for (int s=0; s<smoothnessIndicPolyn_.size(); s++){
-        cout << smoothnessIndicPolyn_[s] << endl;
-    }
-
-}

@@ -236,11 +236,10 @@ double stencilPolynomial::GetSmoothIndic(const MeshInfo& mi, const stencil<indic
 }
 
 double stencilPolynomial::eval(double x, double y) const{
-    double work = 0.0;
-    for (int s=0; s<stencilPolyn_.getSize(); s++){
-        work += stencilPolyn_(s)->eval(x,y);
-    }
-    return work;
+
+    assert(collapsePolyn_ != nullptr);
+
+    return collapsePolyn_->eval(x,y);
 }
 
 void stencilPolynomial::printCoef() {

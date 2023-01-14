@@ -35,14 +35,29 @@ namespace MLWENO {
             void AddStencilPolynomials(const indice& start,              const vertex& center,
                                        const vector<indice>& targetCell, const MeshInfo& mi);
 
+            void Update(const MeshInfo& mi) {ComputeNonLinWgts_(mi);};
+
+            double Eval(double x, double y) const;
+            double Eval(const vertex& P) const {return Eval(P[0],P[1]);};
+            double operator() (const double x, const double y) const {return Eval(x,y);};
+            double operator() (const vertex& P) const {return Eval(P);};
+
+            // Print out calculated private variables
             void PrintSmoothnessIndic() const;
-
-            double Eval(const MeshInfo& mi);
-
             void PrintStencils() const;
+            void PrintNonLinWgts() const;
+
+            // Clear class member vectors and reset to default values
             void Clear();
 
         private:
+
+            double eps0_ = 0.01;
+ 
+            double scale_ = -1;
+
+            vector<int> etaBias_;
+
             vector<int*> stencilSize_;
             
             void UpdateStencilSizeMax_(int* newStencilSize);

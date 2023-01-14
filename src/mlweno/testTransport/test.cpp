@@ -17,12 +17,10 @@ extern "C"{
 using namespace std;
 
 double func(vertex& point, const vector<double>& param){
-	 if (point[0]<-1.0/param[0]){
-		  //return point[0]*point[0]+point[1]*point[1];
-	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
+	 if (point[0]<-1.0/3.0){
+		  return point[0]*point[0]+point[1]*point[1];
 	 } else {
-		  //return point[0]*point[0]*point[1]*point[1] + 1.0;
-	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
+		  return point[0]*point[0]*point[1]*point[1] + 1.0;
 	 }
 
     //return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
@@ -136,6 +134,21 @@ int main(int argc, char **argv){
 
     // ====================================================================================================================================
 
+    // test for 2D Burgers equation
+    // Explicit time progression for simplicity
+    // DrawPressure(dmu, &globalu);   
+
+    //double T = 0.5;
+    //double currentT = 0.0;
+
+    // Spectial case
+    //double dx = (L*H)/((double)M*(double)N);
+
+    //double dt = 0.8*3.0/(double)M;
+
+    //PetscInt       xs,ys,xm,ym;
+    //ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
+
     // Create MeshInfo object
     MeshInfo mi; 
     AssignValuesMeshInfo(mi,dm,dmu); 
@@ -144,57 +157,8 @@ int main(int argc, char **argv){
     mi.lmesh = mesh;
     mi.localVals = lu;
 
-    indice start = {M/2,N/2};
-    vector<indice> targetCell;
-    targetCell.push_back({0,0});
-    //targetCell.push_back({1,0}); 
-    vertex center = {0.0,0.0};
+    // Define reconstructions on the given problem
 
-    MLWENO::stencil<indice> third(3,3);
-
-    for (int j=0; j<3; j++){
-    for (int i=0; i<3; i++){
-        third(i,j) = {i-1,j-1};
-    }}
-
-    MLWENO::stencil<indice> second(2,2);
-
-    for (int j=0; j<2; j++){
-    for (int i=0; i<2; i++){
-        second(i,j) = {i,j};
-    }}
-
-    MLWENO::stencilPolynomial* sp = new MLWENO::stencilPolynomial(start,center,targetCell,mi);
-
-    sp->SetStencilPolynomials(mi, second);
-
-    //sp->printCoef(); 
-    
-    //cout << sp->eval(0.0,0.0) << " " <<func(center,{1,1}) << endl;
-
-    // Test class of reconstruction
-    MLWENO::reconstruction * rptr = new MLWENO::reconstruction();
-
-    int stencil3[2] = {3,3};
-    int stencil2[2] = {2,2};
-    vector<int*> stencilSizes = {stencil3,stencil2,stencil2,stencil2,stencil2};
-    vector<indice> shifts = {{-1,-1},{-1,-1},{0,0},{-1,0},{0,-1}};
-
-    rptr->AddStencil(stencilSizes, shifts);
-
-    rptr->CreateStencilPolynomials(start, center, targetCell, mi);
-
-    rptr->Update(mi);
-
-    //rptr->PrintNonLinWgts();
-
-    //rptr->PrintSmoothnessIndic();
-
-    //rptr->PrintStencils();
-
-    cout << rptr->Eval(0.0,0.0) << " " << func(center,{(double)M,(double)N}) << endl;
-
-    rptr->Clear();
 
     // ====================================================================================================================================
     // Clear used objects

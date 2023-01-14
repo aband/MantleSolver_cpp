@@ -76,7 +76,11 @@ namespace MLWENO{
             void SetCollapsePolyn(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
             double GetSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice);
-             
+
+            const int GetOrderX() const { return stencilPolyn_.getI();};
+
+            const int GetOrderY() const { return stencilPolyn_.getJ();};
+
         private:
 
             vertex center_ = {0.0,0.0};
