@@ -15,10 +15,11 @@ namespace Transport{
             ~advection() {Clear();};
 
             void Clear() const;
-
             double AdvFlux();
 
         private:
+            void CreateBoundary_(); 
+
             std::map<indice, int> boundaryType_;
             std::map<indice, MLWENO::reconstruction *> advRecon_;
 

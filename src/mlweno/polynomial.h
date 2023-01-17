@@ -61,6 +61,9 @@ namespace MLWENO{
             void SetStencilPolynomials(const MeshInfo& mi,
                                        const stencil <indice>& stencilIndice);
 
+            void SetUpScale() {ComputeCellBasedScal_();};
+            void SetUpScale(const stencil <indice>& stencilIndice) {ComputeStencilBasedScale_(stencilIndice);};
+
             const double GetScale() const {return scale_;}; 
 
             double eval(const double x, const double y) const;
@@ -78,7 +81,6 @@ namespace MLWENO{
             double GetSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
             const int GetOrderX() const { return stencilPolyn_.getI();};
-
             const int GetOrderY() const { return stencilPolyn_.getJ();};
 
         private:
@@ -87,6 +89,11 @@ namespace MLWENO{
             indice start_ = {-1,-1};
             vector<indice> targetCell_;
             double scale_ = -1.0;
+
+            // Calculate scale based on the information of a single cell
+            void ComputeCellBasedScale_();
+            // Calculate scale based on the value of a given stencil
+            void ComputeStencilBasedScale_();
 
             stencil <basisPolynomial*> stencilPolyn_;
 

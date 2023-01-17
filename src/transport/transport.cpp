@@ -10,6 +10,11 @@ using namespace Transport {
         }
     }
 
+    void CreateBoundary_() {
+
+
+    }
+
 
     void diffusion::Clear() const {
         boundaryType_.clear();
