@@ -16,20 +16,6 @@ extern "C"{
 
 using namespace std;
 
-double func(vertex& point, const vector<double>& param){
-	 if (point[0]<-1.0/3.0){
-		  return point[0]*point[0]+point[1]*point[1];
-	 } else {
-		  return point[0]*point[0]*point[1]*point[1] + 1.0;
-	 }
-
-    //return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
-    //return point[0]*point[0] + point[1]*point[1];
-    //return 0.5;
-    //return point[0] + point[1];
-
-}
-
 int main(int argc, char **argv){
 
     // Initializing petsc function
@@ -119,8 +105,8 @@ int main(int argc, char **argv){
     ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
 
     // Initialize with oblique data for Burgers equation 
-    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -156,8 +142,6 @@ int main(int argc, char **argv){
     // Assign local mesh and local values to mi
     mi.lmesh = mesh;
     mi.localVals = lu;
-
-    // Define reconstructions on the given problem
 
 
     // ====================================================================================================================================

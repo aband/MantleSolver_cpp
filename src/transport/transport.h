@@ -1,103 +1,54 @@
 #ifndef TRANSPORT_H_
 #define TRANSPORT_H_
 
-#include "weno_multilevel.h"
+#include <petsc.h>
+#include <map>
 
-enum boundaryType {inflow, outflow};
-enum edgeIndex {West, South, East, North};
+#include "reconstruction.h"
+#include "input.h"
 
-class TransportCell{
-    public:
-        TransportCell(const MeshInfo& mi, point_index& cellIndex);
-        ~TransportCell();
+namespace Transport{
 
-        // Indicate if the given cell is on boundary
-        bool boundaryflag;
+    class advection {
+        public:
+            advection();
+            ~advection() {Clear();};
 
-        point_index GetLocalAdvWenoIndex();
+            void Clear() const;
 
-    private:
-        // The prefix local and global are 
-        // referring to parallel local and global
-        point_index localCellIndex_;
-        int localCellIndexFlat_;
+            double AdvFlux();
 
-        point_index localCellIndexGhost_;
-        int localCellIndexFlatGhost_;
+        private:
+            std::map<indice, int> boundaryType_;
+            std::map<indice, MLWENO::reconstruction *> advRecon_;
 
-        point_index globalCellIndex_;
-        int globalCellIndexFlat_;
+    };
 
-        // Number of vertical edges and horizontal edges per local row
-        int localNVertiEdge_;
-        int localNHoriEdge_;
+    class diffusion {
+        public:
+            diffusion();
+            ~diffusion() {Clear();};
 
-        // Number of vertical edges and horizontal edges per global row
-        int globalNVertiEdge_;
-        int globalNHoriEdge_;
+            void Clear() const;
 
-        int[4] localEdgeIndex_;
-        int[4] globalEdgeIndex_;
+            double DiffFlux();
 
-        // Boundary information stores which edge is on the boundary and 
-        // the corresponding boundary type: inflow or outflow
-        vector<pair <int, boundaryType>> boundaryInfo_;
+        private:
+            std::map<indice, int> boundaryType_; 
+            std::map<indice, MLWENO::reconstruction *> diffRecon_;
 
-        bool withinBoundary_(const MeshInfo& mi); 
+    };
 
-        void identifyBoundary_(double * horieffVel, double * vertEffVel);
+    class transport : public advection, public diffusion{
+        public:
+            transport();
+            ~transport() {};
 
-        // Reconstruction stencls selection
-        // Mark index ordering of stencils
-        // This method of selection can only be applied to fixed stencil ordering
+            double TotalFlux();
 
-        /* advective flux stencil ordering
-         * 3  2
-         * 0  1
-         */ 
+        private:
 
-        /*
-         * diffusive flux stencil ordering
-         *
-         *
-         */
+    };
 
-        void selectAdvStencil_();
-        void selectDiffStencil_();
-
-        unordered_set<int> advStencilSelection_({0,1,2,3,4});
-        vector<int* > diffStencilSelection_;
 }
-
-// Define transport per cell
-class Transport{
-    public:
-        Transport(const MeshInfo& mi);
-        ~Transport();
-
-    private:
-
-        vector<int *> advRangex_;
-        vector<int *> advRangey_;
-
-        vector<int *> diffHoriRangex_;
-        vector<int *> diffHoriRangey_;
-        vector<int *> diffVertRangex_;
-        vector<int *> diffVertRangey_;
-
-        vector<double> SelectLinWeights_(TransportCell cell);
-        vector<int *> SelectStencilx_(Transport Cell);
-        vector<int *> SelectStencilx_(Transport Cell);
-
-        // vector holding cell index of boundary cells and interior cells
-        vector< TransportCell *> localcells_;
-
-        // vector holding reconstruction method of advective flux and diffusion flux
-        void CreateWenoReconstruction_(const MeshInfo& mi);
-
-        vector<WenoReconstruction *> advWr_;
-        vector<WenoReconstruction *> diffhoriwr_;
-        vector<WenoReconstruction *> diffvertwr_;
-};
-
 #endif
