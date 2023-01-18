@@ -54,7 +54,8 @@ void reconstruction::CreateStencilPolynomials(const indice& start,              
     nonLinWgts_.resize(stencilIndice_.size());
 
     for (int s=0; s<stencilIndice_.size(); s++){
-        stencilPolyn_[s] = new stencilPolynomial(start, center, targetCell, mi); 
+        stencilPolyn_[s] = new stencilPolynomial(start, center, targetCell); 
+        stencilPolyn_[s]->SetUpScale(mi,stencilIndice_[s]);
         stencilPolyn_[s]->SetStencilPolynomials(mi,stencilIndice_[s]);
         linWgts_[s] = 1.0;
         nonLinWgts_[s] = 1.0;
@@ -69,7 +70,8 @@ void reconstruction::AddStencilPolynomials(const indice& start,              con
     assert(currentSize < stencilIndice_.size());
 
     for (int i=currentSize; i<stencilIndice_.size(); i++){
-        stencilPolyn_.push_back(new stencilPolynomial(start, center, targetCell, mi));
+        stencilPolyn_.push_back(new stencilPolynomial(start, center, targetCell));
+        stencilPolyn_[i]->SetUpScale(mi, stencilIndice_[i]);
         stencilPolyn_[i]->SetStencilPolynomials(mi, stencilIndice_[i]);
         linWgts_.push_back(1.0);
         nonLinWgts_.push_back(1.0);
@@ -176,4 +178,23 @@ void reconstruction::Clear() {
     nonLinWgts_.clear();
 }
 
+// ======================================================================
+void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
+    // Should be called each time add a new level to reconstruction
+    // For better countability, all stencils 
+    for (int j=0; j<MPIlocalCellSize[1]; j++){
+    for (int i=0; i<MPIlocalCellSize[0]; i++){ 
+       if  
+    }}
+}
 
+void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY){
+    allLevels_.push_back(new singleLevelReconstruction(mi, stencilSizeX, stencilSizeY)); 
+}
+
+void multiLeveReconstruction::Clear(){
+    for (int i=0; i<allLevels_.size(); i++){
+        delete allLevels_[i];
+    }
+    allLevels_.clear();
+}

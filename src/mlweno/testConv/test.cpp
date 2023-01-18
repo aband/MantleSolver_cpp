@@ -164,7 +164,7 @@ int main(int argc, char **argv){
         second(i,j) = {i,j};
     }}
 
-    MLWENO::stencilPolynomial* sp = new MLWENO::stencilPolynomial(start,center,targetCell,mi);
+    MLWENO::stencilPolynomial* sp = new MLWENO::stencilPolynomial(start,center,targetCell);
 
     sp->SetStencilPolynomials(mi, second);
 

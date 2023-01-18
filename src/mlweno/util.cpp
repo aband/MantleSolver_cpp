@@ -100,6 +100,14 @@ void polynDerMulti(int der, int max, int * multiplier){
 
 }
 
+indice MPILocalToGlobal(indice local, const MeshInfo& mi){
+    return local + MPIlocalCellStart;
+}
+
+indice MPIGlobalToLocal(indice global, const MeshInfo& mi){
+    return global - MPIlocalCellStart;
+}
+
 // Assign values to MeshInfo object
 void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
 

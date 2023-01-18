@@ -99,4 +99,9 @@ double polyEval(double x, double * coef, int degree);
 // Compute factorial coefficient for polynomial derivatives
 void polynDerMulti(int der, int max, int * multiplier);
 
+// Local to global and global to local
+// All indices are referenced to cell indice
+indice MPILocalToGlobal(indice local, const MeshInfo& mi);
+indice MPIGlobalToLocal(indice global, const MeshInfo& mi);
+
 #endif

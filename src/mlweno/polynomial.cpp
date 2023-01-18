@@ -85,7 +85,7 @@ void basisPolynomial::printCoef() const {
 
 // ================================================================================
 stencilPolynomial::stencilPolynomial(const indice& start, const vertex& center, 
-                                     const vector<indice>& targetCell, const MeshInfo& mi){
+                                     const vector<indice>& targetCell){
 
 
     start_[0] = start[0];
@@ -100,16 +100,15 @@ stencilPolynomial::stencilPolynomial(const indice& start, const vertex& center,
         targetCell_.at(i) = targetCell.at(i);
     }
 
-    ComputeScale_();
 }
 
-void stencilPolynomial::ComputeCellBasedScale_(){
+void stencilPolynomial::ComputeCellBasedScale_(const MeshInfo& mi){
     scale_ = 0.0;
-    for (auto & cell: targetCell){
+    for (auto & cell: targetCell_){
         vector<vertex> work;
         for (auto & c: mi.faceCorner){
-            int sj = start[1]+cell[1]+c[1] + mi.vertexGhostLayerSize;
-            int si = start[0]+cell[0]+c[0] + mi.vertexGhostLayerSize;
+            int sj = start_[1]+cell[1]+c[1] + mi.vertexGhostLayerSize;
+            int si = start_[0]+cell[0]+c[0] + mi.vertexGhostLayerSize;
             work.push_back(mi.lmesh[sj*mi.MPIlocalVertexSizeFull.at(0)+si]);
         }
         scale_ += NumIntegralFace(work, {0,0}, {0.0,0.0}, 1.0, constFunc); 
@@ -118,28 +117,26 @@ void stencilPolynomial::ComputeCellBasedScale_(){
     scale_ = pow(scale_,0.5); 
 }
 
-void stencilPolynomial::ComputeStencilBasedScale_(const stencil <indice>& stencilIndice){
+void stencilPolynomial::ComputeStencilBasedScale_(const MeshInfo& mi, const stencil <indice>& stencilIndice){
 
-    scale_ = 0.0;
-    maxScale_ = 0.0;
+    double maxScale_ = 0.0;
 
-    for (auto siNow: stencilIndice){
+    for (int j=0; j<stencilIndice.getSize(); j++){
+        scale_ = 0.0; 
         vector<vertex> work;
+        indice siNow = stencilIndice(j);
         for (auto & c: mi.faceCorner){
-            int sj = start[1]+cell[1]+c[1] + mi.vertexGhostLayerSize;
-            int si = start[0]+cell[0]+c[0] + mi.vertexGhostLayerSize;
+            int sj = start_[1]+siNow[1]+c[1] + mi.vertexGhostLayerSize;
+            int si = start_[0]+siNow[0]+c[0] + mi.vertexGhostLayerSize;
             work.push_back(mi.lmesh[sj*mi.MPIlocalVertexSizeFull.at(0)+si]);
         }
         scale_ += NumIntegralFace(work, {0,0}, {0.0,0.0}, 1.0, constFunc); 
 
         if (scale_ > maxScale_) {maxScale_ = scale_;};
 
-        scale_ = 0.0;
-
     }
 
-
-    scale_ = pow(maxScale_.0.5);
+    scale_ = pow(maxScale_,0.5);
 
 }
 

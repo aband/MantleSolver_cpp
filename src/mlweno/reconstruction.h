@@ -14,6 +14,7 @@
  */
 
 #include "polynomial.h"
+#include <map>
 
 namespace MLWENO {
 
@@ -21,9 +22,11 @@ namespace MLWENO {
 
         public:
             reconstruction(){};
+            // Create stencil polynomials from stencil of indices
             reconstruction(vector<stencil <indice>> stencilIndice) {};
             reconstruction(int* stencilSize, indice shift) {AddStencil(stencilSize, shift);};
             reconstruction(vector<int*> stencilSizes, vector<indice> shifts) {AddStencil(stencilSizes,shifts);};
+
             ~reconstruction(){};
 
             void AddStencil(int* stencilSize, indice shift);
@@ -77,6 +80,43 @@ namespace MLWENO {
             vector<double> nonLinWgts_;
 
             vector<double> smoothnessIndicPolyn_;
+    };
+
+    // A reconstruction methodology based on the idea of multi level ideas
+
+    class singleLevelReconstruction {
+        public:
+            singleLevelReconstruction();
+            ~singleLevelReconstruction();
+
+        private:
+            void IdentifyInteriorCell_();
+            unordered_set<indice> interior_;
+
+            map<indice, stencilPolynomial*> singleLevel;
+    };
+
+    class multiLevelReconstruction {
+        public:
+            multiLevelReconstruction();
+            multiLevelReconstruction(const MeshInfo& mi, int stencilSizeX, int stencilSizeY){AddLevel(mi,stencilSizeX,stencilSizeY);};
+            multiLevelReconstruction(const MeshInfo& mi, int* stencilSize) {AddLevel(mi,stencilSize);};
+            multiLevelReconstruction(const MeshInfo& mi, vector<int*> stencilSizes) 
+            {AddLevel(mi,stencilSizes);};
+
+            ~multiLevelReconstruction() {Clear();};
+
+            void AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY);
+            void AddLevel(const MeshInfo& mi, int* stencilSize) {AddLevel(mi,stencilSize[0],stencilSize[1]);};
+            void AddLevel(const MeshInfo& mi, vector<int*> stencilSizes)
+            {for (int i=0; i<stencilSizes.size(); i++){
+                 AddLevel(mi,stencilSizes[i]);}};
+
+            void Clear();
+        private:
+
+            vector< singleLevelReconstruction *> allLevels_;
+
     };
 }
 #endif

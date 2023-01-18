@@ -54,15 +54,15 @@ namespace MLWENO{
         public:
             stencilPolynomial() {};
             stencilPolynomial(const indice& start, const vertex& center, 
-                              const vector<indice>& targetCell, const MeshInfo& mi);
+                              const vector<indice>& targetCell);
             ~stencilPolynomial() {stencilPolyn_.clearPtr();
                                   delete [] collapsePolyn_;};
 
             void SetStencilPolynomials(const MeshInfo& mi,
                                        const stencil <indice>& stencilIndice);
 
-            void SetUpScale() {ComputeCellBasedScal_();};
-            void SetUpScale(const stencil <indice>& stencilIndice) {ComputeStencilBasedScale_(stencilIndice);};
+            void SetUpScale(const MeshInfo& mi) {ComputeCellBasedScale_(mi);};
+            void SetUpScale(const MeshInfo& mi, const stencil <indice>& stencilIndice) {ComputeStencilBasedScale_(mi, stencilIndice);};
 
             const double GetScale() const {return scale_;}; 
 
@@ -91,9 +91,9 @@ namespace MLWENO{
             double scale_ = -1.0;
 
             // Calculate scale based on the information of a single cell
-            void ComputeCellBasedScale_();
+            void ComputeCellBasedScale_(const MeshInfo& mi);
             // Calculate scale based on the value of a given stencil
-            void ComputeStencilBasedScale_();
+            void ComputeStencilBasedScale_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
             stencil <basisPolynomial*> stencilPolyn_;
 
