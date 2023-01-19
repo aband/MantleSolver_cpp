@@ -86,14 +86,29 @@ namespace MLWENO {
 
     class singleLevelReconstruction {
         public:
-            singleLevelReconstruction();
-            ~singleLevelReconstruction();
+            singleLevelReconstruction() {};
+            singleLevelReconstruction(int stencilSizeX, int stencilSizeY); 
+            
+            ~singleLevelReconstruction() {interior_.clear(); singleLevel.clear();};
+
+            void CreateStencilPolynomials(const MeshInfo& mi);
 
         private:
-            void IdentifyInteriorCell_();
-            unordered_set<indice> interior_;
 
-            map<indice, stencilPolynomial*> singleLevel;
+            int FlatIndic_(const MeshInfo& mi, int i, int j) 
+                          {return j*mi.MPIlocalCellSize[0]+i;};
+
+            indice Bend(const MeshInfo& mi, int flat) 
+                       {return {flat%mi.MPIlocalCellSize[0], flat/mi.MPIlocalCellSize[0]};};
+
+            int stencilSizeX_ = -1;
+            int stencilSizeY_ = -1;
+
+            void IdentifyInteriorCell_(const MeshInfo& mi);
+            unordered_set<int> interior_;
+
+            void ComputeStencilPolyn_(const MeshInfo& mi);
+            map<int, stencilPolynomial*> singleLevel_;
     };
 
     class multiLevelReconstruction {

@@ -179,20 +179,40 @@ void reconstruction::Clear() {
 }
 
 // ======================================================================
+singleLevelReconstruction::singleLevelReconstruction(int stencilSizeX, int stencilSizeY){
+    stencilSizeX_ = stencilSizeX;
+    stencilSizeY_ = stencilSizeY;
+}
+
 void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
     // Should be called each time add a new level to reconstruction
     // For better countability, all stencils 
-    for (int j=0; j<MPIlocalCellSize[1]; j++){
-    for (int i=0; i<MPIlocalCellSize[0]; i++){ 
-       if  
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){ 
+       if (j+mi.MPIlocalCellStart[1]+stencilSizeY_-1<mi.MPIglobalCellSize[1] &&
+           j+mi.MPIlocalCellStart[0]+stencilSizeX_-1<mi.MPIglobalCellSize[0] ){
+               interior_.insert(FlatIndic_(mi,i,j));
+           }
     }}
 }
 
-void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY){
-    allLevels_.push_back(new singleLevelReconstruction(mi, stencilSizeX, stencilSizeY)); 
+void singleLevelReconstruction::ComputeStencilPolyn_(const indice& start, const vertex& center, 
+                                                     const vector<indice>& targetCell){
+    for (auto& flat: interior_){
+        singleLevel_[flat] = new stencilPolynomial(start, center, targetCell);
+    }
+
 }
 
-void multiLeveReconstruction::Clear(){
+void singleLevelReconstruction::CreateStencilPolynomials(const MeshInfo& mi){
+    IdentifyInteriorCell_(mi);
+}
+
+void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY){
+    allLevels_.push_back(new singleLevelReconstruction(stencilSizeX, stencilSizeY)); 
+}
+
+void multiLevelReconstruction::Clear(){
     for (int i=0; i<allLevels_.size(); i++){
         delete allLevels_[i];
     }
