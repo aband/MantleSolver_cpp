@@ -92,6 +92,8 @@ namespace MLWENO {
             ~singleLevelReconstruction() {interior_.clear(); singleLevel_.clear();};
 
             void CreateStencilPolynomials(const MeshInfo& mi);
+
+            void CheckStencils() const {cout<< "Constructed "<< interior_.size() << " stencils with the size of " << stencilSizeX_ << " " << stencilSizeY_ << endl;};
             void CheckStencilPolynomials(const MeshInfo& mi, indice start);
 
         private:
@@ -127,7 +129,7 @@ namespace MLWENO {
 
     class multiLevelReconstruction {
         public:
-            multiLevelReconstruction();
+            multiLevelReconstruction() {};
             multiLevelReconstruction(const MeshInfo& mi, int stencilSizeX, int stencilSizeY){AddLevel(mi,stencilSizeX,stencilSizeY);};
             multiLevelReconstruction(const MeshInfo& mi, int* stencilSize) {AddLevel(mi,stencilSize);};
             multiLevelReconstruction(const MeshInfo& mi, vector<int*> stencilSizes) 
@@ -141,11 +143,19 @@ namespace MLWENO {
             {for (int i=0; i<stencilSizes.size(); i++){
                  AddLevel(mi,stencilSizes[i]);}};
 
+            void AdjustLinearWgts(int l, double w);
+
+            void UpdateNonlinearWgts();
+
+            void GetInfo();
+
             void Clear();
         private:
 
             vector< singleLevelReconstruction *> allLevels_;
 
+            vector< double > linearWgts_;
+            vector< double > nonLinearWgts_;
     };
 }
 #endif

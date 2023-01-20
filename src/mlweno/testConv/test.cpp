@@ -197,14 +197,19 @@ int main(int argc, char **argv){
     rptr->Clear();
 
     // Test single level reconstruction
-    MLWENO::singleLevelReconstruction * slrPtr = new MLWENO::singleLevelReconstruction(3,3);
+    //MLWENO::singleLevelReconstruction * slrPtr = new MLWENO::singleLevelReconstruction(3,3);
 
-    slrPtr->CreateStencilPolynomials(mi);
+    //slrPtr->CreateStencilPolynomials(mi);
 
-    indice test = {0,0};
-    slrPtr->CheckStencilPolynomials(mi,test);
+    //indice test = {0,0};
+    //slrPtr->CheckStencilPolynomials(mi,test);
 
+    MLWENO::multiLevelReconstruction * mlrPtr = new MLWENO::multiLevelReconstruction(mi,2,2);
+    mlrPtr->AddLevel(mi,3,3);
+    mlrPtr->AddLevel(mi,2,3);
+    mlrPtr->AddLevel(mi,3,2);
 
+    mlrPtr->GetInfo();
 
     // ====================================================================================================================================
     // Clear used objects

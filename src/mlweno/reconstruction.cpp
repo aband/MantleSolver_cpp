@@ -194,11 +194,14 @@ singleLevelReconstruction::singleLevelReconstruction(int stencilSizeX, int stenc
 
 void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
     // Should be called each time add a new level to reconstruction
-    // For better countability, all stencils 
-    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
-    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){ 
+    // For better countability, all stencils
+    for (int j=-2; j<mi.MPIlocalCellSize[1]; j++){
+    for (int i=-2; i<mi.MPIlocalCellSize[0]; i++){ 
        if (j+mi.MPIlocalCellStart[1]+stencilSizeY_-1<mi.MPIglobalCellSize[1] &&
-           j+mi.MPIlocalCellStart[0]+stencilSizeX_-1<mi.MPIglobalCellSize[0] ){
+           i+mi.MPIlocalCellStart[0]+stencilSizeX_-1<mi.MPIglobalCellSize[0] &&
+           j+mi.MPIlocalCellStart[1]>-1 &&
+           i+mi.MPIlocalCellStart[0]>-1 ){
+
                interior_.insert(FlatIndic_(mi,i,j));
            }
     }}
@@ -246,8 +249,26 @@ void singleLevelReconstruction::CheckStencilPolynomials(const MeshInfo& mi, indi
     singleLevel_[FlatIndic_(mi,start)]->printCoef();
 }
 
+// ==========================================================================================
 void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY){
-    allLevels_.push_back(new singleLevelReconstruction(stencilSizeX, stencilSizeY)); 
+    singleLevelReconstruction * slrPtr = new singleLevelReconstruction(stencilSizeX,stencilSizeY);
+    slrPtr->CreateStencilPolynomials(mi);
+    allLevels_.push_back(slrPtr); 
+}
+
+void multiLevelReconstruction::AdjustLinearWgts(int l, double w){
+}
+
+void multiLevelReconstruction::UpdateNonlinearWgts(){
+}
+
+void multiLevelReconstruction::GetInfo(){
+
+    cout << "There are " <<allLevels_.size()<< " levels." << endl;
+
+    for (int l=0; l<allLevels_.size(); l++){
+        allLevels_[l]->CheckStencils(); 
+    }
 }
 
 void multiLevelReconstruction::Clear(){
