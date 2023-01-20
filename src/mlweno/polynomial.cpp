@@ -84,6 +84,16 @@ void basisPolynomial::printCoef() const {
 }
 
 // ================================================================================
+stencilPolynomial::stencilPolynomial(const indice& start, const vertex& center){
+
+    start_[0] = start[0];
+    start_[1] = start[1];
+
+    center_[0] = center[0];
+    center_[1] = center[1];
+
+}
+
 stencilPolynomial::stencilPolynomial(const indice& start, const vertex& center, 
                                      const vector<indice>& targetCell){
 
@@ -100,6 +110,14 @@ stencilPolynomial::stencilPolynomial(const indice& start, const vertex& center,
         targetCell_.at(i) = targetCell.at(i);
     }
 
+}
+
+void stencilPolynomial::SetTargetCell_(const vector<indice>& targetCell){
+    targetCell_.resize(targetCell.size());
+
+    for (int i=0; i<targetCell_.size(); i++){
+        targetCell_.at(i) = targetCell.at(i);
+    }
 }
 
 void stencilPolynomial::ComputeCellBasedScale_(const MeshInfo& mi){

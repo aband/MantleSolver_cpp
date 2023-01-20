@@ -89,17 +89,23 @@ namespace MLWENO {
             singleLevelReconstruction() {};
             singleLevelReconstruction(int stencilSizeX, int stencilSizeY); 
             
-            ~singleLevelReconstruction() {interior_.clear(); singleLevel.clear();};
+            ~singleLevelReconstruction() {interior_.clear(); singleLevel_.clear();};
 
             void CreateStencilPolynomials(const MeshInfo& mi);
 
         private:
 
+            vertex ComputeStencilCenter_(const MeshInfo& mi, int flat);
+
             int FlatIndic_(const MeshInfo& mi, int i, int j) 
                           {return j*mi.MPIlocalCellSize[0]+i;};
 
-            indice Bend(const MeshInfo& mi, int flat) 
-                       {return {flat%mi.MPIlocalCellSize[0], flat/mi.MPIlocalCellSize[0]};};
+            int FlatIndic_(const int M, int i, int j) {return j*M+i;};
+            int FlatIndic_(const MeshInfo& mi, const indice& p) {return FlatIndic_(mi,p[0],p[1]);}
+            int FlatIndic_(const int M, const indice& p) {return FlatIndic_(M,p[0],p[1]);};
+
+            indice Bend_(const MeshInfo& mi, int flat) 
+                        {return {flat%mi.MPIlocalCellSize[0], flat/mi.MPIlocalCellSize[0]};};
 
             int stencilSizeX_ = -1;
             int stencilSizeY_ = -1;
@@ -109,6 +115,9 @@ namespace MLWENO {
 
             void ComputeStencilPolyn_(const MeshInfo& mi);
             map<int, stencilPolynomial*> singleLevel_;
+
+            stencil <indice>& stencilIndice_;
+
     };
 
     class multiLevelReconstruction {

@@ -196,10 +196,34 @@ void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
     }}
 }
 
-void singleLevelReconstruction::ComputeStencilPolyn_(const indice& start, const vertex& center, 
-                                                     const vector<indice>& targetCell){
+vertex singleLevelReconstruction::ComputeStencilCenter_(const MeshInfo& mi, int flat){
+    vertex work  = {0.0,0.0};
+    indice original = Bend_(mi,flat);
+
+    original[0] = original[0] + mi.vertexGhostLayerSize;
+    original[1] = original[1] + mi.vertexGhostLayerSize;
+
+    work += mi.lmesh[FlatIndic_(mi.MPIlocalVertexSizeFull[0],original)];
+
+    original[0] = original[0] + stencilSizeX_;
+ 
+    work += mi.lmesh[FlatIndic_(mi.MPIlocalVertexSizeFull[0],original)];
+
+    original[1] = original[1] + stencilSizeY_;
+ 
+    work += mi.lmesh[FlatIndic_(mi.MPIlocalVertexSizeFull[0],original)];
+
+    original[0] = original[0] - stencilSizeX_;
+ 
+    work += mi.lmesh[FlatIndic_(mi.MPIlocalVertexSizeFull[0],original)];
+
+    return work/4.0;
+}
+
+void singleLevelReconstruction::ComputeStencilPolyn_(const MeshInfo& mi){
     for (auto& flat: interior_){
-        singleLevel_[flat] = new stencilPolynomial(start, center, targetCell);
+        singleLevel_[flat] = new stencilPolynomial(Bend_(mi,flat), ComputeStencilCenter_(mi,flat));
+        singleLevel_[flat]->SetUpScale(mi,stencilIndice_);
     }
 
 }
