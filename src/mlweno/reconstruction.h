@@ -92,20 +92,25 @@ namespace MLWENO {
             ~singleLevelReconstruction() {interior_.clear(); singleLevel_.clear();};
 
             void CreateStencilPolynomials(const MeshInfo& mi);
+            void CheckStencilPolynomials(const MeshInfo& mi, indice start);
 
         private:
 
             vertex ComputeStencilCenter_(const MeshInfo& mi, int flat);
 
-            int FlatIndic_(const MeshInfo& mi, int i, int j) 
+            // Flatten indice into 1D array
+            int FlatIndic_(const MeshInfo& mi, int i, int j) const 
                           {return j*mi.MPIlocalCellSize[0]+i;};
 
-            int FlatIndic_(const int M, int i, int j) {return j*M+i;};
-            int FlatIndic_(const MeshInfo& mi, const indice& p) {return FlatIndic_(mi,p[0],p[1]);}
-            int FlatIndic_(const int M, const indice& p) {return FlatIndic_(M,p[0],p[1]);};
+            int FlatIndic_(const int M, int i, int j) const {return j*M+i;};
+            int FlatIndic_(const MeshInfo& mi, const indice& p) const {return FlatIndic_(mi,p[0],p[1]);}
+            int FlatIndic_(const int M, const indice& p) const {return FlatIndic_(M,p[0],p[1]);};
 
-            indice Bend_(const MeshInfo& mi, int flat) 
+            // Reverse process of flatten indices
+            indice Bend_(const MeshInfo& mi, int flat) const 
                         {return {flat%mi.MPIlocalCellSize[0], flat/mi.MPIlocalCellSize[0]};};
+
+            indice Bend_(const int M, int flat) const {return {flat%M, flat/M};}
 
             int stencilSizeX_ = -1;
             int stencilSizeY_ = -1;
@@ -116,7 +121,7 @@ namespace MLWENO {
             void ComputeStencilPolyn_(const MeshInfo& mi);
             map<int, stencilPolynomial*> singleLevel_;
 
-            stencil <indice>& stencilIndice_;
+            stencil <indice> stencilIndice_;
 
     };
 

@@ -196,6 +196,16 @@ int main(int argc, char **argv){
 
     rptr->Clear();
 
+    // Test single level reconstruction
+    MLWENO::singleLevelReconstruction * slrPtr = new MLWENO::singleLevelReconstruction(3,3);
+
+    slrPtr->CreateStencilPolynomials(mi);
+
+    indice test = {0,0};
+    slrPtr->CheckStencilPolynomials(mi,test);
+
+
+
     // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);

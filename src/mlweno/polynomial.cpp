@@ -161,7 +161,6 @@ void stencilPolynomial::ComputeStencilBasedScale_(const MeshInfo& mi, const sten
 void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi, 
                                               const stencil <indice>& stencilIndice){
 
-
     stencil<indice> siNow = stencilIndice;
 
     // Setup linear system for computing basis polynomials 

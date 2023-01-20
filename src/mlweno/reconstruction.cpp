@@ -182,6 +182,14 @@ void reconstruction::Clear() {
 singleLevelReconstruction::singleLevelReconstruction(int stencilSizeX, int stencilSizeY){
     stencilSizeX_ = stencilSizeX;
     stencilSizeY_ = stencilSizeY;
+ 
+    // Create stencil of indice used in creating stencil polynomials
+    stencilIndice_.SetStencil(stencilSizeX_, stencilSizeY_); 
+
+    for (int j=0; j<stencilSizeY_; j++){
+    for (int i=0; i<stencilSizeX_; i++){
+        stencilIndice_(i,j) = {i,j};
+    }}
 }
 
 void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
@@ -224,12 +232,18 @@ void singleLevelReconstruction::ComputeStencilPolyn_(const MeshInfo& mi){
     for (auto& flat: interior_){
         singleLevel_[flat] = new stencilPolynomial(Bend_(mi,flat), ComputeStencilCenter_(mi,flat));
         singleLevel_[flat]->SetUpScale(mi,stencilIndice_);
+        singleLevel_[flat]->SetStencilPolynomials(mi,stencilIndice_);
     }
 
 }
 
 void singleLevelReconstruction::CreateStencilPolynomials(const MeshInfo& mi){
     IdentifyInteriorCell_(mi);
+    ComputeStencilPolyn_(mi);
+}
+
+void singleLevelReconstruction::CheckStencilPolynomials(const MeshInfo& mi, indice start){
+    singleLevel_[FlatIndic_(mi,start)]->printCoef();
 }
 
 void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY){
