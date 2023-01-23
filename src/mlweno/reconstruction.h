@@ -143,7 +143,9 @@ namespace MLWENO {
             {for (int i=0; i<stencilSizes.size(); i++){
                  AddLevel(mi,stencilSizes[i]);}};
 
-            void AdjustLinearWgts(int l, double w);
+            
+            
+
 
             void UpdateNonlinearWgts();
 
@@ -154,8 +156,10 @@ namespace MLWENO {
 
             vector< singleLevelReconstruction *> allLevels_;
 
-            vector< double > linearWgts_;
-            vector< double > nonLinearWgts_;
+            vector<vector<indice>> reconstMethod_; 
+
+            vector< vector<double> > linearWgts_;
+            vector< vector<double> > nonLinearWgts_;
     };
 }
 #endif

@@ -256,8 +256,8 @@ void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, in
     allLevels_.push_back(slrPtr); 
 }
 
-void multiLevelReconstruction::AdjustLinearWgts(int l, double w){
-}
+
+
 
 void multiLevelReconstruction::UpdateNonlinearWgts(){
 }
