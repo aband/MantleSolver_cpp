@@ -89,30 +89,22 @@ namespace MLWENO {
             singleLevelReconstruction() {};
             singleLevelReconstruction(int stencilSizeX, int stencilSizeY); 
             
-            ~singleLevelReconstruction() {interior_.clear(); singleLevel_.clear();};
+            ~singleLevelReconstruction() {interior_.clear(); singleLevel_.clear();smoothnessIndic_.clear();};
 
             void CreateStencilPolynomials(const MeshInfo& mi);
 
             void CheckStencils() const {cout<< "Constructed "<< interior_.size() << " stencils with the size of " << stencilSizeX_ << " " << stencilSizeY_ << endl;};
             void CheckStencilPolynomials(const MeshInfo& mi, indice start);
 
+            const double CalculateSmoothnessIndic(const MeshInfo& mi, indice owner);
+
+            const double GetScale(const MeshInfo& mi, indice owner) {return singleLevel_[FlatIndic(mi,owner)]->GetScale();}; 
+
+            int CheckExist(const MeshInfo& mi, indice owner) const {return interior_.count(FlatIndic(mi,owner));};
+
         private:
 
             vertex ComputeStencilCenter_(const MeshInfo& mi, int flat);
-
-            // Flatten indice into 1D array
-            int FlatIndic_(const MeshInfo& mi, int i, int j) const 
-                          {return j*mi.MPIlocalCellSize[0]+i;};
-
-            int FlatIndic_(const int M, int i, int j) const {return j*M+i;};
-            int FlatIndic_(const MeshInfo& mi, const indice& p) const {return FlatIndic_(mi,p[0],p[1]);}
-            int FlatIndic_(const int M, const indice& p) const {return FlatIndic_(M,p[0],p[1]);};
-
-            // Reverse process of flatten indices
-            indice Bend_(const MeshInfo& mi, int flat) const 
-                        {return {flat%mi.MPIlocalCellSize[0], flat/mi.MPIlocalCellSize[0]};};
-
-            indice Bend_(const int M, int flat) const {return {flat%M, flat/M};}
 
             int stencilSizeX_ = -1;
             int stencilSizeY_ = -1;
@@ -123,7 +115,10 @@ namespace MLWENO {
             void ComputeStencilPolyn_(const MeshInfo& mi);
             map<int, stencilPolynomial*> singleLevel_;
 
+            void UpdateSmoothnessIndic_(const MeshInfo& mi);
             stencil <indice> stencilIndice_;
+
+            map<int, double> smoothnessIndic_;
 
     };
 
@@ -143,23 +138,32 @@ namespace MLWENO {
             {for (int i=0; i<stencilSizes.size(); i++){
                  AddLevel(mi,stencilSizes[i]);}};
 
-            
-            
+            void AddReconstMethod(vector<indice> brm) {baseReconstMethod_.push_back(brm); AddWgts_();}; 
+            void AddReconstMethod(vector<vector<indice>> brms) 
+                                 {for (int i=0; i<brms.size(); i++){
+                                      AddReconstMethod(brms[i]);     
+                                  }}; 
 
-
-            void UpdateNonlinearWgts();
+            void UpdateNonlinearWgts(const MeshInfo& mi, indice start);
 
             void GetInfo();
 
             void Clear();
         private:
 
+            const double eps0_ = 0.001;
+
             vector< singleLevelReconstruction *> allLevels_;
 
-            vector<vector<indice>> reconstMethod_; 
+            vector<vector<indice>> baseReconstMethod_; 
+
+            void ResetWgts_();
+            void AddWgts_();
 
             vector< vector<double> > linearWgts_;
-            vector< vector<double> > nonLinearWgts_;
+            map<int, vector< vector<double> >> nonLinearWgts_;
+
+            vector< vector<int> > etaBias_;
     };
 }
 #endif

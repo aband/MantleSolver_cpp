@@ -104,4 +104,17 @@ void polynDerMulti(int der, int max, int * multiplier);
 indice MPILocalToGlobal(indice local, const MeshInfo& mi);
 indice MPIGlobalToLocal(indice global, const MeshInfo& mi);
 
+// Indice convention functions
+// Flatten indice into 1D array
+int FlatIndic(const MeshInfo& mi, int i, int j);
+
+int FlatIndic(const int M, int i, int j);
+int FlatIndic(const MeshInfo& mi, const indice& p);
+int FlatIndic(const int M, const indice& p);
+
+// Reverse process of flatten indices
+indice Bend(const MeshInfo& mi, int flat);
+
+indice Bend(const int M, int flat);
+
 #endif

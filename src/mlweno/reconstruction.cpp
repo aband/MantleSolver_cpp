@@ -202,42 +202,51 @@ void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
            j+mi.MPIlocalCellStart[1]>-1 &&
            i+mi.MPIlocalCellStart[0]>-1 ){
 
-               interior_.insert(FlatIndic_(mi,i,j));
+               interior_.insert(FlatIndic(mi,i,j));
            }
     }}
 }
 
 vertex singleLevelReconstruction::ComputeStencilCenter_(const MeshInfo& mi, int flat){
     vertex work  = {0.0,0.0};
-    indice original = Bend_(mi,flat);
+    indice original = Bend(mi,flat);
 
     original[0] = original[0] + mi.vertexGhostLayerSize;
     original[1] = original[1] + mi.vertexGhostLayerSize;
 
-    work += mi.lmesh[FlatIndic_(mi.MPIlocalVertexSizeFull[0],original)];
+    work += mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],original)];
 
     original[0] = original[0] + stencilSizeX_;
  
-    work += mi.lmesh[FlatIndic_(mi.MPIlocalVertexSizeFull[0],original)];
+    work += mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],original)];
 
     original[1] = original[1] + stencilSizeY_;
  
-    work += mi.lmesh[FlatIndic_(mi.MPIlocalVertexSizeFull[0],original)];
+    work += mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],original)];
 
     original[0] = original[0] - stencilSizeX_;
  
-    work += mi.lmesh[FlatIndic_(mi.MPIlocalVertexSizeFull[0],original)];
+    work += mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],original)];
 
     return work/4.0;
 }
 
+void singleLevelReconstruction::UpdateSmoothnessIndic_(const MeshInfo& mi){
+    for (auto& ind:interior_){
+        smoothnessIndic_[ind] = singleLevel_[ind]->GetSmoothIndic(mi,stencilIndice_);
+    }
+}
+
+const double singleLevelReconstruction::CalculateSmoothnessIndic(const MeshInfo& mi, indice owner) {
+    return singleLevel_[FlatIndic(mi, owner)]->GetSmoothIndic(mi,stencilIndice_);
+}
+
 void singleLevelReconstruction::ComputeStencilPolyn_(const MeshInfo& mi){
     for (auto& flat: interior_){
-        singleLevel_[flat] = new stencilPolynomial(Bend_(mi,flat), ComputeStencilCenter_(mi,flat));
+        singleLevel_[flat] = new stencilPolynomial(Bend(mi,flat), ComputeStencilCenter_(mi,flat));
         singleLevel_[flat]->SetUpScale(mi,stencilIndice_);
         singleLevel_[flat]->SetStencilPolynomials(mi,stencilIndice_);
     }
-
 }
 
 void singleLevelReconstruction::CreateStencilPolynomials(const MeshInfo& mi){
@@ -246,9 +255,12 @@ void singleLevelReconstruction::CreateStencilPolynomials(const MeshInfo& mi){
 }
 
 void singleLevelReconstruction::CheckStencilPolynomials(const MeshInfo& mi, indice start){
-    singleLevel_[FlatIndic_(mi,start)]->printCoef();
+    singleLevel_[FlatIndic(mi,start)]->printCoef();
 }
 
+// ==========================================================================================
+// Class of multi level reconstructions, managing information related to smoothness indicator
+// and nonlinear weights between reconstruction levels.
 // ==========================================================================================
 void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY){
     singleLevelReconstruction * slrPtr = new singleLevelReconstruction(stencilSizeX,stencilSizeY);
@@ -256,10 +268,55 @@ void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, in
     allLevels_.push_back(slrPtr); 
 }
 
+void multiLevelReconstruction::AddWgts_() {
+
+    vector<double> lw(baseReconstMethod_[baseReconstMethod_.size()-1].size(),1.0);
+    vector<int> bias(baseReconstMethod_[baseReconstMethod_.size()-1].size(),0);
+
+    linearWgts_.push_back(lw);
+    etaBias_.push_back(bias);
+}
+
+void multiLevelReconstruction::ResetWgts_() {
+    // Initialize linear weights and non linear weights
+    // with the given information on reconstruction method
+    linearWgts_.clear();
+    etaBias_.clear();
+
+    linearWgts_.resize(baseReconstMethod_.size());
+    etaBias_.resize(baseReconstMethod_.size());
+
+    for (int i=0; i<baseReconstMethod_.size();i++){
+        linearWgts_[i].resize(baseReconstMethod_[i].size(),1.0);
+        etaBias_[i].resize(baseReconstMethod_[i].size(),0);
+    }
+
+}
+
+void multiLevelReconstruction::UpdateNonlinearWgts(const MeshInfo& mi, indice start){
+
+    assert(baseReconstMethod_.size() == allLevels_.size());
+
+    vector<vector<double>> nlw(linearWgts_.size());
+    for (int i=0; i<linearWgts_.size(); i++){
+        nlw[i].resize(linearWgts_[i].size());
+    }
+
+    for (int l=0; l<allLevels_.size(); l++){
+       for (auto& i:baseReconstMethod_[l]){
+            indice owner = start + i;
+            allLevels_[l]->CalculateSmoothnessIndic(mi,owner);
+            if (allLevels_[l]->CheckExist(mi, owner)){
+                // Get updated smoothness indicators
 
 
+            }
 
-void multiLevelReconstruction::UpdateNonlinearWgts(){
+        }
+    }
+
+    nonLinearWgts_[FlatIndic(mi,start)] = nlw;
+
 }
 
 void multiLevelReconstruction::GetInfo(){

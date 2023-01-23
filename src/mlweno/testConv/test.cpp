@@ -144,47 +144,47 @@ int main(int argc, char **argv){
     mi.lmesh = mesh;
     mi.localVals = lu;
 
-    indice start = {M/2,N/2};
-    vector<indice> targetCell;
-    targetCell.push_back({0,0});
+    //indice start = {M/2,N/2};
+    //vector<indice> targetCell;
+    //targetCell.push_back({0,0});
     //targetCell.push_back({1,0}); 
-    vertex center = {0.0,0.0};
+    //vertex center = {0.0,0.0};
 
-    MLWENO::stencil<indice> third(3,3);
+    //MLWENO::stencil<indice> third(3,3);
 
-    for (int j=0; j<3; j++){
-    for (int i=0; i<3; i++){
-        third(i,j) = {i-1,j-1};
-    }}
+    //for (int j=0; j<3; j++){
+    //for (int i=0; i<3; i++){
+    //    third(i,j) = {i-1,j-1};
+    //}}
 
-    MLWENO::stencil<indice> second(2,2);
+    //MLWENO::stencil<indice> second(2,2);
 
-    for (int j=0; j<2; j++){
-    for (int i=0; i<2; i++){
-        second(i,j) = {i,j};
-    }}
+    //for (int j=0; j<2; j++){
+    //for (int i=0; i<2; i++){
+    //    second(i,j) = {i,j};
+    //}}
 
-    MLWENO::stencilPolynomial* sp = new MLWENO::stencilPolynomial(start,center,targetCell);
+    //MLWENO::stencilPolynomial* sp = new MLWENO::stencilPolynomial(start,center,targetCell);
 
-    sp->SetStencilPolynomials(mi, second);
+    //sp->SetStencilPolynomials(mi, second);
 
     //sp->printCoef(); 
     
     //cout << sp->eval(0.0,0.0) << " " <<func(center,{1,1}) << endl;
 
     // Test class of reconstruction
-    MLWENO::reconstruction * rptr = new MLWENO::reconstruction();
+    //MLWENO::reconstruction * rptr = new MLWENO::reconstruction();
 
-    int stencil3[2] = {3,3};
-    int stencil2[2] = {2,2};
-    vector<int*> stencilSizes = {stencil3,stencil2,stencil2,stencil2,stencil2};
-    vector<indice> shifts = {{-1,-1},{-1,-1},{0,0},{-1,0},{0,-1}};
+    //int stencil3[2] = {3,3};
+    //int stencil2[2] = {2,2};
+    //vector<int*> stencilSizes = {stencil3,stencil2,stencil2,stencil2,stencil2};
+    //vector<indice> shifts = {{-1,-1},{-1,-1},{0,0},{-1,0},{0,-1}};
 
-    rptr->AddStencil(stencilSizes, shifts);
+    //rptr->AddStencil(stencilSizes, shifts);
 
-    rptr->CreateStencilPolynomials(start, center, targetCell, mi);
+    //rptr->CreateStencilPolynomials(start, center, targetCell, mi);
 
-    rptr->Update(mi);
+    //rptr->Update(mi);
 
     //rptr->PrintNonLinWgts();
 
@@ -192,9 +192,9 @@ int main(int argc, char **argv){
 
     //rptr->PrintStencils();
 
-    cout << rptr->Eval(0.0,0.0) << " " << func(center,{(double)M,(double)N}) << endl;
+    //cout << rptr->Eval(0.0,0.0) << " " << func(center,{(double)M,(double)N}) << endl;
 
-    rptr->Clear();
+    //rptr->Clear();
 
     // Test single level reconstruction
     //MLWENO::singleLevelReconstruction * slrPtr = new MLWENO::singleLevelReconstruction(3,3);
@@ -209,11 +209,18 @@ int main(int argc, char **argv){
     mlrPtr->AddLevel(mi,2,3);
     mlrPtr->AddLevel(mi,3,2);
 
+    vector<vector<indice>> reconstMethod {{{-1,0},{-1,-1,},{0,-1},{0,0}},{{-1,-1}},{{-1,-1},{0,-1}},{{-1,-1},{-1,0}}};
+
+    mlrPtr->AddReconstMethod(reconstMethod);
+
     mlrPtr->GetInfo();
+
+    mlrPtr->UpdateNonlinearWgts(mi,{1,1});
 
     // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);
+    DMRestoreLocalVector(dmu, &localu); 
 
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);

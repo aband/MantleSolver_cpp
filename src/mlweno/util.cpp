@@ -108,6 +108,21 @@ indice MPIGlobalToLocal(indice global, const MeshInfo& mi){
     return global - mi.MPIlocalCellStart;
 }
 
+// Indice convention functions
+// Flatten indice into 1D array
+int FlatIndic(const MeshInfo& mi, int i, int j)  
+              {return j*mi.MPIlocalCellSize[0]+i;};
+
+int FlatIndic(const int M, int i, int j) {return j*M+i;};
+int FlatIndic(const MeshInfo& mi, const indice& p) {return FlatIndic(mi,p[0],p[1]);}
+int FlatIndic(const int M, const indice& p) {return FlatIndic(M,p[0],p[1]);};
+
+// Reverse process of flatten indices
+indice Bend(const MeshInfo& mi, int flat) 
+            {return {flat%mi.MPIlocalCellSize[0], flat/mi.MPIlocalCellSize[0]};};
+
+indice Bend(const int M, int flat) {return {flat%M, flat/M};}
+
 // Assign values to MeshInfo object
 void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
 
