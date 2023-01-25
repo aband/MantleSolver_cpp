@@ -102,6 +102,10 @@ namespace MLWENO {
 
             int CheckExist(const MeshInfo& mi, indice owner) const {return interior_.count(FlatIndic(mi,owner));};
 
+            const int GetSizeX() const {return stencilSizeX_;};
+            const int GetSizeY() const {return stencilSizeY_;};
+            const double GetScale(int s) {return singleLevel_[s]->GetScale();};
+
         private:
 
             vertex ComputeStencilCenter_(const MeshInfo& mi, int flat);
@@ -144,9 +148,10 @@ namespace MLWENO {
                                       AddReconstMethod(brms[i]);     
                                   }}; 
 
-            void UpdateNonlinearWgts(const MeshInfo& mi, indice start);
+            void UpdateNonLinearWgts(const MeshInfo& mi);
 
             void GetInfo();
+            void PrintNonLinearWgts(const MeshInfo& mi);
 
             void Clear();
         private:
@@ -160,10 +165,12 @@ namespace MLWENO {
             void ResetWgts_();
             void AddWgts_();
 
-            vector< vector<double> > linearWgts_;
-            map<int, vector< vector<double> >> nonLinearWgts_;
+            vector< map<int, double> > linearWgts_;
 
-            vector< vector<int> > etaBias_;
+            void UpdateNonLinearWgts_(const MeshInfo& mi, indice start);
+            map<int, vector< map<int, double> > > nonLinearWgts_;
+
+            vector< map<int, int> > etaBias_;
     };
 }
 #endif

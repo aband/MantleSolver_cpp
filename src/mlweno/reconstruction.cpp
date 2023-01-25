@@ -56,6 +56,7 @@ void reconstruction::CreateStencilPolynomials(const indice& start,              
     for (int s=0; s<stencilIndice_.size(); s++){
         stencilPolyn_[s] = new stencilPolynomial(start, center, targetCell); 
         stencilPolyn_[s]->SetUpScale(mi,stencilIndice_[s]);
+        //stencilPolyn_[s]->SetUpScale(mi,targetCell);
         stencilPolyn_[s]->SetStencilPolynomials(mi,stencilIndice_[s]);
         linWgts_[s] = 1.0;
         nonLinWgts_[s] = 1.0;
@@ -270,8 +271,16 @@ void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, in
 
 void multiLevelReconstruction::AddWgts_() {
 
-    vector<double> lw(baseReconstMethod_[baseReconstMethod_.size()-1].size(),1.0);
-    vector<int> bias(baseReconstMethod_[baseReconstMethod_.size()-1].size(),0);
+    map<int, double> lw;
+    map<int, int> bias;
+
+    const int sizeX = allLevels_[baseReconstMethod_.size()-1]->GetSizeX();
+
+    for (auto& b: baseReconstMethod_[baseReconstMethod_.size()-1]){
+             
+        lw.insert({FlatIndic(sizeX,b),1.0});
+        bias.insert({FlatIndic(sizeX,b),0});
+    }
 
     linearWgts_.push_back(lw);
     etaBias_.push_back(bias);
@@ -287,36 +296,64 @@ void multiLevelReconstruction::ResetWgts_() {
     etaBias_.resize(baseReconstMethod_.size());
 
     for (int i=0; i<baseReconstMethod_.size();i++){
-        linearWgts_[i].resize(baseReconstMethod_[i].size(),1.0);
-        etaBias_[i].resize(baseReconstMethod_[i].size(),0);
+        const int sizeX = allLevels_[i]->GetSizeX();
+        for (auto& b : baseReconstMethod_[i]){
+            linearWgts_[i].insert({FlatIndic(sizeX, b),1.0});
+            etaBias_[i].insert({FlatIndic(sizeX,b),0});
+        }
     }
 
 }
 
-void multiLevelReconstruction::UpdateNonlinearWgts(const MeshInfo& mi, indice start){
+void multiLevelReconstruction::UpdateNonLinearWgts_(const MeshInfo& mi, indice start){
 
     assert(baseReconstMethod_.size() == allLevels_.size());
 
-    vector<vector<double>> nlw(linearWgts_.size());
-    for (int i=0; i<linearWgts_.size(); i++){
-        nlw[i].resize(linearWgts_[i].size());
-    }
+    vector< map<int,double> > nlw(linearWgts_.size());
+
+    double sum = 0.0;
 
     for (int l=0; l<allLevels_.size(); l++){
+       const int sizeX = allLevels_[l]->GetSizeX();
+       const int sizeY = allLevels_[l]->GetSizeY();
        for (auto& i:baseReconstMethod_[l]){
             indice owner = start + i;
-            allLevels_[l]->CalculateSmoothnessIndic(mi,owner);
             if (allLevels_[l]->CheckExist(mi, owner)){
+                double scale = allLevels_[l]->GetScale(FlatIndic(mi,owner));
+                double sm = allLevels_[l]->CalculateSmoothnessIndic(mi,owner); 
                 // Get updated smoothness indicators
-
-
-            }
+                double value = linearWgts_[l].at(FlatIndic(sizeX,i))/ 
+                               pow(sm + scale*scale*eps0_ , max(sizeX, sizeY)) * 
+                               pow(eps0_*scale / sm+eps0_*
+                               scale, etaBias_[l].at(FlatIndic(sizeX,i)));
+                nlw[l].insert({FlatIndic(sizeX,i) , value});
+                sum += value;
+            }            
 
         }
     }
 
-    nonLinearWgts_[FlatIndic(mi,start)] = nlw;
+    for (int l=0; l<allLevels_.size(); l++){
+        if (nlw[l].empty() ==0){
+            for (auto & in:nlw[l]){
+                in.second = in.second/sum; 
+            }
+        }
+    }
 
+
+    nonLinearWgts_.erase(FlatIndic(mi,start));
+    nonLinearWgts_.insert({FlatIndic(mi,start) , nlw});
+
+}
+
+void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+        indice add {i,j};
+        indice start = mi.MPIlocalCellStart+add;
+        UpdateNonLinearWgts_(mi,start);
+    } }
 }
 
 void multiLevelReconstruction::GetInfo(){
@@ -326,6 +363,30 @@ void multiLevelReconstruction::GetInfo(){
     for (int l=0; l<allLevels_.size(); l++){
         allLevels_[l]->CheckStencils(); 
     }
+}
+
+void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi){
+
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+
+        indice add {i,j};
+        indice start = mi.MPIlocalCellStart + add;
+        const vector<map<int,double>>& nlw = nonLinearWgts_[FlatIndic(mi,start)];
+
+        cout << "Reconstruction at cell ( " << start[0] << ", " << start[1] << ")" << endl; 
+        for (int l=0; l < allLevels_.size(); l++) {
+            int sizeX = allLevels_[l]->GetSizeX();
+
+            if (nlw[l].empty() == 0) {
+                for (auto & in:nlw[l]){
+                    indice m = Bend(sizeX,in.first);
+                    cout << "At Level " << l << " reconstruction at ( " << m[0] << ", "
+                         << m[1] << ") " << " with wgt " << in.second << endl;
+                }
+            }
+        }
+    }}
 }
 
 void multiLevelReconstruction::Clear(){
