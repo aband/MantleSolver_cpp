@@ -55,7 +55,7 @@ namespace MLWENO {
 
         private:
 
-            double eps0_ = 0.01;
+            double eps0_ = 1;
  
             double scale_ = -1;
 
@@ -148,6 +148,12 @@ namespace MLWENO {
                                       AddReconstMethod(brms[i]);     
                                   }}; 
 
+            void AddReconstMethod(const MeshInfo& mi, unordered_set<indice> start, vector<indice> rm);
+            void AddReconstMethod(const MeshInfo& mi, unordered_set<indice> start, vector<vector<indice>> rm ) 
+                                 { for (int i=0; i<rm.size(); i++){
+                                      AddReconstMethod(mi,start,rm[i]);
+                                  }};
+
             void UpdateNonLinearWgts(const MeshInfo& mi);
 
             void GetInfo();
@@ -156,16 +162,23 @@ namespace MLWENO {
             void Clear();
         private:
 
-            const double eps0_ = 0.001;
+            const double eps0_ = 1;
 
             vector< singleLevelReconstruction *> allLevels_;
 
             vector<vector<indice>> baseReconstMethod_; 
 
+            void AddSpecialReconstMethods_(indice start);
+            map <int, vector<vector<indice>>* > reconstMethods_;
+
+            // Collective methods
             void ResetWgts_();
             void AddWgts_();
 
             vector< map<int, double> > linearWgts_;
+
+            void AddSpecialLinearWgts_(indice start); 
+            map <int, vector< map<int, double>>* > allLinearWgts_;
 
             void UpdateNonLinearWgts_(const MeshInfo& mi, indice start);
             map<int, vector< map<int, double> > > nonLinearWgts_;

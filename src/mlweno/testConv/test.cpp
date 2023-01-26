@@ -17,15 +17,15 @@ extern "C"{
 using namespace std;
 
 double func(vertex& point, const vector<double>& param){
-	 if (point[0]<-1.0/param[0]){
-		  return point[0]*point[0]+point[1]*point[1];
-	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
-	 } else {
+	 //if (point[0]<-1.0/param[0]){
+	//	  return point[0]*point[0]+point[1]*point[1];
+	 //    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
+	 //} else {
 		  //return point[0]*point[0]*point[1]*point[1] + 1.0;
-	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
-	 }
+	 //    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
+	 //}
 
-    //return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
+    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
     //return point[0]*point[0] + point[1]*point[1];
     //return 0.5;
     //return point[0] + point[1];

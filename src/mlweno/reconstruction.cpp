@@ -341,7 +341,6 @@ void multiLevelReconstruction::UpdateNonLinearWgts_(const MeshInfo& mi, indice s
         }
     }
 
-
     nonLinearWgts_.erase(FlatIndic(mi,start));
     nonLinearWgts_.insert({FlatIndic(mi,start) , nlw});
 
@@ -354,6 +353,21 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
         indice start = mi.MPIlocalCellStart+add;
         UpdateNonLinearWgts_(mi,start);
     } }
+}
+
+void multiLevelReconstruction::AddSpecialLinearWgts_(const MeshInfo& mi, unordered_set<indice> start){
+
+
+}
+
+void multiLevelReconstruction::AddSpecialReconstMethods_(const MeshInfo& mi, unordered_set<indice> start){
+
+
+}
+
+void multiLevelReconstruction::AddReconstMethod(const MeshInfo& mi, unordered_set<indice> start, vector<indice> rm){
+    AddSpecialReconstMethods_(mi,start);
+    AddSpecialLinearWgts_(mi,start);
 }
 
 void multiLevelReconstruction::GetInfo(){
