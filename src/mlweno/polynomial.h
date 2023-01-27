@@ -94,6 +94,8 @@ namespace MLWENO{
             vector<indice> targetCell_;
             double scale_ = -1.0;
 
+            double coef_ = 1.0;
+
             // Calculate scale based on the information of a single cell
             void ComputeCellBasedScale_(const MeshInfo& mi);
             // Calculate scale based on the value of a given stencil
@@ -105,6 +107,9 @@ namespace MLWENO{
             basisPolynomial* collapsePolyn_ = nullptr;
 
             // Create polynomial smoothness indicator
+            void CreateXi_();
+            vector<double> Xi_;
+
             void EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
             double smoothnessIndic_ = -1;
     };

@@ -356,12 +356,12 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
 }
 
 // For special treatment on boundary
-void multiLevelReconstruction::AddSpecialLinearWgts_(const MeshInfo& mi, unordered_set<indice> start){
+void multiLevelReconstruction::AddSpecialLinearWgts_(const MeshInfo& mi, const unordered_set<indice>& start){
 
 
 }
 
-void multiLevelReconstruction::AddSpecialReconstMethods_(const MeshInfo& mi, unordered_set<indice> start, vector<vector<indice>> rm){
+void multiLevelReconstruction::AddSpecialReconstMethods_(const MeshInfo& mi, const unordered_set<indice>& start, vector<vector<indice>> rm){
 
 
 }

@@ -253,18 +253,36 @@ void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indi
 
     // ===================================
 
-    for (int i=1; i<collapsePolyn_->getSize(); i++){
-        int l = i/collapsePolyn_->getI(); int m = i%collapsePolyn_->getI(); 
-        for (int j=i; j<collapsePolyn_->getSize(); j++){
-            int r = j/collapsePolyn_->getI(); int s = j%collapsePolyn_->getI();
-            smoothnessIndic_ += pow(collapsePolyn_->getCoef(j) *
-                                //factorial(r,r-l)*factorial(s,s-m),2)*
-                                (factorial(r)/factorial(l)) * (factorial(s)/factorial(m)),2) *
-                                pow(2*(double)(r-l)+1.0,-1)*
-                                pow(2*(double)(s-m)+1.0,-1);
+//    for (int i=1; i<collapsePolyn_->getSize(); i++){
+//        int l = i/collapsePolyn_->getI(); int m = i%collapsePolyn_->getI(); 
+//        for (int j=i; j<collapsePolyn_->getSize(); j++){
+//            int r = j/collapsePolyn_->getI(); int s = j%collapsePolyn_->getI();
+//            smoothnessIndic_ += pow(collapsePolyn_->getCoef(j) *
+//                                //factorial(r,r-l)*factorial(s,s-m),2)*
+//                                (factorial(r)/factorial(l)) * (factorial(s)/factorial(m)),2) *
+//                                pow(2*(double)(r-l)+1.0,-1)*
+//                                pow(2*(double)(s-m)+1.0,-1);
 
+//        }
+//    }
+
+    if (Xi_.empty()) {CreateXi_();}
+
+    
+
+
+}
+
+// Evaluation of auxiliary variable Xi in evaluation of smooth indicator
+void stencilPolynoial::CreateXi_(){
+    Xi_.resize(stencilPolyn_.getSize(),0.0);
+
+    for (int i=0; i<Xi_.size(); i++){
+        for (int k=0; k<i+1; k++){
+            Xi_[i]  += pow(coef_,2*k)*pow(factorial(i,i-k),2)/(2*(i-k)+1)/pow(4,i-k);
         }
     }
+
 }
 
 double stencilPolynomial::GetSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice){

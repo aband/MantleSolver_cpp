@@ -164,7 +164,7 @@ namespace MLWENO {
 
             vector<vector<indice>> baseReconstMethod_; 
 
-            void AddSpecialReconstMethods_(const MeshInfo& mi, unordered_set<indice> start, vector<vector<indice>> rm);
+            void AddSpecialReconstMethods_(const MeshInfo& mi, const unordered_set<indice>& start, vector<vector<indice>> rm);
             map <int, vector<vector<indice>>* > reconstMethods_;
 
             // Collective methods
@@ -173,7 +173,7 @@ namespace MLWENO {
 
             vector< map<int, double> > linearWgts_;
 
-            void AddSpecialLinearWgts_(const MeshInfo& mi, unordered_set<indice> start); 
+            void AddSpecialLinearWgts_(const MeshInfo& mi, const unordered_set<indice>& start); 
             map <int, vector< map<int, double>>* > allLinearWgts_;
 
             void UpdateNonLinearWgts_(const MeshInfo& mi, indice start);
