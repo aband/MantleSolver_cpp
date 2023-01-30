@@ -280,7 +280,7 @@ void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indi
 
 // Evaluation of auxiliary variable Xi in evaluation of smooth indicator
 void stencilPolynoial::CreateXi_(){
-    Xi_.resize(max(),0.0);
+    Xi_.resize(max(stencilPolyn_.getI(),stencilPolyn_.getJ()),0.0);
 
     for (int i=0; i<Xi_.size(); i++){
         for (int k=0; k<i+1; k++){
