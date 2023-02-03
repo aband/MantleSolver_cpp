@@ -74,19 +74,20 @@ namespace EUTECTIC{
 
     }
 
-    // Dimensionless specific enthalpy of the phases
-    class hd{
-        public:
-           hd() {};
-           ~hd() {}; 
-
-           
-    }
-
-    class phase : public phi, public rho, public kappa{
+    class hd : public rho{
         public:
             phase() {};
             ~phase() {};
+
+            // Dimensionless specific enthalpy of the phases
+            double solid1(double TD) const {return TD;};
+            double solid2(double TD) const {return cp::ratio2*TD;};
+            double hybrid(double TD) const {return solid1(0.0) + 1/Ste_ + cp::ratio1*TD};
+
+            // Bulk Enthalpy of system
+            double HD(double TD, const phi& Phi) const {Phi.solid1*solid1(TD) +
+                                                        Phi.solid2*rho::ratio2*solid2(TD) + 
+                                                        Phi.hybrid1()*rho::ratio1*hybrid(TD)}; 
 
         private:
             double etutecticTemp_  = 245; // Eutectic Temperature
@@ -95,7 +96,7 @@ namespace EUTECTIC{
             double L_              = 3.34e5; // Latent heat of water [J/kg]
  
             double DT_ = multTemp1_ - etutecticTemp_;
-            double Ste = cp::solid1*DT_/L_; 
+            double Ste_ = cp::solid1*DT_/L_; 
 
     }
 
