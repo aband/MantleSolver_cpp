@@ -11,42 +11,49 @@ phase::phase(double X, double TD){
 }
 
 // Compute mass fraction
-void FSolid1_(double X, double TD){
-    fSolid1_ = (1-fSolid2_)*(TD<TDe) + 
-               (1-fHybrid_)*((TD<TDL_ || TD==TDL_) && (TD>TDe || TD==TDe));
+void phase::FIce_(double X, double TD){
+    fIce_ = (1-fSal_)*(TD<TDe) + 
+               (1-fBri_)*((TD<TDL_ || TD==TDL_) && (TD>TDe || TD==TDe));
 }
 
-void FSolid2_(double X, double TD){
-    fSolid2_ = X*(TD<TDe); 
+void phase::FSal_(double X, double TD){
+    fSal_ = X*(TD<TDe); 
 }
 
-void FHybrid_(double X, double TD){
-    fHybrid_ = X/xHyb_*((TD<TDL_ || TD==TDL_) && (TD>TDe || TD==TDe)) + (TD>TDL_ || TD==TDL_);
+void phase::FBri_(double X, double TD){
+    fBri_ = X/xBri_*((TD<TDL_ || TD==TDL_) && (TD>TDe || TD==TDe)) + (TD>TDL_ || TD==TDL_);
 }
 
 // Compute volume fraction
-void PhiSolid1_(double TD){
-    phi::solid1 = (1-phi::solid2)*(TD<TDe) + 
-                  (1-phi::hybrid)*((TD<TDL_ || TD==TDL_) && (TD>TDe || TD==TDe));
+void phase::PhiIce_(double TD){
+    phi::ice = (1-phi::sal)*(TD<TDe) + 
+               (1-phi::bri)*((TD<TDL_ || TD==TDL_) && (TD>TDe || TD==TDe));
 }
 
-void PhiSolid2_(){
-    phi::solid2 = fSolid2_/(hd::rho::ratio2 + (1-hd::rho::ratio2)*fSolid2_);
+void phase::PhiSal_(){
+    phi::sal = fSal_/(hd::rho::si + (1-hd::rho::si)*fSal_);
 }
 
-void PhiHybrid_(){
-    phi::hybrid = fHybrid_/(hd::rho::ratio1 + (1-hd::rho::ratio1)*fHybrid_);
+void phase::PhiBri_(){
+    phi::bri = fBri_/(hd::rho::bi + (1-hd::rho::bi)*fBri_);
 }
 
 // dimensionless CD as function of TD and X
-void CD_(){
-    cd_ = phi::solid2*hd::rho::ratio2+
-          phi::hybrid*hd::rho::ratio1*xHyb_;
+void phase::CD_(){
+    cd_ = phi::sal*hd::rho::si+
+          phi::bri*hd::rho::bi*xBri_;
 }
 
-void HD_(){
-    hd_ = phi::solid1*hd::solid1 + 
-          phi::solid2*hd::rho::ratio2*hd::solid2 + 
-          phi::hybrid*hd::rho::ratio1*hd::hybrid; 
+void phase::HD_(){
+    hd_ = phi::ice * hd::ice(TD) + 
+          phi::sal * hd::rho::si * hd::Sal(TD) + 
+          phi::bri * hd::rho::bi * hd::Bri(TD,Ste); 
 }
 
+double invHX::HDe(const double& X, const double& Ste, const double& Xe){
+    return rho::bi/Ste*X/(rho::bi*Xe + (i1-rho::bi)*X);
+}
+
+double invHX::HDl(const double& X, const double& Ste, const double& Xe){
+    return rho::bi*(1/Ste + cp::bi*(1-X/Xe));
+}
