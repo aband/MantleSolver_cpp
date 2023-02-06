@@ -90,11 +90,22 @@ namespace EUTECTIC{
                                                         Phi.solid2*rho::ratio2*solid2(TD) + 
                                                         Phi.hybrid1()*rho::ratio1*hybrid(TD)}; 
 
-        private:
     }
 
+    // Boundaries of the regions in HX-phase diagram
+    class invHX {
+        public : 
+            invHX() {};
+            ~invHX() {};
 
-    class phase : public cp{
+    }
+
+    // Translating from matlab code to C++ code
+	 // ice --- solid1
+	 // salt --- solid2
+	 // brine --- hybrid
+
+    class phase : public phi, public hd{
 
         public: 
             phase() {};
@@ -118,18 +129,38 @@ namespace EUTECTIC{
 
             void TDl_(double X) {TDL_ =  1-X/Xe;}; 
 
-            void Xhyb_(double TD) {return Xe*(1-TD);}; 
+            void Xhyb_(double TD) {xHyb_ = Xe*(1-TD);}; 
 
-
+            double TDL_;
+            double xHyb_;
 
             // Mass fractions
-            void Fsolid1_(double X, double TD) {};
-            void Fsolid2_(double X, double TD) {};
-            void Fhybrid_(double X, double TD) {};
 
-            double fsolid1_;
-            double fsolid2_;
-            double fhybrid_;
+            void MassFraction(double X, double TD) { FSolid2_(X,TD); FHybrid_(X,TD); FSolid1_(X,TD);};
+            void FSolid1_(double X, double TD);
+            void FSolid2_(double X, double TD);
+            void FHybrid_(double X, double TD);
+
+            double fSolid1_;
+            double fSolid2_;
+            double fHybrid_;
+
+            // Volume fractions
+            void VolumeFraction(double TD) { PhiSolid2_(); PhiHybrid(); PhiSolid1_(TD);};
+            void PhiSolid1_(double TD);
+            void PhiSolid2_();
+            void PhiHybrid_();
+
+            // Dimensionless CD as function of TD and X
+            void CD_();
+ 
+            double cd_;
+
+            // Dimensionless HD as function of TD and X
+            void HD_();
+
+            double hd_();
+
 
     }
 
