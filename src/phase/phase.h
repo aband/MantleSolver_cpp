@@ -82,7 +82,7 @@ namespace EUTECTIC{
     }
 
     // Dimensionless Specific enthalpy of the phases
-    class hd : virtual public rho, public cp{
+    class hd : virtual public rho, virtual public cp{
         public:
             hd() {};
             ~hd() {};
@@ -124,14 +124,46 @@ namespace EUTECTIC{
             double X3l(const double& Xe) {return Xe;};
             double HD3l(const double& Ste) {return rho::bi/Ste;};
 
+            // Solution to quadtatic in supra-eutectic region
+            double a(const double& X, const double& Xe) {return rho::bi*Xe/X + (1-rho::bi);};
+
     }
 
     // Boundaries of the regions in HC-phase diagram
-    class invHC : virtual public rho{
+    class invHC : virtual public rho, virtual public cp{
         public :
             invHC() {};
             ~invHC() {};
 
+            double nu(const double& Xe) {return (1-rho::si)*Xe + rho::si;};
+
+            double HDe(const double& CD, const double& Xe) {return CD/(Xe*Ste);};
+
+            double HDl(const double& CD, const double& Xe, const double& Ste) 
+            {return rho::bi*(1/Ste + cp::bi * (1-CD/(rho::bi*Xe)));};
+
+            double HDb(const double& CD, const double& Xe, const double& Ste)
+            {return rho::bi*rho::si/((rho::bi*nu(Xe) - rho::si)*Ste *  (nu(Xe)*CD/(rho::si*Xe)-1));};
+
+            double CDb(const double& HD, const double& Xe, const double& Ste)
+            {return rho::si*Xe/nu(Xe)*(1-Ste*HD/rho::bi) + Ste*Xe*HD;};
+
+            // Corners of phase fields in HC-diagram
+            // 1
+            double CD1 = 0;
+            double HD1 = 0;
+            // 2s
+            double CD2s = 0;
+            double HD2s = 1;
+            // 2l
+            double CD2l = 0;
+            double HD2l(double invHXHD2l) {return invHXHD2l;};
+            // 3s
+            double CD3s(const double& Xe) {return rho::si*Xe/((1-rho::si)*Xe+rho::si);};
+            double HD3s = 0;
+            // 3l
+            double CD3l(const double& Xe) {return rho::bi*Xe;};
+            double HD3l(double invHXHD3l) {return invHXHD3l;};
     }
 
     // Translating from matlab code to C++ code
@@ -143,8 +175,9 @@ namespace EUTECTIC{
 
         public: 
             phase() {};
-            phase(double X, double TD);
             ~phase() {};
+
+            void SetPhase(double X, double TD);
 
             double etutecticTemp  = 245; // Eutectic Temperature
             double multTemp1      = 273; // Multing Temperature of ice 

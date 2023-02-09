@@ -2,7 +2,7 @@
 
 using namespace EUTECTIC;  
 
-phase::phase(double X, double TD){
+void phase::SetPhase(double X, double TD){
     // Set up phase physical properties eutectic using default physical values
 
     TDl_(X);
@@ -57,3 +57,6 @@ double invHX::HDe(const double& X, const double& Ste, const double& Xe){
 double invHX::HDl(const double& X, const double& Ste, const double& Xe){
     return rho::bi*(1/Ste + cp::bi*(1-X/Xe));
 }
+
+// Boundaries of HC - phase field
+
