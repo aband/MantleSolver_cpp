@@ -4,16 +4,14 @@ using namespace EUTECTIC;
 
 void phase::SetPhase(double X, double TD){
     // Set up phase physical properties eutectic using default physical values
-
     TDl_(X);
     Xhyb_(TD);
-
 }
 
 // Compute mass fraction
 void phase::FIce_(double X, double TD){
     fIce_ = (1-fSal_)*(TD<TDe) + 
-               (1-fBri_)*((TD<TDL_ || TD==TDL_) && (TD>TDe || TD==TDe));
+            (1-fBri_)*((TD<TDL_ || TD==TDL_) && (TD>TDe || TD==TDe));
 }
 
 void phase::FSal_(double X, double TD){
@@ -50,13 +48,10 @@ void phase::HD_(){
           phi::bri * hd::rho::bi * hd::Bri(TD,Ste); 
 }
 
-double invHX::HDe(const double& X, const double& Ste, const double& Xe){
-    return rho::bi/Ste*X/(rho::bi*Xe + (i1-rho::bi)*X);
+double invHX::HDe(const double& X, const double& Ste){
+    return rho::bi/Ste*X/(rho::bi*Xe_ + (i1-rho::bi)*X);
 }
 
-double invHX::HDl(const double& X, const double& Ste, const double& Xe){
-    return rho::bi*(1/Ste + cp::bi*(1-X/Xe));
+double invHX::HDl(const double& X, const double& Ste){
+    return rho::bi*(1/Ste + cp::bi*(1-X/Xe_));
 }
-
-// Boundaries of HC - phase field
-

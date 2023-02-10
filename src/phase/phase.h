@@ -21,7 +21,7 @@ namespace EUTECTIC{
             double bri = 0.4;
             //double hybrid2 = 0.2;
 
-    }
+    };
 
     // Density
     class rho{
@@ -37,7 +37,7 @@ namespace EUTECTIC{
             const double bi = bri/ice;
             const double si = sal/ice;
 
-    }
+    };
 
     // Heat capacity
     class cp{
@@ -53,7 +53,7 @@ namespace EUTECTIC{
             const double bi = bri/ice;
             const double si = sal/ice; 
 
-    }
+    };
 
     // Thermal conductivity
     class kappa{
@@ -72,14 +72,14 @@ namespace EUTECTIC{
            const double si() const {return Sal()/Ice();};
            const double ii() const {return Ice()/Ice();}; 
 
-           const double sysD(const phi& Phi) const {Phi.ice*ii() + 
-                                                    Phi.sal*si() + 
-                                                    Phi.bri()*bi();};
+           double sysD(const phi& Phi) const {return Phi.ice*ii() + 
+                                                     Phi.sal*si() + 
+                                                     Phi.bri*bi();};
 
         private:
            double T_;
 
-    }
+    };
 
     // Dimensionless Specific enthalpy of the phases
     class hd : virtual public rho, virtual public cp{
@@ -90,14 +90,14 @@ namespace EUTECTIC{
             // Dimensionless specific enthalpy of the phases
             double Ice(const double& TD) const {return TD;};
             double Sal(const double& TD) const {return cp::bi*TD;};
-            double Bri(const double& TD, const double& Ste) const {return Ice(0.0) + 1/Ste + cp::bi*TD};
+            double Bri(const double& TD, const double& Ste) const {return Ice(0.0) + 1/Ste + cp::bi*TD;};
 
             // Bulk Enthalpy of system
-            double HD(const double& TD, const phi& Phi) const {Phi.ice*Ice(TD) +
-                                                               Phi.sal*rho::si * Sal(TD) + 
-                                                               Phi.bri*rho::bi * Bri(TD)}; 
+            double HD(const double& TD, const phi& Phi, const double& Ste) const {return Phi.ice*Ice(TD) +
+                                                                                         Phi.sal*rho::si * Sal(TD) + 
+                                                                                         Phi.bri*rho::bi * Bri(TD, Ste);}; 
 
-    }
+    };
 
     // Boundaries of the regions in HX-phase diagram
     class invHX : virtual public rho, virtual public cp{
@@ -105,9 +105,11 @@ namespace EUTECTIC{
             invHX() {};
             ~invHX() {};
 
-            double HDe(const double& X, const double& Ste, const double& Xe);
+            void GetXe(const double& Xe) {Xe_ = Xe;};
 
-            double HDl(const double& X, const double& Ste, const double& Xe);
+            double HDe(const double& X, const double& Ste);
+
+            double HDl(const double& X, const double& Ste);
 
             double X1  = 0;
             double HD1 = 0;
@@ -118,16 +120,42 @@ namespace EUTECTIC{
             double X2l  = 0;
             double HD2l(const double& Ste) {return rho::bi*(1/Ste + cp::bi);};
 
-            double X3s(const double& Xe) {return Xe;}
+            double X3s() {return Xe_;}
             double HD3s = 0;
 
-            double X3l(const double& Xe) {return Xe;};
+            double X3l() {return Xe_;};
             double HD3l(const double& Ste) {return rho::bi/Ste;};
 
-            // Solution to quadtatic in supra-eutectic region
-            double a(const double& X, const double& Xe) {return rho::bi*Xe/X + (1-rho::bi);};
+            double field4T1(const double& X, const double& Ste, const double& HD) 
+            {return -beta_(X,HD) + pow(discHX_(X,Ste,HD),0.5)/(2*alpha_(X));};
 
-    }
+            double field4T2(const double& X, const double& Ste, const double& HD) 
+            {return -beta_(X,HD) - pow(discHX_(X,Ste,HD),0.5)/(2*alpha_(X));};
+
+            double disc(const double& X, const double& Ste, const double& HD) {return discHX_(X,Ste,HD);};
+
+            double alpha(const double& X) {return alpha_(X);};
+            double beta(const double& X, const double& HD) {return beta_(X, HD);};
+            double gamma(const double& X, const double& Ste, const double& HD) 
+            {return gamma_(X,Ste,HD);};
+
+            private:
+                double Xe_;
+                // Solution to quadtatic in supra-eutectic region
+                double a_(const double& X) {return rho::bi*Xe_/X + (1-rho::bi);};
+                double b_(const double& X) {return -1*rho::bi*Xe_/X;};
+
+                double alpha_(const double& X) {return b_(X);};
+                double beta_(const double& X, const double& HD) 
+                {return a_(X) + rho::bi*cp::bi - 1 - b_(X)*HD;};
+
+                double gamma_(const double& X, const double& Ste, const double& HD)
+                {return rho::bi/Ste-a_(X)*HD;};
+
+                // Roots
+                double discHX_(const double& X, const double& Ste, const double& HD)
+                {return pow(beta_(X,HD),2) - 4*alpha_(X)*gamma_(X,Ste,HD);};
+    };
 
     // Boundaries of the regions in HC-phase diagram
     class invHC : virtual public rho, virtual public cp{
@@ -135,18 +163,20 @@ namespace EUTECTIC{
             invHC() {};
             ~invHC() {};
 
-            double nu(const double& Xe) {return (1-rho::si)*Xe + rho::si;};
+            void GetXe(const double& Xe) {Xe_ = Xe;};
 
-            double HDe(const double& CD, const double& Xe) {return CD/(Xe*Ste);};
+            double nu() {return (1-rho::si)*Xe_ + rho::si;};
 
-            double HDl(const double& CD, const double& Xe, const double& Ste) 
-            {return rho::bi*(1/Ste + cp::bi * (1-CD/(rho::bi*Xe)));};
+            double HDe(const double& CD, const double& Ste) {return CD/(Xe_*Ste);};
 
-            double HDb(const double& CD, const double& Xe, const double& Ste)
-            {return rho::bi*rho::si/((rho::bi*nu(Xe) - rho::si)*Ste *  (nu(Xe)*CD/(rho::si*Xe)-1));};
+            double HDl(const double& CD, const double& Ste) 
+            {return rho::bi*(1/Ste + cp::bi * (1-CD/(rho::bi*Xe_)));};
 
-            double CDb(const double& HD, const double& Xe, const double& Ste)
-            {return rho::si*Xe/nu(Xe)*(1-Ste*HD/rho::bi) + Ste*Xe*HD;};
+            double HDb(const double& CD, const double& Ste)
+            {return rho::bi*rho::si/((rho::bi*nu() - rho::si)*Ste *  (nu()*CD/(rho::si*Xe_)-1));};
+
+            double CDb(const double& HD, const double& Ste)
+            {return rho::si*Xe_/nu()*(1-Ste*HD/rho::bi) + Ste*Xe_*HD;};
 
             // Corners of phase fields in HC-diagram
             // 1
@@ -159,19 +189,48 @@ namespace EUTECTIC{
             double CD2l = 0;
             double HD2l(double invHXHD2l) {return invHXHD2l;};
             // 3s
-            double CD3s(const double& Xe) {return rho::si*Xe/((1-rho::si)*Xe+rho::si);};
+            double CD3s() {return rho::si*Xe_/((1-rho::si)*Xe_+rho::si);};
             double HD3s = 0;
             // 3l
-            double CD3l(const double& Xe) {return rho::bi*Xe;};
+            double CD3l() {return rho::bi*Xe_;};
             double HD3l(double invHXHD3l) {return invHXHD3l;};
-    }
+
+            double field4T1(const double& CD, const double& Ste, const double& HD)
+            {return -1*beta_(CD,HD) + pow(discHC_(CD,Ste,HD),0.5)/(2*alpha_());};
+
+            double field4T2(const double& CD, const double& Ste, const double& HD)
+            {return -1*beta_(CD,HD) - pow(discHC_(CD,Ste,HD),0.5)/(2*alpha_());};
+
+            double disc(const double& CD, const double& Ste, const double& HD)
+            {return discHC_(CD,Ste,HD);};
+
+            double alpha(const double& CD, const double& HD)
+            {return alpha_();};
+
+            double beta(const double& CD, const double& HD)
+            {return beta_(CD,HD);};
+
+            double gamm(const double& CD, const double& Ste, const double& HD)
+            {return gamma_(CD, Ste, HD);}
+
+            private:
+                double Xe_;
+                double alpha_() {return rho::bi*Xe_;};
+                double beta_(const double& CD, const double& HD)
+                {return (1-rho::bi*cp::bi)*CD - (1+HD)*rho::bi*Xe_;};
+                double gamma_(const double& CD, const double& Ste, const double& HD)
+                {return rho::bi*Xe_*HD - rho::bi/Ste*CD;};
+                double discHC_(const double& CD, const double& Ste, const double& HD)
+                {return pow(beta_(CD,HD),2) - 4*alpha_() * gamma_(CD,Ste,HD);};
+
+    };
 
     // Translating from matlab code to C++ code
 	 // ice --- solid1
 	 // salt --- solid2
 	 // brine --- hybrid
 
-    class phase : public phi, public hd{
+    class phase : public phi, public hd, public invHX, public invHC{
 
         public: 
             phase() {};
@@ -227,9 +286,7 @@ namespace EUTECTIC{
             void HD_();
 
             double hd_();
-    }
-
-   
+    };
 
 }
 
