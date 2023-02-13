@@ -2,6 +2,7 @@
 #define PHASE_H_
 
 #include <math.h>
+#include <iostream>
 
 namespace EUTECTIC{
 
@@ -250,11 +251,11 @@ namespace EUTECTIC{
 
             double Xe;
 
-        private:
             // Define liquidus and phase composition
             double TDe = 0;
             double TD1 = 1;
 
+        private:
             void TDl_(double X) {TDL_ =  1-X/Xe;}; 
 
             void Xbri_(double TD) {xBri_ = Xe*(1-TD);}; 
@@ -293,10 +294,18 @@ namespace EUTECTIC{
     class evalPhase : public phase {
         public:
         // Identify different fieldions of HX phase diagram
+        evalPhase(const double& HD, const double& CD);
+        ~evalPhase();
+
+        // Evaluate volume fraction according to different regimes
+        void SetPhase();
 
         private:
-
-    }
+        int currentPhase_ = 0;
+        double CD_;
+        double HD_;
+        double TD_;
+    };
 
 }
 
