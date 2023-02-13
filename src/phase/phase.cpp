@@ -5,7 +5,7 @@ using namespace EUTECTIC;
 void phase::SetPhase(double X, double TD){
     // Set up phase physical properties eutectic using default physical values
     TDl_(X);
-    Xhyb_(TD);
+    Xbri_(TD);
 }
 
 // Compute mass fraction
@@ -42,14 +42,14 @@ void phase::CD_(){
           phi::bri*hd::rho::bi*xBri_;
 }
 
-void phase::HD_(){
-    hd_ = phi::ice * hd::ice(TD) + 
+void phase::HD_(const double& TD){
+    hd_ = phi::ice * hd::Ice(TD) + 
           phi::sal * hd::rho::si * hd::Sal(TD) + 
           phi::bri * hd::rho::bi * hd::Bri(TD,Ste); 
 }
 
 double invHX::HDe(const double& X, const double& Ste){
-    return rho::bi/Ste*X/(rho::bi*Xe_ + (i1-rho::bi)*X);
+    return rho::bi/Ste*X/(rho::bi*Xe_ + (1-rho::bi)*X);
 }
 
 double invHX::HDl(const double& X, const double& Ste){

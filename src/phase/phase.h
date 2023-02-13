@@ -1,6 +1,8 @@
 #ifndef PHASE_H_
 #define PHASE_H_
 
+#include <math.h>
+
 namespace EUTECTIC{
 
     // Eutectic phase behavior exhibits 5 possible fieldions
@@ -283,10 +285,18 @@ namespace EUTECTIC{
             double cd_;
 
             // Dimensionless HD as function of TD and X
-            void HD_();
+            void HD_(const double& TD);
 
-            double hd_();
+            double hd_;
     };
+
+    class evalPhase : public phase {
+        public:
+        // Identify different fieldions of HX phase diagram
+
+        private:
+
+    }
 
 }
 
