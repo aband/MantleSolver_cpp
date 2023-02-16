@@ -6,6 +6,13 @@ void phase::SetPhase(double X, double TD){
     // Set up phase physical properties eutectic using default physical values
     TDl_(X);
     Xbri_(TD);
+
+    MassFraction_(X,TD);
+
+    VolumeFraction(TD);
+
+    CD_();
+    HD_(TD);
 }
 
 // Compute mass fraction

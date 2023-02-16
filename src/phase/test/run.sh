@@ -9,3 +9,4 @@ echo -n "Phase test case Built!"
 echo " "
 
 #valgrind --leak-check=full ./test
+./testphase

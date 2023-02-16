@@ -241,15 +241,15 @@ namespace EUTECTIC{
 
             void SetPhase(double X, double TD);
 
-            double etutecticTemp  = 245; // Eutectic Temperature
-            double multTemp1      = 273; // Multing Temperature of ice 
-            double multTemp2      = 400; // Multing Temperature of sal
-            double L              = 3.34e5; // Latent heat of water [J/kg]
+            double eutecticTemp = 1227; // Eutectic Temperature
+            double multTemp1    = 1350; // Multing Temperature of ice 
+            double multTemp2    = 400; // Multing Temperature of sal
+            double L            = 4e5; // Latent heat of water [J/kg]
  
-            double DT = multTemp1 - etutecticTemp;
+            double DT = multTemp1 - eutecticTemp;
             double Ste = cp::ice*DT/L; 
 
-            double Xe;
+            double Xe = 0.7;
 
             // Define liquidus and phase composition
             double TDe = 0;
@@ -265,7 +265,7 @@ namespace EUTECTIC{
 
             // Mass fractions
 
-            void MassFraction(double X, double TD) { FSal_(X,TD); FBri_(X,TD); FIce_(X,TD);};
+            void MassFraction_(double X, double TD) { FSal_(X,TD); FBri_(X,TD); FIce_(X,TD);};
             void FIce_(double X, double TD);
             void FSal_(double X, double TD);
             void FBri_(double X, double TD);
