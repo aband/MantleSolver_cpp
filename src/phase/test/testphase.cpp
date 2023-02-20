@@ -21,5 +21,9 @@ int main(int argc, char **argv){
 
     pPtr->ViewPhase();
 
+    pPtr->EvalPhase(3,0);
+
+    pPtr->ViewPhase();
+
     return 0;
 }

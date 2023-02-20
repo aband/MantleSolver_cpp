@@ -130,14 +130,12 @@ void evalPhase::SetPhase(){
 
         case 4:
             if (CD_ == 0){
-                TD_  = phase::invHC::field4T2(CD_,phase::Ste,HD_);
-                phase::phi::bri = CD_/phase::hd::rho::bi*phase::Xe*(1-TD_);
-
-
-            } else {
                 TD_ = 1; // single phase limit of fieldion 4
                 phase::phi::bri = (HD_-1)/(phase::hd::rho::bi/phase::Ste + 
                                            phase::hd::rho::bi*phase::hd::cp::bi-1);
+            } else {
+               TD_  = phase::invHC::field4T2(CD_,phase::Ste,HD_);
+               phase::phi::bri = CD_/(phase::hd::rho::bi*phase::Xe*(1-TD_));
             }
 
             // Volume fractions no salt
