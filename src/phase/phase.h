@@ -300,6 +300,9 @@ namespace EUTECTIC{
         // Evaluate volume fraction according to different regimes
         void SetPhase();
 
+        // Functions used for testing
+        void PrintPhase();
+
         private:
         int currentPhase_ = 0;
         double CD_;

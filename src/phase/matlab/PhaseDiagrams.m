@@ -18,6 +18,9 @@ Phase.Te = 1227;
 
 % [rho,cp,kappa,hD,Phase] = physical_properties_eutectic(Phase);
 [rho,cp,kappa,hD,HD_from_TPhi,Phase] = physical_properties_eutectic(Phase);
+
+Phase
+
 [HD_of_TX,  CD_of_TX,  phi_of_TX,f_of_TX,Phase] = setup_phase_behavior(rho,cp,hD,Phase);
 
 

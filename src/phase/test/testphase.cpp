@@ -6,7 +6,7 @@
 int main(int argc, char **argv){
 
     // Test HCDdiagram
-    EUTECTIC::evalphase* pPtr = new EUTECTIC::phase();  
+    EUTECTIC::evalPhase* pPtr = new EUTECTIC::evalPhase(0.1,0.2);  
 
     pPtr->L         = 4e5;
     pPtr->Xe        = 0.7;
