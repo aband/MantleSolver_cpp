@@ -21,8 +21,25 @@ Phase.Te = 1227;
 
 Phase
 
+rho
+
+cp
+
+kappa
+
+hD
+
+HD_from_TPhi
+
 [HD_of_TX,  CD_of_TX,  phi_of_TX,f_of_TX,Phase] = setup_phase_behavior(rho,cp,hD,Phase);
 
+HD_of_TX
+
+CD_of_TX
+
+phi_of_TX
+
+Phase
 
 scsz = get(0,'ScreenSize');
 scw = scsz(3); sch = scsz(4);

@@ -6,16 +6,20 @@
 int main(int argc, char **argv){
 
     // Test HCDdiagram
-    EUTECTIC::evalPhase* pPtr = new EUTECTIC::evalPhase(0.1,0.2);  
+    EUTECTIC::evalPhase* pPtr = new EUTECTIC::evalPhase(6,0.2);  
 
-    pPtr->L         = 4e5;
-    pPtr->Xe        = 0.7;
-    pPtr->multTemp1 = 1350;
-    pPtr->eutecticTemp = 1227;
+    pPtr->ViewPhysics();
 
     // Set upeutectic physical properties
+    pPtr->ViewPhase(); 
 
+    pPtr->EvalPhase(-0.5,0.2);
 
+    pPtr->ViewPhase();
+
+    pPtr->EvalPhase(-0.5,0.1);
+
+    pPtr->ViewPhase();
 
     return 0;
 }

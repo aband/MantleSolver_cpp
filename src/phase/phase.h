@@ -32,9 +32,9 @@ namespace EUTECTIC{
             rho() {};
             ~rho() {}; 
 
-            const double ice = 917; // kg/m^3
-            const double sal = 1466; 
-            const double bri = 1e3;
+            const double ice = 3e3; // kg/m^3
+            const double sal = 3e3; 
+            const double bri = 3e3;
 
             // dimensionless density ratios
             const double bi = bri/ice;
@@ -48,9 +48,9 @@ namespace EUTECTIC{
             cp() {};
             ~cp() {};
 
-            const double ice = 2000;
-            const double sal = 920;
-            const double bri = 4200;
+            const double ice = 1200;
+            const double sal = 1200;
+            const double bri = 1200;
 
             // dimensionless density ratios
             const double bi = bri/ice;
@@ -66,18 +66,22 @@ namespace EUTECTIC{
 
            void GetT(double T) {T_ = T;};
 
-           const double Ice() const {return 0.4685 + 488.12/T_;}; 
-           const double Sal() const {return 0.6  + T_*0;};
-           const double Bri() const {return 0.56 + T_*0;};
+           //const double ice() const {return 0.4685 + 488.12/T_;}; 
+           //const double sal() const {return 0.6  + T_*0;};
+           //const double bri() const {return 0.56 + T_*0;};
+
+           const double ice = 5.2;
+           const double sal = 4.7;
+           const double bri = 4.7;
 
            // dimensionless density ratios
-           const double bi() const {return Bri()/Ice();};
-           const double si() const {return Sal()/Ice();};
-           const double ii() const {return Ice()/Ice();}; 
+           const double bi = bri/ice;
+           const double si = sal/ice;
+           const double ii = ice/ice;
 
-           double sysD(const phi& Phi) const {return Phi.ice*ii() + 
-                                                     Phi.sal*si() + 
-                                                     Phi.bri*bi();};
+           double sysD(const phi& Phi) const {return Phi.ice*ii + 
+                                                     Phi.sal*si + 
+                                                     Phi.bri*bi;};
 
         private:
            double T_;
@@ -247,6 +251,8 @@ namespace EUTECTIC{
             double L            = 4e5; // Latent heat of water [J/kg]
  
             double DT = multTemp1 - eutecticTemp;
+
+            //void UpdateSte() {Ste = cp::ice*DT/L;};
             double Ste = cp::ice*DT/L; 
 
             double Xe = 0.7;
@@ -291,17 +297,20 @@ namespace EUTECTIC{
             double hd_;
     };
 
-    class evalPhase : public phase {
+    class evalPhase : public phase , public kappa{
         public:
         // Identify different fieldions of HX phase diagram
         evalPhase(const double& HD, const double& CD);
         ~evalPhase();
 
+        void EvalPhase(const double& HD, const double& CD);
         // Evaluate volume fraction according to different regimes
         void SetPhase();
 
+        void ViewPhysics();
+
         // Functions used for testing
-        void PrintPhase();
+        void ViewPhase();
 
         private:
         int currentPhase_ = 0;

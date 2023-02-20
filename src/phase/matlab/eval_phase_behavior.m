@@ -40,6 +40,9 @@ CDb = Phase.invHC.CDb;
 CD3l = Phase.invHC.CD3l;
 Ste = Phase.Ste;
 
+HDe(CD)
+HDl(CD)
+
 % Identify different fieldions of HX phase diagram
 field = zeros(N,1);
 field(HD<=1 & CD==0)            = 1;

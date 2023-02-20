@@ -20,15 +20,21 @@ Phase.Te = 1227;
 [rho,cp,kappa,hD,HD,Phase] = physical_properties_eutectic(Phase);
 [HD_of_TX,CD_of_TX,phi_of_TX,f_of_TX,Phase] = setup_phase_behavior(rho,cp,hD,Phase);
 
-CDmax = max(Phase.invHC.CD3l,Phase.invHC.CD3s);
+CDmax = max(Phase.invHC.CD3l,Phase.invHC.CD3s)
+Phase.invHC.CD3l
+Phase.invHC.CD3s
+
 HDmax = 15;
 
-Nc = 100; Nh = 100;
+Nc = 10; Nh = 10;
 cc = linspace(0,CDmax,Nc);
 hh = linspace(-1,HDmax,Nh);
 [CD,HD] = meshgrid(cc,hh);
 
 [TD,Phi,reg] = eval_phase_behavior(HD,CD,rho,cp,hD,Phase);
+
+[pTD,pPhi,preg] = eval_phase_behavior(6,0.2,rho,cp,hD,Phase)
+
 TD = reshape(TD,Nh,Nc);
 Phi_ice = reshape(Phi(:,1),Nh,Nc);
 Phi_sal = reshape(Phi(:,2),Nh,Nc);
