@@ -203,10 +203,10 @@ namespace EUTECTIC{
             double HD3l(double invHXHD3l) {return invHXHD3l;};
 
             double field4T1(const double& CD, const double& Ste, const double& HD)
-            {return -1*beta_(CD,HD) + pow(discHC_(CD,Ste,HD),0.5)/(2*alpha_());};
+            {return (-1*beta_(CD,HD) + pow(discHC_(CD,Ste,HD),0.5))/(2*alpha_());};
 
             double field4T2(const double& CD, const double& Ste, const double& HD)
-            {return -1*beta_(CD,HD) - pow(discHC_(CD,Ste,HD),0.5)/(2*alpha_());};
+            {return (-1*beta_(CD,HD) - pow(discHC_(CD,Ste,HD),0.5))/(2*alpha_());};
 
             double disc(const double& CD, const double& Ste, const double& HD)
             {return discHC_(CD,Ste,HD);};
