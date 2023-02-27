@@ -259,6 +259,14 @@ void singleLevelReconstruction::CheckStencilPolynomials(const MeshInfo& mi, indi
     singleLevel_[FlatIndic(mi,start)]->printCoef();
 }
 
+void singleLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
+
+    for (auto& ind:interior_){
+        cout << smoothnessIndic_[ind] << endl;
+    }
+
+}
+
 // ==========================================================================================
 // Class of multi level reconstructions, managing information related to smoothness indicator
 // and nonlinear weights between reconstruction levels.
@@ -378,6 +386,23 @@ void multiLevelReconstruction::GetInfo(){
     for (int l=0; l<allLevels_.size(); l++){
         allLevels_[l]->CheckStencils(); 
     }
+}
+
+void multiLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
+
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+
+        indice add {i,j};
+        indice start = mi.MPIlocalCellStart + add;
+
+        cout << "Reconstruction at cell ( " << start[0] << ", " << start[1] << ")" << endl; 
+        for (int l=0; l < allLevels_.size(); l++) {
+            allLevels_[l]->PrintSmoothnessIndicator(mi);
+        }
+ 
+    }}
+
 }
 
 void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi){

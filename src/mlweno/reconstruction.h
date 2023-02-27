@@ -106,6 +106,8 @@ namespace MLWENO {
             const int GetSizeY() const {return stencilSizeY_;};
             const double GetScale(int s) {return singleLevel_[s]->GetScale();};
 
+            void PrintSmoothnessIndicator(const MeshInfo& mi);
+
         private:
 
             vertex ComputeStencilCenter_(const MeshInfo& mi, int flat);
@@ -153,6 +155,7 @@ namespace MLWENO {
             void UpdateNonLinearWgts(const MeshInfo& mi);
 
             void GetInfo();
+            void PrintSmoothnessIndicator(const MeshInfo& mi);
             void PrintNonLinearWgts(const MeshInfo& mi);
 
             void Clear();

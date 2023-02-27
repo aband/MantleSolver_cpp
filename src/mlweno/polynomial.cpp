@@ -268,19 +268,33 @@ void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indi
 
     if (Xi_.empty()) {CreateXi_();}
 
-    for (int a1=0; a1<stencilPolyn_.getX(); a1++){
-    for (int a2=0; a2<stencilPolyn_.getY(); a2++){
-        double work1 = 0.0;
-        double work2 = 0.0;
-        work1 = Xi_[a1]*Xi_[a2]
+    for (int alpha1 = 0; alpha1<maxR_; alpha1++){
+    for (int alpha2 = 0; alpha2<maxR_-alpha1; alpha2++){
+        smoothnessIndic_ += Xi_[alpha1]*Xi_[alpha2] - 
+                            (1/((2*alpha1+1)*pow(4,alpha1)))*
+                            (1/((2*alpha2+1)*pow(4,alpha2)));
 
     }}
+
+    // Subtracting zero derivative case
+    smoothnessIndic_ += Xi_[0]*Xi_[0] - 
+                        (1/((2*0+1)*pow(4,0)))*
+                        (1/((2*0+1)*pow(4,0)));
 
 }
 
 // Evaluation of auxiliary variable Xi in evaluation of smooth indicator
-void stencilPolynoial::CreateXi_(){
-    Xi_.resize(max(stencilPolyn_.getI(),stencilPolyn_.getJ()),0.0);
+void stencilPolynomial::CreateXi_(){
+   
+    if (stencilPolyn_.getI() > stencilPolyn_.getJ()){
+        maxR_ = stencilPolyn_.getI();
+        minR_ = stencilPolyn_.getJ();
+    } else {
+        maxR_ = stencilPolyn_.getJ();
+        minR_ = stencilPolyn_.getI();
+    }
+
+    Xi_.resize(maxR_,0.0);
 
     for (int i=0; i<Xi_.size(); i++){
         for (int k=0; k<i+1; k++){

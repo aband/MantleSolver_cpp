@@ -25,9 +25,9 @@ double func(vertex& point, const vector<double>& param){
 	 //    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
 	 //}
 
-    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
+    //return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
     //return point[0]*point[0] + point[1]*point[1];
-    //return 0.5;
+    return 0.5;
     //return point[0] + point[1];
 
 }
@@ -186,17 +186,18 @@ int main(int argc, char **argv){
 
     rptr->Update(mi);
 
-    rptr->PrintNonLinWgts();
+    //rptr->PrintNonLinWgts();
 
     //rptr->PrintSmoothnessIndic();
 
     //rptr->PrintStencils();
 
-    cout << rptr->Eval(0.0,0.0) << " " << func(center,{(double)M,(double)N}) << endl;
+    //cout << rptr->Eval(0.0,0.0) << " " << func(center,{(double)M,(double)N}) << endl;
 
     rptr->Clear();
 
     // Test single level reconstruction
+
     //MLWENO::singleLevelReconstruction * slrPtr = new MLWENO::singleLevelReconstruction(3,3);
 
     //slrPtr->CreateStencilPolynomials(mi);
@@ -204,6 +205,7 @@ int main(int argc, char **argv){
     //indice test = {0,0};
     //slrPtr->CheckStencilPolynomials(mi,test);
 
+    // Test multi level reconstruction
     MLWENO::multiLevelReconstruction * mlrPtr = new MLWENO::multiLevelReconstruction(mi,2,2);
     mlrPtr->AddLevel(mi,3,3);
     mlrPtr->AddLevel(mi,2,3);
@@ -215,11 +217,13 @@ int main(int argc, char **argv){
 
     mlrPtr->AddReconstMethod(reconstMethod);
 
-    mlrPtr->GetInfo();
+    //mlrPtr->GetInfo();
 
     mlrPtr->UpdateNonLinearWgts(mi);
 
-    //mlrPtr->PrintNonLinearWgts(mi);
+    mlrPtr->PrintNonLinearWgts(mi);
+
+    mlrPtr->PrintSmoothnessIndicator(mi);
 
     // ====================================================================================================================================
     // Clear used objects

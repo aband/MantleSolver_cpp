@@ -110,6 +110,9 @@ namespace MLWENO{
             void CreateXi_();
             vector<double> Xi_;
 
+            int maxR_;
+            int minR_;
+
             void EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
             double smoothnessIndic_ = -1;
     };
