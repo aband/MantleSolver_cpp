@@ -305,9 +305,7 @@ void stencilPolynomial::CreateXi_(){
 }
 
 double stencilPolynomial::GetSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice){
-    if (smoothnessIndic_ == -1) {
-        EvalSmoothIndic_(mi, stencilIndice);
-    }
+    EvalSmoothIndic_(mi, stencilIndice);
 
     return smoothnessIndic_;
 }

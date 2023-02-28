@@ -221,9 +221,9 @@ int main(int argc, char **argv){
 
     mlrPtr->UpdateNonLinearWgts(mi);
 
-    mlrPtr->PrintNonLinearWgts(mi);
+    //mlrPtr->PrintNonLinearWgts(mi);
 
-    mlrPtr->PrintSmoothnessIndicator(mi);
+    //mlrPtr->PrintSmoothnessIndicator(mi);
 
     // ====================================================================================================================================
     // Clear used objects

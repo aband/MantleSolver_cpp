@@ -123,6 +123,7 @@ void reconstruction::ComputeNonLinWgts_(const MeshInfo& mi){
     nonLinWgts_.resize(stencilPolyn_.size());
     double sum = 0.0;
     for (int i=0; i<stencilPolyn_.size(); i++){
+        //cout << smoothnessIndicPolyn_[i] << endl;
         nonLinWgts_[i] = linWgts_[i] / pow(smoothnessIndicPolyn_[i] + eps0_*scale_*scale_, 
                                            max(stencilPolyn_[i]->GetOrderX(),stencilPolyn_[i]->GetOrderY())) * 
                                        pow(eps0_*scale_ / (smoothnessIndicPolyn_[i] + eps0_*scale_), etaBias_[i]);
@@ -328,7 +329,8 @@ void multiLevelReconstruction::UpdateNonLinearWgts_(const MeshInfo& mi, indice s
             indice owner = start + i;
             if (allLevels_[l]->CheckExist(mi, owner)){
                 double scale = allLevels_[l]->GetScale(FlatIndic(mi,owner));
-                double sm = allLevels_[l]->CalculateSmoothnessIndic(mi,owner); 
+                double sm = allLevels_[l]->CalculateSmoothnessIndic(mi,owner);
+                cout << sm << endl;
                 // Get updated smoothness indicators
                 double value = linearWgts_[l].at(FlatIndic(sizeX,i))/ 
                                pow(sm + scale*scale*eps0_ , max(sizeX, sizeY)) * 
