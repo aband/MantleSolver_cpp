@@ -12,4 +12,4 @@ echo " "
 ./test
 #./test -M 11 -N 11
 #./test -M 21 -N 21
-#./test -M 41 -N 41
+./test -M 41 -N 41
