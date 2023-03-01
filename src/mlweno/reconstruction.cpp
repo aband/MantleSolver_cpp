@@ -262,6 +262,8 @@ void singleLevelReconstruction::CheckStencilPolynomials(const MeshInfo& mi, indi
 
 void singleLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
 
+    UpdateSmoothnessIndic_(mi);
+
     for (auto& ind:interior_){
         cout << smoothnessIndic_[ind] << endl;
     }
@@ -330,7 +332,6 @@ void multiLevelReconstruction::UpdateNonLinearWgts_(const MeshInfo& mi, indice s
             if (allLevels_[l]->CheckExist(mi, owner)){
                 double scale = allLevels_[l]->GetScale(FlatIndic(mi,owner));
                 double sm = allLevels_[l]->CalculateSmoothnessIndic(mi,owner);
-                cout << sm << endl;
                 // Get updated smoothness indicators
                 double value = linearWgts_[l].at(FlatIndic(sizeX,i))/ 
                                pow(sm + scale*scale*eps0_ , max(sizeX, sizeY)) * 
@@ -353,6 +354,11 @@ void multiLevelReconstruction::UpdateNonLinearWgts_(const MeshInfo& mi, indice s
 
     nonLinearWgts_.erase(FlatIndic(mi,start));
     nonLinearWgts_.insert({FlatIndic(mi,start) , nlw});
+
+}
+
+void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi){
+
 
 }
 

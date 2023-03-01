@@ -251,21 +251,6 @@ void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indi
     // Initialize smoothness Indicator
     smoothnessIndic_ = 0.0;
 
-    // ===================================
-
-//    for (int i=1; i<collapsePolyn_->getSize(); i++){
-//        int l = i/collapsePolyn_->getI(); int m = i%collapsePolyn_->getI(); 
-//        for (int j=i; j<collapsePolyn_->getSize(); j++){
-//            int r = j/collapsePolyn_->getI(); int s = j%collapsePolyn_->getI();
-//            smoothnessIndic_ += pow(collapsePolyn_->getCoef(j) *
-//                                //factorial(r,r-l)*factorial(s,s-m),2)*
-//                                (factorial(r)/factorial(l)) * (factorial(s)/factorial(m)),2) *
-//                                pow(2*(double)(r-l)+1.0,-1)*
-//                                pow(2*(double)(s-m)+1.0,-1);
-
-//        }
-//    }
-
     if (Xi_.empty()) {CreateXi_();}
 
     for (int alpha1 = 0; alpha1<maxR_; alpha1++){
@@ -274,12 +259,23 @@ void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indi
                             (1/((2*alpha1+1)*pow(4,alpha1)))*
                             (1/((2*alpha2+1)*pow(4,alpha2)));
 
+        double coefindx = 0.0;
+
+        if (stencilPolyn_.getI() == maxR_){
+            coefindx = alpha1 + alpha2*maxR_;
+        } else {
+            coefindx = alpha2 + alpha1*maxR_;
+        }
+
+        smoothnessIndic_ *= pow(collapsePolyn_->getCoef(coefindx),2);
+
     }}
 
     // Subtracting zero derivative case
-    smoothnessIndic_ += Xi_[0]*Xi_[0] - 
+    smoothnessIndic_ -= (Xi_[0]*Xi_[0] - 
                         (1/((2*0+1)*pow(4,0)))*
-                        (1/((2*0+1)*pow(4,0)));
+                        (1/((2*0+1)*pow(4,0)))) * pow(collapsePolyn_->getCoef(0),2);
+
 
 }
 

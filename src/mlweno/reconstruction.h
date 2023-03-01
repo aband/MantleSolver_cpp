@@ -1,7 +1,7 @@
 #ifndef RECONSTRUCTION_H_
 #define RECONSTRUCTION_H_
 
-/*
+/** \reconstruction reconstruction.h
  *A ML weno reconstruction contains several information:
  *1. Center point
  *2. Stencils
@@ -17,6 +17,13 @@
 #include <map>
 
 namespace MLWENO {
+
+   //! A test class for weno reconstruction
+   /*!
+    * Test reconstruction without defining levels 
+    * Used for numerical verification
+    * Not used directly in actual computation.
+    */
 
     class reconstruction {
 
@@ -82,10 +89,17 @@ namespace MLWENO {
             vector<double> smoothnessIndicPolyn_;
     };
 
-    // A reconstruction methodology based on the idea of multi level ideas
+    //! Multilevel WENO reconstruction method
+    /*!
+     * A reconstruction methodology based on the idea of multi level ideas
+     */
 
     class singleLevelReconstruction {
         public:
+            //! A constructor
+            /*!
+             * Default constructor for a single reconstruction level
+             */
             singleLevelReconstruction() {};
             singleLevelReconstruction(int stencilSizeX, int stencilSizeY); 
             
@@ -93,18 +107,19 @@ namespace MLWENO {
 
             void CreateStencilPolynomials(const MeshInfo& mi);
 
-            void CheckStencils() const {cout<< "Constructed "<< interior_.size() << " stencils with the size of " << stencilSizeX_ << " " << stencilSizeY_ << endl;};
-            void CheckStencilPolynomials(const MeshInfo& mi, indice start);
-
             const double CalculateSmoothnessIndic(const MeshInfo& mi, indice owner);
-
-            const double GetScale(const MeshInfo& mi, indice owner) {return singleLevel_[FlatIndic(mi,owner)]->GetScale();}; 
 
             int CheckExist(const MeshInfo& mi, indice owner) const {return interior_.count(FlatIndic(mi,owner));};
 
             const int GetSizeX() const {return stencilSizeX_;};
             const int GetSizeY() const {return stencilSizeY_;};
+
             const double GetScale(int s) {return singleLevel_[s]->GetScale();};
+            const double GetScale(const MeshInfo& mi, indice owner) {return singleLevel_[FlatIndic(mi,owner)]->GetScale();}; 
+
+            //! class members for checking and verification
+            void CheckStencils() const {cout<< "Constructed "<< interior_.size() << " stencils with the size of " << stencilSizeX_ << " " << stencilSizeY_ << endl;};
+            void CheckStencilPolynomials(const MeshInfo& mi, indice start);
 
             void PrintSmoothnessIndicator(const MeshInfo& mi);
 
@@ -154,6 +169,7 @@ namespace MLWENO {
 
             void UpdateNonLinearWgts(const MeshInfo& mi);
 
+            //! Routines used to check results and verification
             void GetInfo();
             void PrintSmoothnessIndicator(const MeshInfo& mi);
             void PrintNonLinearWgts(const MeshInfo& mi);
@@ -180,6 +196,7 @@ namespace MLWENO {
             map <int, vector< map<int, double>>* > allLinearWgts_;
 
             void UpdateNonLinearWgts_(const MeshInfo& mi, indice start);
+            void UpdateTwoStageNonLinearWgts_(const MeshInfo& mi);
             map<int, vector< map<int, double> > > nonLinearWgts_;
 
             vector< map<int, int> > etaBias_;

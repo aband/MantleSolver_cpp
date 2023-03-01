@@ -25,9 +25,9 @@ double func(vertex& point, const vector<double>& param){
 	 //    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
 	 //}
 
-    //return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
+    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
     //return point[0]*point[0] + point[1]*point[1];
-    return 0.5;
+    //return 0.5;
     //return point[0] + point[1];
 
 }
@@ -221,7 +221,7 @@ int main(int argc, char **argv){
 
     mlrPtr->UpdateNonLinearWgts(mi);
 
-    //mlrPtr->PrintNonLinearWgts(mi);
+    mlrPtr->PrintNonLinearWgts(mi);
 
     //mlrPtr->PrintSmoothnessIndicator(mi);
 
