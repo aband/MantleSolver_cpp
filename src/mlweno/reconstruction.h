@@ -168,6 +168,7 @@ namespace MLWENO {
             void AddReconstMethod(const MeshInfo& mi, unordered_set<indice> start, vector< vector<indice> > rm);
 
             void UpdateNonLinearWgts(const MeshInfo& mi);
+            void UpdateTwoStageNonLinearWgts(const MeshInfo& mi);
 
             //! Routines used to check results and verification
             void GetInfo();
@@ -177,7 +178,7 @@ namespace MLWENO {
             void Clear();
         private:
 
-            const double eps0_ = 1;
+            const double eps0_ = 0.01;
 
             vector< singleLevelReconstruction *> allLevels_;
 

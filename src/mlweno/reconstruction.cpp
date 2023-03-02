@@ -334,7 +334,8 @@ void multiLevelReconstruction::UpdateNonLinearWgts_(const MeshInfo& mi, indice s
                 double sm = allLevels_[l]->CalculateSmoothnessIndic(mi,owner);
                 // Get updated smoothness indicators
                 double value = linearWgts_[l].at(FlatIndic(sizeX,i))/ 
-                               pow(sm + scale*scale*eps0_ , max(sizeX, sizeY)) * 
+                               //pow(sm + scale*scale*eps0_ , max(sizeX, sizeY)) * 
+                               pow(sm + scale*scale*eps0_ , sizeX+sizeY) * 
                                pow(eps0_*scale / sm+eps0_*
                                scale, etaBias_[l].at(FlatIndic(sizeX,i)));
                 nlw[l].insert({FlatIndic(sizeX,i) , value});
@@ -404,7 +405,15 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
     for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
         indice add {i,j};
         indice start = mi.MPIlocalCellStart+add;
-        //UpdateNonLinearWgts_(mi,start);
+        UpdateNonLinearWgts_(mi,start);
+    } }
+}
+
+void multiLevelReconstruction::UpdateTwoStageNonLinearWgts(const MeshInfo& mi){
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+        indice add {i,j};
+        indice start = mi.MPIlocalCellStart+add;
         UpdateTwoStageNonLinearWgts_(mi,start);
     } }
 }
