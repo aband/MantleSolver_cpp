@@ -362,6 +362,9 @@ void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, 
 
     UpdateNonLinearWgts_(mi,start);
 
+
+
+
     vector< map<int,double> > nlw(linearWgts_.size());
 
     double sum = 0.0;
@@ -397,7 +400,6 @@ void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, 
 
     nonLinearWgts_.erase(FlatIndic(mi,start));
     nonLinearWgts_.insert({FlatIndic(mi,start) , nlw});
-
 }
 
 void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
