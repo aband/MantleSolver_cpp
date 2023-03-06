@@ -197,6 +197,7 @@ namespace MLWENO {
             map <int, vector< map<int, double>>* > allLinearWgts_;
 
             void UpdateNonLinearWgts_(const MeshInfo& mi, indice start);
+            void UpdateFirstStageNonLinearWgts_(const MeshInfo& mi, indice start);
             void UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, indice start);
             map<int, vector< map<int, double> > > nonLinearWgts_;
 

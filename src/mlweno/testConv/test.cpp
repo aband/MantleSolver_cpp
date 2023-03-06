@@ -219,7 +219,7 @@ int main(int argc, char **argv){
 
     //mlrPtr->GetInfo();
 
-    mlrPtr->UpdateNonLinearWgts(mi);
+    mlrPtr->UpdateTwoStageNonLinearWgts(mi);
 
     mlrPtr->PrintNonLinearWgts(mi);
 
