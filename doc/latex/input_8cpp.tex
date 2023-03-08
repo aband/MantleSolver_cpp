@@ -1,0 +1,49 @@
+\hypertarget{input_8cpp}{}\doxysection{/home/renpo/\+Research/\+Mantle\+Solver/src/input.cpp File Reference}
+\label{input_8cpp}\index{/home/renpo/Research/MantleSolver/src/input.cpp@{/home/renpo/Research/MantleSolver/src/input.cpp}}
+{\ttfamily \#include \char`\"{}../include/input.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{input_8cpp_ab9721e0e8741972e36c8e3c434622249}{constfun2}} (valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param)
+\item 
+Petsc\+Error\+Code \mbox{\hyperlink{input_8cpp_a9c39f3aa755f1d5744f1b30f5a20e1d3}{Read\+Mesh\+Portion}} (DM dm, Vec $\ast$fullmesh, vector$<$ valarray$<$ double $>$ $>$ \&mesh)
+\item 
+Petsc\+Error\+Code \mbox{\hyperlink{input_8cpp_ae551df95a41e062e4269a146a233f3e7}{Read\+Solution\+Local}} (DM dmu, Vec $\ast$globalu, vector$<$ vector$<$ double $>$ $>$ \&sol)
+\item 
+Petsc\+Error\+Code \mbox{\hyperlink{input_8cpp_a269004ca7eb8ee31557b9439421d20b9}{Simple\+Initial\+Value}} (DM dm, DM dmu, Vec $\ast$fullmesh, Vec $\ast$globalu, double($\ast$func)(valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param))
+\item 
+Petsc\+Error\+Code \mbox{\hyperlink{input_8cpp_a3aa8b3737f264a69035dcfb48577ec57}{Oblique\+Burgers}} (DM dm, DM dmu, Vec $\ast$fullmesh, Vec $\ast$globalu, double($\ast$func)(valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param))
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{input_8cpp_ab9721e0e8741972e36c8e3c434622249}\label{input_8cpp_ab9721e0e8741972e36c8e3c434622249}} 
+\index{input.cpp@{input.cpp}!constfun2@{constfun2}}
+\index{constfun2@{constfun2}!input.cpp@{input.cpp}}
+\doxysubsubsection{\texorpdfstring{constfun2()}{constfun2()}}
+{\footnotesize\ttfamily double constfun2 (\begin{DoxyParamCaption}\item[{valarray$<$ double $>$ \&}]{point,  }\item[{const vector$<$ double $>$ \&}]{param }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{input_8cpp_a3aa8b3737f264a69035dcfb48577ec57}\label{input_8cpp_a3aa8b3737f264a69035dcfb48577ec57}} 
+\index{input.cpp@{input.cpp}!ObliqueBurgers@{ObliqueBurgers}}
+\index{ObliqueBurgers@{ObliqueBurgers}!input.cpp@{input.cpp}}
+\doxysubsubsection{\texorpdfstring{ObliqueBurgers()}{ObliqueBurgers()}}
+{\footnotesize\ttfamily Petsc\+Error\+Code Oblique\+Burgers (\begin{DoxyParamCaption}\item[{DM}]{dm,  }\item[{DM}]{dmu,  }\item[{Vec $\ast$}]{fullmesh,  }\item[{Vec $\ast$}]{globalu,  }\item[{double($\ast$)(valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param)}]{func }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{input_8cpp_a9c39f3aa755f1d5744f1b30f5a20e1d3}\label{input_8cpp_a9c39f3aa755f1d5744f1b30f5a20e1d3}} 
+\index{input.cpp@{input.cpp}!ReadMeshPortion@{ReadMeshPortion}}
+\index{ReadMeshPortion@{ReadMeshPortion}!input.cpp@{input.cpp}}
+\doxysubsubsection{\texorpdfstring{ReadMeshPortion()}{ReadMeshPortion()}}
+{\footnotesize\ttfamily Petsc\+Error\+Code Read\+Mesh\+Portion (\begin{DoxyParamCaption}\item[{DM}]{dm,  }\item[{Vec $\ast$}]{fullmesh,  }\item[{vector$<$ valarray$<$ double $>$ $>$ \&}]{mesh }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{input_8cpp_ae551df95a41e062e4269a146a233f3e7}\label{input_8cpp_ae551df95a41e062e4269a146a233f3e7}} 
+\index{input.cpp@{input.cpp}!ReadSolutionLocal@{ReadSolutionLocal}}
+\index{ReadSolutionLocal@{ReadSolutionLocal}!input.cpp@{input.cpp}}
+\doxysubsubsection{\texorpdfstring{ReadSolutionLocal()}{ReadSolutionLocal()}}
+{\footnotesize\ttfamily Petsc\+Error\+Code Read\+Solution\+Local (\begin{DoxyParamCaption}\item[{DM}]{dmu,  }\item[{Vec $\ast$}]{globalu,  }\item[{vector$<$ vector$<$ double $>$ $>$ \&}]{sol }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{input_8cpp_a269004ca7eb8ee31557b9439421d20b9}\label{input_8cpp_a269004ca7eb8ee31557b9439421d20b9}} 
+\index{input.cpp@{input.cpp}!SimpleInitialValue@{SimpleInitialValue}}
+\index{SimpleInitialValue@{SimpleInitialValue}!input.cpp@{input.cpp}}
+\doxysubsubsection{\texorpdfstring{SimpleInitialValue()}{SimpleInitialValue()}}
+{\footnotesize\ttfamily Petsc\+Error\+Code Simple\+Initial\+Value (\begin{DoxyParamCaption}\item[{DM}]{dm,  }\item[{DM}]{dmu,  }\item[{Vec $\ast$}]{fullmesh,  }\item[{Vec $\ast$}]{globalu,  }\item[{double($\ast$)(valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param)}]{func }\end{DoxyParamCaption})}
+

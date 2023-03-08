@@ -1,0 +1,126 @@
+\hypertarget{util_8h_source}{}\doxysection{util.\+h}
+\label{util_8h_source}\index{/home/renpo/Research/MantleSolver/src/mlweno/util.h@{/home/renpo/Research/MantleSolver/src/mlweno/util.h}}
+\mbox{\hyperlink{util_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ UTIL\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ UTIL\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <unordered\_set>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <array>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <valarray>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <numeric>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <cstdlib>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <iomanip>}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}lapacke.h"{}}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}integral.h"{}}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <assert.h>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <petsc.h>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{using\ }\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}\ =\ valarray<double>;}
+\DoxyCodeLine{00024\ \textcolor{keyword}{using\ }\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ =\ valarray<int>;}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{using\ }\mbox{\hyperlink{util_8h_ad73a990d094c45a550a23ca93de73656}{vertexSet}}\ =\ vector<valarray<double>>;}
+\DoxyCodeLine{00027\ \textcolor{keyword}{using\ }\mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indiceSet}}\ =\ vector<valarray<double>>;}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00030\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{util_8h_aa164c13b41576f3c2df41a21297c5c7a}{delete\_pointed\_to}}(T\ \textcolor{keyword}{const}\ ptr)\{}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keyword}{delete}\ ptr;}
+\DoxyCodeLine{00032\ \}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00035\ \textcolor{comment}{\ *Containing\ essential\ information\ about\ mesh.}}
+\DoxyCodeLine{00036\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00037\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{comment}{//\ In\ the\ case,\ Cell\ and\ Vertex\ are\ maintained\ by\ same\ global\ size}}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{comment}{//\ They\ will\ still\ be\ stored\ separately\ for\ clearification.}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{structMeshInfo_aa9675a2706273dcab8c9b53f801345a0}{dim}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Total\ number\ of\ dimensions}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ vector<int>\ \mbox{\hyperlink{structMeshInfo_a7533073d056a8a49e385c5df02f6a223}{MPIlocalCellSize}};\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Local\ chunk\ size\ of\ cell\ without\ ghost\ layer}}
+\DoxyCodeLine{00045\ \ \ \ \ vector<int>\ \mbox{\hyperlink{structMeshInfo_a29b4d0a10498a613d74402d8c6e0b6d8}{MPIlocalVertexSize}};\ \ \ \ \ \ \ \textcolor{comment}{//\ Local\ chunk\ size\ of\ vertex\ without\ ghost\ layer}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ \mbox{\hyperlink{structMeshInfo_a5f68852761f07e231419465ad1ffc90e}{MPIlocalCellStart}};\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ starting\ cell\ index\ for\ MPI\ local\ part}}
+\DoxyCodeLine{00048\ \ \ \ \ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ \mbox{\hyperlink{structMeshInfo_a1fee68c93b5da2e30dfa56405dde6842}{MPIlocalVertexStart}};\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ starting\ vertex\ index\ for\ MPI\ local\ part}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ vector<int>\ \mbox{\hyperlink{structMeshInfo_a4adcf41795eb519a1da775c7802327ff}{MPIglobalCellSize}};\ \ \ \ \ \ \ \ \textcolor{comment}{//\ global\ chunk\ size\ of\ cell\ without\ ghost\ layer}}
+\DoxyCodeLine{00051\ \ \ \ \ vector<int>\ \mbox{\hyperlink{structMeshInfo_a1c49d85391491860f255f6c9b4425a54}{MPIglobalVertexSize}};\ \ \ \ \ \ \textcolor{comment}{//\ global\ chunk\ size\ of\ vertex\ without\ ghost\ layer}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{structMeshInfo_a9bc08203db9947c052a4379ae76fce71}{cellGhostLayerSize}};\ \ \ \textcolor{comment}{//\ size\ of\ ghost\ layer\ of\ cell}}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{structMeshInfo_a9cef22ffb2b99554430198922458f593}{vertexGhostLayerSize}};\ \textcolor{comment}{//\ size\ of\ ghost\ layer\ of\ node}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ vector<int>\ \mbox{\hyperlink{structMeshInfo_a53d66c4b90143910215d8b69425723e5}{MPIlocalCellSizeFull}};\ \ \ \ \ \textcolor{comment}{//\ Local\ chunk\ size\ of\ cells\ including\ ghost\ layer}}
+\DoxyCodeLine{00057\ \ \ \ \ vector<int>\ \mbox{\hyperlink{structMeshInfo_ae503f6f46e7d8d6ffe8ef7bbc826d291}{MPIlocalVertexSizeFull}};\ \ \ \textcolor{comment}{//\ Local\ chunk\ size\ of\ vertex\ including\ ghost\ layer\ }}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{comment}{//\ Horizontal\ edges\ first\ than\ vertical\ edges}}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{structMeshInfo_a06c8559c1002402e4256098107246ae4}{MPIglobalHoriEdgeSize}};}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{structMeshInfo_a48e58925407c02b43cce4ed5f3d67585}{MPIlocalHoriEdgeSize}};}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{comment}{//\ Starting\ at\ 0\ (has\ not\ stacked\ on\ horizontal\ edges\ yet)}}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{structMeshInfo_a54b9263da1d71e16d833be319f24e05e}{MPIglobalVertEdgeSize}};}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{structMeshInfo_a5387e2907c1cfc6457d6cf57b220b26b}{MPIlocalVertEdgeSize}};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{comment}{//\ Containing\ all\ the\ local\ mesh\ vertex\ points\ here\ \ }}
+\DoxyCodeLine{00068\ \ \ \ \ \mbox{\hyperlink{util_8h_ad73a990d094c45a550a23ca93de73656}{vertexSet}}\ \mbox{\hyperlink{structMeshInfo_a12dea3ca6aa446b75ccb00a49f8ad2f6}{lmesh}};\ }
+\DoxyCodeLine{00069\ \ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{double}**\ \mbox{\hyperlink{structMeshInfo_a4fe3be726d76e07f3fa1af356d9b8482}{localVals}};}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{comment}{//\ Corner\ index\ within\ a\ single\ element}}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indiceSet}}\ edgeCorner\ \ \ \{\{0\},\ \{1\}\};}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indiceSet}}\ faceCorner\ \ \ \{\{0,0\},\{1,0\},\{1,1\},\{0,1\}\};}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indiceSet}}\ volumeCorner\ \{\{0,0,0\},\{1,0,0\},\{1,1,0\},\{0,1,0\},}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0,0,1\},\{1,0,1\},\{1,1,1\},\{0,1,1\}\};}
+\DoxyCodeLine{00077\ \}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{util_8h_add1eadf50177393936460ade849dad87}{AssignValuesMeshInfo}}(\mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ DM\ dmv,\ DM\ dmu);}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{comment}{//\ Generic\ auxiliary\ functions}}
+\DoxyCodeLine{00082\ \textcolor{comment}{//\ Function\ return\ constant\ value}}
+\DoxyCodeLine{00083\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{util_8h_a8a9e107350c85a1f80089e7108a969ea}{constFunc}}(valarray<double>\&\ point,\textcolor{keyword}{const}\ vector<double>\&\ param);}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{util_8h_a8a9e107350c85a1f80089e7108a969ea}{constFunc}}(valarray<double>\&\ point,\textcolor{keyword}{const}\ vector<double>\&\ param,\ \textcolor{keywordtype}{double}\ c);}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{util_8h_a8a9e107350c85a1f80089e7108a969ea}{constFunc}}();}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{util_8h_a8a9e107350c85a1f80089e7108a969ea}{constFunc}}(\textcolor{keywordtype}{double}\ c);}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \textcolor{comment}{//\ Funcstions\ calculate\ factorials}}
+\DoxyCodeLine{00092\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{util_8h_a5788e091deb7c828238d3fa4c71ee58c}{factorial}}(\textcolor{keywordtype}{int}\ top,\ \textcolor{keywordtype}{int}\ bottom);}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{util_8h_a5788e091deb7c828238d3fa4c71ee58c}{factorial}}(\textcolor{keywordtype}{int}\ top);}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \textcolor{comment}{//\ Evaluation\ of\ polynomial\ using\ Horner's\ method}}
+\DoxyCodeLine{00097\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{util_8h_a3ce1935948a79b1c0edc84c3dd5f4708}{polyEval}}(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ *\ coef,\ \textcolor{keywordtype}{int}\ degree);}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \textcolor{comment}{//\ Compute\ factorial\ coefficient\ for\ polynomial\ derivatives}}
+\DoxyCodeLine{00100\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{util_8h_a4cf5d4796e3b8098b0d742a8c0d63868}{polynDerMulti}}(\textcolor{keywordtype}{int}\ der,\ \textcolor{keywordtype}{int}\ max,\ \textcolor{keywordtype}{int}\ *\ multiplier);}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{comment}{//\ Local\ to\ global\ and\ global\ to\ local}}
+\DoxyCodeLine{00103\ \textcolor{comment}{//\ All\ indices\ are\ referenced\ to\ cell\ indice}}
+\DoxyCodeLine{00104\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ \mbox{\hyperlink{util_8h_afd6e6890a61d10bb043f44cbbf30b9d6}{MPILocalToGlobal}}(\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ local,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi);}
+\DoxyCodeLine{00105\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ \mbox{\hyperlink{util_8h_ad5153d533412da9ccb2c93de44949b03}{MPIGlobalToLocal}}(\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ global,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi);}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \textcolor{comment}{//\ Indice\ convention\ functions}}
+\DoxyCodeLine{00108\ \textcolor{comment}{//\ Flatten\ indice\ into\ 1D\ array}}
+\DoxyCodeLine{00109\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{util_8h_a703c2a3bcdd5cc5356bdd15bd9683fd3}{FlatIndic}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keywordtype}{int}\ i,\ \textcolor{keywordtype}{int}\ j);}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{util_8h_a703c2a3bcdd5cc5356bdd15bd9683fd3}{FlatIndic}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ M,\ \textcolor{keywordtype}{int}\ i,\ \textcolor{keywordtype}{int}\ j);}
+\DoxyCodeLine{00112\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{util_8h_a703c2a3bcdd5cc5356bdd15bd9683fd3}{FlatIndic}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\&\ p);}
+\DoxyCodeLine{00113\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{util_8h_a703c2a3bcdd5cc5356bdd15bd9683fd3}{FlatIndic}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ M,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\&\ p);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{comment}{//\ Reverse\ process\ of\ flatten\ indices}}
+\DoxyCodeLine{00116\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ \mbox{\hyperlink{util_8h_a7aeffa3472ac4b1125ecb3ca8d15d404}{Bend}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keywordtype}{int}\ flat);}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ \mbox{\hyperlink{util_8h_a7aeffa3472ac4b1125ecb3ca8d15d404}{Bend}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ M,\ \textcolor{keywordtype}{int}\ flat);}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

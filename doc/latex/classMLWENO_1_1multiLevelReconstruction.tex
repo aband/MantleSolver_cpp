@@ -1,0 +1,171 @@
+\hypertarget{classMLWENO_1_1multiLevelReconstruction}{}\doxysection{MLWENO\+::multi\+Level\+Reconstruction Class Reference}
+\label{classMLWENO_1_1multiLevelReconstruction}\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+
+
+{\ttfamily \#include $<$mlreconstruction.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a890b2c9598cdd97ca59f7f8428abf06d}{multi\+Level\+Reconstruction}} ()
+\begin{DoxyCompactList}\small\item\em A constructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_abf2ebd11ba0b40e540425c3043d62a5b}{multi\+Level\+Reconstruction}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, int stencil\+SizeX, int stencil\+SizeY)
+\item 
+\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_abb5b0d6cb7a1251423a8ca179ad8fa1d}{multi\+Level\+Reconstruction}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, int $\ast$stencil\+Size)
+\item 
+\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a07051d39d4a8a95686259f556b5b0a46}{multi\+Level\+Reconstruction}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, vector$<$ int $\ast$ $>$ stencil\+Sizes)
+\item 
+\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a7b05c081d1dd6ee6d22ef5786f06faef}{$\sim$multi\+Level\+Reconstruction}} ()
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ac8556b9b31f7c380bb23d9d7238e6e99}{Add\+Level}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, int stencil\+SizeX, int stencil\+SizeY)
+\begin{DoxyCompactList}\small\item\em A destructor. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a43f5310567606a3d2f75f7f936629bc2}{Add\+Level}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, int $\ast$stencil\+Size)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a3fe09b93f893bba1d98fc96f826b0197}{Add\+Level}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, vector$<$ int $\ast$ $>$ stencil\+Sizes)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a86efde0be7470e44c9ac3748c7bf9898}{Add\+Reconst\+Method}} (vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ brm)
+\begin{DoxyCompactList}\small\item\em Uniformally add reconstruction methods. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a12cb1ac37f7dce8e370079013a1dc25b}{Add\+Reconst\+Method}} (vector$<$ vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ $>$ brms)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_aef3fc19bdccba720c897dcf725fabf8e}{Update\+Non\+Linear\+Wgts}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi)
+\begin{DoxyCompactList}\small\item\em Two ways of updateing non linear weights with updated smoothness indicators. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ab10ed466f7a049b358f349841f1ca89f}{Update\+Two\+Stage\+Non\+Linear\+Wgts}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_aae16556d1618926f4c7d0eaf26cf7266}{Get\+Info}} ()
+\begin{DoxyCompactList}\small\item\em Routines used to check results and verification. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ab5aea8004802275c9c207f5771595fe7}{Print\+Smoothness\+Indicator}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_afe529c8508638beb32672ae2ed957a6d}{Print\+Non\+Linear\+Wgts}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_adb1265bfb32f082760cb6bb514f5d077}{Clear}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_a890b2c9598cdd97ca59f7f8428abf06d}\label{classMLWENO_1_1multiLevelReconstruction_a890b2c9598cdd97ca59f7f8428abf06d}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!multiLevelReconstruction@{multiLevelReconstruction}}
+\index{multiLevelReconstruction@{multiLevelReconstruction}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{multiLevelReconstruction()}{multiLevelReconstruction()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily MLWENO\+::multi\+Level\+Reconstruction\+::multi\+Level\+Reconstruction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+A constructor. 
+
+! Construt multi-\/level weno reconstruction by specifying each single level \mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_abf2ebd11ba0b40e540425c3043d62a5b}\label{classMLWENO_1_1multiLevelReconstruction_abf2ebd11ba0b40e540425c3043d62a5b}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!multiLevelReconstruction@{multiLevelReconstruction}}
+\index{multiLevelReconstruction@{multiLevelReconstruction}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{multiLevelReconstruction()}{multiLevelReconstruction()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily MLWENO\+::multi\+Level\+Reconstruction\+::multi\+Level\+Reconstruction (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{int}]{stencil\+SizeX,  }\item[{int}]{stencil\+SizeY }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_abb5b0d6cb7a1251423a8ca179ad8fa1d}\label{classMLWENO_1_1multiLevelReconstruction_abb5b0d6cb7a1251423a8ca179ad8fa1d}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!multiLevelReconstruction@{multiLevelReconstruction}}
+\index{multiLevelReconstruction@{multiLevelReconstruction}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{multiLevelReconstruction()}{multiLevelReconstruction()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily MLWENO\+::multi\+Level\+Reconstruction\+::multi\+Level\+Reconstruction (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{int $\ast$}]{stencil\+Size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_a07051d39d4a8a95686259f556b5b0a46}\label{classMLWENO_1_1multiLevelReconstruction_a07051d39d4a8a95686259f556b5b0a46}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!multiLevelReconstruction@{multiLevelReconstruction}}
+\index{multiLevelReconstruction@{multiLevelReconstruction}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{multiLevelReconstruction()}{multiLevelReconstruction()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily MLWENO\+::multi\+Level\+Reconstruction\+::multi\+Level\+Reconstruction (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{vector$<$ int $\ast$ $>$}]{stencil\+Sizes }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_a7b05c081d1dd6ee6d22ef5786f06faef}\label{classMLWENO_1_1multiLevelReconstruction_a7b05c081d1dd6ee6d22ef5786f06faef}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!````~multiLevelReconstruction@{$\sim$multiLevelReconstruction}}
+\index{````~multiLevelReconstruction@{$\sim$multiLevelReconstruction}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{$\sim$multiLevelReconstruction()}{~multiLevelReconstruction()}}
+{\footnotesize\ttfamily MLWENO\+::multi\+Level\+Reconstruction\+::$\sim$multi\+Level\+Reconstruction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_a43f5310567606a3d2f75f7f936629bc2}\label{classMLWENO_1_1multiLevelReconstruction_a43f5310567606a3d2f75f7f936629bc2}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!AddLevel@{AddLevel}}
+\index{AddLevel@{AddLevel}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{AddLevel()}{AddLevel()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily void MLWENO\+::multi\+Level\+Reconstruction\+::\+Add\+Level (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{int $\ast$}]{stencil\+Size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_ac8556b9b31f7c380bb23d9d7238e6e99}\label{classMLWENO_1_1multiLevelReconstruction_ac8556b9b31f7c380bb23d9d7238e6e99}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!AddLevel@{AddLevel}}
+\index{AddLevel@{AddLevel}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{AddLevel()}{AddLevel()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily void multi\+Level\+Reconstruction\+::\+Add\+Level (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{int}]{stencil\+SizeX,  }\item[{int}]{stencil\+SizeY }\end{DoxyParamCaption})}
+
+
+
+A destructor. 
+
+Add a single weno reconstruction level to the computation.
+
+! Construt multi-\/level weno reconstruction by specifying each single level Uniformally add reconstruction level. \mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_a3fe09b93f893bba1d98fc96f826b0197}\label{classMLWENO_1_1multiLevelReconstruction_a3fe09b93f893bba1d98fc96f826b0197}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!AddLevel@{AddLevel}}
+\index{AddLevel@{AddLevel}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{AddLevel()}{AddLevel()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily void MLWENO\+::multi\+Level\+Reconstruction\+::\+Add\+Level (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{vector$<$ int $\ast$ $>$}]{stencil\+Sizes }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_a86efde0be7470e44c9ac3748c7bf9898}\label{classMLWENO_1_1multiLevelReconstruction_a86efde0be7470e44c9ac3748c7bf9898}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!AddReconstMethod@{AddReconstMethod}}
+\index{AddReconstMethod@{AddReconstMethod}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{AddReconstMethod()}{AddReconstMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void MLWENO\+::multi\+Level\+Reconstruction\+::\+Add\+Reconst\+Method (\begin{DoxyParamCaption}\item[{vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$}]{brm }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Uniformally add reconstruction methods. 
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_a12cb1ac37f7dce8e370079013a1dc25b}\label{classMLWENO_1_1multiLevelReconstruction_a12cb1ac37f7dce8e370079013a1dc25b}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!AddReconstMethod@{AddReconstMethod}}
+\index{AddReconstMethod@{AddReconstMethod}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{AddReconstMethod()}{AddReconstMethod()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void MLWENO\+::multi\+Level\+Reconstruction\+::\+Add\+Reconst\+Method (\begin{DoxyParamCaption}\item[{vector$<$ vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ $>$}]{brms }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_adb1265bfb32f082760cb6bb514f5d077}\label{classMLWENO_1_1multiLevelReconstruction_adb1265bfb32f082760cb6bb514f5d077}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!Clear@{Clear}}
+\index{Clear@{Clear}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{Clear()}{Clear()}}
+{\footnotesize\ttfamily void multi\+Level\+Reconstruction\+::\+Clear (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_aae16556d1618926f4c7d0eaf26cf7266}\label{classMLWENO_1_1multiLevelReconstruction_aae16556d1618926f4c7d0eaf26cf7266}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!GetInfo@{GetInfo}}
+\index{GetInfo@{GetInfo}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{GetInfo()}{GetInfo()}}
+{\footnotesize\ttfamily void multi\+Level\+Reconstruction\+::\+Get\+Info (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Routines used to check results and verification. 
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_afe529c8508638beb32672ae2ed957a6d}\label{classMLWENO_1_1multiLevelReconstruction_afe529c8508638beb32672ae2ed957a6d}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!PrintNonLinearWgts@{PrintNonLinearWgts}}
+\index{PrintNonLinearWgts@{PrintNonLinearWgts}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{PrintNonLinearWgts()}{PrintNonLinearWgts()}}
+{\footnotesize\ttfamily void multi\+Level\+Reconstruction\+::\+Print\+Non\+Linear\+Wgts (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_ab5aea8004802275c9c207f5771595fe7}\label{classMLWENO_1_1multiLevelReconstruction_ab5aea8004802275c9c207f5771595fe7}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!PrintSmoothnessIndicator@{PrintSmoothnessIndicator}}
+\index{PrintSmoothnessIndicator@{PrintSmoothnessIndicator}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{PrintSmoothnessIndicator()}{PrintSmoothnessIndicator()}}
+{\footnotesize\ttfamily void multi\+Level\+Reconstruction\+::\+Print\+Smoothness\+Indicator (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_aef3fc19bdccba720c897dcf725fabf8e}\label{classMLWENO_1_1multiLevelReconstruction_aef3fc19bdccba720c897dcf725fabf8e}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!UpdateNonLinearWgts@{UpdateNonLinearWgts}}
+\index{UpdateNonLinearWgts@{UpdateNonLinearWgts}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{UpdateNonLinearWgts()}{UpdateNonLinearWgts()}}
+{\footnotesize\ttfamily void multi\+Level\+Reconstruction\+::\+Update\+Non\+Linear\+Wgts (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi }\end{DoxyParamCaption})}
+
+
+
+Two ways of updateing non linear weights with updated smoothness indicators. 
+
+\mbox{\Hypertarget{classMLWENO_1_1multiLevelReconstruction_ab10ed466f7a049b358f349841f1ca89f}\label{classMLWENO_1_1multiLevelReconstruction_ab10ed466f7a049b358f349841f1ca89f}} 
+\index{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!UpdateTwoStageNonLinearWgts@{UpdateTwoStageNonLinearWgts}}
+\index{UpdateTwoStageNonLinearWgts@{UpdateTwoStageNonLinearWgts}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{UpdateTwoStageNonLinearWgts()}{UpdateTwoStageNonLinearWgts()}}
+{\footnotesize\ttfamily void multi\+Level\+Reconstruction\+::\+Update\+Two\+Stage\+Non\+Linear\+Wgts (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi }\end{DoxyParamCaption})}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{mlreconstruction_8h}{mlreconstruction.\+h}}\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{mlreconstruction_8cpp}{mlreconstruction.\+cpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,236 @@
+\hypertarget{classMLWENO_1_1stencil}{}\doxysection{MLWENO\+::stencil\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\label{classMLWENO_1_1stencil}\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+
+
+{\ttfamily \#include $<$stencil.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classMLWENO_1_1stencil_a19c1318b96421889146c56f3485f2a22}{stencil}} ()
+\item 
+\mbox{\hyperlink{classMLWENO_1_1stencil_a040fbc5fefa846c8da303b76a8dc9172}{stencil}} (size\+\_\+t I)
+\item 
+\mbox{\hyperlink{classMLWENO_1_1stencil_a8e271b611d2b1d123aad2f736d23103d}{stencil}} (size\+\_\+t I, size\+\_\+t J)
+\item 
+\mbox{\hyperlink{classMLWENO_1_1stencil_a023644f195f800027c59947091a9f2b9}{stencil}} (size\+\_\+t I, size\+\_\+t J, size\+\_\+t K)
+\item 
+\mbox{\hyperlink{classMLWENO_1_1stencil_ae39644842e5e91acd8fa2e3086f8c98c}{$\sim$stencil}} ()
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencil_afda0108b0d52ca2d5d824f4b720555c4}{Set\+Stencil}} (size\+\_\+t I)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencil_a94939fd14ea8315377063e92550072bd}{Set\+Stencil}} (size\+\_\+t I, size\+\_\+t J)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencil_a1b9780c28d48e4ce6a9ffaaa41ae9c9a}{Set\+Stencil}} (size\+\_\+t I, size\+\_\+t J, size\+\_\+t K)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencil_ac8fc8443c4ba3bc7541df912602306c7}{Create\+Stencil}} ()
+\item 
+const int \mbox{\hyperlink{classMLWENO_1_1stencil_af5fbacfb1b981f8c39aa109a726b6134}{get\+Size}} () const
+\item 
+const int \mbox{\hyperlink{classMLWENO_1_1stencil_ac2fec191fe9dc3c52a55c42ae6ab2fc1}{getI}} () const
+\item 
+const int \mbox{\hyperlink{classMLWENO_1_1stencil_a8652d7eeb4132cd0dcb1c42606d565d0}{getJ}} () const
+\item 
+const int \mbox{\hyperlink{classMLWENO_1_1stencil_a8f177b9f966a82287792d1d6866aaf9b}{getK}} () const
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencil_a080c4f35ab9a8c33175e6840e1341dad}{setI}} (size\+\_\+t I) const
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencil_af7f8dc81427faf4c957d8412924324ce}{setJ}} (size\+\_\+t J) const
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencil_a6f993479a3880cf6aa2da35b5375b348}{setK}} (size\+\_\+t K) const
+\item 
+T \& \mbox{\hyperlink{classMLWENO_1_1stencil_a2f87323e56460203d0be8d680ca10e8d}{operator()}} (size\+\_\+t i)
+\item 
+T \& \mbox{\hyperlink{classMLWENO_1_1stencil_a7988a0861f1d1ce522e5a02e7a1b9188}{operator()}} (size\+\_\+t i, size\+\_\+t j)
+\item 
+T \& \mbox{\hyperlink{classMLWENO_1_1stencil_a61fe55b2f3daf5a009e997ce5adccf71}{operator()}} (size\+\_\+t i, size\+\_\+t j, size\+\_\+t k)
+\item 
+T \mbox{\hyperlink{classMLWENO_1_1stencil_a2285c8cabd153126faa21e6253988aae}{operator()}} (size\+\_\+t i) const
+\item 
+T \mbox{\hyperlink{classMLWENO_1_1stencil_a62b78e4c84fbdbf7e3e90b9f072e512e}{operator()}} (size\+\_\+t i, size\+\_\+t j) const
+\item 
+T \mbox{\hyperlink{classMLWENO_1_1stencil_a3f9e3fac37c7b0b908c5d729989bc670}{operator()}} (size\+\_\+t i, size\+\_\+t j, size\+\_\+t k) const
+\item 
+const vector$<$ T $>$ \& \mbox{\hyperlink{classMLWENO_1_1stencil_a1226eedca1550864fc252cd4595424a8}{Get\+Stencil}} () const
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencil_a6c36f96fb5aeca4586fe75a9dc3bebad}{clear\+Ptr}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a19c1318b96421889146c56f3485f2a22}\label{classMLWENO_1_1stencil_a19c1318b96421889146c56f3485f2a22}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!stencil@{stencil}}
+\index{stencil@{stencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{stencil()}{stencil()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+\mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::stencil (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a040fbc5fefa846c8da303b76a8dc9172}\label{classMLWENO_1_1stencil_a040fbc5fefa846c8da303b76a8dc9172}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!stencil@{stencil}}
+\index{stencil@{stencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{stencil()}{stencil()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+\mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::stencil (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{I }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a8e271b611d2b1d123aad2f736d23103d}\label{classMLWENO_1_1stencil_a8e271b611d2b1d123aad2f736d23103d}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!stencil@{stencil}}
+\index{stencil@{stencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{stencil()}{stencil()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+\mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::stencil (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{I,  }\item[{size\+\_\+t}]{J }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a023644f195f800027c59947091a9f2b9}\label{classMLWENO_1_1stencil_a023644f195f800027c59947091a9f2b9}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!stencil@{stencil}}
+\index{stencil@{stencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{stencil()}{stencil()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+\mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::stencil (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{I,  }\item[{size\+\_\+t}]{J,  }\item[{size\+\_\+t}]{K }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_ae39644842e5e91acd8fa2e3086f8c98c}\label{classMLWENO_1_1stencil_ae39644842e5e91acd8fa2e3086f8c98c}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!````~stencil@{$\sim$stencil}}
+\index{````~stencil@{$\sim$stencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{$\sim$stencil()}{~stencil()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+\mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::$\sim$\mbox{\hyperlink{classMLWENO_1_1stencil}{stencil}} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a6c36f96fb5aeca4586fe75a9dc3bebad}\label{classMLWENO_1_1stencil_a6c36f96fb5aeca4586fe75a9dc3bebad}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!clearPtr@{clearPtr}}
+\index{clearPtr@{clearPtr}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{clearPtr()}{clearPtr()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::clear\+Ptr (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_ac8fc8443c4ba3bc7541df912602306c7}\label{classMLWENO_1_1stencil_ac8fc8443c4ba3bc7541df912602306c7}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!CreateStencil@{CreateStencil}}
+\index{CreateStencil@{CreateStencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{CreateStencil()}{CreateStencil()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::\+Create\+Stencil (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_ac2fec191fe9dc3c52a55c42ae6ab2fc1}\label{classMLWENO_1_1stencil_ac2fec191fe9dc3c52a55c42ae6ab2fc1}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!getI@{getI}}
+\index{getI@{getI}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getI()}{getI()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+const int \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::getI (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a8652d7eeb4132cd0dcb1c42606d565d0}\label{classMLWENO_1_1stencil_a8652d7eeb4132cd0dcb1c42606d565d0}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!getJ@{getJ}}
+\index{getJ@{getJ}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getJ()}{getJ()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+const int \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::getJ (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a8f177b9f966a82287792d1d6866aaf9b}\label{classMLWENO_1_1stencil_a8f177b9f966a82287792d1d6866aaf9b}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!getK@{getK}}
+\index{getK@{getK}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getK()}{getK()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+const int \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::getK (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_af5fbacfb1b981f8c39aa109a726b6134}\label{classMLWENO_1_1stencil_af5fbacfb1b981f8c39aa109a726b6134}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!getSize@{getSize}}
+\index{getSize@{getSize}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getSize()}{getSize()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+const int \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::get\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a1226eedca1550864fc252cd4595424a8}\label{classMLWENO_1_1stencil_a1226eedca1550864fc252cd4595424a8}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!GetStencil@{GetStencil}}
+\index{GetStencil@{GetStencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{GetStencil()}{GetStencil()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+const vector$<$ T $>$ \& \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::\+Get\+Stencil (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a2f87323e56460203d0be8d680ca10e8d}\label{classMLWENO_1_1stencil_a2f87323e56460203d0be8d680ca10e8d}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}}
+\index{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [1/6]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+T \& \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::operator() (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a2285c8cabd153126faa21e6253988aae}\label{classMLWENO_1_1stencil_a2285c8cabd153126faa21e6253988aae}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}}
+\index{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [2/6]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+T \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::operator() (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{i }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a7988a0861f1d1ce522e5a02e7a1b9188}\label{classMLWENO_1_1stencil_a7988a0861f1d1ce522e5a02e7a1b9188}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}}
+\index{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [3/6]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+T \& \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::operator() (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{i,  }\item[{size\+\_\+t}]{j }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a62b78e4c84fbdbf7e3e90b9f072e512e}\label{classMLWENO_1_1stencil_a62b78e4c84fbdbf7e3e90b9f072e512e}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}}
+\index{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [4/6]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+T \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::operator() (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{i,  }\item[{size\+\_\+t}]{j }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a61fe55b2f3daf5a009e997ce5adccf71}\label{classMLWENO_1_1stencil_a61fe55b2f3daf5a009e997ce5adccf71}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}}
+\index{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [5/6]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+T \& \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::operator() (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{i,  }\item[{size\+\_\+t}]{j,  }\item[{size\+\_\+t}]{k }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a3f9e3fac37c7b0b908c5d729989bc670}\label{classMLWENO_1_1stencil_a3f9e3fac37c7b0b908c5d729989bc670}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}}
+\index{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [6/6]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+T \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::operator() (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{i,  }\item[{size\+\_\+t}]{j,  }\item[{size\+\_\+t}]{k }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a080c4f35ab9a8c33175e6840e1341dad}\label{classMLWENO_1_1stencil_a080c4f35ab9a8c33175e6840e1341dad}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!setI@{setI}}
+\index{setI@{setI}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{setI()}{setI()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::setI (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{I }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_af7f8dc81427faf4c957d8412924324ce}\label{classMLWENO_1_1stencil_af7f8dc81427faf4c957d8412924324ce}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!setJ@{setJ}}
+\index{setJ@{setJ}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{setJ()}{setJ()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::setJ (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{J }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a6f993479a3880cf6aa2da35b5375b348}\label{classMLWENO_1_1stencil_a6f993479a3880cf6aa2da35b5375b348}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!setK@{setK}}
+\index{setK@{setK}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{setK()}{setK()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::setK (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{K }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_afda0108b0d52ca2d5d824f4b720555c4}\label{classMLWENO_1_1stencil_afda0108b0d52ca2d5d824f4b720555c4}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!SetStencil@{SetStencil}}
+\index{SetStencil@{SetStencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SetStencil()}{SetStencil()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::\+Set\+Stencil (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{I }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a94939fd14ea8315377063e92550072bd}\label{classMLWENO_1_1stencil_a94939fd14ea8315377063e92550072bd}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!SetStencil@{SetStencil}}
+\index{SetStencil@{SetStencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SetStencil()}{SetStencil()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::\+Set\+Stencil (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{I,  }\item[{size\+\_\+t}]{J }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencil_a1b9780c28d48e4ce6a9ffaaa41ae9c9a}\label{classMLWENO_1_1stencil_a1b9780c28d48e4ce6a9ffaaa41ae9c9a}} 
+\index{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!SetStencil@{SetStencil}}
+\index{SetStencil@{SetStencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{SetStencil()}{SetStencil()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \mbox{\hyperlink{classMLWENO_1_1stencil}{MLWENO\+::stencil}}$<$ T $>$\+::\+Set\+Stencil (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{I,  }\item[{size\+\_\+t}]{J,  }\item[{size\+\_\+t}]{K }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{stencil_8h}{stencil.\+h}}\end{DoxyCompactItemize}

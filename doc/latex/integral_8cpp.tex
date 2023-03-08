@@ -1,0 +1,139 @@
+\hypertarget{integral_8cpp}{}\doxysection{/home/renpo/\+Research/\+Mantle\+Solver/src/integral.cpp File Reference}
+\label{integral_8cpp}\index{/home/renpo/Research/MantleSolver/src/integral.cpp@{/home/renpo/Research/MantleSolver/src/integral.cpp}}
+{\ttfamily \#include \char`\"{}../include/integral.\+h\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+valarray$<$ double $>$ \mbox{\hyperlink{integral_8cpp_a1a4d230e33c5bb71887d9b9e228b6f3a}{Gauss\+Map\+Points\+Face}} (valarray$<$ double $>$ ref, const vector$<$ valarray$<$ double $>$ $>$ \&corner)
+\item 
+valarray$<$ double $>$ \mbox{\hyperlink{integral_8cpp_aeaa509a6f30cd87e87071a9fe08aa7df}{Gauss\+Map\+Points\+Edge}} (valarray$<$ double $>$ ref, const vector$<$ valarray$<$ double $>$ $>$ \&corner)
+\item 
+double \mbox{\hyperlink{integral_8cpp_a055165ecb6db89dba5ad4e8913485534}{Gauss\+Jacobian}} (valarray$<$ double $>$ ref, const vector$<$ valarray$<$ double $>$ $>$ \&corner)
+\item 
+valarray$<$ double $>$ \mbox{\hyperlink{integral_8cpp_ac5200949424cc22363a38868e930a57d}{Unit\+Normal}} (const vector$<$ valarray$<$ double $>$ $>$ \&corner, double len)
+\item 
+double \mbox{\hyperlink{integral_8cpp_ace8da051b42625d43432e651f3a2cac2}{length}} (const vector$<$ valarray$<$ double $>$ $>$ \&corner)
+\item 
+double \mbox{\hyperlink{integral_8cpp_ae98478cc0d69ae3382c2aa5f30473270}{Num\+Integral\+Face}} (const vector$<$ valarray$<$ double $>$ $>$ \&corner, const vector$<$ double $>$ \&param, const valarray$<$ double $>$ \&center, const double \&h, double($\ast$func)(valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param))
+\item 
+double \mbox{\hyperlink{integral_8cpp_a6bf2911fb31fb655cc70dccad3dc120f}{Num\+Integral\+Face}} (const vector$<$ valarray$<$ double $>$ $>$ \&corner, const vector$<$ int $>$ \&param, const valarray$<$ double $>$ \&center, const double \&h, double($\ast$func)(valarray$<$ double $>$ \&point, const vector$<$ int $>$ \&param))
+\item 
+double \mbox{\hyperlink{integral_8cpp_a1ab7ed5058ac5b7f2021d3d8e2311629}{Num\+Integral\+Edge}} (const vector$<$ valarray$<$ double $>$ $>$ \&corner, const vector$<$ int $>$ \&param, double($\ast$funcX)(valarray$<$ double $>$ \&point, const vector$<$ int $>$ \&param), double($\ast$funcY)(valarray$<$ double $>$ \&point, const vector$<$ int $>$ \&param))
+\item 
+double \mbox{\hyperlink{integral_8cpp_a4b2a536b0fb3bcf1f145b258bd441fab}{Num\+Integral\+Edge}} (const vector$<$ valarray$<$ double $>$ $>$ \&corner, const vector$<$ double $>$ \&param, double($\ast$funcX)(valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param), double($\ast$funcY)(valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param))
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+valarray$<$ double $>$ \mbox{\hyperlink{integral_8cpp_adfa530f3f70419c8d263b3f4da22d740}{Gauss\+Weights\+Edge}} \{5.\+0/9.\+0,8.\+0/9.\+0,5.\+0/9.\+0\}
+\item 
+valarray$<$ double $>$ \mbox{\hyperlink{integral_8cpp_a5257ef68d6b25f1ffbe37a997ddd5059}{Gauss\+Points\+Edge}} \{-\/sqrt(3.\+0/5.\+0),0.\+0,sqrt(3.\+0/5.\+0)\}
+\item 
+valarray$<$ double $>$ \mbox{\hyperlink{integral_8cpp_a5d6d1fa973f15e0848b0ecdf695a5d76}{Gauss\+Weights\+Face}}
+\item 
+vector$<$ valarray$<$ double $>$ $>$ \mbox{\hyperlink{integral_8cpp_a784c61c228e2bfb133b2971b37650816}{Gauss\+Points\+Face}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{integral_8cpp_a055165ecb6db89dba5ad4e8913485534}\label{integral_8cpp_a055165ecb6db89dba5ad4e8913485534}} 
+\index{integral.cpp@{integral.cpp}!GaussJacobian@{GaussJacobian}}
+\index{GaussJacobian@{GaussJacobian}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{GaussJacobian()}{GaussJacobian()}}
+{\footnotesize\ttfamily double Gauss\+Jacobian (\begin{DoxyParamCaption}\item[{valarray$<$ double $>$}]{ref,  }\item[{const vector$<$ valarray$<$ double $>$ $>$ \&}]{corner }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{integral_8cpp_aeaa509a6f30cd87e87071a9fe08aa7df}\label{integral_8cpp_aeaa509a6f30cd87e87071a9fe08aa7df}} 
+\index{integral.cpp@{integral.cpp}!GaussMapPointsEdge@{GaussMapPointsEdge}}
+\index{GaussMapPointsEdge@{GaussMapPointsEdge}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{GaussMapPointsEdge()}{GaussMapPointsEdge()}}
+{\footnotesize\ttfamily valarray$<$ double $>$ Gauss\+Map\+Points\+Edge (\begin{DoxyParamCaption}\item[{valarray$<$ double $>$}]{ref,  }\item[{const vector$<$ valarray$<$ double $>$ $>$ \&}]{corner }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{integral_8cpp_a1a4d230e33c5bb71887d9b9e228b6f3a}\label{integral_8cpp_a1a4d230e33c5bb71887d9b9e228b6f3a}} 
+\index{integral.cpp@{integral.cpp}!GaussMapPointsFace@{GaussMapPointsFace}}
+\index{GaussMapPointsFace@{GaussMapPointsFace}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{GaussMapPointsFace()}{GaussMapPointsFace()}}
+{\footnotesize\ttfamily valarray$<$ double $>$ Gauss\+Map\+Points\+Face (\begin{DoxyParamCaption}\item[{valarray$<$ double $>$}]{ref,  }\item[{const vector$<$ valarray$<$ double $>$ $>$ \&}]{corner }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{integral_8cpp_ace8da051b42625d43432e651f3a2cac2}\label{integral_8cpp_ace8da051b42625d43432e651f3a2cac2}} 
+\index{integral.cpp@{integral.cpp}!length@{length}}
+\index{length@{length}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{length()}{length()}}
+{\footnotesize\ttfamily double length (\begin{DoxyParamCaption}\item[{const vector$<$ valarray$<$ double $>$ $>$ \&}]{corner }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{integral_8cpp_a4b2a536b0fb3bcf1f145b258bd441fab}\label{integral_8cpp_a4b2a536b0fb3bcf1f145b258bd441fab}} 
+\index{integral.cpp@{integral.cpp}!NumIntegralEdge@{NumIntegralEdge}}
+\index{NumIntegralEdge@{NumIntegralEdge}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{NumIntegralEdge()}{NumIntegralEdge()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double Num\+Integral\+Edge (\begin{DoxyParamCaption}\item[{const vector$<$ valarray$<$ double $>$ $>$ \&}]{corner,  }\item[{const vector$<$ double $>$ \&}]{param,  }\item[{double($\ast$)(valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param)}]{funcX,  }\item[{double($\ast$)(valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param)}]{funcY }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{integral_8cpp_a1ab7ed5058ac5b7f2021d3d8e2311629}\label{integral_8cpp_a1ab7ed5058ac5b7f2021d3d8e2311629}} 
+\index{integral.cpp@{integral.cpp}!NumIntegralEdge@{NumIntegralEdge}}
+\index{NumIntegralEdge@{NumIntegralEdge}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{NumIntegralEdge()}{NumIntegralEdge()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double Num\+Integral\+Edge (\begin{DoxyParamCaption}\item[{const vector$<$ valarray$<$ double $>$ $>$ \&}]{corner,  }\item[{const vector$<$ int $>$ \&}]{param,  }\item[{double($\ast$)(valarray$<$ double $>$ \&point, const vector$<$ int $>$ \&param)}]{funcX,  }\item[{double($\ast$)(valarray$<$ double $>$ \&point, const vector$<$ int $>$ \&param)}]{funcY }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{integral_8cpp_ae98478cc0d69ae3382c2aa5f30473270}\label{integral_8cpp_ae98478cc0d69ae3382c2aa5f30473270}} 
+\index{integral.cpp@{integral.cpp}!NumIntegralFace@{NumIntegralFace}}
+\index{NumIntegralFace@{NumIntegralFace}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{NumIntegralFace()}{NumIntegralFace()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double Num\+Integral\+Face (\begin{DoxyParamCaption}\item[{const vector$<$ valarray$<$ double $>$ $>$ \&}]{corner,  }\item[{const vector$<$ double $>$ \&}]{param,  }\item[{const valarray$<$ double $>$ \&}]{center,  }\item[{const double \&}]{h,  }\item[{double($\ast$)(valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param)}]{func }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{integral_8cpp_a6bf2911fb31fb655cc70dccad3dc120f}\label{integral_8cpp_a6bf2911fb31fb655cc70dccad3dc120f}} 
+\index{integral.cpp@{integral.cpp}!NumIntegralFace@{NumIntegralFace}}
+\index{NumIntegralFace@{NumIntegralFace}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{NumIntegralFace()}{NumIntegralFace()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double Num\+Integral\+Face (\begin{DoxyParamCaption}\item[{const vector$<$ valarray$<$ double $>$ $>$ \&}]{corner,  }\item[{const vector$<$ int $>$ \&}]{param,  }\item[{const valarray$<$ double $>$ \&}]{center,  }\item[{const double \&}]{h,  }\item[{double($\ast$)(valarray$<$ double $>$ \&point, const vector$<$ int $>$ \&param)}]{func }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{integral_8cpp_ac5200949424cc22363a38868e930a57d}\label{integral_8cpp_ac5200949424cc22363a38868e930a57d}} 
+\index{integral.cpp@{integral.cpp}!UnitNormal@{UnitNormal}}
+\index{UnitNormal@{UnitNormal}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{UnitNormal()}{UnitNormal()}}
+{\footnotesize\ttfamily valarray$<$ double $>$ Unit\+Normal (\begin{DoxyParamCaption}\item[{const vector$<$ valarray$<$ double $>$ $>$ \&}]{corner,  }\item[{double}]{len }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{integral_8cpp_a5257ef68d6b25f1ffbe37a997ddd5059}\label{integral_8cpp_a5257ef68d6b25f1ffbe37a997ddd5059}} 
+\index{integral.cpp@{integral.cpp}!GaussPointsEdge@{GaussPointsEdge}}
+\index{GaussPointsEdge@{GaussPointsEdge}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{GaussPointsEdge}{GaussPointsEdge}}
+{\footnotesize\ttfamily valarray$<$double$>$ Gauss\+Points\+Edge \{-\/sqrt(3.\+0/5.\+0),0.\+0,sqrt(3.\+0/5.\+0)\}}
+
+\mbox{\Hypertarget{integral_8cpp_a784c61c228e2bfb133b2971b37650816}\label{integral_8cpp_a784c61c228e2bfb133b2971b37650816}} 
+\index{integral.cpp@{integral.cpp}!GaussPointsFace@{GaussPointsFace}}
+\index{GaussPointsFace@{GaussPointsFace}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{GaussPointsFace}{GaussPointsFace}}
+{\footnotesize\ttfamily vector$<$ valarray$<$double$>$ $>$ Gauss\+Points\+Face}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{\ \{-\/sqrt(3.0/5.0),\ -\/sqrt(3.0/5.0)\},\ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.0\ \ \ \ \ \ \ \ \ \ \ ,\ -\/sqrt(3.0/5.0)\},\ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{sqrt(3.0/5.0)\ ,\ -\/sqrt(3.0/5.0)\},\ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{-\/sqrt(3.0/5.0),\ 0.0\},\ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.0\ \ \ \ \ \ \ \ \ \ \ ,\ 0.0\},\ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{sqrt(3.0/5.0)\ ,\ 0.0\},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{-\/sqrt(3.0/5.0),\ sqrt(3.0/5.0)\},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{0.0\ \ \ \ \ \ \ \ \ \ \ ,\ sqrt(3.0/5.0)\},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{sqrt(3.0/5.0)\ ,\ sqrt(3.0/5.0)\}\ \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{integral_8cpp_adfa530f3f70419c8d263b3f4da22d740}\label{integral_8cpp_adfa530f3f70419c8d263b3f4da22d740}} 
+\index{integral.cpp@{integral.cpp}!GaussWeightsEdge@{GaussWeightsEdge}}
+\index{GaussWeightsEdge@{GaussWeightsEdge}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{GaussWeightsEdge}{GaussWeightsEdge}}
+{\footnotesize\ttfamily valarray$<$double$>$ Gauss\+Weights\+Edge \{5.\+0/9.\+0,8.\+0/9.\+0,5.\+0/9.\+0\}}
+
+\mbox{\Hypertarget{integral_8cpp_a5d6d1fa973f15e0848b0ecdf695a5d76}\label{integral_8cpp_a5d6d1fa973f15e0848b0ecdf695a5d76}} 
+\index{integral.cpp@{integral.cpp}!GaussWeightsFace@{GaussWeightsFace}}
+\index{GaussWeightsFace@{GaussWeightsFace}!integral.cpp@{integral.cpp}}
+\doxysubsubsection{\texorpdfstring{GaussWeightsFace}{GaussWeightsFace}}
+{\footnotesize\ttfamily valarray$<$double$>$ Gauss\+Weights\+Face}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{25.0/81.0,40.0/81.0,25/81.0,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 40.0/81.0,64.0/81.0,40/81.0,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 25.0/81.0,40.0/81.0,25/81.0\}}
+
+\end{DoxyCode}

@@ -1,0 +1,165 @@
+\hypertarget{classMLWENO_1_1basisPolynomial}{}\doxysection{MLWENO\+::basis\+Polynomial Class Reference}
+\label{classMLWENO_1_1basisPolynomial}\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+
+
+{\ttfamily \#include $<$polynomial.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a179f77bcdcfa2d61ca33953e783f3848}{basis\+Polynomial}} ()
+\item 
+\mbox{\hyperlink{classMLWENO_1_1basisPolynomial_aaed4ab556fa355befe212c2a8b4615c7}{basis\+Polynomial}} (const int max\+Degree\mbox{[}2\mbox{]})
+\item 
+\mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a977dbff01938b37923c7d5ca184ab7c5}{basis\+Polynomial}} (const int max\+Degree\mbox{[}2\mbox{]}, double $\ast$coef)
+\item 
+\mbox{\hyperlink{classMLWENO_1_1basisPolynomial_afce848d04755900733239c0c6c35d04b}{$\sim$basis\+Polynomial}} ()
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a4824245693d40a3def5de2d8fd91a9f1}{set\+Max\+Degree}} (const int max\+Degree\mbox{[}2\mbox{]})
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a5d7427e871e89138e2ee102defc5011d}{set\+Coef}} (double $\ast$coef)
+\item 
+double $\ast$ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_ad856ca863fe17f511dd0d50bf59d9225}{get\+Coef}} () const
+\item 
+int \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a787c9e5f9f27aa59c6acef752bfe7ba0}{get\+Size}} () const
+\item 
+int \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_af35cd1069fd6fa68c933fec534f93ab5}{getI}} () const
+\item 
+int \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a7c934f9775c742aa518c08b2435e712e}{getJ}} () const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a26fe81c3cc483637fbb5678f290e9655}{eval}} (double x, double y) const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a68a400a564cc81c47ac290b15b1114ac}{eval}} (\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} P) const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_aeeac4d07911dbf27c1cfb17bff1e9700}{operator()}} (double x, double y) const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_adc1682a3a703aa14ec608639acc93b36}{operator()}} (\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} P) const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a2b4fcd70361d641f985f447f0343d052}{der}} (int derX, int derY, double x, double y) const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a3930f2d4b847b6db19d0221248ee43f4}{der}} (int derX, int derY, \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} P) const
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a93d885308aa7258d8822696eccf71129}{print\+Coef}} () const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a34272f291a2c53ceeb7259e7bef6fbef}{get\+Coef}} (int i) const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a179f77bcdcfa2d61ca33953e783f3848}\label{classMLWENO_1_1basisPolynomial_a179f77bcdcfa2d61ca33953e783f3848}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!basisPolynomial@{basisPolynomial}}
+\index{basisPolynomial@{basisPolynomial}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{basisPolynomial()}{basisPolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily MLWENO\+::basis\+Polynomial\+::basis\+Polynomial (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_aaed4ab556fa355befe212c2a8b4615c7}\label{classMLWENO_1_1basisPolynomial_aaed4ab556fa355befe212c2a8b4615c7}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!basisPolynomial@{basisPolynomial}}
+\index{basisPolynomial@{basisPolynomial}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{basisPolynomial()}{basisPolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily basis\+Polynomial\+::basis\+Polynomial (\begin{DoxyParamCaption}\item[{const int}]{max\+Degree\mbox{[}2\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a977dbff01938b37923c7d5ca184ab7c5}\label{classMLWENO_1_1basisPolynomial_a977dbff01938b37923c7d5ca184ab7c5}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!basisPolynomial@{basisPolynomial}}
+\index{basisPolynomial@{basisPolynomial}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{basisPolynomial()}{basisPolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily basis\+Polynomial\+::basis\+Polynomial (\begin{DoxyParamCaption}\item[{const int}]{max\+Degree\mbox{[}2\mbox{]},  }\item[{double $\ast$}]{coef }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_afce848d04755900733239c0c6c35d04b}\label{classMLWENO_1_1basisPolynomial_afce848d04755900733239c0c6c35d04b}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!````~basisPolynomial@{$\sim$basisPolynomial}}
+\index{````~basisPolynomial@{$\sim$basisPolynomial}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{$\sim$basisPolynomial()}{~basisPolynomial()}}
+{\footnotesize\ttfamily basis\+Polynomial\+::$\sim$basis\+Polynomial (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a2b4fcd70361d641f985f447f0343d052}\label{classMLWENO_1_1basisPolynomial_a2b4fcd70361d641f985f447f0343d052}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!der@{der}}
+\index{der@{der}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{der()}{der()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double MLWENO\+::basis\+Polynomial\+::der (\begin{DoxyParamCaption}\item[{int}]{derX,  }\item[{int}]{derY,  }\item[{double}]{x,  }\item[{double}]{y }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a3930f2d4b847b6db19d0221248ee43f4}\label{classMLWENO_1_1basisPolynomial_a3930f2d4b847b6db19d0221248ee43f4}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!der@{der}}
+\index{der@{der}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{der()}{der()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double MLWENO\+::basis\+Polynomial\+::der (\begin{DoxyParamCaption}\item[{int}]{derX,  }\item[{int}]{derY,  }\item[{\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a26fe81c3cc483637fbb5678f290e9655}\label{classMLWENO_1_1basisPolynomial_a26fe81c3cc483637fbb5678f290e9655}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!eval@{eval}}
+\index{eval@{eval}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double basis\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a68a400a564cc81c47ac290b15b1114ac}\label{classMLWENO_1_1basisPolynomial_a68a400a564cc81c47ac290b15b1114ac}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!eval@{eval}}
+\index{eval@{eval}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double MLWENO\+::basis\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_ad856ca863fe17f511dd0d50bf59d9225}\label{classMLWENO_1_1basisPolynomial_ad856ca863fe17f511dd0d50bf59d9225}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!getCoef@{getCoef}}
+\index{getCoef@{getCoef}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{getCoef()}{getCoef()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double $\ast$ basis\+Polynomial\+::get\+Coef (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a34272f291a2c53ceeb7259e7bef6fbef}\label{classMLWENO_1_1basisPolynomial_a34272f291a2c53ceeb7259e7bef6fbef}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!getCoef@{getCoef}}
+\index{getCoef@{getCoef}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{getCoef()}{getCoef()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double basis\+Polynomial\+::get\+Coef (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_af35cd1069fd6fa68c933fec534f93ab5}\label{classMLWENO_1_1basisPolynomial_af35cd1069fd6fa68c933fec534f93ab5}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!getI@{getI}}
+\index{getI@{getI}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{getI()}{getI()}}
+{\footnotesize\ttfamily int MLWENO\+::basis\+Polynomial\+::getI (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a7c934f9775c742aa518c08b2435e712e}\label{classMLWENO_1_1basisPolynomial_a7c934f9775c742aa518c08b2435e712e}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!getJ@{getJ}}
+\index{getJ@{getJ}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{getJ()}{getJ()}}
+{\footnotesize\ttfamily int MLWENO\+::basis\+Polynomial\+::getJ (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a787c9e5f9f27aa59c6acef752bfe7ba0}\label{classMLWENO_1_1basisPolynomial_a787c9e5f9f27aa59c6acef752bfe7ba0}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!getSize@{getSize}}
+\index{getSize@{getSize}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{getSize()}{getSize()}}
+{\footnotesize\ttfamily int MLWENO\+::basis\+Polynomial\+::get\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_aeeac4d07911dbf27c1cfb17bff1e9700}\label{classMLWENO_1_1basisPolynomial_aeeac4d07911dbf27c1cfb17bff1e9700}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!operator()@{operator()}}
+\index{operator()@{operator()}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double MLWENO\+::basis\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_adc1682a3a703aa14ec608639acc93b36}\label{classMLWENO_1_1basisPolynomial_adc1682a3a703aa14ec608639acc93b36}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!operator()@{operator()}}
+\index{operator()@{operator()}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double MLWENO\+::basis\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a93d885308aa7258d8822696eccf71129}\label{classMLWENO_1_1basisPolynomial_a93d885308aa7258d8822696eccf71129}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!printCoef@{printCoef}}
+\index{printCoef@{printCoef}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{printCoef()}{printCoef()}}
+{\footnotesize\ttfamily void basis\+Polynomial\+::print\+Coef (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a5d7427e871e89138e2ee102defc5011d}\label{classMLWENO_1_1basisPolynomial_a5d7427e871e89138e2ee102defc5011d}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!setCoef@{setCoef}}
+\index{setCoef@{setCoef}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{setCoef()}{setCoef()}}
+{\footnotesize\ttfamily void basis\+Polynomial\+::set\+Coef (\begin{DoxyParamCaption}\item[{double $\ast$}]{coef }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1basisPolynomial_a4824245693d40a3def5de2d8fd91a9f1}\label{classMLWENO_1_1basisPolynomial_a4824245693d40a3def5de2d8fd91a9f1}} 
+\index{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!setMaxDegree@{setMaxDegree}}
+\index{setMaxDegree@{setMaxDegree}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}}
+\doxysubsubsection{\texorpdfstring{setMaxDegree()}{setMaxDegree()}}
+{\footnotesize\ttfamily void basis\+Polynomial\+::set\+Max\+Degree (\begin{DoxyParamCaption}\item[{const int}]{max\+Degree\mbox{[}2\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{polynomial_8h}{polynomial.\+h}}\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{polynomial_8cpp}{polynomial.\+cpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,327 @@
+\indexentry{MLWENO@{MLWENO}|hyperpage}{7}
+\indexentry{MLWENO@{MLWENO}!stencilType@{stencilType}|hyperpage}{7}
+\indexentry{stencilType@{stencilType}!MLWENO@{MLWENO}|hyperpage}{7}
+\indexentry{cellCentered@{cellCentered}!MLWENO@{MLWENO}|hyperpage}{8}
+\indexentry{MLWENO@{MLWENO}!cellCentered@{cellCentered}|hyperpage}{8}
+\indexentry{edgeCentered@{edgeCentered}!MLWENO@{MLWENO}|hyperpage}{8}
+\indexentry{MLWENO@{MLWENO}!edgeCentered@{edgeCentered}|hyperpage}{8}
+\indexentry{vertexCentered@{vertexCentered}!MLWENO@{MLWENO}|hyperpage}{8}
+\indexentry{MLWENO@{MLWENO}!vertexCentered@{vertexCentered}|hyperpage}{8}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{9}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!basisPolynomial@{basisPolynomial}|hyperpage}{9}
+\indexentry{basisPolynomial@{basisPolynomial}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{9}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!basisPolynomial@{basisPolynomial}|hyperpage}{9}
+\indexentry{basisPolynomial@{basisPolynomial}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{9}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!basisPolynomial@{basisPolynomial}|hyperpage}{10}
+\indexentry{basisPolynomial@{basisPolynomial}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{10}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!````~basisPolynomial@{$\sim$basisPolynomial}|hyperpage}{10}
+\indexentry{````~basisPolynomial@{$\sim$basisPolynomial}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{10}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!der@{der}|hyperpage}{10}
+\indexentry{der@{der}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{10}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!der@{der}|hyperpage}{10}
+\indexentry{der@{der}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{10}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!eval@{eval}|hyperpage}{10}
+\indexentry{eval@{eval}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{10}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!eval@{eval}|hyperpage}{10}
+\indexentry{eval@{eval}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{10}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!getCoef@{getCoef}|hyperpage}{11}
+\indexentry{getCoef@{getCoef}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{11}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!getCoef@{getCoef}|hyperpage}{11}
+\indexentry{getCoef@{getCoef}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{11}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!getI@{getI}|hyperpage}{11}
+\indexentry{getI@{getI}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{11}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!getJ@{getJ}|hyperpage}{11}
+\indexentry{getJ@{getJ}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{11}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!getSize@{getSize}|hyperpage}{11}
+\indexentry{getSize@{getSize}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{11}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!operator()@{operator()}|hyperpage}{11}
+\indexentry{operator()@{operator()}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{11}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!operator()@{operator()}|hyperpage}{11}
+\indexentry{operator()@{operator()}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{11}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!printCoef@{printCoef}|hyperpage}{12}
+\indexentry{printCoef@{printCoef}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{12}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!setCoef@{setCoef}|hyperpage}{12}
+\indexentry{setCoef@{setCoef}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{12}
+\indexentry{MLWENO::basisPolynomial@{MLWENO::basisPolynomial}!setMaxDegree@{setMaxDegree}|hyperpage}{12}
+\indexentry{setMaxDegree@{setMaxDegree}!MLWENO::basisPolynomial@{MLWENO::basisPolynomial}|hyperpage}{12}
+\indexentry{MeshInfo@{MeshInfo}|hyperpage}{12}
+\indexentry{MeshInfo@{MeshInfo}!cellGhostLayerSize@{cellGhostLayerSize}|hyperpage}{13}
+\indexentry{cellGhostLayerSize@{cellGhostLayerSize}!MeshInfo@{MeshInfo}|hyperpage}{13}
+\indexentry{MeshInfo@{MeshInfo}!dim@{dim}|hyperpage}{13}
+\indexentry{dim@{dim}!MeshInfo@{MeshInfo}|hyperpage}{13}
+\indexentry{MeshInfo@{MeshInfo}!edgeCorner@{edgeCorner}|hyperpage}{13}
+\indexentry{edgeCorner@{edgeCorner}!MeshInfo@{MeshInfo}|hyperpage}{13}
+\indexentry{MeshInfo@{MeshInfo}!faceCorner@{faceCorner}|hyperpage}{13}
+\indexentry{faceCorner@{faceCorner}!MeshInfo@{MeshInfo}|hyperpage}{13}
+\indexentry{MeshInfo@{MeshInfo}!lmesh@{lmesh}|hyperpage}{13}
+\indexentry{lmesh@{lmesh}!MeshInfo@{MeshInfo}|hyperpage}{13}
+\indexentry{MeshInfo@{MeshInfo}!localVals@{localVals}|hyperpage}{13}
+\indexentry{localVals@{localVals}!MeshInfo@{MeshInfo}|hyperpage}{13}
+\indexentry{MeshInfo@{MeshInfo}!MPIglobalCellSize@{MPIglobalCellSize}|hyperpage}{13}
+\indexentry{MPIglobalCellSize@{MPIglobalCellSize}!MeshInfo@{MeshInfo}|hyperpage}{13}
+\indexentry{MeshInfo@{MeshInfo}!MPIglobalHoriEdgeSize@{MPIglobalHoriEdgeSize}|hyperpage}{13}
+\indexentry{MPIglobalHoriEdgeSize@{MPIglobalHoriEdgeSize}!MeshInfo@{MeshInfo}|hyperpage}{13}
+\indexentry{MeshInfo@{MeshInfo}!MPIglobalVertEdgeSize@{MPIglobalVertEdgeSize}|hyperpage}{14}
+\indexentry{MPIglobalVertEdgeSize@{MPIglobalVertEdgeSize}!MeshInfo@{MeshInfo}|hyperpage}{14}
+\indexentry{MeshInfo@{MeshInfo}!MPIglobalVertexSize@{MPIglobalVertexSize}|hyperpage}{14}
+\indexentry{MPIglobalVertexSize@{MPIglobalVertexSize}!MeshInfo@{MeshInfo}|hyperpage}{14}
+\indexentry{MeshInfo@{MeshInfo}!MPIlocalCellSize@{MPIlocalCellSize}|hyperpage}{14}
+\indexentry{MPIlocalCellSize@{MPIlocalCellSize}!MeshInfo@{MeshInfo}|hyperpage}{14}
+\indexentry{MeshInfo@{MeshInfo}!MPIlocalCellSizeFull@{MPIlocalCellSizeFull}|hyperpage}{14}
+\indexentry{MPIlocalCellSizeFull@{MPIlocalCellSizeFull}!MeshInfo@{MeshInfo}|hyperpage}{14}
+\indexentry{MeshInfo@{MeshInfo}!MPIlocalCellStart@{MPIlocalCellStart}|hyperpage}{14}
+\indexentry{MPIlocalCellStart@{MPIlocalCellStart}!MeshInfo@{MeshInfo}|hyperpage}{14}
+\indexentry{MeshInfo@{MeshInfo}!MPIlocalHoriEdgeSize@{MPIlocalHoriEdgeSize}|hyperpage}{14}
+\indexentry{MPIlocalHoriEdgeSize@{MPIlocalHoriEdgeSize}!MeshInfo@{MeshInfo}|hyperpage}{14}
+\indexentry{MeshInfo@{MeshInfo}!MPIlocalVertEdgeSize@{MPIlocalVertEdgeSize}|hyperpage}{14}
+\indexentry{MPIlocalVertEdgeSize@{MPIlocalVertEdgeSize}!MeshInfo@{MeshInfo}|hyperpage}{14}
+\indexentry{MeshInfo@{MeshInfo}!MPIlocalVertexSize@{MPIlocalVertexSize}|hyperpage}{14}
+\indexentry{MPIlocalVertexSize@{MPIlocalVertexSize}!MeshInfo@{MeshInfo}|hyperpage}{14}
+\indexentry{MeshInfo@{MeshInfo}!MPIlocalVertexSizeFull@{MPIlocalVertexSizeFull}|hyperpage}{15}
+\indexentry{MPIlocalVertexSizeFull@{MPIlocalVertexSizeFull}!MeshInfo@{MeshInfo}|hyperpage}{15}
+\indexentry{MeshInfo@{MeshInfo}!MPIlocalVertexStart@{MPIlocalVertexStart}|hyperpage}{15}
+\indexentry{MPIlocalVertexStart@{MPIlocalVertexStart}!MeshInfo@{MeshInfo}|hyperpage}{15}
+\indexentry{MeshInfo@{MeshInfo}!vertexGhostLayerSize@{vertexGhostLayerSize}|hyperpage}{15}
+\indexentry{vertexGhostLayerSize@{vertexGhostLayerSize}!MeshInfo@{MeshInfo}|hyperpage}{15}
+\indexentry{MeshInfo@{MeshInfo}!volumeCorner@{volumeCorner}|hyperpage}{15}
+\indexentry{volumeCorner@{volumeCorner}!MeshInfo@{MeshInfo}|hyperpage}{15}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{15}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!multiLevelReconstruction@{multiLevelReconstruction}|hyperpage}{16}
+\indexentry{multiLevelReconstruction@{multiLevelReconstruction}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{16}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!multiLevelReconstruction@{multiLevelReconstruction}|hyperpage}{16}
+\indexentry{multiLevelReconstruction@{multiLevelReconstruction}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{16}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!multiLevelReconstruction@{multiLevelReconstruction}|hyperpage}{16}
+\indexentry{multiLevelReconstruction@{multiLevelReconstruction}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{16}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!multiLevelReconstruction@{multiLevelReconstruction}|hyperpage}{16}
+\indexentry{multiLevelReconstruction@{multiLevelReconstruction}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{16}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!````~multiLevelReconstruction@{$\sim$multiLevelReconstruction}|hyperpage}{17}
+\indexentry{````~multiLevelReconstruction@{$\sim$multiLevelReconstruction}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{17}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!AddLevel@{AddLevel}|hyperpage}{17}
+\indexentry{AddLevel@{AddLevel}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{17}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!AddLevel@{AddLevel}|hyperpage}{17}
+\indexentry{AddLevel@{AddLevel}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{17}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!AddLevel@{AddLevel}|hyperpage}{17}
+\indexentry{AddLevel@{AddLevel}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{17}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!AddReconstMethod@{AddReconstMethod}|hyperpage}{17}
+\indexentry{AddReconstMethod@{AddReconstMethod}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{17}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!AddReconstMethod@{AddReconstMethod}|hyperpage}{18}
+\indexentry{AddReconstMethod@{AddReconstMethod}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{18}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!Clear@{Clear}|hyperpage}{18}
+\indexentry{Clear@{Clear}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{18}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!GetInfo@{GetInfo}|hyperpage}{18}
+\indexentry{GetInfo@{GetInfo}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{18}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!PrintNonLinearWgts@{PrintNonLinearWgts}|hyperpage}{18}
+\indexentry{PrintNonLinearWgts@{PrintNonLinearWgts}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{18}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!PrintSmoothnessIndicator@{PrintSmoothnessIndicator}|hyperpage}{18}
+\indexentry{PrintSmoothnessIndicator@{PrintSmoothnessIndicator}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{18}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!UpdateNonLinearWgts@{UpdateNonLinearWgts}|hyperpage}{18}
+\indexentry{UpdateNonLinearWgts@{UpdateNonLinearWgts}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{18}
+\indexentry{MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}!UpdateTwoStageNonLinearWgts@{UpdateTwoStageNonLinearWgts}|hyperpage}{19}
+\indexentry{UpdateTwoStageNonLinearWgts@{UpdateTwoStageNonLinearWgts}!MLWENO::multiLevelReconstruction@{MLWENO::multiLevelReconstruction}|hyperpage}{19}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{19}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!singleLevelReconstruction@{singleLevelReconstruction}|hyperpage}{20}
+\indexentry{singleLevelReconstruction@{singleLevelReconstruction}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{20}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!singleLevelReconstruction@{singleLevelReconstruction}|hyperpage}{20}
+\indexentry{singleLevelReconstruction@{singleLevelReconstruction}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{20}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!````~singleLevelReconstruction@{$\sim$singleLevelReconstruction}|hyperpage}{20}
+\indexentry{````~singleLevelReconstruction@{$\sim$singleLevelReconstruction}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{20}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CalculateSmoothnessIndic@{CalculateSmoothnessIndic}|hyperpage}{20}
+\indexentry{CalculateSmoothnessIndic@{CalculateSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{20}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CheckExist@{CheckExist}|hyperpage}{20}
+\indexentry{CheckExist@{CheckExist}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{20}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CheckStencilPolynomials@{CheckStencilPolynomials}|hyperpage}{21}
+\indexentry{CheckStencilPolynomials@{CheckStencilPolynomials}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{21}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CheckStencils@{CheckStencils}|hyperpage}{21}
+\indexentry{CheckStencils@{CheckStencils}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{21}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CreateStencilPolynomials@{CreateStencilPolynomials}|hyperpage}{21}
+\indexentry{CreateStencilPolynomials@{CreateStencilPolynomials}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{21}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetScale@{GetScale}|hyperpage}{21}
+\indexentry{GetScale@{GetScale}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{21}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetScale@{GetScale}|hyperpage}{21}
+\indexentry{GetScale@{GetScale}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{21}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetSizeX@{GetSizeX}|hyperpage}{21}
+\indexentry{GetSizeX@{GetSizeX}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{21}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetSizeY@{GetSizeY}|hyperpage}{22}
+\indexentry{GetSizeY@{GetSizeY}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{22}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!PrintSmoothnessIndicator@{PrintSmoothnessIndicator}|hyperpage}{22}
+\indexentry{PrintSmoothnessIndicator@{PrintSmoothnessIndicator}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{22}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{22}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!stencil@{stencil}|hyperpage}{23}
+\indexentry{stencil@{stencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{23}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!stencil@{stencil}|hyperpage}{23}
+\indexentry{stencil@{stencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{23}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!stencil@{stencil}|hyperpage}{23}
+\indexentry{stencil@{stencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{23}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!stencil@{stencil}|hyperpage}{23}
+\indexentry{stencil@{stencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{23}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!````~stencil@{$\sim$stencil}|hyperpage}{23}
+\indexentry{````~stencil@{$\sim$stencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{23}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!clearPtr@{clearPtr}|hyperpage}{23}
+\indexentry{clearPtr@{clearPtr}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{23}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!CreateStencil@{CreateStencil}|hyperpage}{24}
+\indexentry{CreateStencil@{CreateStencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{24}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!getI@{getI}|hyperpage}{24}
+\indexentry{getI@{getI}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{24}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!getJ@{getJ}|hyperpage}{24}
+\indexentry{getJ@{getJ}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{24}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!getK@{getK}|hyperpage}{24}
+\indexentry{getK@{getK}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{24}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!getSize@{getSize}|hyperpage}{24}
+\indexentry{getSize@{getSize}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{24}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!GetStencil@{GetStencil}|hyperpage}{24}
+\indexentry{GetStencil@{GetStencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{24}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{24}
+\indexentry{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{24}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{25}
+\indexentry{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{25}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{25}
+\indexentry{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{25}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{25}
+\indexentry{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{25}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{25}
+\indexentry{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{25}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{25}
+\indexentry{operator()@{operator()}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{25}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!setI@{setI}|hyperpage}{25}
+\indexentry{setI@{setI}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{25}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!setJ@{setJ}|hyperpage}{26}
+\indexentry{setJ@{setJ}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{26}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!setK@{setK}|hyperpage}{26}
+\indexentry{setK@{setK}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{26}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!SetStencil@{SetStencil}|hyperpage}{26}
+\indexentry{SetStencil@{SetStencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{26}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!SetStencil@{SetStencil}|hyperpage}{26}
+\indexentry{SetStencil@{SetStencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{26}
+\indexentry{MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}!SetStencil@{SetStencil}|hyperpage}{26}
+\indexentry{SetStencil@{SetStencil}!MLWENO::stencil$<$ T $>$@{MLWENO::stencil$<$ T $>$}|hyperpage}{26}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{27}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!stencilPolynomial@{stencilPolynomial}|hyperpage}{27}
+\indexentry{stencilPolynomial@{stencilPolynomial}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{27}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!stencilPolynomial@{stencilPolynomial}|hyperpage}{27}
+\indexentry{stencilPolynomial@{stencilPolynomial}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{27}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!stencilPolynomial@{stencilPolynomial}|hyperpage}{27}
+\indexentry{stencilPolynomial@{stencilPolynomial}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{27}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!````~stencilPolynomial@{$\sim$stencilPolynomial}|hyperpage}{27}
+\indexentry{````~stencilPolynomial@{$\sim$stencilPolynomial}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{27}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!eval@{eval}|hyperpage}{28}
+\indexentry{eval@{eval}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{28}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!eval@{eval}|hyperpage}{28}
+\indexentry{eval@{eval}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{28}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!GetOrderX@{GetOrderX}|hyperpage}{28}
+\indexentry{GetOrderX@{GetOrderX}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{28}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!GetOrderY@{GetOrderY}|hyperpage}{28}
+\indexentry{GetOrderY@{GetOrderY}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{28}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!GetScale@{GetScale}|hyperpage}{28}
+\indexentry{GetScale@{GetScale}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{28}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!GetSmoothIndic@{GetSmoothIndic}|hyperpage}{28}
+\indexentry{GetSmoothIndic@{GetSmoothIndic}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{28}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!operator()@{operator()}|hyperpage}{28}
+\indexentry{operator()@{operator()}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{28}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!operator()@{operator()}|hyperpage}{29}
+\indexentry{operator()@{operator()}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{29}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!printCoef@{printCoef}|hyperpage}{29}
+\indexentry{printCoef@{printCoef}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{29}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!printCoef@{printCoef}|hyperpage}{29}
+\indexentry{printCoef@{printCoef}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{29}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!SetCollapsePolyn@{SetCollapsePolyn}|hyperpage}{29}
+\indexentry{SetCollapsePolyn@{SetCollapsePolyn}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{29}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!SetStencilPolynomials@{SetStencilPolynomials}|hyperpage}{29}
+\indexentry{SetStencilPolynomials@{SetStencilPolynomials}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{29}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!SetUpScale@{SetUpScale}|hyperpage}{29}
+\indexentry{SetUpScale@{SetUpScale}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{29}
+\indexentry{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!SetUpScale@{SetUpScale}|hyperpage}{30}
+\indexentry{SetUpScale@{SetUpScale}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}|hyperpage}{30}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/mlreconstruction.cpp@{/home/renpo/Research/MantleSolver/src/mlweno/mlreconstruction.cpp}|hyperpage}{31}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/mlreconstruction.h@{/home/renpo/Research/MantleSolver/src/mlweno/mlreconstruction.h}|hyperpage}{31}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/mlreconstruction.h@{/home/renpo/Research/MantleSolver/src/mlweno/mlreconstruction.h}|hyperpage}{32}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/polynomial.cpp@{/home/renpo/Research/MantleSolver/src/mlweno/polynomial.cpp}|hyperpage}{32}
+\indexentry{polynomial.cpp@{polynomial.cpp}!basePoly@{basePoly}|hyperpage}{33}
+\indexentry{basePoly@{basePoly}!polynomial.cpp@{polynomial.cpp}|hyperpage}{33}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/polynomial.h@{/home/renpo/Research/MantleSolver/src/mlweno/polynomial.h}|hyperpage}{33}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/polynomial.h@{/home/renpo/Research/MantleSolver/src/mlweno/polynomial.h}|hyperpage}{33}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/slreconstruction.cpp@{/home/renpo/Research/MantleSolver/src/mlweno/slreconstruction.cpp}|hyperpage}{35}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/slreconstruction.h@{/home/renpo/Research/MantleSolver/src/mlweno/slreconstruction.h}|hyperpage}{35}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/slreconstruction.h@{/home/renpo/Research/MantleSolver/src/mlweno/slreconstruction.h}|hyperpage}{35}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/stencil.h@{/home/renpo/Research/MantleSolver/src/mlweno/stencil.h}|hyperpage}{36}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/stencil.h@{/home/renpo/Research/MantleSolver/src/mlweno/stencil.h}|hyperpage}{37}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/util.cpp@{/home/renpo/Research/MantleSolver/src/mlweno/util.cpp}|hyperpage}{38}
+\indexentry{util.cpp@{util.cpp}!AssignValuesMeshInfo@{AssignValuesMeshInfo}|hyperpage}{38}
+\indexentry{AssignValuesMeshInfo@{AssignValuesMeshInfo}!util.cpp@{util.cpp}|hyperpage}{38}
+\indexentry{util.cpp@{util.cpp}!Bend@{Bend}|hyperpage}{38}
+\indexentry{Bend@{Bend}!util.cpp@{util.cpp}|hyperpage}{38}
+\indexentry{util.cpp@{util.cpp}!Bend@{Bend}|hyperpage}{39}
+\indexentry{Bend@{Bend}!util.cpp@{util.cpp}|hyperpage}{39}
+\indexentry{util.cpp@{util.cpp}!constFunc@{constFunc}|hyperpage}{39}
+\indexentry{constFunc@{constFunc}!util.cpp@{util.cpp}|hyperpage}{39}
+\indexentry{util.cpp@{util.cpp}!constFunc@{constFunc}|hyperpage}{39}
+\indexentry{constFunc@{constFunc}!util.cpp@{util.cpp}|hyperpage}{39}
+\indexentry{util.cpp@{util.cpp}!constFunc@{constFunc}|hyperpage}{39}
+\indexentry{constFunc@{constFunc}!util.cpp@{util.cpp}|hyperpage}{39}
+\indexentry{util.cpp@{util.cpp}!constFunc@{constFunc}|hyperpage}{39}
+\indexentry{constFunc@{constFunc}!util.cpp@{util.cpp}|hyperpage}{39}
+\indexentry{util.cpp@{util.cpp}!factorial@{factorial}|hyperpage}{39}
+\indexentry{factorial@{factorial}!util.cpp@{util.cpp}|hyperpage}{39}
+\indexentry{util.cpp@{util.cpp}!factorial@{factorial}|hyperpage}{40}
+\indexentry{factorial@{factorial}!util.cpp@{util.cpp}|hyperpage}{40}
+\indexentry{util.cpp@{util.cpp}!FlatIndic@{FlatIndic}|hyperpage}{40}
+\indexentry{FlatIndic@{FlatIndic}!util.cpp@{util.cpp}|hyperpage}{40}
+\indexentry{util.cpp@{util.cpp}!FlatIndic@{FlatIndic}|hyperpage}{40}
+\indexentry{FlatIndic@{FlatIndic}!util.cpp@{util.cpp}|hyperpage}{40}
+\indexentry{util.cpp@{util.cpp}!FlatIndic@{FlatIndic}|hyperpage}{40}
+\indexentry{FlatIndic@{FlatIndic}!util.cpp@{util.cpp}|hyperpage}{40}
+\indexentry{util.cpp@{util.cpp}!FlatIndic@{FlatIndic}|hyperpage}{40}
+\indexentry{FlatIndic@{FlatIndic}!util.cpp@{util.cpp}|hyperpage}{40}
+\indexentry{util.cpp@{util.cpp}!MPIGlobalToLocal@{MPIGlobalToLocal}|hyperpage}{40}
+\indexentry{MPIGlobalToLocal@{MPIGlobalToLocal}!util.cpp@{util.cpp}|hyperpage}{40}
+\indexentry{util.cpp@{util.cpp}!MPILocalToGlobal@{MPILocalToGlobal}|hyperpage}{41}
+\indexentry{MPILocalToGlobal@{MPILocalToGlobal}!util.cpp@{util.cpp}|hyperpage}{41}
+\indexentry{util.cpp@{util.cpp}!polyEval@{polyEval}|hyperpage}{41}
+\indexentry{polyEval@{polyEval}!util.cpp@{util.cpp}|hyperpage}{41}
+\indexentry{util.cpp@{util.cpp}!polynDerMulti@{polynDerMulti}|hyperpage}{41}
+\indexentry{polynDerMulti@{polynDerMulti}!util.cpp@{util.cpp}|hyperpage}{41}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/util.h@{/home/renpo/Research/MantleSolver/src/mlweno/util.h}|hyperpage}{41}
+\indexentry{util.h@{util.h}!indice@{indice}|hyperpage}{42}
+\indexentry{indice@{indice}!util.h@{util.h}|hyperpage}{42}
+\indexentry{util.h@{util.h}!indiceSet@{indiceSet}|hyperpage}{42}
+\indexentry{indiceSet@{indiceSet}!util.h@{util.h}|hyperpage}{42}
+\indexentry{util.h@{util.h}!vertex@{vertex}|hyperpage}{42}
+\indexentry{vertex@{vertex}!util.h@{util.h}|hyperpage}{42}
+\indexentry{util.h@{util.h}!vertexSet@{vertexSet}|hyperpage}{43}
+\indexentry{vertexSet@{vertexSet}!util.h@{util.h}|hyperpage}{43}
+\indexentry{util.h@{util.h}!AssignValuesMeshInfo@{AssignValuesMeshInfo}|hyperpage}{43}
+\indexentry{AssignValuesMeshInfo@{AssignValuesMeshInfo}!util.h@{util.h}|hyperpage}{43}
+\indexentry{util.h@{util.h}!Bend@{Bend}|hyperpage}{43}
+\indexentry{Bend@{Bend}!util.h@{util.h}|hyperpage}{43}
+\indexentry{util.h@{util.h}!Bend@{Bend}|hyperpage}{43}
+\indexentry{Bend@{Bend}!util.h@{util.h}|hyperpage}{43}
+\indexentry{util.h@{util.h}!constFunc@{constFunc}|hyperpage}{43}
+\indexentry{constFunc@{constFunc}!util.h@{util.h}|hyperpage}{43}
+\indexentry{util.h@{util.h}!constFunc@{constFunc}|hyperpage}{43}
+\indexentry{constFunc@{constFunc}!util.h@{util.h}|hyperpage}{43}
+\indexentry{util.h@{util.h}!constFunc@{constFunc}|hyperpage}{44}
+\indexentry{constFunc@{constFunc}!util.h@{util.h}|hyperpage}{44}
+\indexentry{util.h@{util.h}!constFunc@{constFunc}|hyperpage}{44}
+\indexentry{constFunc@{constFunc}!util.h@{util.h}|hyperpage}{44}
+\indexentry{util.h@{util.h}!delete\_pointed\_to@{delete\_pointed\_to}|hyperpage}{44}
+\indexentry{delete\_pointed\_to@{delete\_pointed\_to}!util.h@{util.h}|hyperpage}{44}
+\indexentry{util.h@{util.h}!factorial@{factorial}|hyperpage}{44}
+\indexentry{factorial@{factorial}!util.h@{util.h}|hyperpage}{44}
+\indexentry{util.h@{util.h}!factorial@{factorial}|hyperpage}{44}
+\indexentry{factorial@{factorial}!util.h@{util.h}|hyperpage}{44}
+\indexentry{util.h@{util.h}!FlatIndic@{FlatIndic}|hyperpage}{44}
+\indexentry{FlatIndic@{FlatIndic}!util.h@{util.h}|hyperpage}{44}
+\indexentry{util.h@{util.h}!FlatIndic@{FlatIndic}|hyperpage}{45}
+\indexentry{FlatIndic@{FlatIndic}!util.h@{util.h}|hyperpage}{45}
+\indexentry{util.h@{util.h}!FlatIndic@{FlatIndic}|hyperpage}{45}
+\indexentry{FlatIndic@{FlatIndic}!util.h@{util.h}|hyperpage}{45}
+\indexentry{util.h@{util.h}!FlatIndic@{FlatIndic}|hyperpage}{45}
+\indexentry{FlatIndic@{FlatIndic}!util.h@{util.h}|hyperpage}{45}
+\indexentry{util.h@{util.h}!MPIGlobalToLocal@{MPIGlobalToLocal}|hyperpage}{45}
+\indexentry{MPIGlobalToLocal@{MPIGlobalToLocal}!util.h@{util.h}|hyperpage}{45}
+\indexentry{util.h@{util.h}!MPILocalToGlobal@{MPILocalToGlobal}|hyperpage}{45}
+\indexentry{MPILocalToGlobal@{MPILocalToGlobal}!util.h@{util.h}|hyperpage}{45}
+\indexentry{util.h@{util.h}!polyEval@{polyEval}|hyperpage}{45}
+\indexentry{polyEval@{polyEval}!util.h@{util.h}|hyperpage}{45}
+\indexentry{util.h@{util.h}!polynDerMulti@{polynDerMulti}|hyperpage}{46}
+\indexentry{polynDerMulti@{polynDerMulti}!util.h@{util.h}|hyperpage}{46}
+\indexentry{/home/renpo/Research/MantleSolver/src/mlweno/util.h@{/home/renpo/Research/MantleSolver/src/mlweno/util.h}|hyperpage}{46}

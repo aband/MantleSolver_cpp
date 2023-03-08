@@ -1,0 +1,67 @@
+\hypertarget{slreconstruction_8h_source}{}\doxysection{slreconstruction.\+h}
+\label{slreconstruction_8h_source}\index{/home/renpo/Research/MantleSolver/src/mlweno/slreconstruction.h@{/home/renpo/Research/MantleSolver/src/mlweno/slreconstruction.h}}
+\mbox{\hyperlink{slreconstruction_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ SLRECONSTRUCTION\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ SLRECONSTRUCTION\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{comment}{//\(\backslash\)slreconstruction.h\ slreconstruction.h}}
+\DoxyCodeLine{00006\ \textcolor{comment}{}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{polynomial_8h}{polynomial.h}}"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceMLWENO}{MLWENO}}\{}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction}{singleLevelReconstruction}}\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a1f0a038b173cfe97b21de2febf9133a9}{singleLevelReconstruction}}()\ \{\};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a1f0a038b173cfe97b21de2febf9133a9}{singleLevelReconstruction}}(\textcolor{keywordtype}{int}\ stencilSizeX,\ \textcolor{keywordtype}{int}\ stencilSizeY);\ }
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a3c166ed26a5f1bf4291ce490666b3085}{\string~singleLevelReconstruction}}()\ \{interior\_.clear();\ singleLevel\_.clear();smoothnessIndic\_.clear();\};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ======================================================================}}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a5a63990afdb6304d4cf2f0c800bf1259}{CreateStencilPolynomials}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi);}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a57d226934762e1c5d953f3e9bd5784e7}{CheckExist}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ owner)\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ interior\_.count(\mbox{\hyperlink{util_8cpp_a703c2a3bcdd5cc5356bdd15bd9683fd3}{FlatIndic}}(mi,owner));\};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a0bec39c49435c5994fbe62684ab8cc04}{GetSizeX}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ stencilSizeX\_;\};}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a8ea3817ebddbf101139fdc568c74c568}{GetSizeY}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ stencilSizeY\_;\};}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a6f8d801e96d3057822ead32258a2455b}{GetScale}}(\textcolor{keywordtype}{int}\ s)\ \{\textcolor{keywordflow}{return}\ singleLevel\_[s]-\/>GetScale();\};}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a855440617dc638139cbc442d57abeb8a}{GetScale}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ owner)\ \{\textcolor{keywordflow}{return}\ singleLevel\_[\mbox{\hyperlink{util_8cpp_a703c2a3bcdd5cc5356bdd15bd9683fd3}{FlatIndic}}(mi,owner)]-\/>GetScale();\};\ }
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a705893e946eda8e309910e4cf90651ec}{CalculateSmoothnessIndic}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ owner);}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ======================================================================}}
+\DoxyCodeLine{00048\ \textcolor{comment}{}\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a62a18da5e34895ca4f6b62ca4b005e3c}{CheckStencils}}()\textcolor{keyword}{\ const\ }\{cout<<\ \textcolor{stringliteral}{"{}Constructed\ "{}}<<\ interior\_.size()\ <<\ \textcolor{stringliteral}{"{}\ stencils\ with\ the\ size\ of\ "{}}\ <<\ stencilSizeX\_\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ stencilSizeY\_\ <<\ endl;\};}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a533bef552787e08bf635d3767e6acb55}{CheckStencilPolynomials}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ start);}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}{PrintSmoothnessIndicator}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi);}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ stencilSizeX\_\ =\ -\/1;\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ stencilSizeY\_\ =\ -\/1;\ }
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ stencil\ <indice>\ stencilIndice\_;\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<int>\ interior\_;\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ map<int,\ stencilPolynomial*>\ singleLevel\_;\ }
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ map<int,\ double>\ smoothnessIndic\_;\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ IdentifyInteriorCell\_(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi);}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}\ ComputeStencilCenter\_(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keywordtype}{int}\ flat);}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ ComputeStencilPolyn\_(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi);}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ UpdateSmoothnessIndic\_(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi);}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \};}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

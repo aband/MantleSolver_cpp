@@ -1,0 +1,165 @@
+\hypertarget{classMLWENO_1_1stencilPolynomial}{}\doxysection{MLWENO\+::stencil\+Polynomial Class Reference}
+\label{classMLWENO_1_1stencilPolynomial}\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+
+
+{\ttfamily \#include $<$polynomial.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_aab71404fdf32a7d6223cdc9207fc0a10}{stencil\+Polynomial}} ()
+\item 
+\mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_aec105fe420e248603783084a1242f5aa}{stencil\+Polynomial}} (const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&start, const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&center)
+\item 
+\mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_acec4c0e43eefdccb13f0a0122c9f0b7b}{stencil\+Polynomial}} (const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&start, const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&center, const vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&target\+Cell)
+\item 
+\mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a0ccd3bdb9ad678cad7dee1d8241fb881}{$\sim$stencil\+Polynomial}} ()
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a532d45eb587cb7286216f94bb79c0ae4}{Set\+Stencil\+Polynomials}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const \mbox{\hyperlink{classMLWENO_1_1stencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&stencil\+Indice)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a6228c75fe4e5c501ec170cf7f856003c}{Set\+Up\+Scale}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&target\+Cell)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a922bba3a2a4526966c25e26832635365}{Set\+Up\+Scale}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const \mbox{\hyperlink{classMLWENO_1_1stencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&stencil\+Indice)
+\item 
+const double \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_af4657b162850137c86202637f8d22fe9}{Get\+Scale}} () const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a85cef48422dd21b423f4a5ea68863d0f}{eval}} (const double x, const double y) const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a014f2a945214604e2cb0fa6761038b28}{eval}} (const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&P) const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a03c9c63bc363835eacc6ffb6ebf1d30b}{operator()}} (const double x, const double y) const
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a59ce7f46a0e2f731c1015ad5312e7b44}{operator()}} (const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&P) const
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_aa1e5425a1849862ba9ec271ea23b76f5}{print\+Coef}} ()
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_ad789d32004b0e015538b2626b7b699c6}{print\+Coef}} (int s)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a543010fffdf90cbb7011cfbeae42c209}{Set\+Collapse\+Polyn}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const \mbox{\hyperlink{classMLWENO_1_1stencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&stencil\+Indice)
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a77735dc4d501e62493b20fef8b3d97b2}{Get\+Smooth\+Indic}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const \mbox{\hyperlink{classMLWENO_1_1stencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&stencil\+Indice)
+\item 
+const int \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_aba437512bc1d8dc7e599024caebfdc98}{Get\+OrderX}} () const
+\item 
+const int \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a80d0953567fc4d555536d1c485cd417b}{Get\+OrderY}} () const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_aab71404fdf32a7d6223cdc9207fc0a10}\label{classMLWENO_1_1stencilPolynomial_aab71404fdf32a7d6223cdc9207fc0a10}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!stencilPolynomial@{stencilPolynomial}}
+\index{stencilPolynomial@{stencilPolynomial}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{stencilPolynomial()}{stencilPolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily MLWENO\+::stencil\+Polynomial\+::stencil\+Polynomial (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_aec105fe420e248603783084a1242f5aa}\label{classMLWENO_1_1stencilPolynomial_aec105fe420e248603783084a1242f5aa}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!stencilPolynomial@{stencilPolynomial}}
+\index{stencilPolynomial@{stencilPolynomial}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{stencilPolynomial()}{stencilPolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily stencil\+Polynomial\+::stencil\+Polynomial (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&}]{start,  }\item[{const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&}]{center }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_acec4c0e43eefdccb13f0a0122c9f0b7b}\label{classMLWENO_1_1stencilPolynomial_acec4c0e43eefdccb13f0a0122c9f0b7b}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!stencilPolynomial@{stencilPolynomial}}
+\index{stencilPolynomial@{stencilPolynomial}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{stencilPolynomial()}{stencilPolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily stencil\+Polynomial\+::stencil\+Polynomial (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&}]{start,  }\item[{const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&}]{center,  }\item[{const vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{target\+Cell }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a0ccd3bdb9ad678cad7dee1d8241fb881}\label{classMLWENO_1_1stencilPolynomial_a0ccd3bdb9ad678cad7dee1d8241fb881}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!````~stencilPolynomial@{$\sim$stencilPolynomial}}
+\index{````~stencilPolynomial@{$\sim$stencilPolynomial}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{$\sim$stencilPolynomial()}{~stencilPolynomial()}}
+{\footnotesize\ttfamily MLWENO\+::stencil\+Polynomial\+::$\sim$stencil\+Polynomial (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a85cef48422dd21b423f4a5ea68863d0f}\label{classMLWENO_1_1stencilPolynomial_a85cef48422dd21b423f4a5ea68863d0f}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!eval@{eval}}
+\index{eval@{eval}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double stencil\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{const double}]{x,  }\item[{const double}]{y }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a014f2a945214604e2cb0fa6761038b28}\label{classMLWENO_1_1stencilPolynomial_a014f2a945214604e2cb0fa6761038b28}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!eval@{eval}}
+\index{eval@{eval}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double MLWENO\+::stencil\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_aba437512bc1d8dc7e599024caebfdc98}\label{classMLWENO_1_1stencilPolynomial_aba437512bc1d8dc7e599024caebfdc98}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!GetOrderX@{GetOrderX}}
+\index{GetOrderX@{GetOrderX}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{GetOrderX()}{GetOrderX()}}
+{\footnotesize\ttfamily const int MLWENO\+::stencil\+Polynomial\+::\+Get\+OrderX (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a80d0953567fc4d555536d1c485cd417b}\label{classMLWENO_1_1stencilPolynomial_a80d0953567fc4d555536d1c485cd417b}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!GetOrderY@{GetOrderY}}
+\index{GetOrderY@{GetOrderY}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{GetOrderY()}{GetOrderY()}}
+{\footnotesize\ttfamily const int MLWENO\+::stencil\+Polynomial\+::\+Get\+OrderY (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_af4657b162850137c86202637f8d22fe9}\label{classMLWENO_1_1stencilPolynomial_af4657b162850137c86202637f8d22fe9}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!GetScale@{GetScale}}
+\index{GetScale@{GetScale}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{GetScale()}{GetScale()}}
+{\footnotesize\ttfamily const double MLWENO\+::stencil\+Polynomial\+::\+Get\+Scale (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a77735dc4d501e62493b20fef8b3d97b2}\label{classMLWENO_1_1stencilPolynomial_a77735dc4d501e62493b20fef8b3d97b2}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!GetSmoothIndic@{GetSmoothIndic}}
+\index{GetSmoothIndic@{GetSmoothIndic}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{GetSmoothIndic()}{GetSmoothIndic()}}
+{\footnotesize\ttfamily double stencil\+Polynomial\+::\+Get\+Smooth\+Indic (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const \mbox{\hyperlink{classMLWENO_1_1stencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a03c9c63bc363835eacc6ffb6ebf1d30b}\label{classMLWENO_1_1stencilPolynomial_a03c9c63bc363835eacc6ffb6ebf1d30b}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!operator()@{operator()}}
+\index{operator()@{operator()}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double MLWENO\+::stencil\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{const double}]{x,  }\item[{const double}]{y }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a59ce7f46a0e2f731c1015ad5312e7b44}\label{classMLWENO_1_1stencilPolynomial_a59ce7f46a0e2f731c1015ad5312e7b44}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!operator()@{operator()}}
+\index{operator()@{operator()}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double MLWENO\+::stencil\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_aa1e5425a1849862ba9ec271ea23b76f5}\label{classMLWENO_1_1stencilPolynomial_aa1e5425a1849862ba9ec271ea23b76f5}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!printCoef@{printCoef}}
+\index{printCoef@{printCoef}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{printCoef()}{printCoef()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void stencil\+Polynomial\+::print\+Coef (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_ad789d32004b0e015538b2626b7b699c6}\label{classMLWENO_1_1stencilPolynomial_ad789d32004b0e015538b2626b7b699c6}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!printCoef@{printCoef}}
+\index{printCoef@{printCoef}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{printCoef()}{printCoef()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void stencil\+Polynomial\+::print\+Coef (\begin{DoxyParamCaption}\item[{int}]{s }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a543010fffdf90cbb7011cfbeae42c209}\label{classMLWENO_1_1stencilPolynomial_a543010fffdf90cbb7011cfbeae42c209}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!SetCollapsePolyn@{SetCollapsePolyn}}
+\index{SetCollapsePolyn@{SetCollapsePolyn}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{SetCollapsePolyn()}{SetCollapsePolyn()}}
+{\footnotesize\ttfamily void stencil\+Polynomial\+::\+Set\+Collapse\+Polyn (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const \mbox{\hyperlink{classMLWENO_1_1stencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a532d45eb587cb7286216f94bb79c0ae4}\label{classMLWENO_1_1stencilPolynomial_a532d45eb587cb7286216f94bb79c0ae4}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!SetStencilPolynomials@{SetStencilPolynomials}}
+\index{SetStencilPolynomials@{SetStencilPolynomials}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{SetStencilPolynomials()}{SetStencilPolynomials()}}
+{\footnotesize\ttfamily void stencil\+Polynomial\+::\+Set\+Stencil\+Polynomials (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const \mbox{\hyperlink{classMLWENO_1_1stencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a922bba3a2a4526966c25e26832635365}\label{classMLWENO_1_1stencilPolynomial_a922bba3a2a4526966c25e26832635365}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!SetUpScale@{SetUpScale}}
+\index{SetUpScale@{SetUpScale}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{SetUpScale()}{SetUpScale()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void MLWENO\+::stencil\+Polynomial\+::\+Set\+Up\+Scale (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const \mbox{\hyperlink{classMLWENO_1_1stencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1stencilPolynomial_a6228c75fe4e5c501ec170cf7f856003c}\label{classMLWENO_1_1stencilPolynomial_a6228c75fe4e5c501ec170cf7f856003c}} 
+\index{MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}!SetUpScale@{SetUpScale}}
+\index{SetUpScale@{SetUpScale}!MLWENO::stencilPolynomial@{MLWENO::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{SetUpScale()}{SetUpScale()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void MLWENO\+::stencil\+Polynomial\+::\+Set\+Up\+Scale (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{target\+Cell }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{polynomial_8h}{polynomial.\+h}}\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{polynomial_8cpp}{polynomial.\+cpp}}\end{DoxyCompactItemize}

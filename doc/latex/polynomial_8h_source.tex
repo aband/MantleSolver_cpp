@@ -1,0 +1,129 @@
+\hypertarget{polynomial_8h_source}{}\doxysection{polynomial.\+h}
+\label{polynomial_8h_source}\index{/home/renpo/Research/MantleSolver/src/mlweno/polynomial.h@{/home/renpo/Research/MantleSolver/src/mlweno/polynomial.h}}
+\mbox{\hyperlink{polynomial_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ POLYNOMIAL\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ POLYNOMIAL\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{util_8h}{util.h}}"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{stencil_8h}{stencil.h}}"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceMLWENO}{MLWENO}}\{}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{comment}{//\ Tensor\ product\ 2D\ polynomial\ for\ stencil\ basis}}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1basisPolynomial}{basisPolynomial}}\ \{}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a179f77bcdcfa2d61ca33953e783f3848}{basisPolynomial}}()\ \{\};}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a179f77bcdcfa2d61ca33953e783f3848}{basisPolynomial}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ maxDegree[2]);}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a179f77bcdcfa2d61ca33953e783f3848}{basisPolynomial}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ maxDegree[2],\ \textcolor{keywordtype}{double}*\ coef);}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_afce848d04755900733239c0c6c35d04b}{\string~basisPolynomial}}();}
+\DoxyCodeLine{00016\ \ }
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a4824245693d40a3def5de2d8fd91a9f1}{setMaxDegree}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ maxDegree[2]);}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a5d7427e871e89138e2ee102defc5011d}{setCoef}}(\textcolor{keywordtype}{double}*\ coef);}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}*\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_ad856ca863fe17f511dd0d50bf59d9225}{getCoef}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Return\ the\ size\ of\ the\ polynomial}}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a787c9e5f9f27aa59c6acef752bfe7ba0}{getSize}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ maxDegree\_[0]*maxDegree\_[1];\};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Return\ the\ size\ of\ degree\ x\ as\ I}}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_af35cd1069fd6fa68c933fec534f93ab5}{getI}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ maxDegree\_[0];\};}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Return\ the\ size\ of\ degree\ y\ as\ J}}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a7c934f9775c742aa518c08b2435e712e}{getJ}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ maxDegree\_[1];\};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Evaluation\ of\ point\ value\ for\ a\ given\ polynomial}}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a26fe81c3cc483637fbb5678f290e9655}{eval}}(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a68a400a564cc81c47ac290b15b1114ac}{eval}}(\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}\ P)\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a68a400a564cc81c47ac290b15b1114ac}{eval}}(P[0],P[1]);\};}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_aeeac4d07911dbf27c1cfb17bff1e9700}{operator()\ }}(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y)\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a26fe81c3cc483637fbb5678f290e9655}{eval}}(x,y);\};}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_aeeac4d07911dbf27c1cfb17bff1e9700}{operator()\ }}(\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}\ P)\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a26fe81c3cc483637fbb5678f290e9655}{eval}}(P);\};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Evaluation\ of\ derivative\ value\ for\ a\ given\ polynomial}}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a2b4fcd70361d641f985f447f0343d052}{der}}(\textcolor{keywordtype}{int}\ derX,\ \textcolor{keywordtype}{int}\ derY,\ \textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a3930f2d4b847b6db19d0221248ee43f4}{der}}(\textcolor{keywordtype}{int}\ derX,\ \textcolor{keywordtype}{int}\ derY,\ \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}\ P)\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a3930f2d4b847b6db19d0221248ee43f4}{der}}(derX,\ derY,\ P[0],\ P[1]);\};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Print\ coefficients\ out}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_a93d885308aa7258d8822696eccf71129}{printCoef}}()\ \textcolor{keyword}{const};\ }
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1basisPolynomial_ad856ca863fe17f511dd0d50bf59d9225}{getCoef}}(\textcolor{keywordtype}{int}\ i)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ maxDegree\_[2]\ =\ \{-\/1,-\/1\};\ }
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}*\ coef\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00049\ \ \ \ \ \};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{comment}{//\ stencil\ polynomials\ used\ for\ weno\ reconstruction}}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1stencilPolynomial}{stencilPolynomial}}\ \{}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_aab71404fdf32a7d6223cdc9207fc0a10}{stencilPolynomial}}()\ \{\};}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_aab71404fdf32a7d6223cdc9207fc0a10}{stencilPolynomial}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\&\ start,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}\&\ center);}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_aab71404fdf32a7d6223cdc9207fc0a10}{stencilPolynomial}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\&\ start,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}\&\ center,\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ vector<indice>\&\ targetCell);}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a0ccd3bdb9ad678cad7dee1d8241fb881}{\string~stencilPolynomial}}()\ \{stencilPolyn\_.clearPtr();}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ []\ collapsePolyn\_;\};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a532d45eb587cb7286216f94bb79c0ae4}{SetStencilPolynomials}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ stencil\ <indice>\&\ stencilIndice);}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a6228c75fe4e5c501ec170cf7f856003c}{SetUpScale}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keyword}{const}\ vector<indice>\&\ targetCell)\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{SetTargetCell\_(targetCell);ComputeCellBasedScale\_(mi);\};}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a922bba3a2a4526966c25e26832635365}{SetUpScale}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keyword}{const}\ stencil\ <indice>\&\ stencilIndice)\ \{ComputeStencilBasedScale\_(mi,\ stencilIndice);\};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_af4657b162850137c86202637f8d22fe9}{GetScale}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ scale\_;\};\ }
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a85cef48422dd21b423f4a5ea68863d0f}{eval}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ x,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ y)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a014f2a945214604e2cb0fa6761038b28}{eval}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}\&\ P)\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a014f2a945214604e2cb0fa6761038b28}{eval}}(P[0],P[1]);\};}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a03c9c63bc363835eacc6ffb6ebf1d30b}{operator()\ }}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ x,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ y)\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a85cef48422dd21b423f4a5ea68863d0f}{eval}}(x,y);\};}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a03c9c63bc363835eacc6ffb6ebf1d30b}{operator()\ }}(\textcolor{keyword}{const}\ \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}\&\ P)\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a85cef48422dd21b423f4a5ea68863d0f}{eval}}(P);\};}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Check\ basis\ polynomial\ coefficients}}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_aa1e5425a1849862ba9ec271ea23b76f5}{printCoef}}();}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_aa1e5425a1849862ba9ec271ea23b76f5}{printCoef}}(\textcolor{keywordtype}{int}\ s);}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Set\ collapse\ polynomial}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a543010fffdf90cbb7011cfbeae42c209}{SetCollapsePolyn}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keyword}{const}\ stencil\ <indice>\&\ stencilIndice);}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a77735dc4d501e62493b20fef8b3d97b2}{GetSmoothIndic}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keyword}{const}\ stencil\ <indice>\&\ stencilIndice);}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_aba437512bc1d8dc7e599024caebfdc98}{GetOrderX}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ stencilPolyn\_.getI();\};}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1stencilPolynomial_a80d0953567fc4d555536d1c485cd417b}{GetOrderY}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ stencilPolyn\_.getJ();\};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}\ center\_\ =\ \{0.0,0.0\};}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}\ start\_\ =\ \{-\/1,-\/1\};}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetTargetCell\_(\textcolor{keyword}{const}\ vector<indice>\&\ targetCell);}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ vector<indice>\ targetCell\_;}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ scale\_\ =\ -\/1.0;}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ coef\_\ =\ 1.0;}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Calculate\ scale\ based\ on\ the\ information\ of\ a\ single\ cell}}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ ComputeCellBasedScale\_(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi);}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Calculate\ scale\ based\ on\ the\ value\ of\ a\ given\ stencil}}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ ComputeStencilBasedScale\_(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keyword}{const}\ stencil\ <indice>\&\ stencilIndice);}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ stencil\ <basisPolynomial*>\ stencilPolyn\_;}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SetCollapsePolyn\_(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keyword}{const}\ stencil\ <indice>\&\ stencilIndice);}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ basisPolynomial*\ collapsePolyn\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Create\ polynomial\ smoothness\ indicator}}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ CreateXi\_();}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ vector<double>\ Xi\_;}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ maxR\_;}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ minR\_;}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ EvalSmoothIndic\_(\textcolor{keyword}{const}\ \mbox{\hyperlink{structMeshInfo}{MeshInfo}}\&\ mi,\ \textcolor{keyword}{const}\ stencil\ <indice>\&\ stencilIndice);}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ smoothnessIndic\_\ =\ -\/1;}
+\DoxyCodeLine{00118\ \ \ \ \ \};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{comment}{//\ End\ of\ using\ name\ space\ MLWENO}}
+\DoxyCodeLine{00121\ \}}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

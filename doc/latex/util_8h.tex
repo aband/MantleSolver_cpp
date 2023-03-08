@@ -1,0 +1,212 @@
+\hypertarget{util_8h}{}\doxysection{/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/util.h File Reference}
+\label{util_8h}\index{/home/renpo/Research/MantleSolver/src/mlweno/util.h@{/home/renpo/Research/MantleSolver/src/mlweno/util.h}}
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$utility$>$}\newline
+{\ttfamily \#include $<$set$>$}\newline
+{\ttfamily \#include $<$unordered\+\_\+set$>$}\newline
+{\ttfamily \#include $<$array$>$}\newline
+{\ttfamily \#include $<$valarray$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$numeric$>$}\newline
+{\ttfamily \#include $<$memory$>$}\newline
+{\ttfamily \#include $<$cstdlib$>$}\newline
+{\ttfamily \#include $<$type\+\_\+traits$>$}\newline
+{\ttfamily \#include $<$iomanip$>$}\newline
+{\ttfamily \#include \char`\"{}lapacke.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}integral.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include $<$petsc.\+h$>$}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} = valarray$<$ double $>$
+\item 
+using \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} = valarray$<$ int $>$
+\item 
+using \mbox{\hyperlink{util_8h_ad73a990d094c45a550a23ca93de73656}{vertex\+Set}} = vector$<$ valarray$<$ double $>$ $>$
+\item 
+using \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indice\+Set}} = vector$<$ valarray$<$ double $>$ $>$
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \mbox{\hyperlink{util_8h_aa164c13b41576f3c2df41a21297c5c7a}{delete\+\_\+pointed\+\_\+to}} (T const ptr)
+\item 
+void \mbox{\hyperlink{util_8h_add1eadf50177393936460ade849dad87}{Assign\+Values\+Mesh\+Info}} (\mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, DM dmv, DM dmu)
+\item 
+double \mbox{\hyperlink{util_8h_a633f7b31f73c4d3049e6ca0672827107}{const\+Func}} (valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param)
+\item 
+double \mbox{\hyperlink{util_8h_aaa4e624df21cf14f034c1eaa0454b347}{const\+Func}} (valarray$<$ double $>$ \&point, const vector$<$ double $>$ \&param, double c)
+\item 
+double \mbox{\hyperlink{util_8h_a8a9e107350c85a1f80089e7108a969ea}{const\+Func}} ()
+\item 
+double \mbox{\hyperlink{util_8h_af682168e261e808147386ee1d5872c7a}{const\+Func}} (double c)
+\item 
+int \mbox{\hyperlink{util_8h_a5788e091deb7c828238d3fa4c71ee58c}{factorial}} (int top, int bottom)
+\item 
+int \mbox{\hyperlink{util_8h_a2ef0d4282fd35df2c8f1189e213182c8}{factorial}} (int top)
+\item 
+double \mbox{\hyperlink{util_8h_a3ce1935948a79b1c0edc84c3dd5f4708}{poly\+Eval}} (double x, double $\ast$coef, int degree)
+\item 
+void \mbox{\hyperlink{util_8h_a4cf5d4796e3b8098b0d742a8c0d63868}{polyn\+Der\+Multi}} (int der, int max, int $\ast$multiplier)
+\item 
+\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \mbox{\hyperlink{util_8h_afd6e6890a61d10bb043f44cbbf30b9d6}{MPILocal\+To\+Global}} (\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} local, const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi)
+\item 
+\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \mbox{\hyperlink{util_8h_ad5153d533412da9ccb2c93de44949b03}{MPIGlobal\+To\+Local}} (\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} global, const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi)
+\item 
+int \mbox{\hyperlink{util_8h_a703c2a3bcdd5cc5356bdd15bd9683fd3}{Flat\+Indic}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, int i, int j)
+\item 
+int \mbox{\hyperlink{util_8h_a880c85572bcda8b3f580ba4b01e4f3ff}{Flat\+Indic}} (const int M, int i, int j)
+\item 
+int \mbox{\hyperlink{util_8h_afbbee9e6b373d468c8fb8b3315fc9efd}{Flat\+Indic}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&p)
+\item 
+int \mbox{\hyperlink{util_8h_ab7518d1d77a5a17c1aad2889fd1c25f2}{Flat\+Indic}} (const int M, const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&p)
+\item 
+\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \mbox{\hyperlink{util_8h_a7aeffa3472ac4b1125ecb3ca8d15d404}{Bend}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, int flat)
+\item 
+\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \mbox{\hyperlink{util_8h_afcf3f371515a60717eea76cda30e0f11}{Bend}} (const int M, int flat)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{util_8h_a724c00a63451ac03113852e2700f68ea}\label{util_8h_a724c00a63451ac03113852e2700f68ea}} 
+\index{util.h@{util.h}!indice@{indice}}
+\index{indice@{indice}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{indice}{indice}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} =  valarray$<$int$>$}
+
+\mbox{\Hypertarget{util_8h_a9a56e3a726f886fc0803abdf6d937882}\label{util_8h_a9a56e3a726f886fc0803abdf6d937882}} 
+\index{util.h@{util.h}!indiceSet@{indiceSet}}
+\index{indiceSet@{indiceSet}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{indiceSet}{indiceSet}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indice\+Set}} =  vector$<$valarray$<$double$>$ $>$}
+
+\mbox{\Hypertarget{util_8h_afe3e6e2ad779e5f022bca85e9820be67}\label{util_8h_afe3e6e2ad779e5f022bca85e9820be67}} 
+\index{util.h@{util.h}!vertex@{vertex}}
+\index{vertex@{vertex}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{vertex}{vertex}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} =  valarray$<$double$>$}
+
+\mbox{\Hypertarget{util_8h_ad73a990d094c45a550a23ca93de73656}\label{util_8h_ad73a990d094c45a550a23ca93de73656}} 
+\index{util.h@{util.h}!vertexSet@{vertexSet}}
+\index{vertexSet@{vertexSet}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{vertexSet}{vertexSet}}
+{\footnotesize\ttfamily using \mbox{\hyperlink{util_8h_ad73a990d094c45a550a23ca93de73656}{vertex\+Set}} =  vector$<$valarray$<$double$>$ $>$}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{util_8h_add1eadf50177393936460ade849dad87}\label{util_8h_add1eadf50177393936460ade849dad87}} 
+\index{util.h@{util.h}!AssignValuesMeshInfo@{AssignValuesMeshInfo}}
+\index{AssignValuesMeshInfo@{AssignValuesMeshInfo}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{AssignValuesMeshInfo()}{AssignValuesMeshInfo()}}
+{\footnotesize\ttfamily void Assign\+Values\+Mesh\+Info (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{DM}]{dmv,  }\item[{DM}]{dmu }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_afcf3f371515a60717eea76cda30e0f11}\label{util_8h_afcf3f371515a60717eea76cda30e0f11}} 
+\index{util.h@{util.h}!Bend@{Bend}}
+\index{Bend@{Bend}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{Bend()}{Bend()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} Bend (\begin{DoxyParamCaption}\item[{const int}]{M,  }\item[{int}]{flat }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_a7aeffa3472ac4b1125ecb3ca8d15d404}\label{util_8h_a7aeffa3472ac4b1125ecb3ca8d15d404}} 
+\index{util.h@{util.h}!Bend@{Bend}}
+\index{Bend@{Bend}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{Bend()}{Bend()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} Bend (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{int}]{flat }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_a8a9e107350c85a1f80089e7108a969ea}\label{util_8h_a8a9e107350c85a1f80089e7108a969ea}} 
+\index{util.h@{util.h}!constFunc@{constFunc}}
+\index{constFunc@{constFunc}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{constFunc()}{constFunc()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily double const\+Func (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_af682168e261e808147386ee1d5872c7a}\label{util_8h_af682168e261e808147386ee1d5872c7a}} 
+\index{util.h@{util.h}!constFunc@{constFunc}}
+\index{constFunc@{constFunc}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{constFunc()}{constFunc()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily double const\+Func (\begin{DoxyParamCaption}\item[{double}]{c }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_a633f7b31f73c4d3049e6ca0672827107}\label{util_8h_a633f7b31f73c4d3049e6ca0672827107}} 
+\index{util.h@{util.h}!constFunc@{constFunc}}
+\index{constFunc@{constFunc}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{constFunc()}{constFunc()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily double const\+Func (\begin{DoxyParamCaption}\item[{valarray$<$ double $>$ \&}]{point,  }\item[{const vector$<$ double $>$ \&}]{param }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_aaa4e624df21cf14f034c1eaa0454b347}\label{util_8h_aaa4e624df21cf14f034c1eaa0454b347}} 
+\index{util.h@{util.h}!constFunc@{constFunc}}
+\index{constFunc@{constFunc}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{constFunc()}{constFunc()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily double const\+Func (\begin{DoxyParamCaption}\item[{valarray$<$ double $>$ \&}]{point,  }\item[{const vector$<$ double $>$ \&}]{param,  }\item[{double}]{c }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_aa164c13b41576f3c2df41a21297c5c7a}\label{util_8h_aa164c13b41576f3c2df41a21297c5c7a}} 
+\index{util.h@{util.h}!delete\_pointed\_to@{delete\_pointed\_to}}
+\index{delete\_pointed\_to@{delete\_pointed\_to}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{delete\_pointed\_to()}{delete\_pointed\_to()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void delete\+\_\+pointed\+\_\+to (\begin{DoxyParamCaption}\item[{T const}]{ptr }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_a2ef0d4282fd35df2c8f1189e213182c8}\label{util_8h_a2ef0d4282fd35df2c8f1189e213182c8}} 
+\index{util.h@{util.h}!factorial@{factorial}}
+\index{factorial@{factorial}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{factorial()}{factorial()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily int factorial (\begin{DoxyParamCaption}\item[{int}]{top }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_a5788e091deb7c828238d3fa4c71ee58c}\label{util_8h_a5788e091deb7c828238d3fa4c71ee58c}} 
+\index{util.h@{util.h}!factorial@{factorial}}
+\index{factorial@{factorial}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{factorial()}{factorial()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily int factorial (\begin{DoxyParamCaption}\item[{int}]{top,  }\item[{int}]{bottom }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_ab7518d1d77a5a17c1aad2889fd1c25f2}\label{util_8h_ab7518d1d77a5a17c1aad2889fd1c25f2}} 
+\index{util.h@{util.h}!FlatIndic@{FlatIndic}}
+\index{FlatIndic@{FlatIndic}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{FlatIndic()}{FlatIndic()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily int Flat\+Indic (\begin{DoxyParamCaption}\item[{const int}]{M,  }\item[{const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&}]{p }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_a880c85572bcda8b3f580ba4b01e4f3ff}\label{util_8h_a880c85572bcda8b3f580ba4b01e4f3ff}} 
+\index{util.h@{util.h}!FlatIndic@{FlatIndic}}
+\index{FlatIndic@{FlatIndic}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{FlatIndic()}{FlatIndic()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily int Flat\+Indic (\begin{DoxyParamCaption}\item[{const int}]{M,  }\item[{int}]{i,  }\item[{int}]{j }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_afbbee9e6b373d468c8fb8b3315fc9efd}\label{util_8h_afbbee9e6b373d468c8fb8b3315fc9efd}} 
+\index{util.h@{util.h}!FlatIndic@{FlatIndic}}
+\index{FlatIndic@{FlatIndic}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{FlatIndic()}{FlatIndic()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily int Flat\+Indic (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&}]{p }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_a703c2a3bcdd5cc5356bdd15bd9683fd3}\label{util_8h_a703c2a3bcdd5cc5356bdd15bd9683fd3}} 
+\index{util.h@{util.h}!FlatIndic@{FlatIndic}}
+\index{FlatIndic@{FlatIndic}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{FlatIndic()}{FlatIndic()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily int Flat\+Indic (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{int}]{i,  }\item[{int}]{j }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_ad5153d533412da9ccb2c93de44949b03}\label{util_8h_ad5153d533412da9ccb2c93de44949b03}} 
+\index{util.h@{util.h}!MPIGlobalToLocal@{MPIGlobalToLocal}}
+\index{MPIGlobalToLocal@{MPIGlobalToLocal}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{MPIGlobalToLocal()}{MPIGlobalToLocal()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} MPIGlobal\+To\+Local (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}}]{global,  }\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_afd6e6890a61d10bb043f44cbbf30b9d6}\label{util_8h_afd6e6890a61d10bb043f44cbbf30b9d6}} 
+\index{util.h@{util.h}!MPILocalToGlobal@{MPILocalToGlobal}}
+\index{MPILocalToGlobal@{MPILocalToGlobal}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{MPILocalToGlobal()}{MPILocalToGlobal()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} MPILocal\+To\+Global (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}}]{local,  }\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_a3ce1935948a79b1c0edc84c3dd5f4708}\label{util_8h_a3ce1935948a79b1c0edc84c3dd5f4708}} 
+\index{util.h@{util.h}!polyEval@{polyEval}}
+\index{polyEval@{polyEval}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{polyEval()}{polyEval()}}
+{\footnotesize\ttfamily double poly\+Eval (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double $\ast$}]{coef,  }\item[{int}]{degree }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{util_8h_a4cf5d4796e3b8098b0d742a8c0d63868}\label{util_8h_a4cf5d4796e3b8098b0d742a8c0d63868}} 
+\index{util.h@{util.h}!polynDerMulti@{polynDerMulti}}
+\index{polynDerMulti@{polynDerMulti}!util.h@{util.h}}
+\doxysubsubsection{\texorpdfstring{polynDerMulti()}{polynDerMulti()}}
+{\footnotesize\ttfamily void polyn\+Der\+Multi (\begin{DoxyParamCaption}\item[{int}]{der,  }\item[{int}]{max,  }\item[{int $\ast$}]{multiplier }\end{DoxyParamCaption})}
+

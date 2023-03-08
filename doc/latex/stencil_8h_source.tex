@@ -1,0 +1,88 @@
+\hypertarget{stencil_8h_source}{}\doxysection{stencil.\+h}
+\label{stencil_8h_source}\index{/home/renpo/Research/MantleSolver/src/mlweno/stencil.h@{/home/renpo/Research/MantleSolver/src/mlweno/stencil.h}}
+\mbox{\hyperlink{stencil_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ STENCIL\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ STENCIL\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *Define\ multi-\/level\ stencils\ for\ weno\ reconstruction}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *Designed\ for\ cartesian\ logically\ rectangular\ mesh.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{util_8h}{util.h}}"{}}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceMLWENO}{MLWENO}}\ \{}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{enum}\ \mbox{\hyperlink{namespaceMLWENO_a049b2dc986469f15cf43de27983a3140}{stencilType}}\ \{\mbox{\hyperlink{namespaceMLWENO_a049b2dc986469f15cf43de27983a3140ab9d5ad596c633f4b2bfddbc4d1135c66}{cellCentered}},\ \mbox{\hyperlink{namespaceMLWENO_a049b2dc986469f15cf43de27983a3140a822d9c5419a05737ddb0f92127100115}{edgeCentered}},\ \mbox{\hyperlink{namespaceMLWENO_a049b2dc986469f15cf43de27983a3140a6704ef9cf3e5b045237384dca21e6ebe}{vertexCentered}}\};}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1stencil}{stencil}}\{}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1stencil_a19c1318b96421889146c56f3485f2a22}{stencil}}()\ \{\};}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1stencil_a040fbc5fefa846c8da303b76a8dc9172}{stencil}}(\textcolor{keywordtype}{size\_t}\ I):\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ I\_(I),\ stencilSize\_(I)\ \{stencil\_.resize(stencilSize\_);\};}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1stencil_a8e271b611d2b1d123aad2f736d23103d}{stencil}}(\textcolor{keywordtype}{size\_t}\ I,\ \textcolor{keywordtype}{size\_t}\ J):\ \ \ \ \ \ \ \ \ \ \ I\_(I),\ J\_(J),\ stencilSize\_(I*J)\ \{stencil\_.resize(stencilSize\_);\};}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1stencil_a023644f195f800027c59947091a9f2b9}{stencil}}(\textcolor{keywordtype}{size\_t}\ I,\ \textcolor{keywordtype}{size\_t}\ J,\ \textcolor{keywordtype}{size\_t}\ K):\ I\_(I),\ J\_(J),\ K\_(K),\ stencilSize\_(I*J*K)\ \{stencil\_.resize(stencilSize\_);\};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1stencil_ae39644842e5e91acd8fa2e3086f8c98c}{\string~stencil}}()\ \{\};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencil_afda0108b0d52ca2d5d824f4b720555c4}{SetStencil}}(\textcolor{keywordtype}{size\_t}\ I)\ \{I\_\ =\ I;\ stencilSize\_\ =\ I;\ stencil\_.resize(stencilSize\_);\}}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencil_a94939fd14ea8315377063e92550072bd}{SetStencil}}(\textcolor{keywordtype}{size\_t}\ I,\ \textcolor{keywordtype}{size\_t}\ J)\ \{I\_\ =\ I;\ J\_\ =\ J;\ stencilSize\_\ =\ I*J;\ stencil\_.resize(stencilSize\_);\}}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencil_a1b9780c28d48e4ce6a9ffaaa41ae9c9a}{SetStencil}}(\textcolor{keywordtype}{size\_t}\ I,\ \textcolor{keywordtype}{size\_t}\ J,\ \textcolor{keywordtype}{size\_t}\ K)\ \{I\_\ =\ I;\ J\_\ =\ J;\ K\_\ =\ K;\ stencilSize\_\ =\ I*J*K;\ stencil\_.resize(stencilSize\_);\}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencil_ac8fc8443c4ba3bc7541df912602306c7}{CreateStencil}}()\ \{stencil\_.resize(stencilSize\_);\}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1stencil_af5fbacfb1b981f8c39aa109a726b6134}{getSize}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ stencilSize\_;\};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1stencil_ac2fec191fe9dc3c52a55c42ae6ab2fc1}{getI}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ I\_;\};}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1stencil_a8652d7eeb4132cd0dcb1c42606d565d0}{getJ}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ J\_;\};}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1stencil_a8f177b9f966a82287792d1d6866aaf9b}{getK}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ K\_;\};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencil_a080c4f35ab9a8c33175e6840e1341dad}{setI}}(\textcolor{keywordtype}{size\_t}\ I)\textcolor{keyword}{\ const\ }\{I\_\ =\ I;\};}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencil_af7f8dc81427faf4c957d8412924324ce}{setJ}}(\textcolor{keywordtype}{size\_t}\ J)\textcolor{keyword}{\ const\ }\{J\_\ =\ J;\};}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencil_a6f993479a3880cf6aa2da35b5375b348}{setK}}(\textcolor{keywordtype}{size\_t}\ K)\textcolor{keyword}{\ const\ }\{K\_\ =\ K;\};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ T\ \&\mbox{\hyperlink{classMLWENO_1_1stencil_a2f87323e56460203d0be8d680ca10e8d}{operator()}}(\textcolor{keywordtype}{size\_t}\ i)\{}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ stencil\_[i];}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ T\ \&\mbox{\hyperlink{classMLWENO_1_1stencil_a7988a0861f1d1ce522e5a02e7a1b9188}{operator()}}(\textcolor{keywordtype}{size\_t}\ i,\ \textcolor{keywordtype}{size\_t}\ j)\{}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ stencil\_[i+j*I\_];}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ T\ \&\mbox{\hyperlink{classMLWENO_1_1stencil_a61fe55b2f3daf5a009e997ce5adccf71}{operator()}}(\textcolor{keywordtype}{size\_t}\ i,\ \textcolor{keywordtype}{size\_t}\ j,\ \textcolor{keywordtype}{size\_t}\ k)\{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ stencil\_[i+j*I\_+k*I\_*J\_];}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ T\ \mbox{\hyperlink{classMLWENO_1_1stencil_a2285c8cabd153126faa21e6253988aae}{operator()}}(\textcolor{keywordtype}{size\_t}\ i)\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ stencil\_[i];}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ T\ \mbox{\hyperlink{classMLWENO_1_1stencil_a62b78e4c84fbdbf7e3e90b9f072e512e}{operator()}}(\textcolor{keywordtype}{size\_t}\ i,\ \textcolor{keywordtype}{size\_t}\ j)\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ stencil\_[i+j*I\_];}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ T\ \mbox{\hyperlink{classMLWENO_1_1stencil_a3f9e3fac37c7b0b908c5d729989bc670}{operator()}}(\textcolor{keywordtype}{size\_t}\ i,\ \textcolor{keywordtype}{size\_t}\ j,\ \textcolor{keywordtype}{size\_t}\ k)\textcolor{keyword}{\ const}\{}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ stencil\_[i+j*I\_+k*I\_*J\_];}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ vector<T>\&\ \mbox{\hyperlink{classMLWENO_1_1stencil_a1226eedca1550864fc252cd4595424a8}{GetStencil}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ stencil\_;\}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Call\ it\ when\ T\ is\ pointer}}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1stencil_a6c36f96fb5aeca4586fe75a9dc3bebad}{clearPtr}}()\ \{\textcolor{keywordflow}{if}\ (std::is\_pointer<T>::value)\{}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::for\_each(stencil\_.begin(),stencil\_.end(),delete\_pointed\_to<T>);\}\}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ I\_;}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ J\_;}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ K\_;\ }
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ stencilSize\_;}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ vector<T>\ stencil\_;}
+\DoxyCodeLine{00077\ \ \ \ \ \};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \textcolor{comment}{//\ End\ of\ using\ name\ space\ MLWENO}}
+\DoxyCodeLine{00080\ \}\ }
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}
