@@ -51,6 +51,7 @@ add_executable(test test.cpp ../../integral.cpp ../../mesh.c ../polynomial.cpp .
 include_directories(../../../include ../../../src/mlweno)
 
 find_package(PkgConfig REQUIRED)
+find_package(MPI REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
 #pkg_search_module(ADOLC REQUIRED IMPORTED_TARGET adolc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)

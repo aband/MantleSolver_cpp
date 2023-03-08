@@ -147,22 +147,24 @@ int main(int argc, char **argv){
 // ========================================================================================================================================
 
     // Test multi level reconstruction
-    MLWENO::multiLevelReconstruction * mlrPtr = new MLWENO::multiLevelReconstruction(mi,2,2);
-    mlrPtr->AddLevel(mi,3,3);
-    mlrPtr->AddLevel(mi,2,3);
-    mlrPtr->AddLevel(mi,3,2);
+    MLWENO::multiLevelReconstruction * mlrPtr = new MLWENO::multiLevelReconstruction(mi,2,2,{{-1,0},{-1,-1,},{0,-1},{0,0}});
+    mlrPtr->AddLevel(mi,3,3,{{-1,-1}});
+    mlrPtr->AddLevel(mi,2,3,{{-1,-1},{0,-1}});
+    mlrPtr->AddLevel(mi,3,2,{{-1,-1},{-1,0}});
 
-    vector<vector<indice>> reconstMethod {{{-1,0},{-1,-1,},{0,-1},{0,0}},{{-1,-1}},{{-1,-1},{0,-1}},{{-1,-1},{-1,0}}};
+    mlrPtr->AddLevel(mi,1,1,{{0,0}});
+
+    //vector<vector<indice>> reconstMethod {{{-1,0},{-1,-1,},{0,-1},{0,0}},{{-1,-1}},{{-1,-1},{0,-1}},{{-1,-1},{-1,0}}};
 
     //vector<vector<indice>> reconstMethod {{{-1,0},{-1,-1,},{0,-1},{0,0}},{{-1,-1}}};
 
-    mlrPtr->AddReconstMethod(reconstMethod);
+    //mlrPtr->AddReconstMethod(reconstMethod);
 
-    //mlrPtr->GetInfo();
+    mlrPtr->GetInfo();
 
-    mlrPtr->UpdateTwoStageNonLinearWgts(mi);
+    //mlrPtr->UpdateTwoStageNonLinearWgts(mi);
 
-    mlrPtr->PrintNonLinearWgts(mi);
+    //mlrPtr->PrintNonLinearWgts(mi);
 
     //mlrPtr->PrintSmoothnessIndicator(mi);
 

@@ -11,23 +11,41 @@ namespace MLWENO{
              * Construt multi-level weno reconstruction by specifying each single level
              */
             multiLevelReconstruction() {};
-            multiLevelReconstruction(const MeshInfo& mi, int stencilSizeX, int stencilSizeY){AddLevel(mi,stencilSizeX,stencilSizeY);};
-            multiLevelReconstruction(const MeshInfo& mi, int* stencilSize) {AddLevel(mi,stencilSize);};
-            multiLevelReconstruction(const MeshInfo& mi, vector<int*> stencilSizes) 
-            {AddLevel(mi,stencilSizes);};
 
-            ~multiLevelReconstruction() {Clear();};
+            multiLevelReconstruction(const MeshInfo& mi, int stencilSizeX, int stencilSizeY, 
+                                     vector<indice> brm)
+            {AddLevel(mi,stencilSizeX,stencilSizeY,brm);};
+
+            multiLevelReconstruction(const MeshInfo& mi, int* stencilSize, vector<indice> brm) 
+            {AddLevel(mi,stencilSize,brm);};
+
+            multiLevelReconstruction(const MeshInfo& mi, vector<int*> stencilSizes,
+                                     vector<vector<indice>> brms) 
+            {AddLevel(mi,stencilSizes,brms);};
 
             //! A destructor
-            /**!
-             * Construt multi-level weno reconstruction by specifying each single level
+            /**
+             * Construct multi-level weno reconstruction by specifying each single level
              */
-            //! Uniformally add reconstruction level.
-            void AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY);
-            void AddLevel(const MeshInfo& mi, int* stencilSize) {AddLevel(mi,stencilSize[0],stencilSize[1]);};
-            void AddLevel(const MeshInfo& mi, vector<int*> stencilSizes)
+            ~multiLevelReconstruction() {Clear();};
+
+            /**
+             * Add a single weno reconstruction level to the weno reconstruction.
+             * Create a reference key name for specific level.
+             * Create map from the reference key to the single level reconstruction.
+             */
+            void AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY, vector<indice> brm);
+            void AddLevel(const MeshInfo& mi, int* stencilSize, vector<indice> brm) {AddLevel(mi,stencilSize[0],stencilSize[1],brm);};
+            void AddLevel(const MeshInfo& mi, vector<int*> stencilSizes, vector<vector<indice>> brms)
             {for (int i=0; i<stencilSizes.size(); i++){
-                 AddLevel(mi,stencilSizes[i]);}};
+                 AddLevel(mi,stencilSizes[i],brms[i]);}};
+
+            /**
+             * Specify boundary layers (cells near boundary that need additional reconstruciton level then interior cells)
+             * Default boundary layer size is set to be 1.
+             * Call this function when a boundary layer size larger than 1 is needed.
+             */
+            void SpecifyBoundaryLayer(const MeshInfo& mi, const int& layerSize);
 
             //! Uniformally add reconstruction methods.
             void AddReconstMethod(vector<indice> brm) {baseReconstMethod_.push_back(brm); AddWgts_();}; 
@@ -50,12 +68,14 @@ namespace MLWENO{
 
             const double eps0_ = 0.01;
 
+            map<std::string, singleLevelReconstruction *> reconstLevels_; //! reconstruction levels
+            map<std::string, vector<indice> > reconstMethods_;            //! reconst methods
+
             vector< singleLevelReconstruction *> allLevels_;
             vector<vector<indice>> baseReconstMethod_; 
             vector< map<int, double> > linearWgts_;
 
-            map <int, vector<vector<indice>>* > reconstMethods_;
-            map <int, vector< map<int, double>>* > allLinearWgts_;
+            map<int, vector< map<int, double>>* > allLinearWgts_;
             map<int, vector< map<int, double> > > nonLinearWgts_;
 
             //! Bias usually set to be zero

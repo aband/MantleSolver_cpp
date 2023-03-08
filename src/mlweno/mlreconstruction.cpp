@@ -7,10 +7,30 @@
 using namespace MLWENO;
 
 //! Add a single weno reconstruction level to the computation
-void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY){
+void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY,
+                                        vector<indice> brm){
+    //! Initialize single level reconstruction class pointer.
     singleLevelReconstruction * slrPtr = new singleLevelReconstruction(stencilSizeX,stencilSizeY);
     slrPtr->CreateStencilPolynomials(mi);
+
+    //! Create single level key 
+    std::string key = '(' + std::to_string(stencilSizeX) + ',' + 
+                            std::to_string(stencilSizeY) + ')';
+
+    //! Create map from single level key to created single level reconstrucion
+    reconstLevels_.insert(std::pair<std::string,singleLevelReconstruction *>(key,slrPtr));
+
+    //! Create map from single level key to reconstruction method (how to find stencils)
+    reconstMethods_.insert(std::pair<std::string, vector<indice>>(key,brm)); 
+
+    //redundant all levels will be replaced with reconLevels later
     allLevels_.push_back(slrPtr); 
+    // ===========================================================
+}
+
+//! Specify boundary layers (cells near boundary that need additional reconstruciton level then interior cells)
+void SpecifyBoundaryLayer(const MeshInfo& mi, const int& layerSize){
+    
 }
 
 void multiLevelReconstruction::AddWgts_() {
@@ -196,16 +216,18 @@ void multiLevelReconstruction::UpdateTwoStageNonLinearWgts(const MeshInfo& mi){
     } }
 }
 
+// ===================================================================================
 void multiLevelReconstruction::GetInfo(){
+    //! Print added levels and reconstruction methods
+    cout << "There are " <<reconstLevels_.size()<< " levels pre computed." << endl;
 
-    cout << "There are " <<allLevels_.size()<< " levels." << endl;
-
-    for (int l=0; l<allLevels_.size(); l++){
-        allLevels_[l]->CheckStencils(); 
+    for (auto const& it : reconstLevels_){
+        cout << it.first << " " ; 
+        (it.second)->CheckStencils();
     }
+
 }
 
-// ===================================================================================
 void multiLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
 
     for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
