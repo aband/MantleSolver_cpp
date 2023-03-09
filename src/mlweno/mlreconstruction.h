@@ -10,7 +10,7 @@ namespace MLWENO{
             /**!
              * Construt multi-level weno reconstruction by specifying each single level
              */
-            multiLevelReconstruction() {};
+            //multiLevelReconstruction() {};
 
             multiLevelReconstruction(const MeshInfo& mi, int stencilSizeX, int stencilSizeY, 
                                      vector<indice> brm)
@@ -43,9 +43,10 @@ namespace MLWENO{
             /**
              * Specify boundary layers (cells near boundary that need additional reconstruciton level then interior cells)
              * Default boundary layer size is set to be 1.
-             * Call this function when a boundary layer size larger than 1 is needed.
+             * Call the second function when a boundary layer size larger than 1 is needed.
              */
-            void SpecifyBoundaryLayer(const MeshInfo& mi, const int& layerSize);
+            void SeparateBoundaryLayer(const MeshInfo& mi, const int& layerSize);
+            void SeparateBoundaryLayer(const MeshInfo& mi);
 
             //! Uniformally add reconstruction methods.
             void AddReconstMethod(vector<indice> brm) {baseReconstMethod_.push_back(brm); AddWgts_();}; 
@@ -68,8 +69,11 @@ namespace MLWENO{
 
             const double eps0_ = 0.01;
 
-            map<std::string, singleLevelReconstruction *> reconstLevels_; //! reconstruction levels
-            map<std::string, vector<indice> > reconstMethods_;            //! reconst methods
+            unordered_map<std::string, singleLevelReconstruction *> reconstLevels_; //! reconstruction levels
+            unordered_map<std::string, vector<indice> > reconstMethods_;            //! reconst methods
+
+            unordered_set<int> interiorCells_; //! Cells inside the computational domain.
+            unordered_set<int> boundaryCells_; //! Cells on the boundary layer requiring additional resolution.
 
             vector< singleLevelReconstruction *> allLevels_;
             vector<vector<indice>> baseReconstMethod_; 

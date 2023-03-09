@@ -36,25 +36,25 @@ void delete_pointed_to(T const ptr){
  */
 typedef struct {
 
-    // In the case, Cell and Vertex are maintained by same global size
-    // They will still be stored separately for clearification.
+    //! In the case, Cell and Vertex are maintained by same global size
+    //! They will still be stored separately for clearification.
 
-    int dim;                 // Total number of dimensions
+    int dim;                 //! Total number of dimensions
 
-    vector<int> MPIlocalCellSize;         // Local chunk size of cell without ghost layer
-    vector<int> MPIlocalVertexSize;       // Local chunk size of vertex without ghost layer
+    vector<int> MPIlocalCellSize;         //! Local chunk size of cell without ghost layer
+    vector<int> MPIlocalVertexSize;       //! Local chunk size of vertex without ghost layer
 
-    indice MPIlocalCellStart;             // The starting cell index for MPI local part
-    indice MPIlocalVertexStart;           // The starting vertex index for MPI local part
+    indice MPIlocalCellStart;             //! The starting cell index for MPI local part
+    indice MPIlocalVertexStart;           //! The starting vertex index for MPI local part
 
-    vector<int> MPIglobalCellSize;        // global chunk size of cell without ghost layer
-    vector<int> MPIglobalVertexSize;      // global chunk size of vertex without ghost layer
+    vector<int> MPIglobalCellSize;        //! global chunk size of cell without ghost layer
+    vector<int> MPIglobalVertexSize;      //! global chunk size of vertex without ghost layer
 
-    int cellGhostLayerSize;   // size of ghost layer of cell
-    int vertexGhostLayerSize; // size of ghost layer of node
+    int cellGhostLayerSize;   //! size of ghost layer of cell
+    int vertexGhostLayerSize; //! size of ghost layer of node
 
-    vector<int> MPIlocalCellSizeFull;     // Local chunk size of cells including ghost layer
-    vector<int> MPIlocalVertexSizeFull;   // Local chunk size of vertex including ghost layer 
+    vector<int> MPIlocalCellSizeFull;     //! Local chunk size of cells including ghost layer
+    vector<int> MPIlocalVertexSizeFull;   //! Local chunk size of vertex including ghost layer 
 
     // Horizontal edges first than vertical edges
     int MPIglobalHoriEdgeSize;

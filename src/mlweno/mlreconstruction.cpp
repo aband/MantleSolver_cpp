@@ -29,8 +29,22 @@ void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, in
 }
 
 //! Specify boundary layers (cells near boundary that need additional reconstruciton level then interior cells)
-void SpecifyBoundaryLayer(const MeshInfo& mi, const int& layerSize){
-    
+void multiLevelReconstruction::SeparateBoundaryLayer(const MeshInfo& mi, const int& layerSize){
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+    for (int i=0; j<mi.MPIlocalCellSize[0]; j++){
+        indice add {i,j}; 
+        indice current = mi.MPIlocalCellStart + add;
+        if (current[0] == 0 + layerSize-1 || current[0] == mi.MPIglobalCellSize[0] - layerSize+1 ||
+            current[1] == 0 + layerSize-1 || current[1] == mi.MPIglobalCellSize[1] - layerSize+1){
+            boundaryCells_.insert(FlatIndic(mi,current));
+        } else {
+            interiorCells_.insert(FlatIndic(mi,current));
+        }
+    }}
+}
+
+void multiLevelReconstruction::SeparateBoundaryLayer(const MeshInfo& mi){
+    SeparateBoundaryLayer(mi,1);
 }
 
 void multiLevelReconstruction::AddWgts_() {
