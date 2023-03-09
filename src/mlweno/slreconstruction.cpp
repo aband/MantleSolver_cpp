@@ -71,7 +71,7 @@ const vertex singleLevelReconstruction::ComputeStencilCenter_(const MeshInfo& mi
 }
 
 //! Update smoothness indicators for the entire level
-void singleLevelReconstruction::UpdateSmoothnessIndic_(const MeshInfo& mi){
+void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi){
     for (auto& ind:interior_){
         smoothnessIndic_[ind] = singleLevel_[ind]->GetSmoothIndic(mi,stencilIndice_);
     }
@@ -86,6 +86,11 @@ void singleLevelReconstruction::ComputeStencilPolyn_(const MeshInfo& mi){
     }
 }
 
+//! Extract smoothness indicator from pre-calculated values
+double singleLevelReconstruction::GetSmoothnessIndic(const MeshInfo& mi, indice owner){
+    return smoothnessIndic_[FlatIndic(mi,owner)];
+}
+
 // ======================================================================
 //! Functions checking created stencil polynomials for a single stencil
 void singleLevelReconstruction::CheckStencilPolynomials(const MeshInfo& mi, indice start){
@@ -94,12 +99,9 @@ void singleLevelReconstruction::CheckStencilPolynomials(const MeshInfo& mi, indi
 
 //! Print all smoothnessIndicator for all stencils belonging to this level
 void singleLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
-    UpdateSmoothnessIndic_(mi);
 
     for (auto& ind:interior_){
         cout << smoothnessIndic_[ind] << endl;
     }
 
 }
-
-

@@ -291,9 +291,8 @@ void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indi
             for (int r=l; r<stencilPolyn_.getJ(); r++){
             for (int s=m; s<stencilPolyn_.getI(); s++){
                 smoothnessIndic_ += pow(factorial(r,r-l),2)/(2*(r-l)+1)/pow(4,r-l) * 
-                                    pow(factorial(s,s-m),2)/(2*(s-m)+1)/pow(4,s-m); 
-
-                smoothnessIndic_ *= pow(collapsePolyn_->getCoef(FlatIndic(stencilPolyn_.getI(),s,r)),2);
+                                    pow(factorial(s,s-m),2)/(2*(s-m)+1)/pow(4,s-m) *
+                                    pow(collapsePolyn_->getCoef(FlatIndic(stencilPolyn_.getI(),s,r)),2); 
             }}
         }
 

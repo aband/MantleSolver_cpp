@@ -48,19 +48,16 @@ namespace MLWENO{
             void SeparateBoundaryLayer(const MeshInfo& mi, const int& layerSize);
             void SeparateBoundaryLayer(const MeshInfo& mi);
 
-            //! Uniformally add reconstruction methods.
-            void AddReconstMethod(vector<indice> brm) {baseReconstMethod_.push_back(brm); AddWgts_();}; 
-            void AddReconstMethod(vector<vector<indice>> brms) 
-                                 {for (int i=0; i<brms.size(); i++){
-                                      AddReconstMethod(brms[i]);     
-                                  }}; 
-
-            //! Two ways of updateing non linear weights with updated smoothness indicators.
-            void UpdateNonLinearWgts(const MeshInfo& mi);
+            /**
+             * Update non linear weights for all levels.
+             * Smoothness indicator will be updated every time when non linear weights updated.
+             */
+            void UpdateOneStageNonLinearWgts(const MeshInfo& mi);
             void UpdateTwoStageNonLinearWgts(const MeshInfo& mi);
 
             //! Routines used to check results and verification
             void GetInfo();
+            void PrintBoundaryLayer(const MeshInfo& mi);
             void PrintSmoothnessIndicator(const MeshInfo& mi);
             void PrintNonLinearWgts(const MeshInfo& mi);
 
@@ -69,29 +66,35 @@ namespace MLWENO{
 
             const double eps0_ = 0.01;
 
-            unordered_map<std::string, singleLevelReconstruction *> reconstLevels_; //! reconstruction levels
-            unordered_map<std::string, vector<indice> > reconstMethods_;            //! reconst methods
+            std::string lowestLevel_;
+            std::string highestLevel_;
+
+            map<std::string, singleLevelReconstruction *> reconstLevels_; //! reconstruction levels
+            map<std::string, vector<indice> > reconstMethods_;            //! reconst methods
 
             unordered_set<int> interiorCells_; //! Cells inside the computational domain.
             unordered_set<int> boundaryCells_; //! Cells on the boundary layer requiring additional resolution.
 
-            vector< singleLevelReconstruction *> allLevels_;
-            vector<vector<indice>> baseReconstMethod_; 
-            vector< map<int, double> > linearWgts_;
+            unordered_set<std::string> wenoLevels_;     //! Storing all reconstruction levels defined previously.
+            unordered_set<std::string> interiorLevels_; //! Reconstruction levels for interior cells
+            unordered_set<std::string> boundaryLevels_; //! Reconstruction levels for boundary cells
 
-            map<int, vector< map<int, double>>* > allLinearWgts_;
-            map<int, vector< map<int, double> > > nonLinearWgts_;
+            int totalLevels_ = 0; //! Accumulate all number of stencils.
+
+            /**
+             * Separate different reconstruction levels for boundary and interior cells.
+             * Immediately called after separating boundary layer.
+             */
+            void SeparateReconstMethods_();
+
+            /**            
+             * No need to define linear weights.
+             * Simply average out the total number of levels; 
+             */
+            unordered_map<int, unordered_map<std::string, unordered_map<int,double>>> nonLinearWgts; //! 
 
             //! Bias usually set to be zero
             vector< map<int, int> > etaBias_;
-
-            // Collective methods
-            void ResetWgts_();
-            void AddWgts_();
-
-            void UpdateNonLinearWgts_(const MeshInfo& mi, indice start);
-            void UpdateFirstStageNonLinearWgts_(const MeshInfo& mi, indice start);
-            void UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, indice start);
 
     };
 }

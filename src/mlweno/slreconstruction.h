@@ -43,6 +43,15 @@ namespace MLWENO{
             //! Should not be called directly for computational efficiency
             double CalculateSmoothnessIndic(const MeshInfo& mi, indice owner);
 
+            /**
+             * Directly extract pre-calculateed smoothness indicator.
+             * Should always be the one to call when smoothness indicator is needed.
+             */
+            double GetSmoothnessIndic(const MeshInfo& mi, indice owner); 
+
+            //! Update smoothness indicator for entire reconstruction level
+            void UpdateSmoothnessIndic(const MeshInfo& mi);
+
             // ======================================================================
             //! class members for checking and verification
             void CheckStencils() const {cout<< "Constructed "<< interior_.size() << " stencils with the size of " << stencilSizeX_ << " " << stencilSizeY_ << endl;};
@@ -64,9 +73,6 @@ namespace MLWENO{
             const vertex ComputeStencilCenter_(const MeshInfo& mi, int flat);
 
             void ComputeStencilPolyn_(const MeshInfo& mi);
-
-            void UpdateSmoothnessIndic_(const MeshInfo& mi);
-
     };
 
 }

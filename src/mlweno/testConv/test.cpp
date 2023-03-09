@@ -25,8 +25,8 @@ double func(vertex& point, const vector<double>& param){
 //	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
 //	 }
 
-    return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
-    //return point[0]*point[0] + point[1]*point[1];
+    //return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
+    return point[0]*point[0] + point[1]*point[1];
     //return 0.5;
     //return point[0] + point[1];
 
@@ -154,19 +154,14 @@ int main(int argc, char **argv){
 
     mlrPtr->AddLevel(mi,1,1,{{0,0}});
 
-    //vector<vector<indice>> reconstMethod {{{-1,0},{-1,-1,},{0,-1},{0,0}},{{-1,-1}},{{-1,-1},{0,-1}},{{-1,-1},{-1,0}}};
+    mlrPtr->SeparateBoundaryLayer(mi);
 
-    //vector<vector<indice>> reconstMethod {{{-1,0},{-1,-1,},{0,-1},{0,0}},{{-1,-1}}};
+    mlrPtr->UpdateOneStageNonLinearWgts(mi);
 
-    //mlrPtr->AddReconstMethod(reconstMethod);
-
+    // Print required information
     mlrPtr->GetInfo();
 
-    //mlrPtr->UpdateTwoStageNonLinearWgts(mi);
-
-    //mlrPtr->PrintNonLinearWgts(mi);
-
-    //mlrPtr->PrintSmoothnessIndicator(mi);
+    mlrPtr->PrintSmoothnessIndicator(mi);
 
     // ====================================================================================================================================
     // Clear used objects

@@ -9,13 +9,19 @@ using namespace MLWENO;
 //! Add a single weno reconstruction level to the computation
 void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY,
                                         vector<indice> brm){
-    //! Initialize single level reconstruction class pointer.
-    singleLevelReconstruction * slrPtr = new singleLevelReconstruction(stencilSizeX,stencilSizeY);
-    slrPtr->CreateStencilPolynomials(mi);
-
     //! Create single level key 
     std::string key = '(' + std::to_string(stencilSizeX) + ',' + 
                             std::to_string(stencilSizeY) + ')';
+
+    //! Check if the new level has never been defined before
+    assert(reconstMethods_.count(key) == 0);
+
+    //! Insert new key into allLevels;
+    wenoLevels_.insert(key);
+
+    //! Initialize single level reconstruction class pointer.
+    singleLevelReconstruction * slrPtr = new singleLevelReconstruction(stencilSizeX,stencilSizeY);
+    slrPtr->CreateStencilPolynomials(mi);
 
     //! Create map from single level key to created single level reconstrucion
     reconstLevels_.insert(std::pair<std::string,singleLevelReconstruction *>(key,slrPtr));
@@ -23,214 +29,113 @@ void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, in
     //! Create map from single level key to reconstruction method (how to find stencils)
     reconstMethods_.insert(std::pair<std::string, vector<indice>>(key,brm)); 
 
-    //redundant all levels will be replaced with reconLevels later
-    allLevels_.push_back(slrPtr); 
-    // ===========================================================
+    //! Update lowest and highest order of reconstruction level
+    lowestLevel_ = reconstMethods_.begin()->first;
+    highestLevel_ = reconstMethods_.rbegin()->first;
+
+    //! Accumulate total levels
+    totalLevels_ += brm.size();
 }
 
 //! Specify boundary layers (cells near boundary that need additional reconstruciton level then interior cells)
 void multiLevelReconstruction::SeparateBoundaryLayer(const MeshInfo& mi, const int& layerSize){
     for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
-    for (int i=0; j<mi.MPIlocalCellSize[0]; j++){
-        indice add {i,j}; 
-        indice current = mi.MPIlocalCellStart + add;
-        if (current[0] == 0 + layerSize-1 || current[0] == mi.MPIglobalCellSize[0] - layerSize+1 ||
-            current[1] == 0 + layerSize-1 || current[1] == mi.MPIglobalCellSize[1] - layerSize+1){
-            boundaryCells_.insert(FlatIndic(mi,current));
+    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+        indice shift {i,j}; 
+        indice global = mi.MPIlocalCellStart + shift;
+        if (global[0] == 0 + layerSize-1 || global[0] == mi.MPIglobalCellSize[0] - layerSize ||
+            global[1] == 0 + layerSize-1 || global[1] == mi.MPIglobalCellSize[1] - layerSize){
+            boundaryCells_.insert(FlatIndic(mi,global));
         } else {
-            interiorCells_.insert(FlatIndic(mi,current));
+            interiorCells_.insert(FlatIndic(mi,global));
         }
     }}
+
+    //! Create two different weno reconstruction levels for interior and boundary cells.
+    SeparateReconstMethods_();
 }
 
 void multiLevelReconstruction::SeparateBoundaryLayer(const MeshInfo& mi){
     SeparateBoundaryLayer(mi,1);
 }
 
-void multiLevelReconstruction::AddWgts_() {
-
-    map<int, double> lw;
-    map<int, int> bias;
-
-    const int sizeX = allLevels_[baseReconstMethod_.size()-1]->GetSizeX();
-
-    for (auto& b: baseReconstMethod_[baseReconstMethod_.size()-1]){
-             
-        lw.insert({FlatIndic(sizeX,b),1.0});
-        bias.insert({FlatIndic(sizeX,b),0});
-    }
-
-    linearWgts_.push_back(lw);
-    etaBias_.push_back(bias);
-}
-
-void multiLevelReconstruction::ResetWgts_() {
-    // Initialize linear weights and non linear weights
-    // with the given information on reconstruction method
-    linearWgts_.clear();
-    etaBias_.clear();
-
-    linearWgts_.resize(baseReconstMethod_.size());
-    etaBias_.resize(baseReconstMethod_.size());
-
-    for (int i=0; i<baseReconstMethod_.size();i++){
-        const int sizeX = allLevels_[i]->GetSizeX();
-        for (auto& b : baseReconstMethod_[i]){
-            linearWgts_[i].insert({FlatIndic(sizeX, b),1.0});
-            etaBias_[i].insert({FlatIndic(sizeX,b),0});
-        }
+void multiLevelReconstruction::SeparateReconstMethods_(){
+    if (lowestLevel_ != "(1,1)"){
+        cout << "Lowest reconstruction level is not constant." << endl;
+        interiorLevels_ = wenoLevels_;
+        boundaryLevels_ = wenoLevels_;
+    } else {
+        interiorLevels_ = wenoLevels_;
+        boundaryLevels_ = wenoLevels_;
+        interiorLevels_.erase(lowestLevel_);
     }
 
 }
 
-void multiLevelReconstruction::UpdateNonLinearWgts_(const MeshInfo& mi, indice start){
+//! Update non linear weights for all cell reconstructions.
+void multiLevelReconstruction::UpdateOneStageNonLinearWgts_(const MeshInfo& mi, int flatGlobal,
+                                                            unordered_set<std::string> levels){
 
-    assert(baseReconstMethod_.size() == allLevels_.size());
-
-    vector< map<int,double> > nlw(linearWgts_.size());
+    unordered_map<std::string, unordered_map<int, double>> nlw;
 
     double sum = 0.0;
 
-    for (int l=0; l<allLevels_.size(); l++){
-       const int sizeX = allLevels_[l]->GetSizeX();
-       const int sizeY = allLevels_[l]->GetSizeY();
-       for (auto& i:baseReconstMethod_[l]){
-            indice owner = start + i;
-            if (allLevels_[l]->CheckExist(mi, owner)){
-                double scale = allLevels_[l]->GetScale(FlatIndic(mi,owner));
-                double sm = allLevels_[l]->CalculateSmoothnessIndic(mi,owner);
-                // Get updated smoothness indicators
-                double value = linearWgts_[l].at(FlatIndic(sizeX,i))/ 
-                               //pow(sm + scale*scale*eps0_ , max(sizeX, sizeY)) * 
-                               pow(sm + scale*scale*eps0_ , sizeX+sizeY) * 
+    for (auto const& level : levels){
+        const int sizeX = reconstMethods_[level]->getsizeX();
+        const int sizeY = reconstMethods_[level]->getsizeY();
+        for (auto const& rm : reconstMethods_[level]){
+            indice owner = Bend(mi,flatGlobal) + rm;
+            if (reconstLevels_[rm]->CheckExist(mi,owner)){
+                double scale = reconstLevels_[level]->GetScale(FlatIndic(mi, owner));
+                double sm = reconstLevels_[level]->GetSmoothnessIndic(mi, owner);
+                double value = 1.0/pow(sm + scale*scale*eps0_ , sizeX+sizeY) * 
                                pow(eps0_*scale / sm+eps0_*
                                scale, etaBias_[l].at(FlatIndic(sizeX,i)));
-                nlw[l].insert({FlatIndic(sizeX,i) , value});
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                nlw[] 
                 sum += value;
-            }            
-
-        }
-    }
-
-    for (int l=0; l<allLevels_.size(); l++){
-        if (nlw[l].empty() ==0){
-            for (auto & in:nlw[l]){
-                in.second = in.second/sum; 
             }
         }
     }
 
-    nonLinearWgts_.erase(FlatIndic(mi,start));
-    nonLinearWgts_.insert({FlatIndic(mi,start) , nlw});
-
 }
 
-void multiLevelReconstruction::UpdateFirstStageNonLinearWgts_(const MeshInfo& mi, indice start){
+void multiLevelReconstruction::UpdateOneStageNonLinearWgts(const MeshInfo& mi){
 
-    assert(baseReconstMethod_.size() == allLevels_.size());
-
-    vector< map<int,double> > nlw(linearWgts_.size());
-
-    double sum = 0.0;
-
-    for (int l=0; l<allLevels_.size(); l++){
-       const int sizeX = allLevels_[l]->GetSizeX();
-       const int sizeY = allLevels_[l]->GetSizeY();
-       for (auto& i:baseReconstMethod_[l]){
-            indice owner = start + i;
-            if (allLevels_[l]->CheckExist(mi, owner)){
-                double scale = allLevels_[l]->GetScale(FlatIndic(mi,owner));
-                double sm = allLevels_[l]->CalculateSmoothnessIndic(mi,owner);
-                // Get updated smoothness indicators
-                int power = 0;
-                if (allLevels_[l]->GetSizeX() * allLevels_[l]->GetSizeY() == 1){
-                    power = 1;} else {
-                    power = 2;
-                }
-
-                double value = linearWgts_[l].at(FlatIndic(sizeX,i))/ 
-                               pow(sm + scale*scale*eps0_ , power); 
-                nlw[l].insert({FlatIndic(sizeX,i) , value});
-                sum += value;
-            }            
-
-        }
+    for (auto const& singleLevel : wenoLevels_){
+        reconstLevels_[singleLevel]->UpdateSmoothnessIndic(mi);
     }
 
-    for (int l=0; l<allLevels_.size(); l++){
-        if (nlw[l].empty() ==0){
-            for (auto & in:nlw[l]){
-                in.second = in.second/sum; 
-            }
-        }
+    for (auto const& it: interiorCells_){
+        UpdateOneStageNonLinearWgts_(mi, it, interiorLevels_);
     }
 
-    nonLinearWgts_.erase(FlatIndic(mi,start));
-    nonLinearWgts_.insert({FlatIndic(mi,start) , nlw});
-
-}
-
-void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, indice start){
-
-    UpdateFirstStageNonLinearWgts_(mi,start);
-
-    vector< map<int,double> > nlw(linearWgts_.size());
-
-    double sum = 0.0;
-
-    for (int l=0; l<allLevels_.size(); l++){
-       const int sizeX = allLevels_[l]->GetSizeX();
-       const int sizeY = allLevels_[l]->GetSizeY();
-       for (auto& i:baseReconstMethod_[l]){
-            indice owner = start + i;
-            if (allLevels_[l]->CheckExist(mi, owner)){
-                double scale = allLevels_[l]->GetScale(FlatIndic(mi,owner));
-                double sm = allLevels_[l]->CalculateSmoothnessIndic(mi,owner);
-                // Get updated smoothness indicators
-                vector< map<int, double> > oldnlw = nonLinearWgts_.at(FlatIndic(mi,start));
-                double value = oldnlw[l].at(FlatIndic(sizeX,i))/ 
-                               //pow(sm + scale*scale*eps0_ , max(sizeX, sizeY)) * 
-                               pow(sm + scale*scale*eps0_ , sizeX+sizeY) * 
-                               pow(eps0_*scale / sm+eps0_*
-                               scale, etaBias_[l].at(FlatIndic(sizeX,i)));
-                nlw[l].insert({FlatIndic(sizeX,i) , value});
-                sum += value;
-            }            
-
-        }
+    for (auto const& it: boundaryCells_){
+        UpdateOneStageNonLinearWgts_(mi, it, boundaryLevels_);
     }
 
-    for (int l=0; l<allLevels_.size(); l++){
-        if (nlw[l].empty() ==0){
-            for (auto & in:nlw[l]){
-                in.second = in.second/sum; 
-            }
-        }
-    }
-
-    nonLinearWgts_.erase(FlatIndic(mi,start));
-    nonLinearWgts_.insert({FlatIndic(mi,start) , nlw});
-}
-
-void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
-    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
-    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
-        indice add {i,j};
-        indice start = mi.MPIlocalCellStart+add;
-        UpdateNonLinearWgts_(mi,start);
-    } }
 }
 
 void multiLevelReconstruction::UpdateTwoStageNonLinearWgts(const MeshInfo& mi){
-    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
-    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
-        indice add {i,j};
-        indice start = mi.MPIlocalCellStart+add;
-        UpdateTwoStageNonLinearWgts_(mi,start);
-    } }
+
+
 }
 
 // ===================================================================================
+void multiLevelReconstruction::PrintBoundaryLayer(const MeshInfo& mi){
+    for (auto const& it : interiorCells_){
+        indice global = Bend(mi,it); 
+        cout << "(" << global[0] << "," << global[1] << ") "; 
+    }cout << endl;
+
+    for (auto const& it : boundaryCells_){
+        indice global = Bend(mi,it); 
+        cout << "(" << global[0] << "," << global[1] << ") "; 
+    }cout << endl;
+
+}
+
+
 void multiLevelReconstruction::GetInfo(){
     //! Print added levels and reconstruction methods
     cout << "There are " <<reconstLevels_.size()<< " levels pre computed." << endl;
@@ -240,10 +145,20 @@ void multiLevelReconstruction::GetInfo(){
         (it.second)->CheckStencils();
     }
 
+    //cout << "Highest order of level is " << highestLevel_ << endl;
+    //cout << "Lowest order of level is " << lowestLevel_ << endl;
+
 }
 
 void multiLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
 
+
+        for (auto const& singleLevel : wenoLevels_) {
+            cout << "Current reconstruction level is :" << singleLevel << endl;
+            reconstLevels_[singleLevel]->PrintSmoothnessIndicator(mi);
+        }
+ 
+/*
     for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
     for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
 
@@ -251,13 +166,18 @@ void multiLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
         indice start = mi.MPIlocalCellStart + add;
 
         cout << "Reconstruction at cell ( " << start[0] << ", " << start[1] << ")" << endl; 
-        for (int l=0; l < allLevels_.size(); l++) {
-            allLevels_[l]->PrintSmoothnessIndicator(mi);
+        for (auto const& singleLevel : wenoLevels_) {
+            cout << "Current reconstruction level is :" << singleLevel << endl;
+            reconstLevels_[singleLevel]->PrintSmoothnessIndicator(mi);
         }
  
     }}
+*/
 
 }
+
+
+/*
 
 void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi){
 
@@ -289,3 +209,4 @@ void multiLevelReconstruction::Clear(){
     }
     allLevels_.clear();
 }
+*/
