@@ -92,7 +92,7 @@ void multiLevelReconstruction::UpdateOneStageNonLinearWgts_(const MeshInfo& mi, 
                                pow(eps0_*scale / sm+eps0_*
                                scale, etaBias_[l].at(FlatIndic(sizeX,i)));
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                nlw[] 
+                nlw[level].insert(std::pair<int, double>(FlatIndic(sizeX,rm), value));
                 sum += value;
             }
         }

@@ -81,6 +81,9 @@ namespace MLWENO{
 
             int totalLevels_ = 0; //! Accumulate all number of stencils.
 
+
+            unordered_map<int, unordered_map<std::string, unordered_map<int,double>>> nonLinearWgts; //! Storing all non linear weights mapping to each cells
+
             /**
              * Separate different reconstruction levels for boundary and interior cells.
              * Immediately called after separating boundary layer.
@@ -91,7 +94,9 @@ namespace MLWENO{
              * No need to define linear weights.
              * Simply average out the total number of levels; 
              */
-            unordered_map<int, unordered_map<std::string, unordered_map<int,double>>> nonLinearWgts; //! 
+             void UpdateOneStageNonLinearWgts_(const MeshInfo& mi, int flatGlobal, 
+                                               unordered_set<std::string> levels);
+
 
             //! Bias usually set to be zero
             vector< map<int, int> > etaBias_;
