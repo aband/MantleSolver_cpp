@@ -57,7 +57,7 @@ namespace tensorProductPoly{
             stencilPolynomial(const indice& start, const vertex& center, 
                               const vector<indice>& targetCell);
             ~stencilPolynomial() {stencilPolyn_.clearPtr();
-                                  delete [] collapsePolyn_;};
+                                  delete collapsePolyn_;};
 
             void SetStencilPolynomials(const MeshInfo& mi,
                                        const stencil <indice>& stencilIndice);

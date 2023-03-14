@@ -2,10 +2,8 @@
 
 /**
  * Change functions for transport part here.
- *
  * Define transport functions and derivatives
- *
- * Burger's equation
+ * 2D Burger's equation
  *
  */
 double funcX(vertex x, double u, double t){

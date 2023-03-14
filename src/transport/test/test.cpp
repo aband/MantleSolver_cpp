@@ -4,7 +4,6 @@
 
 #include "stencil.h"
 #include "util.h"
-#include "polynomial.h"
 #include "input.h"
 #include "reconstruction.h"
 //#include <adolc/adolc.h>
@@ -15,6 +14,22 @@ extern "C"{
 }
 
 using namespace std;
+
+double func(vertex& point, const vector<double>& param){
+	 //if (point[0]<-1.0/param[0]){
+//		  return point[0]*point[0]+point[1]*point[1];
+//	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
+//	 } else {
+//		  return point[0]*point[0]*point[1]*point[1] + 1.0;
+//	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
+//	 }
+
+    return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
+    //return point[0]*point[0] + point[1]*point[1];
+    //return 0.5;
+    //return point[0] + point[1];
+
+}
 
 int main(int argc, char **argv){
 
@@ -105,8 +120,8 @@ int main(int argc, char **argv){
     ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
 
     // Initialize with oblique data for Burgers equation 
-    ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -120,21 +135,6 @@ int main(int argc, char **argv){
 
     // ====================================================================================================================================
 
-    // test for 2D Burgers equation
-    // Explicit time progression for simplicity
-    // DrawPressure(dmu, &globalu);   
-
-    //double T = 0.5;
-    //double currentT = 0.0;
-
-    // Spectial case
-    //double dx = (L*H)/((double)M*(double)N);
-
-    //double dt = 0.8*3.0/(double)M;
-
-    //PetscInt       xs,ys,xm,ym;
-    //ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
-
     // Create MeshInfo object
     MeshInfo mi; 
     AssignValuesMeshInfo(mi,dm,dmu); 
@@ -143,10 +143,39 @@ int main(int argc, char **argv){
     mi.lmesh = mesh;
     mi.localVals = lu;
 
+// ========================================================================================================================================
+    // Test multi level reconstruction
+    MLWENO::multiLevelReconstruction * mlrPtr = new MLWENO::multiLevelReconstruction(mi,2,2,{{-1,0},{-1,-1,},{0,-1},{0,0}});
+    mlrPtr->AddLevel(mi,3,3,{{-1,-1}});
+    mlrPtr->AddLevel(mi,2,3,{{-1,-1},{0,-1}});
+    mlrPtr->AddLevel(mi,3,2,{{-1,-1},{-1,0}});
+
+    mlrPtr->AddLevel(mi,1,1,{{0,0}});
+   
+    // Test rearrange weno reconstruction levels
+    mlrPtr->ModifyReconstMethod("(1,1)",{{1,1}});
+
+    mlrPtr->SelectWenoReconstLevel({"(2,2)","(3,3)","(1,1)"});
+
+    mlrPtr->ModifyReconstMethod("(1,1)",{{0,0}});
+
+    mlrPtr->SeparateBoundaryLayer(mi);
+
+    mlrPtr->UpdateNonLinearWgts(mi,2);
+ 
+    // Test point wise reconstruction
+    vertex center {0.0,0.0};
+    //cout << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) << " " << func(center, {0.0,0.0}) << endl;
+
+    // Print required information
+    //mlrPtr->GetInfo();
+    //mlrPtr->PrintSmoothnessIndicator(mi);
+    //mlrPtr->PrintNonLinearWgts(mi); 
 
     // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);
+    DMRestoreLocalVector(dmu, &localu); 
 
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);

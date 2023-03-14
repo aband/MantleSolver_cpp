@@ -152,7 +152,8 @@ int main(int argc, char **argv){
     mlrPtr->AddLevel(mi,3,2,{{-1,-1},{-1,0}});
 
     mlrPtr->AddLevel(mi,1,1,{{0,0}});
-   
+  
+
     // Test rearrange weno reconstruction levels
     mlrPtr->ModifyReconstMethod("(1,1)",{{1,1}});
 
@@ -170,11 +171,12 @@ int main(int argc, char **argv){
     //cout << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) << " " << func(center, {0.0,0.0}) << endl;
 
     // Print required information
-    mlrPtr->GetInfo();
+    //mlrPtr->GetInfo();
 
     //mlrPtr->PrintSmoothnessIndicator(mi);
 
-    mlrPtr->PrintNonLinearWgts(mi); 
+    //mlrPtr->PrintNonLinearWgts(mi); 
+    delete mlrPtr;
 
 	 // ====================================================================================================================================
     // Clear used objects

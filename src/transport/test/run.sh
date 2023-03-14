@@ -5,7 +5,7 @@ cmake ..
 make
 
 echo " "
-echo -n "Convergence Test Built!"
+echo -n "Transport Test Built!"
 echo " "
 
-valgrind ./test
+valgrind --leak-check=full --show-leak-kinds=all ./test

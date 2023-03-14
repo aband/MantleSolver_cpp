@@ -26,7 +26,7 @@ namespace MLWENO{
             /*!
              * Clear interior, single level polynomial and smoothness indicators
              */
-            ~singleLevelReconstruction() {interior_.clear(); singleLevel_.clear();smoothnessIndic_.clear();};
+            ~singleLevelReconstruction();
 
             // ======================================================================
             void CreateStencilPolynomials(const MeshInfo& mi);
@@ -158,6 +158,12 @@ namespace MLWENO{
             void PrintSmoothnessIndicator(const MeshInfo& mi);
             void PrintNonLinearWgts(const MeshInfo& mi);
 
+            /**
+             * Clear everything.
+             * Delete all pointers defined inside the map.
+             * Can be called directly. 
+             * May crush if destructor is called after Clear() is called.
+             */
             void Clear();
         private:
 

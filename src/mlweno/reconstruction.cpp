@@ -3,6 +3,7 @@
 using namespace MLWENO;
 using namespace tensorProductPoly;
 
+//! A constructor
 singleLevelReconstruction::singleLevelReconstruction(int stencilSizeX, int stencilSizeY){
     stencilSizeX_ = stencilSizeX;
     stencilSizeY_ = stencilSizeY;
@@ -14,6 +15,17 @@ singleLevelReconstruction::singleLevelReconstruction(int stencilSizeX, int stenc
     for (int i=0; i<stencilSizeX_; i++){
         stencilIndice_(i,j) = {i,j};
     }}
+}
+
+//! A destructor
+singleLevelReconstruction::~singleLevelReconstruction(){
+    interior_.clear();
+    smoothnessIndic_.clear();
+
+    for (auto& it: singleLevel_){
+        delete it.second;
+    }
+    singleLevel_.clear();
 }
 
 //! Calculate smoothness indicator for the single stencil
@@ -463,12 +475,23 @@ void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi){
     }}
 }
 
-/*
-
 void multiLevelReconstruction::Clear(){
-    for (int i=0; i<allLevels_.size(); i++){
-        delete allLevels_[i];
+
+    for (auto& it : reconstLevels_){
+        delete it.second;
     }
-    allLevels_.clear();
+
+    reconstLevels_.clear();
+    reconstMethods_.clear();
+
+    interiorCells_.clear();
+    boundaryCells_.clear();
+
+    wenoLevels_.clear();
+    interiorLevels_.clear();
+    boundaryLevels_.clear();
+
+    nonLinearWgts_.clear();
+
+    etaBias_.clear();
 }
-*/

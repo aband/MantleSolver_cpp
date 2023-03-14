@@ -168,5 +168,4 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
 
     mi.MPIlocalVertexSizeFull.push_back(xm+2*ghostWidth);
     mi.MPIlocalVertexSizeFull.push_back(ym+2*ghostWidth);
-
 }
