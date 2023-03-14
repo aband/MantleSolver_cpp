@@ -93,6 +93,8 @@ int factorial(int top, int bottom);
 
 int factorial(int top);
 
+double basePoly(vertex& point, const vector<int>& param);
+
 // Evaluation of polynomial using Horner's method
 double polyEval(double x, double * coef, int degree);
 

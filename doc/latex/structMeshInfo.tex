@@ -10,27 +10,27 @@
 int \mbox{\hyperlink{structMeshInfo_aa9675a2706273dcab8c9b53f801345a0}{dim}}
 \item 
 vector$<$ int $>$ \mbox{\hyperlink{structMeshInfo_a7533073d056a8a49e385c5df02f6a223}{MPIlocal\+Cell\+Size}}
-\item 
+\begin{DoxyCompactList}\small\item\em Total number of dimensions. \end{DoxyCompactList}\item 
 vector$<$ int $>$ \mbox{\hyperlink{structMeshInfo_a29b4d0a10498a613d74402d8c6e0b6d8}{MPIlocal\+Vertex\+Size}}
-\item 
+\begin{DoxyCompactList}\small\item\em Local chunk size of cell without ghost layer. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \mbox{\hyperlink{structMeshInfo_a5f68852761f07e231419465ad1ffc90e}{MPIlocal\+Cell\+Start}}
-\item 
+\begin{DoxyCompactList}\small\item\em Local chunk size of vertex without ghost layer. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \mbox{\hyperlink{structMeshInfo_a1fee68c93b5da2e30dfa56405dde6842}{MPIlocal\+Vertex\+Start}}
-\item 
+\begin{DoxyCompactList}\small\item\em The starting cell index for MPI local part. \end{DoxyCompactList}\item 
 vector$<$ int $>$ \mbox{\hyperlink{structMeshInfo_a4adcf41795eb519a1da775c7802327ff}{MPIglobal\+Cell\+Size}}
-\item 
+\begin{DoxyCompactList}\small\item\em The starting vertex index for MPI local part. \end{DoxyCompactList}\item 
 vector$<$ int $>$ \mbox{\hyperlink{structMeshInfo_a1c49d85391491860f255f6c9b4425a54}{MPIglobal\+Vertex\+Size}}
-\item 
+\begin{DoxyCompactList}\small\item\em global chunk size of cell without ghost layer \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{structMeshInfo_a9bc08203db9947c052a4379ae76fce71}{cell\+Ghost\+Layer\+Size}}
-\item 
+\begin{DoxyCompactList}\small\item\em global chunk size of vertex without ghost layer \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{structMeshInfo_a9cef22ffb2b99554430198922458f593}{vertex\+Ghost\+Layer\+Size}}
-\item 
+\begin{DoxyCompactList}\small\item\em size of ghost layer of cell \end{DoxyCompactList}\item 
 vector$<$ int $>$ \mbox{\hyperlink{structMeshInfo_a53d66c4b90143910215d8b69425723e5}{MPIlocal\+Cell\+Size\+Full}}
-\item 
+\begin{DoxyCompactList}\small\item\em size of ghost layer of node \end{DoxyCompactList}\item 
 vector$<$ int $>$ \mbox{\hyperlink{structMeshInfo_ae503f6f46e7d8d6ffe8ef7bbc826d291}{MPIlocal\+Vertex\+Size\+Full}}
-\item 
+\begin{DoxyCompactList}\small\item\em Local chunk size of cells including ghost layer. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{structMeshInfo_a06c8559c1002402e4256098107246ae4}{MPIglobal\+Hori\+Edge\+Size}}
-\item 
+\begin{DoxyCompactList}\small\item\em Local chunk size of vertex including ghost layer. \end{DoxyCompactList}\item 
 int \mbox{\hyperlink{structMeshInfo_a48e58925407c02b43cce4ed5f3d67585}{MPIlocal\+Hori\+Edge\+Size}}
 \item 
 int \mbox{\hyperlink{structMeshInfo_a54b9263da1d71e16d833be319f24e05e}{MPIglobal\+Vert\+Edge\+Size}}
@@ -56,13 +56,17 @@ const \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indice\+Set}} 
 \doxysubsubsection{\texorpdfstring{cellGhostLayerSize}{cellGhostLayerSize}}
 {\footnotesize\ttfamily int Mesh\+Info\+::cell\+Ghost\+Layer\+Size}
 
+
+
+global chunk size of vertex without ghost layer 
+
 \mbox{\Hypertarget{structMeshInfo_aa9675a2706273dcab8c9b53f801345a0}\label{structMeshInfo_aa9675a2706273dcab8c9b53f801345a0}} 
 \index{MeshInfo@{MeshInfo}!dim@{dim}}
 \index{dim@{dim}!MeshInfo@{MeshInfo}}
 \doxysubsubsection{\texorpdfstring{dim}{dim}}
 {\footnotesize\ttfamily int Mesh\+Info\+::dim}
 
-\mbox{\Hypertarget{structMeshInfo_a27d70481a88ed42c0192233d04ebb076}\label{structMeshInfo_a27d70481a88ed42c0192233d04ebb076}} 
+In the case, Cell and Vertex are maintained by same global size They will still be stored separately for clearification. \mbox{\Hypertarget{structMeshInfo_a27d70481a88ed42c0192233d04ebb076}\label{structMeshInfo_a27d70481a88ed42c0192233d04ebb076}} 
 \index{MeshInfo@{MeshInfo}!edgeCorner@{edgeCorner}}
 \index{edgeCorner@{edgeCorner}!MeshInfo@{MeshInfo}}
 \doxysubsubsection{\texorpdfstring{edgeCorner}{edgeCorner}}
@@ -92,11 +96,19 @@ const \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indice\+Set}} 
 \doxysubsubsection{\texorpdfstring{MPIglobalCellSize}{MPIglobalCellSize}}
 {\footnotesize\ttfamily vector$<$int$>$ Mesh\+Info\+::\+MPIglobal\+Cell\+Size}
 
+
+
+The starting vertex index for MPI local part. 
+
 \mbox{\Hypertarget{structMeshInfo_a06c8559c1002402e4256098107246ae4}\label{structMeshInfo_a06c8559c1002402e4256098107246ae4}} 
 \index{MeshInfo@{MeshInfo}!MPIglobalHoriEdgeSize@{MPIglobalHoriEdgeSize}}
 \index{MPIglobalHoriEdgeSize@{MPIglobalHoriEdgeSize}!MeshInfo@{MeshInfo}}
 \doxysubsubsection{\texorpdfstring{MPIglobalHoriEdgeSize}{MPIglobalHoriEdgeSize}}
 {\footnotesize\ttfamily int Mesh\+Info\+::\+MPIglobal\+Hori\+Edge\+Size}
+
+
+
+Local chunk size of vertex including ghost layer. 
 
 \mbox{\Hypertarget{structMeshInfo_a54b9263da1d71e16d833be319f24e05e}\label{structMeshInfo_a54b9263da1d71e16d833be319f24e05e}} 
 \index{MeshInfo@{MeshInfo}!MPIglobalVertEdgeSize@{MPIglobalVertEdgeSize}}
@@ -110,11 +122,19 @@ const \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indice\+Set}} 
 \doxysubsubsection{\texorpdfstring{MPIglobalVertexSize}{MPIglobalVertexSize}}
 {\footnotesize\ttfamily vector$<$int$>$ Mesh\+Info\+::\+MPIglobal\+Vertex\+Size}
 
+
+
+global chunk size of cell without ghost layer 
+
 \mbox{\Hypertarget{structMeshInfo_a7533073d056a8a49e385c5df02f6a223}\label{structMeshInfo_a7533073d056a8a49e385c5df02f6a223}} 
 \index{MeshInfo@{MeshInfo}!MPIlocalCellSize@{MPIlocalCellSize}}
 \index{MPIlocalCellSize@{MPIlocalCellSize}!MeshInfo@{MeshInfo}}
 \doxysubsubsection{\texorpdfstring{MPIlocalCellSize}{MPIlocalCellSize}}
 {\footnotesize\ttfamily vector$<$int$>$ Mesh\+Info\+::\+MPIlocal\+Cell\+Size}
+
+
+
+Total number of dimensions. 
 
 \mbox{\Hypertarget{structMeshInfo_a53d66c4b90143910215d8b69425723e5}\label{structMeshInfo_a53d66c4b90143910215d8b69425723e5}} 
 \index{MeshInfo@{MeshInfo}!MPIlocalCellSizeFull@{MPIlocalCellSizeFull}}
@@ -122,11 +142,19 @@ const \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indice\+Set}} 
 \doxysubsubsection{\texorpdfstring{MPIlocalCellSizeFull}{MPIlocalCellSizeFull}}
 {\footnotesize\ttfamily vector$<$int$>$ Mesh\+Info\+::\+MPIlocal\+Cell\+Size\+Full}
 
+
+
+size of ghost layer of node 
+
 \mbox{\Hypertarget{structMeshInfo_a5f68852761f07e231419465ad1ffc90e}\label{structMeshInfo_a5f68852761f07e231419465ad1ffc90e}} 
 \index{MeshInfo@{MeshInfo}!MPIlocalCellStart@{MPIlocalCellStart}}
 \index{MPIlocalCellStart@{MPIlocalCellStart}!MeshInfo@{MeshInfo}}
 \doxysubsubsection{\texorpdfstring{MPIlocalCellStart}{MPIlocalCellStart}}
 {\footnotesize\ttfamily \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} Mesh\+Info\+::\+MPIlocal\+Cell\+Start}
+
+
+
+Local chunk size of vertex without ghost layer. 
 
 \mbox{\Hypertarget{structMeshInfo_a48e58925407c02b43cce4ed5f3d67585}\label{structMeshInfo_a48e58925407c02b43cce4ed5f3d67585}} 
 \index{MeshInfo@{MeshInfo}!MPIlocalHoriEdgeSize@{MPIlocalHoriEdgeSize}}
@@ -146,11 +174,19 @@ const \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indice\+Set}} 
 \doxysubsubsection{\texorpdfstring{MPIlocalVertexSize}{MPIlocalVertexSize}}
 {\footnotesize\ttfamily vector$<$int$>$ Mesh\+Info\+::\+MPIlocal\+Vertex\+Size}
 
+
+
+Local chunk size of cell without ghost layer. 
+
 \mbox{\Hypertarget{structMeshInfo_ae503f6f46e7d8d6ffe8ef7bbc826d291}\label{structMeshInfo_ae503f6f46e7d8d6ffe8ef7bbc826d291}} 
 \index{MeshInfo@{MeshInfo}!MPIlocalVertexSizeFull@{MPIlocalVertexSizeFull}}
 \index{MPIlocalVertexSizeFull@{MPIlocalVertexSizeFull}!MeshInfo@{MeshInfo}}
 \doxysubsubsection{\texorpdfstring{MPIlocalVertexSizeFull}{MPIlocalVertexSizeFull}}
 {\footnotesize\ttfamily vector$<$int$>$ Mesh\+Info\+::\+MPIlocal\+Vertex\+Size\+Full}
+
+
+
+Local chunk size of cells including ghost layer. 
 
 \mbox{\Hypertarget{structMeshInfo_a1fee68c93b5da2e30dfa56405dde6842}\label{structMeshInfo_a1fee68c93b5da2e30dfa56405dde6842}} 
 \index{MeshInfo@{MeshInfo}!MPIlocalVertexStart@{MPIlocalVertexStart}}
@@ -158,11 +194,19 @@ const \mbox{\hyperlink{util_8h_a9a56e3a726f886fc0803abdf6d937882}{indice\+Set}} 
 \doxysubsubsection{\texorpdfstring{MPIlocalVertexStart}{MPIlocalVertexStart}}
 {\footnotesize\ttfamily \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} Mesh\+Info\+::\+MPIlocal\+Vertex\+Start}
 
+
+
+The starting cell index for MPI local part. 
+
 \mbox{\Hypertarget{structMeshInfo_a9cef22ffb2b99554430198922458f593}\label{structMeshInfo_a9cef22ffb2b99554430198922458f593}} 
 \index{MeshInfo@{MeshInfo}!vertexGhostLayerSize@{vertexGhostLayerSize}}
 \index{vertexGhostLayerSize@{vertexGhostLayerSize}!MeshInfo@{MeshInfo}}
 \doxysubsubsection{\texorpdfstring{vertexGhostLayerSize}{vertexGhostLayerSize}}
 {\footnotesize\ttfamily int Mesh\+Info\+::vertex\+Ghost\+Layer\+Size}
+
+
+
+size of ghost layer of cell 
 
 \mbox{\Hypertarget{structMeshInfo_a56ef58ce27215c0fdaf1fa9e05d2672c}\label{structMeshInfo_a56ef58ce27215c0fdaf1fa9e05d2672c}} 
 \index{MeshInfo@{MeshInfo}!volumeCorner@{volumeCorner}}

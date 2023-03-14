@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['updatenonlinearwgts_0',['UpdateNonLinearWgts',['../classMLWENO_1_1multiLevelReconstruction.html#aef3fc19bdccba720c897dcf725fabf8e',1,'MLWENO::multiLevelReconstruction']]],
-  ['updatetwostagenonlinearwgts_1',['UpdateTwoStageNonLinearWgts',['../classMLWENO_1_1multiLevelReconstruction.html#ab10ed466f7a049b358f349841f1ca89f',1,'MLWENO::multiLevelReconstruction']]]
+  ['updatenonlinearwgts_0',['UpdateNonLinearWgts',['../classMLWENO_1_1multiLevelReconstruction.html#a8c02d20ee994eb84dbc03727e608ae6e',1,'MLWENO::multiLevelReconstruction']]],
+  ['updatesmoothnessindic_1',['UpdateSmoothnessIndic',['../classMLWENO_1_1singleLevelReconstruction.html#acf1d9c32d9fc29727dd27bdfbd5aff1e',1,'MLWENO::singleLevelReconstruction']]]
 ];

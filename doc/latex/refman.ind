@@ -1,156 +1,153 @@
 \begin{theindex}
 
-  \item {/home/renpo/Research/MantleSolver/src/mlweno/mlreconstruction.cpp}, 
-		\hyperpage{31}
-  \item {/home/renpo/Research/MantleSolver/src/mlweno/mlreconstruction.h}, 
-		\hyperpage{31, 32}
   \item {/home/renpo/Research/MantleSolver/src/mlweno/polynomial.cpp}, 
-		\hyperpage{32}
+		\hyperpage{35}
   \item {/home/renpo/Research/MantleSolver/src/mlweno/polynomial.h}, 
-		\hyperpage{33}
-  \item {/home/renpo/Research/MantleSolver/src/mlweno/slreconstruction.cpp}, 
-		\hyperpage{35}
-  \item {/home/renpo/Research/MantleSolver/src/mlweno/slreconstruction.h}, 
-		\hyperpage{35}
+		\hyperpage{35, 36}
+  \item {/home/renpo/Research/MantleSolver/src/mlweno/reconstruction.cpp}, 
+		\hyperpage{37}
+  \item {/home/renpo/Research/MantleSolver/src/mlweno/reconstruction.h}, 
+		\hyperpage{37, 38}
   \item {/home/renpo/Research/MantleSolver/src/mlweno/stencil.h}, 
-		\hyperpage{36, 37}
+		\hyperpage{39, 40}
   \item {/home/renpo/Research/MantleSolver/src/mlweno/util.cpp}, 
-		\hyperpage{38}
+		\hyperpage{41}
   \item {/home/renpo/Research/MantleSolver/src/mlweno/util.h}, 
-		\hyperpage{41}, \hyperpage{46}
-  \item {$\sim$basisPolynomial}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{10}
+		\hyperpage{45}, \hyperpage{50}
+  \item {$\sim$basePolynomial}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{10}
   \item {$\sim$multiLevelReconstruction}
-    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{17}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{18}
   \item {$\sim$singleLevelReconstruction}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{20}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{22}
   \item {$\sim$stencil}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{23}
+    \subitem {stencil$<$ T $>$}, \hyperpage{26}
   \item {$\sim$stencilPolynomial}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{27}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{30}
 
   \indexspace
 
   \item {AddLevel}
-    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{17}
-  \item {AddReconstMethod}
-    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{17, 18}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{18}
   \item {AssignValuesMeshInfo}
-    \subitem {util.cpp}, \hyperpage{38}
-    \subitem {util.h}, \hyperpage{43}
+    \subitem {util.cpp}, \hyperpage{42}
+    \subitem {util.h}, \hyperpage{46}
 
   \indexspace
 
   \item {basePoly}
-    \subitem {polynomial.cpp}, \hyperpage{33}
-  \item {basisPolynomial}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{9, 10}
+    \subitem {util.cpp}, \hyperpage{42}
+    \subitem {util.h}, \hyperpage{47}
+  \item {basePolynomial}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{9, 10}
   \item {Bend}
-    \subitem {util.cpp}, \hyperpage{38, 39}
-    \subitem {util.h}, \hyperpage{43}
+    \subitem {util.cpp}, \hyperpage{42}
+    \subitem {util.h}, \hyperpage{47}
 
   \indexspace
 
   \item {CalculateSmoothnessIndic}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{20}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{22}
   \item {cellCentered}
-    \subitem {MLWENO}, \hyperpage{8}
+    \subitem {stencil.h}, \hyperpage{40}
   \item {cellGhostLayerSize}
     \subitem {MeshInfo}, \hyperpage{13}
   \item {CheckExist}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{20}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{22}
   \item {CheckStencilPolynomials}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{21}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{22}
   \item {CheckStencils}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{21}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{23}
   \item {Clear}
-    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{18}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{19}
   \item {clearPtr}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{23}
+    \subitem {stencil$<$ T $>$}, \hyperpage{26}
   \item {constFunc}
-    \subitem {util.cpp}, \hyperpage{39}
-    \subitem {util.h}, \hyperpage{43, 44}
+    \subitem {util.cpp}, \hyperpage{42, 43}
+    \subitem {util.h}, \hyperpage{47, 48}
   \item {CreateStencil}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{24}
+    \subitem {stencil$<$ T $>$}, \hyperpage{26}
   \item {CreateStencilPolynomials}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{21}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{23}
 
   \indexspace
 
   \item {delete\_pointed\_to}
-    \subitem {util.h}, \hyperpage{44}
+    \subitem {util.h}, \hyperpage{48}
   \item {der}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{10}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{10}
   \item {dim}
     \subitem {MeshInfo}, \hyperpage{13}
 
   \indexspace
 
   \item {edgeCentered}
-    \subitem {MLWENO}, \hyperpage{8}
+    \subitem {stencil.h}, \hyperpage{40}
   \item {edgeCorner}
     \subitem {MeshInfo}, \hyperpage{13}
   \item {eval}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{10}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{28}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{10}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{31}
 
   \indexspace
 
   \item {faceCorner}
-    \subitem {MeshInfo}, \hyperpage{13}
+    \subitem {MeshInfo}, \hyperpage{14}
   \item {factorial}
-    \subitem {util.cpp}, \hyperpage{39, 40}
-    \subitem {util.h}, \hyperpage{44}
+    \subitem {util.cpp}, \hyperpage{43}
+    \subitem {util.h}, \hyperpage{48}
   \item {FlatIndic}
-    \subitem {util.cpp}, \hyperpage{40}
-    \subitem {util.h}, \hyperpage{44, 45}
+    \subitem {util.cpp}, \hyperpage{43, 44}
+    \subitem {util.h}, \hyperpage{48, 49}
 
   \indexspace
 
   \item {getCoef}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{11}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{11}
   \item {getI}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{11}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{24}
+    \subitem {stencil$<$ T $>$}, \hyperpage{26}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{11}
   \item {GetInfo}
-    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{18}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{19}
   \item {getJ}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{11}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{24}
+    \subitem {stencil$<$ T $>$}, \hyperpage{26}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{11}
   \item {getK}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{24}
+    \subitem {stencil$<$ T $>$}, \hyperpage{27}
   \item {GetOrderX}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{28}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{31}
   \item {GetOrderY}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{28}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{31}
   \item {GetScale}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{21}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{28}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{23}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{31}
   \item {getSize}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{11}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{24}
+    \subitem {stencil$<$ T $>$}, \hyperpage{27}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{11}
   \item {GetSizeX}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{21}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{23}
   \item {GetSizeY}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{22}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{23}
   \item {GetSmoothIndic}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{28}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{31}
+  \item {GetSmoothnessIndic}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{24}
   \item {GetStencil}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{24}
+    \subitem {stencil$<$ T $>$}, \hyperpage{27}
 
   \indexspace
 
   \item {indice}
-    \subitem {util.h}, \hyperpage{42}
+    \subitem {util.h}, \hyperpage{46}
   \item {indiceSet}
-    \subitem {util.h}, \hyperpage{42}
+    \subitem {util.h}, \hyperpage{46}
 
   \indexspace
 
   \item {lmesh}
-    \subitem {MeshInfo}, \hyperpage{13}
+    \subitem {MeshInfo}, \hyperpage{14}
   \item {localVals}
-    \subitem {MeshInfo}, \hyperpage{13}
+    \subitem {MeshInfo}, \hyperpage{14}
 
   \indexspace
 
@@ -158,31 +155,171 @@
     \subitem {cellGhostLayerSize}, \hyperpage{13}
     \subitem {dim}, \hyperpage{13}
     \subitem {edgeCorner}, \hyperpage{13}
-    \subitem {faceCorner}, \hyperpage{13}
-    \subitem {lmesh}, \hyperpage{13}
-    \subitem {localVals}, \hyperpage{13}
-    \subitem {MPIglobalCellSize}, \hyperpage{13}
-    \subitem {MPIglobalHoriEdgeSize}, \hyperpage{13}
+    \subitem {faceCorner}, \hyperpage{14}
+    \subitem {lmesh}, \hyperpage{14}
+    \subitem {localVals}, \hyperpage{14}
+    \subitem {MPIglobalCellSize}, \hyperpage{14}
+    \subitem {MPIglobalHoriEdgeSize}, \hyperpage{14}
     \subitem {MPIglobalVertEdgeSize}, \hyperpage{14}
     \subitem {MPIglobalVertexSize}, \hyperpage{14}
-    \subitem {MPIlocalCellSize}, \hyperpage{14}
-    \subitem {MPIlocalCellSizeFull}, \hyperpage{14}
-    \subitem {MPIlocalCellStart}, \hyperpage{14}
-    \subitem {MPIlocalHoriEdgeSize}, \hyperpage{14}
-    \subitem {MPIlocalVertEdgeSize}, \hyperpage{14}
-    \subitem {MPIlocalVertexSize}, \hyperpage{14}
-    \subitem {MPIlocalVertexSizeFull}, \hyperpage{15}
-    \subitem {MPIlocalVertexStart}, \hyperpage{15}
-    \subitem {vertexGhostLayerSize}, \hyperpage{15}
-    \subitem {volumeCorner}, \hyperpage{15}
+    \subitem {MPIlocalCellSize}, \hyperpage{15}
+    \subitem {MPIlocalCellSizeFull}, \hyperpage{15}
+    \subitem {MPIlocalCellStart}, \hyperpage{15}
+    \subitem {MPIlocalHoriEdgeSize}, \hyperpage{15}
+    \subitem {MPIlocalVertEdgeSize}, \hyperpage{15}
+    \subitem {MPIlocalVertexSize}, \hyperpage{15}
+    \subitem {MPIlocalVertexSizeFull}, \hyperpage{16}
+    \subitem {MPIlocalVertexStart}, \hyperpage{16}
+    \subitem {vertexGhostLayerSize}, \hyperpage{16}
+    \subitem {volumeCorner}, \hyperpage{16}
   \item {MLWENO}, \hyperpage{7}
-    \subitem {cellCentered}, \hyperpage{8}
-    \subitem {edgeCentered}, \hyperpage{8}
-    \subitem {stencilType}, \hyperpage{7}
-    \subitem {vertexCentered}, \hyperpage{8}
-  \item {MLWENO::basisPolynomial}, \hyperpage{9}
-    \subitem {$\sim$basisPolynomial}, \hyperpage{10}
-    \subitem {basisPolynomial}, \hyperpage{9, 10}
+  \item {MLWENO::multiLevelReconstruction}, \hyperpage{16}
+    \subitem {$\sim$multiLevelReconstruction}, \hyperpage{18}
+    \subitem {AddLevel}, \hyperpage{18}
+    \subitem {Clear}, \hyperpage{19}
+    \subitem {GetInfo}, \hyperpage{19}
+    \subitem {ModifyReconstMethod}, \hyperpage{19}
+    \subitem {multiLevelReconstruction}, \hyperpage{17}
+    \subitem {PrintBoundaryLayer}, \hyperpage{19}
+    \subitem {PrintNonLinearWgts}, \hyperpage{20}
+    \subitem {PrintSmoothnessIndicator}, \hyperpage{20}
+    \subitem {SelectWenoReconstLevel}, \hyperpage{20}
+    \subitem {SeparateBoundaryLayer}, \hyperpage{20}
+    \subitem {UpdateNonLinearWgts}, \hyperpage{20}
+  \item {MLWENO::singleLevelReconstruction}, \hyperpage{21}
+    \subitem {$\sim$singleLevelReconstruction}, \hyperpage{22}
+    \subitem {CalculateSmoothnessIndic}, \hyperpage{22}
+    \subitem {CheckExist}, \hyperpage{22}
+    \subitem {CheckStencilPolynomials}, \hyperpage{22}
+    \subitem {CheckStencils}, \hyperpage{23}
+    \subitem {CreateStencilPolynomials}, \hyperpage{23}
+    \subitem {GetScale}, \hyperpage{23}
+    \subitem {GetSizeX}, \hyperpage{23}
+    \subitem {GetSizeY}, \hyperpage{23}
+    \subitem {GetSmoothnessIndic}, \hyperpage{24}
+    \subitem {PrintSmoothnessIndicator}, \hyperpage{24}
+    \subitem {singleLevelReconstruction}, \hyperpage{21, 22}
+    \subitem {UpdateSmoothnessIndic}, \hyperpage{24}
+  \item {ModifyReconstMethod}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{19}
+  \item {MPIglobalCellSize}
+    \subitem {MeshInfo}, \hyperpage{14}
+  \item {MPIglobalHoriEdgeSize}
+    \subitem {MeshInfo}, \hyperpage{14}
+  \item {MPIGlobalToLocal}
+    \subitem {util.cpp}, \hyperpage{44}
+    \subitem {util.h}, \hyperpage{49}
+  \item {MPIglobalVertEdgeSize}
+    \subitem {MeshInfo}, \hyperpage{14}
+  \item {MPIglobalVertexSize}
+    \subitem {MeshInfo}, \hyperpage{14}
+  \item {MPIlocalCellSize}
+    \subitem {MeshInfo}, \hyperpage{15}
+  \item {MPIlocalCellSizeFull}
+    \subitem {MeshInfo}, \hyperpage{15}
+  \item {MPIlocalCellStart}
+    \subitem {MeshInfo}, \hyperpage{15}
+  \item {MPIlocalHoriEdgeSize}
+    \subitem {MeshInfo}, \hyperpage{15}
+  \item {MPILocalToGlobal}
+    \subitem {util.cpp}, \hyperpage{44}
+    \subitem {util.h}, \hyperpage{49}
+  \item {MPIlocalVertEdgeSize}
+    \subitem {MeshInfo}, \hyperpage{15}
+  \item {MPIlocalVertexSize}
+    \subitem {MeshInfo}, \hyperpage{15}
+  \item {MPIlocalVertexSizeFull}
+    \subitem {MeshInfo}, \hyperpage{16}
+  \item {MPIlocalVertexStart}
+    \subitem {MeshInfo}, \hyperpage{16}
+  \item {multiLevelReconstruction}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{17}
+
+  \indexspace
+
+  \item {operator()}
+    \subitem {stencil$<$ T $>$}, \hyperpage{27, 28}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{11}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{31, 32}
+
+  \indexspace
+
+  \item {polyEval}
+    \subitem {util.cpp}, \hyperpage{44}
+    \subitem {util.h}, \hyperpage{49}
+  \item {polynDerMulti}
+    \subitem {util.cpp}, \hyperpage{44}
+    \subitem {util.h}, \hyperpage{49}
+  \item {PrintBoundaryLayer}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{19}
+  \item {printCoef}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{12}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{32}
+  \item {PrintNonLinearWgts}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{20}
+  \item {PrintSmoothnessIndicator}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{20}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{24}
+
+  \indexspace
+
+  \item {SelectWenoReconstLevel}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{20}
+  \item {SeparateBoundaryLayer}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{20}
+  \item {setCoef}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{12}
+  \item {SetCollapsePolyn}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{32}
+  \item {setI}
+    \subitem {stencil$<$ T $>$}, \hyperpage{28}
+  \item {setJ}
+    \subitem {stencil$<$ T $>$}, \hyperpage{28}
+  \item {setK}
+    \subitem {stencil$<$ T $>$}, \hyperpage{29}
+  \item {setMaxDegree}
+    \subitem {tensorProductPoly::basePolynomial}, \hyperpage{12}
+  \item {SetStencil}
+    \subitem {stencil$<$ T $>$}, \hyperpage{29}
+  \item {SetStencilPolynomials}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{32}
+  \item {SetUpScale}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{32, 33}
+  \item {singleLevelReconstruction}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{21, 22}
+  \item {stencil}
+    \subitem {stencil$<$ T $>$}, \hyperpage{25, 26}
+  \item {stencil$<$ T $>$}, \hyperpage{24}
+    \subitem {$\sim$stencil}, \hyperpage{26}
+    \subitem {clearPtr}, \hyperpage{26}
+    \subitem {CreateStencil}, \hyperpage{26}
+    \subitem {getI}, \hyperpage{26}
+    \subitem {getJ}, \hyperpage{26}
+    \subitem {getK}, \hyperpage{27}
+    \subitem {getSize}, \hyperpage{27}
+    \subitem {GetStencil}, \hyperpage{27}
+    \subitem {operator()}, \hyperpage{27, 28}
+    \subitem {setI}, \hyperpage{28}
+    \subitem {setJ}, \hyperpage{28}
+    \subitem {setK}, \hyperpage{29}
+    \subitem {SetStencil}, \hyperpage{29}
+    \subitem {stencil}, \hyperpage{25, 26}
+  \item {stencil.h}
+    \subitem {cellCentered}, \hyperpage{40}
+    \subitem {edgeCentered}, \hyperpage{40}
+    \subitem {stencilType}, \hyperpage{40}
+    \subitem {vertexCentered}, \hyperpage{40}
+  \item {stencilPolynomial}
+    \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{30}
+  \item {stencilType}
+    \subitem {stencil.h}, \hyperpage{40}
+
+  \indexspace
+
+  \item {tensorProductPoly}, \hyperpage{7}
+  \item {tensorProductPoly::basePolynomial}, \hyperpage{9}
+    \subitem {$\sim$basePolynomial}, \hyperpage{10}
+    \subitem {basePolynomial}, \hyperpage{9, 10}
     \subitem {der}, \hyperpage{10}
     \subitem {eval}, \hyperpage{10}
     \subitem {getCoef}, \hyperpage{11}
@@ -193,188 +330,65 @@
     \subitem {printCoef}, \hyperpage{12}
     \subitem {setCoef}, \hyperpage{12}
     \subitem {setMaxDegree}, \hyperpage{12}
-  \item {MLWENO::multiLevelReconstruction}, \hyperpage{15}
-    \subitem {$\sim$multiLevelReconstruction}, \hyperpage{17}
-    \subitem {AddLevel}, \hyperpage{17}
-    \subitem {AddReconstMethod}, \hyperpage{17, 18}
-    \subitem {Clear}, \hyperpage{18}
-    \subitem {GetInfo}, \hyperpage{18}
-    \subitem {multiLevelReconstruction}, \hyperpage{16}
-    \subitem {PrintNonLinearWgts}, \hyperpage{18}
-    \subitem {PrintSmoothnessIndicator}, \hyperpage{18}
-    \subitem {UpdateNonLinearWgts}, \hyperpage{18}
-    \subitem {UpdateTwoStageNonLinearWgts}, \hyperpage{19}
-  \item {MLWENO::singleLevelReconstruction}, \hyperpage{19}
-    \subitem {$\sim$singleLevelReconstruction}, \hyperpage{20}
-    \subitem {CalculateSmoothnessIndic}, \hyperpage{20}
-    \subitem {CheckExist}, \hyperpage{20}
-    \subitem {CheckStencilPolynomials}, \hyperpage{21}
-    \subitem {CheckStencils}, \hyperpage{21}
-    \subitem {CreateStencilPolynomials}, \hyperpage{21}
-    \subitem {GetScale}, \hyperpage{21}
-    \subitem {GetSizeX}, \hyperpage{21}
-    \subitem {GetSizeY}, \hyperpage{22}
-    \subitem {PrintSmoothnessIndicator}, \hyperpage{22}
-    \subitem {singleLevelReconstruction}, \hyperpage{20}
-  \item {MLWENO::stencil$<$ T $>$}, \hyperpage{22}
-    \subitem {$\sim$stencil}, \hyperpage{23}
-    \subitem {clearPtr}, \hyperpage{23}
-    \subitem {CreateStencil}, \hyperpage{24}
-    \subitem {getI}, \hyperpage{24}
-    \subitem {getJ}, \hyperpage{24}
-    \subitem {getK}, \hyperpage{24}
-    \subitem {getSize}, \hyperpage{24}
-    \subitem {GetStencil}, \hyperpage{24}
-    \subitem {operator()}, \hyperpage{24, 25}
-    \subitem {setI}, \hyperpage{25}
-    \subitem {setJ}, \hyperpage{26}
-    \subitem {setK}, \hyperpage{26}
-    \subitem {SetStencil}, \hyperpage{26}
-    \subitem {stencil}, \hyperpage{23}
-  \item {MLWENO::stencilPolynomial}, \hyperpage{27}
-    \subitem {$\sim$stencilPolynomial}, \hyperpage{27}
-    \subitem {eval}, \hyperpage{28}
-    \subitem {GetOrderX}, \hyperpage{28}
-    \subitem {GetOrderY}, \hyperpage{28}
-    \subitem {GetScale}, \hyperpage{28}
-    \subitem {GetSmoothIndic}, \hyperpage{28}
-    \subitem {operator()}, \hyperpage{28, 29}
-    \subitem {printCoef}, \hyperpage{29}
-    \subitem {SetCollapsePolyn}, \hyperpage{29}
-    \subitem {SetStencilPolynomials}, \hyperpage{29}
-    \subitem {SetUpScale}, \hyperpage{29, 30}
-    \subitem {stencilPolynomial}, \hyperpage{27}
-  \item {MPIglobalCellSize}
-    \subitem {MeshInfo}, \hyperpage{13}
-  \item {MPIglobalHoriEdgeSize}
-    \subitem {MeshInfo}, \hyperpage{13}
-  \item {MPIGlobalToLocal}
-    \subitem {util.cpp}, \hyperpage{40}
-    \subitem {util.h}, \hyperpage{45}
-  \item {MPIglobalVertEdgeSize}
-    \subitem {MeshInfo}, \hyperpage{14}
-  \item {MPIglobalVertexSize}
-    \subitem {MeshInfo}, \hyperpage{14}
-  \item {MPIlocalCellSize}
-    \subitem {MeshInfo}, \hyperpage{14}
-  \item {MPIlocalCellSizeFull}
-    \subitem {MeshInfo}, \hyperpage{14}
-  \item {MPIlocalCellStart}
-    \subitem {MeshInfo}, \hyperpage{14}
-  \item {MPIlocalHoriEdgeSize}
-    \subitem {MeshInfo}, \hyperpage{14}
-  \item {MPILocalToGlobal}
-    \subitem {util.cpp}, \hyperpage{41}
-    \subitem {util.h}, \hyperpage{45}
-  \item {MPIlocalVertEdgeSize}
-    \subitem {MeshInfo}, \hyperpage{14}
-  \item {MPIlocalVertexSize}
-    \subitem {MeshInfo}, \hyperpage{14}
-  \item {MPIlocalVertexSizeFull}
-    \subitem {MeshInfo}, \hyperpage{15}
-  \item {MPIlocalVertexStart}
-    \subitem {MeshInfo}, \hyperpage{15}
-  \item {multiLevelReconstruction}
-    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{16}
-
-  \indexspace
-
-  \item {operator()}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{11}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{24, 25}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{28, 29}
-
-  \indexspace
-
-  \item {polyEval}
-    \subitem {util.cpp}, \hyperpage{41}
-    \subitem {util.h}, \hyperpage{45}
-  \item {polynDerMulti}
-    \subitem {util.cpp}, \hyperpage{41}
-    \subitem {util.h}, \hyperpage{46}
-  \item {polynomial.cpp}
-    \subitem {basePoly}, \hyperpage{33}
-  \item {printCoef}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{12}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{29}
-  \item {PrintNonLinearWgts}
-    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{18}
-  \item {PrintSmoothnessIndicator}
-    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{18}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{22}
-
-  \indexspace
-
-  \item {setCoef}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{12}
-  \item {SetCollapsePolyn}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{29}
-  \item {setI}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{25}
-  \item {setJ}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{26}
-  \item {setK}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{26}
-  \item {setMaxDegree}
-    \subitem {MLWENO::basisPolynomial}, \hyperpage{12}
-  \item {SetStencil}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{26}
-  \item {SetStencilPolynomials}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{29}
-  \item {SetUpScale}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{29, 30}
-  \item {singleLevelReconstruction}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{20}
-  \item {stencil}
-    \subitem {MLWENO::stencil$<$ T $>$}, \hyperpage{23}
-  \item {stencilPolynomial}
-    \subitem {MLWENO::stencilPolynomial}, \hyperpage{27}
-  \item {stencilType}
-    \subitem {MLWENO}, \hyperpage{7}
+  \item {tensorProductPoly::stencilPolynomial}, \hyperpage{29}
+    \subitem {$\sim$stencilPolynomial}, \hyperpage{30}
+    \subitem {eval}, \hyperpage{31}
+    \subitem {GetOrderX}, \hyperpage{31}
+    \subitem {GetOrderY}, \hyperpage{31}
+    \subitem {GetScale}, \hyperpage{31}
+    \subitem {GetSmoothIndic}, \hyperpage{31}
+    \subitem {operator()}, \hyperpage{31, 32}
+    \subitem {printCoef}, \hyperpage{32}
+    \subitem {SetCollapsePolyn}, \hyperpage{32}
+    \subitem {SetStencilPolynomials}, \hyperpage{32}
+    \subitem {SetUpScale}, \hyperpage{32, 33}
+    \subitem {stencilPolynomial}, \hyperpage{30}
 
   \indexspace
 
   \item {UpdateNonLinearWgts}
-    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{18}
-  \item {UpdateTwoStageNonLinearWgts}
-    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{19}
+    \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{20}
+  \item {UpdateSmoothnessIndic}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{24}
   \item {util.cpp}
-    \subitem {AssignValuesMeshInfo}, \hyperpage{38}
-    \subitem {Bend}, \hyperpage{38, 39}
-    \subitem {constFunc}, \hyperpage{39}
-    \subitem {factorial}, \hyperpage{39, 40}
-    \subitem {FlatIndic}, \hyperpage{40}
-    \subitem {MPIGlobalToLocal}, \hyperpage{40}
-    \subitem {MPILocalToGlobal}, \hyperpage{41}
-    \subitem {polyEval}, \hyperpage{41}
-    \subitem {polynDerMulti}, \hyperpage{41}
+    \subitem {AssignValuesMeshInfo}, \hyperpage{42}
+    \subitem {basePoly}, \hyperpage{42}
+    \subitem {Bend}, \hyperpage{42}
+    \subitem {constFunc}, \hyperpage{42, 43}
+    \subitem {factorial}, \hyperpage{43}
+    \subitem {FlatIndic}, \hyperpage{43, 44}
+    \subitem {MPIGlobalToLocal}, \hyperpage{44}
+    \subitem {MPILocalToGlobal}, \hyperpage{44}
+    \subitem {polyEval}, \hyperpage{44}
+    \subitem {polynDerMulti}, \hyperpage{44}
   \item {util.h}
-    \subitem {AssignValuesMeshInfo}, \hyperpage{43}
-    \subitem {Bend}, \hyperpage{43}
-    \subitem {constFunc}, \hyperpage{43, 44}
-    \subitem {delete\_pointed\_to}, \hyperpage{44}
-    \subitem {factorial}, \hyperpage{44}
-    \subitem {FlatIndic}, \hyperpage{44, 45}
-    \subitem {indice}, \hyperpage{42}
-    \subitem {indiceSet}, \hyperpage{42}
-    \subitem {MPIGlobalToLocal}, \hyperpage{45}
-    \subitem {MPILocalToGlobal}, \hyperpage{45}
-    \subitem {polyEval}, \hyperpage{45}
-    \subitem {polynDerMulti}, \hyperpage{46}
-    \subitem {vertex}, \hyperpage{42}
-    \subitem {vertexSet}, \hyperpage{43}
+    \subitem {AssignValuesMeshInfo}, \hyperpage{46}
+    \subitem {basePoly}, \hyperpage{47}
+    \subitem {Bend}, \hyperpage{47}
+    \subitem {constFunc}, \hyperpage{47, 48}
+    \subitem {delete\_pointed\_to}, \hyperpage{48}
+    \subitem {factorial}, \hyperpage{48}
+    \subitem {FlatIndic}, \hyperpage{48, 49}
+    \subitem {indice}, \hyperpage{46}
+    \subitem {indiceSet}, \hyperpage{46}
+    \subitem {MPIGlobalToLocal}, \hyperpage{49}
+    \subitem {MPILocalToGlobal}, \hyperpage{49}
+    \subitem {polyEval}, \hyperpage{49}
+    \subitem {polynDerMulti}, \hyperpage{49}
+    \subitem {vertex}, \hyperpage{46}
+    \subitem {vertexSet}, \hyperpage{46}
 
   \indexspace
 
   \item {vertex}
-    \subitem {util.h}, \hyperpage{42}
+    \subitem {util.h}, \hyperpage{46}
   \item {vertexCentered}
-    \subitem {MLWENO}, \hyperpage{8}
+    \subitem {stencil.h}, \hyperpage{40}
   \item {vertexGhostLayerSize}
-    \subitem {MeshInfo}, \hyperpage{15}
+    \subitem {MeshInfo}, \hyperpage{16}
   \item {vertexSet}
-    \subitem {util.h}, \hyperpage{43}
+    \subitem {util.h}, \hyperpage{46}
   \item {volumeCorner}
-    \subitem {MeshInfo}, \hyperpage{15}
+    \subitem {MeshInfo}, \hyperpage{16}
 
 \end{theindex}

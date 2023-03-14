@@ -1,29 +1,21 @@
 #include "transport.h"
 
-using namespace Transport {
+advection::SelectReconstLevels(unordered_set<std::string> reconstLevels){
 
-    void advection::Clear() const {
-        boundaryType_.clear();
-
-        for (auto it = advRecon_.begin(); it != advRecon_.end(); it++){
-            delete it->second;
-        }
-    }
-
-    void CreateBoundary_() {
-
-
-    }
-
-
-    void diffusion::Clear() const {
-        boundaryType_.clear();
-
-        for (auto it = diffRecon_.begin(); it != diffRecon_.end(); it++){
-            delete it->second;
-        }
-    }
-
-
-
+    
 }
+
+advection::Func_(double x, double y, double u, double t){
+    return func(double x, double y, double u, double t);
+}
+
+advection::dFunc_(double x, double y, double u, double t){
+    return dfunc(double x, double y, double u, double t);
+}
+
+
+transport::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY, vector<indice> brm){
+    mlrPtr_->AddLevel(mi,stencilSizeX,stencilSizeY,brm);
+}
+
+

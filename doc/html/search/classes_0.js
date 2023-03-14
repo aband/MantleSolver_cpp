@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['basispolynomial_0',['basisPolynomial',['../classMLWENO_1_1basisPolynomial.html',1,'MLWENO']]]
+  ['basepolynomial_0',['basePolynomial',['../classtensorProductPoly_1_1basePolynomial.html',1,'tensorProductPoly']]]
 ];

@@ -2,7 +2,7 @@
 \label{classMLWENO_1_1singleLevelReconstruction}\index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 
 
-{\ttfamily \#include $<$slreconstruction.\+h$>$}
+{\ttfamily \#include $<$reconstruction.\+h$>$}
 
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
@@ -27,6 +27,10 @@ const double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a85544061
 \item 
 double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a705893e946eda8e309910e4cf90651ec}{Calculate\+Smoothness\+Indic}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} owner)
 \begin{DoxyCompactList}\small\item\em Calculate smoothness indicator for the single stencil. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a152e62ac226fa60ca9b2160ff5cdb6be}{Get\+Smoothness\+Indic}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} owner)
+\begin{DoxyCompactList}\small\item\em Extract smoothness indicator from pre-\/calculated values. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_acf1d9c32d9fc29727dd27bdfbd5aff1e}{Update\+Smoothness\+Indic}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi)
+\begin{DoxyCompactList}\small\item\em Update smoothness indicator for entire reconstruction level. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a62a18da5e34895ca4f6b62ca4b005e3c}{Check\+Stencils}} () const
 \begin{DoxyCompactList}\small\item\em class members for checking and verification \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a533bef552787e08bf635d3767e6acb55}{Check\+Stencil\+Polynomials}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} start)
@@ -135,7 +139,17 @@ class members for checking and verification
 \doxysubsubsection{\texorpdfstring{GetSizeY()}{GetSizeY()}}
 {\footnotesize\ttfamily const int MLWENO\+::single\+Level\+Reconstruction\+::\+Get\+SizeY (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
 
-\mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}\label{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}} 
+\mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a152e62ac226fa60ca9b2160ff5cdb6be}\label{classMLWENO_1_1singleLevelReconstruction_a152e62ac226fa60ca9b2160ff5cdb6be}} 
+\index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetSmoothnessIndic@{GetSmoothnessIndic}}
+\index{GetSmoothnessIndic@{GetSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{GetSmoothnessIndic()}{GetSmoothnessIndic()}}
+{\footnotesize\ttfamily double single\+Level\+Reconstruction\+::\+Get\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}}]{owner }\end{DoxyParamCaption})}
+
+
+
+Extract smoothness indicator from pre-\/calculated values. 
+
+Directly extract pre-\/calculateed smoothness indicator. Should always be the one to call when smoothness indicator is needed. \mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}\label{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}} 
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!PrintSmoothnessIndicator@{PrintSmoothnessIndicator}}
 \index{PrintSmoothnessIndicator@{PrintSmoothnessIndicator}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 \doxysubsubsection{\texorpdfstring{PrintSmoothnessIndicator()}{PrintSmoothnessIndicator()}}
@@ -145,9 +159,19 @@ class members for checking and verification
 
 Print all smoothness\+Indicator for all stencils belonging to this level. 
 
+\mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_acf1d9c32d9fc29727dd27bdfbd5aff1e}\label{classMLWENO_1_1singleLevelReconstruction_acf1d9c32d9fc29727dd27bdfbd5aff1e}} 
+\index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!UpdateSmoothnessIndic@{UpdateSmoothnessIndic}}
+\index{UpdateSmoothnessIndic@{UpdateSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{UpdateSmoothnessIndic()}{UpdateSmoothnessIndic()}}
+{\footnotesize\ttfamily void single\+Level\+Reconstruction\+::\+Update\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi }\end{DoxyParamCaption})}
 
+
+
+Update smoothness indicator for entire reconstruction level. 
+
+Update smoothness indicators for the entire level. 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
 \item 
-/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{slreconstruction_8h}{slreconstruction.\+h}}\item 
-/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{slreconstruction_8cpp}{slreconstruction.\+cpp}}\end{DoxyCompactItemize}
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{reconstruction_8h}{reconstruction.\+h}}\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{reconstruction_8cpp}{reconstruction.\+cpp}}\end{DoxyCompactItemize}

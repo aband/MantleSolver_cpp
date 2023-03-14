@@ -80,7 +80,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="slreconstruction_8h_source.html">slreconstruction.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="reconstruction_8h_source.html">reconstruction.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -108,6 +108,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a705893e946eda8e309910e4cf90651ec"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMLWENO_1_1singleLevelReconstruction.html#a705893e946eda8e309910e4cf90651ec">CalculateSmoothnessIndic</a> (const <a class="el" href="structMeshInfo.html">MeshInfo</a> &amp;mi, <a class="el" href="util_8h.html#a724c00a63451ac03113852e2700f68ea">indice</a> owner)</td></tr>
 <tr class="memdesc:a705893e946eda8e309910e4cf90651ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate smoothness indicator for the single stencil.  <br /></td></tr>
 <tr class="separator:a705893e946eda8e309910e4cf90651ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a152e62ac226fa60ca9b2160ff5cdb6be"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMLWENO_1_1singleLevelReconstruction.html#a152e62ac226fa60ca9b2160ff5cdb6be">GetSmoothnessIndic</a> (const <a class="el" href="structMeshInfo.html">MeshInfo</a> &amp;mi, <a class="el" href="util_8h.html#a724c00a63451ac03113852e2700f68ea">indice</a> owner)</td></tr>
+<tr class="memdesc:a152e62ac226fa60ca9b2160ff5cdb6be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract smoothness indicator from pre-calculated values.  <br /></td></tr>
+<tr class="separator:a152e62ac226fa60ca9b2160ff5cdb6be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf1d9c32d9fc29727dd27bdfbd5aff1e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMLWENO_1_1singleLevelReconstruction.html#acf1d9c32d9fc29727dd27bdfbd5aff1e">UpdateSmoothnessIndic</a> (const <a class="el" href="structMeshInfo.html">MeshInfo</a> &amp;mi)</td></tr>
+<tr class="memdesc:acf1d9c32d9fc29727dd27bdfbd5aff1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update smoothness indicator for entire reconstruction level.  <br /></td></tr>
+<tr class="separator:acf1d9c32d9fc29727dd27bdfbd5aff1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62a18da5e34895ca4f6b62ca4b005e3c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMLWENO_1_1singleLevelReconstruction.html#a62a18da5e34895ca4f6b62ca4b005e3c">CheckStencils</a> () const</td></tr>
 <tr class="memdesc:a62a18da5e34895ca4f6b62ca4b005e3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">class members for checking and verification  <br /></td></tr>
 <tr class="separator:a62a18da5e34895ca4f6b62ca4b005e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -463,6 +469,37 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a152e62ac226fa60ca9b2160ff5cdb6be" name="a152e62ac226fa60ca9b2160ff5cdb6be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a152e62ac226fa60ca9b2160ff5cdb6be">&#9670;&#160;</a></span>GetSmoothnessIndic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double singleLevelReconstruction::GetSmoothnessIndic </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structMeshInfo.html">MeshInfo</a> &amp;&#160;</td>
+          <td class="paramname"><em>mi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="util_8h.html#a724c00a63451ac03113852e2700f68ea">indice</a>&#160;</td>
+          <td class="paramname"><em>owner</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Extract smoothness indicator from pre-calculated values. </p>
+<p>Directly extract pre-calculateed smoothness indicator. Should always be the one to call when smoothness indicator is needed. </p>
+
+</div>
+</div>
 <a id="a7fdd670b69aa03ef268a9e168b6b6006" name="a7fdd670b69aa03ef268a9e168b6b6006"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7fdd670b69aa03ef268a9e168b6b6006">&#9670;&#160;</a></span>PrintSmoothnessIndicator()</h2>
 
@@ -483,9 +520,30 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="acf1d9c32d9fc29727dd27bdfbd5aff1e" name="acf1d9c32d9fc29727dd27bdfbd5aff1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf1d9c32d9fc29727dd27bdfbd5aff1e">&#9670;&#160;</a></span>UpdateSmoothnessIndic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void singleLevelReconstruction::UpdateSmoothnessIndic </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structMeshInfo.html">MeshInfo</a> &amp;&#160;</td>
+          <td class="paramname"><em>mi</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Update smoothness indicator for entire reconstruction level. </p>
+<p>Update smoothness indicators for the entire level. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>/home/renpo/Research/MantleSolver/src/mlweno/<a class="el" href="slreconstruction_8h_source.html">slreconstruction.h</a></li>
-<li>/home/renpo/Research/MantleSolver/src/mlweno/<a class="el" href="slreconstruction_8cpp.html">slreconstruction.cpp</a></li>
+<li>/home/renpo/Research/MantleSolver/src/mlweno/<a class="el" href="reconstruction_8h_source.html">reconstruction.h</a></li>
+<li>/home/renpo/Research/MantleSolver/src/mlweno/<a class="el" href="reconstruction_8cpp.html">reconstruction.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

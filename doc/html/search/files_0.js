@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['mlreconstruction_2ecpp_0',['mlreconstruction.cpp',['../mlreconstruction_8cpp.html',1,'']]],
-  ['mlreconstruction_2eh_1',['mlreconstruction.h',['../mlreconstruction_8h.html',1,'']]]
+  ['polynomial_2ecpp_0',['polynomial.cpp',['../polynomial_8cpp.html',1,'']]],
+  ['polynomial_2eh_1',['polynomial.h',['../polynomial_8h.html',1,'']]]
 ];

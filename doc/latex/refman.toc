@@ -8,15 +8,14 @@
 \contentsline {chapter}{\numberline {4}Namespace Documentation}{7}{chapter.4}%
 \contentsline {section}{\numberline {4.1}MLWENO Namespace Reference}{7}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}Detailed Description}{7}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Enumeration Type Documentation}{7}{subsection.4.1.2}%
-\contentsline {subsubsection}{\numberline {4.1.2.1}stencilType}{7}{subsubsection.4.1.2.1}%
+\contentsline {section}{\numberline {4.2}tensor\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Product\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Poly Namespace Reference}{7}{section.4.2}%
 \contentsline {chapter}{\numberline {5}Class Documentation}{9}{chapter.5}%
-\contentsline {section}{\numberline {5.1}MLWENO\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::basis\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Polynomial Class Reference}{9}{section.5.1}%
+\contentsline {section}{\numberline {5.1}tensor\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Product\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Poly\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::base\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Polynomial Class Reference}{9}{section.5.1}%
 \contentsline {subsection}{\numberline {5.1.1}Constructor \& Destructor Documentation}{9}{subsection.5.1.1}%
-\contentsline {subsubsection}{\numberline {5.1.1.1}basisPolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{9}{subsubsection.5.1.1.1}%
-\contentsline {subsubsection}{\numberline {5.1.1.2}basisPolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{10}{subsubsection.5.1.1.2}%
-\contentsline {subsubsection}{\numberline {5.1.1.3}basisPolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{10}{subsubsection.5.1.1.3}%
-\contentsline {subsubsection}{\numberline {5.1.1.4}$\sim $basisPolynomial()}{10}{subsubsection.5.1.1.4}%
+\contentsline {subsubsection}{\numberline {5.1.1.1}basePolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{9}{subsubsection.5.1.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.1.2}basePolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{10}{subsubsection.5.1.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.1.3}basePolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{10}{subsubsection.5.1.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.1.4}$\sim $basePolynomial()}{10}{subsubsection.5.1.1.4}%
 \contentsline {subsection}{\numberline {5.1.2}Member Function Documentation}{10}{subsection.5.1.2}%
 \contentsline {subsubsection}{\numberline {5.1.2.1}der()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{10}{subsubsection.5.1.2.1}%
 \contentsline {subsubsection}{\numberline {5.1.2.2}der()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{10}{subsubsection.5.1.2.2}%
@@ -36,164 +35,167 @@
 \contentsline {subsection}{\numberline {5.2.1}Member Data Documentation}{13}{subsection.5.2.1}%
 \contentsline {subsubsection}{\numberline {5.2.1.1}cellGhostLayerSize}{13}{subsubsection.5.2.1.1}%
 \contentsline {subsubsection}{\numberline {5.2.1.2}dim}{13}{subsubsection.5.2.1.2}%
-\contentsline {subsubsection}{\numberline {5.2.1.3}edgeCorner}{13}{subsubsection.5.2.1.3}%
-\contentsline {subsubsection}{\numberline {5.2.1.4}faceCorner}{13}{subsubsection.5.2.1.4}%
-\contentsline {subsubsection}{\numberline {5.2.1.5}lmesh}{13}{subsubsection.5.2.1.5}%
-\contentsline {subsubsection}{\numberline {5.2.1.6}localVals}{13}{subsubsection.5.2.1.6}%
-\contentsline {subsubsection}{\numberline {5.2.1.7}MPIglobalCellSize}{13}{subsubsection.5.2.1.7}%
+\contentsline {subsubsection}{\numberline {5.2.1.3}edgeCorner}{14}{subsubsection.5.2.1.3}%
+\contentsline {subsubsection}{\numberline {5.2.1.4}faceCorner}{14}{subsubsection.5.2.1.4}%
+\contentsline {subsubsection}{\numberline {5.2.1.5}lmesh}{14}{subsubsection.5.2.1.5}%
+\contentsline {subsubsection}{\numberline {5.2.1.6}localVals}{14}{subsubsection.5.2.1.6}%
+\contentsline {subsubsection}{\numberline {5.2.1.7}MPIglobalCellSize}{14}{subsubsection.5.2.1.7}%
 \contentsline {subsubsection}{\numberline {5.2.1.8}MPIglobalHoriEdgeSize}{14}{subsubsection.5.2.1.8}%
 \contentsline {subsubsection}{\numberline {5.2.1.9}MPIglobalVertEdgeSize}{14}{subsubsection.5.2.1.9}%
-\contentsline {subsubsection}{\numberline {5.2.1.10}MPIglobalVertexSize}{14}{subsubsection.5.2.1.10}%
-\contentsline {subsubsection}{\numberline {5.2.1.11}MPIlocalCellSize}{14}{subsubsection.5.2.1.11}%
-\contentsline {subsubsection}{\numberline {5.2.1.12}MPIlocalCellSizeFull}{14}{subsubsection.5.2.1.12}%
-\contentsline {subsubsection}{\numberline {5.2.1.13}MPIlocalCellStart}{14}{subsubsection.5.2.1.13}%
-\contentsline {subsubsection}{\numberline {5.2.1.14}MPIlocalHoriEdgeSize}{14}{subsubsection.5.2.1.14}%
-\contentsline {subsubsection}{\numberline {5.2.1.15}MPIlocalVertEdgeSize}{14}{subsubsection.5.2.1.15}%
-\contentsline {subsubsection}{\numberline {5.2.1.16}MPIlocalVertexSize}{15}{subsubsection.5.2.1.16}%
-\contentsline {subsubsection}{\numberline {5.2.1.17}MPIlocalVertexSizeFull}{15}{subsubsection.5.2.1.17}%
-\contentsline {subsubsection}{\numberline {5.2.1.18}MPIlocalVertexStart}{15}{subsubsection.5.2.1.18}%
-\contentsline {subsubsection}{\numberline {5.2.1.19}vertexGhostLayerSize}{15}{subsubsection.5.2.1.19}%
-\contentsline {subsubsection}{\numberline {5.2.1.20}volumeCorner}{15}{subsubsection.5.2.1.20}%
-\contentsline {section}{\numberline {5.3}MLWENO\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::multi\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Level\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Reconstruction Class Reference}{15}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Constructor \& Destructor Documentation}{16}{subsection.5.3.1}%
-\contentsline {subsubsection}{\numberline {5.3.1.1}multiLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{16}{subsubsection.5.3.1.1}%
-\contentsline {subsubsection}{\numberline {5.3.1.2}multiLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{16}{subsubsection.5.3.1.2}%
-\contentsline {subsubsection}{\numberline {5.3.1.3}multiLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{16}{subsubsection.5.3.1.3}%
-\contentsline {subsubsection}{\numberline {5.3.1.4}multiLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{17}{subsubsection.5.3.1.4}%
-\contentsline {subsubsection}{\numberline {5.3.1.5}$\sim $multiLevelReconstruction()}{17}{subsubsection.5.3.1.5}%
-\contentsline {subsection}{\numberline {5.3.2}Member Function Documentation}{17}{subsection.5.3.2}%
-\contentsline {subsubsection}{\numberline {5.3.2.1}AddLevel()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{17}{subsubsection.5.3.2.1}%
-\contentsline {subsubsection}{\numberline {5.3.2.2}AddLevel()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{17}{subsubsection.5.3.2.2}%
-\contentsline {subsubsection}{\numberline {5.3.2.3}AddLevel()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{17}{subsubsection.5.3.2.3}%
-\contentsline {subsubsection}{\numberline {5.3.2.4}AddReconstMethod()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{18}{subsubsection.5.3.2.4}%
-\contentsline {subsubsection}{\numberline {5.3.2.5}AddReconstMethod()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{18}{subsubsection.5.3.2.5}%
-\contentsline {subsubsection}{\numberline {5.3.2.6}Clear()}{18}{subsubsection.5.3.2.6}%
-\contentsline {subsubsection}{\numberline {5.3.2.7}GetInfo()}{18}{subsubsection.5.3.2.7}%
-\contentsline {subsubsection}{\numberline {5.3.2.8}PrintNonLinearWgts()}{18}{subsubsection.5.3.2.8}%
-\contentsline {subsubsection}{\numberline {5.3.2.9}PrintSmoothnessIndicator()}{18}{subsubsection.5.3.2.9}%
-\contentsline {subsubsection}{\numberline {5.3.2.10}UpdateNonLinearWgts()}{19}{subsubsection.5.3.2.10}%
-\contentsline {subsubsection}{\numberline {5.3.2.11}UpdateTwoStageNonLinearWgts()}{19}{subsubsection.5.3.2.11}%
-\contentsline {section}{\numberline {5.4}MLWENO\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::single\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Level\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Reconstruction Class Reference}{19}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Constructor \& Destructor Documentation}{20}{subsection.5.4.1}%
-\contentsline {subsubsection}{\numberline {5.4.1.1}singleLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{20}{subsubsection.5.4.1.1}%
-\contentsline {subsubsection}{\numberline {5.4.1.2}singleLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{20}{subsubsection.5.4.1.2}%
-\contentsline {subsubsection}{\numberline {5.4.1.3}$\sim $singleLevelReconstruction()}{20}{subsubsection.5.4.1.3}%
-\contentsline {subsection}{\numberline {5.4.2}Member Function Documentation}{20}{subsection.5.4.2}%
-\contentsline {subsubsection}{\numberline {5.4.2.1}CalculateSmoothnessIndic()}{20}{subsubsection.5.4.2.1}%
-\contentsline {subsubsection}{\numberline {5.4.2.2}CheckExist()}{21}{subsubsection.5.4.2.2}%
-\contentsline {subsubsection}{\numberline {5.4.2.3}CheckStencilPolynomials()}{21}{subsubsection.5.4.2.3}%
-\contentsline {subsubsection}{\numberline {5.4.2.4}CheckStencils()}{21}{subsubsection.5.4.2.4}%
-\contentsline {subsubsection}{\numberline {5.4.2.5}CreateStencilPolynomials()}{21}{subsubsection.5.4.2.5}%
-\contentsline {subsubsection}{\numberline {5.4.2.6}GetScale()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{21}{subsubsection.5.4.2.6}%
-\contentsline {subsubsection}{\numberline {5.4.2.7}GetScale()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{21}{subsubsection.5.4.2.7}%
-\contentsline {subsubsection}{\numberline {5.4.2.8}GetSizeX()}{22}{subsubsection.5.4.2.8}%
-\contentsline {subsubsection}{\numberline {5.4.2.9}GetSizeY()}{22}{subsubsection.5.4.2.9}%
-\contentsline {subsubsection}{\numberline {5.4.2.10}PrintSmoothnessIndicator()}{22}{subsubsection.5.4.2.10}%
-\contentsline {section}{\numberline {5.5}MLWENO\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::stencil$<$ T $>$ Class Template Reference}{22}{section.5.5}%
-\contentsline {subsection}{\numberline {5.5.1}Constructor \& Destructor Documentation}{23}{subsection.5.5.1}%
-\contentsline {subsubsection}{\numberline {5.5.1.1}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{23}{subsubsection.5.5.1.1}%
-\contentsline {subsubsection}{\numberline {5.5.1.2}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{23}{subsubsection.5.5.1.2}%
-\contentsline {subsubsection}{\numberline {5.5.1.3}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{23}{subsubsection.5.5.1.3}%
-\contentsline {subsubsection}{\numberline {5.5.1.4}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{23}{subsubsection.5.5.1.4}%
-\contentsline {subsubsection}{\numberline {5.5.1.5}$\sim $stencil()}{23}{subsubsection.5.5.1.5}%
-\contentsline {subsection}{\numberline {5.5.2}Member Function Documentation}{23}{subsection.5.5.2}%
-\contentsline {subsubsection}{\numberline {5.5.2.1}clearPtr()}{24}{subsubsection.5.5.2.1}%
-\contentsline {subsubsection}{\numberline {5.5.2.2}CreateStencil()}{24}{subsubsection.5.5.2.2}%
-\contentsline {subsubsection}{\numberline {5.5.2.3}getI()}{24}{subsubsection.5.5.2.3}%
-\contentsline {subsubsection}{\numberline {5.5.2.4}getJ()}{24}{subsubsection.5.5.2.4}%
-\contentsline {subsubsection}{\numberline {5.5.2.5}getK()}{24}{subsubsection.5.5.2.5}%
-\contentsline {subsubsection}{\numberline {5.5.2.6}getSize()}{24}{subsubsection.5.5.2.6}%
-\contentsline {subsubsection}{\numberline {5.5.2.7}GetStencil()}{24}{subsubsection.5.5.2.7}%
-\contentsline {subsubsection}{\numberline {5.5.2.8}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [1/6]}}{25}{subsubsection.5.5.2.8}%
-\contentsline {subsubsection}{\numberline {5.5.2.9}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [2/6]}}{25}{subsubsection.5.5.2.9}%
-\contentsline {subsubsection}{\numberline {5.5.2.10}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [3/6]}}{25}{subsubsection.5.5.2.10}%
-\contentsline {subsubsection}{\numberline {5.5.2.11}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [4/6]}}{25}{subsubsection.5.5.2.11}%
-\contentsline {subsubsection}{\numberline {5.5.2.12}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [5/6]}}{25}{subsubsection.5.5.2.12}%
-\contentsline {subsubsection}{\numberline {5.5.2.13}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [6/6]}}{25}{subsubsection.5.5.2.13}%
-\contentsline {subsubsection}{\numberline {5.5.2.14}setI()}{26}{subsubsection.5.5.2.14}%
-\contentsline {subsubsection}{\numberline {5.5.2.15}setJ()}{26}{subsubsection.5.5.2.15}%
-\contentsline {subsubsection}{\numberline {5.5.2.16}setK()}{26}{subsubsection.5.5.2.16}%
-\contentsline {subsubsection}{\numberline {5.5.2.17}SetStencil()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{26}{subsubsection.5.5.2.17}%
-\contentsline {subsubsection}{\numberline {5.5.2.18}SetStencil()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{26}{subsubsection.5.5.2.18}%
-\contentsline {subsubsection}{\numberline {5.5.2.19}SetStencil()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{26}{subsubsection.5.5.2.19}%
-\contentsline {section}{\numberline {5.6}MLWENO\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::stencil\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Polynomial Class Reference}{27}{section.5.6}%
-\contentsline {subsection}{\numberline {5.6.1}Constructor \& Destructor Documentation}{27}{subsection.5.6.1}%
-\contentsline {subsubsection}{\numberline {5.6.1.1}stencilPolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{27}{subsubsection.5.6.1.1}%
-\contentsline {subsubsection}{\numberline {5.6.1.2}stencilPolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{27}{subsubsection.5.6.1.2}%
-\contentsline {subsubsection}{\numberline {5.6.1.3}stencilPolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{27}{subsubsection.5.6.1.3}%
-\contentsline {subsubsection}{\numberline {5.6.1.4}$\sim $stencilPolynomial()}{28}{subsubsection.5.6.1.4}%
-\contentsline {subsection}{\numberline {5.6.2}Member Function Documentation}{28}{subsection.5.6.2}%
-\contentsline {subsubsection}{\numberline {5.6.2.1}eval()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{28}{subsubsection.5.6.2.1}%
-\contentsline {subsubsection}{\numberline {5.6.2.2}eval()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{28}{subsubsection.5.6.2.2}%
-\contentsline {subsubsection}{\numberline {5.6.2.3}GetOrderX()}{28}{subsubsection.5.6.2.3}%
-\contentsline {subsubsection}{\numberline {5.6.2.4}GetOrderY()}{28}{subsubsection.5.6.2.4}%
-\contentsline {subsubsection}{\numberline {5.6.2.5}GetScale()}{28}{subsubsection.5.6.2.5}%
-\contentsline {subsubsection}{\numberline {5.6.2.6}GetSmoothIndic()}{28}{subsubsection.5.6.2.6}%
-\contentsline {subsubsection}{\numberline {5.6.2.7}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{29}{subsubsection.5.6.2.7}%
-\contentsline {subsubsection}{\numberline {5.6.2.8}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{29}{subsubsection.5.6.2.8}%
-\contentsline {subsubsection}{\numberline {5.6.2.9}printCoef()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{29}{subsubsection.5.6.2.9}%
-\contentsline {subsubsection}{\numberline {5.6.2.10}printCoef()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{29}{subsubsection.5.6.2.10}%
-\contentsline {subsubsection}{\numberline {5.6.2.11}SetCollapsePolyn()}{29}{subsubsection.5.6.2.11}%
-\contentsline {subsubsection}{\numberline {5.6.2.12}SetStencilPolynomials()}{29}{subsubsection.5.6.2.12}%
-\contentsline {subsubsection}{\numberline {5.6.2.13}SetUpScale()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{30}{subsubsection.5.6.2.13}%
-\contentsline {subsubsection}{\numberline {5.6.2.14}SetUpScale()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{30}{subsubsection.5.6.2.14}%
-\contentsline {chapter}{\numberline {6}File Documentation}{31}{chapter.6}%
-\contentsline {section}{\numberline {6.1}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/mlreconstruction.cpp File Reference}{31}{section.6.1}%
-\contentsline {section}{\numberline {6.2}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/mlreconstruction.h File Reference}{31}{section.6.2}%
-\contentsline {section}{\numberline {6.3}mlreconstruction.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{32}{section.6.3}%
-\contentsline {section}{\numberline {6.4}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/polynomial.cpp File Reference}{32}{section.6.4}%
-\contentsline {subsection}{\numberline {6.4.1}Function Documentation}{33}{subsection.6.4.1}%
-\contentsline {subsubsection}{\numberline {6.4.1.1}basePoly()}{33}{subsubsection.6.4.1.1}%
-\contentsline {section}{\numberline {6.5}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/polynomial.h File Reference}{33}{section.6.5}%
-\contentsline {section}{\numberline {6.6}polynomial.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{33}{section.6.6}%
-\contentsline {section}{\numberline {6.7}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/slreconstruction.cpp File Reference}{35}{section.6.7}%
-\contentsline {section}{\numberline {6.8}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/slreconstruction.h File Reference}{35}{section.6.8}%
-\contentsline {section}{\numberline {6.9}slreconstruction.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{35}{section.6.9}%
-\contentsline {section}{\numberline {6.10}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/stencil.h File Reference}{36}{section.6.10}%
-\contentsline {section}{\numberline {6.11}stencil.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{37}{section.6.11}%
-\contentsline {section}{\numberline {6.12}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/util.cpp File Reference}{38}{section.6.12}%
-\contentsline {subsection}{\numberline {6.12.1}Function Documentation}{38}{subsection.6.12.1}%
-\contentsline {subsubsection}{\numberline {6.12.1.1}AssignValuesMeshInfo()}{38}{subsubsection.6.12.1.1}%
-\contentsline {subsubsection}{\numberline {6.12.1.2}Bend()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{39}{subsubsection.6.12.1.2}%
-\contentsline {subsubsection}{\numberline {6.12.1.3}Bend()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{39}{subsubsection.6.12.1.3}%
-\contentsline {subsubsection}{\numberline {6.12.1.4}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{39}{subsubsection.6.12.1.4}%
-\contentsline {subsubsection}{\numberline {6.12.1.5}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{39}{subsubsection.6.12.1.5}%
-\contentsline {subsubsection}{\numberline {6.12.1.6}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{39}{subsubsection.6.12.1.6}%
-\contentsline {subsubsection}{\numberline {6.12.1.7}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{39}{subsubsection.6.12.1.7}%
-\contentsline {subsubsection}{\numberline {6.12.1.8}factorial()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{40}{subsubsection.6.12.1.8}%
-\contentsline {subsubsection}{\numberline {6.12.1.9}factorial()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{40}{subsubsection.6.12.1.9}%
-\contentsline {subsubsection}{\numberline {6.12.1.10}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{40}{subsubsection.6.12.1.10}%
-\contentsline {subsubsection}{\numberline {6.12.1.11}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{40}{subsubsection.6.12.1.11}%
-\contentsline {subsubsection}{\numberline {6.12.1.12}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{40}{subsubsection.6.12.1.12}%
-\contentsline {subsubsection}{\numberline {6.12.1.13}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{40}{subsubsection.6.12.1.13}%
-\contentsline {subsubsection}{\numberline {6.12.1.14}MPIGlobalToLocal()}{41}{subsubsection.6.12.1.14}%
-\contentsline {subsubsection}{\numberline {6.12.1.15}MPILocalToGlobal()}{41}{subsubsection.6.12.1.15}%
-\contentsline {subsubsection}{\numberline {6.12.1.16}polyEval()}{41}{subsubsection.6.12.1.16}%
-\contentsline {subsubsection}{\numberline {6.12.1.17}polynDerMulti()}{41}{subsubsection.6.12.1.17}%
-\contentsline {section}{\numberline {6.13}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/util.h File Reference}{41}{section.6.13}%
-\contentsline {subsection}{\numberline {6.13.1}Typedef Documentation}{42}{subsection.6.13.1}%
-\contentsline {subsubsection}{\numberline {6.13.1.1}indice}{42}{subsubsection.6.13.1.1}%
-\contentsline {subsubsection}{\numberline {6.13.1.2}indiceSet}{42}{subsubsection.6.13.1.2}%
-\contentsline {subsubsection}{\numberline {6.13.1.3}vertex}{43}{subsubsection.6.13.1.3}%
-\contentsline {subsubsection}{\numberline {6.13.1.4}vertexSet}{43}{subsubsection.6.13.1.4}%
-\contentsline {subsection}{\numberline {6.13.2}Function Documentation}{43}{subsection.6.13.2}%
-\contentsline {subsubsection}{\numberline {6.13.2.1}AssignValuesMeshInfo()}{43}{subsubsection.6.13.2.1}%
-\contentsline {subsubsection}{\numberline {6.13.2.2}Bend()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{43}{subsubsection.6.13.2.2}%
-\contentsline {subsubsection}{\numberline {6.13.2.3}Bend()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{43}{subsubsection.6.13.2.3}%
-\contentsline {subsubsection}{\numberline {6.13.2.4}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{43}{subsubsection.6.13.2.4}%
-\contentsline {subsubsection}{\numberline {6.13.2.5}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{44}{subsubsection.6.13.2.5}%
-\contentsline {subsubsection}{\numberline {6.13.2.6}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{44}{subsubsection.6.13.2.6}%
-\contentsline {subsubsection}{\numberline {6.13.2.7}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{44}{subsubsection.6.13.2.7}%
-\contentsline {subsubsection}{\numberline {6.13.2.8}delete\_pointed\_to()}{44}{subsubsection.6.13.2.8}%
-\contentsline {subsubsection}{\numberline {6.13.2.9}factorial()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{44}{subsubsection.6.13.2.9}%
-\contentsline {subsubsection}{\numberline {6.13.2.10}factorial()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{44}{subsubsection.6.13.2.10}%
-\contentsline {subsubsection}{\numberline {6.13.2.11}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{45}{subsubsection.6.13.2.11}%
-\contentsline {subsubsection}{\numberline {6.13.2.12}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{45}{subsubsection.6.13.2.12}%
-\contentsline {subsubsection}{\numberline {6.13.2.13}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{45}{subsubsection.6.13.2.13}%
-\contentsline {subsubsection}{\numberline {6.13.2.14}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{45}{subsubsection.6.13.2.14}%
-\contentsline {subsubsection}{\numberline {6.13.2.15}MPIGlobalToLocal()}{45}{subsubsection.6.13.2.15}%
-\contentsline {subsubsection}{\numberline {6.13.2.16}MPILocalToGlobal()}{45}{subsubsection.6.13.2.16}%
-\contentsline {subsubsection}{\numberline {6.13.2.17}polyEval()}{46}{subsubsection.6.13.2.17}%
-\contentsline {subsubsection}{\numberline {6.13.2.18}polynDerMulti()}{46}{subsubsection.6.13.2.18}%
-\contentsline {section}{\numberline {6.14}util.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{46}{section.6.14}%
-\contentsline {chapter}{Index}{49}{section*.23}%
+\contentsline {subsubsection}{\numberline {5.2.1.10}MPIglobalVertexSize}{15}{subsubsection.5.2.1.10}%
+\contentsline {subsubsection}{\numberline {5.2.1.11}MPIlocalCellSize}{15}{subsubsection.5.2.1.11}%
+\contentsline {subsubsection}{\numberline {5.2.1.12}MPIlocalCellSizeFull}{15}{subsubsection.5.2.1.12}%
+\contentsline {subsubsection}{\numberline {5.2.1.13}MPIlocalCellStart}{15}{subsubsection.5.2.1.13}%
+\contentsline {subsubsection}{\numberline {5.2.1.14}MPIlocalHoriEdgeSize}{15}{subsubsection.5.2.1.14}%
+\contentsline {subsubsection}{\numberline {5.2.1.15}MPIlocalVertEdgeSize}{15}{subsubsection.5.2.1.15}%
+\contentsline {subsubsection}{\numberline {5.2.1.16}MPIlocalVertexSize}{16}{subsubsection.5.2.1.16}%
+\contentsline {subsubsection}{\numberline {5.2.1.17}MPIlocalVertexSizeFull}{16}{subsubsection.5.2.1.17}%
+\contentsline {subsubsection}{\numberline {5.2.1.18}MPIlocalVertexStart}{16}{subsubsection.5.2.1.18}%
+\contentsline {subsubsection}{\numberline {5.2.1.19}vertexGhostLayerSize}{16}{subsubsection.5.2.1.19}%
+\contentsline {subsubsection}{\numberline {5.2.1.20}volumeCorner}{16}{subsubsection.5.2.1.20}%
+\contentsline {section}{\numberline {5.3}MLWENO\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::multi\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Level\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Reconstruction Class Reference}{16}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Constructor \& Destructor Documentation}{17}{subsection.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.3.1.1}multiLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{17}{subsubsection.5.3.1.1}%
+\contentsline {subsubsection}{\numberline {5.3.1.2}multiLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{17}{subsubsection.5.3.1.2}%
+\contentsline {subsubsection}{\numberline {5.3.1.3}multiLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{18}{subsubsection.5.3.1.3}%
+\contentsline {subsubsection}{\numberline {5.3.1.4}$\sim $multiLevelReconstruction()}{18}{subsubsection.5.3.1.4}%
+\contentsline {subsection}{\numberline {5.3.2}Member Function Documentation}{18}{subsection.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.3.2.1}AddLevel()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{18}{subsubsection.5.3.2.1}%
+\contentsline {subsubsection}{\numberline {5.3.2.2}AddLevel()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{18}{subsubsection.5.3.2.2}%
+\contentsline {subsubsection}{\numberline {5.3.2.3}AddLevel()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{19}{subsubsection.5.3.2.3}%
+\contentsline {subsubsection}{\numberline {5.3.2.4}Clear()}{19}{subsubsection.5.3.2.4}%
+\contentsline {subsubsection}{\numberline {5.3.2.5}GetInfo()}{19}{subsubsection.5.3.2.5}%
+\contentsline {subsubsection}{\numberline {5.3.2.6}ModifyReconstMethod()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{19}{subsubsection.5.3.2.6}%
+\contentsline {subsubsection}{\numberline {5.3.2.7}ModifyReconstMethod()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{19}{subsubsection.5.3.2.7}%
+\contentsline {subsubsection}{\numberline {5.3.2.8}PrintBoundaryLayer()}{20}{subsubsection.5.3.2.8}%
+\contentsline {subsubsection}{\numberline {5.3.2.9}PrintNonLinearWgts()}{20}{subsubsection.5.3.2.9}%
+\contentsline {subsubsection}{\numberline {5.3.2.10}PrintSmoothnessIndicator()}{20}{subsubsection.5.3.2.10}%
+\contentsline {subsubsection}{\numberline {5.3.2.11}SelectWenoReconstLevel()}{20}{subsubsection.5.3.2.11}%
+\contentsline {subsubsection}{\numberline {5.3.2.12}SeparateBoundaryLayer()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{20}{subsubsection.5.3.2.12}%
+\contentsline {subsubsection}{\numberline {5.3.2.13}SeparateBoundaryLayer()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{20}{subsubsection.5.3.2.13}%
+\contentsline {subsubsection}{\numberline {5.3.2.14}UpdateNonLinearWgts()}{21}{subsubsection.5.3.2.14}%
+\contentsline {section}{\numberline {5.4}MLWENO\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::single\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Level\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Reconstruction Class Reference}{21}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Constructor \& Destructor Documentation}{21}{subsection.5.4.1}%
+\contentsline {subsubsection}{\numberline {5.4.1.1}singleLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{22}{subsubsection.5.4.1.1}%
+\contentsline {subsubsection}{\numberline {5.4.1.2}singleLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{22}{subsubsection.5.4.1.2}%
+\contentsline {subsubsection}{\numberline {5.4.1.3}$\sim $singleLevelReconstruction()}{22}{subsubsection.5.4.1.3}%
+\contentsline {subsection}{\numberline {5.4.2}Member Function Documentation}{22}{subsection.5.4.2}%
+\contentsline {subsubsection}{\numberline {5.4.2.1}CalculateSmoothnessIndic()}{22}{subsubsection.5.4.2.1}%
+\contentsline {subsubsection}{\numberline {5.4.2.2}CheckExist()}{22}{subsubsection.5.4.2.2}%
+\contentsline {subsubsection}{\numberline {5.4.2.3}CheckStencilPolynomials()}{23}{subsubsection.5.4.2.3}%
+\contentsline {subsubsection}{\numberline {5.4.2.4}CheckStencils()}{23}{subsubsection.5.4.2.4}%
+\contentsline {subsubsection}{\numberline {5.4.2.5}CreateStencilPolynomials()}{23}{subsubsection.5.4.2.5}%
+\contentsline {subsubsection}{\numberline {5.4.2.6}GetScale()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{23}{subsubsection.5.4.2.6}%
+\contentsline {subsubsection}{\numberline {5.4.2.7}GetScale()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{23}{subsubsection.5.4.2.7}%
+\contentsline {subsubsection}{\numberline {5.4.2.8}GetSizeX()}{23}{subsubsection.5.4.2.8}%
+\contentsline {subsubsection}{\numberline {5.4.2.9}GetSizeY()}{24}{subsubsection.5.4.2.9}%
+\contentsline {subsubsection}{\numberline {5.4.2.10}GetSmoothnessIndic()}{24}{subsubsection.5.4.2.10}%
+\contentsline {subsubsection}{\numberline {5.4.2.11}PrintSmoothnessIndicator()}{24}{subsubsection.5.4.2.11}%
+\contentsline {subsubsection}{\numberline {5.4.2.12}UpdateSmoothnessIndic()}{24}{subsubsection.5.4.2.12}%
+\contentsline {section}{\numberline {5.5}stencil$<$ T $>$ Class Template Reference}{24}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}Constructor \& Destructor Documentation}{25}{subsection.5.5.1}%
+\contentsline {subsubsection}{\numberline {5.5.1.1}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{25}{subsubsection.5.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.5.1.2}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{25}{subsubsection.5.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.5.1.3}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{26}{subsubsection.5.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.5.1.4}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{26}{subsubsection.5.5.1.4}%
+\contentsline {subsubsection}{\numberline {5.5.1.5}$\sim $stencil()}{26}{subsubsection.5.5.1.5}%
+\contentsline {subsection}{\numberline {5.5.2}Member Function Documentation}{26}{subsection.5.5.2}%
+\contentsline {subsubsection}{\numberline {5.5.2.1}clearPtr()}{26}{subsubsection.5.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.5.2.2}CreateStencil()}{26}{subsubsection.5.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.5.2.3}getI()}{26}{subsubsection.5.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.5.2.4}getJ()}{27}{subsubsection.5.5.2.4}%
+\contentsline {subsubsection}{\numberline {5.5.2.5}getK()}{27}{subsubsection.5.5.2.5}%
+\contentsline {subsubsection}{\numberline {5.5.2.6}getSize()}{27}{subsubsection.5.5.2.6}%
+\contentsline {subsubsection}{\numberline {5.5.2.7}GetStencil()}{27}{subsubsection.5.5.2.7}%
+\contentsline {subsubsection}{\numberline {5.5.2.8}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [1/6]}}{27}{subsubsection.5.5.2.8}%
+\contentsline {subsubsection}{\numberline {5.5.2.9}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [2/6]}}{27}{subsubsection.5.5.2.9}%
+\contentsline {subsubsection}{\numberline {5.5.2.10}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [3/6]}}{28}{subsubsection.5.5.2.10}%
+\contentsline {subsubsection}{\numberline {5.5.2.11}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [4/6]}}{28}{subsubsection.5.5.2.11}%
+\contentsline {subsubsection}{\numberline {5.5.2.12}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [5/6]}}{28}{subsubsection.5.5.2.12}%
+\contentsline {subsubsection}{\numberline {5.5.2.13}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [6/6]}}{28}{subsubsection.5.5.2.13}%
+\contentsline {subsubsection}{\numberline {5.5.2.14}setI()}{28}{subsubsection.5.5.2.14}%
+\contentsline {subsubsection}{\numberline {5.5.2.15}setJ()}{29}{subsubsection.5.5.2.15}%
+\contentsline {subsubsection}{\numberline {5.5.2.16}setK()}{29}{subsubsection.5.5.2.16}%
+\contentsline {subsubsection}{\numberline {5.5.2.17}SetStencil()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{29}{subsubsection.5.5.2.17}%
+\contentsline {subsubsection}{\numberline {5.5.2.18}SetStencil()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{29}{subsubsection.5.5.2.18}%
+\contentsline {subsubsection}{\numberline {5.5.2.19}SetStencil()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{29}{subsubsection.5.5.2.19}%
+\contentsline {section}{\numberline {5.6}tensor\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Product\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Poly\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::stencil\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Polynomial Class Reference}{29}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}Constructor \& Destructor Documentation}{30}{subsection.5.6.1}%
+\contentsline {subsubsection}{\numberline {5.6.1.1}stencilPolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [1/3]}}{30}{subsubsection.5.6.1.1}%
+\contentsline {subsubsection}{\numberline {5.6.1.2}stencilPolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [2/3]}}{30}{subsubsection.5.6.1.2}%
+\contentsline {subsubsection}{\numberline {5.6.1.3}stencilPolynomial()\hspace {0.1cm}{\footnotesize \ttfamily [3/3]}}{30}{subsubsection.5.6.1.3}%
+\contentsline {subsubsection}{\numberline {5.6.1.4}$\sim $stencilPolynomial()}{31}{subsubsection.5.6.1.4}%
+\contentsline {subsection}{\numberline {5.6.2}Member Function Documentation}{31}{subsection.5.6.2}%
+\contentsline {subsubsection}{\numberline {5.6.2.1}eval()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{31}{subsubsection.5.6.2.1}%
+\contentsline {subsubsection}{\numberline {5.6.2.2}eval()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{31}{subsubsection.5.6.2.2}%
+\contentsline {subsubsection}{\numberline {5.6.2.3}GetOrderX()}{31}{subsubsection.5.6.2.3}%
+\contentsline {subsubsection}{\numberline {5.6.2.4}GetOrderY()}{31}{subsubsection.5.6.2.4}%
+\contentsline {subsubsection}{\numberline {5.6.2.5}GetScale()}{31}{subsubsection.5.6.2.5}%
+\contentsline {subsubsection}{\numberline {5.6.2.6}GetSmoothIndic()}{31}{subsubsection.5.6.2.6}%
+\contentsline {subsubsection}{\numberline {5.6.2.7}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{32}{subsubsection.5.6.2.7}%
+\contentsline {subsubsection}{\numberline {5.6.2.8}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{32}{subsubsection.5.6.2.8}%
+\contentsline {subsubsection}{\numberline {5.6.2.9}printCoef()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{32}{subsubsection.5.6.2.9}%
+\contentsline {subsubsection}{\numberline {5.6.2.10}printCoef()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{32}{subsubsection.5.6.2.10}%
+\contentsline {subsubsection}{\numberline {5.6.2.11}SetCollapsePolyn()}{32}{subsubsection.5.6.2.11}%
+\contentsline {subsubsection}{\numberline {5.6.2.12}SetStencilPolynomials()}{32}{subsubsection.5.6.2.12}%
+\contentsline {subsubsection}{\numberline {5.6.2.13}SetUpScale()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{33}{subsubsection.5.6.2.13}%
+\contentsline {subsubsection}{\numberline {5.6.2.14}SetUpScale()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{33}{subsubsection.5.6.2.14}%
+\contentsline {chapter}{\numberline {6}File Documentation}{35}{chapter.6}%
+\contentsline {section}{\numberline {6.1}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/polynomial.cpp File Reference}{35}{section.6.1}%
+\contentsline {section}{\numberline {6.2}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/polynomial.h File Reference}{35}{section.6.2}%
+\contentsline {section}{\numberline {6.3}polynomial.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{36}{section.6.3}%
+\contentsline {section}{\numberline {6.4}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/reconstruction.cpp File Reference}{37}{section.6.4}%
+\contentsline {section}{\numberline {6.5}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/reconstruction.h File Reference}{37}{section.6.5}%
+\contentsline {section}{\numberline {6.6}reconstruction.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{38}{section.6.6}%
+\contentsline {section}{\numberline {6.7}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/stencil.h File Reference}{39}{section.6.7}%
+\contentsline {subsection}{\numberline {6.7.1}Enumeration Type Documentation}{40}{subsection.6.7.1}%
+\contentsline {subsubsection}{\numberline {6.7.1.1}stencilType}{40}{subsubsection.6.7.1.1}%
+\contentsline {section}{\numberline {6.8}stencil.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{40}{section.6.8}%
+\contentsline {section}{\numberline {6.9}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/util.cpp File Reference}{41}{section.6.9}%
+\contentsline {subsection}{\numberline {6.9.1}Function Documentation}{42}{subsection.6.9.1}%
+\contentsline {subsubsection}{\numberline {6.9.1.1}AssignValuesMeshInfo()}{42}{subsubsection.6.9.1.1}%
+\contentsline {subsubsection}{\numberline {6.9.1.2}basePoly()}{42}{subsubsection.6.9.1.2}%
+\contentsline {subsubsection}{\numberline {6.9.1.3}Bend()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{42}{subsubsection.6.9.1.3}%
+\contentsline {subsubsection}{\numberline {6.9.1.4}Bend()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{42}{subsubsection.6.9.1.4}%
+\contentsline {subsubsection}{\numberline {6.9.1.5}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{42}{subsubsection.6.9.1.5}%
+\contentsline {subsubsection}{\numberline {6.9.1.6}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{43}{subsubsection.6.9.1.6}%
+\contentsline {subsubsection}{\numberline {6.9.1.7}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{43}{subsubsection.6.9.1.7}%
+\contentsline {subsubsection}{\numberline {6.9.1.8}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{43}{subsubsection.6.9.1.8}%
+\contentsline {subsubsection}{\numberline {6.9.1.9}factorial()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{43}{subsubsection.6.9.1.9}%
+\contentsline {subsubsection}{\numberline {6.9.1.10}factorial()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{43}{subsubsection.6.9.1.10}%
+\contentsline {subsubsection}{\numberline {6.9.1.11}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{43}{subsubsection.6.9.1.11}%
+\contentsline {subsubsection}{\numberline {6.9.1.12}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{44}{subsubsection.6.9.1.12}%
+\contentsline {subsubsection}{\numberline {6.9.1.13}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{44}{subsubsection.6.9.1.13}%
+\contentsline {subsubsection}{\numberline {6.9.1.14}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{44}{subsubsection.6.9.1.14}%
+\contentsline {subsubsection}{\numberline {6.9.1.15}MPIGlobalToLocal()}{44}{subsubsection.6.9.1.15}%
+\contentsline {subsubsection}{\numberline {6.9.1.16}MPILocalToGlobal()}{44}{subsubsection.6.9.1.16}%
+\contentsline {subsubsection}{\numberline {6.9.1.17}polyEval()}{44}{subsubsection.6.9.1.17}%
+\contentsline {subsubsection}{\numberline {6.9.1.18}polynDerMulti()}{45}{subsubsection.6.9.1.18}%
+\contentsline {section}{\numberline {6.10}/home/renpo/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Research/\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Mantle\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Solver/src/mlweno/util.h File Reference}{45}{section.6.10}%
+\contentsline {subsection}{\numberline {6.10.1}Typedef Documentation}{46}{subsection.6.10.1}%
+\contentsline {subsubsection}{\numberline {6.10.1.1}indice}{46}{subsubsection.6.10.1.1}%
+\contentsline {subsubsection}{\numberline {6.10.1.2}indiceSet}{46}{subsubsection.6.10.1.2}%
+\contentsline {subsubsection}{\numberline {6.10.1.3}vertex}{46}{subsubsection.6.10.1.3}%
+\contentsline {subsubsection}{\numberline {6.10.1.4}vertexSet}{46}{subsubsection.6.10.1.4}%
+\contentsline {subsection}{\numberline {6.10.2}Function Documentation}{46}{subsection.6.10.2}%
+\contentsline {subsubsection}{\numberline {6.10.2.1}AssignValuesMeshInfo()}{47}{subsubsection.6.10.2.1}%
+\contentsline {subsubsection}{\numberline {6.10.2.2}basePoly()}{47}{subsubsection.6.10.2.2}%
+\contentsline {subsubsection}{\numberline {6.10.2.3}Bend()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{47}{subsubsection.6.10.2.3}%
+\contentsline {subsubsection}{\numberline {6.10.2.4}Bend()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{47}{subsubsection.6.10.2.4}%
+\contentsline {subsubsection}{\numberline {6.10.2.5}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{47}{subsubsection.6.10.2.5}%
+\contentsline {subsubsection}{\numberline {6.10.2.6}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{47}{subsubsection.6.10.2.6}%
+\contentsline {subsubsection}{\numberline {6.10.2.7}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{48}{subsubsection.6.10.2.7}%
+\contentsline {subsubsection}{\numberline {6.10.2.8}constFunc()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{48}{subsubsection.6.10.2.8}%
+\contentsline {subsubsection}{\numberline {6.10.2.9}delete\_pointed\_to()}{48}{subsubsection.6.10.2.9}%
+\contentsline {subsubsection}{\numberline {6.10.2.10}factorial()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{48}{subsubsection.6.10.2.10}%
+\contentsline {subsubsection}{\numberline {6.10.2.11}factorial()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{48}{subsubsection.6.10.2.11}%
+\contentsline {subsubsection}{\numberline {6.10.2.12}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{48}{subsubsection.6.10.2.12}%
+\contentsline {subsubsection}{\numberline {6.10.2.13}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{49}{subsubsection.6.10.2.13}%
+\contentsline {subsubsection}{\numberline {6.10.2.14}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{49}{subsubsection.6.10.2.14}%
+\contentsline {subsubsection}{\numberline {6.10.2.15}FlatIndic()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{49}{subsubsection.6.10.2.15}%
+\contentsline {subsubsection}{\numberline {6.10.2.16}MPIGlobalToLocal()}{49}{subsubsection.6.10.2.16}%
+\contentsline {subsubsection}{\numberline {6.10.2.17}MPILocalToGlobal()}{49}{subsubsection.6.10.2.17}%
+\contentsline {subsubsection}{\numberline {6.10.2.18}polyEval()}{49}{subsubsection.6.10.2.18}%
+\contentsline {subsubsection}{\numberline {6.10.2.19}polynDerMulti()}{50}{subsubsection.6.10.2.19}%
+\contentsline {section}{\numberline {6.11}util.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}h}{50}{section.6.11}%
+\contentsline {chapter}{Index}{53}{section*.19}%

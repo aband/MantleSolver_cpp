@@ -1,55 +1,65 @@
 #ifndef TRANSPORT_H_
 #define TRANSPORT_H_
 
-#include <petsc.h>
-#include <map>
-
 #include "reconstruction.h"
-#include "input.h"
+#include "func.h"
 
-namespace Transport{
+class advection {
+    public:
+        advection() {};
+        ~advection() {};
 
-    class advection {
-        public:
-            advection();
-            ~advection() {Clear();};
+        void SelectReconstLevels(unordered_set<std::string> reconstLevels;);
 
-            void Clear() const;
-            double AdvFlux();
+        void Flux();
 
-        private:
-            void CreateBoundary_(); 
+    private:
+        unordered_set<std::string> reconstLevels_;
 
-            std::map<indice, int> boundaryType_;
-            std::map<indice, MLWENO::reconstruction *> advRecon_;
+        /** 
+         * Transport function and its derivative.
+         * Returns function defined in the func.cpp file.
+         */
+        double Func_(double x, double y, double u, double t);
+        double dFunc_(double x, double y, double y, double t);
 
-    };
+};
 
-    class diffusion {
-        public:
-            diffusion();
-            ~diffusion() {Clear();};
+class diffusion {
+    public:
+        diffusion() {};
+        ~diffusion() {};
 
-            void Clear() const;
+        void SelectReconstLevels(unordered_set<std::string> reconstLevels;);
 
-            double DiffFlux();
+        void Flux();
 
-        private:
-            std::map<indice, int> boundaryType_; 
-            std::map<indice, MLWENO::reconstruction *> diffRecon_;
+    private:
+        unordered_set<std::string> reconstLevels_;
+ 
+};
 
-    };
+class reaction {
+    public:
+        reaction() {};
+        ~reaction() {};
 
-    class transport : public advection, public diffusion{
-        public:
-            transport();
-            ~transport() {};
+        void SelectReconstLevels(unordered_set<std::string> reconstLevels;);
 
-            double TotalFlux();
-
-        private:
-
-    };
+    private:
+        unordered_set<std::string> reconstLevels_;
 
 }
+
+class transport : public advection, public diffusion, public reaction {
+    public:
+        transport() {mlrPtr_ = new MLWENO::multiLevelReconstruction();};
+        ~transport() {delete mlrPtr;};
+  
+        void AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY, vector<indice> brm);
+
+    private:
+        MLWENO::multiLevelReconstruction * mlrPtr_;
+}
+
 #endif

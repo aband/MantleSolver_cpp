@@ -4,9 +4,8 @@
 
 #include "stencil.h"
 #include "util.h"
-#include "polynomial.h"
 #include "input.h"
-#include "mlreconstruction.h"
+#include "reconstruction.h"
 //#include <adolc/adolc.h>
 
 extern "C"{
@@ -25,8 +24,8 @@ double func(vertex& point, const vector<double>& param){
 //	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
 //	 }
 
-    //return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
-    return point[0]*point[0] + point[1]*point[1];
+    return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
+    //return point[0]*point[0] + point[1]*point[1];
     //return 0.5;
     //return point[0] + point[1];
 
@@ -153,17 +152,31 @@ int main(int argc, char **argv){
     mlrPtr->AddLevel(mi,3,2,{{-1,-1},{-1,0}});
 
     mlrPtr->AddLevel(mi,1,1,{{0,0}});
+   
+    // Test rearrange weno reconstruction levels
+    mlrPtr->ModifyReconstMethod("(1,1)",{{1,1}});
+
+    mlrPtr->SelectWenoReconstLevel({"(2,2)","(3,3)","(1,1)"});
+
+    mlrPtr->ModifyReconstMethod("(1,1)",{{0,0}});
 
     mlrPtr->SeparateBoundaryLayer(mi);
 
-    mlrPtr->UpdateOneStageNonLinearWgts(mi);
+    mlrPtr->UpdateNonLinearWgts(mi,2);
+
+    vertex center {0.0,0.0};
+
+    // Test point wise reconstruction
+    //cout << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) << " " << func(center, {0.0,0.0}) << endl;
 
     // Print required information
     mlrPtr->GetInfo();
 
-    mlrPtr->PrintSmoothnessIndicator(mi);
+    //mlrPtr->PrintSmoothnessIndicator(mi);
 
-    // ====================================================================================================================================
+    mlrPtr->PrintNonLinearWgts(mi); 
+
+	 // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);
     DMRestoreLocalVector(dmu, &localu); 

@@ -1,0 +1,165 @@
+\hypertarget{classtensorProductPoly_1_1basePolynomial}{}\doxysection{tensor\+Product\+Poly\+::base\+Polynomial Class Reference}
+\label{classtensorProductPoly_1_1basePolynomial}\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+
+
+{\ttfamily \#include $<$polynomial.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_a0e0d4a39ae3659784899b43bf6c4b80c}{base\+Polynomial}} ()
+\item 
+\mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_aa5425f9fdb1b578086d07c2670544a8e}{base\+Polynomial}} (const int max\+Degree\mbox{[}2\mbox{]})
+\item 
+\mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_afdd3ae80b3875b33fbe1e51f71443cb0}{base\+Polynomial}} (const int max\+Degree\mbox{[}2\mbox{]}, double $\ast$coef)
+\item 
+\mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_a1e88a26d9d154c03453a2b741b3425d4}{$\sim$base\+Polynomial}} ()
+\item 
+void \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_a8cc3b69c49b7948dabc385ec84a8a86a}{set\+Max\+Degree}} (const int max\+Degree\mbox{[}2\mbox{]})
+\item 
+void \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_af47e3db8ee30e60a83423733e6c376ea}{set\+Coef}} (double $\ast$coef)
+\item 
+double $\ast$ \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_a698d5300c54aa140f31c0f2164d9e766}{get\+Coef}} () const
+\item 
+int \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_a6421466866ed126cecea5d0d3056a604}{get\+Size}} () const
+\item 
+int \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_ac65623540cdef9c6a97837c356428c40}{getI}} () const
+\item 
+int \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_a98f879a4f545cc52c107f2eeaaaeb196}{getJ}} () const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_a208fcc54b45e2e6c6191438c431160d1}{eval}} (double x, double y) const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_a33a2f3cd813066fec7af152e331b74d1}{eval}} (\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} P) const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_ae39b400d1d22f11ffa9d269adfc88811}{operator()}} (double x, double y) const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_ab9587dae83df0fea5cd605782ab17c98}{operator()}} (\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} P) const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_ad8a66bf82581005ec5e00d8d6ae01386}{der}} (int derX, int derY, double x, double y) const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_aacb7360ee5e76e8e81f5cd767a129999}{der}} (int derX, int derY, \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} P) const
+\item 
+void \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_a7773de94eab32a50614b663de741fca5}{print\+Coef}} () const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1basePolynomial_a32612a3ba308387d3cebe460909b8971}{get\+Coef}} (int i) const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_a0e0d4a39ae3659784899b43bf6c4b80c}\label{classtensorProductPoly_1_1basePolynomial_a0e0d4a39ae3659784899b43bf6c4b80c}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!basePolynomial@{basePolynomial}}
+\index{basePolynomial@{basePolynomial}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{basePolynomial()}{basePolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily tensor\+Product\+Poly\+::base\+Polynomial\+::base\+Polynomial (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_aa5425f9fdb1b578086d07c2670544a8e}\label{classtensorProductPoly_1_1basePolynomial_aa5425f9fdb1b578086d07c2670544a8e}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!basePolynomial@{basePolynomial}}
+\index{basePolynomial@{basePolynomial}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{basePolynomial()}{basePolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily base\+Polynomial\+::base\+Polynomial (\begin{DoxyParamCaption}\item[{const int}]{max\+Degree\mbox{[}2\mbox{]} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_afdd3ae80b3875b33fbe1e51f71443cb0}\label{classtensorProductPoly_1_1basePolynomial_afdd3ae80b3875b33fbe1e51f71443cb0}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!basePolynomial@{basePolynomial}}
+\index{basePolynomial@{basePolynomial}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{basePolynomial()}{basePolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily base\+Polynomial\+::base\+Polynomial (\begin{DoxyParamCaption}\item[{const int}]{max\+Degree\mbox{[}2\mbox{]},  }\item[{double $\ast$}]{coef }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_a1e88a26d9d154c03453a2b741b3425d4}\label{classtensorProductPoly_1_1basePolynomial_a1e88a26d9d154c03453a2b741b3425d4}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!````~basePolynomial@{$\sim$basePolynomial}}
+\index{````~basePolynomial@{$\sim$basePolynomial}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{$\sim$basePolynomial()}{~basePolynomial()}}
+{\footnotesize\ttfamily base\+Polynomial\+::$\sim$base\+Polynomial (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_ad8a66bf82581005ec5e00d8d6ae01386}\label{classtensorProductPoly_1_1basePolynomial_ad8a66bf82581005ec5e00d8d6ae01386}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!der@{der}}
+\index{der@{der}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{der()}{der()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double tensor\+Product\+Poly\+::base\+Polynomial\+::der (\begin{DoxyParamCaption}\item[{int}]{derX,  }\item[{int}]{derY,  }\item[{double}]{x,  }\item[{double}]{y }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_aacb7360ee5e76e8e81f5cd767a129999}\label{classtensorProductPoly_1_1basePolynomial_aacb7360ee5e76e8e81f5cd767a129999}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!der@{der}}
+\index{der@{der}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{der()}{der()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double tensor\+Product\+Poly\+::base\+Polynomial\+::der (\begin{DoxyParamCaption}\item[{int}]{derX,  }\item[{int}]{derY,  }\item[{\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_a208fcc54b45e2e6c6191438c431160d1}\label{classtensorProductPoly_1_1basePolynomial_a208fcc54b45e2e6c6191438c431160d1}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!eval@{eval}}
+\index{eval@{eval}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double base\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_a33a2f3cd813066fec7af152e331b74d1}\label{classtensorProductPoly_1_1basePolynomial_a33a2f3cd813066fec7af152e331b74d1}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!eval@{eval}}
+\index{eval@{eval}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double tensor\+Product\+Poly\+::base\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_a698d5300c54aa140f31c0f2164d9e766}\label{classtensorProductPoly_1_1basePolynomial_a698d5300c54aa140f31c0f2164d9e766}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!getCoef@{getCoef}}
+\index{getCoef@{getCoef}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{getCoef()}{getCoef()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double $\ast$ base\+Polynomial\+::get\+Coef (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_a32612a3ba308387d3cebe460909b8971}\label{classtensorProductPoly_1_1basePolynomial_a32612a3ba308387d3cebe460909b8971}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!getCoef@{getCoef}}
+\index{getCoef@{getCoef}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{getCoef()}{getCoef()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double base\+Polynomial\+::get\+Coef (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_ac65623540cdef9c6a97837c356428c40}\label{classtensorProductPoly_1_1basePolynomial_ac65623540cdef9c6a97837c356428c40}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!getI@{getI}}
+\index{getI@{getI}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{getI()}{getI()}}
+{\footnotesize\ttfamily int tensor\+Product\+Poly\+::base\+Polynomial\+::getI (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_a98f879a4f545cc52c107f2eeaaaeb196}\label{classtensorProductPoly_1_1basePolynomial_a98f879a4f545cc52c107f2eeaaaeb196}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!getJ@{getJ}}
+\index{getJ@{getJ}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{getJ()}{getJ()}}
+{\footnotesize\ttfamily int tensor\+Product\+Poly\+::base\+Polynomial\+::getJ (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_a6421466866ed126cecea5d0d3056a604}\label{classtensorProductPoly_1_1basePolynomial_a6421466866ed126cecea5d0d3056a604}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!getSize@{getSize}}
+\index{getSize@{getSize}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{getSize()}{getSize()}}
+{\footnotesize\ttfamily int tensor\+Product\+Poly\+::base\+Polynomial\+::get\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_ae39b400d1d22f11ffa9d269adfc88811}\label{classtensorProductPoly_1_1basePolynomial_ae39b400d1d22f11ffa9d269adfc88811}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!operator()@{operator()}}
+\index{operator()@{operator()}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double tensor\+Product\+Poly\+::base\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_ab9587dae83df0fea5cd605782ab17c98}\label{classtensorProductPoly_1_1basePolynomial_ab9587dae83df0fea5cd605782ab17c98}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!operator()@{operator()}}
+\index{operator()@{operator()}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double tensor\+Product\+Poly\+::base\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}}}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_a7773de94eab32a50614b663de741fca5}\label{classtensorProductPoly_1_1basePolynomial_a7773de94eab32a50614b663de741fca5}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!printCoef@{printCoef}}
+\index{printCoef@{printCoef}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{printCoef()}{printCoef()}}
+{\footnotesize\ttfamily void base\+Polynomial\+::print\+Coef (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_af47e3db8ee30e60a83423733e6c376ea}\label{classtensorProductPoly_1_1basePolynomial_af47e3db8ee30e60a83423733e6c376ea}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!setCoef@{setCoef}}
+\index{setCoef@{setCoef}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{setCoef()}{setCoef()}}
+{\footnotesize\ttfamily void base\+Polynomial\+::set\+Coef (\begin{DoxyParamCaption}\item[{double $\ast$}]{coef }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1basePolynomial_a8cc3b69c49b7948dabc385ec84a8a86a}\label{classtensorProductPoly_1_1basePolynomial_a8cc3b69c49b7948dabc385ec84a8a86a}} 
+\index{tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}!setMaxDegree@{setMaxDegree}}
+\index{setMaxDegree@{setMaxDegree}!tensorProductPoly::basePolynomial@{tensorProductPoly::basePolynomial}}
+\doxysubsubsection{\texorpdfstring{setMaxDegree()}{setMaxDegree()}}
+{\footnotesize\ttfamily void base\+Polynomial\+::set\+Max\+Degree (\begin{DoxyParamCaption}\item[{const int}]{max\+Degree\mbox{[}2\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{polynomial_8h}{polynomial.\+h}}\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{polynomial_8cpp}{polynomial.\+cpp}}\end{DoxyCompactItemize}

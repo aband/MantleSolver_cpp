@@ -1,13 +1,9 @@
 #include "polynomial.h"
 
-using namespace MLWENO;
-
-double basePoly(vertex& point, const vector<int>& param){
-    return pow(point[0],param[0])*pow(point[1],param[1]);
-}
+using namespace tensorProductPoly;
 
 // Constructors and destructors
-basisPolynomial::basisPolynomial(const int maxDegree[2]){
+basePolynomial::basePolynomial(const int maxDegree[2]){
     maxDegree_[0] = maxDegree[0];
     maxDegree_[1] = maxDegree[1];
 
@@ -15,7 +11,7 @@ basisPolynomial::basisPolynomial(const int maxDegree[2]){
     coef_ = new double [maxDegree[0]*maxDegree[1]];
 }
 
-basisPolynomial::basisPolynomial(const int maxDegree[2], double* coef){
+basePolynomial::basePolynomial(const int maxDegree[2], double* coef){
     maxDegree_[0] = maxDegree[0];
     maxDegree_[1] = maxDegree[1];
 
@@ -26,16 +22,16 @@ basisPolynomial::basisPolynomial(const int maxDegree[2], double* coef){
 
 }
 
-basisPolynomial::~basisPolynomial(){
+basePolynomial::~basePolynomial(){
     delete [] coef_;
 }
 
-void basisPolynomial::setMaxDegree(const int maxDegree[2]){
+void basePolynomial::setMaxDegree(const int maxDegree[2]){
     maxDegree_[0] = maxDegree[0];
     maxDegree_[1] = maxDegree[1];
 }
 
-void basisPolynomial::setCoef(double* coef){
+void basePolynomial::setCoef(double* coef){
 
     if (maxDegree_[0] == -1 || maxDegree_[1] == -1) {
         cout <<" Max Degrees weren't assigned ! " << endl;
@@ -47,7 +43,7 @@ void basisPolynomial::setCoef(double* coef){
     for (int i=0; i<coefSize; i++){coef_[i] = coef[i];}
 }
 
-double basisPolynomial::eval(double x, double y) const {
+double basePolynomial::eval(double x, double y) const {
     // Evaluation of the 2D basis polynomial with the given point
     // Using Horner's method
     double ycoef[maxDegree_[1]];
@@ -62,7 +58,7 @@ double basisPolynomial::eval(double x, double y) const {
     return polyEval(y,ycoef,maxDegree_[1]-1);
 }
 
-double* basisPolynomial::getCoef() const{
+double* basePolynomial::getCoef() const{
     double * coef = new double [maxDegree_[0]*maxDegree_[1]] ();
     for (int i=0; i<maxDegree_[0]*maxDegree_[1]; i++){
         coef[i] = coef_[i];
@@ -70,14 +66,14 @@ double* basisPolynomial::getCoef() const{
     return coef;
 } 
 
-double basisPolynomial::getCoef(int i) const{
+double basePolynomial::getCoef(int i) const{
     assert(coef_ != nullptr); 
 
     return coef_[i];  
 
 }
 
-void basisPolynomial::printCoef() const {
+void basePolynomial::printCoef() const {
     for (int i=0; i<maxDegree_[0]*maxDegree_[1]; i++){
         cout << std::setprecision(5)<< coef_[i] << "  " ;
     }cout << endl;
@@ -212,7 +208,7 @@ void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi,
             tmpcoef[r] = b[r*n+p];
         }
 
-        stencilPolyn_(p) = new basisPolynomial(maxDegree, tmpcoef);
+        stencilPolyn_(p) = new basePolynomial(maxDegree, tmpcoef);
 
         delete [] tmpcoef;
     }
@@ -240,10 +236,11 @@ void stencilPolynomial::SetCollapsePolyn_(const MeshInfo& mi, const stencil <ind
         delete [] tmp;
     }
     int maxDegree[2] = {stencilPolyn_.getI(),stencilPolyn_.getJ()};
-    collapsePolyn_ = new basisPolynomial(maxDegree,tmpcoef);
+    collapsePolyn_ = new basePolynomial(maxDegree,tmpcoef);
     delete [] tmpcoef;
 } 
 
+//! Polyn smoothness indicator
 void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice){
 
     SetCollapsePolyn_(mi, stencilIndice);

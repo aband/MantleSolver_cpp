@@ -1,7 +1,21 @@
 var searchData=
 [
-  ['updatenonlinearwgts_0',['UpdateNonLinearWgts',['../classMLWENO_1_1multiLevelReconstruction.html#aef3fc19bdccba720c897dcf725fabf8e',1,'MLWENO::multiLevelReconstruction']]],
-  ['updatetwostagenonlinearwgts_1',['UpdateTwoStageNonLinearWgts',['../classMLWENO_1_1multiLevelReconstruction.html#ab10ed466f7a049b358f349841f1ca89f',1,'MLWENO::multiLevelReconstruction']]],
-  ['util_2ecpp_2',['util.cpp',['../util_8cpp.html',1,'']]],
-  ['util_2eh_3',['util.h',['../util_8h.html',1,'']]]
+  ['selectwenoreconstlevel_0',['SelectWenoReconstLevel',['../classMLWENO_1_1multiLevelReconstruction.html#aa319bf6241b31252243d7a4d740723d0',1,'MLWENO::multiLevelReconstruction']]],
+  ['separateboundarylayer_1',['SeparateBoundaryLayer',['../classMLWENO_1_1multiLevelReconstruction.html#a98c612f8fb2703a99b108bac7c47f792',1,'MLWENO::multiLevelReconstruction::SeparateBoundaryLayer(const MeshInfo &amp;mi, const int &amp;layerSize)'],['../classMLWENO_1_1multiLevelReconstruction.html#a0a9be3c1731ba402be384437a8634d7e',1,'MLWENO::multiLevelReconstruction::SeparateBoundaryLayer(const MeshInfo &amp;mi)']]],
+  ['setcoef_2',['setCoef',['../classtensorProductPoly_1_1basePolynomial.html#af47e3db8ee30e60a83423733e6c376ea',1,'tensorProductPoly::basePolynomial']]],
+  ['setcollapsepolyn_3',['SetCollapsePolyn',['../classtensorProductPoly_1_1stencilPolynomial.html#a543010fffdf90cbb7011cfbeae42c209',1,'tensorProductPoly::stencilPolynomial']]],
+  ['seti_4',['setI',['../classstencil.html#adfe8e69744a7e4fff40a66c9cf1849ac',1,'stencil']]],
+  ['setj_5',['setJ',['../classstencil.html#ad8736030cd9f389f7912f8bd97c92e83',1,'stencil']]],
+  ['setk_6',['setK',['../classstencil.html#adb81bbafaed994002c837ae65a9fa050',1,'stencil']]],
+  ['setmaxdegree_7',['setMaxDegree',['../classtensorProductPoly_1_1basePolynomial.html#a8cc3b69c49b7948dabc385ec84a8a86a',1,'tensorProductPoly::basePolynomial']]],
+  ['setstencil_8',['SetStencil',['../classstencil.html#a53ad5e9f43dc00b9e0c00ece0c3512d7',1,'stencil::SetStencil(size_t I, size_t J, size_t K)'],['../classstencil.html#a979c05017223eadb1f6d158df18f6bd0',1,'stencil::SetStencil(size_t I, size_t J)'],['../classstencil.html#a4a2ef97be7d226e4bc3fb1f60e66d4b0',1,'stencil::SetStencil(size_t I)']]],
+  ['setstencilpolynomials_9',['SetStencilPolynomials',['../classtensorProductPoly_1_1stencilPolynomial.html#a532d45eb587cb7286216f94bb79c0ae4',1,'tensorProductPoly::stencilPolynomial']]],
+  ['setupscale_10',['SetUpScale',['../classtensorProductPoly_1_1stencilPolynomial.html#a58b4164c04b42e0c2970db18c9c3bbca',1,'tensorProductPoly::stencilPolynomial::SetUpScale(const MeshInfo &amp;mi, const stencil&lt; indice &gt; &amp;stencilIndice)'],['../classtensorProductPoly_1_1stencilPolynomial.html#ae33d7b6ea3707b7860994abe08950615',1,'tensorProductPoly::stencilPolynomial::SetUpScale(const MeshInfo &amp;mi, const vector&lt; indice &gt; &amp;targetCell)']]],
+  ['singlelevelreconstruction_11',['singleLevelReconstruction',['../classMLWENO_1_1singleLevelReconstruction.html',1,'MLWENO::singleLevelReconstruction'],['../classMLWENO_1_1singleLevelReconstruction.html#a1f0a038b173cfe97b21de2febf9133a9',1,'MLWENO::singleLevelReconstruction::singleLevelReconstruction()'],['../classMLWENO_1_1singleLevelReconstruction.html#aff39b14197478220d7a6d75f9a27c095',1,'MLWENO::singleLevelReconstruction::singleLevelReconstruction(int stencilSizeX, int stencilSizeY)']]],
+  ['stencil_12',['stencil',['../classstencil.html#a6f843140dac012b06ffca24a04d8a8af',1,'stencil::stencil()'],['../classstencil.html#ae8b023ed857e9f472fdb11b639620f4e',1,'stencil::stencil(size_t I)'],['../classstencil.html#ac44e4ecec2c97859cfe60e65642e8b3e',1,'stencil::stencil(size_t I, size_t J)'],['../classstencil.html#ae4fae63500309f5c663f18cc1218cba9',1,'stencil::stencil(size_t I, size_t J, size_t K)'],['../classstencil.html',1,'stencil&lt; T &gt;']]],
+  ['stencil_2eh_13',['stencil.h',['../stencil_8h.html',1,'']]],
+  ['stencil_3c_20indice_20_3e_14',['stencil&lt; indice &gt;',['../classstencil.html',1,'']]],
+  ['stencil_3c_20tensorproductpoly_3a_3abasepolynomial_20_2a_20_3e_15',['stencil&lt; tensorProductPoly::basePolynomial * &gt;',['../classstencil.html',1,'']]],
+  ['stencilpolynomial_16',['stencilPolynomial',['../classtensorProductPoly_1_1stencilPolynomial.html#a5c7feacb442b27af04cea6a023b1c399',1,'tensorProductPoly::stencilPolynomial::stencilPolynomial()'],['../classtensorProductPoly_1_1stencilPolynomial.html#aec105fe420e248603783084a1242f5aa',1,'tensorProductPoly::stencilPolynomial::stencilPolynomial(const indice &amp;start, const vertex &amp;center)'],['../classtensorProductPoly_1_1stencilPolynomial.html#acec4c0e43eefdccb13f0a0122c9f0b7b',1,'tensorProductPoly::stencilPolynomial::stencilPolynomial(const indice &amp;start, const vertex &amp;center, const vector&lt; indice &gt; &amp;targetCell)'],['../classtensorProductPoly_1_1stencilPolynomial.html',1,'tensorProductPoly::stencilPolynomial']]],
+  ['stenciltype_17',['stencilType',['../stencil_8h.html#aa1d0dcc55d7fdaafecc6197a83aa43a1',1,'stencil.h']]]
 ];

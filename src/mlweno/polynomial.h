@@ -4,15 +4,15 @@
 #include "util.h"
 #include "stencil.h"
 
-namespace MLWENO{
+namespace tensorProductPoly{
     // Tensor product 2D polynomial for stencil basis
-    class basisPolynomial {
+    class basePolynomial {
 
         public:
-            basisPolynomial() {};
-            basisPolynomial(const int maxDegree[2]);
-            basisPolynomial(const int maxDegree[2], double* coef);
-            ~basisPolynomial();
+            basePolynomial() {};
+            basePolynomial(const int maxDegree[2]);
+            basePolynomial(const int maxDegree[2], double* coef);
+            ~basePolynomial();
  
             void setMaxDegree(const int maxDegree[2]);
             void setCoef(double* coef);
@@ -101,10 +101,10 @@ namespace MLWENO{
             // Calculate scale based on the value of a given stencil
             void ComputeStencilBasedScale_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
-            stencil <basisPolynomial*> stencilPolyn_;
+            stencil <basePolynomial*> stencilPolyn_;
 
             void SetCollapsePolyn_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
-            basisPolynomial* collapsePolyn_ = nullptr;
+            basePolynomial* collapsePolyn_ = nullptr;
 
             // Create polynomial smoothness indicator
             void CreateXi_();
@@ -115,6 +115,7 @@ namespace MLWENO{
 
             void EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
             double smoothnessIndic_ = -1;
+
     };
 
 // End of using name space MLWENO

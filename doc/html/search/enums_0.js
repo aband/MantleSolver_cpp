@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['stenciltype_0',['stencilType',['../namespaceMLWENO.html#a049b2dc986469f15cf43de27983a3140',1,'MLWENO']]]
+  ['stenciltype_0',['stencilType',['../stencil_8h.html#aa1d0dcc55d7fdaafecc6197a83aa43a1',1,'stencil.h']]]
 ];
