@@ -86,7 +86,7 @@ namespace MLWENO{
             /**!
              * Construt multi-level weno reconstruction by specifying each single level
              */
-            //multiLevelReconstruction() {};
+            multiLevelReconstruction() {};
 
             multiLevelReconstruction(const MeshInfo& mi, int stencilSizeX, int stencilSizeY, 
                                      vector<indice> brm)

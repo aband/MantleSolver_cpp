@@ -62,3 +62,77 @@ PetscErrorCode DrawPressure(DM dmu, Vec * globalu){
 
     PetscFunctionReturn(0);
 }
+
+//! Output data in a plain fashion.
+PetscErrorCode PlainOutput(DM dmu, Vec * globalu, char* filename){
+
+    PetscErrorCode    ierr;
+    Vec      fu, lu;
+    PetscInt xs,ys,xm,ym,M,N,stencilwidth;
+    double   **localu;
+    PetscFunctionBeginUser;
+
+    fu = *globalu;
+
+    ierr = DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
+    ierr = DMDAGetInfo(dmu, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
+
+    FILE *f = fopen(filename,"w");
+
+    ierr = DMGetLocalVector(dmu, &lu); CHKERRQ(ierr); 
+    ierr = DMGlobalToLocalBegin(dmu,fu,INSERT_VALUES,lu); CHKERRQ(ierr);
+    ierr = DMGlobalToLocalEnd(dmu,fu,INSERT_VALUES,lu); CHKERRQ(ierr);
+    ierr = DMDAVecGetArrayRead(dmu,lu,&localu); CHKERRQ(ierr);
+
+    for (int j=ys; j<ys+ym; j++){
+    for (int i=xs; i<xs+xm; i++){
+        fprintf(f,"%f ",localu[j][i]);
+    }fprintf(f,"\n");}
+
+    ierr = DMDAVecRestoreArrayRead(dmu,lu,&localu); CHKERRQ(ierr);
+    ierr = DMRestoreLocalVector(dmu,&lu); CHKERRQ(ierr);
+
+    fclose(f);
+
+    PetscFunctionReturn(0);
+}
+
+//! Output mesh in the plain form
+PetscErrorCode PlainMeshOutput(DM dmMesh, Vec * fullmesh){
+
+    PetscErrorCode ierr;
+    Vec            fmesh, lmesh;
+    PetscInt       xs,ys,xm,ym,M,N,stencilwidth;
+    Point          **localmesh;
+    PetscFunctionBeginUser;
+
+    fmesh = *fullmesh; 
+
+    ierr = DMDAGetCorners(dmMesh, &xs, &ys, NULL, &xm, &ym, NULL); CHKERRQ(ierr);
+    ierr = DMDAGetInfo(dmMesh, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
+
+    FILE *f1 = fopen("gridX.txt", "w");
+    FILE *f2 = fopen("gridY.txt", "w"); 
+
+    // Check Mesh definition
+    ierr = DMGetLocalVector(dmMesh, &lmesh); CHKERRQ(ierr);
+    ierr = DMGlobalToLocalBegin(dmMesh,fmesh,INSERT_VALUES,lmesh); CHKERRQ(ierr);
+    ierr = DMGlobalToLocalEnd(dmMesh,fmesh,INSERT_VALUES,lmesh); CHKERRQ(ierr);
+    ierr = DMDAVecGetArrayRead(dmMesh,lmesh,&localmesh); CHKERRQ(ierr);
+
+    for (int j=ys; j<ym+ys+1; j++){
+    for (int i=xs; i<xm+xs+1; i++){
+        fprintf(f1,"%f ", localmesh[j][i].p[0]);
+        fprintf(f2,"%f ", localmesh[j][i].p[1]);
+    }fprintf(f1,"\n");fprintf(f2,"\n");}
+
+    ierr = DMDAVecRestoreArrayRead(dmMesh,lmesh,&localmesh); CHKERRQ(ierr);
+    ierr = DMRestoreLocalVector(dmMesh,&lmesh); CHKERRQ(ierr);
+
+    fclose(f1);
+    fclose(f2);
+
+    PetscFunctionReturn(0);
+}
+
+

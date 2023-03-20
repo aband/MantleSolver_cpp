@@ -2,11 +2,15 @@
 #include <petsc.h>
 #include "integral.h"
 
+// From MLWENO
 #include "stencil.h"
 #include "util.h"
 #include "input.h"
 #include "reconstruction.h"
-//#include <adolc/adolc.h>
+
+// From tranport
+#include "transport.h"
+#include "timestepping.h"
 
 extern "C"{
 #include "mesh.h"
@@ -15,7 +19,7 @@ extern "C"{
 
 using namespace std;
 
-double func(vertex& point, const vector<double>& param){
+double InitialValue(vertex& point, const vector<double>& param){
 	 //if (point[0]<-1.0/param[0]){
 //		  return point[0]*point[0]+point[1]*point[1];
 //	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
@@ -24,10 +28,13 @@ double func(vertex& point, const vector<double>& param){
 //	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
 //	 }
 
-    return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
+    //return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
     //return point[0]*point[0] + point[1]*point[1];
     //return 0.5;
     //return point[0] + point[1];
+
+    // Initial value for sine wave 2D Burger's equation
+    return pow(sin(M_PI*(point[0]+1)/2),2)*pow(sin(M_PI*(point[1]+1)/2),2);
 
 }
 
@@ -46,7 +53,7 @@ int main(int argc, char **argv){
 
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-    // ==========================================================================================================================
+// ==========================================================================================================================
 
     // Start testing mesh function
     // Initializing problem size with 3X3
@@ -95,7 +102,7 @@ int main(int argc, char **argv){
     cout << "Mesh Created. To check full mesh, rerun with -printmesh 1 " << endl;
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-    // ==========================================================================================================================
+// ==========================================================================================================================
 
     // Contain defined mesh in vector container.
     // and verify it.
@@ -106,22 +113,22 @@ int main(int argc, char **argv){
     //cout << "Converted c array of local mesh into vector container c++ " << endl;
     //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-    // ====================================================================================================================================
+// ====================================================================================================================================
 
     DM dmu;
 
     int cell_ghost = 3;
 
     ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_PERIODIC, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, cell_ghost, NULL, NULL, &dmu);CHKERRQ(ierr);
-    ierr = DMSetFromOptions(dmu);               CHKERRQ(ierr);
-    ierr = DMSetUp(dmu);                        CHKERRQ(ierr);
+    ierr = DMSetFromOptions(dmu); CHKERRQ(ierr);
+    ierr = DMSetUp(dmu);          CHKERRQ(ierr);
 
     Vec globalu;
     ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
 
     // Initialize with oblique data for Burgers equation 
     //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,InitialValue);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -133,7 +140,7 @@ int main(int argc, char **argv){
     double ** lu;
     DMDAVecGetArray(dmu, localu, &lu);
 
-    // ====================================================================================================================================
+// ====================================================================================================================================
 
     // Create MeshInfo object
     MeshInfo mi; 
@@ -144,35 +151,98 @@ int main(int argc, char **argv){
     mi.localVals = lu;
 
 // ========================================================================================================================================
-    // Test multi level reconstruction
-    MLWENO::multiLevelReconstruction * mlrPtr = new MLWENO::multiLevelReconstruction(mi,2,2,{{-1,0},{-1,-1,},{0,-1},{0,0}});
-    mlrPtr->AddLevel(mi,3,3,{{-1,-1}});
-    mlrPtr->AddLevel(mi,2,3,{{-1,-1},{0,-1}});
-    mlrPtr->AddLevel(mi,3,2,{{-1,-1},{-1,0}});
 
-    mlrPtr->AddLevel(mi,1,1,{{0,0}});
-   
-    // Test rearrange weno reconstruction levels
-    mlrPtr->ModifyReconstMethod("(1,1)",{{1,1}});
+    // Ouptut of initial value
+    char * filename = (char *)"initial.txt";
 
-    mlrPtr->SelectWenoReconstLevel({"(2,2)","(3,3)","(1,1)"});
+    PlainOutput(dmu, &globalu, filename);
+    PlainMeshOutput(dm, &fullmesh);
 
-    mlrPtr->ModifyReconstMethod("(1,1)",{{0,0}});
+// ========================================================================================================================================
 
-    mlrPtr->SeparateBoundaryLayer(mi);
+    //! Create a transport object
+    transport* trPtr = new transport();
 
-    mlrPtr->UpdateNonLinearWgts(mi,2);
+    /**
+     * Initialize transport object
+     * No need to give a precious description of reconstruction methods.
+     * Detailed reconstruction method will be added separately later.
+     */
+    trPtr->AddLevel(mi,1,1,{{0,0}});
+    trPtr->AddLevel(mi,2,2,{{0,0}});
+    trPtr->AddLevel(mi,3,3,{{0,0}});
+
+    //! Define advection reconstruction methods
+    trPtr->AddReconstMethod(trPtr->advection::reconstMethods,"(1,1)",{{0,0}});
+    trPtr->AddReconstMethod(trPtr->advection::reconstMethods,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
+    trPtr->AddReconstMethod(trPtr->advection::reconstMethods,"(3,3)",{{-1,-1}});
+
+    trPtr->CreateWenoLevel(trPtr->advection::reconstMethods, trPtr->advection::wenoLevels);
+
+    //! Define diffusion reconstruction methods
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsVert,"(1,1)",{{0,0}});
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{-1,0}, {-2,0}, {-2,-2}, {-1,-2}});
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsVert,"(4,5)",{{-2,-2}});
+
+    trPtr->CreateWenoLevel(trPtr->diffusion::reconstMethodsVert, trPtr->diffusion::wenoLevelsVert);
+
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsHori,"(1,1)",{{0,0}});
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,1}, {-2,-1}, {-2,-2}, {0,-2}});
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsHori,"(5,4)",{{-2,-2}});
+
+    trPtr->CreateWenoLevel(trPtr->diffusion::reconstMethodsHori, trPtr->diffusion::wenoLevelsHori);
+
+    /**
+     * Explicit time stepping.
+     */
+    TS ts;
+
+    double Tmax = 0.5;
+    double dt = 0.01;
+
+    //! Get time variables input from terminal line
+    ierr = PetscOptionsGetReal(NULL,NULL,"-Tmax",&Tmax,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetReal(NULL,NULL,"-dt",&dt,NULL);    CHKERRQ(ierr);
  
-    // Test point wise reconstruction
-    vertex center {0.0,0.0};
-    //cout << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) << " " << func(center, {0.0,0.0}) << endl;
+    //! Create ctx for time stepping
+    Ctx ctx;
+    ctx.trPtr = trPtr;
+    ctx.mi    = &mi;
+    ctx.dmu   = dmu;
 
-    // Print required information
-    //mlrPtr->GetInfo();
-    //mlrPtr->PrintSmoothnessIndicator(mi);
-    //mlrPtr->PrintNonLinearWgts(mi); 
+    TSCreate(PETSC_COMM_WORLD, &ts);
+    TSSetProblemType(ts, TS_NONLINEAR);
 
-    // ====================================================================================================================================
+    //! Forward Euler
+    //TSSetType(ts, TSEULER);
+
+    //! RK
+    TSSetType(ts, TSRK);
+    TSRKSetType(ts, TSRK2A);
+
+    TSSetMaxTime(ts, Tmax);
+    TSSetExactFinalTime(ts, TS_EXACTFINALTIME_MATCHSTEP);
+    TSSetDM(ts,dmu);
+
+    TSSetTimeStep(ts, dt);
+    TSSetSolution(ts,globalu);
+
+    TSSetRHSFunction(ts, globalu, Explicit, &ctx);
+
+    cout << "Time stepping started here. " << endl;
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+
+    TSSolve(ts,globalu);
+
+// ====================================================================================================================================
+    // Ouptut of final result
+    filename = (char *)"final.txt";
+
+    PlainOutput(dmu, &globalu, filename);
+
+    delete trPtr;
+
+// ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);
     DMRestoreLocalVector(dmu, &localu); 

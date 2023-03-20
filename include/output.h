@@ -9,8 +9,24 @@
 
 PetscErrorCode PrintFullMesh(DM dmMesh, Vec * fullmesh);
 
+PetscErrorCode hdf5output(DM dmu, Vec * globalu); 
+
+/**
+ * Specified to output pressure data.
+ * The output file name is pre determined as pressure.data.
+ */
 PetscErrorCode DrawPressure(DM dmu, Vec * globalu);
 
-PetscErrorCode hdf5output(DM dmu, Vec * globalu); 
+/**
+ * Output data in a unprocessed raw way.
+ * Almost the same as function DrawPressure expect filename is not pre determined.
+ */
+PetscErrorCode PlainOutput(DM dmu, Vec * globalu, char* filename);
+
+/**
+ * Output coordiante data in an unprocessed raw way.
+ * Two files will be created, gridX and gridY.
+ */
+PetscErrorCode PlainMeshOutput(DM dmMesh, Vec * fullmesh);
 
 #endif

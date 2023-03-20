@@ -46,11 +46,14 @@ endif (FORTRAN_COMPILER)
 #find_package(ADOLC REQUIRED)
 
 project(test)
-add_executable(test test.cpp ../../integral.cpp ../../mesh.c ../../input.cpp ../../output.c ../../mlweno/reconstruction.cpp ../../mlweno/polynomial.cpp ../../mlweno/util.cpp )
+# Build library
 
-include_directories(../../../include ../../../src/mlweno)
+add_executable(test test.cpp ../../integral.cpp ../../mesh.c ../../input.cpp ../../output.c ../../transport/transport.cpp ../../transport/func.cpp ../../mlweno/reconstruction.cpp ../../mlweno/polynomial.cpp ../../mlweno/util.cpp ../../transport/timestepping.cpp)
+
+include_directories(../../../include ../../../src/mlweno ../../../src/transport)
 
 find_package(PkgConfig REQUIRED)
+find_package(MPI REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
 #pkg_search_module(ADOLC REQUIRED IMPORTED_TARGET adolc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
@@ -58,4 +61,3 @@ pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
 ##target_link_libraries(original_weno PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE PkgConfig::HDF5)
 #target_link_libraries(multilevel_weno PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE PkgConfig::HDF5)
 target_link_libraries(test PkgConfig::PETSC PkgConfig::LAPACKE)
-

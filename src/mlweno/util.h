@@ -20,11 +20,13 @@
 
 #include <petsc.h>
 
+#define M_PI 3.14159265358979323846
+
 using vertex = valarray<double>;
 using indice = valarray<int>;
 
 using vertexSet = vector<valarray<double>>;
-using indiceSet = vector<valarray<double>>;
+using indiceSet = vector<valarray<int>>;
 
 template <typename T>
 void delete_pointed_to(T const ptr){
@@ -74,6 +76,9 @@ typedef struct {
     const indiceSet faceCorner   {{0,0},{1,0},{1,1},{0,1}};
     const indiceSet volumeCorner {{0,0,0},{1,0,0},{1,1,0},{0,1,0},
                                   {0,0,1},{1,0,1},{1,1,1},{0,1,1}};
+
+    const indiceSet faceNormal {{0,-1},{1,0},{0,1},{-1,0}};
+
 } MeshInfo;
 
 void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu);

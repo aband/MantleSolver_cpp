@@ -256,7 +256,7 @@ void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, 
 
                 int power = 2;
                 double linearWgt = 1.0;
-                if (sizeX*sizeY == 1){power = 1; linearWgt = 1e-2;}
+                if (sizeX*sizeY == 1){power = 1; linearWgt = 1e-2;} else {power = 2; linearWgt = 1;};
 
                 double value = linearWgt/pow(sm + scale*scale*eps0_ , power);
                 tmp[level].insert(std::pair<int, double>(FlatIndic(sizeX,rm), value));
@@ -286,7 +286,7 @@ void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, 
                 double scale = reconstLevels_[level]->GetScale(FlatIndic(mi, owner));
                 double sm = reconstLevels_[level]->GetSmoothnessIndic(mi, owner);
 
-                double value = wgts[FlatIndic(sizeX,rm)]/pow(sm + scale*scale*eps0_ , sizeX*sizeY);
+                double value = wgts[FlatIndic(sizeX,rm)]/pow(sm + scale*scale*eps0_ , max(sizeX, sizeY));
                 nlw[level].insert(std::pair<int, double>(FlatIndic(sizeX,rm), value));
                 sum += value;
             }
@@ -475,6 +475,7 @@ void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi){
     }}
 }
 
+//! Clear created multi level reconstruction
 void multiLevelReconstruction::Clear(){
 
     for (auto& it : reconstLevels_){
