@@ -9,7 +9,7 @@ echo -n "Convergence Test Built!"
 echo " "
 
 #./test
-valgrind --leak-check=full -s ./test
+#valgrind --leak-check=full -s ./test
 #mpiexec -n 2 ./test -M 8 -N 8
 #./test -M 11 -N 11
 #./test -M 21 -N 21

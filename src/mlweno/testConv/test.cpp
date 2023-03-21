@@ -68,6 +68,20 @@ int main(int argc, char **argv){
     double xstart = -1.0, ystart = -1.0;
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
+    ierr = PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL); CHKERRQ(ierr);
+    ierr = PetscOptionsGetReal(NULL,NULL,"-ystart", &ystart, NULL); CHKERRQ(ierr);
+
+    int singleStencilTest = 0;
+    double scale = 1;
+    ierr = PetscOptionsGetInt(NULL,NULL, "-single", &singleStencilTest, NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetReal(NULL,NULL, "-scale", &scale, NULL);CHKERRQ(ierr);
+
+    if (singleStencilTest){
+        L = L/scale;
+        H = H/scale;
+        xstart = -L/2.0;
+        ystart = -H/2.0;
+    }
 
     MeshParam mp;
     mp.xstart = xstart;
@@ -158,6 +172,8 @@ int main(int argc, char **argv){
 
     mlrPtr->SelectWenoReconstLevel({"(2,2)","(3,3)","(1,1)"});
 
+    //mlrPtr->SelectWenoReconstLevel({"(3,3)","(1,1)"});
+
     mlrPtr->ModifyReconstMethod("(1,1)",{{0,0}});
 
     mlrPtr->SeparateBoundaryLayer(mi);
@@ -167,14 +183,14 @@ int main(int argc, char **argv){
     vertex center {0.0,0.0};
 
     // Test point wise reconstruction
-    cout << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) << " " << func(center, {0.0,0.0}) << endl;
+    cout << "Reconstruction error at the center " << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) - func(center, {0.0,0.0}) << endl;
 
     // Print required information
     //mlrPtr->GetInfo();
 
     //mlrPtr->PrintSmoothnessIndicator(mi);
 
-    //mlrPtr->PrintNonLinearWgts(mi); 
+    mlrPtr->PrintNonLinearWgts(mi); 
     delete mlrPtr;
 
 	 // ====================================================================================================================================
