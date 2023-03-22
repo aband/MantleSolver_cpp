@@ -16,15 +16,15 @@ extern "C"{
 using namespace std;
 
 double func(vertex& point, const vector<double>& param){
-	 //if (point[0]<-1.0/param[0]){
+	 if (point[0]<param[0]){
 //		  return point[0]*point[0]+point[1]*point[1];
-//	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
-//	 } else {
+	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
+	 } else {
 //		  return point[0]*point[0]*point[1]*point[1] + 1.0;
-//	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
-//	 }
+	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1) + 10;
+	 }
 
-    return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
+    //return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
     //return point[0]*point[0] + point[1]*point[1];
     //return 0.5;
     //return point[0] + point[1];
@@ -42,9 +42,9 @@ int main(int argc, char **argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
 
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     // ==========================================================================================================================
 
@@ -106,8 +106,8 @@ int main(int argc, char **argv){
         PrintFullMesh(dm, &fullmesh);
     }
 
-    cout << "Mesh Created. To check full mesh, rerun with -printmesh 1 " << endl;
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    //cout << "Mesh Created. To check full mesh, rerun with -printmesh 1 " << endl;
+    //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     // ==========================================================================================================================
 
@@ -135,7 +135,7 @@ int main(int argc, char **argv){
 
     // Initialize with oblique data for Burgers equation 
     //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,func);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,{-L/(2*M)},func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -168,13 +168,12 @@ int main(int argc, char **argv){
     mlrPtr->AddLevel(mi,1,1,{{0,0}});
 
     // Test rearrange weno reconstruction levels
-    mlrPtr->ModifyReconstMethod("(1,1)",{{1,1}});
+
+    //mlrPtr->ModifyReconstMethod("(2,2)",{{-1,-1}});
 
     mlrPtr->SelectWenoReconstLevel({"(2,2)","(3,3)","(1,1)"});
 
-    //mlrPtr->SelectWenoReconstLevel({"(3,3)","(1,1)"});
-
-    mlrPtr->ModifyReconstMethod("(1,1)",{{0,0}});
+    //mlrPtr->SelectWenoReconstLevel({"(2,2)","(1,1)"});
 
     mlrPtr->SeparateBoundaryLayer(mi);
 
@@ -183,7 +182,31 @@ int main(int argc, char **argv){
     vertex center {0.0,0.0};
 
     // Test point wise reconstruction
-    cout << "Reconstruction error at the center " << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) - func(center, {0.0,0.0}) << endl;
+    cout << "Point wise reconstruction error at center " << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) - func(center, {-L/(2*M)}) << endl;
+
+    // Compute lr norm
+    int r=1;
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<valarray<double>>& gpf = GaussPointsFace;
+
+    vertex p0 = {-L/(2*M), -H/(2*N)};
+    vertex p1 = { L/(2*M), -H/(2*N)};
+    vertex p2 = { L/(2*M),  H/(2*N)};
+    vertex p3 = {-L/(2*M),  H/(2*N)};
+
+    vector<vertex> corner = {p0,p1,p2,p3};
+    double work = 0.0;
+
+    for (size_t i=0; i<gpf.size(); i++){
+        vertex mapped = GaussMapPointsFace(gpf[i],corner);
+        double jac = abs(GaussJacobian(gpf[i],corner));
+        double gw = gwf[i];
+        work += jac*gw*pow(abs(mlrPtr->EvaluateMLWENO(mi,mapped,{1,1}) - func(mapped, {-L/(2*M)})),r);
+    }
+
+    work = work / ((L*H)/9);
+
+    cout << "Average L 1 norm at center cell " << work << endl;
 
     // Print required information
     //mlrPtr->GetInfo();
@@ -191,6 +214,12 @@ int main(int argc, char **argv){
     //mlrPtr->PrintSmoothnessIndicator(mi);
 
     mlrPtr->PrintNonLinearWgts(mi); 
+
+    // Print initial condition
+    char * filename = (char*) "initial.txt"; 
+    PlainOutput(dmu, &globalu, filename);
+    PlainMeshOutput(dm, &fullmesh);
+
     delete mlrPtr;
 
 	 // ====================================================================================================================================
@@ -202,6 +231,8 @@ int main(int argc, char **argv){
     VecDestroy(&globalu);
     DMDestroy(&dm);
     DMDestroy(&dmu);
+
+    PetscFinalize();
 
     return 0;
 }

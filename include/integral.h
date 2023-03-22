@@ -26,6 +26,10 @@ double length(const vector< valarray<double> >& corner);
 
 valarray<double> GaussMapPointsEdge(valarray<double> ref, const vector< valarray<double> >& corner);
 
+double GaussJacobian(valarray<double> ref, const vector< valarray<double> >& corner);
+ 
+valarray<double> GaussMapPointsFace(valarray<double> ref, const vector< valarray<double> >& corner);
+ 
 /*
  *Define numerical integral function with function
  *overloading in c++.

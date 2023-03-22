@@ -22,8 +22,8 @@ vector< valarray<double> > GaussPointsFace  { {-sqrt(3.0/5.0), -sqrt(3.0/5.0)},
                                               {0.0           , sqrt(3.0/5.0)},
                                               {sqrt(3.0/5.0) , sqrt(3.0/5.0)} };
 
-inline valarray<double> GaussMapPointsFace(valarray<double> ref, 
-                                           const vector< valarray<double> >& corner){
+valarray<double> GaussMapPointsFace(valarray<double> ref, 
+                                    const vector< valarray<double> >& corner){
     assert(corner.size()==4);
 
     valarray<double> mapped = {0.0,0.0};
@@ -52,8 +52,8 @@ valarray<double> GaussMapPointsEdge(valarray<double> ref,
     return mapped;
 }
 
-inline double GaussJacobian(valarray<double> ref,
-                            const vector< valarray<double> >& corner){
+double GaussJacobian(valarray<double> ref,
+                     const vector< valarray<double> >& corner){
     assert(corner.size()==4);
 
     double jac = 1.0/16 * ( (- corner[0][0]*(1.0-ref[1]) + corner[1][0]*(1.0-ref[1]) + corner[2][0]*(1.0+ref[1]) - corner[3][0]*(1.0+ref[1]) ) *
