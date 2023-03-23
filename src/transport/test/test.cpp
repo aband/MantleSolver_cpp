@@ -216,9 +216,11 @@ int main(int argc, char **argv){
     //! Forward Euler
     //TSSetType(ts, TSEULER);
 
-    //! RK
-    TSSetType(ts, TSRK);
-    TSRKSetType(ts, TSRK2A);
+    //! SSP
+    TSSetType(ts, TSSSP);
+    TSSSPSetType(ts, TSSSPRKS2);
+
+    //TSRKSetType(ts, TSRK3);
 
     TSSetMaxTime(ts, Tmax);
     TSSetExactFinalTime(ts, TS_EXACTFINALTIME_MATCHSTEP);

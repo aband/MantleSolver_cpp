@@ -98,6 +98,7 @@ void singleLevelReconstruction::ComputeStencilPolyn_(const MeshInfo& mi){
         singleLevel_[flat] = new stencilPolynomial(Bend(mi,flat), ComputeStencilCenter_(mi,flat));
         singleLevel_[flat]->SetUpScale(mi,stencilIndice_);
         singleLevel_[flat]->SetStencilPolynomials(mi,stencilIndice_);
+        //singleLevel_[flat]->printCoef();
     }
 }
 
