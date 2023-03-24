@@ -66,16 +66,31 @@ double transport::advFlux(const MeshInfo& mi, indice global, double t){
         //! Compute global indice of outside cell with respect to the inside cell.
         indice globalOut = global + mi.faceNormal[pos];
 
+//        cout << "unitNormal " << unitNormal[0] << " " << unitNormal[1] << endl;
+
         //! Gauss quadrature rule.
         for (int g=0; g<gpe.size(); g++){
             vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
 
             double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,global);
-            double uOut = mlrPtr_->EvaluateMLWENO(mi,mapped,globalOut);
+
+            double uOut = 0.0;
+            if (InsideBoundary_(mi,globalOut)){
+                uOut = mlrPtr_->EvaluateMLWENO(mi,mapped,globalOut);
+            }
+
+//            if (global[0] == mi.MPIglobalCellSize[0] && global[1] == 15){
+//            cout << "global " << global[0] << " " << global[1] << " globalOut " << globalOut[0] << " " <<globalOut[1] << endl;
+//            cout << "uIn " << uIn << " uOut " << uOut << endl;}
 
             work += gwe[g] * LaxFriedrichs::flux(uIn, uOut, unitNormal, mapped, 1.0) * len/2.0; 
         }
+
     }
+
+//    if (global[0] == 0){
+//    cout << "global " << global[0] << " " << global[1] << endl;
+//    cout << "flux " << work << endl;}
 
     work = work / NumIntegralFace(corner,{0,0}, {0.0,0.0}, 1.0, constFunc);
 
@@ -99,6 +114,17 @@ void transport::CreateWenoLevel(const unordered_map<std::string, vector<indice>>
     for (auto rm : reconstMethods){
         wenoLevels.insert(rm.first); 
     }
+}
+
+bool transport::InsideBoundary_(const MeshInfo& mi, const indice& target){
+
+    if (target[0] < 0 || target[0] > mi.MPIglobalCellSize[0] -1 ||
+        target[1] < 0 || target[1] > mi.MPIglobalCellSize[1] -1 ){
+        return false;
+    } else {
+        return true;
+    }
+
 }
 
 void transport::Check(const MeshInfo& mi){

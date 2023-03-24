@@ -43,7 +43,6 @@ namespace LaxFriedrichs {
         work = 0.5 * (work - alphaLF*(uOut - uIn));
 
         return work;
-
     }
 
     double flux(double uIn, double uOut, vertex unitNormal, vertex point, double alphaLF){

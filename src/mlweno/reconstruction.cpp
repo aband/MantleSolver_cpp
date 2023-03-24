@@ -375,12 +375,12 @@ void multiLevelReconstruction::SelectWenoReconstLevel(unordered_set<std::string>
 /**
  * Evaluation of given point with selected weno reconstruction method.
  */
-double multiLevelReconstruction::EvaluateMLWENO(const MeshInfo& mi, vertex point, indice localCell){
+double multiLevelReconstruction::EvaluateMLWENO(const MeshInfo& mi, vertex point, indice globalCell){
 
     double work = 0.0;
 
     //! Convert local cell indice to global cell indice.
-    indice globalCell = mi.MPIlocalCellStart + localCell;
+    //indice globalCell = mi.MPIlocalCellStart + localCell;
 
     //! Get calculated nonlinear weights linked to this cell.
     unordered_map<std::string, unordered_map<int,double>> nlw = nonLinearWgts_[FlatIndic(mi,globalCell)];
@@ -389,7 +389,7 @@ double multiLevelReconstruction::EvaluateMLWENO(const MeshInfo& mi, vertex point
     for (auto const& level : wenoLevels_){
         if (nlw[level].empty() == 0){
             for (auto & wgts: nlw[level]){
-                indice owner = localCell + Bend(reconstLevels_[level]->GetSizeX(),wgts.first);
+                indice owner = globalCell + Bend(reconstLevels_[level]->GetSizeX(),wgts.first);
                 work += wgts.second * reconstLevels_[level]->Evaluate(mi, owner, point); 
             }
         }
@@ -427,7 +427,6 @@ void multiLevelReconstruction::GetInfo(){
 }
 
 void multiLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
-
 
         for (auto const& singleLevel : wenoLevels_) {
             cout << "Current reconstruction level is :" << singleLevel << endl;

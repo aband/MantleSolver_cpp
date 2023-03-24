@@ -101,6 +101,13 @@ class transport : public advection, public diffusion, public reaction {
         void Check(const MeshInfo& mi);
 
     private:
+
+        /** 
+         * Check if a given cell is inside the boundary or not
+         */
+        bool InsideBoundary_(const MeshInfo& mi, const indice& target);
+
+
         MLWENO::multiLevelReconstruction * mlrPtr_;
 };
 

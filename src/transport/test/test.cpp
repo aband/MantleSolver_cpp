@@ -30,12 +30,25 @@ double InitialValue(vertex& point, const vector<double>& param){
 
     //return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
     //return point[0]*point[0] + point[1]*point[1];
-    //return 0.5;
     //return point[0] + point[1];
 
     // Initial value for sine wave 2D Burger's equation
     return pow(sin(M_PI*(point[0]+1)/2),2)*pow(sin(M_PI*(point[1]+1)/2),2);
 
+}
+
+PetscErrorCode Monitor(TS ts, PetscInt step, PetscReal t, Vec U, void *ctx){
+
+    PetscFunctionBeginUser;
+
+    Ctx * user = (Ctx*) ctx;
+    char * filename = (char*) &t;
+
+    if (t == 0.5 || t == 0.8 || t == 1.0 || t == 1.2 || t == 1.5){
+        PlainOutput(user->dmu, &U, filename);
+    }
+
+    PetscFunctionReturn(0);
 }
 
 int main(int argc, char **argv){
@@ -197,7 +210,7 @@ int main(int argc, char **argv){
      */
     TS ts;
 
-    double Tmax = 0.5;
+    double Tmax = 0.01;
     double dt = 0.01;
 
     //! Get time variables input from terminal line
@@ -214,11 +227,11 @@ int main(int argc, char **argv){
     TSSetProblemType(ts, TS_NONLINEAR);
 
     //! Forward Euler
-    //TSSetType(ts, TSEULER);
+    TSSetType(ts, TSEULER);
 
     //! SSP
-    TSSetType(ts, TSSSP);
-    TSSSPSetType(ts, TSSSPRKS2);
+    //TSSetType(ts, TSSSP);
+    //TSSSPSetType(ts, TSSSPRKS2);
 
     //TSRKSetType(ts, TSRK3);
 
@@ -230,6 +243,8 @@ int main(int argc, char **argv){
     TSSetSolution(ts,globalu);
 
     TSSetRHSFunction(ts, globalu, Explicit, &ctx);
+
+//    TSMonitorSet(ts, Monitor, &ctx, NULL);
 
     cout << "Time stepping started here. " << endl;
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
