@@ -101,6 +101,7 @@ int main(int argc, char **argv){
     switch(meshtype){
         case 0: CreateFullMesh(dm, &fullmesh, &mp); break;
         case 1: LogicRectMesh(dm, &fullmesh, &mp);  break;
+        case 2: RefineMesh(dm, &fullmesh, &mp); break;
         //case 2: TestControlMeshSecond(dmCell,L,H); break;
         //case 3: TestControlMeshThird(dmCell,L,H);  break;
     }

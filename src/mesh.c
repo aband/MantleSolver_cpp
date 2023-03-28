@@ -1,6 +1,9 @@
 #include <petsc.h>
 #include "../include/mesh.h"
 
+/**
+ * Create uniform rectanguler mesh 
+ */
 PetscErrorCode CreateFullMesh(DM dm, Vec *fullmesh, MeshParam * mp){
 
     PetscErrorCode ierr;
@@ -64,6 +67,9 @@ PetscErrorCode CreateFullMesh(DM dm, Vec *fullmesh, MeshParam * mp){
     PetscFunctionReturn(0);
 }
 
+/**
+ * Create randomly disturbed quadrilateral mesh
+ */
 PetscErrorCode LogicRectMesh(DM dm, Vec *fullmesh, MeshParam * mp){
 
     PetscErrorCode ierr;
@@ -135,6 +141,80 @@ PetscErrorCode LogicRectMesh(DM dm, Vec *fullmesh, MeshParam * mp){
             ierr = PetscRandomGetValue(rndx, &value);CHKERRQ(ierr);
             localmesh[j][i].p[1] = ystart+j*hy + (double)(PetscRealPart(value));
         }
+    }}
+
+    ierr = DMDAVecRestoreArray(dm, lmesh, &localmesh); CHKERRQ(ierr);
+
+    // Update global vector without ghost region
+    ierr = DMLocalToGlobalBegin(dm, lmesh, INSERT_VALUES, fmesh);CHKERRQ(ierr); 
+    ierr = DMLocalToGlobalEnd(dm, lmesh, INSERT_VALUES, fmesh);  CHKERRQ(ierr);
+
+    ierr = DMRestoreLocalVector(dm, &lmesh);           CHKERRQ(ierr);
+
+    PetscFunctionReturn(0);
+
+}
+
+/**
+ * Create mesh gradually refined towards boundary
+ */
+PetscErrorCode RefineMesh(DM dm, Vec *fullmesh, MeshParam * mp){
+
+    PetscErrorCode ierr;
+    Vec            fmesh, lmesh;
+    PetscInt       xs,ys,xm,ym,M,N;
+    Point          **localmesh;
+    PetscInt       stencilwidth;
+    PetscFunctionBeginUser;
+
+    fmesh = *fullmesh;
+
+    ierr = DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL);                                                CHKERRQ(ierr);
+    ierr = DMDAGetInfo(dm, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, &stencilwidth, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
+
+    // Unpack parameters
+    double L = mp->L;
+    double H = mp->H;
+    double xstart = mp->xstart;
+    double ystart = mp->ystart;
+
+    double hx = L/(double)M;
+    double hy = H/(double)N;
+
+    // Define rectangular mesh
+    ierr = DMGetLocalVector(dm, &lmesh);                         CHKERRQ(ierr);
+    ierr = DMGlobalToLocalBegin(dm, fmesh, INSERT_VALUES, lmesh);CHKERRQ(ierr); 
+    ierr = DMGlobalToLocalEnd(dm, fmesh, INSERT_VALUES, lmesh);  CHKERRQ(ierr);
+    ierr = DMDAVecGetArray(dm, lmesh, &localmesh);               CHKERRQ(ierr);
+
+    for (int j=ys-stencilwidth; j<ys+ym+stencilwidth; j++){
+    for (int i=xs-stencilwidth; i<xs+xm+stencilwidth; i++){
+        localmesh[j][i].p[0] = xstart+i*hx;
+        localmesh[j][i].p[1] = ystart+j*hy;
+    }}
+
+    ierr = DMDAVecRestoreArray(dm, lmesh, &localmesh); CHKERRQ(ierr);
+
+    // Update global vector with ghost region
+    ierr = DMLocalToGlobalBegin(dm, lmesh, ADD_VALUES, fmesh);CHKERRQ(ierr); 
+    ierr = DMLocalToGlobalEnd(dm, lmesh, ADD_VALUES, fmesh);  CHKERRQ(ierr);
+
+    // Global to Local again
+    ierr = DMGlobalToLocalBegin(dm, fmesh, INSERT_VALUES, lmesh);CHKERRQ(ierr); 
+    ierr = DMGlobalToLocalEnd(dm, fmesh, INSERT_VALUES, lmesh);  CHKERRQ(ierr);
+    ierr = DMDAVecGetArray(dm, lmesh, &localmesh);               CHKERRQ(ierr);
+
+    PetscRandom    rndx,rndy;
+    PetscScalar    value;
+
+    // Get current time in seconds as random seed
+    for (int j=ys; j<ys+ym; j++){
+    for (int i=xs; i<xs+xm; i++){
+        double xshift = sin((xstart + i*hx)*PI/2);
+        double yshift = sin((ystart + j*hy)*PI/2);
+
+        localmesh[j][i].p[0] = xshift;
+        localmesh[j][i].p[1] = yshift;
     }}
 
     ierr = DMDAVecRestoreArray(dm, lmesh, &localmesh); CHKERRQ(ierr);
