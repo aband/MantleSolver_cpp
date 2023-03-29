@@ -12,6 +12,12 @@ class advection {
         unordered_map<std::string, vector<indice>> reconstMethods;
         unordered_set<std::string> wenoLevels;
 
+        unordered_set<int> boundaryCells;
+        unordered_set<int> interiorCells;
+
+        unordered_set<std::string> boundaryLevels;
+        unordered_set<std::string> interiorLevels;
+
     private:
         /** 
          * Transport function and its derivative.
@@ -37,6 +43,18 @@ class diffusion {
 
         unordered_map<std::string, vector<indice>> reconstMethodsHori;
         unordered_set<std::string> wenoLevelsHori;
+
+        unordered_set<int> boundaryCellsHori;
+        unordered_set<int> interiorCellsHori;
+
+        unordered_set<std::string> boundaryLevelsHori;
+        unordered_set<std::string> interiorLevelsHori;
+
+        unordered_set<int> boundaryCellsVert;
+        unordered_set<int> interiorCellsVert;
+
+        unordered_set<std::string> boundaryLevelsVert;
+        unordered_set<std::string> interiorLevelsVert;
 };
 
 class reaction {
@@ -77,10 +95,19 @@ class transport : public advection, public diffusion, public reaction {
          */
         void AssignReconstruction(const unordered_map<std::string, vector<indice>>& reconstMethods, const unordered_set<std::string>& wenoLevels);
 
+        void AssignBoundaryMethods(const unordered_set<int>& boundaryCells, 
+                                   const unordered_set<int>& interiorCells,
+                                   const unordered_set<std::string>& boundaryLevels, 
+                                   const unordered_set<std::string>& interiorLevels);
+
         /**
          * Separate boundary layer
          */
         void SeparateBoundaryLayer(const MeshInfo& mi) {mlrPtr_->SeparateBoundaryLayer(mi);};
+
+        void SeparateAdvBoundaryLayer(const MeshInfo& mi);
+
+        void SeparateDiffBoundaryLayer(const MeshInfo& mi);
 
         /**
          * Update non linear weights with given reconstruction methods and weno levels
@@ -93,7 +120,14 @@ class transport : public advection, public diffusion, public reaction {
          * Intended to write this function inside advection class.
          * Attempt failed.
          */
-        double advFlux(const MeshInfo& mi, indice global, double t);
+        double advFlux(const MeshInfo& mi, const indice& global, double t);
+
+        /**
+         * Compute derivative of advection flux using in the jacobian
+         */
+        const unordered_map<int, double>& derivAdvFlux(const MeshInfo& mi, 
+                                                       const indice& global,
+                                                       double time);
 
         /**
          * Check if there is anything wrong
@@ -106,7 +140,6 @@ class transport : public advection, public diffusion, public reaction {
          * Check if a given cell is inside the boundary or not
          */
         bool InsideBoundary_(const MeshInfo& mi, const indice& target);
-
 
         MLWENO::multiLevelReconstruction * mlrPtr_;
 };

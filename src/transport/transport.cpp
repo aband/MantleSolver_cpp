@@ -66,8 +66,6 @@ double transport::advFlux(const MeshInfo& mi, indice global, double t){
         //! Compute global indice of outside cell with respect to the inside cell.
         indice globalOut = global + mi.faceNormal[pos];
 
-//        cout << "unitNormal " << unitNormal[0] << " " << unitNormal[1] << endl;
-
         //! Gauss quadrature rule.
         for (int g=0; g<gpe.size(); g++){
             vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
@@ -79,20 +77,78 @@ double transport::advFlux(const MeshInfo& mi, indice global, double t){
                 uOut = mlrPtr_->EvaluateMLWENO(mi,mapped,globalOut);
             }
 
-//            if (global[0] == mi.MPIglobalCellSize[0] && global[1] == 15){
-//            cout << "global " << global[0] << " " << global[1] << " globalOut " << globalOut[0] << " " <<globalOut[1] << endl;
-//            cout << "uIn " << uIn << " uOut " << uOut << endl;}
-
             work += gwe[g] * LaxFriedrichs::flux(uIn, uOut, unitNormal, mapped, 1.0) * len/2.0; 
         }
 
     }
 
-//    if (global[0] == 0){
-//    cout << "global " << global[0] << " " << global[1] << endl;
-//    cout << "flux " << work << endl;}
-
     work = work / NumIntegralFace(corner,{0,0}, {0.0,0.0}, 1.0, constFunc);
+
+    return work;
+}
+
+/**
+ * Compute derivative of advection flux
+ */
+const unordered_map<int, double>& derivAdvFlux(const MeshInfo& mi, const indice& global, 
+                                               double time){
+
+// loop through all reconstruction method
+// if key exists add values
+// if key not exists insert pair
+
+    unordered_map<int, double> work;
+
+    //! Declare variable holding four corners of the given cell.
+    vertexSet corner; 
+
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+     
+    //! Retrieve local cell indice (including ghost vertex)
+    indice ghostlayerShift {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
+    indice fullLocal = global - mi.MPIlocalCellStart + ghostlayerShift;
+
+    //! Extract corners from mesh.
+    for (auto & fcorner: mi.faceCorner){
+        corner.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],fullLocal+fcorner)]);
+    }
+
+    //! Loop through four edges of a given cell
+    for (int pos=0; pos<4; pos++){
+
+        vertexSet edge;
+        edge.push_back(corner[pos]);
+        edge.push_back(corner[(pos+1)%4]);
+
+        double len = length(edge);
+        //! Compute unit normal vector pointing outside.
+        vertex unitNormal = UnitNormal(edge,len);
+
+        //! Compute global indice of outside cell with respect to the inside cell.
+        indice globalOut = global + mi.faceNormal[pos];
+
+        //! Loop through gauss points
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
+
+            //! Compute derivative and value of multi level reconstruction
+            unordered_map<int, double> derivIn = mlrPtr_->EvaluateMLWENODeirv(mi,mapped,global);
+            double uIn = mlrPtr->EvaluateMLWENO(mi,mapped,global);
+
+            unordered_map<int, double> derivOut;
+            double uOut = 0.0;
+            if (InsideBoundary_(mi, globalOut)){
+                derivOut = mlrPtr->EvaluateMLWENODeriv(mi,mapped,global);
+                uOut = mlrPtr->EvaluateMLWENO(mi,mapped,global);
+            }
+
+           // ==========================????????????!!!!!!!!!!!!!!!!! 
+
+
+        } 
+    }
 
     return work;
 }
@@ -116,6 +172,9 @@ void transport::CreateWenoLevel(const unordered_map<std::string, vector<indice>>
     }
 }
 
+/** 
+ * Check if a given cell is inside the boundary or not
+ */
 bool transport::InsideBoundary_(const MeshInfo& mi, const indice& target){
 
     if (target[0] < 0 || target[0] > mi.MPIglobalCellSize[0] -1 ||
@@ -125,6 +184,64 @@ bool transport::InsideBoundary_(const MeshInfo& mi, const indice& target){
         return true;
     }
 
+}
+
+/**
+ * Separate boundary layer for different sub problems
+ */
+void transport::SeparateAdvBoundaryLayer(const MeshInfo& mi){
+    AssignReconstruction(advection::reconstMethods,
+                         advection::wenoLevels);
+
+    mlrPtr_->SeparateBoundaryLayer(mi);
+
+    advection::boundaryCells = mlrPtr_->GetboundaryCells();
+    advection::interiorCells = mlrPtr_->GetinteriorCells();
+
+    advection::boundaryLevels = mlrPtr_->GetboundaryLevels();
+    advection::interiorLevels = mlrPtr_->GetinteriorLevels();
+}
+
+void transport::SeparateDiffBoundaryLayer(const MeshInfo& mi){
+
+    // Vertical edge reconstruction
+    AssignReconstruction(diffusion::reconstMethodsVert,
+                         diffusion::wenoLevelsVert);
+
+    mlrPtr_->SeparateBoundaryLayer(mi);
+
+    diffusion::boundaryCellsVert = mlrPtr_->GetboundaryCells();
+    diffusion::interiorCellsVert = mlrPtr_->GetinteriorCells();
+
+    diffusion::boundaryLevelsVert = mlrPtr_->GetboundaryLevels();
+    diffusion::interiorLevelsVert = mlrPtr_->GetinteriorLevels();
+
+    // Horizontal edge reconstruction
+    AssignReconstruction(diffusion::reconstMethodsHori,
+                         diffusion::wenoLevelsHori);
+
+    mlrPtr_->SeparateBoundaryLayer(mi);
+
+    diffusion::boundaryCellsVert = mlrPtr_->GetboundaryCells();
+    diffusion::interiorCellsVert = mlrPtr_->GetinteriorCells();
+
+    diffusion::boundaryLevelsVert = mlrPtr_->GetboundaryLevels();
+    diffusion::interiorLevelsVert = mlrPtr_->GetinteriorLevels();
+}
+
+/**
+ * Assign pre calculated boundary cells and levels to multi level reconstuction
+ */
+void transport::AssignBoundaryMethods(const unordered_set<int>& boundaryCells, 
+                                      const unordered_set<int>& interiorCells,
+                                      const unordered_set<std::string>& boundaryLevels, 
+                                      const unordered_set<std::string>& interiorLevels){
+
+    mlrPtr_->AssignboundaryCells(boundaryCells);
+    mlrPtr_->AssigninteriorCells(interiorCells);
+
+    mlrPtr_->AssignboundaryLevels(boundaryLevels);
+    mlrPtr_->AssigninteriorLevels(interiorLevels);
 }
 
 void transport::Check(const MeshInfo& mi){

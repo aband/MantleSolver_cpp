@@ -124,6 +124,30 @@ namespace MLWENO{
             void SeparateBoundaryLayer(const MeshInfo& mi, const int& layerSize);
             void SeparateBoundaryLayer(const MeshInfo& mi);
 
+            //! Get a copy of calculated boundary and interior cells
+            const unordered_set<int>& GetboundaryCells() const 
+            {return boundaryCells_;};
+            const unordered_set<int>& GetinteriorCells() const 
+            {return interiorCells_;};
+
+            //! Assing calculated boundary and interior cells
+            void AssignboundaryCells (const unordered_set<int>& boundaryCells) 
+            {boundaryCells_ = boundaryCells;};
+            void AssigninteriorCells (const unordered_set<int>& interiorCells)
+            {interiorCells_ = interiorCells;};
+
+            //! Get a copy of calculated boundary and interior levels
+            const unordered_set<std::string>& GetboundaryLevels() const 
+            {return boundaryLevels_;};
+            const unordered_set<std::string>& GetinteriorLevels() const 
+            {return interiorLevels_;};
+
+            //! Assing calculated boundary and interior levels
+            void AssignboundaryLevels (const unordered_set<std::string>& boundaryLevels) 
+            {boundaryLevels_ = boundaryLevels;};
+            void AssigninteriorLevels (const unordered_set<std::string>& interiorLevels)
+            {interiorLevels_ = interiorLevels;};
+
             /**
              * Update non linear weights for all levels.
              * Smoothness indicator will be updated every time when non linear weights updated.

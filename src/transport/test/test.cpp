@@ -206,6 +206,9 @@ int main(int argc, char **argv){
 
     trPtr->CreateWenoLevel(trPtr->diffusion::reconstMethodsHori, trPtr->diffusion::wenoLevelsHori);
 
+    //! Compute boundary and interior cells and levels
+    trPtr->SeparateAdvBoundaryLayer(mi);
+
     /**
      * Explicit time stepping.
      */

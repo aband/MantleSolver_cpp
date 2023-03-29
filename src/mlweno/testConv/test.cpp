@@ -180,6 +180,12 @@ int main(int argc, char **argv){
 
     mlrPtr->SeparateBoundaryLayer(mi);
 
+    unordered_set <int> bl = mlrPtr->GetboundaryCells();
+    unordered_set <int> il = mlrPtr->GetinteriorCells();
+
+    mlrPtr->AssignboundaryCells(bl);
+    mlrPtr->AssigninteriorCells(il);
+
     mlrPtr->UpdateNonLinearWgts(mi,2);
 
     vertex center {0.0,0.0};

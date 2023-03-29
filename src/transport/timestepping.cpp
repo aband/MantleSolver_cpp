@@ -28,11 +28,14 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     //! Hook local u to meshinfo
     user->mi->localVals = lu;
 
-    //! Define advection problem first
+    //! Compute advection flux first =======================================
     user->trPtr->AssignReconstruction(user->trPtr->advection::reconstMethods,
                                       user->trPtr->advection::wenoLevels);
 
-    user->trPtr->SeparateBoundaryLayer(*(user->mi));
+    user->trPtr->AssignBoundaryMethods(user->trPtr->advection::boundaryCells,
+                                       user->trPtr->advection::interiorCells,
+                                       user->trPtr->advection::boundaryLevels,
+                                       user->trPtr->advection::interiorLevels);
 
     user->trPtr->UpdateNonLinearWgts(*(user->mi),2);
 
@@ -44,8 +47,72 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
         f[j][i] = -1.0*user->trPtr->advFlux(*(user->mi), {i,j}, time);
     }}
 
+    //! Compute diffusion flux second ======================================
+
+
+
     //! Restore array to local vectors.
     DMDAVecRestoreArray(dmu, F, &f);
+    DMDAVecRestoreArray(dmu, localu, &lu);
+    DMRestoreLocalVector(dmu, &localu);
+
+    PetscFunctionReturn(0);
+}
+
+/**
+ * Compute jacobian requiared for implicit time stepping
+ */
+PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* ctx){
+    PetscErrorCode    ierr;
+    PetscFunctionBeginUser;
+
+    Ctx * user = (Ctx*)ctx;
+    DM dmu = (DM)user->dmu;
+
+    //! Get local vector
+    Vec localu;
+    DMGetLocalVector(dmu, &localu);
+
+    DMGlobalToLocalBegin(dmu, U, INSERT_VALUES, localu);
+    DMGlobalToLocalEnd(dmu, U, INSERT_VALUES, localu); 
+
+    double ** lu;
+    DMDAVecGetArray(dmu, localu, &lu);
+
+    //! Define advection problem first
+    user->trPtr->AssignReconstruction(user->trPtr->advection::reconstMethods,
+                                      user->trPtr->advection::wenoLevels);
+
+    user->trPtr->AssignBoundaryMethods(user->trPtr->advection::boundaryCells,
+                                       user->trPtr->advection::interiorCells,
+                                       user->trPtr->advection::boundaryLevels,
+                                       user->trPtr->advection::interiorLevels);
+
+    user->trPtr->UpdateNonLinearWgts(*(user->mi),2);
+
+    //! Get MPI local part of Jacobian matrix
+    MatGetOwnershipRange(J, &start, &rend);
+
+    for (int row = rstart; row<rend; row++){
+        indice global = Bend(*(user->mi), row);
+
+        unordered_map<int,double> deriv = user->trPtr->derivAdvFlux(*(user->mi), global, time);
+
+        for (auto & dVal: deriv){
+            ierr = MatSetValue(J,row,dVal.first,dVal.second,INSERT_VALUES);CHKERRQ(ierr);
+        }
+
+    }
+
+    ierr = MatAssemblyBegin(J,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+    ierr = MatAssemblyEnd(J,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+
+    if (J != Jp){
+        ierr = MatAssemblyBegin(Jp, MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+        ierr = MatAssemblyEnd(Jp, MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
+    }
+
+    //! Restore array to local vectors
     DMDAVecRestoreArray(dmu, localu, &lu);
     DMRestoreLocalVector(dmu, &localu);
 

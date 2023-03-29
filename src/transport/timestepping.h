@@ -22,7 +22,7 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx);
  * Implicit time stepping.
  * Using time stepping object provided by Petsc.
  */
-PetscErrorCode FormJacobian();
+PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* ctx);
 
 
 
