@@ -13,9 +13,17 @@ typedef struct {
 } Ctx;
 
 /**
- * Explicit Eurler.
+ * Explicit time stepping.
  * Using time stepping object provided by Petsc.
  */
 PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx);
+
+/**
+ * Implicit time stepping.
+ * Using time stepping object provided by Petsc.
+ */
+PetscErrorCode FormJacobian();
+
+
 
 #endif
