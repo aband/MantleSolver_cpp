@@ -33,7 +33,7 @@ void transport::AssignReconstruction(const unordered_map<std::string, vector<ind
 /**
  * Compute integrated advective flux.
  */
-double transport::advFlux(const MeshInfo& mi, indice global, double t){
+double transport::advFlux(const MeshInfo& mi, const indice& global, double t){
 
     double work = 0.0;
 
@@ -90,12 +90,8 @@ double transport::advFlux(const MeshInfo& mi, indice global, double t){
 /**
  * Compute derivative of advection flux
  */
-const unordered_map<int, double>& derivAdvFlux(const MeshInfo& mi, const indice& global, 
-                                               double time){
-
-// loop through all reconstruction method
-// if key exists add values
-// if key not exists insert pair
+unordered_map<int, double> transport::derivAdvFlux(const MeshInfo& mi, const indice& global, 
+                                                   const double& time){
 
     unordered_map<int, double> work;
 
@@ -134,18 +130,28 @@ const unordered_map<int, double>& derivAdvFlux(const MeshInfo& mi, const indice&
             vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
 
             //! Compute derivative and value of multi level reconstruction
-            unordered_map<int, double> derivIn = mlrPtr_->EvaluateMLWENODeirv(mi,mapped,global);
-            double uIn = mlrPtr->EvaluateMLWENO(mi,mapped,global);
+            unordered_map<int, double> derivIn = mlrPtr_->EvaluateDerivMLWENO(mi,mapped,global);
+            double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,global);
 
             unordered_map<int, double> derivOut;
             double uOut = 0.0;
             if (InsideBoundary_(mi, globalOut)){
-                derivOut = mlrPtr->EvaluateMLWENODeriv(mi,mapped,global);
-                uOut = mlrPtr->EvaluateMLWENO(mi,mapped,global);
+                derivOut = mlrPtr_->EvaluateDerivMLWENO(mi,mapped,global);
+                uOut = mlrPtr_->EvaluateMLWENO(mi,mapped,global);
             }
 
-           // ==========================????????????!!!!!!!!!!!!!!!!! 
+            // Compute derivative of flux at a given gauss point
+            unordered_map<int, double> derivflux = LaxFriedrichs::dflux(uIn, uOut, unitNormal,
+                                                                        mapped, 1.0, 
+                                                                        derivOut, derivIn);
 
+            for (auto & derivf : derivflux){
+                if (work.count(derivf.first) > 0){
+                    work[derivf.first] += derivf.second;
+                } else {
+                    work.insert(std::pair<int,double> (derivf.first, derivf.second));
+                }
+            }
 
         } 
     }

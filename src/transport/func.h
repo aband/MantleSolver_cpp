@@ -15,10 +15,17 @@ double dfuncY(vertex x, double u, double t);
 
 namespace LaxFriedrichs {
     //! Local lax friedrichs scheme
-    double flux(double uIn, double uOut, vertex unitNormal, vertex point);
-    //! Global lax firedrichs scheme
-    double flux(double uIn, double uOut, vertex unitNormal, vertex point, double alphaLF);
- 
+    double flux(const double& uIn, const double& uOut, 
+                const vertex& unitNormal, const vertex& point);
+    //! Global lax friedrichs scheme
+    double flux(const double& uIn, const double& uOut, 
+                const vertex& unitNormal, const vertex& point, const double& alphaLF);
+
+    //! derivative of global lax friedrichs scheme
+    unordered_map<int, double> dflux(const double& uIn, const double& uOut, const vertex& unitNormal, 
+                                     const vertex& mapped, const double& alphaLF, 
+                                     const unordered_map<int, double>& duOut, const unordered_map<int, double>& duIn);
+
 }
 
 #endif

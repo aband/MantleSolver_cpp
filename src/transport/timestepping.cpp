@@ -91,7 +91,8 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
     user->trPtr->UpdateNonLinearWgts(*(user->mi),2);
 
     //! Get MPI local part of Jacobian matrix
-    MatGetOwnershipRange(J, &start, &rend);
+    int rstart, rend;
+    MatGetOwnershipRange(J, &rstart, &rend);
 
     for (int row = rstart; row<rend; row++){
         indice global = Bend(*(user->mi), row);

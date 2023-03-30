@@ -176,6 +176,12 @@ namespace MLWENO{
              */
             double EvaluateMLWENO(const MeshInfo& mi, vertex point, indice cell);
 
+            /**
+             * Derivative of the reconstruction of value with respect to the given point
+             * with multi level weno method.
+             */
+            unordered_map<int, double> EvaluateDerivMLWENO(const MeshInfo& mi, const vertex& point, const indice& global);
+
             //! Routines used to check results and verification
             void GetInfo();
             void PrintBoundaryLayer(const MeshInfo& mi);

@@ -125,9 +125,9 @@ class transport : public advection, public diffusion, public reaction {
         /**
          * Compute derivative of advection flux using in the jacobian
          */
-        const unordered_map<int, double>& derivAdvFlux(const MeshInfo& mi, 
-                                                       const indice& global,
-                                                       double time);
+        unordered_map<int, double> derivAdvFlux(const MeshInfo& mi, 
+                                                const indice& global,
+                                                const double& time);
 
         /**
          * Check if there is anything wrong

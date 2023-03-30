@@ -399,14 +399,13 @@ double multiLevelReconstruction::EvaluateMLWENO(const MeshInfo& mi, vertex point
 }
 
 /**
- * Derivative of the reconstructionof value with respect to the given point
- * with multi level weno method.
+ * Reconstruciton of derivative at the given point with selected weno reconstruction method
  */
 unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const MeshInfo& mi,
                                                      const vertex& point, const indice& global){
 
     unordered_map<int, double> work;
-    
+
 
 
     return work;

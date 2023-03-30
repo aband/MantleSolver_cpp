@@ -28,7 +28,7 @@ double dfuncY(vertex x, double u, double t){
 
 namespace LaxFriedrichs {
 
-    double flux(double uIn, double uOut, vertex unitNormal, vertex point){
+    double flux(const double& uIn, const double& uOut, const vertex& unitNormal, const vertex& point){
         double work = 0.0;
 
         work = (funcX(point, uIn, 0) + funcX(point, uOut, 0))*unitNormal[0] + 
@@ -45,7 +45,7 @@ namespace LaxFriedrichs {
         return work;
     }
 
-    double flux(double uIn, double uOut, vertex unitNormal, vertex point, double alphaLF){
+    double flux(const double& uIn, const double& uOut, const vertex& unitNormal, const vertex& point, const double& alphaLF){
         double work = 0.0;
         
         work = (funcX(point, uIn, 0) + funcX(point, uOut, 0))*unitNormal[0] + 
@@ -60,8 +60,30 @@ namespace LaxFriedrichs {
         return work; 
     }
 
-    double dflux(double uIn, double uOut, vertex unitNormal, vertex point, double alphaLF){
-        double work = 0.0;
+    unordered_map<int,double> dflux(const double& uIn, const double& uOut, const vertex& unitNormal, 
+                                    const vertex& mapped, const double& alphaLF, 
+                                    const unordered_map<int, double>& duOut, const unordered_map<int,double>& duIn){
+        unordered_map<int, double> work;
+
+        double in = (dfuncX(mapped, uIn, 0)*unitNormal[0] + dfuncY(mapped, uIn, 0)*unitNormal[1] + alphaLF);
+        double out = (dfuncX(mapped, uOut, 0)*unitNormal[0] + dfuncY(mapped, uOut, 0)*unitNormal[1] - alphaLF);
+
+        //! Loop through derivative of outside cell
+        for (auto& duout: duOut){
+            // No need to check if key exists for the fact that work is now completely empty
+            work.insert(std::pair<int, double>(duout.first, duout.second));
+        }
+
+        //! Loop through derivative of inside cell
+        for (auto& duin: duIn){
+            if (work.count(duin.first) > 0){
+                // this key does exists
+                work[duin.first] += duin.second;
+            } else {
+                // this key does not exists
+                work.insert(std::pair<int,double>(duin.first, duin.second));
+            }
+        }
 
         return work;
     }
