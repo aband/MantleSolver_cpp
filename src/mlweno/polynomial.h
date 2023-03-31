@@ -73,6 +73,13 @@ namespace tensorProductPoly{
             double operator() (const double x, const double y) const {return eval(x,y);};
             double operator() (const vertex& P) const {return eval(P);};
 
+            // Evaluation of point value for a given polynomial.
+            // Separately without using collapsed polynomial.
+            double eval(double x, double y, int poly) const;
+            double eval(vertex P, int poly) const {return eval(P[0],P[1],poly);};
+            double operator() (double x, double y, int poly) const {return eval(x,y,poly);};
+            double operator() (vertex P, int poly) const {return eval(P,poly);};
+
             // Check basis polynomial coefficients
             void printCoef();
             void printCoef(int s);

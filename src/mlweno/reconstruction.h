@@ -57,6 +57,8 @@ namespace MLWENO{
              */
             double Evaluate(const MeshInfo& mi, indice owner, vertex point);
 
+            double Evaluate(const MeshInfo& mi, const indice& owner, const vertex& point, const int& local);
+
             // ======================================================================
             //! class members for checking and verification
             void CheckStencils() const {cout<< "Constructed "<< interior_.size() << " stencils with the size of " << stencilSizeX_ << " " << stencilSizeY_ << endl;};
@@ -180,7 +182,14 @@ namespace MLWENO{
              * Derivative of the reconstruction of value with respect to the given point
              * with multi level weno method.
              */
-            unordered_map<int, double> EvaluateDerivMLWENO(const MeshInfo& mi, const vertex& point, const indice& global);
+            unordered_map<int, double> EvaluateDerivMLWENO(const MeshInfo& mi, 
+                                                           const vertex& point, 
+                                                           const indice& global);
+
+            unordered_map<int, double> EvaluateDerivMLWENO(const MeshInfo& mi,
+                                                           const vertex& point, 
+                                                           const indice& global,
+                                                           const int& flag);
 
             //! Routines used to check results and verification
             void GetInfo();

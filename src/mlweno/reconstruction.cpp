@@ -109,6 +109,14 @@ double singleLevelReconstruction::Evaluate(const MeshInfo& mi, indice owner, ver
     return CheckExist(mi, owner) * singleLevel_[FlatIndic(mi,owner)]->eval(point);
 }
 
+/**
+ * Evaluate at the given single reconstruction level 
+ * but evaluate individual stencil polynomials separately not the collapsed one.
+ */
+double singleLevelReconstruction::Evaluate(const MeshInfo& mi, const indice& owner, const vertex& point, const int& local){
+    return CheckExist(mi, owner) * singleLevel_[FlatIndic(mi,owner)]->eval(point, local);
+}
+
 //! Extract smoothness indicator from pre-calculated values
 double singleLevelReconstruction::GetSmoothnessIndic(const MeshInfo& mi, indice owner){
     return smoothnessIndic_[FlatIndic(mi,owner)];
@@ -401,17 +409,58 @@ double multiLevelReconstruction::EvaluateMLWENO(const MeshInfo& mi, vertex point
 /**
  * Derivative of the reconstructionof value with respect to the given point
  * with multi level weno method.
+ * Start with pseudo derivative where non linear weights are not differentiated.
  */
 unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const MeshInfo& mi,
-                                                     const vertex& point, const indice& global){
+                                                                         const vertex& point, 
+                                                                         const indice& global){
 
     unordered_map<int, double> work;
     
+    //! Extract nonliear weights linked to the target cell.
+    unordered_map<std::string, unordered_map<int, double>> nlw = nonLinearWgts_[FlatIndic(mi,global)];
 
+    //! Evaluate in the multi level weno fashion.
+    for (auto const& level : wenoLevels_){
+        if (nlw[level].empty() == 0){
+            for (auto & wgts: nlw[level]){
+                indice owner = global + Bend(reconstLevels_[level]->GetSizeX(), wgts.first);
+                int flatOwner = FlatIndic(mi, owner);
+
+                for (int p = 0; p<reconstLevels_[level]->GetSizeX()*
+                                  reconstLevels_[level]->GetSizeY(); p++){
+                    indice ownerShift = owner + Bend(reconstLevels_[level]->GetSizeX(),p);
+                    int flatOwnerShift = FlatIndic(mi,ownerShift);
+
+                    if (work.count(flatOwnerShift)>0){
+                        work[flatOwnerShift] += wgts.second * 
+                        reconstLevels_[level]->Evaluate(mi,owner,point, p);
+                    } else {
+                        work.insert(std::pair<int, double>(flatOwnerShift, wgts.second* 
+                                    reconstLevels_[level]->Evaluate(mi,owner,point,p)));
+                    }
+
+
+                }
+            }
+        }
+    }
 
     return work;
 }
 
+/**
+ * Differentiate non linear weight as well.
+ */
+unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const MeshInfo& mi,
+                                                     const vertex& point, const indice& global,
+                                                     const int& flag){
+    assert(flag == 1);
+
+    unordered_map<int, double> work;
+
+    return work;
+}
 // ===================================================================================
 void multiLevelReconstruction::PrintBoundaryLayer(const MeshInfo& mi){
     for (auto const& it : interiorCells_){

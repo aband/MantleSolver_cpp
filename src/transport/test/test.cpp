@@ -210,7 +210,7 @@ int main(int argc, char **argv){
     trPtr->SeparateAdvBoundaryLayer(mi);
 
     /**
-     * Explicit time stepping.
+     * Time stepping.
      */
     TS ts;
 
@@ -230,15 +230,6 @@ int main(int argc, char **argv){
     TSCreate(PETSC_COMM_WORLD, &ts);
     TSSetProblemType(ts, TS_NONLINEAR);
 
-    //! Forward Euler
-    TSSetType(ts, TSEULER);
-
-    //! SSP
-    //TSSetType(ts, TSSSP);
-    //TSSSPSetType(ts, TSSSPRKS2);
-
-    //TSRKSetType(ts, TSRK3);
-
     TSSetMaxTime(ts, Tmax);
     TSSetExactFinalTime(ts, TS_EXACTFINALTIME_MATCHSTEP);
     TSSetDM(ts,dmu);
@@ -248,9 +239,29 @@ int main(int argc, char **argv){
 
     TSSetRHSFunction(ts, globalu, Explicit, &ctx);
 
+    // ===================================================================
+    //! Explicit
+    //! Forward Euler
+    //TSSetType(ts, TSEULER);
+
+    //! SSP
+    //TSSetType(ts, TSSSP);
+    //TSSSPSetType(ts, TSSSPRKS2);
+
+    //TSRKSetType(ts, TSRK3);
+
+    // ===================================================================
+    //! Implicit
+    Mat J;
+    MatCreate(PETSC_COMM_WORLD, &J);
+    MatSetSizes(J, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N);
+    MatSetUp(J);
+    TSSetType(ts, TSBEULER);
+    TSSetRHSJacobian(ts, J, J, FormJacobian, &ctx);
+
 //    TSMonitorSet(ts, Monitor, &ctx, NULL);
 
-    cout << "Time stepping started here. " << endl;
+    cout << "Time stepping begins .. .. .. " << endl;
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     TSSolve(ts,globalu);

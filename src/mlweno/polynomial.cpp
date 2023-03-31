@@ -335,6 +335,16 @@ double stencilPolynomial::eval(double x, double y) const{
     return collapsePolyn_->eval(shift[0],shift[1]);
 }
 
+double stencilPolynomial::eval(double x, double y, int poly) const{
+
+    //! Shift input point with respect to the stencil center
+
+    vertex shift = {x,y};
+    shift = (shift-center_)/scale_;
+
+    return stencilPolyn_(poly)->eval(x,y);
+}
+
 void stencilPolynomial::printCoef() {
     for (int s =0; s<stencilPolyn_.getSize(); s++){
         stencilPolyn_(s)->printCoef();
