@@ -41,12 +41,13 @@ PetscErrorCode Monitor(TS ts, PetscInt step, PetscReal t, Vec U, void *ctx){
 
     PetscFunctionBeginUser;
 
-    Ctx * user = (Ctx*) ctx;
-    char * filename = (char*) &t;
+    Ctx * user = (Ctx*)ctx;
+    SNES * snes = user->snes;
 
-    if (t == 0.5 || t == 0.8 || t == 1.0 || t == 1.2 || t == 1.5){
-        PlainOutput(user->dmu, &U, filename);
-    }
+    int it;
+    SNESGetIterationNumber(*snes, &it);
+
+    cout << "T = " << t << " .Newton iteration number: " << it << endl;
 
     PetscFunctionReturn(0);
 }
@@ -213,6 +214,7 @@ int main(int argc, char **argv){
      * Time stepping.
      */
     TS ts;
+    SNES snes;
 
     double Tmax = 0.01;
     double dt = 0.01;
@@ -227,6 +229,9 @@ int main(int argc, char **argv){
     ctx.mi    = &mi;
     ctx.dmu   = dmu;
 
+    SNESCreate(PETSC_COMM_WORLD, &snes);
+    ctx.snes  = &snes; 
+
     TSCreate(PETSC_COMM_WORLD, &ts);
     TSSetProblemType(ts, TS_NONLINEAR);
 
@@ -235,9 +240,11 @@ int main(int argc, char **argv){
     TSSetDM(ts,dmu);
 
     TSSetTimeStep(ts, dt);
+    TSGetSNES(ts, &snes);
     TSSetSolution(ts,globalu);
 
-    TSSetRHSFunction(ts, globalu, Explicit, &ctx);
+    //TSSetRHSFunction(ts, globalu, Explicit, &ctx);
+    TSSetRHSFunction(ts, NULL, Explicit, &ctx);
 
     // ===================================================================
     //! Explicit
@@ -259,7 +266,14 @@ int main(int argc, char **argv){
     TSSetType(ts, TSBEULER);
     TSSetRHSJacobian(ts, J, J, FormJacobian, &ctx);
 
-//    TSMonitorSet(ts, Monitor, &ctx, NULL);
+    TSSetTolerances(ts,1e-3,NULL,1e-3,NULL);
+
+    //TSSetMaxSNESFailures(ts, 50);
+
+    TSMonitorSet(ts, Monitor, &ctx, NULL);
+
+    TSSetFromOptions(ts);
+    TSSetUp(ts);
 
     cout << "Time stepping begins .. .. .. " << endl;
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;

@@ -88,7 +88,7 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
                                        user->trPtr->advection::boundaryLevels,
                                        user->trPtr->advection::interiorLevels);
 
-    user->trPtr->UpdateNonLinearWgts(*(user->mi),2);
+    //user->trPtr->UpdateNonLinearWgts(*(user->mi),2);
 
     //! Get MPI local part of Jacobian matrix
     int rstart, rend;
@@ -100,7 +100,7 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
         unordered_map<int,double> deriv = user->trPtr->derivAdvFlux(*(user->mi), global, time);
 
         for (auto & dVal: deriv){
-            ierr = MatSetValue(J,row,dVal.first,dVal.second,INSERT_VALUES);CHKERRQ(ierr);
+            ierr = MatSetValue(J,row,dVal.first,-1.0*dVal.second,INSERT_VALUES);CHKERRQ(ierr);
         }
 
     }
@@ -112,6 +112,8 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
         ierr = MatAssemblyBegin(Jp, MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
         ierr = MatAssemblyEnd(Jp, MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
     }
+
+    //MatView(J,PETSC_VIEWER_STDOUT_WORLD);
 
     //! Restore array to local vectors
     DMDAVecRestoreArray(dmu, localu, &lu);

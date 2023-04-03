@@ -340,6 +340,7 @@ PetscErrorCode SeqImplicitEuler(int stencil_count, vector<double>& linWeights, v
     SNES snes;
     Ctx  ctx;
 
+    ctx->snes = &snes;
     // Time stepping with TS object
     ctx.wr = wr;
     ctx.dm = dmu;

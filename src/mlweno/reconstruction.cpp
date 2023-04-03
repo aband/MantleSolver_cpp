@@ -318,6 +318,7 @@ void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, 
 void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, const int stage){
 
     for (auto const& singleLevel : wenoLevels_){
+        //cout << "Level " << singleLevel << " Smoothness indic updated ... " << endl;
         reconstLevels_[singleLevel]->UpdateSmoothnessIndic(mi);
     }
 

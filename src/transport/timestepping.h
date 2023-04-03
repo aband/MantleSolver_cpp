@@ -7,9 +7,10 @@
  * Define struct object Ctx.
  */
 typedef struct {
-    transport* trPtr;
+    transport * trPtr;
     DM dmu;
     MeshInfo * mi;
+    SNES * snes;
 } Ctx;
 
 /**

@@ -111,6 +111,9 @@ unordered_map<int, double> transport::derivAdvFlux(const MeshInfo& mi, const ind
         corner.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],fullLocal+fcorner)]);
     }
 
+    //! Compute area of target cell
+    double area = NumIntegralFace(corner, {0,0}, {0.0,0.0}, 1.0, constFunc);
+
     //! Loop through four edges of a given cell
     for (int pos=0; pos<4; pos++){
 
@@ -143,13 +146,13 @@ unordered_map<int, double> transport::derivAdvFlux(const MeshInfo& mi, const ind
             // Compute derivative of flux at a given gauss point
             unordered_map<int, double> derivflux = LaxFriedrichs::dflux(uIn, uOut, unitNormal,
                                                                         mapped, 1.0, 
-                                                                        derivOut, derivIn);
+                                                                        derivIn, derivOut);
 
             for (auto & derivf : derivflux){
                 if (work.count(derivf.first) > 0){
-                    work[derivf.first] += derivf.second;
+                    work[derivf.first] += gwe[g]*derivf.second*len/2.0/area;
                 } else {
-                    work.insert(std::pair<int,double> (derivf.first, derivf.second));
+                    work.insert(std::pair<int,double> (derivf.first, gwe[g]*derivf.second*len/2.0/area));
                 }
             }
 
