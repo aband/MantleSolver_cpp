@@ -41,11 +41,11 @@ PetscErrorCode Monitor(TS ts, PetscInt step, PetscReal t, Vec U, void *ctx){
 
     PetscFunctionBeginUser;
 
-    Ctx * user = (Ctx*)ctx;
-    SNES * snes = user->snes;
+    SNES snes;
+    TSGetSNES(ts, &snes);
 
     int it;
-    SNESGetIterationNumber(*snes, &it);
+    SNESGetIterationNumber(snes, &it);
 
     cout << "T = " << t << " .Newton iteration number: " << it << endl;
 
@@ -215,6 +215,8 @@ int main(int argc, char **argv){
      */
     TS ts;
     SNES snes;
+    KSP ksp;
+    PC  pc;
 
     double Tmax = 0.01;
     double dt = 0.01;
@@ -229,8 +231,8 @@ int main(int argc, char **argv){
     ctx.mi    = &mi;
     ctx.dmu   = dmu;
 
-    SNESCreate(PETSC_COMM_WORLD, &snes);
-    ctx.snes  = &snes; 
+    //SNESCreate(PETSC_COMM_WORLD, &snes);
+    //KSPCreate(PETSC_COMM_WORLD, &ksp);
 
     TSCreate(PETSC_COMM_WORLD, &ts);
     TSSetProblemType(ts, TS_NONLINEAR);
@@ -240,8 +242,14 @@ int main(int argc, char **argv){
     TSSetDM(ts,dmu);
 
     TSSetTimeStep(ts, dt);
-    TSGetSNES(ts, &snes);
     TSSetSolution(ts,globalu);
+
+    //! Change preconditioner
+    TSGetSNES(ts, &snes);
+    SNESGetKSP(snes, &ksp);
+    KSPGetPC(ksp, &pc);
+    PCSetType(pc, PCILU);
+    PCSetFromOptions(pc);
 
     //TSSetRHSFunction(ts, globalu, Explicit, &ctx);
     TSSetRHSFunction(ts, NULL, Explicit, &ctx);
@@ -266,8 +274,7 @@ int main(int argc, char **argv){
     TSSetType(ts, TSBEULER);
     TSSetRHSJacobian(ts, J, J, FormJacobian, &ctx);
 
-    TSSetTolerances(ts,1e-3,NULL,1e-3,NULL);
-
+    //TSSetTolerances(ts,1e-3,NULL,1e-3,NULL);
     //TSSetMaxSNESFailures(ts, 50);
 
     TSMonitorSet(ts, Monitor, &ctx, NULL);

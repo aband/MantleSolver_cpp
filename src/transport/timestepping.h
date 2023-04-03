@@ -10,7 +10,6 @@ typedef struct {
     transport * trPtr;
     DM dmu;
     MeshInfo * mi;
-    SNES * snes;
 } Ctx;
 
 /**

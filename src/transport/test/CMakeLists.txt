@@ -45,6 +45,8 @@ endif (FORTRAN_COMPILER)
 #list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 #find_package(ADOLC REQUIRED)
 
+set(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra")
+
 project(test)
 # Build library
 
