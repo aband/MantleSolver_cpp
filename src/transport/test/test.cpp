@@ -17,6 +17,8 @@ extern "C"{
 #include "output.h"
 }
 
+#include <chrono>
+
 using namespace std;
 
 double InitialValue(vertex& point, const vector<double>& param){
@@ -47,7 +49,7 @@ PetscErrorCode Monitor(TS ts, PetscInt step, PetscReal t, Vec U, void *ctx){
     int it;
     SNESGetIterationNumber(snes, &it);
 
-    cout << "T = " << t << " .Newton iteration number: " << it << endl;
+    cout << "T = " << t << ". Newton iteration number: " << it << endl;
 
     PetscFunctionReturn(0);
 }
@@ -248,8 +250,9 @@ int main(int argc, char **argv){
     TSGetSNES(ts, &snes);
     SNESGetKSP(snes, &ksp);
     KSPGetPC(ksp, &pc);
-    PCSetType(pc, PCILU);
+    PCSetType(pc, PCJACOBI);
     PCSetFromOptions(pc);
+    PCSetUp(pc);
 
     //TSSetRHSFunction(ts, globalu, Explicit, &ctx);
     TSSetRHSFunction(ts, NULL, Explicit, &ctx);
@@ -285,7 +288,13 @@ int main(int argc, char **argv){
     cout << "Time stepping begins .. .. .. " << endl;
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
+    auto start = std::chrono::system_clock::now();
     TSSolve(ts,globalu);
+    auto end = std::chrono::system_clock::now();
+
+    std::chrono::duration<double> elapsed_seconds = end-start;
+
+    cout << "Elapsed time: " << elapsed_seconds.count() << endl;
 
 // ====================================================================================================================================
     // Ouptut of final result

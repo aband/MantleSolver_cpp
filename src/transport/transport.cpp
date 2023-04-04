@@ -77,7 +77,7 @@ double transport::advFlux(const MeshInfo& mi, const indice& global, double t){
                 uOut = mlrPtr_->EvaluateMLWENO(mi,mapped,globalOut);
             }
 
-            work += gwe[g] * LaxFriedrichs::flux(uIn, uOut, unitNormal, mapped, 1.0) * len/2.0; 
+            work += gwe[g] * advection::flux(uIn, uOut, unitNormal, mapped, 1.0) * len/2.0; 
         }
 
     }

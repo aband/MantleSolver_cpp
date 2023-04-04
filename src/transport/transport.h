@@ -18,6 +18,17 @@ class advection {
         unordered_set<std::string> boundaryLevels;
         unordered_set<std::string> interiorLevels;
 
+        double flux(const double& uIn, const double& uOut, 
+                    const vertex& unitNormal, const vertex& point,
+                    const double& alphaLF) 
+        {return LaxFriedrichs::flux(uIn, uOut, unitNormal, point, alphaLF);};
+
+        unordered_map<int, double> dflux(const double& uIn, const double& uOut, const vertex& unitNormal, 
+                                         const vertex& mapped, const double& alphaLF, 
+                                         const unordered_map<int, double>& duIn, 
+                                         const unordered_map<int, double>& duOut)
+        {return LaxFriedrichs::dflux(uIn, uOut, unitNormal, mapped, alphaLF, duIn, duOut);};
+
     private:
         /** 
          * Transport function and its derivative.
