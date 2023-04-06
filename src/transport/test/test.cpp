@@ -252,7 +252,6 @@ int main(int argc, char **argv){
     KSPGetPC(ksp, &pc);
     PCSetType(pc, PCJACOBI);
     PCSetFromOptions(pc);
-    PCSetUp(pc);
 
     //TSSetRHSFunction(ts, globalu, Explicit, &ctx);
     TSSetRHSFunction(ts, NULL, Explicit, &ctx);
