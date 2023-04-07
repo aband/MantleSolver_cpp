@@ -162,6 +162,24 @@ unordered_map<int, double> transport::derivAdvFlux(const MeshInfo& mi, const ind
     return work;
 }
 
+/**
+ * Compute diffusion flux.
+ */
+double diffFlux(const MeshInfo& mi, const indice& global, double t){
+
+
+}
+
+/**
+ * Compute derivative of diffusion flux using in the jacobian
+ */
+unordered_map<int, double> derivDiffFlux(const MeshInfo& mi, 
+                                         const indice& global,
+                                         const double& time){
+
+
+}
+
 // ==============================================================================================
 void transport::AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY, vector<indice> brm){
     mlrPtr_->AddLevel(mi,stencilSizeX,stencilSizeY,brm);

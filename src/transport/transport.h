@@ -9,6 +9,8 @@ class advection {
         advection() {};
         ~advection() {};
 
+        // Pre computed reconstruction information
+        // Will not be changed during computation
         unordered_map<std::string, vector<indice>> reconstMethods;
         unordered_set<std::string> wenoLevels;
 
@@ -66,6 +68,10 @@ class diffusion {
 
         unordered_set<std::string> boundaryLevelsVert;
         unordered_set<std::string> interiorLevelsVert;
+
+        // Calculate diffusive flux
+        double flux();
+
 };
 
 class reaction {
@@ -139,6 +145,18 @@ class transport : public advection, public diffusion, public reaction {
         unordered_map<int, double> derivAdvFlux(const MeshInfo& mi, 
                                                 const indice& global,
                                                 const double& time);
+
+        /**
+         * Compute diffusion flux.
+         */
+        double diffFlux(const MeshInfo& mi, const indice& global, const double& t);
+
+        /**
+         * Compute derivative of diffusion flux using in the jacobian
+         */
+        unordered_map<int, double> derivDiffFlux(const MeshInfo& mi, 
+                                                 const indice& global,
+                                                 const double& time);
 
         /**
          * Check if there is anything wrong
