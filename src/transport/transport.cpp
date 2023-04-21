@@ -167,7 +167,10 @@ unordered_map<int, double> transport::derivAdvFlux(const MeshInfo& mi, const ind
  */
 double diffFlux(const MeshInfo& mi, const indice& global, double t){
 
+    double work;
 
+
+    return work;
 }
 
 /**

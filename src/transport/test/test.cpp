@@ -161,11 +161,13 @@ int main(int argc, char **argv){
 
     // Create MeshInfo object
     MeshInfo mi; 
-    AssignValuesMeshInfo(mi,dm,dmu); 
 
     // Assign local mesh and local values to mi
     mi.lmesh = mesh;
     mi.localVals = lu;
+
+    // Assign meshinfo after mesh added to meshinfo
+    AssignValuesMeshInfo(mi,dm,dmu); 
 
 // ========================================================================================================================================
 

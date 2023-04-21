@@ -68,8 +68,6 @@ typedef struct {
 
     // Containing all the local mesh vertex points here  
     vertexSet lmesh; 
- 
-    double** localVals;
 
     // Corner index within a single element
     const indiceSet edgeCorner   {{0}, {1}};
@@ -78,6 +76,12 @@ typedef struct {
                                   {0,0,1},{1,0,1},{1,1,1},{0,1,1}};
 
     const indiceSet faceNormal {{0,-1},{1,0},{0,1},{-1,0}};
+
+    // Scalar values distributed to mpi processors
+    double** localVals;
+
+    // Areas of cells distributed to mpi processors
+    unordered_map<int,double> cellArea;
 
 } MeshInfo;
 

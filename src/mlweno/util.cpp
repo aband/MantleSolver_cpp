@@ -168,4 +168,29 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
 
     mi.MPIlocalVertexSizeFull.push_back(xm+2*ghostWidth);
     mi.MPIlocalVertexSizeFull.push_back(ym+2*ghostWidth);
+
+    // Pre calculate cell area for future computation.
+    // Repeat calculation of cell areas cost a lot of computation resources.
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    for (int j=ys; j<ys+ym; j++){
+    for (int i=xs; i<xs+xm; i++){
+
+        vertexSet corner;
+        //! Retrieve local cell indice (including ghost vertex)
+        indice ghostlayerShift {ghostWidth, ghostWidth};
+        indice global {i,j};
+        indice fullLocal = global - mi.MPIlocalCellStart + ghostlayerShift;
+
+        for (auto & fcorner : mi.faceCorner){
+            corner.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], fullLocal+fcorner)]); 
+        }
+
+        mi.cellArea.insert(std::make_pair<int,double>
+                           (FlatIndic(mi.MPIglobalCellSize[0],i,j),
+                            NumIntegralFace(corner,{0,0},{0.0,0.0},1.0,constFunc))); 
+    }}
+
 }
