@@ -70,7 +70,7 @@ class diffusion {
         unordered_set<std::string> interiorLevelsVert;
 
         // Calculate diffusive flux
-        double flux();
+        double flux(const double * ru, int n, double alpha, double beta);
 
 };
 

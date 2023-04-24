@@ -1,5 +1,9 @@
 #include "timestepping.h"
 
+extern "C"{
+#include "output.h"
+}
+
 /**
  * Explicit Eurler.
  * Using time stepping object provided by Petsc.
@@ -113,7 +117,10 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
         ierr = MatAssemblyEnd(Jp, MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
     }
 
-    //MatView(J,PETSC_VIEWER_STDOUT_WORLD);
+    // Output Jacobian
+    //std::string tmp = std::to_string(time);
+
+    //DrawMat(J,tmp.c_str());
 
     //! Restore array to local vectors
     DMDAVecRestoreArray(dmu, localu, &lu);

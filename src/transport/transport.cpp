@@ -18,6 +18,16 @@ double advection::dFuncY_(vertex x, double u, double t){
 }
 
 /**
+ * Return diffusive flux
+ */
+double diffusion::flux(const double * ru, int n, double alpha, double beta){
+    assert(n == 4);
+    return ((ru[2]- ru[1])*beta*beta/(2*alpha)-
+            (ru[3]- ru[0])*alpha*alpha/(2*beta))/
+           (beta*beta-alpha*alpha);
+}
+
+/**
  * Assign reconstruction method and weno levels to multi level reconstruction
  */
 void transport::AssignReconstruction(const unordered_map<std::string, vector<indice>>& reconstMethods, const unordered_set<std::string>& wenoLevels){
@@ -113,6 +123,7 @@ unordered_map<int, double> transport::derivAdvFlux(const MeshInfo& mi, const ind
 
     //! Compute area of target cell
     double area = NumIntegralFace(corner, {0,0}, {0.0,0.0}, 1.0, constFunc);
+    //double area = mi.cellArea.at(FlatIndic(mi,global));
 
     //! Loop through four edges of a given cell
     for (int pos=0; pos<4; pos++){

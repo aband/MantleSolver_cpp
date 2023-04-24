@@ -29,4 +29,9 @@ PetscErrorCode PlainOutput(DM dmu, Vec * globalu, char* filename);
  */
 PetscErrorCode PlainMeshOutput(DM dmMesh, Vec * fullmesh);
 
+/**
+ * Output (Jacobian) matrix element pattern.
+ */
+PetscErrorCode DrawMat(Mat V, const char * myfile);
+
 #endif

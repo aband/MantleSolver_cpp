@@ -248,10 +248,15 @@ int main(int argc, char **argv){
     TSSetTimeStep(ts, dt);
     TSSetSolution(ts,globalu);
 
+    SNESLineSearch linesearch;
+
     //! Change preconditioner
     TSGetSNES(ts, &snes);
     SNESGetKSP(snes, &ksp);
+    SNESGetLineSearch(snes, &linesearch);
+    SNESLineSearchSetTolerances(linesearch, 0, 1e8, 1e-8, 1e-14, 1e-8, 30);
     KSPGetPC(ksp, &pc);
+    KSPSetTolerances(ksp, 1e-8,1e-13,1000,30);
     PCSetType(pc, PCJACOBI);
     PCSetFromOptions(pc);
 
@@ -271,6 +276,7 @@ int main(int argc, char **argv){
 
     // ===================================================================
     //! Implicit
+
     Mat J;
     MatCreate(PETSC_COMM_WORLD, &J);
     MatSetSizes(J, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N);
@@ -296,6 +302,8 @@ int main(int argc, char **argv){
     std::chrono::duration<double> elapsed_seconds = end-start;
 
     cout << "Elapsed time: " << elapsed_seconds.count() << endl;
+
+    TSView(ts,PETSC_VIEWER_STDOUT_WORLD);
 
 // ====================================================================================================================================
     // Ouptut of final result
