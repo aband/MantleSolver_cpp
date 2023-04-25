@@ -31,6 +31,9 @@ class advection {
                                          const unordered_map<int, double>& duOut)
         {return LaxFriedrichs::dflux(uIn, uOut, unitNormal, mapped, alphaLF, duIn, duOut);};
 
+        // ????!!! boundary is not defined correctlly.
+        const double boundary = 0.0;
+
     private:
         /** 
          * Transport function and its derivative.
@@ -69,9 +72,25 @@ class diffusion {
         unordered_set<std::string> boundaryLevelsVert;
         unordered_set<std::string> interiorLevelsVert;
 
+        std::string highestHoriLevel;
+        std::string highestVertLevel;
+
         // Calculate diffusive flux
         double flux(const double * ru, int n, double alpha, double beta);
 
+        // Store calculated diffusive flux on the edge
+        unordered_map<int, double> edgeHoriFlux;
+        unordered_map<int, double> edgeVertFlux;
+
+        // Interpolation positions
+        const double alpha = 0.5;
+        const double beta = 1.5;
+
+        // Four fixed boundary values
+        const double boundaryL = 0.0;
+        const double boundaryR = 0.0;
+        const double boundaryU = 0.0;
+        const double boundaryD = 0.0;
 };
 
 class reaction {
@@ -147,7 +166,12 @@ class transport : public advection, public diffusion, public reaction {
                                                 const double& time);
 
         /**
-         * Compute diffusion flux.
+         * Compute diffusion flux on all edges at the same time.
+         */
+        double updateAllDiffFlux(const MeshInfo& mi);
+
+        /**
+         * Assemble calculated diffusive flux on each edges with respect to a given cell
          */
         double diffFlux(const MeshInfo& mi, const indice& global, const double& t);
 
@@ -164,6 +188,12 @@ class transport : public advection, public diffusion, public reaction {
         void Check(const MeshInfo& mi);
 
     private:
+
+        /**
+         * Calculate diffusive flux on a given edge
+         */
+        double edgeHoriDiffFlux_(const MeshInfo& mi, const indice& global, const vertexSet& corner);
+        double edgeVertDiffFlux_(const MeshInfo& mi, const indice& global, const vertexSet& corner);
 
         /** 
          * Check if a given cell is inside the boundary or not

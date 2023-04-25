@@ -73,7 +73,7 @@ int main(int argc, char **argv){
 
     // Start testing mesh function
     // Initializing problem size with 3X3
-    int M = 3, N = 3;
+    int M = 5, N = 5;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
@@ -162,7 +162,6 @@ int main(int argc, char **argv){
     // Create MeshInfo object
     MeshInfo mi; 
 
-    // Assign local mesh and local values to mi
     mi.lmesh = mesh;
     mi.localVals = lu;
 
@@ -205,11 +204,15 @@ int main(int argc, char **argv){
 
     trPtr->CreateWenoLevel(trPtr->diffusion::reconstMethodsVert, trPtr->diffusion::wenoLevelsVert);
 
+    trPtr->diffusion::highestHoriLevel = "(4,5)";
+
     trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsHori,"(1,1)",{{0,0}});
     trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,1}, {-2,-1}, {-2,-2}, {0,-2}});
     trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsHori,"(5,4)",{{-2,-2}});
 
     trPtr->CreateWenoLevel(trPtr->diffusion::reconstMethodsHori, trPtr->diffusion::wenoLevelsHori);
+
+    trPtr->diffusion::highestVertLevel = "(5,4)";
 
     //! Compute boundary and interior cells and levels
     trPtr->SeparateAdvBoundaryLayer(mi);

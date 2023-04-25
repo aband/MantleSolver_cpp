@@ -37,7 +37,7 @@ namespace MLWENO{
             const int GetSizeY() const {return stencilSizeY_;};
 
             const double GetScale(int s) {return singleLevel_[s]->GetScale();};
-            const double GetScale(const MeshInfo& mi, indice owner) {return singleLevel_[FlatIndic(mi,owner)]->GetScale();}; 
+            const double GetScale(const MeshInfo& mi, const indice& owner) {return singleLevel_[FlatIndic(mi,owner)]->GetScale();}; 
 
             //! Directly calculate smoothness indicator of a given stencil
             //! Should not be called directly for computational efficiency
@@ -190,6 +190,15 @@ namespace MLWENO{
                                                            const vertex& point, 
                                                            const indice& global,
                                                            const int& flag);
+
+            /**
+             * Get scale of the selected single level reconstruction
+             * with respect to the selected cell.
+             */
+            const double GetScale(std::string level, int s)
+            {return reconstLevels_[level]->GetScale(s);};
+            const double GetScale(std::string level, const MeshInfo& mi, const indice& owner)
+            {return reconstLevels_[level]->GetScale(mi,owner);};
 
             //! Routines used to check results and verification
             void GetInfo();
