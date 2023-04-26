@@ -128,4 +128,7 @@ indice Bend(const MeshInfo& mi, int flat);
 
 indice Bend(const int M, int flat);
 
+//! Extract corners for the target cell
+vertexSet extractCorners(const MeshInfo& mi, const indice& global);
+
 #endif

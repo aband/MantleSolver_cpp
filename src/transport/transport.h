@@ -168,7 +168,7 @@ class transport : public advection, public diffusion, public reaction {
         /**
          * Compute diffusion flux on all edges at the same time.
          */
-        double updateAllDiffFlux(const MeshInfo& mi);
+        void updateAllDiffFlux(const MeshInfo& mi);
 
         /**
          * Assemble calculated diffusive flux on each edges with respect to a given cell
@@ -192,9 +192,12 @@ class transport : public advection, public diffusion, public reaction {
         /**
          * Calculate diffusive flux on a given edge
          */
-        double edgeHoriDiffFlux_(const MeshInfo& mi, const indice& global, const vertexSet& corner);
-        double edgeVertDiffFlux_(const MeshInfo& mi, const indice& global, const vertexSet& corner);
-
+        //! A more compact version function utilizing function overload
+        double edgeDiffFlux_(const MeshInfo& mi, const indice& global, const vertexSet& edge,
+                             const double& alpha, const double& beta, const double& scale);
+        double edgeDiffFlux_(const MeshInfo& mi, const indice& global, const vertexSet& edge,
+                             const double& alpha, const double& beta, const double& scale,
+                             const int * boundFix, const int& n, const double& boundaryValue);
         /** 
          * Check if a given cell is inside the boundary or not
          */

@@ -175,60 +175,76 @@ unordered_map<int, double> transport::derivAdvFlux(const MeshInfo& mi, const ind
 
 /**
  * Compute diffusion flux.
+ * A compact version of function.
  */
-double transport::edgeHoriDiffFlux_(const MeshInfo& mi,
-                                    const indice& global, 
-                                    const vertexSet& corner){
-    //! Calculate diffusive flux on a single edge
+double transport::edgeDiffFlux_(const MeshInfo& mi,
+                                const indice& global, 
+                                const vertexSet& edge,
+                                const double& alpha,
+                                const double& beta,
+                                const double& scale){
     double work = 0.0;
 
     // Extract default gauess points and gauess weights.
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
 
-    // Get scale for the target cell
-    double scale = mlrPtr_->GetScale(hightestHoriLevel);
+    // Find Interpolation positions
+    double len = length(edge);
+    // Compute unit normal vector pointing outside.
+    vertex unitNormal = UnitNormal(edge,len);
 
-    // Extract edge from given corners of the target cell
-    vertex edge;
+    for (int g = 0; g<gpe.size(); g++){
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
-    // Horizontal edge first
-    edge.push_back(corner.at(0));
-    edge.push_back(corner.at(3));
-    edgeCenter = (edge.at(0) + edge.at(1))/2.0;
+        double ru[4];
+
+        ru[0] = mlrPtr_->EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, global);
+        ru[1] = mlrPtr_->EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,global);
+        ru[2] = mlrPtr_->EvaluateMLWENO(mi,mapped+unitNormal*alpha*scale,global);
+        ru[3] = mlrPtr_->EvaluateMLWENO(mi,mapped+unitNormal*beta*scale, global);
+
+        work += gwe[g] * diffusion::flux(ru, 4, alpha, beta) * len/2.0;
+
+    }
+
+    return work;
+}
+
+//! Cases where boundary values are fixed
+double transport::edgeDiffFlux_(const MeshInfo& mi,
+                                const indice& global, 
+                                const vertexSet& edge,
+                                const double& alpha,
+                                const double& beta,
+                                const double& scale,
+                                const int * boundFix,
+                                const int& n,
+                                const double& boundaryValue){
+    double work = 0.0;
+
+    // Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
 
     // Find Interpolation positions
     double len = length(edge);
     // Compute unit normal vector pointing outside.
     vertex unitNormal = UnitNormal(edge,len);
 
-    double beta = diffusion::beta;
-    double alpha = diffusion::alpha;
-  
-    // Left interpolation points are outside left boundary completely
     for (int g = 0; g<gpe.size(); g++){
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
         double ru[4];
- 
-        // Fix values for cells at the boundary
-        if (global[0] == 0){
-            ru[0] = diffusion::boundaryL;
-            ru[1] = diffusion::boundaryL;
-            ru[2] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*alpha*scale,global);
-            ru[3] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*beta*scale, global);
 
-        } else if (global[0] == 1 || global[0] == mi.MPIglobalCellSize[0] - 1){
-            ru[0] = mlrPtr->EvaluateMLWENO(mi,mapped-unitNormal*beta/beta*scale, global);
-            ru[1] = mlrPtr->EvaluateMLWENO(mi,mapped-unitNormal*alpha/beta*scale,global);
-            ru[2] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*alpha/beta*scale,global);
-            ru[3] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*beta/beta*scale, global);
+        ru[0] = mlrPtr_->EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, global);
+        ru[1] = mlrPtr_->EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,global);
+        ru[2] = mlrPtr_->EvaluateMLWENO(mi,mapped+unitNormal*alpha*scale,global);
+        ru[3] = mlrPtr_->EvaluateMLWENO(mi,mapped+unitNormal*beta*scale, global);
 
-        } else {
-            ru[0] = mlrPtr->EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, global);
-            ru[1] = mlrPtr->EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,global);
-            ru[2] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*alpha*scale,global);
-            ru[3] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*beta*scale, global);
+        // Correct boundary values
+        for (int i=0; i<n; i++){
+            ru[boundFix[i]] = boundaryValue;
         }
 
         work += gwe[g] * diffusion::flux(ru, 4, alpha, beta) * len/2.0;
@@ -238,123 +254,167 @@ double transport::edgeHoriDiffFlux_(const MeshInfo& mi,
     return work;
 }
 
-double transport::edgeVertDiffFlux_(const MeshInfo& mi,
-                                    const indice& global, 
-                                    const vertexSet& corner){
-    //! Calculate diffusive flux on a single edge
-    double work = 0.0;
-
-    // Extract default gauess points and gauess weights.
-    const valarray<double>& gwe = GaussWeightsEdge;
-    const valarray<double>& gpe = GaussPointsEdge;
- 
-    // Get scale
-    double scale = mlrPtr_->GetScale(hightestVertLevel);
-
-    // Extract edge from given corners of the target cell
-    vertex edge;
-
-    // Vertical edge next
-    edge.clear();
-    edge.push_back(corner.at(0));
-    edge.push_back(corner.at(1));
-
-    // Find Interpolation positions
-    len = length(edge);
-    // Compute unit normal vector pointing outside.
-    unitNormal = UnitNormal(edge,len);
-
-    // Find Interpolation positions
-    double len = length(edge);
-    // Compute unit normal vector pointing outside.
-    vertex unitNormal = UnitNormal(edge,len);
-
-    double beta = diffusion::beta;
-    double alpha = diffusion::alpha;
-  
-    // Left interpolation points are outside left boundary completely
-    for (int g = 0; g<gpe.size(); g++){
-        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
-
-        double ru[4];
-
-        // Fix values for cells at the boundary
-        if (global[1] == 0){
-            ru[0] = diffusion::boundaryD;
-            ru[1] = diffusion::boundaryD;
-            ru[2] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*alpha*scale,global);
-            ru[3] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*beta*scale, global);
-
-        } else if (global[1] == 1 || global[1] == mi.MPIglobalCellSize[1] - 1){
-            ru[0] = mlrPtr->EvaluateMLWENO(mi,mapped-unitNormal*beta/beta*scale, global);
-            ru[1] = mlrPtr->EvaluateMLWENO(mi,mapped-unitNormal*alpha/beta*scale,global);
-            ru[2] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*alpha/beta*scale,global);
-            ru[3] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*beta/beta*scale, global);
-
-        } else {
-            ru[0] = mlrPtr->EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, global);
-            ru[1] = mlrPtr->EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,global);
-            ru[2] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*alpha*scale,global);
-            ru[3] = mlrPtr->EvaluateMLWENO(mi,mapped+unitNormal*beta*scale, global);
-        }
-
-        work += gwe[g] * diffusion::flux(ru, 4, alpha, beta) * len/2.0;
-
-    }
-
-    return work; 
-}
-
-void transport::updateAllDiffFlux_(const MeshInfo& mi){
+void transport::updateAllDiffFlux(const MeshInfo& mi){
     //! Calculate diffusive flux on edges.
     //! Calculated values are stored in diffusion::edgeFlux.
     // Clear previous data first.
     diffusion::edgeHoriFlux.clear();
     diffusion::edgeVertFlux.clear();
 
+    double beta = diffusion::beta;
+    double alpha = diffusion::alpha;
+
+    int bF[2] = {0,0};
+
+    const int n = 2;
+
     // In order to avoid repeating the same calculation
     // Calculate left and bottom edges for each cell first
     // Calculate right and top edges for the entire local part next 
-    for (int j=0; j<mi.localCellSize[1]; j++){
-    for (int i=0; i<mi.localCellSize[0]; i++){
-        
+    // Used predefined functions above to calculate left and bottom edges of each cell
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+        indice globalCell {i,j};
 
+        double scale = sqrt(mi.cellArea.at(FlatIndic(mi,globalCell)));
+
+        // Extract four corners from mesh
+        vertexSet corner = extractCorners(mi, globalCell);
+
+        vertexSet horiEdge {corner.at(0), corner.at(1)};
+        vertexSet vertEdge {corner.at(0), corner.at(3)};
+
+        // Calculate diffusive flux
+        // Calculate horizontal diffusive flux first
+        if(j==0){
+            // In this multi level calculation
+            // The reconstruction of values exactly on the boundary will be 
+            // using reconstruction methods one cell next to it
+            bF[0] = 0;
+            bF[1] = 1;
+            indice shift {i,j+1};
+            diffusion::edgeHoriFlux.insert(
+                std::make_pair<int, double>(
+                    FlatIndic(mi.MPIlocalCellSize[0], globalCell), 
+                    edgeDiffFlux_(mi,shift,horiEdge,alpha,beta,scale,bF,n,diffusion::boundaryD)
+                )
+            );
+
+        } else if (j==1 || j==mi.MPIlocalCellSize[1]-1){
+            double tmpAlpha = alpha/beta;
+            double tmpBeta = beta/beta;
+            diffusion::edgeHoriFlux.insert(
+                std::make_pair<int, double>(
+                    FlatIndic(mi.MPIlocalCellSize[0], globalCell),
+                    edgeDiffFlux_(mi,globalCell,horiEdge,tmpAlpha,tmpBeta,scale)
+                )
+            );
+        } else {
+            diffusion::edgeHoriFlux.insert(
+                std::make_pair<int, double>(
+                    FlatIndic(mi.MPIlocalCellSize[0], globalCell),
+                    edgeDiffFlux_(mi,globalCell,horiEdge,alpha,beta,scale)
+                )
+            );
+        }
+
+        // Calculate vertical diffusive flux next
+        if(i==0){
+            // In this multi level calculation
+            // The reconstruction of values exactly on the boundary will be 
+            // using reconstruction methods one cell next to it
+            bF[0] = 0;
+            bF[1] = 1;
+            indice shift {i+1,j};
+            diffusion::edgeVertFlux.insert(
+                std::make_pair<int, double>(
+                    FlatIndic(mi.MPIlocalCellSize[0]+1, globalCell), 
+                    edgeDiffFlux_(mi,shift,vertEdge,alpha,beta,scale,bF,n,diffusion::boundaryD)
+                )
+            );
+
+        } else if (i==1 || i==mi.MPIlocalCellSize[0]-1){
+            double tmpAlpha = alpha/beta;
+            double tmpBeta = beta/beta;
+            diffusion::edgeVertFlux.insert(
+                std::make_pair<int, double>(
+                    FlatIndic(mi.MPIlocalCellSize[0]+1, globalCell),
+                    edgeDiffFlux_(mi,globalCell,vertEdge,tmpAlpha,tmpBeta,scale)
+                )
+            );
+        } else {
+            diffusion::edgeVertFlux.insert(
+                std::make_pair<int, double>(
+                    FlatIndic(mi.MPIlocalCellSize[0]+1, globalCell),
+                    edgeDiffFlux_(mi,globalCell,vertEdge,alpha,beta,scale)
+                )
+            );
+        }
 
     }}
 
+    // Calculate remaining top and right edges on the boundary
+    for(int i=0; i<mi.MPIlocalCellSize[0]; i++){
+        indice globalCell {i,mi.MPIlocalCellSize[1]};
+
+        indice shift {i,mi.MPIlocalCellSize[1]-1};
+
+        bF[0] = 2;
+        bF[1] = 3;
+
+        double scale = sqrt(mi.cellArea.at(FlatIndic(mi,globalCell)));
+
+        // Extract four corners from mesh
+        vertexSet corner = extractCorners(mi, globalCell);
+
+        vertexSet horiEdge {corner.at(0), corner.at(1)};
+
+        diffusion::edgeHoriFlux.insert(
+            std::make_pair<int, double>(
+                FlatIndic(mi.MPIlocalCellSize[0], globalCell), 
+                edgeDiffFlux_(mi,shift,horiEdge,alpha,beta,scale,bF,n,diffusion::boundaryD)
+            )
+        );
+    }
+
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+        indice globalCell {mi.MPIlocalCellSize[0],j};
+
+        indice shift {mi.MPIlocalCellSize[0]-1,j};
+
+        bF[0] = 2;
+        bF[1] = 3;
+
+        double scale = sqrt(mi.cellArea.at(FlatIndic(mi,globalCell)));
+
+        // Extract four corners from mesh
+        vertexSet corner = extractCorners(mi, globalCell);
+
+        vertexSet vertEdge {corner.at(0), corner.at(3)};
+
+        diffusion::edgeVertFlux.insert(
+            std::make_pair<int, double>(
+                FlatIndic(mi.MPIlocalCellSize[0]+1, globalCell), 
+                edgeDiffFlux_(mi,shift,vertEdge,alpha,beta,scale,bF,n,diffusion::boundaryD)
+            )
+        );
+    }
+
 }
 
-double transport::diffFlux(const MeshInfo& mi, const indice& global, double t){
+double transport::diffFlux(const MeshInfo& mi, const indice& global, const double& t){
     //! Combine diffusive flux on each edge of the target cell 
 
     double work = 0.0;
 
-    //! Declare variable holding four corners of the given cell.
-    vertexSet corner; 
+    //! Extracting diffusive flux on the boundary precalculated
+    work += edgeHoriFlux.at(FlatIndic(mi.MPIlocalCellSize[0], global));
+    work += edgeHoriFlux.at(FlatIndic(mi.MPIlocalCellSize[0], global[0], global[1]+1));
 
-    //! Extract default gauess points and gauess weights.
-    const valarray<double>& gwe = GaussWeightsEdge;
-    const valarray<double>& gpe = GaussPointsEdge;
-     
-    //! Retrieve local cell indice (including ghost vertex)
-    indice ghostlayerShift {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
-    indice fullLocal = global - mi.MPIlocalCellStart + ghostlayerShift;
+    work += edgeVertFlux.at(FlatIndic(mi.MPIlocalCellSize[0]+1, global));
+    work += edgeVertFlux.at(FlatIndic(mi.MPIlocalCellSize[0]+1, global[0]+1, global[1]));
 
-    //! Extract corners from mesh.
-    for (auto & fcorner: mi.faceCorner){
-        corner.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],fullLocal+fcorner)]);
-    }
-
-    //! Integral flux edge by edge
-    for (int pos = 0; pos < 4; pos++){
-        vertexSet edge;
-        edge.push_back(corner[pos]);
-        edge.push_back(corner[(pos+1)%4]);
-
-        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
-
-
-    }
+    work = work/mi.cellArea.at(FlatIndic(mi,global));
 
     return work;
 }

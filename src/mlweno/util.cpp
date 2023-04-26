@@ -194,3 +194,19 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
     }}
 
 }
+
+//! Extract corners for the target cell
+vertexSet extractCorners(const MeshInfo& mi, const indice& global){
+    vertexSet corner;
+
+    //! Retrieve local cell indice (including ghost vertex)
+    indice ghostlayerShift {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
+    indice fullLocal = global - mi.MPIlocalCellStart + ghostlayerShift;
+
+    //! Extract corners from mesh.
+    for (auto & fcorner: mi.faceCorner){
+        corner.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],fullLocal+fcorner)]);
+    }
+
+    return corner;
+}

@@ -52,7 +52,10 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     }}
 
     //! Compute diffusion flux second ======================================
+    user->trPtr->AssignReconstruction(user->trPtr->diffusion::reconstMethodsVert,
+                                      user->trPtr->diffusion::wenoLevelsVert);
 
+    user->trPtr->UpdateNonLinearWgts(*(user->mi),2);
 
 
     //! Restore array to local vectors.
