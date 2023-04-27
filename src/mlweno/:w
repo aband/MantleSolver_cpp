@@ -137,7 +137,7 @@ void singleLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
 }
 
 // ============= Multi level reconstruction preparation ========================
-void MLWENOPrepare::AddLevel(const MeshInfo& mi, const int& stencilSizeX,
+void MLWENOPrepare::AddLevel(const MeshInfo& mi, const int& stencilSizeX
                                                  const int& stencilSizeY){
 
     //! Create single level key 
@@ -145,7 +145,10 @@ void MLWENOPrepare::AddLevel(const MeshInfo& mi, const int& stencilSizeX,
                             std::to_string(stencilSizeY) + ')';
 
     //! Check if the new level has never been defined before
-    assert(allLevels_.count(key) == 0);
+    assert(reconstMethods_.count(key) == 0);
+
+    //! Insert new key into allLevels;
+    wenoLevels_.insert(key);
 
     //! Initialize single level reconstruction class pointer.
     singleLevelReconstruction * slrPtr = new singleLevelReconstruction(stencilSizeX,stencilSizeY);
@@ -156,21 +159,8 @@ void MLWENOPrepare::AddLevel(const MeshInfo& mi, const int& stencilSizeX,
 
 }
 
-void MLWENOPrepare::UpdateSmoothnessIndic(const MeshInfo& mi){
-    for (auto const& singleLevel : allLevels_){
-        singleLevel.second->UpdateSmoothnessIndic(mi);
-        //singleLevel.second->PrintSmoothnessIndicator(mi);
-    }
-}
+void UpdateSmoothnessIndic(const MeshInfo& mi){
 
-void MLWENOPrepare::PrintInfo(){
-    //! Print added levels and reconstruction methods
-    cout << "There are " <<allLevels_.size()<< " levels created." << endl;
-
-    for (auto const& it : allLevels_){
-        cout << it.first << " " ; 
-        (it.second)->CheckStencils();
-    }
 
 }
 

@@ -82,6 +82,42 @@ namespace MLWENO{
             void ComputeStencilPolyn_(const MeshInfo& mi);
     };
 
+    /**
+     * A class preparing for all possible multi-level weno reconstruciton using
+     * different single-level reconstruction.
+     * This class holding all single level reconstuctions.
+     * Let MLWENO "steal" single level reconstructions from it.
+     * Multi-level reconstruction class is declared as a friend of this class.
+     */
+    class MLWENOPrepare {
+        public:
+            MLWENOPrepare() {};
+
+            /**
+             * Add single levels to the private allLevels_ member.
+             * Reconstruction method not required.
+             * Reconstruction method will be defined later in multiLevelReconstruction.
+             */
+            void AddLevel(const MeshInfo& mi, const int& stencilSizeX, 
+                                              const int& stencilSizeY);
+
+            /**
+             * Update smoothness indicator for all single level stencil polynomials.
+             * Should be called everytime non linear weights are being calculated.
+             */
+            void UpdateSmoothnessIndic(const MeshInfo& mi);
+
+            /**
+             * Print information of all levels created.
+             */
+            void PrintInfo();
+
+        private:
+            friend class multiLevelReconstruction;
+
+            std::unordered_map<std::string, singleLevelReconstruction *> allLevels_;
+    };
+
     class multiLevelReconstruction {
         public:
             //! A constructor
@@ -90,6 +126,10 @@ namespace MLWENO{
              */
             multiLevelReconstruction() {};
 
+            /**
+             * Be careful with the parametrized constructor function.
+             * It is better to "steal" from MLWENOPrepare, instead of calculate itself.
+             */
             multiLevelReconstruction(const MeshInfo& mi, int stencilSizeX, int stencilSizeY, 
                                      vector<indice> brm)
             {AddLevel(mi,stencilSizeX,stencilSizeY,brm);};
@@ -171,7 +211,13 @@ namespace MLWENO{
             /**
              * Select Weno reconstruction levels to be used in the reconstruction.
              */
-            void SelectWenoReconstLevel(unordered_set<std::string> keys);
+            void SelectWenoReconstLevel(const unordered_set<std::string>& keys);
+
+            //! A completelly different function despite sharing the same name with
+            //! the previous one. "Stealing" single level reconstruction from 
+            //! class MLWENOPrepare.
+            void SelectWenoReconstLevel(const unordered_set<std::string>& keys,
+                                        const MLWENOPrepare * mlpPtr);
 
             /**
              * Evaluation of given point with selected weno reconstruction method.
@@ -190,7 +236,6 @@ namespace MLWENO{
                                                            const vertex& point, 
                                                            const indice& global,
                                                            const int& flag);
-
             /**
              * Get scale of the selected single level reconstruction
              * with respect to the selected cell.
@@ -252,9 +297,7 @@ namespace MLWENO{
 
             //! Bias usually set to be zero
             vector< map<int, int> > etaBias_;
-
     };
-
 }
 
 #endif

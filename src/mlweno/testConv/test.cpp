@@ -154,11 +154,12 @@ int main(int argc, char **argv){
 
     // Create MeshInfo object
     MeshInfo mi; 
-    AssignValuesMeshInfo(mi,dm,dmu); 
 
     // Assign local mesh and local values to mi
     mi.lmesh = mesh;
     mi.localVals = lu;
+
+    AssignValuesMeshInfo(mi,dm,dmu); 
 
 // ========================================================================================================================================
 
@@ -191,15 +192,15 @@ int main(int argc, char **argv){
     vertex center {0.0,0.0};
 
     // Test point wise reconstruction
-    cout << "Point wise reconstruction error at center " << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) - func(center, {-L/(2*M)}) << endl;
+//    cout << "Point wise reconstruction error at center " << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) - func(center, {-L/(2*M)}) << endl;
 
     // Test derivative of point wise reconstruction
     unordered_map<int, double> deriv = mlrPtr->EvaluateDerivMLWENO(mi,center,{M/2,N/2});
 
-    for (auto & d: deriv){
-        indice b = Bend(mi,d.first);
-        cout << "( " << b[0] << ", " << b[1] << " )  " << d.second <<  endl;
-    }
+//    for (auto & d: deriv){
+//        indice b = Bend(mi,d.first);
+//        cout << "( " << b[0] << ", " << b[1] << " )  " << d.second <<  endl;
+//    }
 
     // Compute lr norm
     int r=1;
@@ -223,7 +224,7 @@ int main(int argc, char **argv){
 
     work = work / ((L*H)/9);
 
-    cout << "Average L 1 norm at center cell " << work << endl;
+//    cout << "Average L 1 norm at center cell " << work << endl;
 
     // Print required information
     //mlrPtr->GetInfo();
@@ -231,6 +232,22 @@ int main(int argc, char **argv){
     //mlrPtr->PrintSmoothnessIndicator(mi);
 
     //mlrPtr->PrintNonLinearWgts(mi); 
+
+    // ========== Test WENOPrepare class ====================
+    MLWENO::MLWENOPrepare * mlpPtr = new MLWENO::MLWENOPrepare();
+
+    mlpPtr->AddLevel(mi,1,1);
+    mlpPtr->AddLevel(mi,2,2);
+    mlpPtr->AddLevel(mi,3,2);
+    mlpPtr->AddLevel(mi,4,4);
+    mlpPtr->AddLevel(mi,5,5);
+
+    mlpPtr->UpdateSmoothnessIndic(mi);
+
+//    mlpPtr->PrintInfo();
+
+    MLWENO::multiLevelReconstruction * mlrInstance1 = new MLWENO::multiLevelReconstruction();
+    MLWENO::multiLevelReconstruction * mlrInstance2 = new MLWENO::multiLevelReconstruction();
 
     // Print initial condition
     char * filename = (char*) "initial.txt"; 
