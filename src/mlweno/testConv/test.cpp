@@ -238,7 +238,7 @@ int main(int argc, char **argv){
 
     mlpPtr->AddLevel(mi,1,1);
     mlpPtr->AddLevel(mi,2,2);
-    mlpPtr->AddLevel(mi,3,2);
+    mlpPtr->AddLevel(mi,3,3);
     mlpPtr->AddLevel(mi,4,4);
     mlpPtr->AddLevel(mi,5,5);
 
@@ -246,8 +246,41 @@ int main(int argc, char **argv){
 
 //    mlpPtr->PrintInfo();
 
-    MLWENO::multiLevelReconstruction * mlrInstance1 = new MLWENO::multiLevelReconstruction();
-    MLWENO::multiLevelReconstruction * mlrInstance2 = new MLWENO::multiLevelReconstruction();
+    MLWENO::multiLevelReconstruction * mlrIns1 = new MLWENO::multiLevelReconstruction();
+    MLWENO::multiLevelReconstruction * mlrIns2 = new MLWENO::multiLevelReconstruction();
+
+    mlrIns1->SelectWenoReconstLevel({"(1,1)", "(2,2)", "(3,3)"},(*mlpPtr));
+
+    mlrIns1->ModifyReconstMethod("(2,2)",{{-1,-1}});
+    mlrIns1->ModifyReconstMethod("(1,1)",{{0,0}});
+    mlrIns1->ModifyReconstMethod("(3,3)",{{-1,-1}});
+
+    mlrIns1->SeparateBoundaryLayer(mi);
+
+    mlrIns1->UpdateNonLinearWgts(mi,2);
+
+    mlrIns1->GetInfo();
+
+    //mlrIns1->PrintSmoothnessIndicator(mi);
+
+    //mlrIns1->PrintNonLinearWgts(mi); 
+
+    mlrIns2->SelectWenoReconstLevel({"(3,3)", "(4,4)", "(5,5)"},(*mlpPtr));
+
+    mlrIns2->ModifyReconstMethod("(4,4)",{{0,0}});
+    mlrIns2->ModifyReconstMethod("(5,5)",{{0,0}});
+    mlrIns2->ModifyReconstMethod("(3,3)",{{-1,-1}});
+
+    mlrIns2->SeparateBoundaryLayer(mi);
+
+    mlrIns2->UpdateNonLinearWgts(mi,2);
+
+    mlrIns2->GetInfo();
+
+    //mlrIns1->PrintSmoothnessIndicator(mi);
+
+    //mlrIns1->PrintNonLinearWgts(mi); 
+
 
     // Print initial condition
     char * filename = (char*) "initial.txt"; 
@@ -255,7 +288,9 @@ int main(int argc, char **argv){
     PlainMeshOutput(dm, &fullmesh);
 
     delete mlrPtr;
-
+    delete mlpPtr;
+    delete mlrIns1;
+    delete mlrIns2;
 	 // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);

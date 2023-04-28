@@ -137,13 +137,6 @@ void singleLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
 }
 
 // ============= Multi level reconstruction preparation ========================
-MLWENOPrepare::~MLWENOPrepare(){
-    for (auto& it : allLevels_){
-        delete it.second;
-    }
-    allLevels_.clear();
-}
-
 void MLWENOPrepare::AddLevel(const MeshInfo& mi, const int& stencilSizeX,
                                                  const int& stencilSizeY){
 
@@ -362,12 +355,9 @@ void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, 
 
 void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, const int stage){
 
-    if (prepare == false){
-
-        for (auto const& singleLevel : wenoLevels_){
-            //cout << "Level " << singleLevel << " Smoothness indic updated ... " << endl;
-            reconstLevels_[singleLevel]->UpdateSmoothnessIndic(mi);
-        }
+    for (auto const& singleLevel : wenoLevels_){
+        //cout << "Level " << singleLevel << " Smoothness indic updated ... " << endl;
+        reconstLevels_[singleLevel]->UpdateSmoothnessIndic(mi);
     }
 
     if (stage == 1){
@@ -401,14 +391,18 @@ void multiLevelReconstruction::ModifyReconstMethod(std::string key, vector<indic
     // Make sure it is a existing key
     //assert(reconstMethods_.count(key) != 0); 
 
-    if (reconstMethods_.count(key) != 0){
+    if (reconstMethods_count(key) != 0){
         // Corresponding reconstruction method has been defined beforehand.
         // Ereasing the existing key
         reconstMethods_.erase(key);
-    }
-
         // Assign key and reconstruction method pair
         reconstMethods_.insert(std::pair<std::string, vector<indice>>(key, newReconstMethod));
+    } else {
+        // Corresponding reconstruction method has not been defined beforehand.
+        // Insert pair directly.
+        reconstMethods_.insert(std::pair<std::string, vector<indice>>(key, newReconstMethod));
+    }
+
 }
 
 /**
@@ -440,7 +434,7 @@ void multiLevelReconstruction::SelectWenoReconstLevel(const unordered_set<std::s
 
     // Indicating MLWENOPrepare is used in the computation.
     prepare = true;
-
+ 
     // Make wenoLevels_ an empty set
     wenoLevels_.clear();
 
@@ -618,12 +612,8 @@ void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi){
 //! Clear created multi level reconstruction
 void multiLevelReconstruction::Clear(){
 
-    if (prepare == 0){
-        // Clear pointers if MLWENOPrepare is not used
-        // Otherwise, these pointers should be destroyed in MLWENOPrepare
-        for (auto& it : reconstLevels_){
-            delete it.second;
-        }
+    for (auto& it : reconstLevels_){
+        delete it.second;
     }
 
     reconstLevels_.clear();

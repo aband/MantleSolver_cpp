@@ -93,6 +93,8 @@ namespace MLWENO{
         public:
             MLWENOPrepare() {};
 
+            ~MLWENOPrepare();
+
             /**
              * Add single levels to the private allLevels_ member.
              * Reconstruction method not required.
@@ -217,7 +219,7 @@ namespace MLWENO{
             //! the previous one. "Stealing" single level reconstruction from 
             //! class MLWENOPrepare.
             void SelectWenoReconstLevel(const unordered_set<std::string>& keys,
-                                        const MLWENOPrepare * mlpPtr);
+                                        const MLWENOPrepare& mlpPtr);
 
             /**
              * Evaluation of given point with selected weno reconstruction method.
@@ -297,6 +299,9 @@ namespace MLWENO{
 
             //! Bias usually set to be zero
             vector< map<int, int> > etaBias_;
+
+            //! Flag indicating MLWENOPrepare is used.
+            bool prepare = false;
     };
 }
 
