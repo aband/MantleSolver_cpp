@@ -1,3 +1,0 @@
-/workspace/MantleSolver_cpp/src/mlweno/testConv/build/CMakeFiles/rebuild_cache.dir
-/workspace/MantleSolver_cpp/src/mlweno/testConv/build/CMakeFiles/edit_cache.dir
-/workspace/MantleSolver_cpp/src/mlweno/testConv/build/CMakeFiles/test.dir
