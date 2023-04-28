@@ -281,6 +281,10 @@ int main(int argc, char **argv){
 
     //mlrIns1->PrintNonLinearWgts(mi); 
 
+    unordered_map<int, double> testmap;
+    for (const auto& t: testmap){
+        cout << "Test" << endl;
+    }
 
     // Print initial condition
     char * filename = (char*) "initial.txt"; 
