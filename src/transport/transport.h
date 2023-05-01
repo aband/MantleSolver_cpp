@@ -27,15 +27,23 @@ class advection {
         unordered_set<std::string> interiorLevels;
 
         // Create corresponding multilevel reconstruction with the given information.
-        void CreateMLWENO(const MLWENOPrepare& mlp);
+        void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp);
+
+        // Update all flux and its derivatives (if implicit) on all the edges
+        // collectively.
+        void UpdateEdgeFlux(const MeshInfo& mi);
+
+        void UpdateEdgeFluxDerivative(const MeshInfo& mi);
+
+        // flag used to indicate if jacobian has been updated.
+        int jacUpdate =0;
 
         // Return integrated flux corresponding to the given target cell
-        double Flux(const MeshInfo& mi, const indice& global, double t);
+        double Flux(const MeshInfo& mi, const indice& global);
 
         // Compute derivatives of the integrated advection flux using in the jacobian.
         unordered_map<int, double> derivFlux(const MeshInfo& mi, 
-                                             const indice& global,
-                                             const double& time);
+                                             const indice& global);
 
     private:
         /**
@@ -67,9 +75,39 @@ class advection {
                                           const unordered_map<int, double>& duIn, 
                                           const unordered_map<int, double>& duOut);
 
-        //! Store calculated advective flux on both horizontal and vertical edge
+        /**
+         * Computation of flux around a given target cell.
+         * Repeat calculation.
+         * Should not be called directly.
+         * Can be used for verification.
+         * Collective update routine should be used instead.
+         */
+        double singleCellFlux_(const MeshInfo& mi, const indice& global, const double& t);
+        unordered_map<int, double> singleCellDerivFlux_(const MeshInfo& mi, const indice& global, 
+                                                        const double& t);
+
+        /**
+         * Calculate flux integral on one given edge.
+         * Calculate derivative of the flux integral on one given edge at tha same time.
+         */
+        double edgeFlux_(const MeshInfo& mi, 
+                         const indice& globalIn, 
+                         const indice& globalOut, 
+                         const vertexSet& edge);
+
+        unordered_map<int,double> derivEdgeFlux_(const MeshInfo& mi, 
+                                                 const indice& globalIn, 
+                                                 const indice& globalOut, 
+                                                 const vertexSet& edge);
+
+        //! Store calculated advective flux and 
+        //! corresponding derivatives on both horizontal and vertical edge
+        //! The integer key in the following data structures are index of edges
         unordered_map<int, double> edgeHoriFlux_;
         unordered_map<int, double> edgeVertFlux_;
+
+        unordered_map<int, unordered_map<int, double>> derivEdgeHoriFlux_;
+        unordered_map<int, unordered_map<int, double>> derivEdgeVertFlux_;
 
         //! Determine whether the given target cell is inside the boudary or not.
         bool Interior_(const MeshInfo& mi, const indice& target);
@@ -96,11 +134,11 @@ class advection {
          * Pointer to a multilevel reconstruction class.
          */
         MLWENO::multiLevelReconstruction * mlrPtr_; 
-}
+};
 
 class diffusion {
     public:
-        diffusion() {mltPtr_ = new MLWENO::multiLevelReconstruction();};
+        diffusion() {mlrPtr_ = new MLWENO::multiLevelReconstruction();};
         ~diffusion() {delete mlrPtr_;};
 
         /**
@@ -129,7 +167,7 @@ class diffusion {
         std::string highestVertLevel;
 
         // Create corresponding multilevel reconstruction with the given information.
-        void CreateMLWENO(const MLWENOPrepare& mlp);
+        void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp);
 
     private:
 
@@ -151,21 +189,21 @@ class diffusion {
          * Pointer to a multilevel reconstruction class.
          */
         MLWENO::multiLevelReconstruction * mlrPtr_; 
-}
+};
 
 class reaction {
     public:
-        reaction() {mlrPtr = new MLWENO::multiLevelReconstruction();};
+        reaction() {mlrPtr_ = new MLWENO::multiLevelReconstruction();};
         ~reaction() {delete mlrPtr_;};
 
     private:
-        MLWENO::multiLevelReconstrucion * mlrPtr_;
-}
+        MLWENO::multiLevelReconstruction * mlrPtr_;
+};
 
 class transport : public advection, public diffusion, public reaction {
     public:
-        transport() {mlpPtr = new MLWENO::MLWENOPrepare();};
-        ~transport() {delete mlpPtr;};
+        transport() {mlpPtr_ = new MLWENO::MLWENOPrepare();};
+        ~transport() {delete mlpPtr_;};
 
         void AddLevel(const MeshInfo& mi, const int& stencilSizeX, 
                                           const int& stencilSizeY);
@@ -175,7 +213,7 @@ class transport : public advection, public diffusion, public reaction {
         /**
          * Holding all weno reconstruction in a pointer pointing to MLWENOPrepare object
          */
-        MLWENO::MLWENOPrepare * mlpPtr;
-}
+        MLWENO::MLWENOPrepare * mlpPtr_;
+};
 
 #endif

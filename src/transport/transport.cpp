@@ -1,4 +1,4 @@
-#include "transportnew.h"
+#include "transport.h"
 
 // ========== Advection ===========================================
 
@@ -120,9 +120,9 @@ double advection::boundaryCondition_(const double& uIn,
     //return 0.0;
 }
 
-unordered_map<int, double> boundaryCondition_(const double& uIn, const vertex& unitNOrmal,
-                                              const vertex& mapped, const double& alphaLF,
-                                              const unordered_map<int,double>& duIn){
+unordered_map<int, double> advection::boundaryCondition_(const double& uIn, const vertex& unitNormal,
+                                                         const vertex& mapped, const double& alphaLF,
+                                                         const unordered_map<int,double>& duIn){
     unordered_map<int, double> tmp; 
 
     // Mimicing "Dirichlet" boundary condition
@@ -137,16 +137,12 @@ unordered_map<int, double> boundaryCondition_(const double& uIn, const vertex& u
 }
 
 // Integrated flux on edges with respect to the target cell
-double advection::Flux(const MeshInfo& mi, const indice& global, double t){
+double advection::singleCellFlux_(const MeshInfo& mi, const indice& global, const double& t){
 
     double work = 0.0;
 
     //! Declare variable holding four corners of the given cell.
     vertexSet corner = extractCorners(mi, global); 
-
-    //! Extract default gauess points and gauess weights.
-    const valarray<double>& gwe = GaussWeightsEdge;
-    const valarray<double>& gpe = GaussPointsEdge;
 
     //! Integral flux edge by edge.
     for (int pos = 0; pos < 4; pos ++){
@@ -161,30 +157,8 @@ double advection::Flux(const MeshInfo& mi, const indice& global, double t){
         //! Compute global indice of outside cell with respect to the inside cell.
         indice globalOut = global + mi.faceNormal[pos];
 
-        double edgework = 0.0;
-
-        //! Gauss quadrature rule.
-        if (Interior_(mi,globalOut)){
-            for (int g=0; g<gpe.size(); g++){
-                vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
-
-                double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,global);
-
-                double uOut = mlrPtr_->EvaluateMLWENO(mi,mapped,globalOut);
-
-                edgework += gwe[g] * flux_(uIn, uOut, unitNormal, mapped, uMax_) * len/2.0; 
-            }
-        }else{
-             for (int g=0; g<gpe.size(); g++){
-                vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
-
-                double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,global);
-
-                edgework += gwe[g] * boundaryCondition_(uIn, unitNormal, mapped, uMax_) * len/2.0; 
-            }
-        }
         // Summing edge flux
-        work += edgework;
+        work += edgeFlux_(mi,global,globalOut,edge);
     }
 
     work = work / NumIntegralFace(corner,{0,0}, {0.0,0.0}, 1.0, constFunc);
@@ -195,18 +169,18 @@ double advection::Flux(const MeshInfo& mi, const indice& global, double t){
 /**
  * Compute derivative of advection flux
  */
-unordered_map<int, double> advection::derivFlux(const MeshInfo& mi, const indice& global, 
-                                                const double& time){
+unordered_map<int, double> advection::singleCellDerivFlux_(const MeshInfo& mi, const indice& global, 
+                                                           const double& time){
 
     unordered_map<int, double> work;
 
     //! Declare variable holding four corners of the given cell.
     vertexSet corner = extractCorners(mi, global); 
-
+    
     //! Extract default gauess points and gauess weights.
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
-     
+
     //! Compute area of target cell
     double area = NumIntegralFace(corner, {0,0}, {0.0,0.0}, 1.0, constFunc);
     //double area = mi.cellArea.at(FlatIndic(mi,global));
@@ -279,6 +253,293 @@ unordered_map<int, double> advection::derivFlux(const MeshInfo& mi, const indice
     return work;
 }
 
+//inline vertexSet Getedge(const vertexSet& corners, const int& pos){
+//    return {corners[pos], corners[(pos+1)%4]};
+//}
+
+//! Collective flux update.
+void advection::UpdateEdgeFlux(const MeshInfo& mi){
+
+    // Udpate every left and bottom edge for each cell
+    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] ; j++){
+    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] ; i++){
+
+        indice global {i,j};
+
+        // Extract corners with respect to given global indice
+        vertexSet corners = extractCorners(mi, global); 
+
+        // Compute and restore Horizontal flux
+        vertexSet hori {corners.at(0), corners.at(1)};
+
+        //! Compute global indice of outside cell with respect to the inside cell.
+        indice globalOut = global + mi.faceNormal[0];
+
+        edgeHoriFlux_[FlatIndic(mi, global)] = edgeFlux_(mi, global, globalOut, hori);
+
+        // Update top edge for the cells on the very top
+        if (j == mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1]){
+            hori = {corners.at(2), corners.at(3)};
+            globalOut = global + mi.faceNormal[2];
+
+            edgeHoriFlux_[FlatIndic(mi, globalOut)] = -1 * edgeFlux_(mi, global, globalOut, hori);
+       }
+
+        // Compute and restore Vertical flux
+        vertexSet vert {corners.at(3), corners.at(0)};
+        globalOut = global + mi.faceNormal[3];
+
+        edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)] = edgeFlux_(mi, global, globalOut, vert);
+
+        // Update right edge for the cells on the very right of the local part
+        if (i == mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0]){
+            vert = {corners.at(1), corners.at(2)};
+            globalOut = global + mi.faceNormal[1];
+            edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,globalOut)] = -1 * edgeFlux_(mi, global, globalOut, vert);
+        }
+    }}
+
+}
+
+void advection::UpdateEdgeFluxDerivative(const MeshInfo& mi){
+
+    // Udpate every left and bottom edge for each cell
+    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] ; j++){
+    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] ; i++){
+
+        indice global {i,j};
+
+        // Extract corners with respect to given global indice
+        vertexSet corners = extractCorners(mi, global); 
+
+        // Compute and restore Horizontal flux
+        vertexSet hori {corners.at(0), corners.at(1)};
+
+        //! Compute global indice of outside cell with respect to the inside cell.
+        indice globalOut = global + mi.faceNormal[0];
+
+        derivEdgeHoriFlux_[FlatIndic(mi, global)] = derivEdgeFlux_(mi, global, globalOut, hori);
+
+        // Update top edge for the cells on the very top
+        if (j == mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1]){
+            hori = {corners.at(2), corners.at(3)};
+            globalOut = global + mi.faceNormal[2];
+
+            unordered_map<int, double> derivedgehori = derivEdgeFlux_(mi,global, globalOut, hori);
+            for (auto& d: derivedgehori){
+                d.second *= -1;
+            }
+            derivEdgeHoriFlux_[FlatIndic(mi, globalOut)] = derivedgehori;
+       }
+
+        // Compute and restore Vertical flux
+        vertexSet vert {corners.at(3), corners.at(0)};
+        globalOut = global + mi.faceNormal[3];
+
+        derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)] = derivEdgeFlux_(mi, global, globalOut, vert);
+
+        // Update right edge for the cells on the very right of the local part
+        if (i == mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0]){
+            vert = {corners.at(1), corners.at(2)};
+            globalOut = global + mi.faceNormal[1];
+
+            unordered_map<int,double> derivedgevert = derivEdgeFlux_(mi,global,globalOut,vert);
+            for (auto& d: derivedgevert){
+                d.second *= -1;
+            }
+            derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,globalOut)] = derivedgevert;
+        }
+
+    }}
+
+    jacUpdate = 1;
+
+}
+
+//! Calculate integrated flux defined on one given edge.
+double advection::edgeFlux_(const MeshInfo& mi, 
+                            const indice& globalIn,
+                            const indice& globalOut,
+                            const vertexSet& edge){
+
+    double work = 0.0;
+
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    // Get edge lendth and unit vector normal to the given edge
+    double len = length(edge);
+    vertex unitNormal = UnitNormal(edge,len);
+
+    if (Interior_(mi,globalOut)){
+
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
+
+            double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,globalIn);
+
+            double uOut = mlrPtr_->EvaluateMLWENO(mi,mapped,globalOut);
+
+            work += gwe[g] * flux_(uIn, uOut, unitNormal, mapped, uMax_) * len/2.0; 
+        }
+
+    } else {
+
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
+
+            double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,globalIn);
+
+            work += gwe[g] * boundaryCondition_(uIn, unitNormal, mapped, uMax_) * len/2.0; 
+        }
+
+    }
+
+    return work;
+}
+
+unordered_map<int,double> advection::derivEdgeFlux_(const MeshInfo& mi, 
+                                                    const indice& globalIn,
+                                                    const indice& globalOut,
+                                                    const vertexSet& edge){
+
+    unordered_map<int, double> work;
+
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    double len = length(edge);
+
+    //! Compute unit normal vector pointing outside.
+    vertex unitNormal = UnitNormal(edge,len);
+
+    //! Loop through gauss points
+    if (Interior_(mi,globalOut)){
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
+
+            //! Compute derivative and value of multi level reconstruction
+            unordered_map<int, double> derivIn = mlrPtr_->EvaluateDerivMLWENO(mi,mapped,globalIn);
+            double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,globalIn);
+
+            unordered_map<int, double> derivOut = mlrPtr_->EvaluateDerivMLWENO(mi,mapped,globalOut);
+            double uOut = mlrPtr_->EvaluateMLWENO(mi,mapped,globalOut);
+
+            // Compute derivative of flux at a given gauss point
+            unordered_map<int, double> derivflux = dflux_(uIn, uOut, unitNormal,
+                                                          mapped, uMax_, 
+                                                          derivIn, derivOut);
+
+            for (auto & derivf : derivflux){
+                if (work.count(derivf.first) > 0){
+                    work[derivf.first] += gwe[g]*derivf.second*len/2.0;
+                } else {
+                    work.insert(std::pair<int,double> (derivf.first, gwe[g]*derivf.second*len/2.0));
+                }
+            }
+        }
+    } else {
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
+
+            //! Compute derivative and value of multi level reconstruction
+            unordered_map<int, double> derivIn = mlrPtr_->EvaluateDerivMLWENO(mi,mapped,globalIn);
+            double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,globalIn);
+
+            // Compute derivative of flux at a given gauss point
+            unordered_map<int, double> derivflux = 
+                boundaryCondition_(uIn, unitNormal,mapped,uMax_, derivIn);
+
+            // On flux confined boundary.
+            // derivflux will be empty.
+            // loop will not excute.
+            for (auto & derivf : derivflux){
+                if (work.count(derivf.first) > 0){
+                    work[derivf.first] += gwe[g]*derivf.second*len/2.0;
+                } else {
+                    work.insert(std::pair<int,double> (derivf.first, gwe[g]*derivf.second*len/2.0));
+                }
+            }
+        }
+    }
+
+    return work;
+}
+
+//! Simply return values precalculated from collective update routine.
+double advection::Flux(const MeshInfo& mi, const indice& global){
+
+    double work = 0.0;
+
+    double area = mi.cellArea.at(FlatIndic(mi,global));
+
+    work += edgeHoriFlux_[FlatIndic(mi,global)]; 
+
+    work += -1 * edgeHoriFlux_[FlatIndic(mi,global+mi.faceNormal[2])];
+
+    work += -1 * edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global+mi.faceNormal[1])];
+
+    work += edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)];
+
+    work /= area;
+  
+    return work;
+}
+
+unordered_map<int, double> advection::derivFlux(const MeshInfo& mi, const indice& global){
+
+    unordered_map<int,double> work;
+
+    // bottom horizontal edge
+    unordered_map<int,double> tmp = derivEdgeHoriFlux_[FlatIndic(mi,global)];
+
+    double area = mi.cellArea.at(FlatIndic(mi,global));
+
+    for (auto & derivf : tmp){
+        if (work.count(derivf.first) > 0){
+            work[derivf.first] += derivf.second/area;
+        } else {
+            work.insert(std::pair<int,double> (derivf.first, derivf.second/area));
+        }
+    }
+
+    // top horizontal edge
+    tmp = derivEdgeHoriFlux_[FlatIndic(mi,global+mi.faceNormal[2])];
+
+    for (auto & derivf : tmp){
+        if (work.count(derivf.first) > 0){
+            work[derivf.first] += -1*derivf.second/area;
+        } else {
+            work.insert(std::pair<int,double> (derivf.first, -1*derivf.second/area));
+        }
+    }
+
+    // right vertical edge
+    tmp = derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global+mi.faceNormal[1])];
+
+    for (auto & derivf : tmp){
+        if (work.count(derivf.first) > 0){
+            work[derivf.first] += -1*derivf.second/area;
+        } else {
+            work.insert(std::pair<int,double> (derivf.first, -1*derivf.second/area));
+        }
+    }
+
+    // left vertical edge
+    tmp = derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)];
+    for (auto & derivf : tmp){
+        if (work.count(derivf.first) > 0){
+            work[derivf.first] += derivf.second/area;
+        } else {
+            work.insert(std::pair<int,double> (derivf.first, derivf.second/area));
+        }
+    }
+
+    return work;
+}
+
 // ========== Diffusion ===========================================
 
 /**
@@ -301,4 +562,8 @@ double diffusion::dflux_(const double * dru, int n){
 // ========== Transport ===========================================
 // Inherit from advection, diffusion and reaction class
 
+void transport::AddLevel(const MeshInfo& mi, const int& stencilSizeX,
+                                             const int& stencilSizeY){
 
+    mlpPtr_->AddLevel(mi, stencilSizeX, stencilSizeY);
+}

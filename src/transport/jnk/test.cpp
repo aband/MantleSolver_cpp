@@ -186,7 +186,36 @@ int main(int argc, char **argv){
      * No need to give a precious description of reconstruction methods.
      * Detailed reconstruction method will be added separately later.
      */
+    trPtr->AddLevel(mi,1,1,{{0,0}});
+    trPtr->AddLevel(mi,2,2,{{0,0}});
+    trPtr->AddLevel(mi,3,3,{{0,0}});
 
+    //! Define advection reconstruction methods
+    trPtr->AddReconstMethod(trPtr->advection::reconstMethods,"(1,1)",{{0,0}});
+    trPtr->AddReconstMethod(trPtr->advection::reconstMethods,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
+    trPtr->AddReconstMethod(trPtr->advection::reconstMethods,"(3,3)",{{-1,-1}});
+
+    trPtr->CreateWenoLevel(trPtr->advection::reconstMethods, trPtr->advection::wenoLevels);
+
+    //! Define diffusion reconstruction methods
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsVert,"(1,1)",{{0,0}});
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{-1,0}, {-2,0}, {-2,-2}, {-1,-2}});
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsVert,"(4,5)",{{-2,-2}});
+
+    trPtr->CreateWenoLevel(trPtr->diffusion::reconstMethodsVert, trPtr->diffusion::wenoLevelsVert);
+
+    trPtr->diffusion::highestHoriLevel = "(4,5)";
+
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsHori,"(1,1)",{{0,0}});
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,1}, {-2,-1}, {-2,-2}, {0,-2}});
+    trPtr->AddReconstMethod(trPtr->diffusion::reconstMethodsHori,"(5,4)",{{-2,-2}});
+
+    trPtr->CreateWenoLevel(trPtr->diffusion::reconstMethodsHori, trPtr->diffusion::wenoLevelsHori);
+
+    trPtr->diffusion::highestVertLevel = "(5,4)";
+
+    //! Compute boundary and interior cells and levels
+    trPtr->SeparateAdvBoundaryLayer(mi);
 
     /**
      * Time stepping.
