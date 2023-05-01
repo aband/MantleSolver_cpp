@@ -292,8 +292,12 @@ void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indi
                                     pow(collapsePolyn_->getCoef(FlatIndic(stencilPolyn_.getI(),s,r)),2); 
             }}
         }
-
     }
+
+    /**
+     * constant level reconstruction will always return 0.0
+     * when its smoothness indicator is calculated.
+     */
 
 }
 

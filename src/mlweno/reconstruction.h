@@ -168,6 +168,9 @@ namespace MLWENO{
             void SeparateBoundaryLayer(const MeshInfo& mi, const int& layerSize);
             void SeparateBoundaryLayer(const MeshInfo& mi);
 
+            void SeparateBoundaryLayer(const MeshInfo& mi, const int& layerSize, 
+                                       const unordered_set<std::string>& additionalLevels); 
+
             //! Get a copy of calculated boundary and interior cells
             const unordered_set<int>& GetboundaryCells() const 
             {return boundaryCells_;};
@@ -286,6 +289,8 @@ namespace MLWENO{
              * Immediately called after separating boundary layer.
              */
             void SeparateReconstMethods_();
+
+            void SeparateReconstMethods_(const unordered_set<std::string>& additionalLevels);
 
             /**            
              * No need to define linear weights.

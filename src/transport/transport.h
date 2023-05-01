@@ -20,14 +20,11 @@ class advection {
         unordered_map<std::string, vector<indice>> reconstMethods;
         unordered_set<std::string> wenoLevels;
 
-        unordered_set<int> boundaryCells;
-        unordered_set<int> interiorCells;
-
-        unordered_set<std::string> boundaryLevels;
-        unordered_set<std::string> interiorLevels;
-
         // Create corresponding multilevel reconstruction with the given information.
-        void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp);
+        void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& mi);
+
+        // Update non linear weights
+        void UpdateNonLinearWgts(const MeshInfo& mi);
 
         // Update all flux and its derivatives (if implicit) on all the edges
         // collectively.
@@ -44,6 +41,9 @@ class advection {
         // Compute derivatives of the integrated advection flux using in the jacobian.
         unordered_map<int, double> derivFlux(const MeshInfo& mi, 
                                              const indice& global);
+
+        // Print information
+        void GetInfo(const MeshInfo& mi);
 
     private:
         /**
@@ -138,8 +138,9 @@ class advection {
 
 class diffusion {
     public:
-        diffusion() {mlrPtr_ = new MLWENO::multiLevelReconstruction();};
-        ~diffusion() {delete mlrPtr_;};
+        diffusion() {mlrPtrHori_ = new MLWENO::multiLevelReconstruction();
+                     mlrPtrVert_ = new MLWENO::multiLevelReconstruction();};
+        ~diffusion() {delete mlrPtrHori_; delete mlrPtrVert_;};
 
         /**
          * Diffusion defined on edges.
@@ -151,23 +152,17 @@ class diffusion {
         unordered_map<std::string, vector<indice>> reconstMethodsHori;
         unordered_set<std::string> wenoLevelsHori;
 
-        unordered_set<int> boundaryCellsHori;
-        unordered_set<int> interiorCellsHori;
-
-        unordered_set<std::string> boundaryLevelsHori;
-        unordered_set<std::string> interiorLevelsHori;
-
-        unordered_set<int> boundaryCellsVert;
-        unordered_set<int> interiorCellsVert;
-
-        unordered_set<std::string> boundaryLevelsVert;
-        unordered_set<std::string> interiorLevelsVert;
-
-        std::string highestHoriLevel;
-        std::string highestVertLevel;
-
         // Create corresponding multilevel reconstruction with the given information.
-        void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp);
+        void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& mi);
+
+        // Update nonlinear weights
+        void UpdateNonLinearWgts(const MeshInfo& mi);
+
+        // Update flux across the edges collectively
+        void diffusion::UpdateEdgeFlux(const MeshInfo& mi);
+
+        // Print information
+        void GetInfo(const MeshInfo& mi);
 
     private:
 
@@ -188,7 +183,8 @@ class diffusion {
         /**
          * Pointer to a multilevel reconstruction class.
          */
-        MLWENO::multiLevelReconstruction * mlrPtr_; 
+        MLWENO::multiLevelReconstruction * mlrPtrHori_;
+        MLWENO::multiLevelReconstruction * mlrPtrVert_;
 };
 
 class reaction {
@@ -205,8 +201,27 @@ class transport : public advection, public diffusion, public reaction {
         transport() {mlpPtr_ = new MLWENO::MLWENOPrepare();};
         ~transport() {delete mlpPtr_;};
 
+        /**
+         * Add reconstruction levels to MLWENOPrepare class
+         */
         void AddLevel(const MeshInfo& mi, const int& stencilSizeX, 
                                           const int& stencilSizeY);
+
+        /**
+         * Update smoothness indicator for all levels predefined.
+         */
+        void UpdateSmoothnessIndic(const MeshInfo& mi);
+
+        /**
+         * Assign reconstruction levels and methods to advection and diffusion
+         */
+        void AssignReconstMethod(unordered_map<std::string, vector<indice>>& reconstMethods,
+                                 std::string key, const vector<indice>& brm);
+
+        /**
+         * Create MLWENO reconstruction for advection and diffusion class
+         */
+        void CreateMLWENO(const MeshInfo& mi);
 
     private:
 

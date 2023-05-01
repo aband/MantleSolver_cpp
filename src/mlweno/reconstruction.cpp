@@ -236,6 +236,27 @@ void multiLevelReconstruction::SeparateBoundaryLayer(const MeshInfo& mi){
     SeparateBoundaryLayer(mi,1);
 }
 
+//! A more advanced boudarylayer separation function
+//! Assign not only the (1,1) level to boundary cells.
+void multiLevelReconstruction::SeparateBoundaryLayer(const MeshInfo& mi, const int& layerSize, 
+                                                     const unordered_set<std::string>& additionalLevels){
+
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+        indice shift {i,j}; 
+        indice global = mi.MPIlocalCellStart + shift;
+        if ((global[0] < 0 + layerSize || global[0] > mi.MPIglobalCellSize[0] - layerSize -1) ||
+            (global[1] < 0 + layerSize || global[1] > mi.MPIglobalCellSize[1] - layerSize -1)){
+            boundaryCells_.insert(FlatIndic(mi,global));
+        } else {
+            interiorCells_.insert(FlatIndic(mi,global));
+        }
+    }}
+
+    //! Create two different weno reconstruction levels for interior and boundary cells.
+    SeparateReconstMethods_(additionalLevels);
+}
+
 void multiLevelReconstruction::SeparateReconstMethods_(){
 
     //! Clear old boundary and interior levels
@@ -251,7 +272,15 @@ void multiLevelReconstruction::SeparateReconstMethods_(){
         boundaryLevels_ = wenoLevels_;
         interiorLevels_.erase(lowestLevel_);
     }
+}
 
+void multiLevelReconstruction::SeparateReconstMethods_(const unordered_set<std::string>& additionalLevels){
+    interiorLevels_ = wenoLevels_;
+    boundaryLevels_ = wenoLevels_;
+    for (const auto& al : additionalLevels){
+        interiorLevels_.erase(al);
+    }
+    assert(interiorLevels_.empty() == 0);
 }
 
 //! Update non linear weights for all cell reconstructions.
@@ -455,6 +484,8 @@ void multiLevelReconstruction::SelectWenoReconstLevel(const unordered_set<std::s
         }
     }
 
+    lowestLevel_ = reconstLevels_.begin()->first;
+    highestLevel_ = reconstLevels_.rbegin()->first;
 }
 
 /**

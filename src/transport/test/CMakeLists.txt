@@ -46,7 +46,7 @@ endif (FORTRAN_COMPILER)
 #find_package(ADOLC REQUIRED)
 
 #set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
-set(CMAKE_CXX_FLAGS "-g")
+#set(CMAKE_CXX_FLAGS "-g")
 
 project(test)
 # Build library

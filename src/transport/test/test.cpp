@@ -186,7 +186,43 @@ int main(int argc, char **argv){
      * No need to give a precious description of reconstruction methods.
      * Detailed reconstruction method will be added separately later.
      */
+    trPtr->AddLevel(mi,1,1);
+    trPtr->AddLevel(mi,2,2);
+    trPtr->AddLevel(mi,3,3);
+    trPtr->AddLevel(mi,4,5);
+    trPtr->AddLevel(mi,5,4);
 
+    trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(1,1)",{{0,0}});
+    trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
+    trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(3,3)",{{-1,-1}});
+
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(1,1)",{{0,0}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(4,5)",{{-2,-2}});
+
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(1,1)",{{0,0}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,1},{-2,-1},{-2,-2},{0,-2}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(5,4)",{{-2,-2}});
+
+    trPtr->CreateMLWENO(mi);
+
+    trPtr->UpdateSmoothnessIndic(mi);
+
+    //trPtr->advection::UpdateNonLinearWgts(mi);
+
+    //trPtr->advection::GetInfo(mi);
+
+    trPtr->diffusion::UpdateNonLinearWgts(mi);
+
+    trPtr->diffusion::GetInfo(mi);
+
+    //! Create ctx for time stepping
+    Ctx ctx;
+    ctx.trPtr = trPtr;
+    ctx.mi    = &mi;
+    ctx.dmu   = dmu;
 
     /**
      * Time stepping.
@@ -204,12 +240,6 @@ int main(int argc, char **argv){
     ierr = PetscOptionsGetReal(NULL,NULL,"-Tmax",&Tmax,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-dt",&dt,NULL);    CHKERRQ(ierr);
  
-    //! Create ctx for time stepping
-    Ctx ctx;
-    ctx.trPtr = trPtr;
-    ctx.mi    = &mi;
-    ctx.dmu   = dmu;
-
     //SNESCreate(PETSC_COMM_WORLD, &snes);
     //KSPCreate(PETSC_COMM_WORLD, &ksp);
 

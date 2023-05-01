@@ -540,6 +540,34 @@ unordered_map<int, double> advection::derivFlux(const MeshInfo& mi, const indice
     return work;
 }
 
+void advection::CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& mi){
+
+    assert(reconstMethods.empty() ==0);
+
+    // Create weno levels from reconst method
+    for (const auto& rm: reconstMethods){
+        wenoLevels.insert(rm.first);
+    }
+
+    mlrPtr_->SelectWenoReconstLevel(wenoLevels,mlp); 
+
+    for (const auto& rm: reconstMethods){
+        mlrPtr_->ModifyReconstMethod(rm.first,rm.second);
+    }
+
+    mlrPtr_->SeparateBoundaryLayer(mi);
+}
+
+void advection::UpdateNonLinearWgts(const MeshInfo& mi){
+    mlrPtr_->UpdateNonLinearWgts(mi,2);
+}
+
+void advection::GetInfo(const MeshInfo& mi){
+    mlrPtr_->GetInfo();
+    mlrPtr_->PrintSmoothnessIndicator(mi);
+    mlrPtr_->PrintNonLinearWgts(mi);
+}
+
 // ========== Diffusion ===========================================
 
 /**
@@ -557,6 +585,73 @@ double diffusion::dflux_(const double * dru, int n){
     return flux_(dru, n);
 }
 
+/**
+ * Check if a given target cell is inside the boundary
+ */
+bool diffusion::Interior_(const MeshInfo& mi, const indice& target){
+    if (target[0] < 0 || target[0] > mi.MPIglobalCellSize[0] -1 ||
+        target[1] < 0 || target[1] > mi.MPIglobalCellSize[1] -1 ){
+        return false;
+    } else {
+        return true;
+    }
+}
+
+void diffusion::UpdateEdgeFlux(const MeshInfo& mi){
+
+}
+
+
+void diffusion::CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& mi){
+    assert(reconstMethodsVert.empty() == 0);
+    assert(reconstMethodsHori.empty() == 0);
+
+    // Create weno levels from reconst method
+    // Horizontal edges
+    for (const auto& rm: reconstMethodsHori){
+        wenoLevelsHori.insert(rm.first);
+    }
+
+    mlrPtrHori_->SelectWenoReconstLevel(wenoLevelsHori,mlp); 
+
+    for (const auto& rm: reconstMethodsHori){
+        mlrPtrHori_->ModifyReconstMethod(rm.first,rm.second);
+    }
+
+    mlrPtrHori_->SeparateBoundaryLayer(mi,2,{"(1,1)","(2,2)"});
+
+    // Vertical edges
+    for (const auto& rm: reconstMethodsVert){
+        wenoLevelsVert.insert(rm.first);
+    }
+
+    mlrPtrVert_->SelectWenoReconstLevel(wenoLevelsVert,mlp); 
+
+    for (const auto& rm: reconstMethodsVert){
+        mlrPtrVert_->ModifyReconstMethod(rm.first,rm.second);
+    }
+
+    mlrPtrVert_->SeparateBoundaryLayer(mi,2,{"(1,1)","(2,2)"});
+}
+
+void diffusion::UpdateNonLinearWgts(const MeshInfo& mi){
+    mlrPtrHori_->UpdateNonLinearWgts(mi,2);
+    mlrPtrVert_->UpdateNonLinearWgts(mi,2);
+}
+
+void diffusion::GetInfo(const MeshInfo& mi){
+
+    cout << "MLWENO reconstruction for Horizontal edges ..." << endl;
+    mlrPtrHori_->GetInfo();
+    mlrPtrHori_->PrintSmoothnessIndicator(mi);
+    mlrPtrHori_->PrintNonLinearWgts(mi);
+
+    cout << "MLWENO reconstruction for Vertical edges ..." << endl;
+    mlrPtrVert_->GetInfo();
+    mlrPtrVert_->PrintSmoothnessIndicator(mi);
+    mlrPtrVert_->PrintNonLinearWgts(mi);
+}
+
 // ========== Reaction ============================================
 
 // ========== Transport ===========================================
@@ -564,6 +659,22 @@ double diffusion::dflux_(const double * dru, int n){
 
 void transport::AddLevel(const MeshInfo& mi, const int& stencilSizeX,
                                              const int& stencilSizeY){
-
     mlpPtr_->AddLevel(mi, stencilSizeX, stencilSizeY);
+}
+
+void transport::UpdateSmoothnessIndic(const MeshInfo& mi){
+    mlpPtr_->UpdateSmoothnessIndic(mi);    
+}
+
+void transport::AssignReconstMethod(unordered_map<std::string, vector<indice>>& reconstMethods,
+                                    std::string key, const vector<indice>& brm){
+    //! Make sure the reconstruction key is new
+    assert(reconstMethods.count(key) == 0);
+    //! Add this new pair to reconstMethods
+    reconstMethods.insert(std::pair<std::string, vector<indice>>(key, brm));
+}
+
+void transport::CreateMLWENO(const MeshInfo& mi){
+    advection::CreateMLWENO((*mlpPtr_), mi);
+    diffusion::CreateMLWENO((*mlpPtr_), mi);
 }
