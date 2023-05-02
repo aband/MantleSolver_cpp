@@ -33,22 +33,22 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     user->mi->localVals = lu;
 
     //! Compute advection flux first =======================================
-//    user->trPtr->AssignReconstruction(user->trPtr->advection::reconstMethods,
-//                                      user->trPtr->advection::wenoLevels);
+    user->trPtr->AssignReconstruction(user->trPtr->advection::reconstMethods,
+                                      user->trPtr->advection::wenoLevels);
 
-//    user->trPtr->AssignBoundaryMethods(user->trPtr->advection::boundaryCells,
-//                                       user->trPtr->advection::interiorCells,
-//                                       user->trPtr->advection::boundaryLevels,
-//                                       user->trPtr->advection::interiorLevels);
+    user->trPtr->AssignBoundaryMethods(user->trPtr->advection::boundaryCells,
+                                       user->trPtr->advection::interiorCells,
+                                       user->trPtr->advection::boundaryLevels,
+                                       user->trPtr->advection::interiorLevels);
 
-//    user->trPtr->UpdateNonLinearWgts(*(user->mi),2);
+    user->trPtr->UpdateNonLinearWgts(*(user->mi),2);
 
     //user->trPtr->Check(*(user->mi));
 
     //! Loop through computational domain
     for (int j=user->mi->MPIlocalCellStart[1]; j<user->mi->MPIlocalCellStart[1] + user->mi->MPIlocalCellSize[1]; j++){
     for (int i=user->mi->MPIlocalCellStart[0]; i<user->mi->MPIlocalCellStart[0] + user->mi->MPIlocalCellSize[0]; i++){
-        f[j][i] = -1.0*user->trPtr->advection::Flux(*(user->mi), {i,j});
+        f[j][i] = -1.0*user->trPtr->advFlux(*(user->mi), {i,j}, time);
     }}
 
     //! Compute diffusion flux second ======================================
@@ -87,13 +87,13 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
     DMDAVecGetArray(dmu, localu, &lu);
 
     //! Define advection problem first
-//    user->trPtr->AssignReconstruction(user->trPtr->advection::reconstMethods,
-//                                      user->trPtr->advection::wenoLevels);
+    user->trPtr->AssignReconstruction(user->trPtr->advection::reconstMethods,
+                                      user->trPtr->advection::wenoLevels);
 
-//    user->trPtr->AssignBoundaryMethods(user->trPtr->advection::boundaryCells,
-//                                       user->trPtr->advection::interiorCells,
-//                                       user->trPtr->advection::boundaryLevels,
-//                                       user->trPtr->advection::interiorLevels);
+    user->trPtr->AssignBoundaryMethods(user->trPtr->advection::boundaryCells,
+                                       user->trPtr->advection::interiorCells,
+                                       user->trPtr->advection::boundaryLevels,
+                                       user->trPtr->advection::interiorLevels);
 
     //user->trPtr->UpdateNonLinearWgts(*(user->mi),2);
 
@@ -104,7 +104,7 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
     for (int row = rstart; row<rend; row++){
         indice global = Bend(*(user->mi), row);
 
-        unordered_map<int,double> deriv = user->trPtr->advection::derivFlux(*(user->mi), global);
+        unordered_map<int,double> deriv = user->trPtr->derivAdvFlux(*(user->mi), global, time);
 
         for (auto & dVal: deriv){
             ierr = MatSetValue(J,row,dVal.first,-1.0*dVal.second,INSERT_VALUES);CHKERRQ(ierr);

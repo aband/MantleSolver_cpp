@@ -4,123 +4,37 @@
 #include "reconstruction.h"
 #include "func.h"
 
-/**
- * Incorporating MLWENOPrepare class.
- * Separate advection, diffusion and reaction multilevel reconstruction classes.
- * However, sharing the same MLWENOPrepare class.
- */
-
 class advection {
     public:
-        advection() {mlrPtr_ = new MLWENO::multiLevelReconstruction();};
-        ~advection() {delete mlrPtr_;};
+        advection() {};
+        ~advection() {};
 
         // Pre computed reconstruction information
         // Will not be changed during computation
         unordered_map<std::string, vector<indice>> reconstMethods;
         unordered_set<std::string> wenoLevels;
 
-        // Create corresponding multilevel reconstruction with the given information.
-        void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& mi);
+        unordered_set<int> boundaryCells;
+        unordered_set<int> interiorCells;
 
-        // Update non linear weights
-        void UpdateNonLinearWgts(const MeshInfo& mi);
+        unordered_set<std::string> boundaryLevels;
+        unordered_set<std::string> interiorLevels;
 
-        // Update all flux and its derivatives (if implicit) on all the edges
-        // collectively.
-        void UpdateEdgeFlux(const MeshInfo& mi);
+        double flux(const double& uIn, const double& uOut, 
+                    const vertex& unitNormal, const vertex& point,
+                    const double& alphaLF) 
+        {return LaxFriedrichs::flux(uIn, uOut, unitNormal, point, alphaLF);};
 
-        void UpdateEdgeFluxDerivative(const MeshInfo& mi);
+        unordered_map<int, double> dflux(const double& uIn, const double& uOut, const vertex& unitNormal, 
+                                         const vertex& mapped, const double& alphaLF, 
+                                         const unordered_map<int, double>& duIn, 
+                                         const unordered_map<int, double>& duOut)
+        {return LaxFriedrichs::dflux(uIn, uOut, unitNormal, mapped, alphaLF, duIn, duOut);};
 
-        // flag used to indicate if jacobian has been updated.
-        int jacUpdate =0;
-
-        // Return integrated flux corresponding to the given target cell
-        double Flux(const MeshInfo& mi, const indice& global);
-
-        // Compute derivatives of the integrated advection flux using in the jacobian.
-        unordered_map<int, double> derivFlux(const MeshInfo& mi, 
-                                             const indice& global);
-
-        // Print information
-        void GetInfo(const MeshInfo& mi);
+        // ????!!! boundary is not defined correctlly.
+        const double boundary = 0.0;
 
     private:
-        /**
-         * Define max value of u.
-         * Used in global Lax-Friedrichs scheme as the stabilization constant.
-         */
-        const double uMax_ = 1.0;
-
-        const double fixed_ = 0.0;
-
-        /**
-         * Define advection flux.
-         * And its corresponding derivatives.
-         * Several different flux scheme has been defined.
-         * Flux will be automatically distinguished with the method of overloading.
-         */
-        //! Local Lax-Friedrichs flux scheme
-        double flux_(const double& uIn, const double& uOut, 
-                     const vertex& unitNormal, const vertex& point);
-
-        //! Global Lax-Friedrichs flux scheme
-        double flux_(const double& uIn, const double& uOut, 
-                     const vertex& unitNormal, const vertex& point,
-                     const double& alphaLF);
-
-        //! Derivative of global Lax-Friedrich flux schme
-        unordered_map<int, double> dflux_(const double& uIn, const double& uOut, const vertex& unitNormal, 
-                                          const vertex& mapped, const double& alphaLF, 
-                                          const unordered_map<int, double>& duIn, 
-                                          const unordered_map<int, double>& duOut);
-
-        /**
-         * Computation of flux around a given target cell.
-         * Repeat calculation.
-         * Should not be called directly.
-         * Can be used for verification.
-         * Collective update routine should be used instead.
-         */
-        double singleCellFlux_(const MeshInfo& mi, const indice& global, const double& t);
-        unordered_map<int, double> singleCellDerivFlux_(const MeshInfo& mi, const indice& global, 
-                                                        const double& t);
-
-        /**
-         * Calculate flux integral on one given edge.
-         * Calculate derivative of the flux integral on one given edge at tha same time.
-         */
-        double edgeFlux_(const MeshInfo& mi, 
-                         const indice& globalIn, 
-                         const indice& globalOut, 
-                         const vertexSet& edge);
-
-        unordered_map<int,double> derivEdgeFlux_(const MeshInfo& mi, 
-                                                 const indice& globalIn, 
-                                                 const indice& globalOut, 
-                                                 const vertexSet& edge);
-
-        //! Store calculated advective flux and 
-        //! corresponding derivatives on both horizontal and vertical edge
-        //! The integer key in the following data structures are index of edges
-        unordered_map<int, double> edgeHoriFlux_;
-        unordered_map<int, double> edgeVertFlux_;
-
-        unordered_map<int, unordered_map<int, double>> derivEdgeHoriFlux_;
-        unordered_map<int, unordered_map<int, double>> derivEdgeVertFlux_;
-
-        //! Determine whether the given target cell is inside the boudary or not.
-        bool Interior_(const MeshInfo& mi, const indice& target);
-
-        //! Deal with boundary condition
-        //! Boundary condition returns boundary values for flux and derivatives of flux
-        double boundaryCondition_(const double& uIn,  
-                                  const vertex& unitNormal, const vertex& point,
-                                  const double& alphaLF);
-
-        unordered_map<int, double> boundaryCondition_(const double& uIn, const vertex& unitNormal, 
-                                                      const vertex& mapped, const double& alphaLF, 
-                                                      const unordered_map<int, double>& duIn);
         /** 
          * Transport function and its derivative.
          * Returns function defined in the func.cpp file.
@@ -129,18 +43,12 @@ class advection {
         double dFuncX_(vertex x, double u, double t);
         double FuncY_(vertex x, double u, double t);
         double dFuncY_(vertex x, double u, double t);
-
-        /**
-         * Pointer to a multilevel reconstruction class.
-         */
-        MLWENO::multiLevelReconstruction * mlrPtr_; 
 };
 
 class diffusion {
     public:
-        diffusion() {mlrPtrHori_ = new MLWENO::multiLevelReconstruction();
-                     mlrPtrVert_ = new MLWENO::multiLevelReconstruction();};
-        ~diffusion() {delete mlrPtrHori_; delete mlrPtrVert_;};
+        diffusion() {};
+        ~diffusion() {};
 
         /**
          * Diffusion defined on edges.
@@ -152,83 +60,150 @@ class diffusion {
         unordered_map<std::string, vector<indice>> reconstMethodsHori;
         unordered_set<std::string> wenoLevelsHori;
 
-        // Create corresponding multilevel reconstruction with the given information.
-        void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& mi);
+        unordered_set<int> boundaryCellsHori;
+        unordered_set<int> interiorCellsHori;
 
-        // Update nonlinear weights
-        void UpdateNonLinearWgts(const MeshInfo& mi);
+        unordered_set<std::string> boundaryLevelsHori;
+        unordered_set<std::string> interiorLevelsHori;
 
-        // Update flux across the edges collectively
-        void diffusion::UpdateEdgeFlux(const MeshInfo& mi);
+        unordered_set<int> boundaryCellsVert;
+        unordered_set<int> interiorCellsVert;
 
-        // Print information
-        void GetInfo(const MeshInfo& mi);
+        unordered_set<std::string> boundaryLevelsVert;
+        unordered_set<std::string> interiorLevelsVert;
 
-    private:
+        std::string highestHoriLevel;
+        std::string highestVertLevel;
 
-        // Calculate diffusive flux.
-        // And its corresponding derivatives.
-        double flux_(const double * ru, int n);
-
-        double dflux_(const double * ru, int n);
-
-        // Interpolation positions
-        const double alpha_ = 0.5;
-        const double beta_ = 1.5;
+        // Calculate diffusive flux
+        double flux(const double * ru, int n, double alpha, double beta);
 
         // Store calculated diffusive flux on the edge
-        unordered_map<int, double> edgeHoriFlux_;
-        unordered_map<int, double> edgeVertFlux_;
+        unordered_map<int, double> edgeHoriFlux;
+        unordered_map<int, double> edgeVertFlux;
 
-        /**
-         * Pointer to a multilevel reconstruction class.
-         */
-        MLWENO::multiLevelReconstruction * mlrPtrHori_;
-        MLWENO::multiLevelReconstruction * mlrPtrVert_;
+        // Interpolation positions
+        const double alpha = 0.5;
+        const double beta = 1.5;
+
+        // Four fixed boundary values
+        const double boundaryL = 0.0;
+        const double boundaryR = 0.0;
+        const double boundaryU = 0.0;
+        const double boundaryD = 0.0;
 };
 
 class reaction {
     public:
-        reaction() {mlrPtr_ = new MLWENO::multiLevelReconstruction();};
-        ~reaction() {delete mlrPtr_;};
+        reaction() {};
+        ~reaction() {};
 
-    private:
-        MLWENO::multiLevelReconstruction * mlrPtr_;
+        unordered_map<std::string, vector<indice>> reconstMethods;
+        unordered_set<std::string> wenoLevels;
 };
 
 class transport : public advection, public diffusion, public reaction {
     public:
-        transport() {mlpPtr_ = new MLWENO::MLWENOPrepare();};
-        ~transport() {delete mlpPtr_;};
+        transport() {mlrPtr_ = new MLWENO::multiLevelReconstruction();};
+        ~transport() {delete mlrPtr_;};
 
         /**
-         * Add reconstruction levels to MLWENOPrepare class
+         * Compute possible weno levels in advance.
+         * Add all useful weno levels to the class pointer.
          */
-        void AddLevel(const MeshInfo& mi, const int& stencilSizeX, 
-                                          const int& stencilSizeY);
+        void AddLevel(const MeshInfo& mi, int stencilSizeX, int stencilSizeY, vector<indice> brm);
 
         /**
-         * Update smoothness indicator for all levels predefined.
+         * Define weno reconstruction method for different sub problems.
          */
-        void UpdateSmoothnessIndic(const MeshInfo& mi);
+        void AddReconstMethod(unordered_map<std::string, vector<indice>>& reconstMethods, 
+                              std::string key, vector<indice> brm);
 
         /**
-         * Assign reconstruction levels and methods to advection and diffusion
+         * Create unordered set for weno levels with defined reconst method.  
+         * Create this unordered set for the member function SelectWenoReconstLevel() from
+         * multiLevelReconstruction pointer.
          */
-        void AssignReconstMethod(unordered_map<std::string, vector<indice>>& reconstMethods,
-                                 std::string key, const vector<indice>& brm);
+        void CreateWenoLevel(const unordered_map<std::string, vector<indice>>& reconstMethods, unordered_set<std::string>& wenoLevels); 
+  
+        /**
+         * Assign reconstruction method and weno levels to multi level reconstruction
+         */
+        void AssignReconstruction(const unordered_map<std::string, vector<indice>>& reconstMethods, const unordered_set<std::string>& wenoLevels);
+
+        void AssignBoundaryMethods(const unordered_set<int>& boundaryCells, 
+                                   const unordered_set<int>& interiorCells,
+                                   const unordered_set<std::string>& boundaryLevels, 
+                                   const unordered_set<std::string>& interiorLevels);
 
         /**
-         * Create MLWENO reconstruction for advection and diffusion class
+         * Separate boundary layer
          */
-        void CreateMLWENO(const MeshInfo& mi);
+        void SeparateBoundaryLayer(const MeshInfo& mi) {mlrPtr_->SeparateBoundaryLayer(mi);};
+
+        void SeparateAdvBoundaryLayer(const MeshInfo& mi);
+
+        void SeparateDiffBoundaryLayer(const MeshInfo& mi);
+
+        /**
+         * Update non linear weights with given reconstruction methods and weno levels
+         * Call update non linear weights from multi level reconstruction from under layer. 
+         */
+        void UpdateNonLinearWgts(const MeshInfo& mi, int stage) {mlrPtr_->UpdateNonLinearWgts(mi,stage);};
+
+        /**
+         * Compute advective flux.
+         * Intended to write this function inside advection class.
+         * Attempt failed.
+         */
+        double advFlux(const MeshInfo& mi, const indice& global, double t);
+
+        /**
+         * Compute derivative of advection flux using in the jacobian
+         */
+        unordered_map<int, double> derivAdvFlux(const MeshInfo& mi, 
+                                                const indice& global,
+                                                const double& time);
+
+        /**
+         * Compute diffusion flux on all edges at the same time.
+         */
+        void updateAllDiffFlux(const MeshInfo& mi);
+
+        /**
+         * Assemble calculated diffusive flux on each edges with respect to a given cell
+         */
+        double diffFlux(const MeshInfo& mi, const indice& global, const double& t);
+
+        /**
+         * Compute derivative of diffusion flux using in the jacobian
+         */
+        unordered_map<int, double> derivDiffFlux(const MeshInfo& mi, 
+                                                 const indice& global,
+                                                 const double& time);
+
+        /**
+         * Check if there is anything wrong
+         */
+        void Check(const MeshInfo& mi);
 
     private:
 
         /**
-         * Holding all weno reconstruction in a pointer pointing to MLWENOPrepare object
+         * Calculate diffusive flux on a given edge
          */
-        MLWENO::MLWENOPrepare * mlpPtr_;
+        //! A more compact version function utilizing function overload
+        double edgeDiffFlux_(const MeshInfo& mi, const indice& global, const vertexSet& edge,
+                             const double& alpha, const double& beta, const double& scale);
+        double edgeDiffFlux_(const MeshInfo& mi, const indice& global, const vertexSet& edge,
+                             const double& alpha, const double& beta, const double& scale,
+                             const int * boundFix, const int& n, const double& boundaryValue);
+        /** 
+         * Check if a given cell is inside the boundary or not
+         */
+        bool InsideBoundary_(const MeshInfo& mi, const indice& target);
+
+        MLWENO::multiLevelReconstruction * mlrPtr_;
 };
 
 #endif
