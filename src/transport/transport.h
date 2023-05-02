@@ -42,6 +42,16 @@ class advection {
         unordered_map<int, double> derivFlux(const MeshInfo& mi, 
                                              const indice& global);
 
+        /**
+         * Computation of flux around a given target cell.
+         * Repeat calculation.
+         * Should not be called directly.
+         * Can be used for verification.
+         * Collective update routine should be used instead.
+         */
+        double singleCellFlux(const MeshInfo& mi, const indice& global, const double& t);
+        unordered_map<int, double> singleCellDerivFlux(const MeshInfo& mi, const indice& global, 
+                                                       const double& t);
         // Print information
         void GetInfo(const MeshInfo& mi);
 
@@ -74,17 +84,6 @@ class advection {
                                           const vertex& mapped, const double& alphaLF, 
                                           const unordered_map<int, double>& duIn, 
                                           const unordered_map<int, double>& duOut);
-
-        /**
-         * Computation of flux around a given target cell.
-         * Repeat calculation.
-         * Should not be called directly.
-         * Can be used for verification.
-         * Collective update routine should be used instead.
-         */
-        double singleCellFlux_(const MeshInfo& mi, const indice& global, const double& t);
-        unordered_map<int, double> singleCellDerivFlux_(const MeshInfo& mi, const indice& global, 
-                                                        const double& t);
 
         /**
          * Calculate flux integral on one given edge.
@@ -152,19 +151,32 @@ class diffusion {
         unordered_map<std::string, vector<indice>> reconstMethodsHori;
         unordered_set<std::string> wenoLevelsHori;
 
+        // Interpolation positions
+        const double alpha = 0.5;
+        const double beta = 1.5;
+
         // Create corresponding multilevel reconstruction with the given information.
         void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& mi);
 
         // Update nonlinear weights
         void UpdateNonLinearWgts(const MeshInfo& mi);
 
-        // Update flux across the edges collectively
-        void diffusion::UpdateEdgeFlux(const MeshInfo& mi);
+        // Update flux and its derivative across the edges collectively
+        void UpdateEdgeFlux(const MeshInfo& mi);
+
+        void UpdateEdgeFluxDerivative(const MeshInfo& mi);
+
+        // Return sum of integrated flux or corresponding derivative for a given target cell
+        double Flux(const MeshInfo& mi, const indice& global);
+
+        unordered_map<int, double> derivFlux(const MeshInfo& mi, const indice& global);
 
         // Print information
         void GetInfo(const MeshInfo& mi);
 
     private:
+
+        double fixed_ = 0.0;
 
         // Calculate diffusive flux.
         // And its corresponding derivatives.
@@ -172,13 +184,34 @@ class diffusion {
 
         double dflux_(const double * ru, int n);
 
-        // Interpolation positions
-        const double alpha_ = 0.5;
-        const double beta_ = 1.5;
+        //! Define boundary conditions here
+        double boundaryCondition_(double * ru, int n, const int& flag);
 
-        // Store calculated diffusive flux on the edge
+        //! Compute integrated diffusion flux on the given edge
+        //! Horizontal or vertical multilevel reconstruction is passed in
+        //! as a parameter.
+        double edgeFlux_(const MeshInfo& mi, 
+                         const indice& global,
+                         const vertexSet& edge,
+                         const MLWENO::multiLevelReconstruction& mlrPtr);
+
+        unordered_map<int, double> derivEdgeFlux_(const MeshInfo& mi,
+                                                  const indice& global,
+                                                  const vertexSet& edge,
+                                                  const MLWENO::multiLevelReconstruction& mlrPtr);
+
+        /**
+         * Determine whether the target cell is inside the boundary layer
+         */
+        int Interior_(const MeshInfo& mi, const indice& target);
+
+        //! Store calculated diffusive flux on the edge
+        //! And its corresponding derivative
         unordered_map<int, double> edgeHoriFlux_;
         unordered_map<int, double> edgeVertFlux_;
+
+        unordered_map<int, unordered_map<int, double>> derivEdgeHoriFlux_;
+        unordered_map<int, unordered_map<int, double>> derivEdgeVertFlux_;
 
         /**
          * Pointer to a multilevel reconstruction class.

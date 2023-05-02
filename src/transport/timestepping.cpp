@@ -33,22 +33,18 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     user->mi->localVals = lu;
 
     //! Compute advection flux first =======================================
-//    user->trPtr->AssignReconstruction(user->trPtr->advection::reconstMethods,
-//                                      user->trPtr->advection::wenoLevels);
 
-//    user->trPtr->AssignBoundaryMethods(user->trPtr->advection::boundaryCells,
-//                                       user->trPtr->advection::interiorCells,
-//                                       user->trPtr->advection::boundaryLevels,
-//                                       user->trPtr->advection::interiorLevels);
+    user->trPtr->UpdateSmoothnessIndic(*(user->mi));
 
-//    user->trPtr->UpdateNonLinearWgts(*(user->mi),2);
+    user->trPtr->advection::UpdateNonLinearWgts(*(user->mi));
 
-    //user->trPtr->Check(*(user->mi));
+    user->trPtr->advection::UpdateEdgeFlux(*(user->mi));
 
     //! Loop through computational domain
     for (int j=user->mi->MPIlocalCellStart[1]; j<user->mi->MPIlocalCellStart[1] + user->mi->MPIlocalCellSize[1]; j++){
     for (int i=user->mi->MPIlocalCellStart[0]; i<user->mi->MPIlocalCellStart[0] + user->mi->MPIlocalCellSize[0]; i++){
         f[j][i] = -1.0*user->trPtr->advection::Flux(*(user->mi), {i,j});
+        //f[j][i] = -1.0*user->trPtr->advection::singleCellFlux(*(user->mi),{i,j},0);
     }}
 
     //! Compute diffusion flux second ======================================

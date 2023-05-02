@@ -192,7 +192,8 @@ int main(int argc, char **argv){
     vertex center {0.0,0.0};
 
     // Test point wise reconstruction
-//    cout << "Point wise reconstruction error at center " << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) - func(center, {-L/(2*M)}) << endl;
+    cout << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) << endl;
+    //cout << "Point wise reconstruction error at center " << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) - func(center, {-L/(2*M)}) << endl;
 
     // Test derivative of point wise reconstruction
     unordered_map<int, double> deriv = mlrPtr->EvaluateDerivMLWENO(mi,center,{M/2,N/2});

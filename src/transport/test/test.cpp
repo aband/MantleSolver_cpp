@@ -208,15 +208,17 @@ int main(int argc, char **argv){
 
     trPtr->CreateMLWENO(mi);
 
-    trPtr->UpdateSmoothnessIndic(mi);
+// Test and print ========================================================
+    //trPtr->UpdateSmoothnessIndic(mi);
 
     //trPtr->advection::UpdateNonLinearWgts(mi);
 
     //trPtr->advection::GetInfo(mi);
 
-    trPtr->diffusion::UpdateNonLinearWgts(mi);
+    //trPtr->diffusion::UpdateNonLinearWgts(mi);
 
-    trPtr->diffusion::GetInfo(mi);
+    //trPtr->diffusion::GetInfo(mi);
+// =======================================================================
 
     //! Create ctx for time stepping
     Ctx ctx;
@@ -227,7 +229,7 @@ int main(int argc, char **argv){
     /**
      * Time stepping.
      */
-/*
+
     TS ts;
     SNES snes;
     KSP ksp;
@@ -271,7 +273,7 @@ int main(int argc, char **argv){
     // ===================================================================
     //! Explicit
     //! Forward Euler
-    //TSSetType(ts, TSEULER);
+    TSSetType(ts, TSEULER);
 
     //! SSP
     //TSSetType(ts, TSSSP);
@@ -281,13 +283,14 @@ int main(int argc, char **argv){
 
     // ===================================================================
     //! Implicit
-
+/*
     Mat J;
     MatCreate(PETSC_COMM_WORLD, &J);
     MatSetSizes(J, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N);
     MatSetUp(J);
     TSSetType(ts, TSBEULER);
     TSSetRHSJacobian(ts, J, J, FormJacobian, &ctx);
+*/
 
     //TSSetTolerances(ts,1e-3,NULL,1e-3,NULL);
     //TSSetMaxSNESFailures(ts, 50);
@@ -309,7 +312,6 @@ int main(int argc, char **argv){
     cout << "Elapsed time: " << elapsed_seconds.count() << endl;
 
     TSView(ts,PETSC_VIEWER_STDOUT_WORLD);
-*/
 
 // ====================================================================================================================================
     // Ouptut of final result

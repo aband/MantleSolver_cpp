@@ -227,7 +227,7 @@ namespace MLWENO{
             /**
              * Evaluation of given point with selected weno reconstruction method.
              */
-            double EvaluateMLWENO(const MeshInfo& mi, vertex point, indice cell);
+            double EvaluateMLWENO(const MeshInfo& mi, vertex point, indice cell) const;
 
             /**
              * Derivative of the reconstruction of value with respect to the given point

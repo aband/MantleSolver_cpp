@@ -491,7 +491,7 @@ void multiLevelReconstruction::SelectWenoReconstLevel(const unordered_set<std::s
 /**
  * Reconstruction of a given point value with selected weno reconstruction method.
  */
-double multiLevelReconstruction::EvaluateMLWENO(const MeshInfo& mi, vertex point, indice globalCell){
+double multiLevelReconstruction::EvaluateMLWENO (const MeshInfo& mi, vertex point, indice globalCell) const {
 
     double work = 0.0;
 
@@ -499,14 +499,14 @@ double multiLevelReconstruction::EvaluateMLWENO(const MeshInfo& mi, vertex point
     //indice globalCell = mi.MPIlocalCellStart + localCell;
 
     //! Get calculated nonlinear weights linked to this cell.
-    unordered_map<std::string, unordered_map<int,double>> nlw = nonLinearWgts_[FlatIndic(mi,globalCell)];
+    unordered_map<std::string, unordered_map<int,double>> nlw = nonLinearWgts_.at(FlatIndic(mi,globalCell));
 
     //! Evaluate in the multi level weno fashion.
     for (auto const& level : wenoLevels_){
         if (nlw[level].empty() == 0){
             for (auto & wgts: nlw[level]){
-                indice owner = globalCell + Bend(reconstLevels_[level]->GetSizeX(),wgts.first);
-                work += wgts.second * reconstLevels_[level]->Evaluate(mi, owner, point); 
+                indice owner = globalCell + Bend(reconstLevels_.at(level)->GetSizeX(),wgts.first);
+                work += wgts.second * reconstLevels_.at(level)->Evaluate(mi, owner, point); 
             }
         }
     }
