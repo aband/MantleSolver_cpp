@@ -36,16 +36,22 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
 
     user->trPtr->UpdateSmoothnessIndic(*(user->mi));
 
-    user->trPtr->advection::UpdateNonLinearWgts(*(user->mi));
+//    user->trPtr->advection::UpdateNonLinearWgts(*(user->mi));
 
-    user->trPtr->advection::UpdateEdgeFlux(*(user->mi));
+    user->trPtr->diffusion::UpdateNonLinearWgts(*(user->mi));
+
+//    user->trPtr->advection::UpdateEdgeFlux(*(user->mi));
+ 
+    user->trPtr->diffusion::UpdateEdgeFlux(*(user->mi));
 
     //! Loop through computational domain
     for (int j=user->mi->MPIlocalCellStart[1]; j<user->mi->MPIlocalCellStart[1] + user->mi->MPIlocalCellSize[1]; j++){
     for (int i=user->mi->MPIlocalCellStart[0]; i<user->mi->MPIlocalCellStart[0] + user->mi->MPIlocalCellSize[0]; i++){
-        f[j][i] = -1.0*user->trPtr->advection::Flux(*(user->mi), {i,j});
+        //f[j][i] = -1.0*user->trPtr->advection::Flux(*(user->mi), {i,j});
+        f[j][i] = user->trPtr->diffusion::Flux(*(user->mi), {i,j});
+        cout << "( " << i << ", " << j << " )" << " Flux : " << f[j][i] << ";  ";
         //f[j][i] = -1.0*user->trPtr->advection::singleCellFlux(*(user->mi),{i,j},0);
-    }}
+    }cout << endl;}
 
     //! Compute diffusion flux second ======================================
 //    user->trPtr->AssignReconstruction(user->trPtr->diffusion::reconstMethodsVert,

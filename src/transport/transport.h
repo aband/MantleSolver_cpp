@@ -191,13 +191,17 @@ class diffusion {
         //! Horizontal or vertical multilevel reconstruction is passed in
         //! as a parameter.
         double edgeFlux_(const MeshInfo& mi, 
-                         const indice& global,
+                         const indice& globalCell,
+                         const indice& globalEdge,
                          const vertexSet& edge,
+                         const double& scale,
                          const MLWENO::multiLevelReconstruction& mlrPtr);
 
         unordered_map<int, double> derivEdgeFlux_(const MeshInfo& mi,
-                                                  const indice& global,
-                                                  const vertexSet& edge,
+                                                  const indice& globalCell,
+                                                  const indice& globalEdge,
+                                                  const vertexSet& edge,                       
+                                                  const double& scale,
                                                   const MLWENO::multiLevelReconstruction& mlrPtr);
 
         /**

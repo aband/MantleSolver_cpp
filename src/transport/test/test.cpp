@@ -198,13 +198,13 @@ int main(int argc, char **argv){
 
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(1,1)",{{0,0}});
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(4,5)",{{-2,-2}});
+    //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}});
+    //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(4,5)",{{-2,-2}});
 
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(1,1)",{{0,0}});
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,1},{-2,-1},{-2,-2},{0,-2}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(5,4)",{{-2,-2}});
+    //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,-1},{-2,-1},{-2,-2},{0,-2}});
+    //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(5,4)",{{-2,-2}});
 
     trPtr->CreateMLWENO(mi);
 
