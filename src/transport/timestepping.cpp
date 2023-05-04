@@ -49,9 +49,8 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     for (int i=user->mi->MPIlocalCellStart[0]; i<user->mi->MPIlocalCellStart[0] + user->mi->MPIlocalCellSize[0]; i++){
         //f[j][i] = -1.0*user->trPtr->advection::Flux(*(user->mi), {i,j});
         f[j][i] = user->trPtr->diffusion::Flux(*(user->mi), {i,j});
-        cout << "( " << i << ", " << j << " )" << " Flux : " << f[j][i] << ";  ";
-        //f[j][i] = -1.0*user->trPtr->advection::singleCellFlux(*(user->mi),{i,j},0);
-    }cout << endl;}
+        //cout << "( " << i << ", " << j << " )" << " Flux : " << f[j][i] << ";  ";
+    }}//cout << endl;}
 
     //! Compute diffusion flux second ======================================
 //    user->trPtr->AssignReconstruction(user->trPtr->diffusion::reconstMethodsVert,

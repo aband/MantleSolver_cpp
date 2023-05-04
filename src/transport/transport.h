@@ -192,7 +192,8 @@ class diffusion {
         //! as a parameter.
         double edgeFlux_(const MeshInfo& mi, 
                          const indice& globalCell,
-                         const indice& globalEdge,
+                         const int& k,
+                         const int& size,
                          const vertexSet& edge,
                          const double& scale,
                          const MLWENO::multiLevelReconstruction& mlrPtr);
@@ -207,7 +208,7 @@ class diffusion {
         /**
          * Determine whether the target cell is inside the boundary layer
          */
-        int Interior_(const MeshInfo& mi, const indice& target);
+        int Interior_(const int& k, const int& size);
 
         //! Store calculated diffusive flux on the edge
         //! And its corresponding derivative
