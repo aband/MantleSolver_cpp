@@ -590,7 +590,20 @@ double diffusion::dflux_(const double * dru, int n){
  * Return an integer that distinguishes different situations near the boundary.
  */
 int diffusion::Interior_(const int& k, const int& size){
-/*
+
+    if (k == 0){
+        return 2;
+    } else if (k == size){
+        return 3;
+    } else if (k == 1 || k == size - 1){
+        return 0;
+    } else {
+        return 0;
+    }
+
+}
+
+int diffusion::Interior_(const MeshInfo& mi, const indice& target){
     if ((target[0] > 1 && target[0] < mi.MPIglobalCellSize[0] -1) ||
         (target[1] > 1 && target[1] < mi.MPIglobalCellSize[1] -1) ){
         // Completelly inside the boundary
@@ -605,18 +618,6 @@ int diffusion::Interior_(const int& k, const int& size){
     } else {
         return 3;
     }
-*/
-
-    if (k == 0){
-        return 2;
-    } else if (k == size){
-        return 3;
-    } else if (k == 1 || k == size - 1){
-        return 1;
-    } else {
-        return 0;
-    }
-
 }
 
 void diffusion::UpdateEdgeFlux(const MeshInfo& mi){
@@ -791,10 +792,10 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
 
                 double ru[4];
 
-                ru[0] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
-                ru[1] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
-                ru[2] = mlrPtr.EvaluateMLWENO(mi,mapped+unitNormal*alpha*scale,globalCell);
-                ru[3] = mlrPtr.EvaluateMLWENO(mi,mapped+unitNormal*beta*scale, globalCell);
+                ru[0] = mlrPtr.EvaluateMLWENO(mi,mapped+unitNormal*beta*scale, globalCell);
+                ru[1] = mlrPtr.EvaluateMLWENO(mi,mapped+unitNormal*alpha*scale,globalCell);
+                ru[2] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
+                ru[3] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
 
                 work += gwe[g] * flux_(ru, 4) * len/2.0;
     
@@ -809,10 +810,10 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
 
                 double ru[4];
 
-                ru[0] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*scale, globalCell);
-                ru[1] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha/beta*scale,globalCell);
-                ru[2] = mlrPtr.EvaluateMLWENO(mi,mapped+unitNormal*alpha/beta*scale,globalCell);
-                ru[3] = mlrPtr.EvaluateMLWENO(mi,mapped+unitNormal*scale, globalCell);
+                ru[0] = mlrPtr.EvaluateMLWENO(mi,mapped+unitNormal*scale, globalCell);
+                ru[1] = mlrPtr.EvaluateMLWENO(mi,mapped+unitNormal*alpha/beta*scale,globalCell);
+                ru[2] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha/beta*scale,globalCell);
+                ru[3] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*scale, globalCell);
 
                 work += gwe[g] * flux_(ru, 4) * len/2.0;
     

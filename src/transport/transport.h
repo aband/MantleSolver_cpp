@@ -210,6 +210,8 @@ class diffusion {
          */
         int Interior_(const int& k, const int& size);
 
+        int Interior_(const MeshInfo& mi, const indice& target);
+
         //! Store calculated diffusive flux on the edge
         //! And its corresponding derivative
         unordered_map<int, double> edgeHoriFlux_;
