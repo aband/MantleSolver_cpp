@@ -253,10 +253,6 @@ unordered_map<int, double> advection::singleCellDerivFlux(const MeshInfo& mi, co
     return work;
 }
 
-//inline vertexSet Getedge(const vertexSet& corners, const int& pos){
-//    return {corners[pos], corners[(pos+1)%4]};
-//}
-
 //! Collective flux update.
 void advection::UpdateEdgeFlux(const MeshInfo& mi){
 
@@ -624,9 +620,6 @@ void diffusion::UpdateEdgeFlux(const MeshInfo& mi){
 
     // Update every left and bottom edge for each target cell
 
-    //cout << mlrPtrHori_->EvaluateMLWENO(mi,{-0.954919, 0.0},{0,2}) << endl;
-    //cout << mlrPtrHori_->EvaluateMLWENO(mi,{0.954919,0.0},{4,2}) << endl;
-
     for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] ; j++){
     for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] ; i++){
 
@@ -678,21 +671,11 @@ double diffusion::Flux(const MeshInfo& mi, const indice& global){
 
     work += edgeHoriFlux_[FlatIndic(mi,global)]; 
 
-//    cout << endl;
-
-//    cout << edgeHoriFlux_[FlatIndic(mi,global)]  << " ";
-
     work += -1 * edgeHoriFlux_[FlatIndic(mi,global+mi.faceNormal[2])];
-
-//    cout << -1 * edgeHoriFlux_[FlatIndic(mi,global+mi.faceNormal[2])] << " ";
 
     work += -1 * edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global+mi.faceNormal[1])];
 
-//    cout << -1 * edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global+mi.faceNormal[1])] << " ";
-
     work += edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)];
-
-//    cout << edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)] << endl;
 
     work /= area;
   
@@ -828,8 +811,8 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
 
                 double ru[4];
 
-                ru[0] = 0.0;
-                ru[1] = 0.0;
+                ru[0] = -1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
+                ru[1] = -1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
                 ru[2] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
                 ru[3] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
 
@@ -846,10 +829,10 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
 
                 double ru[4];
 
-                ru[0] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
-                ru[1] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
-                ru[2] = 0.0;
-                ru[3] = 0.0;
+                ru[0] = -1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
+                ru[1] = -1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
+                ru[2] = 1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
+                ru[3] = 1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
 
                 work += gwe[g] * boundaryCondition_(ru, 4, 3) * len/2.0;
     
