@@ -35,8 +35,13 @@ double InitialValue(vertex& point, const vector<double>& param){
     //return point[0] + point[1];
 
     // Initial value for sine wave 2D Burger's equation
-    return pow(sin(M_PI*(point[0]+1)/2),2)*pow(sin(M_PI*(point[1]+1)/2),2);
+    //return pow(sin(M_PI*(point[0]+1)/2),2)*pow(sin(M_PI*(point[1]+1)/2),2);
 
+    if (abs(point[0])+abs(point[1])<0.5){
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 PetscErrorCode Monitor(TS ts, PetscInt step, PetscReal t, Vec U, void *ctx){
@@ -198,12 +203,14 @@ int main(int argc, char **argv){
 
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(1,1)",{{0,0}});
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}});
+    //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{0,0},{-3,0},{-3,-2},{0,-2}}); 
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(4,5)",{{-2,-2}});
 
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(1,1)",{{0,0}});
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,-1},{-2,-1},{-2,-2},{0,-2}});
+    //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,-1},{-2,-1},{-2,-2},{0,-2}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,0},{-2,0},{-2,-3},{0,-3}}); 
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(5,4)",{{-2,-2}});
 
     trPtr->CreateMLWENO(mi);
@@ -283,15 +290,17 @@ int main(int argc, char **argv){
 
     // ===================================================================
     //! Implicit
-/*
-    Mat J;
-    MatCreate(PETSC_COMM_WORLD, &J);
-    MatSetSizes(J, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N);
-    MatSetUp(J);
-    TSSetType(ts, TSBEULER);
-    TSSetRHSJacobian(ts, J, J, FormJacobian, &ctx);
-*/
 
+    int implicit = 0;
+    ierr = PetscOptionsGetInt(NULL, NULL, "-implicit", &implicit, NULL);CHKERRQ(ierr);
+    if (implicit){
+        Mat J;
+        MatCreate(PETSC_COMM_WORLD, &J);
+        MatSetSizes(J, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N);
+        MatSetUp(J);
+        TSSetType(ts, TSBEULER);
+        TSSetRHSJacobian(ts, J, J, FormJacobian, &ctx);
+    }
     //TSSetTolerances(ts,1e-3,NULL,1e-3,NULL);
     //TSSetMaxSNESFailures(ts, 50);
 

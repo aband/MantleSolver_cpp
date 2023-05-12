@@ -200,7 +200,8 @@ class diffusion {
 
         unordered_map<int, double> derivEdgeFlux_(const MeshInfo& mi,
                                                   const indice& globalCell,
-                                                  const indice& globalEdge,
+                                                  const int& k,
+                                                  const int& size,
                                                   const vertexSet& edge,                       
                                                   const double& scale,
                                                   const MLWENO::multiLevelReconstruction& mlrPtr);
@@ -209,8 +210,6 @@ class diffusion {
          * Determine whether the target cell is inside the boundary layer
          */
         int Interior_(const int& k, const int& size);
-
-        int Interior_(const MeshInfo& mi, const indice& target);
 
         //! Store calculated diffusive flux on the edge
         //! And its corresponding derivative

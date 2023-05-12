@@ -106,7 +106,12 @@ void singleLevelReconstruction::ComputeStencilPolyn_(const MeshInfo& mi){
  * Evaluate at the given single reconstruction level
  */
 double singleLevelReconstruction::Evaluate(const MeshInfo& mi, indice owner, vertex point){
-    return CheckExist(mi, owner) * singleLevel_[FlatIndic(mi,owner)]->eval(point);
+
+    if (CheckExist(mi,owner)){
+        return singleLevel_[FlatIndic(mi,owner)]->eval(point);
+    } else {
+        return 0;
+    }
 }
 
 /**
@@ -114,7 +119,13 @@ double singleLevelReconstruction::Evaluate(const MeshInfo& mi, indice owner, ver
  * but evaluate individual stencil polynomials separately not the collapsed one.
  */
 double singleLevelReconstruction::Evaluate(const MeshInfo& mi, const indice& owner, const vertex& point, const int& local){
-    return CheckExist(mi, owner) * singleLevel_[FlatIndic(mi,owner)]->eval(point, local);
+
+    if (CheckExist(mi,owner)){
+        return singleLevel_[FlatIndic(mi,owner)]->eval(point,local);
+    } else {
+        return 0;
+    }
+    //return CheckExist(mi, owner) * singleLevel_[FlatIndic(mi,owner)]->eval(point, local);
 }
 
 //! Extract smoothness indicator from pre-calculated values

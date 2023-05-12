@@ -192,11 +192,11 @@ int main(int argc, char **argv){
     vertex center {0.0,0.0};
 
     // Test point wise reconstruction
-    cout << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) << endl;
+    //cout << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) << endl;
     //cout << "Point wise reconstruction error at center " << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) - func(center, {-L/(2*M)}) << endl;
 
     // Test derivative of point wise reconstruction
-    unordered_map<int, double> deriv = mlrPtr->EvaluateDerivMLWENO(mi,center,{M/2,N/2});
+//    unordered_map<int, double> deriv = mlrPtr->EvaluateDerivMLWENO(mi,center,{M/2,N/2});
 
 //    for (auto & d: deriv){
 //        indice b = Bend(mi,d.first);
@@ -220,7 +220,7 @@ int main(int argc, char **argv){
         vertex mapped = GaussMapPointsFace(gpf[i],corner);
         double jac = abs(GaussJacobian(gpf[i],corner));
         double gw = gwf[i];
-        work += jac*gw*pow(abs(mlrPtr->EvaluateMLWENO(mi,mapped,{1,1}) - func(mapped, {-L/(2*M)})),r);
+//        work += jac*gw*pow(abs(mlrPtr->EvaluateMLWENO(mi,mapped,{1,1}) - func(mapped, {-L/(2*M)})),r);
     }
 
     work = work / ((L*H)/9);
@@ -242,6 +242,7 @@ int main(int argc, char **argv){
     mlpPtr->AddLevel(mi,3,3);
     mlpPtr->AddLevel(mi,4,4);
     mlpPtr->AddLevel(mi,5,5);
+    mlpPtr->AddLevel(mi,4,5);
 
     mlpPtr->UpdateSmoothnessIndic(mi);
 
@@ -252,13 +253,21 @@ int main(int argc, char **argv){
 
     mlrIns1->SelectWenoReconstLevel({"(1,1)", "(2,2)", "(3,3)"},(*mlpPtr));
 
-    mlrIns1->ModifyReconstMethod("(2,2)",{{-1,-1}});
-    mlrIns1->ModifyReconstMethod("(1,1)",{{0,0}});
-    mlrIns1->ModifyReconstMethod("(3,3)",{{-1,-1}});
+//    mlrIns1->ModifyReconstMethod("(2,2)",{{-1,-1}});
+//    mlrIns1->ModifyReconstMethod("(1,1)",{{0,0}});
+//    mlrIns1->ModifyReconstMethod("(3,3)",{{-1,-1}});
+
+    //mlrIns1->ModifyReconstMethod("(1,1)",{{0,0}}); 
+    //mlrIns1->ModifyReconstMethod("(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}}); 
+    //trPtr->ModifyReconstMethod("(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}}); 
+    mlrIns1->ModifyReconstMethod("(3,3)",{{0,0},{-3,0},{-3,-2},{0,-2}});  
+    mlrIns1->ModifyReconstMethod("(4,5)",{{-2,-2}});            
 
     mlrIns1->SeparateBoundaryLayer(mi);
 
     mlrIns1->UpdateNonLinearWgts(mi,2);
+
+    mlrIns1->EvaluateMLWENO(mi,{-0.85 -0.98873}, {3,0}); 
 
     mlrIns1->GetInfo();
 

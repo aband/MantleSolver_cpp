@@ -274,7 +274,7 @@ void advection::UpdateEdgeFlux(const MeshInfo& mi){
         edgeHoriFlux_[FlatIndic(mi, global)] = edgeFlux_(mi, global, globalOut, hori);
 
         // Update top edge for the cells on the very top
-        if (j == mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1]-1){
+        if (j == mi.MPIglobalCellSize[1]-1){
             hori = {corners.at(2), corners.at(3)};
             globalOut = global + mi.faceNormal[2];
 
@@ -285,13 +285,13 @@ void advection::UpdateEdgeFlux(const MeshInfo& mi){
         vertexSet vert {corners.at(3), corners.at(0)};
         globalOut = global + mi.faceNormal[3];
 
-        edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)] = edgeFlux_(mi, global, globalOut, vert);
+        edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,global)] = edgeFlux_(mi, global, globalOut, vert);
 
         // Update right edge for the cells on the very right of the local part
-        if (i == mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0]-1){
+        if (i == mi.MPIglobalCellSize[0]-1){
             vert = {corners.at(1), corners.at(2)};
             globalOut = global + mi.faceNormal[1];
-            edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,globalOut)] = -1 * edgeFlux_(mi, global, globalOut, vert);
+            edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalOut)] = -1 * edgeFlux_(mi, global, globalOut, vert);
         }
     }}
 
@@ -317,7 +317,7 @@ void advection::UpdateEdgeFluxDerivative(const MeshInfo& mi){
         derivEdgeHoriFlux_[FlatIndic(mi, global)] = derivEdgeFlux_(mi, global, globalOut, hori);
 
         // Update top edge for the cells on the very top
-        if (j == mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1]){
+        if (j == mi.MPIglobalCellSize[1]-1){
             hori = {corners.at(2), corners.at(3)};
             globalOut = global + mi.faceNormal[2];
 
@@ -332,10 +332,10 @@ void advection::UpdateEdgeFluxDerivative(const MeshInfo& mi){
         vertexSet vert {corners.at(3), corners.at(0)};
         globalOut = global + mi.faceNormal[3];
 
-        derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)] = derivEdgeFlux_(mi, global, globalOut, vert);
+        derivEdgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,global)] = derivEdgeFlux_(mi, global, globalOut, vert);
 
         // Update right edge for the cells on the very right of the local part
-        if (i == mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0]){
+        if (i == mi.MPIglobalCellSize[0]-1){
             vert = {corners.at(1), corners.at(2)};
             globalOut = global + mi.faceNormal[1];
 
@@ -343,7 +343,7 @@ void advection::UpdateEdgeFluxDerivative(const MeshInfo& mi){
             for (auto& d: derivedgevert){
                 d.second *= -1;
             }
-            derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,globalOut)] = derivedgevert;
+            derivEdgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalOut)] = derivedgevert;
         }
 
     }}
@@ -599,27 +599,9 @@ int diffusion::Interior_(const int& k, const int& size){
 
 }
 
-int diffusion::Interior_(const MeshInfo& mi, const indice& target){
-    if ((target[0] > 1 && target[0] < mi.MPIglobalCellSize[0] -1) ||
-        (target[1] > 1 && target[1] < mi.MPIglobalCellSize[1] -1) ){
-        // Completelly inside the boundary
-        return 0;
-    } else if(target[0] == 1 || target[0] == mi.MPIglobalCellSize[0] - 1 ||
-              target[1] == 1 || target[1] == mi.MPIglobalCellSize[1] - 1){
-        // Half on the boundary
-        return 1;
-    } else if (target[0] == 0 || target[1] == 0) {
-        // On the boundary
-        return 2;
-    } else {
-        return 3;
-    }
-}
-
 void diffusion::UpdateEdgeFlux(const MeshInfo& mi){
 
     // Update every left and bottom edge for each target cell
-
     for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] ; j++){
     for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] ; i++){
 
@@ -633,25 +615,25 @@ void diffusion::UpdateEdgeFlux(const MeshInfo& mi){
         // Compute and restore horizontal flux
         vertexSet hori {corners.at(0), corners.at(1)};
 
-        edgeHoriFlux_[FlatIndic(mi,globalCell)] = edgeFlux_(mi, globalCell, j, mi.MPIlocalCellSize[1], hori, scale, *(mlrPtrHori_)); 
+        edgeHoriFlux_[FlatIndic(mi,globalCell)] = edgeFlux_(mi, globalCell, j, mi.MPIglobalCellSize[1], hori, scale, *(mlrPtrHori_)); 
         
         // Assign additional top edge flux to the physical boundary
-        if (j == mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] - 1){
+        if (j == mi.MPIglobalCellSize[1] - 1){
             hori = {corners.at(2), corners.at(3)};
             indice globalEdge {i,j+1};
-            edgeHoriFlux_[FlatIndic(mi,globalEdge)] = -1*edgeFlux_(mi,globalCell, j+1, mi.MPIlocalCellSize[1], hori, scale, *(mlrPtrHori_)); 
+            edgeHoriFlux_[FlatIndic(mi,globalEdge)] = -1*edgeFlux_(mi,globalCell, j+1, mi.MPIglobalCellSize[1], hori, scale, *(mlrPtrHori_)); 
         }
 
         // Compute and restore vertical flux
         vertexSet vert {corners.at(3), corners.at(0)};
         
-        edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,globalCell)] = edgeFlux_(mi, globalCell, i, mi.MPIlocalCellSize[0], vert, scale, *(mlrPtrVert_));
+        edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalCell)] = edgeFlux_(mi, globalCell, i, mi.MPIglobalCellSize[0], vert, scale, *(mlrPtrVert_));
 
         // Assign additional right edge flux to the physical boundary
-        if (i == mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] -1 ){
+        if (i == mi.MPIglobalCellSize[0] -1 ){
             vert = {corners.at(1), corners.at(2)};
             indice globalEdge {i+1,j};
-            edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,globalEdge)] = -1*edgeFlux_(mi, globalCell, i+1, mi.MPIlocalCellSize[0], vert, scale, *(mlrPtrVert_));
+            edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalEdge)] = -1*edgeFlux_(mi, globalCell, i+1, mi.MPIglobalCellSize[0], vert, scale, *(mlrPtrVert_));
         }
 
     }}
@@ -659,8 +641,46 @@ void diffusion::UpdateEdgeFlux(const MeshInfo& mi){
 }
 
 void diffusion::UpdateEdgeFluxDerivative(const MeshInfo& mi){
+    // Update every let and bottom edge for each target cell
+    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] ; j++){
+    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] ; i++){
+        indice globalCell {i,j};
 
+        const double scale = sqrt(mi.cellArea.at(FlatIndic(mi,globalCell)));
 
+        // Extract corners with respect to given global indice
+        vertexSet corners = extractCorners(mi, globalCell);
+    
+        // Compute and restore horizontal derivative of flux
+        vertexSet hori {corners.at(0), corners.at(1)};
+
+        derivEdgeHoriFlux_[FlatIndic(mi,globalCell)] = derivEdgeFlux_(mi, globalCell, j, mi.MPIglobalCellSize[1], hori, scale, *(mlrPtrHori_));
+
+        if (j == mi.MPIglobalCellSize[1] - 1){
+            hori = {corners.at(2), corners.at(3)};
+            indice globalEdge {i,j+1};
+            unordered_map<int, double> derivedgehori = derivEdgeFlux_(mi, globalCell, j+1, mi.MPIglobalCellSize[1], hori, scale, *(mlrPtrHori_));
+            for (auto& d: derivedgehori){
+                d.second *= -1;
+            }
+            derivEdgeHoriFlux_[FlatIndic(mi, globalEdge)] = derivedgehori;
+        }
+
+        // Compute and restore vertical flux
+        vertexSet vert {corners.at(3), corners.at(0)};
+        derivEdgeVertFlux_[FlatIndic(mi,globalCell)] = derivEdgeFlux_(mi, globalCell, j, mi.MPIglobalCellSize[0], vert, scale, *(mlrPtrVert_));
+
+        if (i == mi.MPIglobalCellSize[0] - 1){
+            vert = {corners.at(1), corners.at(2)};
+            indice globalEdge {i+1,j};
+            unordered_map<int, double> derivedgevert = derivEdgeFlux_(mi, globalCell, i+1, mi.MPIglobalCellSize[0], vert, scale, *(mlrPtrVert_));
+            for (auto& d:derivedgevert){
+                d.second *= -1;
+            }
+            derivEdgeVertFlux_[FlatIndic(mi,globalEdge)] = derivedgevert;
+        }
+
+    }}
 }
 
 double diffusion::Flux(const MeshInfo& mi, const indice& global){
@@ -735,13 +755,15 @@ unordered_map<int, double> diffusion::derivFlux(const MeshInfo& mi, const indice
 }
 
 double diffusion::boundaryCondition_(double * ru, int n, const int& flag){
+
+    // Reflecive boundary condition
     if (flag == 2) {
-        ru[0] = fixed_;
-        ru[1] = fixed_;
+        ru[0] = -ru[3];
+        ru[1] = -ru[2];
         return flux_(ru,n); 
     } else {
-        ru[2] = fixed_;
-        ru[3] = fixed_;
+        ru[2] = -ru[1];
+        ru[3] = -ru[0];
         return flux_(ru,n);
     }
 
@@ -774,7 +796,7 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
                 vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
                 double ru[4];
-
+                vertex test = mapped + unitNormal*beta*scale;
                 ru[0] = mlrPtr.EvaluateMLWENO(mi,mapped+unitNormal*beta*scale, globalCell);
                 ru[1] = mlrPtr.EvaluateMLWENO(mi,mapped+unitNormal*alpha*scale,globalCell);
                 ru[2] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
@@ -787,7 +809,6 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
             break;
 
         case 1 :
-
             for (int g = 0; g<gpe.size(); g++){
                 vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
@@ -805,14 +826,11 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
             break;
 
         case 2:
-
             for (int g = 0; g<gpe.size(); g++){
                 vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
                 double ru[4];
 
-                ru[0] = -1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
-                ru[1] = -1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
                 ru[2] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
                 ru[3] = mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
 
@@ -823,7 +841,6 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
             break;
 
         case 3:
-
             for (int g = 0; g<gpe.size(); g++){
                 vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
@@ -831,8 +848,6 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
 
                 ru[0] = -1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
                 ru[1] = -1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
-                ru[2] = 1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*alpha*scale,globalCell);
-                ru[3] = 1*mlrPtr.EvaluateMLWENO(mi,mapped-unitNormal*beta*scale, globalCell);
 
                 work += gwe[g] * boundaryCondition_(ru, 4, 3) * len/2.0;
     
@@ -841,7 +856,6 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
             break;
 
         default : 
-
             cout << "Boundary value not assigned correctly ... " << endl;
             break;
 
@@ -852,7 +866,8 @@ double diffusion::edgeFlux_(const MeshInfo& mi,
 
 unordered_map<int, double> diffusion::derivEdgeFlux_(const MeshInfo& mi,
                                                      const indice& globalCell,
-                                                     const indice& globalEdge,
+                                                     const int& k,
+                                                     const int& size,
                                                      const vertexSet& edge,
                                                      const double& scale,
                                                      const MLWENO::multiLevelReconstruction& mlrPtr){
@@ -868,8 +883,18 @@ unordered_map<int, double> diffusion::derivEdgeFlux_(const MeshInfo& mi,
     // Compute unit normal vector pointing outside.
     vertex unitNormal = UnitNormal(edge,len);
 
+    switch (Interior_(k,size)){
+        case 0 :
+            for (int g = 0; g<gpe.size(); g++){
+                vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+                // all maps should have same set of keys
+            }
+            break;
 
-
+        default : 
+            cout << "Boundary value not assigned correctly ... " << endl;
+            break;
+    }
 
     return work;
 }
