@@ -51,7 +51,7 @@ set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
 project(test)
 # Build library
 
-add_executable(test test.cpp ../../integral.cpp ../../mesh.c ../../input.cpp ../../output.c ../../transport/transport.cpp ../../transport/func.cpp ../../mlweno/reconstruction.cpp ../../mlweno/polynomial.cpp ../../mlweno/util.cpp ../../transport/timestepping.cpp)
+add_executable(test test.cpp ../../integral.cpp ../../mesh.c ../../input.cpp ../../output.c ../../transport/transport.cpp ../../transport/func.cpp ../../mlweno/reconstruction.cpp ../../mlweno/polynomial.cpp ../../mlweno/util.cpp ../../transport/timestepping.cpp ../../transport/diffusion.cpp ../../transport/advection.cpp)
 
 include_directories(../../../include ../../../src/mlweno ../../../src/transport)
 
