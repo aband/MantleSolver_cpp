@@ -69,13 +69,18 @@ void AssignMLWENO(const MeshInfo& mi, transport* trPtr){
     trPtr->AddLevel(mi,1,1);
     trPtr->AddLevel(mi,2,2);
     trPtr->AddLevel(mi,3,3);
-    trPtr->AddLevel(mi,4,5);
-    trPtr->AddLevel(mi,5,4);
+    //trPtr->AddLevel(mi,4,5);
+    //trPtr->AddLevel(mi,5,4);
+    trPtr->AddLevel(mi,3,2);
+    trPtr->AddLevel(mi,2,3);
+    trPtr->AddLevel(mi,4,2);
+    trPtr->AddLevel(mi,2,4);
 
     trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(1,1)",{{0,0}});
     trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
     trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(3,3)",{{-1,-1}});
 
+/*
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(1,1)",{{0,0}});
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
     //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}});
@@ -87,6 +92,27 @@ void AssignMLWENO(const MeshInfo& mi, transport* trPtr){
     //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,-1},{-2,-1},{-2,-2},{0,-2}});
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,0},{-2,0},{-2,-3},{0,-3}}); 
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(5,4)",{{-2,-2}});
+*/
+
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(1,1)",{{0,0}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(2,2)",{{0,0},{0,-1}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(3,2)",{{0,0},{0,-1}}); 
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(4,2)",{{0,0},{0,-1}});
+
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(1,1)",{{0,0}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(2,2)",{{-1,0},{-1,-1}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(3,2)",{{-2,0},{-2,-1}}); 
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(4,2)",{{-3,0},{-3,-1}});
+
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(1,1)",{{0,0}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(2,2)",{{-1,0},{0,0}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(2,3)",{{-1,0},{0,0}}); 
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(2,4)",{{-1,0},{0,0}});
+
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(1,1)",{{0,0}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(2,2)",{{-1,-1},{0,-1}});
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(2,3)",{{-1,-2},{0,-2}}); 
+    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(2,4)",{{-1,-3},{0,-3}});
 
     trPtr->CreateMLWENO(mi);
 }

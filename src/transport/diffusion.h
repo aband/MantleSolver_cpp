@@ -96,9 +96,74 @@ namespace SymDiffusion{
 };
 }
 
-namespace NonSymmetryDiffusion{
+namespace NonSymDiffusion{
+    class diffusion {
+        public:
+            diffusion() {mlrPtrHoriUp_    = new MLWENO::multiLevelReconstruction();
+                         mlrPtrHoriDown_  = new MLWENO::multiLevelReconstruction();
+                         mlrPtrVertRight_ = new MLWENO::multiLevelReconstruction();
+                         mlrPtrVertLeft_  = new MLWENO::multiLevelReconstruction();};
 
+            ~diffusion() {delete mlrPtrHoriUp_; 
+                          delete mlrPtrHoriDown_; 
+                          delete mlrPtrVertRight_; 
+                          delete mlrPtrVertLeft_;};
 
+            unordered_map<std::string, vector<indice>> reconstMethodsVertRight;
+            unordered_map<std::string, vector<indice>> reconstMethodsVertLeft;
+            unordered_map<std::string, vector<indice>> reconstMethodsHoriUp;
+            unordered_map<std::string, vector<indice>> reconstMethodsHoriDown;
+
+            unordered_set<std::string> wenoLevelsVertRight;
+            unordered_set<std::string> wenoLevelsVertLeft;
+            unordered_set<std::string> wenoLevelsHoriUp;
+            unordered_set<std::string> wenoLevelsHoriDown;
+
+            // Interpolation positions
+            const double alpha = 0.5;
+            const double beta = 1.5;
+
+            void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& mi);
+
+            void UpdateNonLinearWgts(const MeshInfo& mi);
+
+            void UpdateEdgeFlux(const MeshInfo& mi);
+
+            double Flux(const MeshInfo& mi, const indice& global);
+
+            void GetInfo(const MeshInfo& mi);
+
+        private:
+            double flux_(const std::array<double,4>& ru);
+            double dflux_(const std::array<double,4>& dru);
+
+            double boundaryCondition_(std::array<double,4>& ru, const std::array<int,2>& posOut);
+
+            bool Interior_(const MeshInfo& mi, const indice& target);
+
+            double edgeFlux_(const MeshInfo& mi,
+                             const indice& globalIn,
+                             const indice& globalOut,
+                             const vertexSet& edge,
+                             const double& scale,
+                             const std::array<int, 2>& posIn,
+                             const std::array<int, 2>& posOut,
+                             const MLWENO::multiLevelReconstruction& mlrPtrIn,
+                             const MLWENO::multiLevelReconstruction& mlrPtrOut);
+
+            //! Store calculated diffusive flux on the edge
+            //! And its corresponding derivative
+            unordered_map<int, double> edgeHoriFlux_;
+            unordered_map<int, double> edgeVertFlux_;
+
+            /**
+             * Pointers to different multilevel reconstruction class
+             */
+            MLWENO::multiLevelReconstruction * mlrPtrHoriUp_;
+            MLWENO::multiLevelReconstruction * mlrPtrHoriDown_;
+            MLWENO::multiLevelReconstruction * mlrPtrVertRight_;
+            MLWENO::multiLevelReconstruction * mlrPtrVertLeft_;
+    };
 }
 
 #endif

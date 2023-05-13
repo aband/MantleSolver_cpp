@@ -5,7 +5,7 @@
 #include "advection.h"
 #include "reaction.h"
 
-using namespace SymDiffusion;
+using namespace NonSymDiffusion;
 
 class transport : public advection, public diffusion, public reaction {
     public:

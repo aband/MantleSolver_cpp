@@ -38,18 +38,18 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     user->trPtr->UpdateSmoothnessIndic(*(user->mi));
 
     // Update non linear weights based on updated smoothness indicators
-    user->trPtr->advection::UpdateNonLinearWgts(*(user->mi));
-    //user->trPtr->diffusion::UpdateNonLinearWgts(*(user->mi));
+    //user->trPtr->advection::UpdateNonLinearWgts(*(user->mi));
+    user->trPtr->diffusion::UpdateNonLinearWgts(*(user->mi));
 
     // Update flux defined on each edge
-    user->trPtr->advection::UpdateEdgeFlux(*(user->mi));
-    //user->trPtr->diffusion::UpdateEdgeFlux(*(user->mi));
+    //user->trPtr->advection::UpdateEdgeFlux(*(user->mi));
+    user->trPtr->diffusion::UpdateEdgeFlux(*(user->mi));
 
     //! Loop through computational domain
     for (int j=user->mi->MPIlocalCellStart[1]; j<user->mi->MPIlocalCellStart[1] + user->mi->MPIlocalCellSize[1]; j++){
     for (int i=user->mi->MPIlocalCellStart[0]; i<user->mi->MPIlocalCellStart[0] + user->mi->MPIlocalCellSize[0]; i++){
-        f[j][i] = -1.0*user->trPtr->advection::Flux(*(user->mi), {i,j});
-        //f[j][i] = -1.0*user->trPtr->diffusion::Flux(*(user->mi), {i,j});
+        //f[j][i] = -1.0*user->trPtr->advection::Flux(*(user->mi), {i,j});
+        f[j][i] = -1.0*user->trPtr->diffusion::Flux(*(user->mi), {i,j});
     }}
 
     //! Restore array to local vectors.
