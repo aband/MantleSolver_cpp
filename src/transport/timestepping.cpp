@@ -49,7 +49,7 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     for (int j=user->mi->MPIlocalCellStart[1]; j<user->mi->MPIlocalCellStart[1] + user->mi->MPIlocalCellSize[1]; j++){
     for (int i=user->mi->MPIlocalCellStart[0]; i<user->mi->MPIlocalCellStart[0] + user->mi->MPIlocalCellSize[0]; i++){
         //f[j][i] = -1.0*user->trPtr->advection::Flux(*(user->mi), {i,j});
-        f[j][i] = -1.0*user->trPtr->diffusion::Flux(*(user->mi), {i,j});
+        f[j][i] = user->trPtr->diffusion::Flux(*(user->mi), {i,j});
     }}
 
     //! Restore array to local vectors.
@@ -81,7 +81,8 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
     DMDAVecGetArray(dmu, localu, &lu);
 
     // Update edge flux first
-    user->trPtr->advection::UpdateEdgeFluxDerivative(*(user->mi));
+    //user->trPtr->advection::UpdateEdgeFluxDerivative(*(user->mi));
+    user->trPtr->diffusion::UpdateEdgeFluxDerivative(*(user->mi));
 
     //! Get MPI local part of Jacobian matrix
     int rstart, rend;
@@ -90,7 +91,8 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
     for (int row = rstart; row<rend; row++){
         indice global = Bend(*(user->mi), row);
 
-        unordered_map<int,double> deriv = user->trPtr->advection::derivFlux(*(user->mi), global);
+        //unordered_map<int,double> deriv = user->trPtr->advection::derivFlux(*(user->mi), global);
+        unordered_map<int,double> deriv = user->trPtr->diffusion::derivFlux(*(user->mi), global);
 
         for (auto & dVal: deriv){
             ierr = MatSetValue(J,row,dVal.first,-1.0*dVal.second,INSERT_VALUES);CHKERRQ(ierr);

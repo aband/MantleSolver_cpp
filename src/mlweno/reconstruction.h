@@ -235,12 +235,12 @@ namespace MLWENO{
              */
             unordered_map<int, double> EvaluateDerivMLWENO(const MeshInfo& mi, 
                                                            const vertex& point, 
-                                                           const indice& global);
+                                                           const indice& global) const;
 
             unordered_map<int, double> EvaluateDerivMLWENO(const MeshInfo& mi,
                                                            const vertex& point, 
                                                            const indice& global,
-                                                           const int& flag);
+                                                           const int& flag) const;
             /**
              * Get scale of the selected single level reconstruction
              * with respect to the selected cell.

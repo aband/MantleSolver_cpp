@@ -532,31 +532,31 @@ double multiLevelReconstruction::EvaluateMLWENO (const MeshInfo& mi, vertex poin
  */
 unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const MeshInfo& mi,
                                                                          const vertex& point, 
-                                                                         const indice& global){
+                                                                         const indice& global) const {
 
     unordered_map<int, double> work;
     
     //! Extract nonliear weights linked to the target cell.
-    unordered_map<std::string, unordered_map<int, double>> nlw = nonLinearWgts_[FlatIndic(mi,global)];
+    unordered_map<std::string, unordered_map<int, double>> nlw = nonLinearWgts_.at(FlatIndic(mi,global));
 
     //! Evaluate in the multi level weno fashion.
     for (auto const& level : wenoLevels_){
         if (nlw[level].empty() == 0){
             for (auto & wgts: nlw[level]){
-                indice owner = global + Bend(reconstLevels_[level]->GetSizeX(), wgts.first);
+                indice owner = global + Bend(reconstLevels_.at(level)->GetSizeX(), wgts.first);
                 int flatOwner = FlatIndic(mi, owner);
 
-                for (int p = 0; p<reconstLevels_[level]->GetSizeX()*
-                                  reconstLevels_[level]->GetSizeY(); p++){
-                    indice ownerShift = owner + Bend(reconstLevels_[level]->GetSizeX(),p);
+                for (int p = 0; p<reconstLevels_.at(level)->GetSizeX()*
+                                  reconstLevels_.at(level)->GetSizeY(); p++){
+                    indice ownerShift = owner + Bend(reconstLevels_.at(level)->GetSizeX(),p);
                     int flatOwnerShift = FlatIndic(mi,ownerShift);
 
                     if (work.count(flatOwnerShift)>0){
                         work[flatOwnerShift] += wgts.second * 
-                        reconstLevels_[level]->Evaluate(mi,owner,point, p);
+                        reconstLevels_.at(level)->Evaluate(mi,owner,point, p);
                     } else {
                         work.insert(std::pair<int, double>(flatOwnerShift, wgts.second* 
-                                    reconstLevels_[level]->Evaluate(mi,owner,point,p)));
+                                    reconstLevels_.at(level)->Evaluate(mi,owner,point,p)));
                     }
 
 
@@ -573,7 +573,7 @@ unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const M
  */
 unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const MeshInfo& mi,
                                                      const vertex& point, const indice& global,
-                                                     const int& flag){
+                                                     const int& flag) const{
     assert(flag == 1);
 
     unordered_map<int, double> work;

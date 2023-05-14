@@ -402,13 +402,33 @@ void SymDiffusion::diffusion::GetInfo(const MeshInfo& mi){
 // symmetrical reconstruction scheme.
 double NonSymDiffusion::diffusion::flux_(const std::array<double,4>& ru){
 
-    return ((ru[2]- ru[1])*beta*beta/(2*alpha)-
-            (ru[3]- ru[0])*alpha*alpha/(2*beta))/
+    return ( (ru[2]- ru[1])*beta*beta/(2*alpha)-
+             (ru[3]- ru[0])*alpha*alpha/(2*beta) )/
            (beta*beta-alpha*alpha);
 }
 
-double NonSymDiffusion::diffusion::dflux_(const std::array<double,4>& dru){
-    return flux_(dru);
+unordered_map<int,double> NonSymDiffusion::diffusion::dflux_(const std::array<unordered_map<int,double>,4>& dru){
+
+    unordered_map<int,double> work;
+
+    std::array<double,4> coeff;
+
+    coeff[0] = -1*alpha*alpha/(2*beta )/(beta*beta-alpha*alpha);
+    coeff[1] = -1*beta * beta/(2*alpha)/(beta*beta-alpha*alpha);
+    coeff[2] = -1*coeff[1];
+    coeff[3] = -1*coeff[0];
+
+    for (int k=0; k<4; k++){
+        for (const auto & it : dru[k]){
+            if (work.count(it.first) > 0) {
+                work[it.first] += coeff[k]*it.second;
+            } else {
+                work.insert(std::pair<int,double>(it.first,it.second*coeff[k]));
+            }
+        } 
+    }
+
+    return work;
 }
 
 double NonSymDiffusion::diffusion::boundaryCondition_(std::array<double,4>& ru,
@@ -419,6 +439,18 @@ double NonSymDiffusion::diffusion::boundaryCondition_(std::array<double,4>& ru,
     ru[posOut[1]] = -1*ru[3-posOut[1]];
 
     return flux_(ru); 
+}
+
+unordered_map<int,double> NonSymDiffusion::diffusion::boundaryCondition_(std::array<unordered_map<int,double>,4>& dru,
+                                                                         const std::array<int,2>& posOut){
+
+    for (int k=0; k<2; k++){
+        for (auto & it : dru[3-posOut[0]]){
+            dru[posOut[0]].insert(std::pair<int,double>(it.first,it.second*-1));
+        }
+    }
+
+    return dflux_(dru);
 }
 
 /**
@@ -486,6 +518,69 @@ double NonSymDiffusion::diffusion::edgeFlux_(const MeshInfo& mi,
     return work;
 }
 
+unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFlux_(const MeshInfo& mi,
+                                                                      const indice& globalIn,
+                                                                      const indice& globalOut,
+                                                                      const vertexSet& edge,
+                                                                      const double& scale,
+                                                                      const std::array<int,2>& posIn,
+                                                                      const std::array<int,2>& posOut,
+                                                                      const MLWENO::multiLevelReconstruction& mlrPtrIn,
+                                                                      const MLWENO::multiLevelReconstruction& mlrPtrOut){
+    unordered_map<int, double> work;
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    double len = length(edge);
+
+    vertex unitNormal = UnitNormal(edge, len);
+
+    if (Interior_(mi,globalOut)){
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+
+            std::array<unordered_map<int,double>, 4> dru;
+
+            dru[posIn[0]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*alpha*scale,globalIn);
+            dru[posIn[1]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*beta *scale,globalIn);
+            dru[posOut[0]] = mlrPtrOut.EvaluateDerivMLWENO(mi,mapped+unitNormal*beta *scale,globalOut);
+            dru[posOut[1]] = mlrPtrOut.EvaluateDerivMLWENO(mi,mapped+unitNormal*alpha*scale,globalOut);
+
+            unordered_map<int,double> derivflux = dflux_(dru);
+
+            for (auto & derivf : derivflux){
+                if (work.count(derivf.first) > 0) {
+                    work[derivf.first] += gwe[g]*derivf.second*len/2.0;
+                } else {
+                    work.insert(std::pair<int, double> (derivf.first, gwe[g]*derivf.second*len/2.0));
+                }
+            }
+        }
+    } else {
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+
+            std::array<unordered_map<int,double>, 4> dru;
+
+            dru[posIn[0]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*alpha*scale,globalIn);
+            dru[posIn[1]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*beta *scale,globalIn);
+
+            unordered_map<int,double> derivflux = boundaryCondition_(dru,posOut);
+
+            for (auto & derivf : derivflux){
+                if (work.count(derivf.first) > 0) {
+                    work[derivf.first] += gwe[g]*derivf.second*len/2.0;
+                } else {
+                    work.insert(std::pair<int, double> (derivf.first, gwe[g]*derivf.second*len/2.0));
+                }
+            }
+        }
+    }
+
+    return work;
+}
+
 void NonSymDiffusion::diffusion::UpdateEdgeFlux(const MeshInfo& mi){
 
     std::array<int,2> posIn;
@@ -538,6 +633,58 @@ void NonSymDiffusion::diffusion::UpdateEdgeFlux(const MeshInfo& mi){
     }}
 }
 
+void NonSymDiffusion::diffusion::UpdateEdgeFluxDerivative(const MeshInfo& mi){
+
+    std::array<int,2> posIn;
+    std::array<int,2> posOut;
+
+    indice globalOut;
+
+    // Update every left and bottom edge for each target cell
+    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] ; j++){
+    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] ; i++){
+        indice globalIn {i,j};
+
+        const double scale = sqrt(mi.cellArea.at(FlatIndic(mi,globalIn)));
+
+        // Extract corners with respect to given global indice
+        vertexSet corners = extractCorners(mi, globalIn); 
+
+        // Compute and restore horizontal flux
+        vertexSet hori {corners.at(0), corners.at(1)};
+        vertexSet vert {corners.at(3), corners.at(0)};
+
+        posIn[0] = 2;posOut[0] = 0;
+        posIn[1] = 3;posOut[1] = 1;
+
+
+        globalOut = {i,j-1};
+        // Bottom hoizontal flux
+        derivEdgeHoriFlux_[FlatIndic(mi, globalIn)] = derivEdgeFlux_(mi,globalIn,globalOut,hori,scale,posIn,posOut,
+                                                                     *(mlrPtrHoriUp_), *(mlrPtrHoriDown_));
+
+        globalOut = {i-1,j};
+        // Left vertical flux
+        derivEdgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalIn)] = derivEdgeFlux_(mi, globalIn, globalOut, vert, scale, posIn, posOut, *(mlrPtrVertRight_), *(mlrPtrVertLeft_));
+
+        if (j==mi.MPIglobalCellSize[1]-1){
+            hori = {corners.at(2), corners.at(3)};
+            globalOut = {i,j+1};
+            posIn[0] = 0; posOut[0] = 2;
+            posIn[1] = 1; posOut[1] = 3;
+            derivEdgeHoriFlux_[FlatIndic(mi,globalOut)] = derivEdgeFlux_(mi, globalIn, globalOut, hori, scale, posIn, posOut, *(mlrPtrHoriDown_), *(mlrPtrHoriUp_));       
+        }
+
+        if (i==mi.MPIglobalCellSize[0]-1){
+            vert = {corners.at(1), corners.at(2)};
+            globalOut = {i+1,j};
+            posIn[0] = 0; posOut[0] = 2;
+            posIn[1] = 1; posOut[1] = 3;
+            derivEdgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalOut)] = derivEdgeFlux_(mi, globalIn, globalOut, vert, scale, posIn, posOut, *(mlrPtrVertLeft_), *(mlrPtrVertRight_));      
+        }
+    }}
+}
+
 double NonSymDiffusion::diffusion::Flux(const MeshInfo& mi, const indice& global){
 
     double work = 0.0;
@@ -553,6 +700,60 @@ double NonSymDiffusion::diffusion::Flux(const MeshInfo& mi, const indice& global
     work += edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)];
 
     work /= area;
+
+    work *= -1;
+
+    return work;
+}
+
+unordered_map<int, double> NonSymDiffusion::diffusion::derivFlux(const MeshInfo& mi, const indice& global){
+
+    unordered_map<int,double> work;
+
+    // bottom horizontal edge
+    unordered_map<int,double> tmp = derivEdgeHoriFlux_[FlatIndic(mi,global)];
+
+    double area = mi.cellArea.at(FlatIndic(mi,global));
+
+    for (auto & derivf : tmp){
+        if (work.count(derivf.first) > 0){
+            work[derivf.first] += -1*derivf.second/area;
+        } else {
+            work.insert(std::pair<int,double> (derivf.first, -1*derivf.second/area));
+        }
+    }
+
+    // top horizontal edge
+    tmp = derivEdgeHoriFlux_[FlatIndic(mi,global+mi.faceNormal[2])];
+
+    for (auto & derivf : tmp){
+        if (work.count(derivf.first) > 0){
+            work[derivf.first] += derivf.second/area;
+        } else {
+            work.insert(std::pair<int,double> (derivf.first, derivf.second/area));
+        }
+    }
+
+    // right vertical edge
+    tmp = derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global+mi.faceNormal[1])];
+
+    for (auto & derivf : tmp){
+        if (work.count(derivf.first) > 0){
+            work[derivf.first] += derivf.second/area;
+        } else {
+            work.insert(std::pair<int,double> (derivf.first, derivf.second/area));
+        }
+    }
+
+    // left vertical edge
+    tmp = derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)];
+    for (auto & derivf : tmp){
+        if (work.count(derivf.first) > 0){
+            work[derivf.first] += -1*derivf.second/area;
+        } else {
+            work.insert(std::pair<int,double> (derivf.first, -1*derivf.second/area));
+        }
+    }
 
     return work;
 }

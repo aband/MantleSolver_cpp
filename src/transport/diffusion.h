@@ -121,7 +121,7 @@ namespace NonSymDiffusion{
 
             // Interpolation positions
             const double alpha = 0.5;
-            const double beta = 1.5;
+            const double beta = 1.0;
 
             void CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& mi);
 
@@ -129,15 +129,20 @@ namespace NonSymDiffusion{
 
             void UpdateEdgeFlux(const MeshInfo& mi);
 
+            void UpdateEdgeFluxDerivative(const MeshInfo& mi);
+
             double Flux(const MeshInfo& mi, const indice& global);
+            unordered_map<int,double> derivFlux(const MeshInfo& mi, const indice& global);
 
             void GetInfo(const MeshInfo& mi);
 
         private:
             double flux_(const std::array<double,4>& ru);
-            double dflux_(const std::array<double,4>& dru);
+            unordered_map<int,double> dflux_(const std::array<unordered_map<int,double>,4>& dru);
 
             double boundaryCondition_(std::array<double,4>& ru, const std::array<int,2>& posOut);
+            unordered_map<int,double> boundaryCondition_(std::array<unordered_map<int,double>,4>& dru,
+                                                         const std::array<int,2>& posOut);
 
             bool Interior_(const MeshInfo& mi, const indice& target);
 
@@ -151,10 +156,23 @@ namespace NonSymDiffusion{
                              const MLWENO::multiLevelReconstruction& mlrPtrIn,
                              const MLWENO::multiLevelReconstruction& mlrPtrOut);
 
+            unordered_map<int, double> derivEdgeFlux_(const MeshInfo& mi,
+                                                      const indice& globalIn,
+                                                      const indice& globalout,
+                                                      const vertexSet& edge,
+                                                      const double& scale,
+                                                      const std::array<int,2>& posIn,
+                                                      const std::array<int,2>& posOut,
+                                                      const MLWENO::multiLevelReconstruction& mlrPtrIn,
+                                                      const MLWENO::multiLevelReconstruction& mlrPtrOut); 
+
             //! Store calculated diffusive flux on the edge
             //! And its corresponding derivative
             unordered_map<int, double> edgeHoriFlux_;
             unordered_map<int, double> edgeVertFlux_;
+
+            unordered_map<int, unordered_map<int,double>> derivEdgeHoriFlux_;
+            unordered_map<int, unordered_map<int,double>> derivEdgeVertFlux_;
 
             /**
              * Pointers to different multilevel reconstruction class
