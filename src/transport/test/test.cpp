@@ -35,13 +35,13 @@ double InitialValue(vertex& point, const vector<double>& param){
     //return point[0] + point[1];
 
     // Initial value for sine wave 2D Burger's equation
-    return pow(sin(M_PI*(point[0]+1)/2),2)*pow(sin(M_PI*(point[1]+1)/2),2);
+    //return pow(sin(M_PI*(point[0]+1)/2),2)*pow(sin(M_PI*(point[1]+1)/2),2);
 
-//    if (abs(point[0])+abs(point[1])<0.5){
-//        return 1;
-//    } else {
-//        return 0;
-//    }
+    if (abs(point[0])+abs(point[1])<0.5){
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 PetscErrorCode Monitor(TS ts, PetscInt step, PetscReal t, Vec U, void *ctx){

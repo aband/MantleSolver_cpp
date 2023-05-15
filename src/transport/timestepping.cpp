@@ -38,18 +38,18 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     user->trPtr->UpdateSmoothnessIndic(*(user->mi));
 
     // Update non linear weights based on updated smoothness indicators
-    //user->trPtr->advection::UpdateNonLinearWgts(*(user->mi));
+    user->trPtr->advection::UpdateNonLinearWgts(*(user->mi));
     user->trPtr->diffusion::UpdateNonLinearWgts(*(user->mi));
 
     // Update flux defined on each edge
-    //user->trPtr->advection::UpdateEdgeFlux(*(user->mi));
+    user->trPtr->advection::UpdateEdgeFlux(*(user->mi));
     user->trPtr->diffusion::UpdateEdgeFlux(*(user->mi));
 
     //! Loop through computational domain
     for (int j=user->mi->MPIlocalCellStart[1]; j<user->mi->MPIlocalCellStart[1] + user->mi->MPIlocalCellSize[1]; j++){
     for (int i=user->mi->MPIlocalCellStart[0]; i<user->mi->MPIlocalCellStart[0] + user->mi->MPIlocalCellSize[0]; i++){
-        //f[j][i] = -1.0*user->trPtr->advection::Flux(*(user->mi), {i,j});
-        f[j][i] = user->trPtr->diffusion::Flux(*(user->mi), {i,j});
+        f[j][i] = -1.0*user->trPtr->advection::Flux(*(user->mi), {i,j});
+        f[j][i] += 0.1*user->trPtr->diffusion::Flux(*(user->mi), {i,j});
     }}
 
     //! Restore array to local vectors.
@@ -91,11 +91,18 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
     for (int row = rstart; row<rend; row++){
         indice global = Bend(*(user->mi), row);
 
-        //unordered_map<int,double> deriv = user->trPtr->advection::derivFlux(*(user->mi), global);
-        unordered_map<int,double> deriv = user->trPtr->diffusion::derivFlux(*(user->mi), global);
+        // advection flux
+        unordered_map<int,double> deriv = user->trPtr->advection::derivFlux(*(user->mi), global);
 
         for (auto & dVal: deriv){
-            ierr = MatSetValue(J,row,dVal.first,-1.0*dVal.second,INSERT_VALUES);CHKERRQ(ierr);
+            ierr = MatSetValue(J,row,dVal.first,-1*dVal.second,ADD_VALUES);CHKERRQ(ierr);
+        }
+
+        // Diffusion flux
+        deriv = user->trPtr->diffusion::derivFlux(*(user->mi), global);
+
+        for (auto & dVal: deriv){
+            ierr = MatSetValue(J,row,dVal.first,0.1*dVal.second,ADD_VALUES);CHKERRQ(ierr);
         }
 
     }
