@@ -13,4 +13,8 @@ double funcY(vertex x, double u, double t);
 
 double dfuncY(vertex x, double u, double t);
 
+double diffFunc(double u);
+
+double dDiffFunc(double u);
+
 #endif

@@ -402,8 +402,8 @@ void SymDiffusion::diffusion::GetInfo(const MeshInfo& mi){
 // symmetrical reconstruction scheme.
 double NonSymDiffusion::diffusion::flux_(const std::array<double,4>& ru){
 
-    return ( (ru[2]- ru[1])*beta*beta/(2*alpha)-
-             (ru[3]- ru[0])*alpha*alpha/(2*beta) )/
+    return ( (diffFunc(ru[2])- diffFunc(ru[1]))*beta*beta/(2*alpha)-
+             (diffFunc(ru[3])- diffFunc(ru[0]))*alpha*alpha/(2*beta) )/
            (beta*beta-alpha*alpha);
 }
 
@@ -431,6 +431,31 @@ unordered_map<int,double> NonSymDiffusion::diffusion::dflux_(const std::array<un
     return work;
 }
 
+unordered_map<int,double> NonSymDiffusion::diffusion::dflux_(const std::array<unordered_map<int,double>,4>& dru,
+                                                             const std::array<double,4>& ru){
+
+    unordered_map<int,double> work;
+
+    std::array<double,4> coeff;
+
+    coeff[0] = -1*alpha*alpha/(2*beta )/(beta*beta-alpha*alpha)* dDiffFunc(ru[0]);
+    coeff[1] = -1*beta * beta/(2*alpha)/(beta*beta-alpha*alpha)* dDiffFunc(ru[1]);
+    coeff[2] = -1*coeff[1] * dDiffFunc(ru[2]);
+    coeff[3] = -1*coeff[0] * dDiffFunc(ru[3]);
+
+    for (int k=0; k<4; k++){
+        for (const auto & it : dru[k]){
+            if (work.count(it.first) > 0) {
+                work[it.first] += coeff[k]*it.second;
+            } else {
+                work.insert(std::pair<int,double>(it.first,it.second*coeff[k]));
+            }
+        } 
+    }
+
+    return work;
+}
+
 double NonSymDiffusion::diffusion::boundaryCondition_(std::array<double,4>& ru,
                                                       const std::array<int,2>& posOut){
 
@@ -442,7 +467,12 @@ double NonSymDiffusion::diffusion::boundaryCondition_(std::array<double,4>& ru,
 }
 
 unordered_map<int,double> NonSymDiffusion::diffusion::boundaryCondition_(std::array<unordered_map<int,double>,4>& dru,
+                                                                         std::array<double,4>& ru,
                                                                          const std::array<int,2>& posOut){
+
+    // Reflective boundary condition
+    ru[posOut[0]] = -1*ru[3-posOut[0]];
+    ru[posOut[1]] = -1*ru[3-posOut[1]];
 
     for (int k=0; k<2; k++){
         for (auto & it : dru[3-posOut[0]]){
@@ -450,8 +480,10 @@ unordered_map<int,double> NonSymDiffusion::diffusion::boundaryCondition_(std::ar
         }
     }
 
-    return dflux_(dru);
+    return dflux_(dru,ru);
 }
+
+
 
 /**
  * Check if a given target cell is inside the boundary
@@ -542,12 +574,19 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFlux_(const Mesh
 
             std::array<unordered_map<int,double>, 4> dru;
 
+            std::array<double,4> ru;
+
             dru[posIn[0]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*alpha*scale,globalIn);
             dru[posIn[1]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*beta *scale,globalIn);
             dru[posOut[0]] = mlrPtrOut.EvaluateDerivMLWENO(mi,mapped+unitNormal*beta *scale,globalOut);
             dru[posOut[1]] = mlrPtrOut.EvaluateDerivMLWENO(mi,mapped+unitNormal*alpha*scale,globalOut);
 
-            unordered_map<int,double> derivflux = dflux_(dru);
+            ru[posIn[0]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*alpha*scale, globalIn);
+            ru[posIn[1]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*beta *scale, globalIn);
+            ru[posOut[0]] = mlrPtrOut.EvaluateMLWENO(mi, mapped+unitNormal*beta *scale, globalOut);
+            ru[posOut[1]] = mlrPtrOut.EvaluateMLWENO(mi, mapped+unitNormal*alpha*scale, globalOut);
+ 
+            unordered_map<int,double> derivflux = dflux_(dru, ru);
 
             for (auto & derivf : derivflux){
                 if (work.count(derivf.first) > 0) {
@@ -563,10 +602,15 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFlux_(const Mesh
 
             std::array<unordered_map<int,double>, 4> dru;
 
+            std::array<double,4> ru;
+
             dru[posIn[0]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*alpha*scale,globalIn);
             dru[posIn[1]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*beta *scale,globalIn);
 
-            unordered_map<int,double> derivflux = boundaryCondition_(dru,posOut);
+            ru[posIn[0]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*alpha*scale, globalIn);
+            ru[posIn[1]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*beta *scale, globalIn);
+
+            unordered_map<int,double> derivflux = boundaryCondition_(dru,ru,posOut);
 
             for (auto & derivf : derivflux){
                 if (work.count(derivf.first) > 0) {

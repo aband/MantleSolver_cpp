@@ -21,24 +21,13 @@ extern "C"{
 
 using namespace std;
 
+// Solving a 2D Buckley-Leverett equation with multi level WENO method
+
 double InitialValue(vertex& point, const vector<double>& param){
-	 //if (point[0]<-1.0/param[0]){
-//		  return point[0]*point[0]+point[1]*point[1];
-//	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
-//	 } else {
-//		  return point[0]*point[0]*point[1]*point[1] + 1.0;
-//	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
-//	 }
-
-    //return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
-    //return point[0]*point[0] + point[1]*point[1];
-    //return point[0] + point[1];
-
-    // Initial value for sine wave 2D Burger's equation
-    //return pow(sin(M_PI*(point[0]+1)/2),2)*pow(sin(M_PI*(point[1]+1)/2),2);
-
-    if (abs(point[0])+abs(point[1])<0.5){
-        return 1;
+    if ((point[0]-2)*(point[0]-2)+(point[1]+2)*(point[1]+2)<6){
+        return exp(-1/(6-((point[0]-2)*(point[0]-2)+(point[1]+2)*(point[1]+2))));
+    } else if ((point[0]+2)*(point[0]+2)+(point[1]-2)*(point[1]-2)<6) {
+        return exp(-1/(6-((point[0]+2)*(point[0]+2)+(point[1]-2)*(point[1]-2))));
     } else {
         return 0;
     }
@@ -79,20 +68,6 @@ void AssignMLWENO(const MeshInfo& mi, transport* trPtr){
     trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(1,1)",{{0,0}});
     trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
     trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(3,3)",{{-1,-1}});
-
-/*
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(1,1)",{{0,0}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
-    //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{0,0},{-3,0},{-3,-2},{0,-2}}); 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(4,5)",{{-2,-2}});
-
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(1,1)",{{0,0}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
-    //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,-1},{-2,-1},{-2,-2},{0,-2}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,0},{-2,0},{-2,-3},{0,-3}}); 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(5,4)",{{-2,-2}});
-*/
 
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(1,1)",{{0,0}});
     trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(2,2)",{{0,0},{0,-1}});
@@ -150,8 +125,8 @@ int main(int argc, char **argv){
     ierr = DMSetUp(dm);                        CHKERRQ(ierr);
     ierr = DMCreateGlobalVector(dm, &fullmesh);CHKERRQ(ierr); 
 
-    double L = 2.0, H = 2.0;
-    double xstart = -1.0, ystart = -1.0;
+    double L = 20.0, H = 20.0;
+    double xstart = -10, ystart = -10;
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
 
@@ -246,17 +221,7 @@ int main(int argc, char **argv){
 
     AssignMLWENO(mi, trPtr);
 
-// Test and print ========================================================
-    //trPtr->UpdateSmoothnessIndic(mi);
-
-    //trPtr->advection::UpdateNonLinearWgts(mi);
-
-    //trPtr->advection::GetInfo(mi);
-
-    //trPtr->diffusion::UpdateNonLinearWgts(mi);
-
-    //trPtr->diffusion::GetInfo(mi);
-// =======================================================================
+    trPtr->diffusion::D = 1;
 
     //! Create ctx for time stepping
     Ctx ctx;
@@ -280,9 +245,6 @@ int main(int argc, char **argv){
     ierr = PetscOptionsGetReal(NULL,NULL,"-Tmax",&Tmax,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-dt",&dt,NULL);    CHKERRQ(ierr);
  
-    //SNESCreate(PETSC_COMM_WORLD, &snes);
-    //KSPCreate(PETSC_COMM_WORLD, &ksp);
-
     TSCreate(PETSC_COMM_WORLD, &ts);
     TSSetProblemType(ts, TS_NONLINEAR);
 
@@ -305,7 +267,6 @@ int main(int argc, char **argv){
     PCSetType(pc, PCJACOBI);
     PCSetFromOptions(pc);
 
-    //TSSetRHSFunction(ts, globalu, Explicit, &ctx);
     TSSetRHSFunction(ts, NULL, ExplicitDiffusion, &ctx);
 
     // ===================================================================
@@ -335,7 +296,7 @@ int main(int argc, char **argv){
     //TSSetTolerances(ts,1e-3,NULL,1e-3,NULL);
     //TSSetMaxSNESFailures(ts, 50);
 
-    TSMonitorSet(ts, Monitor, &ctx, NULL);
+    //TSMonitorSet(ts, Monitor, &ctx, NULL);
 
     TSSetFromOptions(ts);
     TSSetUp(ts);

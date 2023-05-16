@@ -2,6 +2,7 @@
 #define DIFFUSION_H_
 
 #include "reconstruction.h"
+#include "func.h"
 
 namespace SymDiffusion{
     class diffusion {
@@ -39,6 +40,9 @@ namespace SymDiffusion{
             double Flux(const MeshInfo& mi, const indice& global);
 
             unordered_map<int, double> derivFlux(const MeshInfo& mi, const indice& global);
+
+            // Diffusion coefficient
+            double D = 1.0;
 
             // Print information
             void GetInfo(const MeshInfo& mi);
@@ -134,14 +138,23 @@ namespace NonSymDiffusion{
             double Flux(const MeshInfo& mi, const indice& global);
             unordered_map<int,double> derivFlux(const MeshInfo& mi, const indice& global);
 
+            // Diffusion coefficient
+            double D = 1.0;
+
+            double DiffCoef(const vertex& x);
+
             void GetInfo(const MeshInfo& mi);
 
         private:
             double flux_(const std::array<double,4>& ru);
             unordered_map<int,double> dflux_(const std::array<unordered_map<int,double>,4>& dru);
+            unordered_map<int,double> dflux_(const std::array<unordered_map<int,double>,4>& dru,
+                                             const std::array<double,4>& ru);
 
             double boundaryCondition_(std::array<double,4>& ru, const std::array<int,2>& posOut);
+
             unordered_map<int,double> boundaryCondition_(std::array<unordered_map<int,double>,4>& dru,
+                                                         std::array<double,4>& ru,
                                                          const std::array<int,2>& posOut);
 
             bool Interior_(const MeshInfo& mi, const indice& target);
