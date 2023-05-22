@@ -210,3 +210,7 @@ vertexSet extractCorners(const MeshInfo& mi, const indice& global){
 
     return corner;
 }
+
+const vertex unitTangent(const vertexSet& edge, const double& len){
+    return (edge.at(1) - edge.at(0))/len;
+}

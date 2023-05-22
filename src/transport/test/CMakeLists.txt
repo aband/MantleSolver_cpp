@@ -44,7 +44,8 @@ add_library(general_lib
         ../../integral.cpp 
         ../../mesh.c 
         ../../input.cpp 
-        ../../output.c 
+        ../../output.c
+        ../../util.cpp
 )
 
 target_include_directories(general_lib
@@ -60,7 +61,6 @@ target_link_libraries(general_lib
 add_library(mlweno_lib 
     ../../mlweno/reconstruction.cpp 
     ../../mlweno/polynomial.cpp 
-    ../../mlweno/util.cpp
 )
 
 # Specify any additional include directories if needed

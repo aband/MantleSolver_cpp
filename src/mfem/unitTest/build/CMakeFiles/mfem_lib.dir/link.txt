@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmfem_lib.a CMakeFiles/mfem_lib.dir/home/renpo/Research/MantleSolver/src/mfem/element.cpp.o
+/usr/bin/ranlib libmfem_lib.a

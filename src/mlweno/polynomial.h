@@ -89,6 +89,8 @@ namespace tensorProductPoly{
 
             double GetSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
+            unordered_map<int, double> GetDerivSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice);
+
             const int GetOrderX() const { return stencilPolyn_.getI();};
             const int GetOrderY() const { return stencilPolyn_.getJ();};
 
@@ -120,8 +122,15 @@ namespace tensorProductPoly{
             int maxR_;
             int minR_;
 
+            /** 
+             * Evaluate smoothness indicator and 
+             * the corresponding derivatives.
+             */
             void EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
+            void EvalDerivSmoothnessIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
+
             double smoothnessIndic_ = -1;
+            unordered_map<int, double> derivSmoothnessIndic_;
 
     };
 

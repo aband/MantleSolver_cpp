@@ -248,29 +248,6 @@ void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indi
     //! Initialize smoothness Indicator each time it computes
     smoothnessIndic_ = 0.0;
 
-/*
- *    if (Xi_.empty()) {CreateXi_();}
- *
- *    for (int alpha1 = 0; alpha1<maxR_; alpha1++){
- *    for (int alpha2 = 0; alpha2<maxR_-alpha1; alpha2++){
- *        smoothnessIndic_ += Xi_[alpha1]*Xi_[alpha2] -
- *                            (1/((2*alpha1+1)*pow(4,alpha1)))*
- *                            (1/((2*alpha2+1)*pow(4,alpha2)));
- *
- *        double coefindx = 0.0;
- *
- *        if (stencilPolyn_.getI() == maxR_){
- *            coefindx = alpha1 + alpha2*maxR_;
- *        } else {
- *            coefindx = alpha2 + alpha1*maxR_;
- *        }
- *
- *        smoothnessIndic_ *= pow(collapsePolyn_->getCoef(coefindx),2);
- *
- *    }}
- *
- */
-
     //! Subtracting zero derivative case
     //smoothnessIndic_ -= (Xi_[0]*Xi_[0] - 
     //                    (1/((2*0+1)*pow(4,0)))*
@@ -278,7 +255,6 @@ void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indi
 
     //! Special treatment for tensor product polynomial
     //! No need to create auxiliary Xi term this time
-
     if (stencilPolyn_.getI()*stencilPolyn_.getJ() != 1){
 
         for (int all = 1; all<stencilPolyn_.getJ()*stencilPolyn_.getI(); all++){
@@ -298,8 +274,44 @@ void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indi
      * constant level reconstruction will always return 0.0
      * when its smoothness indicator is calculated.
      */
-
 }
+
+void stencilPolynomial::EvalDerivSmoothnessIndic_(const MeshInfo& mi, const stencil<indice>& stencilIndice){
+
+    // Make sure smoothness indicator has been calculated
+    // Make sure collapsed polynomial has been calculated
+    // beforehand.
+    assert(smoothnessIndic_ != -1);
+    
+    // Clear existing derivative
+    derivSmoothnessIndic_.clear(); 
+
+    // If constant, there is no need to calculate derivatives
+    if (stencilPolyn_.getI()*stencilPolyn_.getJ() != 1){
+        for (int si=0 ; si<stencilIndice.getSize(); si++){
+            // Convert local index to global index
+            // start is global index (By checking previous codes)
+            indice global = start_ + stencilIndice(si);
+
+            // Initialize work object
+            derivSmoothnessIndic_.insert(std::pair<int,double>(FlatIndic(mi,global),0.0));
+
+            for (int all = 1; all<stencilPolyn_.getJ()*stencilPolyn_.getI(); all++){
+                int l = all/stencilPolyn_.getI();
+                int m = all%stencilPolyn_.getI();
+
+                for (int r=l; r<stencilPolyn_.getJ(); r++){
+                for (int s=m; s<stencilPolyn_.getI(); s++){
+                    // Differentiate collapsed polynomial
+                    derivSmoothnessIndic_.at(FlatIndic(mi,global)) += pow(factorial(r,r-l),2)/(2*(r-l)+1)/pow(4,r-l) * 
+                                            pow(factorial(s,s-m),2)/(2*(s-m)+1)/pow(4,s-m) *
+                                            2*collapsePolyn_->getCoef(FlatIndic(stencilPolyn_.getI(),s,r))*
+                                            stencilPolyn_(si)->getCoef(FlatIndic(stencilPolyn_.getI(),s,r)); 
+                }}
+            }
+        }
+    }
+} 
 
 //! Evaluation of auxiliary variable Xi in evaluation of smooth indicator for plain polynomials
 void stencilPolynomial::CreateXi_(){
@@ -326,6 +338,12 @@ double stencilPolynomial::GetSmoothIndic(const MeshInfo& mi, const stencil<indic
     EvalSmoothIndic_(mi, stencilIndice);
 
     return smoothnessIndic_;
+}
+
+unordered_map<int, double> stencilPolynomial::GetDerivSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice){
+    EvalDerivSmoothnessIndic_(mi, stencilIndice);
+
+    return derivSmoothnessIndic_;
 }
 
 double stencilPolynomial::eval(double x, double y) const{

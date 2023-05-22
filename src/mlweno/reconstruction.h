@@ -49,8 +49,12 @@ namespace MLWENO{
              */
             double GetSmoothnessIndic(const MeshInfo& mi, indice owner); 
 
+            unordered_map<int, double> GetSmoothnessIndicDeriv(const MeshInfo& mi, const indice& owner);
+
             //! Update smoothness indicator for entire reconstruction level
             void UpdateSmoothnessIndic(const MeshInfo& mi);
+
+            void UpdateDerivSmoothnessIndic(const MeshInfo& mi);
 
             /**
              * Evaluate polynomial
@@ -72,8 +76,9 @@ namespace MLWENO{
 
             stencil <indice> stencilIndice_;           //!< Indices with given x and y sizes
             unordered_set<int> interior_;              //!< Numbering the created stencils
-            map<int, double> smoothnessIndic_;         //!< Smoothness Indicators
-            map<int, tensorProductPoly::stencilPolynomial*> singleLevel_; //!< Single level polynomials
+            map<int, double> smoothnessIndic_;         //!< Smoothness indicators
+            unordered_map<int, unordered_map<int,double>> smoothnessIndicDeriv_;//!< Derivative of smoothness indicators
+            map<int, tensorProductPoly::stencilPolynomial*> singleLevel_;       //!< Single level polynomials
 
             void IdentifyInteriorCell_(const MeshInfo& mi);
 
@@ -108,6 +113,13 @@ namespace MLWENO{
              * Should be called everytime non linear weights are being calculated.
              */
             void UpdateSmoothnessIndic(const MeshInfo& mi);
+
+            /**
+             * Update derivatives of smoothness indicator for all single level 
+             * stencil polynomials.
+             * Should be called before using fully implicit method.
+             */
+            void UpdateDerivSmoothnessIndic(const MeshInfo& mi);
 
             /**
              * Print information of all levels created.
@@ -202,6 +214,11 @@ namespace MLWENO{
             void UpdateNonLinearWgts(const MeshInfo& mi, const int stage);
 
             /**
+             * Update non linear weights default with two stage method
+             */
+            void UpdateNonLinearWgts(const MeshInfo& mi);
+
+            /**
              * Update reconstruction methods.
              * Called when same level are used, but different reconstruction methods.
              * For example, advection and diffusion reconstructioin uses third order level 
@@ -282,7 +299,14 @@ namespace MLWENO{
 
             int totalLevels_ = 0; //! Accumulate all number of stencils.
 
-            unordered_map<int, unordered_map<std::string, unordered_map<int,double>>> nonLinearWgts_; //! Storing all non linear weights mapping to each cells
+            //! Storing all non linear weights mapping to each cells
+            unordered_map<int, unordered_map<std::string, unordered_map<int,double>>> nonLinearWgts_; 
+
+            //! Storing all derivatives of non liear weights mapping to each cells
+            // The most outside map creates map from global index of cells to a set of non linear weights
+            // The inner map from levels (std::string) to a set of non linear weights (within the same level)
+            // The most inside map connects derivatives (a map mapping with cells in the chosen stencil).
+            unordered_map<int, unordered_map<std::string, unordered_map<int,unordered_map<int,double>>>> derivNonLinearWgts_;
 
             /**
              * Separate different reconstruction levels for boundary and interior cells.
@@ -302,11 +326,18 @@ namespace MLWENO{
             void UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, int flatGlobal,
                                               const unordered_set<std::string>& levels); 
 
+            /**
+             * Update non linear weights and its 
+             * corresponding derivatives at the same time.
+             */
+            void UpdateNonLinearWgtsAndDerivs_(const MeshInfo& mi, int flatGlobal,
+                                               const unordered_set<std::string>& levels); 
+
             //! Bias usually set to be zero
             vector< map<int, int> > etaBias_;
 
             //! Flag indicating MLWENOPrepare is used.
-            bool prepare = false;
+            bool prepare_ = false;
     };
 }
 

@@ -92,6 +92,12 @@ void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi){
     }
 }
 
+void singleLevelReconstruction::UpdateDerivSmoothnessIndic(const MeshInfo& mi){
+    for (auto& ind:interior_){
+        smoothnessIndicDeriv_.at(ind) = singleLevel_.at(ind)->GetDerivSmoothIndic(mi,stencilIndice_);
+    }
+}
+
 //! Compute stencil polynomials for the entire level
 void singleLevelReconstruction::ComputeStencilPolyn_(const MeshInfo& mi){
     for (auto& flat: interior_){
@@ -131,6 +137,10 @@ double singleLevelReconstruction::Evaluate(const MeshInfo& mi, const indice& own
 //! Extract smoothness indicator from pre-calculated values
 double singleLevelReconstruction::GetSmoothnessIndic(const MeshInfo& mi, indice owner){
     return smoothnessIndic_[FlatIndic(mi,owner)];
+}
+
+unordered_map<int,double> singleLevelReconstruction::GetSmoothnessIndicDeriv(const MeshInfo& mi, const indice& owner){
+    return smoothnessIndicDeriv_.at(FlatIndic(mi,owner));
 }
 
 //! Functions checking created stencil polynomials for a single stencil
@@ -178,6 +188,12 @@ void MLWENOPrepare::UpdateSmoothnessIndic(const MeshInfo& mi){
     for (auto const& singleLevel : allLevels_){
         singleLevel.second->UpdateSmoothnessIndic(mi);
         //singleLevel.second->PrintSmoothnessIndicator(mi);
+    }
+}
+
+void MLWENOPrepare::UpdateDerivSmoothnessIndic(const MeshInfo& mi){
+    for (auto const& singleLevel : allLevels_){
+        singleLevel.second->UpdateDerivSmoothnessIndic(mi);
     }
 }
 
@@ -400,9 +416,160 @@ void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, 
 
 }
 
+void multiLevelReconstruction::UpdateNonLinearWgtsAndDerivs_(const MeshInfo& mi, int flatGlobal, 
+                                                             const unordered_set<std::string>& levels){
+
+// This function update non linear weights and the corresponding derivatives at
+// the same time!!! Only used when full differentiation is required.
+
+    unordered_map<std::string, unordered_map<int, double>> tmp;
+    unordered_map<std::string, unordered_map<int, double>> nlw;
+
+    unordered_map<std::string, unordered_map<int, derivative>> tmpdnlw;
+    unordered_map<std::string, unordered_map<int, derivative>> dnlw;
+
+    double sum = 0.0;
+    derivative sumdnlw;
+
+    // First stage of the calculation of non linear weights
+    // and its derivatives.
+    for (auto const& level : levels){
+        const int sizeX = reconstLevels_[level]->GetSizeX();
+        const int sizeY = reconstLevels_[level]->GetSizeY();
+        for (auto const& rm : reconstMethods_[level]){
+            indice owner = Bend(mi,flatGlobal) + rm;
+            if (reconstLevels_[level]->CheckExist(mi,owner)){
+                double scale = reconstLevels_[level]->GetScale(FlatIndic(mi, owner));
+                // Get smoothness indicator for each level
+                double sm = reconstLevels_[level]->GetSmoothnessIndic(mi, owner);
+                // Get derivative of smoothness indicator for each level
+                derivative dsm = reconstLevels_[level]->GetSmoothnessIndicDeriv(mi, owner);
+
+                int power = 2;
+                double linearWgt = 1.0;
+                if (sizeX*sizeY == 1){power = 1; linearWgt = 1e-2;} else {power = 2; linearWgt = 1;};
+
+                // Calculate stage 1 scale value
+                double value = linearWgt/pow(sm + scale*scale*eps0_ , power);
+                // Calculate derivative of stage 1 scale value
+                double modify = linearWgt * (-1*power)/ pow(sm + scale*scale*eps0_, power+1);
+                unordered_map_arithmetic(dsm, modify, std::multiplies<double>());
+
+                // Insert stage 1 value into temporary storage
+                tmp[level].insert(std::pair<int, double>(FlatIndic(sizeX,rm), value));
+
+                tmpdnlw[level].insert(std::pair<int, unordered_map<int,double>>(FlatIndic(sizeX,rm),dsm));
+
+                // Create sum of all smoothness indicator values
+                sum += value;
+
+                unordered_map_arithmetic(sumdnlw, dsm, std::plus<double>());
+            }
+        }
+    }
+
+    // Create stage 1 nonlinear weights
+    for (auto const& level: levels){
+        if (tmp[level].empty() == 0){
+            for (auto & in: tmp[level]){
+                in.second = in.second/sum;
+            }
+        }
+    }
+
+    // Create derivative of stage 1 nonlinear weights
+    for (auto const& level: levels){
+        if (tmpdnlw[level].empty() == 0){
+            for (auto& in: tmpdnlw[level]){
+                unordered_map_arithmetic(in.second,sum,std::divides<double>());
+                double modify = -1 /sum/sum * tmp[level].at(in.first);
+                unordered_map_arithmetic(sumdnlw,modify,std::multiplies<double>());
+                unordered_map_arithmetic(in.second, sumdnlw, std::plus<double>());
+            }
+        }
+    }
+
+    //! Second stage of the calculatino of non linear weights
+    sum = 0.0; 
+    sumdnlw.clear();
+
+    for (auto const& level : levels){
+        const int sizeX = reconstLevels_[level]->GetSizeX();
+        const int sizeY = reconstLevels_[level]->GetSizeY();
+        const unordered_map<int,double>& wgts = tmp.at(level);
+        const unordered_map<int,derivative>& dwgts = tmpdnlw.at(level);
+
+        for (auto const& rm : reconstMethods_[level]){
+            indice owner = Bend(mi,flatGlobal) + rm;
+            if (reconstLevels_[level]->CheckExist(mi,owner)){
+                double scale = reconstLevels_[level]->GetScale(FlatIndic(mi, owner));
+                // Get smoothness indicator for each level
+                double sm = reconstLevels_[level]->GetSmoothnessIndic(mi, owner);
+                // Get derivative of smoothness indicator for each level
+                derivative dsm = reconstLevels_[level]->GetSmoothnessIndicDeriv(mi, owner);
+
+                double modify = pow(sm + scale*scale*eps0_ , max(sizeX, sizeY));
+
+                // Update nonlinear weights
+                double value = wgts.at(FlatIndic(sizeX,rm))/modify;
+                nlw[level].insert(std::pair<int, double>(FlatIndic(sizeX,rm), value));
+                sum += value;
+
+                // Update derivatives of nonlinear weights
+                derivative dstage2 = dwgts.at(FlatIndic(sizeX,rm));
+                unordered_map_arithmetic(dstage2,modify,std::multiplies<double>());
+                double modify2 = value * -1*max(sizeX,sizeY)/pow(sm+scale*scale*eps0_,max(sizeX,sizeY)+1);
+                unordered_map_arithmetic(dsm,modify2,std::multiplies<double>());
+                unordered_map_arithmetic(dstage2,dsm,std::plus<double>());
+
+                dnlw[level].insert(std::pair<int, derivative>(FlatIndic(sizeX,rm),dstage2));
+                unordered_map_arithmetic(sumdnlw,dstage2,std::plus<double>());
+            }
+        }
+    }
+
+    for (auto const& level: levels){
+        if (nlw[level].empty() == 0){
+            for (auto & in: nlw[level]){
+                in.second = in.second/sum;
+            }
+        }
+    }
+
+    nonLinearWgts_.erase(flatGlobal);
+    nonLinearWgts_.insert(std::pair<int, unordered_map<std::string, unordered_map<int, double>>>(flatGlobal,nlw));
+
+    // Create derivative of two stage non linear weights
+    for (auto const& level: levels){
+        if (dnlw[level].empty() == 0){
+            for (auto& it: dnlw[level]){
+                unordered_map_arithmetic(it.second,sum,std::divides<double>());
+                double modify = -1 /sum/sum * nlw[level].at(it.first);
+                unordered_map_arithmetic(sumdnlw,modify,std::multiplies<double>());
+                unordered_map_arithmetic(it.second, sumdnlw, std::plus<double>());
+            }
+        }
+    }
+
+    derivNonLinearWgts_.erase(flatGlobal);
+    derivNonLinearWgts_.insert(std::pair<int, unordered_map<std::string, unordered_map<int,derivative>>>(flatGlobal,dnlw));
+ 
+}
+
+void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
+//! Default multi level reconstruction will utilize two stage nonlinear weights
+        for (auto const& it: interiorCells_){
+            UpdateTwoStageNonLinearWgts_(mi, it, interiorLevels_);
+        }
+
+        for (auto const& it: boundaryCells_){
+            UpdateTwoStageNonLinearWgts_(mi, it, boundaryLevels_);
+        }
+}
+
 void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, const int stage){
 
-    if (prepare == false){
+    if (prepare_ == false){
 
         for (auto const& singleLevel : wenoLevels_){
             //cout << "Level " << singleLevel << " Smoothness indic updated ... " << endl;
@@ -479,7 +646,7 @@ void multiLevelReconstruction::SelectWenoReconstLevel(const unordered_set<std::s
                                                       const MLWENOPrepare& mlpPtr){
 
     // Indicating MLWENOPrepare is used in the computation.
-    prepare = true;
+    prepare_ = true;
 
     // Make wenoLevels_ an empty set
     wenoLevels_.clear();
@@ -558,8 +725,6 @@ unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const M
                         work.insert(std::pair<int, double>(flatOwnerShift, wgts.second* 
                                     reconstLevels_.at(level)->Evaluate(mi,owner,point,p)));
                     }
-
-
                 }
             }
         }
@@ -569,7 +734,8 @@ unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const M
 }
 
 /**
- * Differentiate non linear weight as well.
+ * Differentiate non linear weight when 
+ * evaluate MLWENO derivative.
  */
 unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const MeshInfo& mi,
                                                      const vertex& point, const indice& global,
@@ -660,7 +826,7 @@ void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi){
 //! Clear created multi level reconstruction
 void multiLevelReconstruction::Clear(){
 
-    if (prepare == 0){
+    if (prepare_ == 0){
         // Clear pointers if MLWENOPrepare is not used
         // Otherwise, these pointers should be destroyed in MLWENOPrepare
         for (auto& it : reconstLevels_){

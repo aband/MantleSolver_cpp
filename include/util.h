@@ -14,6 +14,8 @@
 #include <type_traits>
 #include <iomanip>
 
+#include <functional>
+
 #include "lapacke.h"
 #include "integral.h"
 #include <assert.h>
@@ -130,5 +132,48 @@ indice Bend(const int M, int flat);
 
 //! Extract corners for the target cell
 vertexSet extractCorners(const MeshInfo& mi, const indice& global);
+
+//! Print vertex and indice
+template <typename T>
+void nodePrint(T node){
+    cout << "( " << node[0] << " ," << node[1] << " ) " ;
+}
+
+// ===== Define derivative class =====
+using derivative = unordered_map<int, double>;
+
+/**
+ * Passing arithmetic function to the template 
+ * std::minus
+ * std::plus
+ * std::multiplies
+ * std::divides
+ */
+template <typename Key, typename Value, typename BinaryOp>
+void unordered_map_arithmetic(std::unordered_map<Key, Value>& map1, 
+                              const std::unordered_map<Key, Value>& map2, 
+                                    BinaryOp operation) {
+
+    for (auto it = map2.begin(); it != map2.end(); it++){
+        auto findIt = map1.find(it->first);
+        if (findIt != map1.end()){
+            map1.at(it->first) += it->second;
+        } else {
+            map1.insert(std::pair<Key, Value> (it->first, it->second));
+        }
+    }
+}
+
+template<typename Key, typename Value, typename BinaryOp>
+void unordered_map_arithmetic(std::unordered_map<Key, Value>& map,
+                              const Value& scale,
+                              BinaryOp operation){
+
+    std::unordered_map<Key, Value> result;
+
+    for (auto& pair : map){
+        pair.second = operation(pair.second, scale);
+    }
+}
 
 #endif

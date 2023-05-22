@@ -291,10 +291,21 @@ int main(int argc, char **argv){
 
     //mlrIns1->PrintNonLinearWgts(mi); 
 
-    unordered_map<int, double> testmap;
-    for (const auto& t: testmap){
-        cout << "Test" << endl;
+    derivative testmap1 {{1,2},{2,7},{9,0.5}};
+    derivative testmap2 {{1,0.5},{2,5},{4,6},{-2,0.6},{1000,0.003}};
+    double modify = 10;
+    unordered_map_arithmetic(testmap2, modify, std::multiplies<double>());
+    unordered_map_arithmetic(testmap1, testmap2, std::plus<double>());
+    cout << endl;
+    for (const auto& t: testmap2){
+        cout << t.first << " " << t.second << endl;
     }
+    cout << endl;
+    for (const auto& t: testmap1){
+        cout << t.first << " " << t.second << endl;
+    }
+
+
 
     // Print initial condition
     char * filename = (char*) "initial.txt"; 

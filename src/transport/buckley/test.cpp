@@ -262,7 +262,7 @@ int main(int argc, char **argv){
     SNESLineSearchSetTolerances(linesearch, 0, 1e8, 1e-8, 1e-14, 1e-8, 30);
     KSPGetPC(ksp, &pc);
     KSPSetTolerances(ksp, 1e-8,1e-13,1000,30);
-    PCSetType(pc, PCJACOBI);
+    PCSetType(pc, PCNONE);
     PCSetFromOptions(pc);
 
     //TSSetRHSFunction(ts, globalu, Explicit, &ctx);
