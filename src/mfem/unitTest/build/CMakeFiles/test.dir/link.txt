@@ -1,1 +1,0 @@
-/home/renpo/system/mpich-install/bin/mpicxx -g -rdynamic CMakeFiles/test.dir/test.cpp.o -o test  -Wl,-rpath,/home/renpo/system/petsc/arch-linux-c-debug/lib libmfem_lib.a libgeneral_lib.a /home/renpo/system/petsc/arch-linux-c-debug/lib/libpetsc.so -llapacke 
