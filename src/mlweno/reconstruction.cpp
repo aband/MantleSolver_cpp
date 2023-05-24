@@ -94,7 +94,7 @@ void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi){
 
 void singleLevelReconstruction::UpdateDerivSmoothnessIndic(const MeshInfo& mi){
     for (auto& ind:interior_){
-        smoothnessIndicDeriv_.at(ind) = singleLevel_.at(ind)->GetDerivSmoothIndic(mi,stencilIndice_);
+        smoothnessIndicDeriv_[ind] = singleLevel_.at(ind)->GetDerivSmoothIndic(mi,stencilIndice_);
     }
 }
 
@@ -111,7 +111,7 @@ void singleLevelReconstruction::ComputeStencilPolyn_(const MeshInfo& mi){
 /**
  * Evaluate at the given single reconstruction level
  */
-double singleLevelReconstruction::Evaluate(const MeshInfo& mi, indice owner, vertex point){
+double singleLevelReconstruction::Evaluate(const MeshInfo& mi, const indice& owner, const vertex& point){
 
     if (CheckExist(mi,owner)){
         return singleLevel_[FlatIndic(mi,owner)]->eval(point);
@@ -458,7 +458,7 @@ void multiLevelReconstruction::UpdateNonLinearWgtsAndDerivs_(const MeshInfo& mi,
                 // Insert stage 1 value into temporary storage
                 tmp[level].insert(std::pair<int, double>(FlatIndic(sizeX,rm), value));
 
-                tmpdnlw[level].insert(std::pair<int, unordered_map<int,double>>(FlatIndic(sizeX,rm),dsm));
+                tmpdnlw[level].insert(std::pair<int, derivative>(FlatIndic(sizeX,rm),dsm));
 
                 // Create sum of all smoothness indicator values
                 sum += value;
@@ -482,9 +482,8 @@ void multiLevelReconstruction::UpdateNonLinearWgtsAndDerivs_(const MeshInfo& mi,
         if (tmpdnlw[level].empty() == 0){
             for (auto& in: tmpdnlw[level]){
                 unordered_map_arithmetic(in.second,sum,std::divides<double>());
-                double modify = -1 /sum/sum * tmp[level].at(in.first);
-                unordered_map_arithmetic(sumdnlw,modify,std::multiplies<double>());
-                unordered_map_arithmetic(in.second, sumdnlw, std::plus<double>());
+                double modify = -1 /sum * tmp[level].at(in.first);
+                unordered_map_arithmetic(in.second, sumdnlw, std::plus<double>(), modify,std::multiplies<double>());
             }
         }
     }
@@ -519,8 +518,7 @@ void multiLevelReconstruction::UpdateNonLinearWgtsAndDerivs_(const MeshInfo& mi,
                 derivative dstage2 = dwgts.at(FlatIndic(sizeX,rm));
                 unordered_map_arithmetic(dstage2,modify,std::multiplies<double>());
                 double modify2 = value * -1*max(sizeX,sizeY)/pow(sm+scale*scale*eps0_,max(sizeX,sizeY)+1);
-                unordered_map_arithmetic(dsm,modify2,std::multiplies<double>());
-                unordered_map_arithmetic(dstage2,dsm,std::plus<double>());
+                unordered_map_arithmetic(dstage2,dsm,std::plus<double>(),modify2,std::multiplies<double>());
 
                 dnlw[level].insert(std::pair<int, derivative>(FlatIndic(sizeX,rm),dstage2));
                 unordered_map_arithmetic(sumdnlw,dstage2,std::plus<double>());
@@ -544,9 +542,9 @@ void multiLevelReconstruction::UpdateNonLinearWgtsAndDerivs_(const MeshInfo& mi,
         if (dnlw[level].empty() == 0){
             for (auto& it: dnlw[level]){
                 unordered_map_arithmetic(it.second,sum,std::divides<double>());
-                double modify = -1 /sum/sum * nlw[level].at(it.first);
-                unordered_map_arithmetic(sumdnlw,modify,std::multiplies<double>());
-                unordered_map_arithmetic(it.second, sumdnlw, std::plus<double>());
+                double modify = -1 /sum * nlw[level].at(it.first);
+
+                unordered_map_arithmetic(it.second, sumdnlw, std::plus<double>(), modify, std::multiplies<double>());
             }
         }
     }
@@ -597,6 +595,17 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, const int
 
     }
 
+}
+
+void multiLevelReconstruction::UpdateNonLinearWgtsAndDerivs(const MeshInfo& mi){
+//! Default multi level reconstruction will utilize two stage nonlinear weights
+        for (auto const& it: interiorCells_){
+            UpdateNonLinearWgtsAndDerivs_(mi, it, interiorLevels_);
+        }
+
+        for (auto const& it: boundaryCells_){
+            UpdateNonLinearWgtsAndDerivs_(mi, it, boundaryLevels_);
+        }
 }
 
 /**
@@ -736,13 +745,28 @@ unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const M
 /**
  * Differentiate non linear weight when 
  * evaluate MLWENO derivative.
+ * Shoule be added to the original derivative in addition.
  */
-unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENO(const MeshInfo& mi,
-                                                     const vertex& point, const indice& global,
-                                                     const int& flag) const{
-    assert(flag == 1);
+unordered_map<int, double> multiLevelReconstruction::EvaluateDerivMLWENOAdd(const MeshInfo& mi,
+                                                                            const vertex& point, 
+                                                                            const indice& global) const{
+    derivative work;
 
-    unordered_map<int, double> work;
+    // Extract non linear weights and its corresponding derivatives
+    unordered_map<std::string, unordered_map<int, derivative>> dnlw = derivNonLinearWgts_.at(FlatIndic(mi,global));
+
+    // Evaluate in the multi level weno fashion
+    for (auto const& level : wenoLevels_){
+        if (dnlw[level].empty() == 0){
+            for (auto it = dnlw[level].begin(); it != dnlw[level].end(); it++){
+                indice owner = global + Bend(reconstLevels_.at(level)->GetSizeX(), it->first);
+
+                double value = reconstLevels_.at(level)->Evaluate(mi,owner,point);
+
+                unordered_map_arithmetic(work, it->second, std::plus<double>(), value, std::multiplies<double>());
+            }
+        }
+    }
 
     return work;
 }

@@ -23,6 +23,8 @@ class transport : public advection, public diffusion, public reaction {
          */
         void UpdateSmoothnessIndic(const MeshInfo& mi);
 
+        void UpdateSmoothnessIndicAndDerivative(const MeshInfo& mi);
+
         /**
          * Assign reconstruction levels and methods to advection and diffusion
          */

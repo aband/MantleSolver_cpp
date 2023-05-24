@@ -18,6 +18,8 @@ typedef struct {
  */
 PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx);
 
+PetscErrorCode ExplicitFull(TS ts, PetscReal time, Vec U, Vec F, void* ctx);
+
 PetscErrorCode ExplicitAdvection(TS ts, PetscReal time, Vec U, Vec F, void* ctx);
 
 PetscErrorCode ExplicitDiffusion(TS ts, PetscReal time, Vec U, Vec F, void* ctx);
@@ -27,6 +29,8 @@ PetscErrorCode ExplicitDiffusion(TS ts, PetscReal time, Vec U, Vec F, void* ctx)
  * Using time stepping object provided by Petsc.
  */
 PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* ctx);
+
+PetscErrorCode FormJacobianFull(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* ctx);
 
 PetscErrorCode FormJacobianAdvection(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* ctx);
 

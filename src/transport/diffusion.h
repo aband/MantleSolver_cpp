@@ -131,9 +131,14 @@ namespace NonSymDiffusion{
 
             void UpdateNonLinearWgts(const MeshInfo& mi);
 
+            void UpdateNonLinearWgtsAndDerivative(const MeshInfo& mi);
+
             void UpdateEdgeFlux(const MeshInfo& mi);
 
             void UpdateEdgeFluxDerivative(const MeshInfo& mi);
+
+            // Derivative in full including non linear weights
+            void UpdateEdgeFluxDerivativeFull(const MeshInfo& mi);
 
             double Flux(const MeshInfo& mi, const indice& global);
             unordered_map<int,double> derivFlux(const MeshInfo& mi, const indice& global);
@@ -178,6 +183,16 @@ namespace NonSymDiffusion{
                                                       const std::array<int,2>& posOut,
                                                       const MLWENO::multiLevelReconstruction& mlrPtrIn,
                                                       const MLWENO::multiLevelReconstruction& mlrPtrOut); 
+
+            unordered_map<int, double> derivEdgeFluxFull_(const MeshInfo& mi,
+                                                          const indice& globalIn,
+                                                          const indice& globalout,
+                                                          const vertexSet& edge,
+                                                          const double& scale,
+                                                          const std::array<int,2>& posIn,
+                                                          const std::array<int,2>& posOut,
+                                                          const MLWENO::multiLevelReconstruction& mlrPtrIn,
+                                                          const MLWENO::multiLevelReconstruction& mlrPtrOut); 
 
             //! Store calculated diffusive flux on the edge
             //! And its corresponding derivative

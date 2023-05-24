@@ -352,6 +352,58 @@ void advection::UpdateEdgeFluxDerivative(const MeshInfo& mi){
 
 }
 
+void advection::UpdateEdgeFluxDerivativeFull(const MeshInfo& mi){
+
+    // Udpate every left and bottom edge for each cell
+    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] ; j++){
+    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] ; i++){
+
+        indice global {i,j};
+
+        // Extract corners with respect to given global indice
+        vertexSet corners = extractCorners(mi, global); 
+
+        // Compute and restore Horizontal flux
+        vertexSet hori {corners.at(0), corners.at(1)};
+
+        //! Compute global indice of outside cell with respect to the inside cell.
+        indice globalOut = global + mi.faceNormal[0];
+
+        derivEdgeHoriFlux_[FlatIndic(mi, global)] = derivEdgeFluxFull_(mi, global, globalOut, hori);
+
+        // Update top edge for the cells on the very top
+        if (j == mi.MPIglobalCellSize[1]-1){
+            hori = {corners.at(2), corners.at(3)};
+            globalOut = global + mi.faceNormal[2];
+
+            unordered_map<int, double> derivedgehori = derivEdgeFluxFull_(mi,global, globalOut, hori);
+            for (auto& d: derivedgehori){
+                d.second *= -1;
+            }
+            derivEdgeHoriFlux_[FlatIndic(mi, globalOut)] = derivedgehori;
+       }
+
+        // Compute and restore Vertical flux
+        vertexSet vert {corners.at(3), corners.at(0)};
+        globalOut = global + mi.faceNormal[3];
+
+        derivEdgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,global)] = derivEdgeFluxFull_(mi, global, globalOut, vert);
+
+        // Update right edge for the cells on the very right of the local part
+        if (i == mi.MPIglobalCellSize[0]-1){
+            vert = {corners.at(1), corners.at(2)};
+            globalOut = global + mi.faceNormal[1];
+
+            unordered_map<int,double> derivedgevert = derivEdgeFluxFull_(mi,global,globalOut,vert);
+            for (auto& d: derivedgevert){
+                d.second *= -1;
+            }
+            derivEdgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalOut)] = derivedgevert;
+        }
+
+    }}
+} 
+
 //! Calculate integrated flux defined on one given edge.
 double advection::edgeFlux_(const MeshInfo& mi, 
                             const indice& globalIn,
@@ -464,6 +516,78 @@ unordered_map<int,double> advection::derivEdgeFlux_(const MeshInfo& mi,
     return work;
 }
 
+// Update derivative of flux fully including differentiation of non linear weights
+unordered_map<int,double> advection::derivEdgeFluxFull_(const MeshInfo& mi, 
+                                                        const indice& globalIn,
+                                                        const indice& globalOut,
+                                                        const vertexSet& edge){
+
+    unordered_map<int, double> work;
+
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    double len = length(edge);
+
+    //! Compute unit normal vector pointing outside.
+    vertex unitNormal = UnitNormal(edge,len);
+
+    derivative tmp;
+
+    //! Loop through gauss points
+    if (Interior_(mi,globalOut)){
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
+
+            //! Compute derivative and value of multi level reconstruction
+            unordered_map<int, double> derivIn = mlrPtr_->EvaluateDerivMLWENO(mi,mapped,globalIn);
+            tmp = mlrPtr_->EvaluateDerivMLWENOAdd(mi,mapped,globalIn);
+            unordered_map_arithmetic(derivIn, tmp, std::plus<double>());
+            tmp.clear();
+            double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,globalIn);
+
+            unordered_map<int, double> derivOut = mlrPtr_->EvaluateDerivMLWENO(mi,mapped,globalOut);
+            tmp = mlrPtr_->EvaluateDerivMLWENOAdd(mi,mapped,globalOut);
+            unordered_map_arithmetic(derivOut, tmp, std::plus<double>());
+            tmp.clear();
+            double uOut = mlrPtr_->EvaluateMLWENO(mi,mapped,globalOut);
+
+            // Compute derivative of flux at a given gauss point
+            unordered_map<int, double> derivflux = dflux_(uIn, uOut, unitNormal,
+                                                          mapped, uMax_, 
+                                                          derivIn, derivOut);
+
+            double modify = gwe[g]*len/2.0;
+
+            unordered_map_arithmetic(work,derivflux,std::plus<double>(),modify,std::multiplies<double>());
+
+        }
+    } else {
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
+
+            //! Compute derivative and value of multi level reconstruction
+            unordered_map<int, double> derivIn = mlrPtr_->EvaluateDerivMLWENO(mi,mapped,globalIn);
+            tmp = mlrPtr_->EvaluateDerivMLWENOAdd(mi,mapped,globalIn);
+            unordered_map_arithmetic(derivIn, tmp, std::plus<double>());
+            tmp.clear();
+            double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,globalIn);
+
+            // Compute derivative of flux at a given gauss point
+            unordered_map<int, double> derivflux = 
+                boundaryCondition_(uIn, unitNormal,mapped,uMax_, derivIn);
+
+            double modify = gwe[g]*len/2.0;
+
+            unordered_map_arithmetic(work,derivflux,std::plus<double>(),modify,std::multiplies<double>());
+
+        }
+    }
+
+    return work;
+}
+
 //! Simply return values precalculated from collective update routine.
 double advection::Flux(const MeshInfo& mi, const indice& global){
 
@@ -556,6 +680,10 @@ void advection::CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& m
 
 void advection::UpdateNonLinearWgts(const MeshInfo& mi){
     mlrPtr_->UpdateNonLinearWgts(mi,2);
+}
+
+void advection::UpdateNonLinearWgtsAndDerivative(const MeshInfo& mi){
+    mlrPtr_->UpdateNonLinearWgtsAndDerivs(mi);
 }
 
 void advection::GetInfo(const MeshInfo& mi){

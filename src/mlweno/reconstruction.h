@@ -59,7 +59,7 @@ namespace MLWENO{
             /**
              * Evaluate polynomial
              */
-            double Evaluate(const MeshInfo& mi, indice owner, vertex point);
+            double Evaluate(const MeshInfo& mi, const indice& owner, const vertex& point);
 
             double Evaluate(const MeshInfo& mi, const indice& owner, const vertex& point, const int& local);
 
@@ -218,6 +218,8 @@ namespace MLWENO{
              */
             void UpdateNonLinearWgts(const MeshInfo& mi);
 
+            void UpdateNonLinearWgtsAndDerivs(const MeshInfo& mi);
+
             /**
              * Update reconstruction methods.
              * Called when same level are used, but different reconstruction methods.
@@ -254,10 +256,9 @@ namespace MLWENO{
                                                            const vertex& point, 
                                                            const indice& global) const;
 
-            unordered_map<int, double> EvaluateDerivMLWENO(const MeshInfo& mi,
-                                                           const vertex& point, 
-                                                           const indice& global,
-                                                           const int& flag) const;
+            unordered_map<int, double> EvaluateDerivMLWENOAdd(const MeshInfo& mi,
+                                                              const vertex& point, 
+                                                              const indice& global) const;
             /**
              * Get scale of the selected single level reconstruction
              * with respect to the selected cell.

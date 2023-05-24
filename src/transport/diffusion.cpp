@@ -625,6 +625,137 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFlux_(const Mesh
     return work;
 }
 
+// Fully differentiate everything
+unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFluxFull_(const MeshInfo& mi,
+                                                                          const indice& globalIn,
+                                                                          const indice& globalOut,
+                                                                          const vertexSet& edge,
+                                                                          const double& scale,
+                                                                          const std::array<int,2>& posIn,
+                                                                          const std::array<int,2>& posOut,
+                                                                          const MLWENO::multiLevelReconstruction& mlrPtrIn,
+                                                                          const MLWENO::multiLevelReconstruction& mlrPtrOut){
+    unordered_map<int, double> work;
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    double len = length(edge);
+
+    vertex unitNormal = UnitNormal(edge, len);
+
+    derivative tmp1, tmp2;
+
+    if (Interior_(mi,globalOut)){
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+
+            std::array<unordered_map<int,double>, 4> dru;
+
+            std::array<double,4> ru;
+
+            //dru[posIn[0]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*alpha*scale,globalIn);
+            //dru[posIn[1]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*beta *scale,globalIn);
+            //dru[posOut[0]] = mlrPtrOut.EvaluateDerivMLWENO(mi,mapped+unitNormal*beta *scale,globalOut);
+            //dru[posOut[1]] = mlrPtrOut.EvaluateDerivMLWENO(mi,mapped+unitNormal*alpha*scale,globalOut);
+
+            tmp1 = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*alpha*scale,globalIn);
+            tmp2 = mlrPtrIn.EvaluateDerivMLWENOAdd(mi,mapped-unitNormal*alpha*scale,globalIn);
+
+            unordered_map_arithmetic(tmp1, tmp2, std::plus<double>());
+            unordered_map_arithmetic(dru[posIn[0]],tmp1,std::plus<double>());
+
+            tmp1.clear(); tmp2.clear();
+
+
+            tmp1 = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*beta *scale,globalIn);
+            tmp2 = mlrPtrIn.EvaluateDerivMLWENOAdd(mi,mapped-unitNormal*beta *scale,globalIn);
+
+            unordered_map_arithmetic(tmp1, tmp2, std::plus<double>());
+            unordered_map_arithmetic(dru[posIn[1]],tmp1,std::plus<double>());
+
+            tmp1.clear(); tmp2.clear();
+
+
+            tmp1 = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped+unitNormal*beta *scale,globalIn);
+            tmp2 = mlrPtrIn.EvaluateDerivMLWENOAdd(mi,mapped+unitNormal*beta *scale,globalIn);
+
+            unordered_map_arithmetic(tmp1, tmp2, std::plus<double>());
+            unordered_map_arithmetic(dru[posOut[0]],tmp1,std::plus<double>());
+
+            tmp1.clear(); tmp2.clear();
+
+            tmp1 = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped+unitNormal*alpha*scale,globalIn);
+            tmp2 = mlrPtrIn.EvaluateDerivMLWENOAdd(mi,mapped+unitNormal*alpha*scale,globalIn);
+
+            unordered_map_arithmetic(tmp1, tmp2, std::plus<double>());
+            unordered_map_arithmetic(dru[posOut[1]],tmp1,std::plus<double>());
+
+            tmp1.clear(); tmp2.clear();
+
+            // ==========================================================================
+
+            ru[posIn[0]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*alpha*scale, globalIn);
+            ru[posIn[1]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*beta *scale, globalIn);
+            ru[posOut[0]] = mlrPtrOut.EvaluateMLWENO(mi, mapped+unitNormal*beta *scale, globalOut);
+            ru[posOut[1]] = mlrPtrOut.EvaluateMLWENO(mi, mapped+unitNormal*alpha*scale, globalOut);
+ 
+            unordered_map<int,double> derivflux = dflux_(dru, ru);
+
+            for (auto & derivf : derivflux){
+                if (work.count(derivf.first) > 0) {
+                    work[derivf.first] += gwe[g]*derivf.second*len/2.0;
+                } else {
+                    work.insert(std::pair<int, double> (derivf.first, gwe[g]*derivf.second*len/2.0));
+                }
+            }
+        }
+    } else {
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+
+            std::array<unordered_map<int,double>, 4> dru;
+
+            std::array<double,4> ru;
+
+            //dru[posIn[0]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*alpha*scale,globalIn);
+            //dru[posIn[1]] = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*beta *scale,globalIn);
+
+            tmp1 = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*alpha*scale,globalIn);
+            tmp2 = mlrPtrIn.EvaluateDerivMLWENOAdd(mi,mapped-unitNormal*alpha*scale,globalIn);
+
+            unordered_map_arithmetic(tmp1, tmp2, std::plus<double>());
+            unordered_map_arithmetic(dru[posIn[0]],tmp1,std::plus<double>());
+
+            tmp1.clear(); tmp2.clear();
+
+
+            tmp1 = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*beta *scale,globalIn);
+            tmp2 = mlrPtrIn.EvaluateDerivMLWENOAdd(mi,mapped-unitNormal*beta *scale,globalIn);
+
+            unordered_map_arithmetic(tmp1, tmp2, std::plus<double>());
+            unordered_map_arithmetic(dru[posIn[1]],tmp1,std::plus<double>());
+
+            // ========================
+
+            ru[posIn[0]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*alpha*scale, globalIn);
+            ru[posIn[1]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*beta *scale, globalIn);
+
+            unordered_map<int,double> derivflux = boundaryCondition_(dru,ru,posOut);
+
+            for (auto & derivf : derivflux){
+                if (work.count(derivf.first) > 0) {
+                    work[derivf.first] += gwe[g]*derivf.second*len/2.0;
+                } else {
+                    work.insert(std::pair<int, double> (derivf.first, gwe[g]*derivf.second*len/2.0));
+                }
+            }
+        }
+    }
+
+    return work;
+}
+
 void NonSymDiffusion::diffusion::UpdateEdgeFlux(const MeshInfo& mi){
 
     std::array<int,2> posIn;
@@ -725,6 +856,59 @@ void NonSymDiffusion::diffusion::UpdateEdgeFluxDerivative(const MeshInfo& mi){
             posIn[0] = 0; posOut[0] = 2;
             posIn[1] = 1; posOut[1] = 3;
             derivEdgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalOut)] = derivEdgeFlux_(mi, globalIn, globalOut, vert, scale, posIn, posOut, *(mlrPtrVertLeft_), *(mlrPtrVertRight_));      
+        }
+    }}
+}
+
+// Full derivative including differentiate non linear weights
+void NonSymDiffusion::diffusion::UpdateEdgeFluxDerivativeFull(const MeshInfo& mi){
+
+    std::array<int,2> posIn;
+    std::array<int,2> posOut;
+
+    indice globalOut;
+
+    // Update every left and bottom edge for each target cell
+    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] ; j++){
+    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] ; i++){
+        indice globalIn {i,j};
+
+        const double scale = sqrt(mi.cellArea.at(FlatIndic(mi,globalIn)));
+
+        // Extract corners with respect to given global indice
+        vertexSet corners = extractCorners(mi, globalIn); 
+
+        // Compute and restore horizontal flux
+        vertexSet hori {corners.at(0), corners.at(1)};
+        vertexSet vert {corners.at(3), corners.at(0)};
+
+        posIn[0] = 2;posOut[0] = 0;
+        posIn[1] = 3;posOut[1] = 1;
+
+
+        globalOut = {i,j-1};
+        // Bottom hoizontal flux
+        derivEdgeHoriFlux_[FlatIndic(mi, globalIn)] = derivEdgeFluxFull_(mi,globalIn,globalOut,hori,scale,posIn,posOut,
+                                                                     *(mlrPtrHoriUp_), *(mlrPtrHoriDown_));
+
+        globalOut = {i-1,j};
+        // Left vertical flux
+        derivEdgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalIn)] = derivEdgeFluxFull_(mi, globalIn, globalOut, vert, scale, posIn, posOut, *(mlrPtrVertRight_), *(mlrPtrVertLeft_));
+
+        if (j==mi.MPIglobalCellSize[1]-1){
+            hori = {corners.at(2), corners.at(3)};
+            globalOut = {i,j+1};
+            posIn[0] = 0; posOut[0] = 2;
+            posIn[1] = 1; posOut[1] = 3;
+            derivEdgeHoriFlux_[FlatIndic(mi,globalOut)] = derivEdgeFluxFull_(mi, globalIn, globalOut, hori, scale, posIn, posOut, *(mlrPtrHoriDown_), *(mlrPtrHoriUp_));       
+        }
+
+        if (i==mi.MPIglobalCellSize[0]-1){
+            vert = {corners.at(1), corners.at(2)};
+            globalOut = {i+1,j};
+            posIn[0] = 0; posOut[0] = 2;
+            posIn[1] = 1; posOut[1] = 3;
+            derivEdgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalOut)] = derivEdgeFluxFull_(mi, globalIn, globalOut, vert, scale, posIn, posOut, *(mlrPtrVertLeft_), *(mlrPtrVertRight_));      
         }
     }}
 }
@@ -867,6 +1051,13 @@ void NonSymDiffusion::diffusion::UpdateNonLinearWgts(const MeshInfo& mi){
     mlrPtrVertLeft_->UpdateNonLinearWgts(mi,2);
     mlrPtrHoriUp_->UpdateNonLinearWgts(mi,2);
     mlrPtrHoriDown_->UpdateNonLinearWgts(mi,2);
+}
+
+void NonSymDiffusion::diffusion::UpdateNonLinearWgtsAndDerivative(const MeshInfo& mi){
+    mlrPtrVertRight_->UpdateNonLinearWgtsAndDerivs(mi);
+    mlrPtrVertLeft_->UpdateNonLinearWgtsAndDerivs(mi);
+    mlrPtrHoriUp_->UpdateNonLinearWgtsAndDerivs(mi);
+    mlrPtrHoriDown_->UpdateNonLinearWgtsAndDerivs(mi);
 }
 
 void NonSymDiffusion::diffusion::GetInfo(const MeshInfo& mi){

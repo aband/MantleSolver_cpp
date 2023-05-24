@@ -157,7 +157,7 @@ void unordered_map_arithmetic(std::unordered_map<Key, Value>& map1,
     for (auto it = map2.begin(); it != map2.end(); it++){
         auto findIt = map1.find(it->first);
         if (findIt != map1.end()){
-            map1.at(it->first) += it->second;
+            map1.at(it->first) = operation(map1.at(it->first),it->second);
         } else {
             map1.insert(std::pair<Key, Value> (it->first, it->second));
         }
@@ -174,6 +174,33 @@ void unordered_map_arithmetic(std::unordered_map<Key, Value>& map,
     for (auto& pair : map){
         pair.second = operation(pair.second, scale);
     }
+}
+
+// A + xB style unordered_map arithmetic
+template <typename Key, typename Value, typename BinaryOp1, typename BinaryOp2>
+void unordered_map_arithmetic(std::unordered_map<Key, Value>& map1, 
+                              const std::unordered_map<Key, Value>& map2, 
+                                    BinaryOp1 operation1,
+                              const Value& scale,
+                                    BinaryOp2 operation2) {
+
+    for (auto it = map2.begin(); it != map2.end(); it++){
+        auto findIt = map1.find(it->first);
+        if (findIt != map1.end()){
+            map1.at(it->first) = operation1(map1.at(it->first),operation2(it->second,scale));
+        } else {
+            map1.insert(std::pair<Key, Value> (it->first, operation2(it->second,scale)));
+        }
+    }
+}
+
+template <typename Key, typename Value>
+void unordered_map_print(const std::unordered_map<Key, Value>& map){
+
+    for (auto it = map.begin(); it!=map.end(); it++){
+        cout << std::setw(3) <<std::setprecision(3) << "( " << it->first <<  " " << it->second << " )   " ;
+    } 
+    cout << endl;
 }
 
 #endif

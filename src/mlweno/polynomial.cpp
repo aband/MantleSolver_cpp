@@ -306,7 +306,7 @@ void stencilPolynomial::EvalDerivSmoothnessIndic_(const MeshInfo& mi, const sten
                     derivSmoothnessIndic_.at(FlatIndic(mi,global)) += pow(factorial(r,r-l),2)/(2*(r-l)+1)/pow(4,r-l) * 
                                             pow(factorial(s,s-m),2)/(2*(s-m)+1)/pow(4,s-m) *
                                             2*collapsePolyn_->getCoef(FlatIndic(stencilPolyn_.getI(),s,r))*
-                                            stencilPolyn_(si)->getCoef(FlatIndic(stencilPolyn_.getI(),s,r)); 
+                                            stencilPolyn_(si)->getCoef(FlatIndic(stencilPolyn_.getI(),s,r));
                 }}
             }
         }

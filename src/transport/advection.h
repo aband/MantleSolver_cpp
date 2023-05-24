@@ -27,11 +27,14 @@ class advection {
         // Update non linear weights
         void UpdateNonLinearWgts(const MeshInfo& mi);
 
+        void UpdateNonLinearWgtsAndDerivative(const MeshInfo& mi);
+
         // Update all flux and its derivatives (if implicit) on all the edges
         // collectively.
         void UpdateEdgeFlux(const MeshInfo& mi);
 
         void UpdateEdgeFluxDerivative(const MeshInfo& mi);
+        void UpdateEdgeFluxDerivativeFull(const MeshInfo& mi);
 
         // flag used to indicate if jacobian has been updated.
         int jacUpdate =0;
@@ -99,6 +102,11 @@ class advection {
                                                  const indice& globalIn, 
                                                  const indice& globalOut, 
                                                  const vertexSet& edge);
+
+        unordered_map<int,double> derivEdgeFluxFull_(const MeshInfo& mi, 
+                                                     const indice& globalIn, 
+                                                     const indice& globalOut, 
+                                                     const vertexSet& edge);
 
         //! Store calculated advective flux and 
         //! corresponding derivatives on both horizontal and vertical edge

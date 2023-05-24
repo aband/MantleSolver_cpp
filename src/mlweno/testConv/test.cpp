@@ -295,7 +295,7 @@ int main(int argc, char **argv){
     derivative testmap2 {{1,0.5},{2,5},{4,6},{-2,0.6},{1000,0.003}};
     double modify = 10;
     unordered_map_arithmetic(testmap2, modify, std::multiplies<double>());
-    unordered_map_arithmetic(testmap1, testmap2, std::plus<double>());
+    unordered_map_arithmetic(testmap1, testmap2, std::multiplies<double>());
     cout << endl;
     for (const auto& t: testmap2){
         cout << t.first << " " << t.second << endl;
@@ -305,7 +305,11 @@ int main(int argc, char **argv){
         cout << t.first << " " << t.second << endl;
     }
 
-
+    unordered_map_arithmetic(testmap1, testmap2, std::multiplies<double>(), modify, std::minus<double>());
+    cout << endl;
+    for (const auto& t: testmap1){
+        cout << t.first << " " << t.second << endl;
+    }
 
     // Print initial condition
     char * filename = (char*) "initial.txt"; 

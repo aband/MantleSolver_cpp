@@ -12,6 +12,11 @@ void transport::UpdateSmoothnessIndic(const MeshInfo& mi){
     mlpPtr_->UpdateSmoothnessIndic(mi);    
 }
 
+void transport::UpdateSmoothnessIndicAndDerivative(const MeshInfo& mi){
+    mlpPtr_->UpdateSmoothnessIndic(mi); 
+    mlpPtr_->UpdateDerivSmoothnessIndic(mi);
+}
+
 void transport::AssignReconstMethod(unordered_map<std::string, vector<indice>>& reconstMethods,
                                     std::string key, const vector<indice>& brm){
     //! Make sure the reconstruction key is new
