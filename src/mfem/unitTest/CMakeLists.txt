@@ -59,7 +59,7 @@ target_link_libraries(general_lib
 
 #Create a library from files in mfem file
 add_library(mfem_lib
-        ../../element.cpp
+        ../../basis.cpp
 )
 
 target_include_directories(mfem_lib

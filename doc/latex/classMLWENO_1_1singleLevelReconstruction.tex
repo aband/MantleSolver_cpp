@@ -11,11 +11,11 @@
 \begin{DoxyCompactList}\small\item\em A constructor. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_aff39b14197478220d7a6d75f9a27c095}{single\+Level\+Reconstruction}} (int stencil\+SizeX, int stencil\+SizeY)
 \begin{DoxyCompactList}\small\item\em A constructor. \end{DoxyCompactList}\item 
-\mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a3c166ed26a5f1bf4291ce490666b3085}{$\sim$single\+Level\+Reconstruction}} ()
+\mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_ad7e6254d9ffce1174d14848bd0e889fd}{$\sim$single\+Level\+Reconstruction}} ()
 \begin{DoxyCompactList}\small\item\em A destructor. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a5a63990afdb6304d4cf2f0c800bf1259}{Create\+Stencil\+Polynomials}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi)
+void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a5a63990afdb6304d4cf2f0c800bf1259}{Create\+Stencil\+Polynomials}} (const Mesh\+Info \&mi)
 \item 
-bool \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a57d226934762e1c5d953f3e9bd5784e7}{Check\+Exist}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} owner) const
+bool \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a57d226934762e1c5d953f3e9bd5784e7}{Check\+Exist}} (const Mesh\+Info \&mi, indice owner) const
 \item 
 const int \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a0bec39c49435c5994fbe62684ab8cc04}{Get\+SizeX}} () const
 \item 
@@ -23,19 +23,27 @@ const int \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a8ea3817ebdd
 \item 
 const double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a6f8d801e96d3057822ead32258a2455b}{Get\+Scale}} (int s)
 \item 
-const double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a855440617dc638139cbc442d57abeb8a}{Get\+Scale}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} owner)
+const double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a1d7cc78315a0592ee9f2836235a3b579}{Get\+Scale}} (const Mesh\+Info \&mi, const indice \&owner)
 \item 
-double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a705893e946eda8e309910e4cf90651ec}{Calculate\+Smoothness\+Indic}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} owner)
+double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a705893e946eda8e309910e4cf90651ec}{Calculate\+Smoothness\+Indic}} (const Mesh\+Info \&mi, indice owner)
 \begin{DoxyCompactList}\small\item\em Calculate smoothness indicator for the single stencil. \end{DoxyCompactList}\item 
-double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a152e62ac226fa60ca9b2160ff5cdb6be}{Get\+Smoothness\+Indic}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} owner)
+double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a152e62ac226fa60ca9b2160ff5cdb6be}{Get\+Smoothness\+Indic}} (const Mesh\+Info \&mi, indice owner)
 \begin{DoxyCompactList}\small\item\em Extract smoothness indicator from pre-\/calculated values. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_acf1d9c32d9fc29727dd27bdfbd5aff1e}{Update\+Smoothness\+Indic}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi)
+unordered\+\_\+map$<$ int, double $>$ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_aab1d8c50ecedbd6dabf01b3664570b1c}{Get\+Smoothness\+Indic\+Deriv}} (const Mesh\+Info \&mi, const indice \&owner)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_acf1d9c32d9fc29727dd27bdfbd5aff1e}{Update\+Smoothness\+Indic}} (const Mesh\+Info \&mi)
 \begin{DoxyCompactList}\small\item\em Update smoothness indicator for entire reconstruction level. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a91cbf91fd64305cb655d015ffd744ed6}{Update\+Deriv\+Smoothness\+Indic}} (const Mesh\+Info \&mi)
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a9999c17acbbec023a144fcf3c616d8c6}{Evaluate}} (const Mesh\+Info \&mi, const indice \&owner, const vertex \&point)
+\item 
+double \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_ac60e8d6b4ee2431237f17d9423496569}{Evaluate}} (const Mesh\+Info \&mi, const indice \&owner, const vertex \&point, const int \&local)
+\item 
 void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a62a18da5e34895ca4f6b62ca4b005e3c}{Check\+Stencils}} () const
 \begin{DoxyCompactList}\small\item\em class members for checking and verification \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a533bef552787e08bf635d3767e6acb55}{Check\+Stencil\+Polynomials}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} start)
+void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a533bef552787e08bf635d3767e6acb55}{Check\+Stencil\+Polynomials}} (const Mesh\+Info \&mi, indice start)
 \begin{DoxyCompactList}\small\item\em Functions checking created stencil polynomials for a single stencil. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}{Print\+Smoothness\+Indicator}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi)
+void \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}{Print\+Smoothness\+Indicator}} (const Mesh\+Info \&mi)
 \begin{DoxyCompactList}\small\item\em Print all smoothness\+Indicator for all stencils belonging to this level. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
@@ -60,11 +68,11 @@ Default constructor for a single reconstruction level. \mbox{\Hypertarget{classM
 
 A constructor. 
 
-Costume constructor with given x and y stencil size. Create stencil of indice used in creating stencil polynomials\mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a3c166ed26a5f1bf4291ce490666b3085}\label{classMLWENO_1_1singleLevelReconstruction_a3c166ed26a5f1bf4291ce490666b3085}} 
+Costume constructor with given x and y stencil size. Create stencil of indice used in creating stencil polynomials\mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_ad7e6254d9ffce1174d14848bd0e889fd}\label{classMLWENO_1_1singleLevelReconstruction_ad7e6254d9ffce1174d14848bd0e889fd}} 
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!````~singleLevelReconstruction@{$\sim$singleLevelReconstruction}}
 \index{````~singleLevelReconstruction@{$\sim$singleLevelReconstruction}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 \doxysubsubsection{\texorpdfstring{$\sim$singleLevelReconstruction()}{~singleLevelReconstruction()}}
-{\footnotesize\ttfamily MLWENO\+::single\+Level\+Reconstruction\+::$\sim$single\+Level\+Reconstruction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily single\+Level\+Reconstruction\+::$\sim$single\+Level\+Reconstruction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
 
 
@@ -77,7 +85,7 @@ Clear interior, single level polynomial and smoothness indicators
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CalculateSmoothnessIndic@{CalculateSmoothnessIndic}}
 \index{CalculateSmoothnessIndic@{CalculateSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 \doxysubsubsection{\texorpdfstring{CalculateSmoothnessIndic()}{CalculateSmoothnessIndic()}}
-{\footnotesize\ttfamily double single\+Level\+Reconstruction\+::\+Calculate\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}}]{owner }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily double single\+Level\+Reconstruction\+::\+Calculate\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{indice}]{owner }\end{DoxyParamCaption})}
 
 
 
@@ -87,13 +95,13 @@ Directly calculate smoothness indicator of a given stencil Should not be called 
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CheckExist@{CheckExist}}
 \index{CheckExist@{CheckExist}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 \doxysubsubsection{\texorpdfstring{CheckExist()}{CheckExist()}}
-{\footnotesize\ttfamily bool MLWENO\+::single\+Level\+Reconstruction\+::\+Check\+Exist (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}}]{owner }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily bool MLWENO\+::single\+Level\+Reconstruction\+::\+Check\+Exist (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{indice}]{owner }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
 
 \mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a533bef552787e08bf635d3767e6acb55}\label{classMLWENO_1_1singleLevelReconstruction_a533bef552787e08bf635d3767e6acb55}} 
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CheckStencilPolynomials@{CheckStencilPolynomials}}
 \index{CheckStencilPolynomials@{CheckStencilPolynomials}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 \doxysubsubsection{\texorpdfstring{CheckStencilPolynomials()}{CheckStencilPolynomials()}}
-{\footnotesize\ttfamily void single\+Level\+Reconstruction\+::\+Check\+Stencil\+Polynomials (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}}]{start }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void single\+Level\+Reconstruction\+::\+Check\+Stencil\+Polynomials (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{indice}]{start }\end{DoxyParamCaption})}
 
 
 
@@ -113,13 +121,27 @@ class members for checking and verification
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CreateStencilPolynomials@{CreateStencilPolynomials}}
 \index{CreateStencilPolynomials@{CreateStencilPolynomials}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 \doxysubsubsection{\texorpdfstring{CreateStencilPolynomials()}{CreateStencilPolynomials()}}
-{\footnotesize\ttfamily void single\+Level\+Reconstruction\+::\+Create\+Stencil\+Polynomials (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void single\+Level\+Reconstruction\+::\+Create\+Stencil\+Polynomials (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi }\end{DoxyParamCaption})}
 
-! Two steps of creating stencil polynomials for a given reconstruction level. Step 1\+: Identify all the stencils covering entire computational domain. Step 2\+: Compute stencil polynomials for each stencil. \mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a855440617dc638139cbc442d57abeb8a}\label{classMLWENO_1_1singleLevelReconstruction_a855440617dc638139cbc442d57abeb8a}} 
+! Two steps of creating stencil polynomials for a given reconstruction level. Step 1\+: Identify all the stencils covering entire computational domain. Step 2\+: Compute stencil polynomials for each stencil. \mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a9999c17acbbec023a144fcf3c616d8c6}\label{classMLWENO_1_1singleLevelReconstruction_a9999c17acbbec023a144fcf3c616d8c6}} 
+\index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!Evaluate@{Evaluate}}
+\index{Evaluate@{Evaluate}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{Evaluate()}{Evaluate()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double single\+Level\+Reconstruction\+::\+Evaluate (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const indice \&}]{owner,  }\item[{const vertex \&}]{point }\end{DoxyParamCaption})}
+
+Evaluate polynomial
+
+Evaluate at the given single reconstruction level \mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_ac60e8d6b4ee2431237f17d9423496569}\label{classMLWENO_1_1singleLevelReconstruction_ac60e8d6b4ee2431237f17d9423496569}} 
+\index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!Evaluate@{Evaluate}}
+\index{Evaluate@{Evaluate}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{Evaluate()}{Evaluate()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double single\+Level\+Reconstruction\+::\+Evaluate (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const indice \&}]{owner,  }\item[{const vertex \&}]{point,  }\item[{const int \&}]{local }\end{DoxyParamCaption})}
+
+Evaluate at the given single reconstruction level but evaluate individual stencil polynomials separately not the collapsed one. \mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a1d7cc78315a0592ee9f2836235a3b579}\label{classMLWENO_1_1singleLevelReconstruction_a1d7cc78315a0592ee9f2836235a3b579}} 
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetScale@{GetScale}}
 \index{GetScale@{GetScale}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 \doxysubsubsection{\texorpdfstring{GetScale()}{GetScale()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily const double MLWENO\+::single\+Level\+Reconstruction\+::\+Get\+Scale (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}}]{owner }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily const double MLWENO\+::single\+Level\+Reconstruction\+::\+Get\+Scale (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const indice \&}]{owner }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 \mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a6f8d801e96d3057822ead32258a2455b}\label{classMLWENO_1_1singleLevelReconstruction_a6f8d801e96d3057822ead32258a2455b}} 
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetScale@{GetScale}}
@@ -143,27 +165,39 @@ class members for checking and verification
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetSmoothnessIndic@{GetSmoothnessIndic}}
 \index{GetSmoothnessIndic@{GetSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 \doxysubsubsection{\texorpdfstring{GetSmoothnessIndic()}{GetSmoothnessIndic()}}
-{\footnotesize\ttfamily double single\+Level\+Reconstruction\+::\+Get\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{\mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}}}]{owner }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily double single\+Level\+Reconstruction\+::\+Get\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{indice}]{owner }\end{DoxyParamCaption})}
 
 
 
 Extract smoothness indicator from pre-\/calculated values. 
 
-Directly extract pre-\/calculateed smoothness indicator. Should always be the one to call when smoothness indicator is needed. \mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}\label{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}} 
+Directly extract pre-\/calculateed smoothness indicator. Should always be the one to call when smoothness indicator is needed. \mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_aab1d8c50ecedbd6dabf01b3664570b1c}\label{classMLWENO_1_1singleLevelReconstruction_aab1d8c50ecedbd6dabf01b3664570b1c}} 
+\index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetSmoothnessIndicDeriv@{GetSmoothnessIndicDeriv}}
+\index{GetSmoothnessIndicDeriv@{GetSmoothnessIndicDeriv}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{GetSmoothnessIndicDeriv()}{GetSmoothnessIndicDeriv()}}
+{\footnotesize\ttfamily unordered\+\_\+map$<$ int, double $>$ single\+Level\+Reconstruction\+::\+Get\+Smoothness\+Indic\+Deriv (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const indice \&}]{owner }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}\label{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}} 
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!PrintSmoothnessIndicator@{PrintSmoothnessIndicator}}
 \index{PrintSmoothnessIndicator@{PrintSmoothnessIndicator}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 \doxysubsubsection{\texorpdfstring{PrintSmoothnessIndicator()}{PrintSmoothnessIndicator()}}
-{\footnotesize\ttfamily void single\+Level\+Reconstruction\+::\+Print\+Smoothness\+Indicator (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void single\+Level\+Reconstruction\+::\+Print\+Smoothness\+Indicator (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi }\end{DoxyParamCaption})}
 
 
 
 Print all smoothness\+Indicator for all stencils belonging to this level. 
 
+\mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_a91cbf91fd64305cb655d015ffd744ed6}\label{classMLWENO_1_1singleLevelReconstruction_a91cbf91fd64305cb655d015ffd744ed6}} 
+\index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!UpdateDerivSmoothnessIndic@{UpdateDerivSmoothnessIndic}}
+\index{UpdateDerivSmoothnessIndic@{UpdateDerivSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
+\doxysubsubsection{\texorpdfstring{UpdateDerivSmoothnessIndic()}{UpdateDerivSmoothnessIndic()}}
+{\footnotesize\ttfamily void single\+Level\+Reconstruction\+::\+Update\+Deriv\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi }\end{DoxyParamCaption})}
+
 \mbox{\Hypertarget{classMLWENO_1_1singleLevelReconstruction_acf1d9c32d9fc29727dd27bdfbd5aff1e}\label{classMLWENO_1_1singleLevelReconstruction_acf1d9c32d9fc29727dd27bdfbd5aff1e}} 
 \index{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!UpdateSmoothnessIndic@{UpdateSmoothnessIndic}}
 \index{UpdateSmoothnessIndic@{UpdateSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}}
 \doxysubsubsection{\texorpdfstring{UpdateSmoothnessIndic()}{UpdateSmoothnessIndic()}}
-{\footnotesize\ttfamily void single\+Level\+Reconstruction\+::\+Update\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void single\+Level\+Reconstruction\+::\+Update\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi }\end{DoxyParamCaption})}
 
 
 

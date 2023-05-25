@@ -2,7 +2,7 @@
 #include <petsc.h>
 #include "integral.h"
 #include "input.h"
-#include "element.h"
+#include "basis.h"
 
 #include "util.h"
 
@@ -43,9 +43,9 @@ int main(int argc, char **argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    //ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
 
-    //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     // ==========================================================================================================================
 
@@ -161,10 +161,9 @@ int main(int argc, char **argv){
 
 // ========================================================================================================================================
 
-    element * elem = new element(mi,{1,1});
+    basis * b = new basis();
 
-    elem->Test({0,0});
-
+    b->GetCorners(mi,{1,1});
 
 // ====================================================================================================================================
     // Clear used objects

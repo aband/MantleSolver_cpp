@@ -1,0 +1,92 @@
+\hypertarget{classMLWENO_1_1MLWENOPrepare}{}\doxysection{MLWENO\+::MLWENOPrepare Class Reference}
+\label{classMLWENO_1_1MLWENOPrepare}\index{MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}}
+
+
+{\ttfamily \#include $<$reconstruction.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a5362e4f5a0481de5cc5770bd4c018118}{MLWENOPrepare}} ()
+\item 
+\mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_aedaebd1dfe9c7e7424130860ee79be61}{$\sim$\+MLWENOPrepare}} ()
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a50e32c6c813d6dbafe385ee56f69d4e5}{Add\+Level}} (const Mesh\+Info \&mi, const int \&stencil\+SizeX, const int \&stencil\+SizeY)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a1f11c74e8d3949ec73e69068338f13ff}{Update\+Smoothness\+Indic}} (const Mesh\+Info \&mi)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a5fb9efbf5868932a43a46716e396a11e}{Update\+Deriv\+Smoothness\+Indic}} (const Mesh\+Info \&mi)
+\item 
+void \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a56c135b8f81e48c6dbb27d50b0ec7b30}{Print\+Info}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a2fd3e184c29c7e5c780110cbfe92fa4a}{multi\+Level\+Reconstruction}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A class preparing for all possible multi-\/level weno reconstruciton using different single-\/level reconstruction. This class holding all single level reconstuctions. Let \doxylink{namespaceMLWENO}{MLWENO} \char`\"{}steal\char`\"{} single level reconstructions from it. Multi-\/level reconstruction class is declared as a friend of this class. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1MLWENOPrepare_a5362e4f5a0481de5cc5770bd4c018118}\label{classMLWENO_1_1MLWENOPrepare_a5362e4f5a0481de5cc5770bd4c018118}} 
+\index{MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}!MLWENOPrepare@{MLWENOPrepare}}
+\index{MLWENOPrepare@{MLWENOPrepare}!MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}}
+\doxysubsubsection{\texorpdfstring{MLWENOPrepare()}{MLWENOPrepare()}}
+{\footnotesize\ttfamily MLWENO\+::\+MLWENOPrepare\+::\+MLWENOPrepare (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classMLWENO_1_1MLWENOPrepare_aedaebd1dfe9c7e7424130860ee79be61}\label{classMLWENO_1_1MLWENOPrepare_aedaebd1dfe9c7e7424130860ee79be61}} 
+\index{MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}!````~MLWENOPrepare@{$\sim$MLWENOPrepare}}
+\index{````~MLWENOPrepare@{$\sim$MLWENOPrepare}!MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}}
+\doxysubsubsection{\texorpdfstring{$\sim$MLWENOPrepare()}{~MLWENOPrepare()}}
+{\footnotesize\ttfamily MLWENOPrepare\+::$\sim$\+MLWENOPrepare (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1MLWENOPrepare_a50e32c6c813d6dbafe385ee56f69d4e5}\label{classMLWENO_1_1MLWENOPrepare_a50e32c6c813d6dbafe385ee56f69d4e5}} 
+\index{MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}!AddLevel@{AddLevel}}
+\index{AddLevel@{AddLevel}!MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}}
+\doxysubsubsection{\texorpdfstring{AddLevel()}{AddLevel()}}
+{\footnotesize\ttfamily void MLWENOPrepare\+::\+Add\+Level (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const int \&}]{stencil\+SizeX,  }\item[{const int \&}]{stencil\+SizeY }\end{DoxyParamCaption})}
+
+Add single levels to the private all\+Levels\+\_\+ member. Reconstruction method not required. Reconstruction method will be defined later in \doxylink{classMLWENO_1_1multiLevelReconstruction}{multi\+Level\+Reconstruction}. Create single level key
+
+Check if the new level has never been defined before
+
+Initialize single level reconstruction class pointer.
+
+Create map from single level key to created single level reconstrucion\mbox{\Hypertarget{classMLWENO_1_1MLWENOPrepare_a56c135b8f81e48c6dbb27d50b0ec7b30}\label{classMLWENO_1_1MLWENOPrepare_a56c135b8f81e48c6dbb27d50b0ec7b30}} 
+\index{MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}!PrintInfo@{PrintInfo}}
+\index{PrintInfo@{PrintInfo}!MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}}
+\doxysubsubsection{\texorpdfstring{PrintInfo()}{PrintInfo()}}
+{\footnotesize\ttfamily void MLWENOPrepare\+::\+Print\+Info (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Print information of all levels created. Print added levels and reconstruction methods\mbox{\Hypertarget{classMLWENO_1_1MLWENOPrepare_a5fb9efbf5868932a43a46716e396a11e}\label{classMLWENO_1_1MLWENOPrepare_a5fb9efbf5868932a43a46716e396a11e}} 
+\index{MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}!UpdateDerivSmoothnessIndic@{UpdateDerivSmoothnessIndic}}
+\index{UpdateDerivSmoothnessIndic@{UpdateDerivSmoothnessIndic}!MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}}
+\doxysubsubsection{\texorpdfstring{UpdateDerivSmoothnessIndic()}{UpdateDerivSmoothnessIndic()}}
+{\footnotesize\ttfamily void MLWENOPrepare\+::\+Update\+Deriv\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi }\end{DoxyParamCaption})}
+
+Update derivatives of smoothness indicator for all single level stencil polynomials. Should be called before using fully implicit method. \mbox{\Hypertarget{classMLWENO_1_1MLWENOPrepare_a1f11c74e8d3949ec73e69068338f13ff}\label{classMLWENO_1_1MLWENOPrepare_a1f11c74e8d3949ec73e69068338f13ff}} 
+\index{MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}!UpdateSmoothnessIndic@{UpdateSmoothnessIndic}}
+\index{UpdateSmoothnessIndic@{UpdateSmoothnessIndic}!MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}}
+\doxysubsubsection{\texorpdfstring{UpdateSmoothnessIndic()}{UpdateSmoothnessIndic()}}
+{\footnotesize\ttfamily void MLWENOPrepare\+::\+Update\+Smoothness\+Indic (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi }\end{DoxyParamCaption})}
+
+Update smoothness indicator for all single level stencil polynomials. Should be called everytime non linear weights are being calculated. 
+
+\doxysubsection{Friends And Related Symbol Documentation}
+\mbox{\Hypertarget{classMLWENO_1_1MLWENOPrepare_a2fd3e184c29c7e5c780110cbfe92fa4a}\label{classMLWENO_1_1MLWENOPrepare_a2fd3e184c29c7e5c780110cbfe92fa4a}} 
+\index{MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}!multiLevelReconstruction@{multiLevelReconstruction}}
+\index{multiLevelReconstruction@{multiLevelReconstruction}!MLWENO::MLWENOPrepare@{MLWENO::MLWENOPrepare}}
+\doxysubsubsection{\texorpdfstring{multiLevelReconstruction}{multiLevelReconstruction}}
+{\footnotesize\ttfamily friend class \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction}{multi\+Level\+Reconstruction}}\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{reconstruction_8h}{reconstruction.\+h}}\item 
+/home/renpo/\+Research/\+Mantle\+Solver/src/mlweno/\mbox{\hyperlink{reconstruction_8cpp}{reconstruction.\+cpp}}\end{DoxyCompactItemize}

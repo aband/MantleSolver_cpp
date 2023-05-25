@@ -9,35 +9,45 @@
 \item 
 \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a5c7feacb442b27af04cea6a023b1c399}{stencil\+Polynomial}} ()
 \item 
-\mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_aec105fe420e248603783084a1242f5aa}{stencil\+Polynomial}} (const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&start, const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&center)
+\mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_aec105fe420e248603783084a1242f5aa}{stencil\+Polynomial}} (const indice \&start, const vertex \&center)
 \item 
-\mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_acec4c0e43eefdccb13f0a0122c9f0b7b}{stencil\+Polynomial}} (const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&start, const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&center, const vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&target\+Cell)
+\mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_acec4c0e43eefdccb13f0a0122c9f0b7b}{stencil\+Polynomial}} (const indice \&start, const vertex \&center, const vector$<$ indice $>$ \&target\+Cell)
 \item 
 \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a5d41aff53e5a76307de92b162cb4f478}{$\sim$stencil\+Polynomial}} ()
 \item 
-void \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a532d45eb587cb7286216f94bb79c0ae4}{Set\+Stencil\+Polynomials}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const \mbox{\hyperlink{classstencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&stencil\+Indice)
+void \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a532d45eb587cb7286216f94bb79c0ae4}{Set\+Stencil\+Polynomials}} (const Mesh\+Info \&mi, const \mbox{\hyperlink{classstencil}{stencil}}$<$ indice $>$ \&stencil\+Indice)
 \item 
-void \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_ae33d7b6ea3707b7860994abe08950615}{Set\+Up\+Scale}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&target\+Cell)
+void \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_ae33d7b6ea3707b7860994abe08950615}{Set\+Up\+Scale}} (const Mesh\+Info \&mi, const vector$<$ indice $>$ \&target\+Cell)
 \item 
-void \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a58b4164c04b42e0c2970db18c9c3bbca}{Set\+Up\+Scale}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const \mbox{\hyperlink{classstencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&stencil\+Indice)
+void \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a58b4164c04b42e0c2970db18c9c3bbca}{Set\+Up\+Scale}} (const Mesh\+Info \&mi, const \mbox{\hyperlink{classstencil}{stencil}}$<$ indice $>$ \&stencil\+Indice)
 \item 
 const double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a655c986180646fcc123a800d3891d876}{Get\+Scale}} () const
 \item 
 double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a85cef48422dd21b423f4a5ea68863d0f}{eval}} (const double x, const double y) const
 \item 
-double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a98dbce300fa1beb21ebe69c679a9dfc9}{eval}} (const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&P) const
+double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a98dbce300fa1beb21ebe69c679a9dfc9}{eval}} (const vertex \&P) const
 \item 
 double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_acc35064ae9248b223ff1d2cf6130ff49}{operator()}} (const double x, const double y) const
 \item 
-double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a046afcf2910c7d6e3a99228bb518e0e7}{operator()}} (const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&P) const
+double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a046afcf2910c7d6e3a99228bb518e0e7}{operator()}} (const vertex \&P) const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a53cd29368250696b21b047b2a85c41b0}{eval}} (double x, double y, int poly) const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_acd2dfb4fdfa2f0c4cf1f4c8bd6c83c82}{eval}} (vertex P, int poly) const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_ad6123f61b2d532977b22af52bb7a8b6c}{operator()}} (double x, double y, int poly) const
+\item 
+double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a055a940001251ca49ddd73143c31cd40}{operator()}} (vertex P, int poly) const
 \item 
 void \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_aa1e5425a1849862ba9ec271ea23b76f5}{print\+Coef}} ()
 \item 
 void \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_ad789d32004b0e015538b2626b7b699c6}{print\+Coef}} (int s)
 \item 
-void \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a543010fffdf90cbb7011cfbeae42c209}{Set\+Collapse\+Polyn}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const \mbox{\hyperlink{classstencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&stencil\+Indice)
+void \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a543010fffdf90cbb7011cfbeae42c209}{Set\+Collapse\+Polyn}} (const Mesh\+Info \&mi, const \mbox{\hyperlink{classstencil}{stencil}}$<$ indice $>$ \&stencil\+Indice)
 \item 
-double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a77735dc4d501e62493b20fef8b3d97b2}{Get\+Smooth\+Indic}} (const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&mi, const \mbox{\hyperlink{classstencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&stencil\+Indice)
+double \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a77735dc4d501e62493b20fef8b3d97b2}{Get\+Smooth\+Indic}} (const Mesh\+Info \&mi, const \mbox{\hyperlink{classstencil}{stencil}}$<$ indice $>$ \&stencil\+Indice)
+\item 
+unordered\+\_\+map$<$ int, double $>$ \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a03a8aca61f8080a2a014b0694de22b95}{Get\+Deriv\+Smooth\+Indic}} (const Mesh\+Info \&mi, const \mbox{\hyperlink{classstencil}{stencil}}$<$ indice $>$ \&stencil\+Indice)
 \item 
 const int \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a67b0dec580255377fd316299b94c8516}{Get\+OrderX}} () const
 \item 
@@ -56,13 +66,13 @@ const int \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a250700c8
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!stencilPolynomial@{stencilPolynomial}}
 \index{stencilPolynomial@{stencilPolynomial}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
 \doxysubsubsection{\texorpdfstring{stencilPolynomial()}{stencilPolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
-{\footnotesize\ttfamily stencil\+Polynomial\+::stencil\+Polynomial (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&}]{start,  }\item[{const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&}]{center }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily stencil\+Polynomial\+::stencil\+Polynomial (\begin{DoxyParamCaption}\item[{const indice \&}]{start,  }\item[{const vertex \&}]{center }\end{DoxyParamCaption})}
 
 \mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_acec4c0e43eefdccb13f0a0122c9f0b7b}\label{classtensorProductPoly_1_1stencilPolynomial_acec4c0e43eefdccb13f0a0122c9f0b7b}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!stencilPolynomial@{stencilPolynomial}}
 \index{stencilPolynomial@{stencilPolynomial}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
 \doxysubsubsection{\texorpdfstring{stencilPolynomial()}{stencilPolynomial()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
-{\footnotesize\ttfamily stencil\+Polynomial\+::stencil\+Polynomial (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} \&}]{start,  }\item[{const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&}]{center,  }\item[{const vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{target\+Cell }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily stencil\+Polynomial\+::stencil\+Polynomial (\begin{DoxyParamCaption}\item[{const indice \&}]{start,  }\item[{const vertex \&}]{center,  }\item[{const vector$<$ indice $>$ \&}]{target\+Cell }\end{DoxyParamCaption})}
 
 \mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a5d41aff53e5a76307de92b162cb4f478}\label{classtensorProductPoly_1_1stencilPolynomial_a5d41aff53e5a76307de92b162cb4f478}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!````~stencilPolynomial@{$\sim$stencilPolynomial}}
@@ -76,14 +86,32 @@ const int \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a250700c8
 \mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a85cef48422dd21b423f4a5ea68863d0f}\label{classtensorProductPoly_1_1stencilPolynomial_a85cef48422dd21b423f4a5ea68863d0f}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!eval@{eval}}
 \index{eval@{eval}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
-\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
 {\footnotesize\ttfamily double stencil\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{const double}]{x,  }\item[{const double}]{y }\end{DoxyParamCaption}) const}
 
-\mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a98dbce300fa1beb21ebe69c679a9dfc9}\label{classtensorProductPoly_1_1stencilPolynomial_a98dbce300fa1beb21ebe69c679a9dfc9}} 
+Shift input point with respect to stencil center\mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a98dbce300fa1beb21ebe69c679a9dfc9}\label{classtensorProductPoly_1_1stencilPolynomial_a98dbce300fa1beb21ebe69c679a9dfc9}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!eval@{eval}}
 \index{eval@{eval}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
-\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily double tensor\+Product\+Poly\+::stencil\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily double tensor\+Product\+Poly\+::stencil\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{const vertex \&}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a53cd29368250696b21b047b2a85c41b0}\label{classtensorProductPoly_1_1stencilPolynomial_a53cd29368250696b21b047b2a85c41b0}} 
+\index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!eval@{eval}}
+\index{eval@{eval}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily double stencil\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y,  }\item[{int}]{poly }\end{DoxyParamCaption}) const}
+
+Shift input point with respect to the stencil center\mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_acd2dfb4fdfa2f0c4cf1f4c8bd6c83c82}\label{classtensorProductPoly_1_1stencilPolynomial_acd2dfb4fdfa2f0c4cf1f4c8bd6c83c82}} 
+\index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!eval@{eval}}
+\index{eval@{eval}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily double tensor\+Product\+Poly\+::stencil\+Polynomial\+::eval (\begin{DoxyParamCaption}\item[{vertex}]{P,  }\item[{int}]{poly }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a03a8aca61f8080a2a014b0694de22b95}\label{classtensorProductPoly_1_1stencilPolynomial_a03a8aca61f8080a2a014b0694de22b95}} 
+\index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!GetDerivSmoothIndic@{GetDerivSmoothIndic}}
+\index{GetDerivSmoothIndic@{GetDerivSmoothIndic}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{GetDerivSmoothIndic()}{GetDerivSmoothIndic()}}
+{\footnotesize\ttfamily unordered\+\_\+map$<$ int, double $>$ stencil\+Polynomial\+::\+Get\+Deriv\+Smooth\+Indic (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const \mbox{\hyperlink{classstencil}{stencil}}$<$ indice $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})}
 
 \mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a67b0dec580255377fd316299b94c8516}\label{classtensorProductPoly_1_1stencilPolynomial_a67b0dec580255377fd316299b94c8516}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!GetOrderX@{GetOrderX}}
@@ -107,19 +135,31 @@ const int \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a250700c8
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!GetSmoothIndic@{GetSmoothIndic}}
 \index{GetSmoothIndic@{GetSmoothIndic}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
 \doxysubsubsection{\texorpdfstring{GetSmoothIndic()}{GetSmoothIndic()}}
-{\footnotesize\ttfamily double stencil\+Polynomial\+::\+Get\+Smooth\+Indic (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const \mbox{\hyperlink{classstencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily double stencil\+Polynomial\+::\+Get\+Smooth\+Indic (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const \mbox{\hyperlink{classstencil}{stencil}}$<$ indice $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})}
 
 \mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_acc35064ae9248b223ff1d2cf6130ff49}\label{classtensorProductPoly_1_1stencilPolynomial_acc35064ae9248b223ff1d2cf6130ff49}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!operator()@{operator()}}
 \index{operator()@{operator()}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
-\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
 {\footnotesize\ttfamily double tensor\+Product\+Poly\+::stencil\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{const double}]{x,  }\item[{const double}]{y }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
 
 \mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a046afcf2910c7d6e3a99228bb518e0e7}\label{classtensorProductPoly_1_1stencilPolynomial_a046afcf2910c7d6e3a99228bb518e0e7}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!operator()@{operator()}}
 \index{operator()@{operator()}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
-\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily double tensor\+Product\+Poly\+::stencil\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{util_8h_afe3e6e2ad779e5f022bca85e9820be67}{vertex}} \&}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily double tensor\+Product\+Poly\+::stencil\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{const vertex \&}]{P }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_ad6123f61b2d532977b22af52bb7a8b6c}\label{classtensorProductPoly_1_1stencilPolynomial_ad6123f61b2d532977b22af52bb7a8b6c}} 
+\index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!operator()@{operator()}}
+\index{operator()@{operator()}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily double tensor\+Product\+Poly\+::stencil\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y,  }\item[{int}]{poly }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a055a940001251ca49ddd73143c31cd40}\label{classtensorProductPoly_1_1stencilPolynomial_a055a940001251ca49ddd73143c31cd40}} 
+\index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!operator()@{operator()}}
+\index{operator()@{operator()}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily double tensor\+Product\+Poly\+::stencil\+Polynomial\+::operator() (\begin{DoxyParamCaption}\item[{vertex}]{P,  }\item[{int}]{poly }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
 
 \mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_aa1e5425a1849862ba9ec271ea23b76f5}\label{classtensorProductPoly_1_1stencilPolynomial_aa1e5425a1849862ba9ec271ea23b76f5}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!printCoef@{printCoef}}
@@ -137,25 +177,25 @@ const int \mbox{\hyperlink{classtensorProductPoly_1_1stencilPolynomial_a250700c8
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!SetCollapsePolyn@{SetCollapsePolyn}}
 \index{SetCollapsePolyn@{SetCollapsePolyn}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
 \doxysubsubsection{\texorpdfstring{SetCollapsePolyn()}{SetCollapsePolyn()}}
-{\footnotesize\ttfamily void stencil\+Polynomial\+::\+Set\+Collapse\+Polyn (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const \mbox{\hyperlink{classstencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void stencil\+Polynomial\+::\+Set\+Collapse\+Polyn (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const \mbox{\hyperlink{classstencil}{stencil}}$<$ indice $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})}
 
 \mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a532d45eb587cb7286216f94bb79c0ae4}\label{classtensorProductPoly_1_1stencilPolynomial_a532d45eb587cb7286216f94bb79c0ae4}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!SetStencilPolynomials@{SetStencilPolynomials}}
 \index{SetStencilPolynomials@{SetStencilPolynomials}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
 \doxysubsubsection{\texorpdfstring{SetStencilPolynomials()}{SetStencilPolynomials()}}
-{\footnotesize\ttfamily void stencil\+Polynomial\+::\+Set\+Stencil\+Polynomials (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const \mbox{\hyperlink{classstencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void stencil\+Polynomial\+::\+Set\+Stencil\+Polynomials (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const \mbox{\hyperlink{classstencil}{stencil}}$<$ indice $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})}
 
 \mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_a58b4164c04b42e0c2970db18c9c3bbca}\label{classtensorProductPoly_1_1stencilPolynomial_a58b4164c04b42e0c2970db18c9c3bbca}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!SetUpScale@{SetUpScale}}
 \index{SetUpScale@{SetUpScale}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
 \doxysubsubsection{\texorpdfstring{SetUpScale()}{SetUpScale()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
-{\footnotesize\ttfamily void tensor\+Product\+Poly\+::stencil\+Polynomial\+::\+Set\+Up\+Scale (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const \mbox{\hyperlink{classstencil}{stencil}}$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily void tensor\+Product\+Poly\+::stencil\+Polynomial\+::\+Set\+Up\+Scale (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const \mbox{\hyperlink{classstencil}{stencil}}$<$ indice $>$ \&}]{stencil\+Indice }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 \mbox{\Hypertarget{classtensorProductPoly_1_1stencilPolynomial_ae33d7b6ea3707b7860994abe08950615}\label{classtensorProductPoly_1_1stencilPolynomial_ae33d7b6ea3707b7860994abe08950615}} 
 \index{tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}!SetUpScale@{SetUpScale}}
 \index{SetUpScale@{SetUpScale}!tensorProductPoly::stencilPolynomial@{tensorProductPoly::stencilPolynomial}}
 \doxysubsubsection{\texorpdfstring{SetUpScale()}{SetUpScale()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
-{\footnotesize\ttfamily void tensor\+Product\+Poly\+::stencil\+Polynomial\+::\+Set\+Up\+Scale (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structMeshInfo}{Mesh\+Info}} \&}]{mi,  }\item[{const vector$<$ \mbox{\hyperlink{util_8h_a724c00a63451ac03113852e2700f68ea}{indice}} $>$ \&}]{target\+Cell }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily void tensor\+Product\+Poly\+::stencil\+Polynomial\+::\+Set\+Up\+Scale (\begin{DoxyParamCaption}\item[{const Mesh\+Info \&}]{mi,  }\item[{const vector$<$ indice $>$ \&}]{target\+Cell }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 
 

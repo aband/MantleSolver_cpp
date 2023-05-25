@@ -1,10 +1,6 @@
-#include "element.h"
+#include "basis.h"
 
-element::element(const MeshInfo& mi,
-                 const indice& global){
-    GetCorners(mi,global);
-}
-
+// ===== Class element =====
 void element::GetCorners(const vertexSet& corners){
     for (const auto& c: corners){
         corners_.push_back(c);
@@ -13,16 +9,32 @@ void element::GetCorners(const vertexSet& corners){
 
 double element::lambda(const int& e,
                        const vertex& point) const{
-    vertexSet edge {corners_.at(e), 
-                    corners_.at((e+1)%4)};
+    vertexSet edge {corners_.at((e+3)%4), 
+                    corners_.at((e+4)%4)};
     return distance_(edge,point);
 }
 
 double element::lambda(const int& e1,
                        const int& e2,
                        const vertex& point) const{
-    
 
+    vertexSet line {corners_.at(e1),
+                    corners_.at(e2)};
+
+    return (lambda(e1,point) - lambda(e2,point))/length(line);
+}
+
+double element::R(const int& e1,
+                  const int& e2,
+                  const vertex& point) const {
+
+    return (lambda(e1,point) - lambda(e2,point))/
+           (lambda(e1,point) + lambda(e2,point));
+}
+
+double element::R(const int& e,
+                  const vertex& point) const{
+    return 0.5*(1-R(e,(e+3)%4,point));
 }
 
 double element::distance_(const vertexSet& edge, 
@@ -39,6 +51,9 @@ double element::distance_(const vertexSet& edge,
                                  0.0);
 }
 
+// ===== Class basis =====
+
+
 // ===== Test =====
 void element::Test(const vertex& point){
 
@@ -50,3 +65,5 @@ void element::Test(const vertex& point){
         cout << "Distance is " << lambda(e,point)  << endl;
     }
 }
+
+
