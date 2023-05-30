@@ -1,4 +1,4 @@
-#include "../include/input.h"
+#include "input.h"
 
 double constfun2(valarray<double>& point,const vector<double>& param){
     return 1.0;

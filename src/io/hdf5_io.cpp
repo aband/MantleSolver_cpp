@@ -1,8 +1,8 @@
 // IO with hdf5 file format
-#include "output.h"
-#include "hdf5.h"
+#include "hdf5_io.h"
 
 #define H5FILE_NAME "data.h5"
+#define FAIL -1
 
 PetscErrorCode hdf5output(DM dmu, Vec * globalu){
 
@@ -88,13 +88,37 @@ PetscErrorCode hdf5output(DM dmu, Vec * globalu){
     PetscFunctionReturn(0);
 }
 
-// Parallel hdf5 output
-PetscErrorCode phdf5output(DM dmu, Vec * globalu){
+PetscErrorCode phdf5Write(const MeshInfo& mi, DM dm, Vec * fullmesh){
 
-    PetscErrorCode    ierr;
+    /**
+     * Be careful with hdf5 data format.
+     * The first dimension of HDF5 is y direction.
+     * The second dimension of HDF5 is x direction.
+     */
+
     PetscFunctionBeginUser;
 
+    hid_t    fid1;                                             /* HDF5 file IDs */
+    hid_t    acc_tpl1;                                         /* File access templates */
+    hid_t    xfer_plist;                                       /* Dataset transfer properties list */
+    hid_t    sid1;                                             /* Dataspace ID */
+    hid_t    file_dataspace;                                   /* File dataspace ID */
+    hid_t    mem_dataspace;                                    /* memory dataspace ID */
+    hid_t    dataset1, dataset2;                               /* Dataset ID */
+    hsize_t  dims1[2] = {(hsize_t)mi.MPIglobalCellSize[1], 
+                         (hsize_t)mi.MPIglobalCellSize[0]};    /* dataspace dim sizes */
 
+    hsize_t start[2];            /* for hyperslab setting */
+    hsize_t count[2], stride[2]; /* for hyperslab setting */
+
+    herr_t ret; /* Generic return value */
+
+    MPI_Comm comm = PETSC_COMM_WORLD;
+    MPI_Info info = MPI_INFO_NULL;
+
+
+
+//! Set up hyperslab first
 
     PetscFunctionReturn(0);
 }

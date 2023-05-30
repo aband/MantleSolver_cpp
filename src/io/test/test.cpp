@@ -2,16 +2,13 @@
 #include <petsc.h>
 #include "integral.h"
 
-#include "stencil.h"
 #include "util.h"
 #include "input.h"
-#include "reconstruction.h"
-//#include <adolc/adolc.h>
 
 extern "C"{
 #include "mesh.h"
 #include "output.h"
-#include "hdf5_io.h"
+#include "cgns_io.h"
 }
 
 using namespace std;
@@ -32,7 +29,6 @@ double func(vertex& point, const vector<double>& param){
     //return point[0]*point[0] + point[1]*point[1];
     //return 0.5;
     //return point[0] + point[1];
-
 }
 
 int main(int argc, char **argv){
@@ -171,7 +167,9 @@ int main(int argc, char **argv){
 
 // ========================================================================================================================================
 
-    parallelWrite();
+    char filename[] = "testOut";
+
+    CGNSMeshWrite(dm, &fullmesh);
 
 // ====================================================================================================================================
     // Clear used objects

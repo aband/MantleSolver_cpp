@@ -1,4 +1,4 @@
-#include "../include/output.h"
+#include "output.h"
 
 PetscErrorCode PrintFullMesh(DM dmMesh, Vec * fullmesh){
 
@@ -158,6 +158,37 @@ PetscErrorCode DrawMat(Mat V, const char * myfile){
     }fprintf(f,"\n ");}
 
     fclose(f);
+
+    PetscFunctionReturn(0);
+}
+
+PetscErrorCode MPIIO(){
+    PetscFunctionBeginUser;
+
+    MPI_Comm comm = PETSC_COMM_WORLD;
+    MPI_Info info = MPI_INFO_NULL;
+    int err;
+
+    char* filename = "testFile";
+    MPI_File fh;
+
+//    MPI_INT size;
+//    MPI_INT rank;
+
+//    MPI_Comm_size(PETSC_COMM_WORLD,&size);  
+//    MPI_Comm_rank(PETSC_COMM_WORLD,&rank);   
+
+//    MPI_Offset offset = (MPI_Offset)rank*10*sizeof(int);
+
+    int cmode;
+    cmode = MPI_MODE_CREATE;
+    cmode |= MPI_MODE_RDWR;
+
+    err = MPI_File_open(comm, filename, cmode, info, &fh);
+    assert(err == MPI_SUCCESS);
+
+
+    MPI_File_close(&fh);
 
     PetscFunctionReturn(0);
 }

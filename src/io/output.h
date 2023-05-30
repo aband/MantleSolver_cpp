@@ -3,13 +3,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include <petscdmda.h>
-#include "../include/mesh.h"
+#include "mesh.h"
 
 PetscErrorCode PrintFullMesh(DM dmMesh, Vec * fullmesh);
-
-PetscErrorCode hdf5output(DM dmu, Vec * globalu); 
 
 /**
  * Specified to output pressure data.
@@ -33,5 +32,10 @@ PetscErrorCode PlainMeshOutput(DM dmMesh, Vec * fullmesh);
  * Output (Jacobian) matrix element pattern.
  */
 PetscErrorCode DrawMat(Mat V, const char * myfile);
+
+/**
+ * Output with native mpi I/O format
+ */
+PetscErrorCode MPIIO();
 
 #endif
