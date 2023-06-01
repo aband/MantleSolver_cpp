@@ -83,14 +83,6 @@ PetscErrorCode CGNSMeshWrite(DM dm, Vec * fullmesh){
     x = (double*)malloc(num_vertex*sizeof(double));
     y = (double*)malloc(num_vertex*sizeof(double));
 
-    // Assign uniform grids to all coordinates
-    Vector2D *data = (Vector2D *)malloc(numLocalx*numLocaly*sizeof(Vector2D));
-    Vector2D **localcoords = (Vector2D **)malloc(numLocaly * sizeof(Vector2D **));
-
-    for (int i=0; i<numLocaly; i++){
-        localcoords[i] = &(data[numLocalx*i]);
-    }
-
     // Get Coordinates
     Vector2D **coords;
 
@@ -101,20 +93,13 @@ PetscErrorCode CGNSMeshWrite(DM dm, Vec * fullmesh){
     ierr = DMDAVecGetArray(dm, lmesh, &coords);CHKERRQ(ierr);
     for (int j=0; j<numLocaly; j++){
     for (int i=0; i<numLocalx; i++){
-        localcoords[j][i].x = coords[j+ys][i+xs].x;
-        localcoords[j][i].y = coords[j+ys][i+xs].y;
+        int id = j*numLocalx + i;
+        x[id] = coords[j+ys][i+xs].x;
+        y[id] = coords[j+ys][i+xs].y;
     }}
 
     ierr = DMDAVecRestoreArray(dm, lmesh, &coords);CHKERRQ(ierr);
     ierr = DMRestoreLocalVector(dm, &lmesh);
-
-    // assign 1d data thereafter
-    for (int j=0; j<numLocaly; j++){
-    for (int i=0; i<numLocalx; i++){
-        int id = j*numLocalx+i;
-        x[id] = localcoords[j][i].x;
-        y[id] = localcoords[j][i].y;
-    }}
 
     // Shape in file space
     s_rmin[0] = xs+1;
@@ -131,13 +116,11 @@ PetscErrorCode CGNSMeshWrite(DM dm, Vec * fullmesh){
     m_rmin[1]    = 1;
     m_rmax[1]    = numLocaly;
 
-     if (cgp_coord_general_write_data(index_file, index_base, index_zone, 1, s_rmin, s_rmax, CGNS_ENUMV(RealDouble),2,m_dimvals, m_rmin, m_rmax, x)){
-      cgp_error_exit();
-    }
-
-    if (cgp_coord_general_write_data(index_file, index_base, index_zone, 2, s_rmin, s_rmax, CGNS_ENUMV(RealDouble),2,m_dimvals, m_rmin, m_rmax, y)){
-      cgp_error_exit();
-    }
+     if (cgp_coord_general_write_data(index_file, index_base, index_zone, 1, s_rmin, s_rmax, 
+                                      CGNS_ENUMV(RealDouble),2,m_dimvals, m_rmin, m_rmax, x)) cgp_error_exit();
+   
+    if (cgp_coord_general_write_data(index_file, index_base, index_zone, 2, s_rmin, s_rmax, 
+                                      CGNS_ENUMV(RealDouble),2,m_dimvals, m_rmin, m_rmax, y)) cgp_error_exit();
 
     free(x);
     free(y);

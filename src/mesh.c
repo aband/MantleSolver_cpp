@@ -126,22 +126,39 @@ PetscErrorCode LogicRectMesh(DM dm, Vec *fullmesh, MeshParam * mp){
     ierr = PetscRandomCreate(PETSC_COMM_WORLD,&rndx);CHKERRQ(ierr);
     ierr = PetscRandomCreate(PETSC_COMM_WORLD,&rndy);CHKERRQ(ierr);
 
-    ierr = PetscRandomSetInterval(rndx,-0.3*hx,0.3*hx)    ;CHKERRQ(ierr);
+    ierr = PetscRandomSetInterval(rndx,-0.25*hx,0.25*hx)    ;CHKERRQ(ierr);
     ierr = PetscRandomSetSeed(rndx,(unsigned long)seconds);CHKERRQ(ierr);
     ierr = PetscRandomSetFromOptions(rndx)                ;CHKERRQ(ierr);
-    ierr = PetscRandomSetInterval(rndy,-0.3*hy,0.3*hy)    ;CHKERRQ(ierr);
+    ierr = PetscRandomSetInterval(rndy,-0.25*hy,0.25*hy)    ;CHKERRQ(ierr);
     ierr = PetscRandomSetSeed(rndy,(unsigned long)seconds);CHKERRQ(ierr);
     ierr = PetscRandomSetFromOptions(rndy)                ;CHKERRQ(ierr);
 
     for (int j=ys; j<ys+ym; j++){
     for (int i=xs; i<xs+xm; i++){
-        if (i*j != 0){
+        if (j != 0 && i != 0){
             ierr = PetscRandomGetValue(rndy, &value);CHKERRQ(ierr);
             localmesh[j][i].p[0] = xstart+i*hx + (double)(PetscRealPart(value));
             ierr = PetscRandomGetValue(rndx, &value);CHKERRQ(ierr);
             localmesh[j][i].p[1] = ystart+j*hy + (double)(PetscRealPart(value));
         }
     }}
+
+    if (xs == 0) {
+        for (int j = ys; j<ys+ym; j++){
+            localmesh[j][0].p[1] = ystart + j*hy;
+            localmesh[j][0].p[0] = xstart;
+        }
+    }
+
+    if (ys == 0) {
+        for (int i = xs; i<xs+xm; i++){
+            localmesh[0][i].p[1] = ystart;
+            localmesh[0][i].p[0] = xstart + i*hx;
+        }
+    }
+
+
+
 
     ierr = DMDAVecRestoreArray(dm, lmesh, &localmesh); CHKERRQ(ierr);
 
@@ -152,7 +169,6 @@ PetscErrorCode LogicRectMesh(DM dm, Vec *fullmesh, MeshParam * mp){
     ierr = DMRestoreLocalVector(dm, &lmesh);           CHKERRQ(ierr);
 
     PetscFunctionReturn(0);
-
 }
 
 /**
@@ -216,6 +232,22 @@ PetscErrorCode RefineMesh(DM dm, Vec *fullmesh, MeshParam * mp){
         localmesh[j][i].p[0] = xshift;
         localmesh[j][i].p[1] = yshift;
     }}
+
+    if (xs + xm == M) {
+        for (int j = ys; j<ys+ym; j++){
+            double yshift = sin((ystart + j*hy)*PI/2);
+            localmesh[j][M].p[1] = yshift;
+            localmesh[j][M].p[0] = xstart + M*hx;
+        }
+    }
+
+    if (ys + ym == N) {
+        for (int i = xs; i<xs+xm; i++){
+            double xshift = sin((xstart + i*hx)*PI/2);
+            localmesh[N][i].p[1] = ystart + N*hy;
+            localmesh[N][i].p[0] = xshift;
+        }
+    }
 
     ierr = DMDAVecRestoreArray(dm, lmesh, &localmesh); CHKERRQ(ierr);
 
