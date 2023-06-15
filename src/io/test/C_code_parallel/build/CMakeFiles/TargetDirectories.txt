@@ -1,4 +1,0 @@
-/home/renpo/Research/MantleSolver/src/io/test/C_code_parallel/build/CMakeFiles/grid.dir
-/home/renpo/Research/MantleSolver/src/io/test/C_code_parallel/build/CMakeFiles/flow.dir
-/home/renpo/Research/MantleSolver/src/io/test/C_code_parallel/build/CMakeFiles/edit_cache.dir
-/home/renpo/Research/MantleSolver/src/io/test/C_code_parallel/build/CMakeFiles/rebuild_cache.dir
