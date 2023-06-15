@@ -15,12 +15,15 @@
  * 0   2
  * |-1-|
  * Edge ordering as above.
+ *
+ * Class basis is used by assigning values
+ * to the reference of four corners as a quadrilateral.
  */
-class element{
+class basis{
 
     public:
-        element() {};
-        ~element() {};
+        basis() {};
+        ~basis() {};
 
         //! Get four corners for this element
         void GetCorners(const vertexSet& corners);
@@ -30,7 +33,7 @@ class element{
         }
 
         //! Overload ostream function
-        friend std::ostream& operator<<(std::ostream& os, const element& obj){
+        friend std::ostream& operator<<(std::ostream& os, const basis& obj){
             os << "The element has four corners: " << endl;
             os << std::setw(3) << std::setprecision(3);
             for (const auto& it: obj.corners_){
@@ -70,6 +73,17 @@ class element{
         double R(const int& e,
                  const vertex& point) const;
 
+        //! Define lagrange basis polynomials
+        double lagrange(const vertex& point) const;
+
+        //! Basis functions on cell, edges and vertex
+        //! Satisfying unisolvence condition.
+        bool Phi(const int i,
+                 const int j) const;
+
+        double phi() const;
+
+
     private:
 
         vertexSet corners_;
@@ -78,15 +92,6 @@ class element{
         //! opposite to normal direction.
         double distance_(const vertexSet& edge, 
                          const vertex& point) const;
-};
-
-class basis : public element {
-    public:
-        basis() {};
-        ~basis() {};
-
-    private:
-
 };
 
 #endif

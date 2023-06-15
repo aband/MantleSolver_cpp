@@ -400,75 +400,68 @@ void SymDiffusion::diffusion::GetInfo(const MeshInfo& mi){
 
 // The computation of flux across the edge is the same as
 // symmetrical reconstruction scheme.
-double NonSymDiffusion::diffusion::flux_(const std::array<double,4>& ru){
+double NonSymDiffusion::diffusion::flux_(const std::array<double,4>& ru, 
+                                         const double& scale){
 
     return ( (diffFunc(ru[2])- diffFunc(ru[1]))*beta*beta/(2*alpha)-
              (diffFunc(ru[3])- diffFunc(ru[0]))*alpha*alpha/(2*beta) )/
-           (beta*beta-alpha*alpha);
+           (beta*beta-alpha*alpha) / scale;
 }
 
-unordered_map<int,double> NonSymDiffusion::diffusion::dflux_(const std::array<unordered_map<int,double>,4>& dru){
+unordered_map<int,double> NonSymDiffusion::diffusion::dflux_(const std::array<unordered_map<int,double>,4>& dru,
+                                                             const double& scale){
 
-    unordered_map<int,double> work;
+    derivative work;
 
     std::array<double,4> coeff;
 
-    coeff[0] = -1*alpha*alpha/(2*beta )/(beta*beta-alpha*alpha);
-    coeff[1] = -1*beta * beta/(2*alpha)/(beta*beta-alpha*alpha);
-    coeff[2] = -1*coeff[1];
-    coeff[3] = -1*coeff[0];
+    for (int k=0; k<4; k++){
+        coeff[k] = derivCoeff_[k]/scale;
+    }
 
     for (int k=0; k<4; k++){
-        for (const auto & it : dru[k]){
-            if (work.count(it.first) > 0) {
-                work[it.first] += coeff[k]*it.second;
-            } else {
-                work.insert(std::pair<int,double>(it.first,it.second*coeff[k]));
-            }
-        } 
+        unordered_map_arithmetic(work,dru[k],std::plus<double>(),
+                                    coeff[k],std::multiplies<double>());
     }
 
     return work;
 }
 
 unordered_map<int,double> NonSymDiffusion::diffusion::dflux_(const std::array<unordered_map<int,double>,4>& dru,
-                                                             const std::array<double,4>& ru){
+                                                             const std::array<double,4>& ru,
+                                                             const double& scale){
 
-    unordered_map<int,double> work;
+    derivative work;
 
     std::array<double,4> coeff;
 
-    coeff[0] = -1*alpha*alpha/(2*beta )/(beta*beta-alpha*alpha)* dDiffFunc(ru[0]);
-    coeff[1] = -1*beta * beta/(2*alpha)/(beta*beta-alpha*alpha)* dDiffFunc(ru[1]);
-    coeff[2] = -1*coeff[1] * dDiffFunc(ru[2]);
-    coeff[3] = -1*coeff[0] * dDiffFunc(ru[3]);
+    for (int k = 0; k<4; k++){
+        coeff[k] = derivCoeff_[k]*dDiffFunc(ru[k])/scale;
+    }
 
     for (int k=0; k<4; k++){
-        for (const auto & it : dru[k]){
-            if (work.count(it.first) > 0) {
-                work[it.first] += coeff[k]*it.second;
-            } else {
-                work.insert(std::pair<int,double>(it.first,it.second*coeff[k]));
-            }
-        } 
+        unordered_map_arithmetic(work,dru[k],std::plus<double>(),
+                                    coeff[k],std::multiplies<double>());
     }
 
     return work;
 }
 
 double NonSymDiffusion::diffusion::boundaryCondition_(std::array<double,4>& ru,
-                                                      const std::array<int,2>& posOut){
+                                                      const std::array<int,2>& posOut,
+                                                      const double& scale){
 
     // Reflective boundary condition
     ru[posOut[0]] = -1*ru[3-posOut[0]];
     ru[posOut[1]] = -1*ru[3-posOut[1]];
 
-    return flux_(ru); 
+    return flux_(ru,scale); 
 }
 
-unordered_map<int,double> NonSymDiffusion::diffusion::boundaryCondition_(std::array<unordered_map<int,double>,4>& dru,
-                                                                         std::array<double,4>& ru,
-                                                                         const std::array<int,2>& posOut){
+derivative NonSymDiffusion::diffusion::boundaryCondition_(std::array<unordered_map<int,double>,4>& dru,
+                                                          std::array<double,4>& ru,
+                                                          const std::array<int,2>& posOut,
+                                                          const double& scale){
 
     // Reflective boundary condition
     ru[posOut[0]] = -1*ru[3-posOut[0]];
@@ -480,10 +473,8 @@ unordered_map<int,double> NonSymDiffusion::diffusion::boundaryCondition_(std::ar
         }
     }
 
-    return dflux_(dru,ru);
+    return dflux_(dru,ru,scale);
 }
-
-
 
 /**
  * Check if a given target cell is inside the boundary
@@ -535,7 +526,7 @@ double NonSymDiffusion::diffusion::edgeFlux_(const MeshInfo& mi,
             ru[posIn[1]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*beta *scale, globalIn);
             ru[posOut[0]] = mlrPtrOut.EvaluateMLWENO(mi, mapped+unitNormal*beta *scale, globalOut);
             ru[posOut[1]] = mlrPtrOut.EvaluateMLWENO(mi, mapped+unitNormal*alpha*scale, globalOut);
-            work += gwe[g] * flux_(ru) * len/2.0;
+            work += gwe[g] * flux_(ru,scale) * len/2.0;
         } 
     } else {
         for (int g=0; g<gpe.size(); g++){
@@ -543,7 +534,7 @@ double NonSymDiffusion::diffusion::edgeFlux_(const MeshInfo& mi,
             std::array<double,4> ru;
             ru[posIn[0]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*alpha*scale, globalIn);
             ru[posIn[1]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*beta *scale, globalIn);
-            work += gwe[g] * boundaryCondition_(ru,posOut) * len/2.0;
+            work += gwe[g] * boundaryCondition_(ru,posOut,scale) * len/2.0;
         }
     }
 
@@ -559,7 +550,7 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFlux_(const Mesh
                                                                       const std::array<int,2>& posOut,
                                                                       const MLWENO::multiLevelReconstruction& mlrPtrIn,
                                                                       const MLWENO::multiLevelReconstruction& mlrPtrOut){
-    unordered_map<int, double> work;
+    derivative work;
 
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
@@ -586,15 +577,12 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFlux_(const Mesh
             ru[posOut[0]] = mlrPtrOut.EvaluateMLWENO(mi, mapped+unitNormal*beta *scale, globalOut);
             ru[posOut[1]] = mlrPtrOut.EvaluateMLWENO(mi, mapped+unitNormal*alpha*scale, globalOut);
  
-            unordered_map<int,double> derivflux = dflux_(dru, ru);
+            derivative derivflux = dflux_(dru, ru, scale);
 
-            for (auto & derivf : derivflux){
-                if (work.count(derivf.first) > 0) {
-                    work[derivf.first] += gwe[g]*derivf.second*len/2.0;
-                } else {
-                    work.insert(std::pair<int, double> (derivf.first, gwe[g]*derivf.second*len/2.0));
-                }
-            }
+            double multi = gwe[g]*len/2.0;
+
+            unordered_map_arithmetic(work, derivflux, std::plus<double>(), 
+                                           multi, std::multiplies<double>());
         }
     } else {
         for (int g=0; g<gpe.size(); g++){
@@ -610,15 +598,13 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFlux_(const Mesh
             ru[posIn[0]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*alpha*scale, globalIn);
             ru[posIn[1]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*beta *scale, globalIn);
 
-            unordered_map<int,double> derivflux = boundaryCondition_(dru,ru,posOut);
+            derivative derivflux = boundaryCondition_(dru,ru,posOut,scale);
 
-            for (auto & derivf : derivflux){
-                if (work.count(derivf.first) > 0) {
-                    work[derivf.first] += gwe[g]*derivf.second*len/2.0;
-                } else {
-                    work.insert(std::pair<int, double> (derivf.first, gwe[g]*derivf.second*len/2.0));
-                }
-            }
+            double multi = gwe[g]*len/2.0;
+
+            unordered_map_arithmetic(work, derivflux, std::plus<double>(), 
+                                           multi, std::multiplies<double>());
+ 
         }
     }
 
@@ -667,7 +653,6 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFluxFull_(const 
 
             tmp1.clear(); tmp2.clear();
 
-
             tmp1 = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*beta *scale,globalIn);
             tmp2 = mlrPtrIn.EvaluateDerivMLWENOAdd(mi,mapped-unitNormal*beta *scale,globalIn);
 
@@ -700,7 +685,7 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFluxFull_(const 
             ru[posOut[0]] = mlrPtrOut.EvaluateMLWENO(mi, mapped+unitNormal*beta *scale, globalOut);
             ru[posOut[1]] = mlrPtrOut.EvaluateMLWENO(mi, mapped+unitNormal*alpha*scale, globalOut);
  
-            unordered_map<int,double> derivflux = dflux_(dru, ru);
+            unordered_map<int,double> derivflux = dflux_(dru, ru, scale);
 
             for (auto & derivf : derivflux){
                 if (work.count(derivf.first) > 0) {
@@ -741,7 +726,7 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFluxFull_(const 
             ru[posIn[0]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*alpha*scale, globalIn);
             ru[posIn[1]]  = mlrPtrIn.EvaluateMLWENO(mi, mapped-unitNormal*beta *scale, globalIn);
 
-            unordered_map<int,double> derivflux = boundaryCondition_(dru,ru,posOut);
+            unordered_map<int,double> derivflux = boundaryCondition_(dru,ru,posOut,scale);
 
             for (auto & derivf : derivflux){
                 if (work.count(derivf.first) > 0) {
@@ -936,52 +921,35 @@ double NonSymDiffusion::diffusion::Flux(const MeshInfo& mi, const indice& global
 
 unordered_map<int, double> NonSymDiffusion::diffusion::derivFlux(const MeshInfo& mi, const indice& global){
 
-    unordered_map<int,double> work;
+    derivative work;
 
     // bottom horizontal edge
-    unordered_map<int,double> tmp = derivEdgeHoriFlux_[FlatIndic(mi,global)];
+    derivative tmp = derivEdgeHoriFlux_[FlatIndic(mi,global)];
 
     double area = mi.cellArea.at(FlatIndic(mi,global));
 
-    for (auto & derivf : tmp){
-        if (work.count(derivf.first) > 0){
-            work[derivf.first] += -1*derivf.second/area;
-        } else {
-            work.insert(std::pair<int,double> (derivf.first, -1*derivf.second/area));
-        }
-    }
+    double multi = -1.0/area;
+
+    unordered_map_arithmetic(work,tmp,std::plus<double>(),
+                                  multi,std::multiplies<double>()); 
 
     // top horizontal edge
     tmp = derivEdgeHoriFlux_[FlatIndic(mi,global+mi.faceNormal[2])];
 
-    for (auto & derivf : tmp){
-        if (work.count(derivf.first) > 0){
-            work[derivf.first] += derivf.second/area;
-        } else {
-            work.insert(std::pair<int,double> (derivf.first, derivf.second/area));
-        }
-    }
+    unordered_map_arithmetic(work,tmp,std::plus<double>(),
+                                  area,std::divides<double>());
 
     // right vertical edge
     tmp = derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global+mi.faceNormal[1])];
 
-    for (auto & derivf : tmp){
-        if (work.count(derivf.first) > 0){
-            work[derivf.first] += derivf.second/area;
-        } else {
-            work.insert(std::pair<int,double> (derivf.first, derivf.second/area));
-        }
-    }
+    unordered_map_arithmetic(work,tmp,std::plus<double>(),
+                                  area,std::divides<double>());
 
     // left vertical edge
     tmp = derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)];
-    for (auto & derivf : tmp){
-        if (work.count(derivf.first) > 0){
-            work[derivf.first] += -1*derivf.second/area;
-        } else {
-            work.insert(std::pair<int,double> (derivf.first, -1*derivf.second/area));
-        }
-    }
+
+    unordered_map_arithmetic(work,tmp,std::plus<double>(),
+                                  multi,std::multiplies<double>()); 
 
     return work;
 }

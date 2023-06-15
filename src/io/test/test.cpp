@@ -57,7 +57,7 @@ int main(int argc, char **argv){
     // Create data management object
     DM    dm;
     Vec   fullmesh;
-    const int stencilWidth = 1;
+    const int stencilWidth = 5;
 
     ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidth, NULL, NULL, &dm);CHKERRQ(ierr);
     ierr = DMSetFromOptions(dm);               CHKERRQ(ierr);
@@ -132,7 +132,7 @@ int main(int argc, char **argv){
 
     DM dmu;
 
-    int cell_ghost = 1;
+    int cell_ghost = 3;
 
     ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_PERIODIC, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, cell_ghost, NULL, NULL, &dmu);CHKERRQ(ierr);
     ierr = DMSetFromOptions(dmu);               CHKERRQ(ierr);
@@ -172,6 +172,7 @@ int main(int argc, char **argv){
 
     CGNSMeshWrite(dm, &fullmesh);
 
+    CGNSCellSolWrite(dmu, &globalu);
 // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);

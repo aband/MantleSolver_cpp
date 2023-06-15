@@ -128,8 +128,8 @@
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{23}
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!singleLevelReconstruction@{singleLevelReconstruction}|hyperpage}{23}
 \indexentry{singleLevelReconstruction@{singleLevelReconstruction}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{23}
-\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!singleLevelReconstruction@{singleLevelReconstruction}|hyperpage}{23}
-\indexentry{singleLevelReconstruction@{singleLevelReconstruction}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{23}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!singleLevelReconstruction@{singleLevelReconstruction}|hyperpage}{24}
+\indexentry{singleLevelReconstruction@{singleLevelReconstruction}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{24}
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!````~singleLevelReconstruction@{$\sim$singleLevelReconstruction}|hyperpage}{24}
 \indexentry{````~singleLevelReconstruction@{$\sim$singleLevelReconstruction}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{24}
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CalculateSmoothnessIndic@{CalculateSmoothnessIndic}|hyperpage}{24}
@@ -138,8 +138,8 @@
 \indexentry{CheckExist@{CheckExist}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{24}
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CheckStencilPolynomials@{CheckStencilPolynomials}|hyperpage}{24}
 \indexentry{CheckStencilPolynomials@{CheckStencilPolynomials}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{24}
-\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CheckStencils@{CheckStencils}|hyperpage}{24}
-\indexentry{CheckStencils@{CheckStencils}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{24}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CheckStencils@{CheckStencils}|hyperpage}{25}
+\indexentry{CheckStencils@{CheckStencils}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{25}
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!CreateStencilPolynomials@{CreateStencilPolynomials}|hyperpage}{25}
 \indexentry{CreateStencilPolynomials@{CreateStencilPolynomials}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{25}
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!Evaluate@{Evaluate}|hyperpage}{25}
@@ -148,10 +148,10 @@
 \indexentry{Evaluate@{Evaluate}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{25}
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetScale@{GetScale}|hyperpage}{25}
 \indexentry{GetScale@{GetScale}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{25}
-\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetScale@{GetScale}|hyperpage}{25}
-\indexentry{GetScale@{GetScale}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{25}
-\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetSizeX@{GetSizeX}|hyperpage}{25}
-\indexentry{GetSizeX@{GetSizeX}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{25}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetScale@{GetScale}|hyperpage}{26}
+\indexentry{GetScale@{GetScale}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{26}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetSizeX@{GetSizeX}|hyperpage}{26}
+\indexentry{GetSizeX@{GetSizeX}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{26}
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetSizeY@{GetSizeY}|hyperpage}{26}
 \indexentry{GetSizeY@{GetSizeY}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{26}
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!GetSmoothnessIndic@{GetSmoothnessIndic}|hyperpage}{26}
@@ -160,13 +160,13 @@
 \indexentry{GetSmoothnessIndicDeriv@{GetSmoothnessIndicDeriv}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{26}
 \indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!PrintSmoothnessIndicator@{PrintSmoothnessIndicator}|hyperpage}{26}
 \indexentry{PrintSmoothnessIndicator@{PrintSmoothnessIndicator}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{26}
-\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!UpdateDerivSmoothnessIndic@{UpdateDerivSmoothnessIndic}|hyperpage}{26}
-\indexentry{UpdateDerivSmoothnessIndic@{UpdateDerivSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{26}
-\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!UpdateSmoothnessIndic@{UpdateSmoothnessIndic}|hyperpage}{26}
-\indexentry{UpdateSmoothnessIndic@{UpdateSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{26}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!UpdateDerivSmoothnessIndic@{UpdateDerivSmoothnessIndic}|hyperpage}{27}
+\indexentry{UpdateDerivSmoothnessIndic@{UpdateDerivSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{27}
+\indexentry{MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}!UpdateSmoothnessIndic@{UpdateSmoothnessIndic}|hyperpage}{27}
+\indexentry{UpdateSmoothnessIndic@{UpdateSmoothnessIndic}!MLWENO::singleLevelReconstruction@{MLWENO::singleLevelReconstruction}|hyperpage}{27}
 \indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{27}
-\indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!stencil@{stencil}|hyperpage}{27}
-\indexentry{stencil@{stencil}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{27}
+\indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!stencil@{stencil}|hyperpage}{28}
+\indexentry{stencil@{stencil}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{28}
 \indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!stencil@{stencil}|hyperpage}{28}
 \indexentry{stencil@{stencil}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{28}
 \indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!stencil@{stencil}|hyperpage}{28}
@@ -177,8 +177,8 @@
 \indexentry{````~stencil@{$\sim$stencil}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{28}
 \indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!clearPtr@{clearPtr}|hyperpage}{28}
 \indexentry{clearPtr@{clearPtr}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{28}
-\indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!CreateStencil@{CreateStencil}|hyperpage}{28}
-\indexentry{CreateStencil@{CreateStencil}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{28}
+\indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!CreateStencil@{CreateStencil}|hyperpage}{29}
+\indexentry{CreateStencil@{CreateStencil}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{29}
 \indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!getI@{getI}|hyperpage}{29}
 \indexentry{getI@{getI}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{29}
 \indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!getJ@{getJ}|hyperpage}{29}
@@ -191,8 +191,8 @@
 \indexentry{GetStencil@{GetStencil}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{29}
 \indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{29}
 \indexentry{operator()@{operator()}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{29}
-\indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{29}
-\indexentry{operator()@{operator()}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{29}
+\indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{30}
+\indexentry{operator()@{operator()}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{30}
 \indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{30}
 \indexentry{operator()@{operator()}!stencil$<$ T $>$@{stencil$<$ T $>$}|hyperpage}{30}
 \indexentry{stencil$<$ T $>$@{stencil$<$ T $>$}!operator()@{operator()}|hyperpage}{30}

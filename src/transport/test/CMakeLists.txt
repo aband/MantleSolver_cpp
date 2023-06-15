@@ -8,7 +8,9 @@ set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH})
 
 set(LAPACK $ENV{LAPACK_DIR})
 
-#set(HDF5 $ENV{HDF5_DIR}/CMakeFiles)
+set(HDF5 $ENV{HDF5_DIR})
+
+set(SRC $ENV{MantleSolver}/src)
 
 # PKG_CONFIG_PATH is set mannually in bashrc
 
@@ -26,7 +28,7 @@ if (FORTRAN_COMPILER)
 endif (FORTRAN_COMPILER)
 
 # Set Optimization flags
-set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
+#set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
 #set(CMAKE_CXX_FLAGS "-g")
 
 project(test)
@@ -36,37 +38,54 @@ find_package(PkgConfig REQUIRED)
 find_package(MPI REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
-#pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
+pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
+pkg_search_module(CGNS REQUIRED IMPORTED_TARGET cgns)
 
 # Build library
 # Create a library from the files in src file
 add_library(general_lib
-        ../../integral.cpp 
-        ../../mesh.c 
-        ../../input.cpp 
-        ../../output.c
-        ../../util.cpp
+		  ${SRC}/general/integral.cpp 
+		  ${SRC}/general/mesh.c 
+		  ${SRC}/general/util.cpp
 )
 
 target_include_directories(general_lib
-    PUBLIC ../../../include
-	 PUBLIC ${PETSC_DIR}/include
+		  PUBLIC SRC/general
 )
 
 target_link_libraries(general_lib
     PkgConfig::PETSC
 )
 
+# Create a library from the files in the io directroy
+add_library(io_lib
+		  ${SRC}/io/input.cpp
+		  ${SRC}/io/output.c
+		  ${SRC}/io/cgns_io.c
+)
+
+target_include_directories(io_lib
+		  PUBLIC ${SRC}/io
+		  PUBLIC ${SRC}/general
+)
+
+target_link_libraries(io_lib
+    general_lib
+    PkgConfig::PETSC
+    PkgConfig::HDF5
+    PkgConfig::CGNS
+)
+
 # Create a library from the files in the mlweno directory
 add_library(mlweno_lib 
-    ../../mlweno/reconstruction.cpp 
-    ../../mlweno/polynomial.cpp 
+		  ${SRC}/mlweno/reconstruction.cpp 
+		  ${SRC}/mlweno/polynomial.cpp 
 )
 
 # Specify any additional include directories if needed
 target_include_directories(mlweno_lib 
-    PUBLIC ../../mlweno
-    PUBLIC ../../../include
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/general
     PUBLIC ${PETSC_DIR}/include 
 )
 
@@ -77,24 +96,25 @@ target_link_libraries(mlweno_lib
 
 # Create a library from the files in the transport directory
 add_library(transport_lib
-        ../../transport/transport.cpp 
-        ../../transport/timestepping.cpp 
-        ../../transport/diffusion.cpp 
-        ../../transport/advection.cpp
+		  ${SRC}/transport/transport.cpp 
+		  ${SRC}/transport/timestepping.cpp 
+		  ${SRC}/transport/diffusion.cpp 
+		  ${SRC}/transport/advection.cpp
 )
 
 # Specify any additional include directories if needed
 target_include_directories(transport_lib 
-    PUBLIC ../../transport
-    PUBLIC ../../mlweno
-    PUBLIC ../../../include
+		  PUBLIC ${SRC}/transport
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/general
     PUBLIC ${PETSC_DIR}/include 
 )
 
 target_link_libraries(transport_lib
+        io_lib
         general_lib
-		  mlweno_lib
-		  PkgConfig::PETSC
+        mlweno_lib
+        PkgConfig::PETSC
 )
 
 # Add to excutable
@@ -105,6 +125,7 @@ add_executable(test
 
 # Link static libraries generated previously
 target_link_libraries(test 
+    io_lib
     transport_lib
     PkgConfig::LAPACKE 
 )

@@ -1,0 +1,213 @@
+\documentclass[smallextended]{svjour3}       % onecolumn (second format)
+
+\usepackage[a-1b]{pdfx}
+
+\smartqed  % flush right qed marks, e.g. at end of proof
+
+\usepackage{graphicx}
+%\graphicspath{{.},{../}}
+
+\usepackage{mathptmx}      % use Times fonts if available on your TeX system
+
+% insert here the call for the packages your document requires
+
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+\usepackage{rsfso}
+
+%\usepackage{amsthm}
+
+\usepackage{xcolor}
+\usepackage{tikz}
+
+\renewcommand{\div}{\nabla\cdot}
+\renewcommand{\Re}{{\mathbb R}}
+\newcommand{\bfx}{{\mathbf x}}
+
+\newcommand*\Laplace{\mathop{}\!\mathbin\bigtriangleup} 
+
+\definecolor{myBlue}{RGB}{190,203,211}
+\definecolor{myRed}{RGB}{244,186,175}
+\definecolor{myGreen}{RGB}{114,138,122}
+\definecolor{myYellow}{RGB}{241,208,157}
+
+\begin{document}
+
+\section{Problem setting}
+A scalar advection-diffusion problem without reaction.
+\begin{equation} \label{eq:ad}
+		  u_t + \div (F(u) - D(u) \nabla u) = 0, \ \bfx\in\Re^d
+\end{equation}
+The variable $D(u)$ will be treated with  Kirchhoff transformation.
+The diffusion coefficient $D$ is treated as a constant here.
+This will not affect the following discussion on numerical scheme.
+\begin{equation} \label{eq:sad}
+		  u_t + \div F(u) - D\Laplace u = 0, \ \bfx\in\Re^d
+\end{equation}
+\subsection{Finite volume scheme}
+Replace scalar $u$ with cell averaged value 
+\begin{equation}\label{eq:cellaveu}
+		  \bar u = \frac{1}{|E|} \int_E u(\bfx, t) d\bfx
+\end{equation}
+and Lax-Friedrichs numerical flux
+\begin{equation}\label{eq:lax}
+		  f(u) = \frac{1}{2} [F(u^+)  + F(u^-) \cdot \nu_E - \alpha (u^+ - u^-)]
+\end{equation}
+The finite volume scheme of advection-diffusion problem is:
+\begin{equation}\label{eq:fv}
+		  \bar u_t + \frac{1}{|E|} \int_{\partial E} (\hat f(\bar u) - \nabla \bar u \cdot \nu_E) d\sigma(\bfx) = 0
+\end{equation}
+In 2D quadrilateral logically rectangular mesh, 
+we apply gaussian quadrature every edge as the approximation of integral of flux. 
+I use Multi-level WENO reconstruction scheme to reconstruct the point value in 
+advective numerical flux.
+\begin{equation}\label{eq:laxWENO}
+		  \hat f(u) = \frac{1}{2} [F(\mathscr{R}^+(\{\bar u\}_+)) + F(\mathscr{R}^-(\{\bar u\}_-))\cdot \nu_E - 
+		  \alpha(\mathscr{R}^+(\{\bar u\}_+) - \mathscr{R}^-(\{\bar u\}_-))] 
+\end{equation}
+Let $\{\bar u\}_+ = \{\bar u_i \mid i \in \text{WENO stencil} \quad I_+ \}$. 
+Diffusive flux is different from its advective counterpart.
+I reconstruct derivative across the edge by sampling along the normal direction.
+
+\section{Computation of Jacobian}
+Implicit method contains solving a non linear system and a linear subproblem.
+I write the general non linear system as:
+\begin{equation} \label{eq:nonlinear}
+		  \bar u_t + \mathscr{F}(\bar u) - \mathscr{G}(\bar u) = 0
+\end{equation}
+where $\mathscr{F}(\bar u)$ represents advection part, and $\mathscr{G} (\bar u)$ represents diffusion part.
+The semi discretized form is 
+\begin{equation}
+		  \bar u^{n+1} - \bar u^{n} + \Delta t [\mathscr{F} (\bar u^{n+1}) - \mathscr{G}(\bar u^{n+1})] = 0
+\end{equation}
+There are many well-researched numerical methods that can be used to solve such non linear system.
+%I use non linear solver provided by PETSc.
+%I provide routine computing right hand side and jacobian matrix.
+%PETSc provides line search and preconditioner algorithm.
+\subsection{ML-WENO reconstruction}
+I use ML-WENO reconstruction scheme to reconstruct point values
+from cell-averaged value...
+I use two stage non linear weighting. The first stage is
+calculated as
+\begin{equation}\label{eq:fstage}
+		  \check \omega_l = \frac{\omega_l}{(\sigma_l + \epsilon h^2_0)^{\eta_l}} 
+		  \quad \eta_l = \left \{\begin{aligned}
+					 &1, \quad \text{if } r=1\\
+					 &3, \quad \text{if } r=2\\
+					 &4, \quad \text{if } r\geq 3
+		  \end{aligned}
+		  \right .
+\end{equation}
+\begin{equation}\label{eq:fstagenorm}
+		  \bar \omega_l = \frac{\check \omega_l}{\sum_k \check \omega_k}
+\end{equation}
+The the second stage is calculated based on first stage:
+\begin{equation}\label{eq:sstage}
+		  \hat \omega_l = \frac{\bar \omega_l}{(\sigma_l + \epsilon h^2_0)^{sr_l}}
+\end{equation}
+\begin{equation}\label{eq:sstagenorm}
+		  \tilde \omega_l = \frac{\hat \omega_l}{\sum_k \hat \omega_k}
+\end{equation}
+
+I write the reconstruction as combination of polynomials:
+\begin{equation}\label{eq:weno}
+		  \mathscr{R}(\bfx) = \sum_{l\in L} P_l(\bfx) \tilde\omega_l(\bar u)
+\end{equation}
+Suppose the reconstruction happens in a given stencil $I$. 
+The cell averaged values $\bar u$ in this stencil is represented as $\{\bar u_s\}_{s \in S}$.
+The derivative of this reconstruction with respect to $\bar u_s$ is:
+\begin{equation}
+		  \frac{\partial \mathscr{R}}{\partial \bar u_s} = 
+		  \sum_{l \in L} \Big(\frac{\partial P_l}{\partial \bar u_s}\tilde \omega_l + P_l\frac{\partial \tilde \omega_l}{\partial \bar u_s}\Big) 
+\end{equation}
+It consists of two parts, derivative of polynomials $\frac{\partial P_l}{\partial \bar u_s}$ and 
+derivative of non linear weights $\frac{\partial \tilde \omega_l}{\partial \bar u_s}$.
+The stencil polynomial is a combination of single polynomials satisfying 
+\begin{equation}\label{eq:spolyn}
+		  \frac{1}{|E_k|} \int_{E_k} p_s(\bfx) d\bfx = \left \{ 
+		  \begin{aligned}
+					 &1 \quad s=k\\
+					 &0 \quad s\neq k
+		  \end{aligned}\right .
+\end{equation}
+The stencil polynomial is expressed in terms of combination of all these polynomials
+\begin{equation}\label{eq:Spolyn}
+		  P(\bfx) = \sum_{s\in S} p_s(\bfx) \bar u_s
+\end{equation}
+The derivative of polynomial is trivial. The derivative of non linear weight is 
+a little more complicated.
+\begin{equation}\label{eq:derivative}
+		  \frac{\partial \mathscr{R}}{\partial \bar u_s} = \sum_{l \in L} p_s(\bfx) \tilde \omega_l + 
+		  \sum_{l\in L} P_l\frac{\partial \tilde \omega_l}{\partial \bar u_s}
+\end{equation}
+
+
+\section{Implicit time stepping}
+
+\subsection{Backward Euler}
+
+\subsection{SSP time stepping}
+
+\section{Parallelism}
+Parallel solver in inevitable in large scale computation.
+Figure~\ref{fig:fullmesh} 
+shows a full view of quadrilateral (logically rectangular) mesh.
+\begin{figure}[htb]
+		  \parbox{\textwidth}{\begin{minipage}[t]{0.45\textwidth}
+		  \input mesh.tex
+		  \caption{Logically rectangular 
+		  mesh displayed in full. The index of 
+		  a stencil (colored cells) is the 
+		  same as the index of the red cell.}
+\label{fig:fullmesh}
+		  \end{minipage}
+		  \hfill
+		  \begin{minipage}[t]{.45\textwidth}
+\input stencil.tex
+					 \caption{Two sample stencils used by cell $E_{i,j}$.
+					 The index of these two stencils are $S_{i-2,j}$ and $S_{i,j-2}$.
+					 Consistent with the index of bottom left cell.}
+		  \label{fig:stencil}
+		  \end{minipage}}
+\end{figure}
+Counting all stencils without repeating is convenient 
+in the logically rectangular mesh setting. 
+We use the index of bottom left cell as the index of 
+the corresponding stencil. A $\text{M}\times \text{N}$ mesh will then contain
+$(\text{M}-\text{I}+1)\times(\text{N}-\text{J}+1)$ stencils 
+of size $\text{I}\times \text{J}$.
+
+\subsection{Mesh partition}
+I examine the following partition of mesh without lossing generality.
+The dashed line indicates ghost cells distributed by
+MPI communication. 
+The size of ghost layer is determined by the largest stencil
+size required for cells in the ghost layer.
+Increasing the order of reconstruction (increasing the size
+of corresponding stencil) will thus increase the communication 
+cost. However, the distribution of mesh only occur once 
+in the beginning of the computation. I will not worry about 
+it considering we are running on the 2D mesh right now.
+\begin{figure}\label{fig:partitionmesh}
+\input quadmesh.tex
+		  \caption{Illustration of mesh partition.
+		  Ghost cells are drawn with dashed lines.
+		  The size of ghost layer is determined 
+		  by the size of stencils needed by cell in 
+		  the ghost layer.}
+\end{figure}
+
+
+\subsection{Sparsity pattern of Jacobian matrix}
+
+\subsection{Optimal preconditioner}
+
+\begin{itemize}
+					 \item 1. Incomplete LU decomposition
+					 \item 2. Additive schwarz
+\end{itemize}
+
+\subsection{Scalability}
+
+\end{document}

@@ -66,12 +66,29 @@ double* basePolynomial::getCoef() const{
     return coef;
 } 
 
+double * basePolynomial::getCoefPtr(){
+    assert(coef_ != nullptr);
+    return coef_;
+}
+
 double basePolynomial::getCoef(int i) const{
     assert(coef_ != nullptr); 
-
     return coef_[i];  
 
 }
+
+void basePolynomial::setCoef(const int& i,
+                             const double& v){
+    assert(coef_ != nullptr);
+    coef_[i] = v;
+}
+
+void basePolynomial::addCoef(const int& i,
+                             const double& v){
+    assert(coef_ != nullptr);
+    coef_[i] += v;
+}
+
 
 void basePolynomial::printCoef() const {
     for (int i=0; i<maxDegree_[0]*maxDegree_[1]; i++){
@@ -151,7 +168,6 @@ void stencilPolynomial::ComputeStencilBasedScale_(const MeshInfo& mi, const sten
     }
 
     scale_ = pow(maxScale_,0.5);
-
 }
 
 void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi, 
@@ -219,42 +235,58 @@ void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi,
 
 }
 
+/*
+ *void stencilPolynomial::SetCollapsePolyn(const MeshInfo& mi, const stencil <indice>& stencilIndice) {
+ *    stencil<indice> siNow = stencilIndice;
+ *    double * tmpcoef = new double [stencilPolyn_.getSize()]();
+ *
+ *    for (int i=0; i<stencilPolyn_.getSize(); i++){
+ *        double * tmp = stencilPolyn_(i)->getCoef();
+ *        indice currentCell = start_ + siNow(i);
+ *
+ *        for (int j=0; j<stencilPolyn_.getSize(); j++){
+ *            tmpcoef[j] += tmp[j]*mi.localVals[currentCell[1]][currentCell[0]];
+ *        }
+ *        delete [] tmp;
+ *    }
+ *    int maxDegree[2] = {stencilPolyn_.getI(),stencilPolyn_.getJ()};
+ *    delete collapsePolyn_;
+ *    collapsePolyn_ = new basePolynomial(maxDegree,tmpcoef);
+ *    delete [] tmpcoef;
+ *}
+ */
+
 void stencilPolynomial::SetCollapsePolyn(const MeshInfo& mi, const stencil <indice>& stencilIndice) {
-    SetCollapsePolyn_(mi,stencilIndice);
+	 stencil<indice> siNow = stencilIndice;
+
+	 if (collapsePolyn_ == nullptr){
+		  int maxDegree[2] = {stencilPolyn_.getI(),stencilPolyn_.getJ()};
+		  collapsePolyn_ = new basePolynomial(maxDegree);
+	 }
+
+	 indice currentCell;
+	 double sum = 0.0;
+
+	 for (int i=0; i<stencilPolyn_.getSize(); i++){
+		  sum = 0.0;
+		  for (int j=0; j<stencilPolyn_.getSize(); j++){
+				currentCell = start_ + siNow(j);
+
+				sum += stencilPolyn_(j)->getCoef(i)*
+					 mi.localVals[currentCell[1]][currentCell[0]];
+		  }
+		  collapsePolyn_->setCoef(i,sum);
+	 }
 }
-
-void stencilPolynomial::SetCollapsePolyn_(const MeshInfo& mi, const stencil <indice>& stencilIndice) {
-    stencil<indice> siNow = stencilIndice;
-    double * tmpcoef = new double [stencilPolyn_.getSize()]();
-    for (int i=0; i<stencilPolyn_.getSize(); i++){
-        double * tmp = stencilPolyn_(i)->getCoef();
-        indice currentCell = start_ + siNow(i);
-
-        for (int j=0; j<stencilPolyn_.getSize(); j++){
-            tmpcoef[j] += tmp[j]*mi.localVals[currentCell[1]][currentCell[0]];
-        }
-        delete [] tmp;
-    }
-    int maxDegree[2] = {stencilPolyn_.getI(),stencilPolyn_.getJ()};
-    collapsePolyn_ = new basePolynomial(maxDegree,tmpcoef);
-    delete [] tmpcoef;
-} 
 
 //! Polyn smoothness indicator
 void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice){
 
-    SetCollapsePolyn_(mi, stencilIndice);
+    SetCollapsePolyn(mi, stencilIndice);
 
     //! Initialize smoothness Indicator each time it computes
     smoothnessIndic_ = 0.0;
 
-    //! Subtracting zero derivative case
-    //smoothnessIndic_ -= (Xi_[0]*Xi_[0] - 
-    //                    (1/((2*0+1)*pow(4,0)))*
-    //                    (1/((2*0+1)*pow(4,0)))) * pow(collapsePolyn_->getCoef(0),2);
-
-    //! Special treatment for tensor product polynomial
-    //! No need to create auxiliary Xi term this time
     if (stencilPolyn_.getI()*stencilPolyn_.getJ() != 1){
 
         for (int all = 1; all<stencilPolyn_.getJ()*stencilPolyn_.getI(); all++){
@@ -313,34 +345,13 @@ void stencilPolynomial::EvalDerivSmoothnessIndic_(const MeshInfo& mi, const sten
     }
 } 
 
-//! Evaluation of auxiliary variable Xi in evaluation of smooth indicator for plain polynomials
-void stencilPolynomial::CreateXi_(){
-   
-    if (stencilPolyn_.getI() > stencilPolyn_.getJ()){
-        maxR_ = stencilPolyn_.getI();
-        minR_ = stencilPolyn_.getJ();
-    } else {
-        maxR_ = stencilPolyn_.getJ();
-        minR_ = stencilPolyn_.getI();
-    }
-
-    Xi_.resize(maxR_,0.0);
-
-    for (int i=0; i<Xi_.size(); i++){
-        for (int k=0; k<i+1; k++){
-            Xi_[i]  += pow(coef_,2*k)*pow(factorial(i,i-k),2)/(2*(i-k)+1)/pow(4,i-k);
-        }
-    }
-
-}
-
 double stencilPolynomial::GetSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice){
     EvalSmoothIndic_(mi, stencilIndice);
 
     return smoothnessIndic_;
 }
 
-unordered_map<int, double> stencilPolynomial::GetDerivSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice){
+derivative stencilPolynomial::GetDerivSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice){
     EvalDerivSmoothnessIndic_(mi, stencilIndice);
 
     return derivSmoothnessIndic_;
@@ -360,7 +371,6 @@ double stencilPolynomial::eval(double x, double y) const{
 double stencilPolynomial::eval(double x, double y, int poly) const{
 
     //! Shift input point with respect to the stencil center
-
     vertex shift = {x,y};
     shift = (shift-center_)/scale_;
 

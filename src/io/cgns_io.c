@@ -34,7 +34,7 @@ PetscErrorCode CGNSMeshWrite(DM dm, Vec * fullmesh){
     char basename[33], zonename[33];
 
     // Open CGNS file for write
-    if (cgp_open("meshOut.cgns", CG_MODE_WRITE, &index_file)) cg_error_exit();
+    if (cgp_open("grid.cgns", CG_MODE_WRITE, &index_file)) cg_error_exit();
 
     // Create base
     strcpy(basename, "Base");
@@ -116,7 +116,7 @@ PetscErrorCode CGNSMeshWrite(DM dm, Vec * fullmesh){
     m_rmin[1]    = 1;
     m_rmax[1]    = numLocaly;
 
-     if (cgp_coord_general_write_data(index_file, index_base, index_zone, 1, s_rmin, s_rmax, 
+    if (cgp_coord_general_write_data(index_file, index_base, index_zone, 1, s_rmin, s_rmax, 
                                       CGNS_ENUMV(RealDouble),2,m_dimvals, m_rmin, m_rmax, x)) cgp_error_exit();
    
     if (cgp_coord_general_write_data(index_file, index_base, index_zone, 2, s_rmin, s_rmax, 
@@ -125,6 +125,114 @@ PetscErrorCode CGNSMeshWrite(DM dm, Vec * fullmesh){
     free(x);
     free(y);
 
+    PetscFunctionReturn(0);
+}
+
+PetscErrorCode CGNSCellSolWrite(DM dm, Vec * globalSol){
+
+    PetscErrorCode    ierr;
+    PetscFunctionBeginUser;
+
+    PetscInt         xs, ys, xm, ym, M, N;
+    PetscInt         stencilWidth;
+    int              size, rank;
+    Vec              gsol, lsol;
+
+    MPI_Comm_size(PETSC_COMM_WORLD, &size);
+    MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+    cgp_mpi_comm(PETSC_COMM_WORLD);
+
+    gsol = *globalSol;
+
+    ierr = DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL);                                          
+           CHKERRQ(ierr);
+    ierr = DMDAGetInfo(dm, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+           CHKERRQ(ierr);
+
+    int index_file, index_base;
+    int index_zone, index_flow, index_field;
+
+    char solname[33], zonename[33];
+
+    if (cgp_open("grid.cgns", CG_MODE_MODIFY, &index_file))
+        cg_error_exit();
+
+    index_base = 1;
+    index_zone = 1;
+
+    strcpy(solname, "FlowSolution");
+
+    cg_sol_write(index_file, index_base, index_zone, solname,
+                 CGNS_ENUMV(CellCenter), &index_flow);
+    // Go to position within tree at FlowSolution_t node
+    cg_goto(index_file, index_base, "Zone_t", index_zone, "FlowSolution_t",
+            index_flow, "end");
+
+    // Write rind information under FlowSolution_t node
+    int irinddata[6] = {1,1,1,1,0,0};
+    cg_rind_write(irinddata);
+    if (cgp_field_write(index_file, index_base, index_zone, index_flow,
+                        CGNS_ENUMV(RealDouble), "u",
+                        &index_field)) cgp_error_exit();
+
+    // Collective writing of file data
+    cgsize_t zoneSize[3][2];
+    if (cg_zone_read(index_file, index_base, index_zone, zonename,
+                     (cgsize_t*)zoneSize)) cg_error_exit();
+
+
+    cgsize_t   s_rmin[2], s_rmax[2], m_dimvals[2], m_rmin[2], m_rmax[2];
+
+    double *u = (double*)malloc(ym*xm*sizeof(double));
+
+    int ni,nj;
+
+    // Get local information
+    double ** sol; 
+
+    ierr = DMGetLocalVector(dm, &lsol);CHKERRQ(ierr);
+    ierr = DMGlobalToLocalBegin(dm, gsol, INSERT_VALUES, lsol);
+    CHKERRQ(ierr);
+    ierr = DMGlobalToLocalEnd(dm, gsol, INSERT_VALUES, lsol);
+    CHKERRQ(ierr);
+ 
+    ierr = DMDAVecGetArray(dm, lsol, &sol);CHKERRQ(ierr);
+
+    for (int j=0; j<nj; j++){
+    for (int i=0; i<ni; i++){
+        int id = j*ni + i;
+        u[id] = sol[j+ys][i+xs];       
+    }}
+
+    ierr = DMDAVecRestoreArray(dm, lsol, &sol);CHKERRQ(ierr);
+    ierr = DMRestoreLocalVector(dm, &lsol);CHKERRQ(ierr);
+
+    // Shape in file space
+    s_rmin[0] = xs+1;
+    s_rmax[0] = xs+xm;
+    s_rmin[1] = ys+1;
+    s_rmax[1] = ys+ym;
+
+    // Shape in memory
+    m_dimvals[0] = xm;
+    m_rmin[0] = 1;
+    m_rmax[0] = xm;
+
+    m_dimvals[0] = ym;
+    m_rmin[0] = 1;
+    m_rmax[0] = ym;
+
+    if (cgp_field_general_write_data(index_file, index_base, index_zone,
+                                     index_flow, 1,
+                                     s_rmin, s_rmax, CGNS_ENUMV(RealDouble),
+                                     2, m_dimvals, m_rmin, m_rmax,
+                                     u)) cgp_error_exit();
+ 
+    free(u);
+
+    // Close CGNS file
+    cg_close(index_file);
+    
     PetscFunctionReturn(0);
 }
 

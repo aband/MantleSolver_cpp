@@ -2,7 +2,7 @@
 #include <petsc.h>
 #include "integral.h"
 #include "input.h"
-#include "basis.h"
+#include "Hdivmixed.h"
 
 #include "util.h"
 
@@ -45,7 +45,7 @@ int main(int argc, char **argv){
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
 
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");CHKERRQ(ierr);
 
     // ==========================================================================================================================
 
@@ -161,9 +161,11 @@ int main(int argc, char **argv){
 
 // ========================================================================================================================================
 
-    basis * b = new basis();
+    Hdivmixed * hdiv = new Hdivmixed();
 
-    b->GetCorners(mi,{1,1});
+    hdiv->GetCorners(mi,{1,1});
+
+    hdiv->Test();
 
 // ====================================================================================================================================
     // Clear used objects

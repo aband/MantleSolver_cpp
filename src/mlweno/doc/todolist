@@ -1,3 +1,0 @@
-1. evaluate smoothness indicator at once instead of calculate at use
-2. create cell wise reconstruction method
-**3. fix smoothness indicator 

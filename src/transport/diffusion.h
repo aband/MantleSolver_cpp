@@ -106,7 +106,13 @@ namespace NonSymDiffusion{
             diffusion() {mlrPtrHoriUp_    = new MLWENO::multiLevelReconstruction();
                          mlrPtrHoriDown_  = new MLWENO::multiLevelReconstruction();
                          mlrPtrVertRight_ = new MLWENO::multiLevelReconstruction();
-                         mlrPtrVertLeft_  = new MLWENO::multiLevelReconstruction();};
+                         mlrPtrVertLeft_  = new MLWENO::multiLevelReconstruction();
+
+                         derivCoeff_[0] =    alpha*alpha/(2*beta )/(beta*beta-alpha*alpha);
+                         derivCoeff_[1] = -1*beta * beta/(2*alpha)/(beta*beta-alpha*alpha);
+                         derivCoeff_[2] = -1*derivCoeff_[1]; 
+                         derivCoeff_[3] = -1*derivCoeff_[0];
+            };
 
             ~diffusion() {delete mlrPtrHoriUp_; 
                           delete mlrPtrHoriDown_; 
@@ -151,16 +157,25 @@ namespace NonSymDiffusion{
             void GetInfo(const MeshInfo& mi);
 
         private:
-            double flux_(const std::array<double,4>& ru);
-            unordered_map<int,double> dflux_(const std::array<unordered_map<int,double>,4>& dru);
-            unordered_map<int,double> dflux_(const std::array<unordered_map<int,double>,4>& dru,
-                                             const std::array<double,4>& ru);
 
-            double boundaryCondition_(std::array<double,4>& ru, const std::array<int,2>& posOut);
+            std::array<double,4> derivCoeff_;
+
+            double flux_(const std::array<double,4>& ru,
+                         const double& scale);
+            unordered_map<int,double> dflux_(const std::array<unordered_map<int,double>,4>& dru,
+                                             const double& scale);
+            unordered_map<int,double> dflux_(const std::array<unordered_map<int,double>,4>& dru,
+                                             const std::array<double,4>& ru,
+                                             const double& scale);
+
+            double boundaryCondition_(std::array<double,4>& ru,
+                                      const std::array<int,2>& posOut,
+                                      const double& scale );
 
             unordered_map<int,double> boundaryCondition_(std::array<unordered_map<int,double>,4>& dru,
                                                          std::array<double,4>& ru,
-                                                         const std::array<int,2>& posOut);
+                                                         const std::array<int,2>& posOut,
+                                                         const double& scale);
 
             bool Interior_(const MeshInfo& mi, const indice& target);
 

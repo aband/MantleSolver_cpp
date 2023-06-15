@@ -1,14 +1,17 @@
 #ifndef RECONSTRUCTION_H_
 #define RECONSTRUCTION_H_
 
-//\slreconstruction.h slreconstruction.h
-//! Weno reconstruction with a given stencil level
-
 #include "polynomial.h"
 #include <map>
 
 namespace MLWENO{
 
+    //! Single level reconstruction class
+    /**
+     * 1. Create non-overlap stencils with given stencil size.
+     * 2. Compute stencil polynomials with created stencils. 
+     * 3. Calculate smoothness indicators with stencil polynomials.
+     */
     class singleLevelReconstruction {
         public:
             //! A constructor
@@ -28,7 +31,6 @@ namespace MLWENO{
              */
             ~singleLevelReconstruction();
 
-            // ======================================================================
             void CreateStencilPolynomials(const MeshInfo& mi);
 
             bool CheckExist(const MeshInfo& mi, indice owner) const {return interior_.count(FlatIndic(mi,owner));};
@@ -38,7 +40,6 @@ namespace MLWENO{
 
             const double GetScale(int s) {return singleLevel_[s]->GetScale();};
             const double GetScale(const MeshInfo& mi, const indice& owner) {return singleLevel_[FlatIndic(mi,owner)]->GetScale();}; 
-
             //! Directly calculate smoothness indicator of a given stencil
             //! Should not be called directly for computational efficiency
             double CalculateSmoothnessIndic(const MeshInfo& mi, indice owner);
@@ -55,7 +56,6 @@ namespace MLWENO{
             void UpdateSmoothnessIndic(const MeshInfo& mi);
 
             void UpdateDerivSmoothnessIndic(const MeshInfo& mi);
-
             /**
              * Evaluate polynomial
              */

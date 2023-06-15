@@ -8,6 +8,8 @@
 #include "reconstruction.h"
 //#include <adolc/adolc.h>
 
+#include <chrono>
+
 extern "C"{
 #include "mesh.h"
 #include "output.h"
@@ -171,7 +173,31 @@ int main(int argc, char **argv){
 
 // ========================================================================================================================================
 
-    parallelWrite();
+   MLWENO::MLWENOPrepare * mlpPtr = new MLWENO::MLWENOPrepare();
+
+//   auto start = std::chrono::system_clock::now();
+    double t1, t2;
+
+    t1 = MPI_Wtime();
+
+	 mlpPtr->AddLevel(mi,1,1);
+	 mlpPtr->AddLevel(mi,2,2);
+	 mlpPtr->AddLevel(mi,3,3);
+//	 mlpPtr->AddLevel(mi,4,4);
+//	 mlpPtr->AddLevel(mi,5,5);
+//	 mlpPtr->AddLevel(mi,6,6);
+
+   //auto end = std::chrono::system_clock::now();
+
+   t2 = MPI_Wtime();
+
+   mlpPtr->PrintInfo();
+
+   //std::chrono::duration<double> elapsed_seconds = end-start;
+
+   //cout << "Elapsed time: " << elapsed_seconds.count() << endl;
+
+   printf( "Elapsed time is %f\n", t2 - t1 );
 
 // ====================================================================================================================================
     // Clear used objects

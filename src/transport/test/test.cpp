@@ -21,29 +21,6 @@ extern "C"{
 
 using namespace std;
 
-double InitialValue(vertex& point, const vector<double>& param){
-	 //if (point[0]<-1.0/param[0]){
-//		  return point[0]*point[0]+point[1]*point[1];
-//	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1);
-//	 } else {
-//		  return point[0]*point[0]*point[1]*point[1] + 1.0;
-//	     return sin(point[0]*3.0)+cos(point[1]/2.0) + point[0]*(point[1]+1) + 1;
-//	 }
-
-    //return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
-    //return point[0]*point[0] + point[1]*point[1];
-    //return point[0] + point[1];
-
-    // Initial value for sine wave 2D Burger's equation
-    //return pow(sin(M_PI*(point[0]+1)/2),2)*pow(sin(M_PI*(point[1]+1)/2),2);
-
-    if (abs(point[0])+abs(point[1])<0.5){
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
 PetscErrorCode Monitor(TS ts, PetscInt step, PetscReal t, Vec U, void *ctx){
 
     PetscFunctionBeginUser;
@@ -71,50 +48,58 @@ void AssignMLWENO(const MeshInfo& mi, transport* trPtr){
     trPtr->AddLevel(mi,3,3);
     //trPtr->AddLevel(mi,4,5);
     //trPtr->AddLevel(mi,5,4);
-    trPtr->AddLevel(mi,3,2);
-    trPtr->AddLevel(mi,2,3);
-    trPtr->AddLevel(mi,4,2);
-    trPtr->AddLevel(mi,2,4);
+    //trPtr->AddLevel(mi,3,2);
+    //trPtr->AddLevel(mi,2,3);
+    //trPtr->AddLevel(mi,4,2);
+    //trPtr->AddLevel(mi,2,4);
 
+    // Advection
     trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(1,1)",{{0,0}});
     trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
     trPtr->AssignReconstMethod(trPtr->advection::reconstMethods,"(3,3)",{{-1,-1}});
 
+    // Diffusion
 /*
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(1,1)",{{0,0}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
-    //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(3,3)",{{0,0},{-3,0},{-3,-2},{0,-2}}); 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVert,"(4,5)",{{-2,-2}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(1,1)",{{0,0}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(2,2)",{{0,0},{0,-1}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(3,2)",{{0,0},{0,-1}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(4,2)",{{0,0},{0,-1}});
+ *
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(1,1)",{{0,0}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(2,2)",{{-1,0},{-1,-1}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(3,2)",{{-2,0},{-2,-1}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(4,2)",{{-3,0},{-3,-1}});
+ *
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(1,1)",{{0,0}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(2,2)",{{-1,0},{0,0}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(2,3)",{{-1,0},{0,0}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(2,4)",{{-1,0},{0,0}});
+ *
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(1,1)",{{0,0}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(2,2)",{{-1,-1},{0,-1}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(2,3)",{{-1,-2},{0,-2}});
+ *    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(2,4)",{{-1,-3},{0,-3}});
+ *
+ */
 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(1,1)",{{0,0}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
-    //trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,-1},{-2,-1},{-2,-2},{0,-2}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(3,3)",{{0,0},{-2,0},{-2,-3},{0,-3}}); 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHori,"(5,4)",{{-2,-2}});
-*/
 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(1,1)",{{0,0}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(2,2)",{{0,0},{0,-1}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(3,2)",{{0,0},{0,-1}}); 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(4,2)",{{0,0},{0,-1}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(1,1)",{{0,0}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertRight,"(3,3)",{{-1,-1}});
 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(1,1)",{{0,0}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(2,2)",{{-1,0},{-1,-1}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(3,2)",{{-2,0},{-2,-1}}); 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(4,2)",{{-3,0},{-3,-1}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(1,1)",{{0,0}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsVertLeft,"(3,3)",{{-1,-1}});
 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(1,1)",{{0,0}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(2,2)",{{-1,0},{0,0}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(2,3)",{{-1,0},{0,0}}); 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(2,4)",{{-1,0},{0,0}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(1,1)",{{0,0}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriUp,"(3,3)",{{-1,-1}});
 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(1,1)",{{0,0}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(2,2)",{{-1,-1},{0,-1}});
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(2,3)",{{-1,-2},{0,-2}}); 
-    trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(2,4)",{{-1,-3},{0,-3}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(1,1)",{{0,0}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}});
+	 trPtr->AssignReconstMethod(trPtr->diffusion::reconstMethodsHoriDown,"(3,3)",{{-1,-1}});
 
-    trPtr->CreateMLWENO(mi);
+	 trPtr->CreateMLWENO(mi);
 }
 
 int main(int argc, char **argv){
@@ -130,7 +115,7 @@ int main(int argc, char **argv){
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
 
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 
 // ==========================================================================================================================
 
@@ -179,8 +164,8 @@ int main(int argc, char **argv){
         PrintFullMesh(dm, &fullmesh);
     }
 
-    cout << "Mesh Created. To check full mesh, rerun with -printmesh 1 " << endl;
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    PetscPrintf(PETSC_COMM_WORLD,"Mesh Created. To check full mesh, rerun with -printmesh 1 \n");
+    PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 
 // ==========================================================================================================================
 
@@ -208,7 +193,7 @@ int main(int argc, char **argv){
 
     // Initialize with oblique data for Burgers equation 
     //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,InitialValue);
+    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,InitialDistribution);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -301,12 +286,12 @@ int main(int argc, char **argv){
     SNESGetLineSearch(snes, &linesearch);
     SNESLineSearchSetTolerances(linesearch, 0, 1e8, 1e-8, 1e-14, 1e-8, 30);
     KSPGetPC(ksp, &pc);
-    KSPSetTolerances(ksp, 1e-8,1e-13,1000,30);
-    PCSetType(pc, PCJACOBI);
+    KSPSetTolerances(ksp, 1e-8,1e-13,1000,70);
+    PCSetType(pc, PCILU);
     PCSetFromOptions(pc);
 
     //TSSetRHSFunction(ts, globalu, Explicit, &ctx);
-    TSSetRHSFunction(ts, NULL, ExplicitDiffusion, &ctx);
+    TSSetRHSFunction(ts, NULL, ExplicitAdvection, &ctx);
 
     // ===================================================================
     //! Explicit
@@ -330,7 +315,7 @@ int main(int argc, char **argv){
         MatSetSizes(J, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N);
         MatSetUp(J);
         TSSetType(ts, TSBEULER);
-        TSSetRHSJacobian(ts, J, J, FormJacobianDiffusion, &ctx);
+        TSSetRHSJacobian(ts, J, J, FormJacobianAdvection, &ctx);
     }
     //TSSetTolerances(ts,1e-3,NULL,1e-3,NULL);
     //TSSetMaxSNESFailures(ts, 50);
@@ -343,23 +328,23 @@ int main(int argc, char **argv){
     cout << "Time stepping begins .. .. .. " << endl;
     cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-    auto start = std::chrono::system_clock::now();
+    //auto start = std::chrono::system_clock::now();
     TSSolve(ts,globalu);
-    auto end = std::chrono::system_clock::now();
+    //auto end = std::chrono::system_clock::now();
 
-    std::chrono::duration<double> elapsed_seconds = end-start;
+    //std::chrono::duration<double> elapsed_seconds = end-start;
 
-    cout << "Elapsed time: " << elapsed_seconds.count() << endl;
+    //cout << "Elapsed time: " << elapsed_seconds.count() << endl;
 
-    TSView(ts,PETSC_VIEWER_STDOUT_WORLD);
+    //TSView(ts,PETSC_VIEWER_STDOUT_WORLD);
 
 // ====================================================================================================================================
     // Ouptut of final result
-    filename = (char *)"final.txt";
+    //filename = (char *)"final.txt";
 
-    PlainOutput(dmu, &globalu, filename);
+    //PlainOutput(dmu, &globalu, filename);
 
-    delete trPtr;
+    //delete trPtr;
 
 // ====================================================================================================================================
     // Clear used objects
@@ -370,6 +355,8 @@ int main(int argc, char **argv){
     VecDestroy(&globalu);
     DMDestroy(&dm);
     DMDestroy(&dmu);
+
+    PetscFinalize();
 
     return 0;
 }

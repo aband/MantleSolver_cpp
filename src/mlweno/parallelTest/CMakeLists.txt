@@ -1,17 +1,3 @@
-#
-#  This is a sample CMakeLists.txt suitable for direct use with a new PETSc application or
-#  you can add fragments of material below to an existing applications CMakeLists.txt
-#
-#  Usage:  To build ex1 from ex1.c
-#    rm -fr build
-#    mkdir build
-#    cd build
-#    cmake ..
-#    make
-#    ./ex1
-#
-#  By default it gets both the compiler information and the library information from PETSc
-#
 cmake_minimum_required(VERSION 3.1.0)
 
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -23,6 +9,8 @@ set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH})
 set(LAPACK $ENV{LAPACK_DIR})
 
 set(HDF5 $ENV{HDF5_DIR})
+
+set(SRC $ENV{MantleSolver}/src)
 
 # PKG_CONFIG_PATH is set mannually in bashrc
 
@@ -39,26 +27,81 @@ if (FORTRAN_COMPILER)
   enable_language(Fortran)
 endif (FORTRAN_COMPILER)
 
-#  tells CMake to build the application ex1 from the source file ex1.c
-#  this must appear AFTER the compilers are set
-
-#list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-#find_package(ADOLC REQUIRED)
+# Set Optimization flags
+#set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-g")
 
 project(test)
-add_executable(test test.cpp ../../integral.cpp ../../mesh.c ../polynomial.cpp ../../util.cpp ../../../src/io/input.cpp ../../../src/io/output.c ../reconstruction.cpp ../../../src/io/hdf5_io.c)
 
-add_executable(ph5test ph5example.c)
-
-include_directories(../../../include ../../../src/mlweno ../../../src/io)
-
+# Find packages using find_package 
 find_package(PkgConfig REQUIRED)
 find_package(MPI REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
-#pkg_search_module(ADOLC REQUIRED IMPORTED_TARGET adolc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
 pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
-##target_link_libraries(original_weno PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE PkgConfig::HDF5)
-#target_link_libraries(multilevel_weno PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE PkgConfig::HDF5)
-target_link_libraries(test PkgConfig::PETSC PkgConfig::LAPACKE PkgConfig::HDF5)
-target_link_libraries(ph5test PkgConfig::HDF5)
+pkg_search_module(CGNS REQUIRED IMPORTED_TARGET cgns)
+
+# Build library
+# Create a library from the files in src file
+add_library(general_lib
+		  ${SRC}/general/integral.cpp 
+		  ${SRC}/general/mesh.c 
+		  ${SRC}/general/util.cpp
+)
+
+target_include_directories(general_lib
+		  PUBLIC SRC/general
+)
+
+target_link_libraries(general_lib
+    PkgConfig::PETSC
+)
+
+# Create a library from the files in the io directroy
+add_library(io_lib
+		  ${SRC}/io/input.cpp
+		  ${SRC}/io/output.c
+		  ${SRC}/io/cgns_io.c
+)
+
+target_include_directories(io_lib
+		  PUBLIC ${SRC}/io
+		  PUBLIC ${SRC}/general
+)
+
+target_link_libraries(io_lib
+    general_lib
+    PkgConfig::PETSC
+    PkgConfig::HDF5
+    PkgConfig::CGNS
+)
+
+# Create a library from the files in the mlweno directory
+add_library(mlweno_lib 
+		  ${SRC}/mlweno/reconstruction.cpp 
+		  ${SRC}/mlweno/polynomial.cpp 
+)
+
+# Specify any additional include directories if needed
+target_include_directories(mlweno_lib 
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/general
+    PUBLIC ${PETSC_DIR}/include 
+)
+
+# Link the PETSc libraries to the mlweno_lib library
+target_link_libraries(mlweno_lib 
+        PkgConfig::PETSC
+)
+
+# Add to excutable
+add_executable(test 
+        test.cpp 
+)
+
+# Link static libraries generated previously
+target_link_libraries(test 
+    mlweno_lib
+    io_lib
+    PkgConfig::LAPACKE 
+)

@@ -198,6 +198,13 @@ void MLWENOPrepare::UpdateDerivSmoothnessIndic(const MeshInfo& mi){
 }
 
 void MLWENOPrepare::PrintInfo(){
+
+    int rank;
+
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    cout << "Current rank is :" << rank << endl;
+
     //! Print added levels and reconstruction methods
     cout << "There are " <<allLevels_.size()<< " levels created." << endl;
 
@@ -205,7 +212,6 @@ void MLWENOPrepare::PrintInfo(){
         cout << it.first << " " ; 
         (it.second)->CheckStencils();
     }
-
 }
 
 // ============= Multi level reconstruction ====================================

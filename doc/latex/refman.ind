@@ -53,13 +53,13 @@
   \item {CheckStencilPolynomials}
     \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{24}
   \item {CheckStencils}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{24}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{25}
   \item {Clear}
     \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{18}
   \item {clearPtr}
     \subitem {stencil$<$ T $>$}, \hyperpage{28}
   \item {CreateStencil}
-    \subitem {stencil$<$ T $>$}, \hyperpage{28}
+    \subitem {stencil$<$ T $>$}, \hyperpage{29}
   \item {CreateStencilPolynomials}
     \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{25}
 
@@ -114,13 +114,13 @@
     \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{34}
   \item {GetScale}
     \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{20}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{25}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{25, 26}
     \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{34}
   \item {getSize}
     \subitem {stencil$<$ T $>$}, \hyperpage{29}
     \subitem {tensorProductPoly::basePolynomial}, \hyperpage{11}
   \item {GetSizeX}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{25}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{26}
   \item {GetSizeY}
     \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{26}
   \item {GetSmoothIndic}
@@ -174,18 +174,18 @@
     \subitem {CalculateSmoothnessIndic}, \hyperpage{24}
     \subitem {CheckExist}, \hyperpage{24}
     \subitem {CheckStencilPolynomials}, \hyperpage{24}
-    \subitem {CheckStencils}, \hyperpage{24}
+    \subitem {CheckStencils}, \hyperpage{25}
     \subitem {CreateStencilPolynomials}, \hyperpage{25}
     \subitem {Evaluate}, \hyperpage{25}
-    \subitem {GetScale}, \hyperpage{25}
-    \subitem {GetSizeX}, \hyperpage{25}
+    \subitem {GetScale}, \hyperpage{25, 26}
+    \subitem {GetSizeX}, \hyperpage{26}
     \subitem {GetSizeY}, \hyperpage{26}
     \subitem {GetSmoothnessIndic}, \hyperpage{26}
     \subitem {GetSmoothnessIndicDeriv}, \hyperpage{26}
     \subitem {PrintSmoothnessIndicator}, \hyperpage{26}
-    \subitem {singleLevelReconstruction}, \hyperpage{23}
-    \subitem {UpdateDerivSmoothnessIndic}, \hyperpage{26}
-    \subitem {UpdateSmoothnessIndic}, \hyperpage{26}
+    \subitem {singleLevelReconstruction}, \hyperpage{23, 24}
+    \subitem {UpdateDerivSmoothnessIndic}, \hyperpage{27}
+    \subitem {UpdateSmoothnessIndic}, \hyperpage{27}
   \item {MLWENOPrepare}
     \subitem {MLWENO::MLWENOPrepare}, \hyperpage{13}
   \item {ModifyReconstMethod}
@@ -241,13 +241,13 @@
   \item {SetUpScale}
     \subitem {tensorProductPoly::stencilPolynomial}, \hyperpage{35, 36}
   \item {singleLevelReconstruction}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{23}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{23, 24}
   \item {stencil}
-    \subitem {stencil$<$ T $>$}, \hyperpage{27, 28}
+    \subitem {stencil$<$ T $>$}, \hyperpage{28}
   \item {stencil$<$ T $>$}, \hyperpage{27}
     \subitem {$\sim$stencil}, \hyperpage{28}
     \subitem {clearPtr}, \hyperpage{28}
-    \subitem {CreateStencil}, \hyperpage{28}
+    \subitem {CreateStencil}, \hyperpage{29}
     \subitem {getI}, \hyperpage{29}
     \subitem {getJ}, \hyperpage{29}
     \subitem {getK}, \hyperpage{29}
@@ -258,7 +258,7 @@
     \subitem {setJ}, \hyperpage{31}
     \subitem {setK}, \hyperpage{31}
     \subitem {SetStencil}, \hyperpage{31}
-    \subitem {stencil}, \hyperpage{27, 28}
+    \subitem {stencil}, \hyperpage{28}
   \item {stencil.h}
     \subitem {cellCentered}, \hyperpage{43}
     \subitem {edgeCentered}, \hyperpage{43}
@@ -304,14 +304,14 @@
 
   \item {UpdateDerivSmoothnessIndic}
     \subitem {MLWENO::MLWENOPrepare}, \hyperpage{13}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{26}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{27}
   \item {UpdateNonLinearWgts}
     \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{22}
   \item {UpdateNonLinearWgtsAndDerivs}
     \subitem {MLWENO::multiLevelReconstruction}, \hyperpage{22}
   \item {UpdateSmoothnessIndic}
     \subitem {MLWENO::MLWENOPrepare}, \hyperpage{14}
-    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{26}
+    \subitem {MLWENO::singleLevelReconstruction}, \hyperpage{27}
 
   \indexspace
 

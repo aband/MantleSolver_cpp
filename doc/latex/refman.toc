@@ -7,7 +7,6 @@
 \contentsline {section}{\numberline {3.1}File List}{5}{section.3.1}%
 \contentsline {chapter}{\numberline {4}Namespace Documentation}{7}{chapter.4}%
 \contentsline {section}{\numberline {4.1}MLWENO Namespace Reference}{7}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Detailed Description}{7}{subsection.4.1.1}%
 \contentsline {section}{\numberline {4.2}tensor\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Product\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Poly Namespace Reference}{7}{section.4.2}%
 \contentsline {chapter}{\numberline {5}Class Documentation}{9}{chapter.5}%
 \contentsline {section}{\numberline {5.1}tensor\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Product\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Poly\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::base\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Polynomial Class Reference}{9}{section.5.1}%
@@ -83,43 +82,44 @@
 \contentsline {subsubsection}{\numberline {5.3.2.30}UpdateNonLinearWgts()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{22}{subsubsection.5.3.2.30}%
 \contentsline {subsubsection}{\numberline {5.3.2.31}UpdateNonLinearWgtsAndDerivs()}{22}{subsubsection.5.3.2.31}%
 \contentsline {section}{\numberline {5.4}MLWENO\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}::single\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Level\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}Reconstruction Class Reference}{23}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Constructor \& Destructor Documentation}{23}{subsection.5.4.1}%
-\contentsline {subsubsection}{\numberline {5.4.1.1}singleLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{23}{subsubsection.5.4.1.1}%
-\contentsline {subsubsection}{\numberline {5.4.1.2}singleLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{24}{subsubsection.5.4.1.2}%
-\contentsline {subsubsection}{\numberline {5.4.1.3}$\sim $singleLevelReconstruction()}{24}{subsubsection.5.4.1.3}%
-\contentsline {subsection}{\numberline {5.4.2}Member Function Documentation}{24}{subsection.5.4.2}%
-\contentsline {subsubsection}{\numberline {5.4.2.1}CalculateSmoothnessIndic()}{24}{subsubsection.5.4.2.1}%
-\contentsline {subsubsection}{\numberline {5.4.2.2}CheckExist()}{24}{subsubsection.5.4.2.2}%
-\contentsline {subsubsection}{\numberline {5.4.2.3}CheckStencilPolynomials()}{24}{subsubsection.5.4.2.3}%
-\contentsline {subsubsection}{\numberline {5.4.2.4}CheckStencils()}{25}{subsubsection.5.4.2.4}%
-\contentsline {subsubsection}{\numberline {5.4.2.5}CreateStencilPolynomials()}{25}{subsubsection.5.4.2.5}%
-\contentsline {subsubsection}{\numberline {5.4.2.6}Evaluate()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{25}{subsubsection.5.4.2.6}%
-\contentsline {subsubsection}{\numberline {5.4.2.7}Evaluate()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{25}{subsubsection.5.4.2.7}%
-\contentsline {subsubsection}{\numberline {5.4.2.8}GetScale()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{25}{subsubsection.5.4.2.8}%
-\contentsline {subsubsection}{\numberline {5.4.2.9}GetScale()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{25}{subsubsection.5.4.2.9}%
-\contentsline {subsubsection}{\numberline {5.4.2.10}GetSizeX()}{26}{subsubsection.5.4.2.10}%
-\contentsline {subsubsection}{\numberline {5.4.2.11}GetSizeY()}{26}{subsubsection.5.4.2.11}%
-\contentsline {subsubsection}{\numberline {5.4.2.12}GetSmoothnessIndic()}{26}{subsubsection.5.4.2.12}%
-\contentsline {subsubsection}{\numberline {5.4.2.13}GetSmoothnessIndicDeriv()}{26}{subsubsection.5.4.2.13}%
-\contentsline {subsubsection}{\numberline {5.4.2.14}PrintSmoothnessIndicator()}{26}{subsubsection.5.4.2.14}%
-\contentsline {subsubsection}{\numberline {5.4.2.15}UpdateDerivSmoothnessIndic()}{26}{subsubsection.5.4.2.15}%
-\contentsline {subsubsection}{\numberline {5.4.2.16}UpdateSmoothnessIndic()}{27}{subsubsection.5.4.2.16}%
+\contentsline {subsection}{\numberline {5.4.1}Detailed Description}{23}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Constructor \& Destructor Documentation}{23}{subsection.5.4.2}%
+\contentsline {subsubsection}{\numberline {5.4.2.1}singleLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{24}{subsubsection.5.4.2.1}%
+\contentsline {subsubsection}{\numberline {5.4.2.2}singleLevelReconstruction()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{24}{subsubsection.5.4.2.2}%
+\contentsline {subsubsection}{\numberline {5.4.2.3}$\sim $singleLevelReconstruction()}{24}{subsubsection.5.4.2.3}%
+\contentsline {subsection}{\numberline {5.4.3}Member Function Documentation}{24}{subsection.5.4.3}%
+\contentsline {subsubsection}{\numberline {5.4.3.1}CalculateSmoothnessIndic()}{24}{subsubsection.5.4.3.1}%
+\contentsline {subsubsection}{\numberline {5.4.3.2}CheckExist()}{24}{subsubsection.5.4.3.2}%
+\contentsline {subsubsection}{\numberline {5.4.3.3}CheckStencilPolynomials()}{25}{subsubsection.5.4.3.3}%
+\contentsline {subsubsection}{\numberline {5.4.3.4}CheckStencils()}{25}{subsubsection.5.4.3.4}%
+\contentsline {subsubsection}{\numberline {5.4.3.5}CreateStencilPolynomials()}{25}{subsubsection.5.4.3.5}%
+\contentsline {subsubsection}{\numberline {5.4.3.6}Evaluate()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{25}{subsubsection.5.4.3.6}%
+\contentsline {subsubsection}{\numberline {5.4.3.7}Evaluate()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{25}{subsubsection.5.4.3.7}%
+\contentsline {subsubsection}{\numberline {5.4.3.8}GetScale()\hspace {0.1cm}{\footnotesize \ttfamily [1/2]}}{26}{subsubsection.5.4.3.8}%
+\contentsline {subsubsection}{\numberline {5.4.3.9}GetScale()\hspace {0.1cm}{\footnotesize \ttfamily [2/2]}}{26}{subsubsection.5.4.3.9}%
+\contentsline {subsubsection}{\numberline {5.4.3.10}GetSizeX()}{26}{subsubsection.5.4.3.10}%
+\contentsline {subsubsection}{\numberline {5.4.3.11}GetSizeY()}{26}{subsubsection.5.4.3.11}%
+\contentsline {subsubsection}{\numberline {5.4.3.12}GetSmoothnessIndic()}{26}{subsubsection.5.4.3.12}%
+\contentsline {subsubsection}{\numberline {5.4.3.13}GetSmoothnessIndicDeriv()}{26}{subsubsection.5.4.3.13}%
+\contentsline {subsubsection}{\numberline {5.4.3.14}PrintSmoothnessIndicator()}{27}{subsubsection.5.4.3.14}%
+\contentsline {subsubsection}{\numberline {5.4.3.15}UpdateDerivSmoothnessIndic()}{27}{subsubsection.5.4.3.15}%
+\contentsline {subsubsection}{\numberline {5.4.3.16}UpdateSmoothnessIndic()}{27}{subsubsection.5.4.3.16}%
 \contentsline {section}{\numberline {5.5}stencil$<$ T $>$ Class Template Reference}{27}{section.5.5}%
-\contentsline {subsection}{\numberline {5.5.1}Constructor \& Destructor Documentation}{27}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.1}Constructor \& Destructor Documentation}{28}{subsection.5.5.1}%
 \contentsline {subsubsection}{\numberline {5.5.1.1}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [1/4]}}{28}{subsubsection.5.5.1.1}%
 \contentsline {subsubsection}{\numberline {5.5.1.2}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [2/4]}}{28}{subsubsection.5.5.1.2}%
 \contentsline {subsubsection}{\numberline {5.5.1.3}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [3/4]}}{28}{subsubsection.5.5.1.3}%
 \contentsline {subsubsection}{\numberline {5.5.1.4}stencil()\hspace {0.1cm}{\footnotesize \ttfamily [4/4]}}{28}{subsubsection.5.5.1.4}%
 \contentsline {subsubsection}{\numberline {5.5.1.5}$\sim $stencil()}{28}{subsubsection.5.5.1.5}%
 \contentsline {subsection}{\numberline {5.5.2}Member Function Documentation}{28}{subsection.5.5.2}%
-\contentsline {subsubsection}{\numberline {5.5.2.1}clearPtr()}{28}{subsubsection.5.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.5.2.1}clearPtr()}{29}{subsubsection.5.5.2.1}%
 \contentsline {subsubsection}{\numberline {5.5.2.2}CreateStencil()}{29}{subsubsection.5.5.2.2}%
 \contentsline {subsubsection}{\numberline {5.5.2.3}getI()}{29}{subsubsection.5.5.2.3}%
 \contentsline {subsubsection}{\numberline {5.5.2.4}getJ()}{29}{subsubsection.5.5.2.4}%
 \contentsline {subsubsection}{\numberline {5.5.2.5}getK()}{29}{subsubsection.5.5.2.5}%
 \contentsline {subsubsection}{\numberline {5.5.2.6}getSize()}{29}{subsubsection.5.5.2.6}%
 \contentsline {subsubsection}{\numberline {5.5.2.7}GetStencil()}{29}{subsubsection.5.5.2.7}%
-\contentsline {subsubsection}{\numberline {5.5.2.8}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [1/6]}}{29}{subsubsection.5.5.2.8}%
+\contentsline {subsubsection}{\numberline {5.5.2.8}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [1/6]}}{30}{subsubsection.5.5.2.8}%
 \contentsline {subsubsection}{\numberline {5.5.2.9}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [2/6]}}{30}{subsubsection.5.5.2.9}%
 \contentsline {subsubsection}{\numberline {5.5.2.10}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [3/6]}}{30}{subsubsection.5.5.2.10}%
 \contentsline {subsubsection}{\numberline {5.5.2.11}operator()()\hspace {0.1cm}{\footnotesize \ttfamily [4/6]}}{30}{subsubsection.5.5.2.11}%

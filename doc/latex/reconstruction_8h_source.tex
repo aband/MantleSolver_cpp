@@ -5,224 +5,222 @@
 \DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ RECONSTRUCTION\_H\_}}
 \DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ RECONSTRUCTION\_H\_}}
 \DoxyCodeLine{00003\ }
-\DoxyCodeLine{00004\ \textcolor{comment}{//\(\backslash\)slreconstruction.h\ slreconstruction.h}}
-\DoxyCodeLine{00006\ \textcolor{comment}{}}
-\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{polynomial_8h}{polynomial.h}}"{}}}
-\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <map>}}
-\DoxyCodeLine{00009\ }
-\DoxyCodeLine{00010\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceMLWENO}{MLWENO}}\{}
-\DoxyCodeLine{00011\ }
-\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction}{singleLevelReconstruction}}\ \{}
-\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00015\ }
-\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a1f0a038b173cfe97b21de2febf9133a9}{singleLevelReconstruction}}()\ \{\};}
-\DoxyCodeLine{00020\ }
-\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a1f0a038b173cfe97b21de2febf9133a9}{singleLevelReconstruction}}(\textcolor{keywordtype}{int}\ stencilSizeX,\ \textcolor{keywordtype}{int}\ stencilSizeY);\ }
-\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \ \ \ }
-\DoxyCodeLine{00026\ }
-\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_ad7e6254d9ffce1174d14848bd0e889fd}{\string~singleLevelReconstruction}}();}
-\DoxyCodeLine{00030\ }
-\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ======================================================================}}
-\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a5a63990afdb6304d4cf2f0c800bf1259}{CreateStencilPolynomials}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{polynomial_8h}{polynomial.h}}"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceMLWENO}{MLWENO}}\{}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction}{singleLevelReconstruction}}\ \{}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a1f0a038b173cfe97b21de2febf9133a9}{singleLevelReconstruction}}()\ \{\};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a1f0a038b173cfe97b21de2febf9133a9}{singleLevelReconstruction}}(\textcolor{keywordtype}{int}\ stencilSizeX,\ \textcolor{keywordtype}{int}\ stencilSizeY);\ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_ad7e6254d9ffce1174d14848bd0e889fd}{\string~singleLevelReconstruction}}();}
 \DoxyCodeLine{00033\ }
-\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a57d226934762e1c5d953f3e9bd5784e7}{CheckExist}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ indice\ owner)\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ interior\_.count(FlatIndic(mi,owner));\};}
-\DoxyCodeLine{00035\ }
-\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a0bec39c49435c5994fbe62684ab8cc04}{GetSizeX}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ stencilSizeX\_;\};}
-\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a8ea3817ebddbf101139fdc568c74c568}{GetSizeY}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ stencilSizeY\_;\};}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ======================================================================}}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a5a63990afdb6304d4cf2f0c800bf1259}{CreateStencilPolynomials}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a57d226934762e1c5d953f3e9bd5784e7}{CheckExist}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ indice\ owner)\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ interior\_.count(FlatIndic(mi,owner));\};}
 \DoxyCodeLine{00038\ }
-\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a6f8d801e96d3057822ead32258a2455b}{GetScale}}(\textcolor{keywordtype}{int}\ s)\ \{\textcolor{keywordflow}{return}\ singleLevel\_[s]-\/>GetScale();\};}
-\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a1d7cc78315a0592ee9f2836235a3b579}{GetScale}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ indice\&\ owner)\ \{\textcolor{keywordflow}{return}\ singleLevel\_[FlatIndic(mi,owner)]-\/>GetScale();\};\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a0bec39c49435c5994fbe62684ab8cc04}{GetSizeX}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ stencilSizeX\_;\};}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a8ea3817ebddbf101139fdc568c74c568}{GetSizeY}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ stencilSizeY\_;\};}
 \DoxyCodeLine{00041\ }
-\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a705893e946eda8e309910e4cf90651ec}{CalculateSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ indice\ owner);}
-\DoxyCodeLine{00045\ }
-\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a152e62ac226fa60ca9b2160ff5cdb6be}{GetSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ indice\ owner);\ }
-\DoxyCodeLine{00051\ }
-\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ double>\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_aab1d8c50ecedbd6dabf01b3664570b1c}{GetSmoothnessIndicDeriv}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ indice\&\ owner);}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a6f8d801e96d3057822ead32258a2455b}{GetScale}}(\textcolor{keywordtype}{int}\ s)\ \{\textcolor{keywordflow}{return}\ singleLevel\_[s]-\/>GetScale();\};}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a1d7cc78315a0592ee9f2836235a3b579}{GetScale}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ indice\&\ owner)\ \{\textcolor{keywordflow}{return}\ singleLevel\_[FlatIndic(mi,owner)]-\/>GetScale();\};\ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a705893e946eda8e309910e4cf90651ec}{CalculateSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ indice\ owner);}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a152e62ac226fa60ca9b2160ff5cdb6be}{GetSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ indice\ owner);\ }
 \DoxyCodeLine{00053\ }
-\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_acf1d9c32d9fc29727dd27bdfbd5aff1e}{UpdateSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
-\DoxyCodeLine{00056\ }
-\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a91cbf91fd64305cb655d015ffd744ed6}{UpdateDerivSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ double>\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_aab1d8c50ecedbd6dabf01b3664570b1c}{GetSmoothnessIndicDeriv}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ indice\&\ owner);}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_acf1d9c32d9fc29727dd27bdfbd5aff1e}{UpdateSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
 \DoxyCodeLine{00058\ }
-\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a9999c17acbbec023a144fcf3c616d8c6}{Evaluate}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ indice\&\ owner,\ \textcolor{keyword}{const}\ vertex\&\ point);}
-\DoxyCodeLine{00063\ }
-\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a9999c17acbbec023a144fcf3c616d8c6}{Evaluate}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ indice\&\ owner,\ \textcolor{keyword}{const}\ vertex\&\ point,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ local);}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a91cbf91fd64305cb655d015ffd744ed6}{UpdateDerivSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a9999c17acbbec023a144fcf3c616d8c6}{Evaluate}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ indice\&\ owner,\ \textcolor{keyword}{const}\ vertex\&\ point);}
 \DoxyCodeLine{00065\ }
-\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ======================================================================}}
-\DoxyCodeLine{00068\ \textcolor{comment}{}\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a62a18da5e34895ca4f6b62ca4b005e3c}{CheckStencils}}()\textcolor{keyword}{\ const\ }\{cout<<\ \textcolor{stringliteral}{"{}Constructed\ "{}}<<\ interior\_.size()\ <<\ \textcolor{stringliteral}{"{}\ stencils\ with\ the\ size\ of\ "{}}\ <<\ stencilSizeX\_\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ stencilSizeY\_\ <<\ endl;\};}
-\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a533bef552787e08bf635d3767e6acb55}{CheckStencilPolynomials}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ indice\ start);}
-\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}{PrintSmoothnessIndicator}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
-\DoxyCodeLine{00071\ }
-\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a9999c17acbbec023a144fcf3c616d8c6}{Evaluate}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ indice\&\ owner,\ \textcolor{keyword}{const}\ vertex\&\ point,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ local);}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ======================================================================}}
+\DoxyCodeLine{00070\ \textcolor{comment}{}\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a62a18da5e34895ca4f6b62ca4b005e3c}{CheckStencils}}()\textcolor{keyword}{\ const\ }\{cout<<\ \textcolor{stringliteral}{"{}Constructed\ "{}}<<\ interior\_.size()\ <<\ \textcolor{stringliteral}{"{}\ stencils\ with\ the\ size\ of\ "{}}\ <<\ stencilSizeX\_\ <<\ \textcolor{stringliteral}{"{}\ "{}}\ <<\ stencilSizeY\_\ <<\ endl;\};}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a533bef552787e08bf635d3767e6acb55}{CheckStencilPolynomials}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ indice\ start);}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1singleLevelReconstruction_a7fdd670b69aa03ef268a9e168b6b6006}{PrintSmoothnessIndicator}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
 \DoxyCodeLine{00073\ }
-\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ stencilSizeX\_\ =\ -\/1;\ }
-\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ stencilSizeY\_\ =\ -\/1;\ }
-\DoxyCodeLine{00076\ }
-\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ stencil\ <indice>\ stencilIndice\_;\ \ \ \ \ \ \ \ \ \ \ }
-\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<int>\ interior\_;\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
-\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ map<int,\ double>\ smoothnessIndic\_;\ \ \ \ \ \ \ \ \ }
-\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ unordered\_map<int,double>>\ smoothnessIndicDeriv\_;}
-\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ map<int,\ tensorProductPoly::stencilPolynomial*>\ singleLevel\_;\ \ \ \ \ \ \ }
-\DoxyCodeLine{00082\ }
-\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ IdentifyInteriorCell\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ stencilSizeX\_\ =\ -\/1;\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ stencilSizeY\_\ =\ -\/1;\ }
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ stencil\ <indice>\ stencilIndice\_;\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<int>\ interior\_;\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ map<int,\ double>\ smoothnessIndic\_;\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ unordered\_map<int,double>>\ smoothnessIndicDeriv\_;}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ map<int,\ tensorProductPoly::stencilPolynomial*>\ singleLevel\_;\ \ \ \ \ \ \ }
 \DoxyCodeLine{00084\ }
-\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ vertex\ ComputeStencilCenter\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ flat);}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ IdentifyInteriorCell\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
 \DoxyCodeLine{00086\ }
-\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ ComputeStencilPolyn\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
-\DoxyCodeLine{00088\ \ \ \ \ \};}
-\DoxyCodeLine{00089\ }
-\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare}{MLWENOPrepare}}\ \{}
-\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a5362e4f5a0481de5cc5770bd4c018118}{MLWENOPrepare}}()\ \{\};}
-\DoxyCodeLine{00100\ }
-\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_aedaebd1dfe9c7e7424130860ee79be61}{\string~MLWENOPrepare}}();}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ vertex\ ComputeStencilCenter\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ flat);}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ ComputeStencilPolyn\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00090\ \ \ \ \ \};}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare}{MLWENOPrepare}}\ \{}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a5362e4f5a0481de5cc5770bd4c018118}{MLWENOPrepare}}()\ \{\};}
 \DoxyCodeLine{00102\ }
-\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a50e32c6c813d6dbafe385ee56f69d4e5}{AddLevel}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ stencilSizeX,\ }
-\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ stencilSizeY);}
-\DoxyCodeLine{00110\ }
-\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a1f11c74e8d3949ec73e69068338f13ff}{UpdateSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
-\DoxyCodeLine{00116\ }
-\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a5fb9efbf5868932a43a46716e396a11e}{UpdateDerivSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
-\DoxyCodeLine{00123\ }
-\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a56c135b8f81e48c6dbb27d50b0ec7b30}{PrintInfo}}();}
-\DoxyCodeLine{00128\ }
-\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
-\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction}{multiLevelReconstruction}};}
-\DoxyCodeLine{00131\ }
-\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ std::unordered\_map<std::string,\ singleLevelReconstruction\ *>\ allLevels\_;}
-\DoxyCodeLine{00133\ \ \ \ \ \};}
-\DoxyCodeLine{00134\ }
-\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction}{multiLevelReconstruction}}\ \{}
-\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
-\DoxyCodeLine{00138\ }
-\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a890b2c9598cdd97ca59f7f8428abf06d}{multiLevelReconstruction}}()\ \{\};}
-\DoxyCodeLine{00142\ }
-\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_add6ca41e59cca5afe10e8b0166f81337}{multiLevelReconstruction}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ stencilSizeX,\ \textcolor{keywordtype}{int}\ stencilSizeY,\ }
-\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vector<indice>\ brm)}
-\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ \{\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0774c2a068e815c1ce941273ef7b8308}{AddLevel}}(mi,stencilSizeX,stencilSizeY,brm);\};}
-\DoxyCodeLine{00150\ }
-\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ab80b8839fb5aa6cd26c44206906f5797}{multiLevelReconstruction}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}*\ stencilSize,\ vector<indice>\ brm)\ }
-\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ \{\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0774c2a068e815c1ce941273ef7b8308}{AddLevel}}(mi,stencilSize,brm);\};}
-\DoxyCodeLine{00153\ }
-\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_aefb524656269c7bd1071ef097c8042a5}{multiLevelReconstruction}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ vector<int*>\ stencilSizes,}
-\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vector<vector<indice>>\ brms)\ }
-\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \{\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0774c2a068e815c1ce941273ef7b8308}{AddLevel}}(mi,stencilSizes,brms);\};}
-\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_aedaebd1dfe9c7e7424130860ee79be61}{\string~MLWENOPrepare}}();}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a50e32c6c813d6dbafe385ee56f69d4e5}{AddLevel}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ stencilSizeX,\ }
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ stencilSizeY);}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a1f11c74e8d3949ec73e69068338f13ff}{UpdateSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a5fb9efbf5868932a43a46716e396a11e}{UpdateDerivSmoothnessIndic}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare_a56c135b8f81e48c6dbb27d50b0ec7b30}{PrintInfo}}();}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction}{multiLevelReconstruction}};}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ std::unordered\_map<std::string,\ singleLevelReconstruction\ *>\ allLevels\_;}
+\DoxyCodeLine{00135\ \ \ \ \ \};}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction}{multiLevelReconstruction}}\ \{}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a890b2c9598cdd97ca59f7f8428abf06d}{multiLevelReconstruction}}()\ \{\};}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_add6ca41e59cca5afe10e8b0166f81337}{multiLevelReconstruction}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ stencilSizeX,\ \textcolor{keywordtype}{int}\ stencilSizeY,\ }
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vector<indice>\ brm)}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ \{\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0774c2a068e815c1ce941273ef7b8308}{AddLevel}}(mi,stencilSizeX,stencilSizeY,brm);\};}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ab80b8839fb5aa6cd26c44206906f5797}{multiLevelReconstruction}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}*\ stencilSize,\ vector<indice>\ brm)\ }
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \{\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0774c2a068e815c1ce941273ef7b8308}{AddLevel}}(mi,stencilSize,brm);\};}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_aefb524656269c7bd1071ef097c8042a5}{multiLevelReconstruction}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ vector<int*>\ stencilSizes,}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vector<vector<indice>>\ brms)\ }
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \{\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0774c2a068e815c1ce941273ef7b8308}{AddLevel}}(mi,stencilSizes,brms);\};}
 \DoxyCodeLine{00159\ }
-\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a7b05c081d1dd6ee6d22ef5786f06faef}{\string~multiLevelReconstruction}}()\ \{\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_adb1265bfb32f082760cb6bb514f5d077}{Clear}}();\};}
-\DoxyCodeLine{00163\ }
-\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0774c2a068e815c1ce941273ef7b8308}{AddLevel}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ stencilSizeX,\ \textcolor{keywordtype}{int}\ stencilSizeY,\ vector<indice>\ brm);}
-\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ac5e212b81ce4015e1894c06d56aec115}{AddLevel}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}*\ stencilSize,\ vector<indice>\ brm)\ \{\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ac5e212b81ce4015e1894c06d56aec115}{AddLevel}}(mi,stencilSize[0],stencilSize[1],brm);\};}
-\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0374a6927f6bfd0b2136c5056781d0df}{AddLevel}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ vector<int*>\ stencilSizes,\ vector<vector<indice>>\ brms)}
-\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ \{\textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i=0;\ i<stencilSizes.size();\ i++)\{}
-\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0774c2a068e815c1ce941273ef7b8308}{AddLevel}}(mi,stencilSizes[i],brms[i]);\}\};}
-\DoxyCodeLine{00174\ }
-\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a98c612f8fb2703a99b108bac7c47f792}{SeparateBoundaryLayer}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ layerSize);}
-\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a98c612f8fb2703a99b108bac7c47f792}{SeparateBoundaryLayer}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
-\DoxyCodeLine{00182\ }
-\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a98c612f8fb2703a99b108bac7c47f792}{SeparateBoundaryLayer}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ layerSize,\ }
-\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ additionalLevels);\ }
-\DoxyCodeLine{00185\ }
-\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<int>\&\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a74ba6ac188a4a090f769cdecaeb9c20f}{GetboundaryCells}}()\textcolor{keyword}{\ const\ }}
-\DoxyCodeLine{00188\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{\textcolor{keywordflow}{return}\ boundaryCells\_;\};}
-\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<int>\&\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a48cd7f8bc5c0602d07d7a786be47f1eb}{GetinteriorCells}}()\textcolor{keyword}{\ const\ }}
-\DoxyCodeLine{00190\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{\textcolor{keywordflow}{return}\ interiorCells\_;\};}
-\DoxyCodeLine{00191\ }
-\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a8e5afa5dbc867c7bd86402e265cb416a}{AssignboundaryCells}}\ (\textcolor{keyword}{const}\ unordered\_set<int>\&\ boundaryCells)\ }
-\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ \{boundaryCells\_\ =\ boundaryCells;\};}
-\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a07438728306169a1fea14c85daaab913}{AssigninteriorCells}}\ (\textcolor{keyword}{const}\ unordered\_set<int>\&\ interiorCells)}
-\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ \{interiorCells\_\ =\ interiorCells;\};}
-\DoxyCodeLine{00197\ }
-\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a2e56f9c701acfa42e3b4767fdaa8f58b}{GetboundaryLevels}}()\textcolor{keyword}{\ const\ }}
-\DoxyCodeLine{00200\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{\textcolor{keywordflow}{return}\ boundaryLevels\_;\};}
-\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a18a520b59c5cb8704e54e79018d7b2b5}{GetinteriorLevels}}()\textcolor{keyword}{\ const\ }}
-\DoxyCodeLine{00202\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{\textcolor{keywordflow}{return}\ interiorLevels\_;\};}
-\DoxyCodeLine{00203\ }
-\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a5dcfdb6a6224fdcc481ef763e3081f7b}{AssignboundaryLevels}}\ (\textcolor{keyword}{const}\ unordered\_set<std::string>\&\ boundaryLevels)\ }
-\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \{boundaryLevels\_\ =\ boundaryLevels;\};}
-\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a8be78c35e1a6b0c883128060e3b6cb6a}{AssigninteriorLevels}}\ (\textcolor{keyword}{const}\ unordered\_set<std::string>\&\ interiorLevels)}
-\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \{interiorLevels\_\ =\ interiorLevels;\};}
-\DoxyCodeLine{00209\ }
-\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a8c02d20ee994eb84dbc03727e608ae6e}{UpdateNonLinearWgts}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ stage);}
-\DoxyCodeLine{00215\ }
-\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a8c02d20ee994eb84dbc03727e608ae6e}{UpdateNonLinearWgts}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
-\DoxyCodeLine{00220\ }
-\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a169f18854eae5165e39d29810d98a68a}{UpdateNonLinearWgtsAndDerivs}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a7b05c081d1dd6ee6d22ef5786f06faef}{\string~multiLevelReconstruction}}()\ \{\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_adb1265bfb32f082760cb6bb514f5d077}{Clear}}();\};}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0774c2a068e815c1ce941273ef7b8308}{AddLevel}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ stencilSizeX,\ \textcolor{keywordtype}{int}\ stencilSizeY,\ vector<indice>\ brm);}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ac5e212b81ce4015e1894c06d56aec115}{AddLevel}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}*\ stencilSize,\ vector<indice>\ brm)\ \{\mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ac5e212b81ce4015e1894c06d56aec115}{AddLevel}}(mi,stencilSize[0],stencilSize[1],brm);\};}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0374a6927f6bfd0b2136c5056781d0df}{AddLevel}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ vector<int*>\ stencilSizes,\ vector<vector<indice>>\ brms)}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ \{\textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i=0;\ i<stencilSizes.size();\ i++)\{}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a0774c2a068e815c1ce941273ef7b8308}{AddLevel}}(mi,stencilSizes[i],brms[i]);\}\};}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a98c612f8fb2703a99b108bac7c47f792}{SeparateBoundaryLayer}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ layerSize);}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a98c612f8fb2703a99b108bac7c47f792}{SeparateBoundaryLayer}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a98c612f8fb2703a99b108bac7c47f792}{SeparateBoundaryLayer}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\&\ layerSize,\ }
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ additionalLevels);\ }
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<int>\&\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a74ba6ac188a4a090f769cdecaeb9c20f}{GetboundaryCells}}()\textcolor{keyword}{\ const\ }}
+\DoxyCodeLine{00190\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{\textcolor{keywordflow}{return}\ boundaryCells\_;\};}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<int>\&\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a48cd7f8bc5c0602d07d7a786be47f1eb}{GetinteriorCells}}()\textcolor{keyword}{\ const\ }}
+\DoxyCodeLine{00192\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{\textcolor{keywordflow}{return}\ interiorCells\_;\};}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a8e5afa5dbc867c7bd86402e265cb416a}{AssignboundaryCells}}\ (\textcolor{keyword}{const}\ unordered\_set<int>\&\ boundaryCells)\ }
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ \{boundaryCells\_\ =\ boundaryCells;\};}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a07438728306169a1fea14c85daaab913}{AssigninteriorCells}}\ (\textcolor{keyword}{const}\ unordered\_set<int>\&\ interiorCells)}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \{interiorCells\_\ =\ interiorCells;\};}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a2e56f9c701acfa42e3b4767fdaa8f58b}{GetboundaryLevels}}()\textcolor{keyword}{\ const\ }}
+\DoxyCodeLine{00202\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{\textcolor{keywordflow}{return}\ boundaryLevels\_;\};}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a18a520b59c5cb8704e54e79018d7b2b5}{GetinteriorLevels}}()\textcolor{keyword}{\ const\ }}
+\DoxyCodeLine{00204\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ }\{\textcolor{keywordflow}{return}\ interiorLevels\_;\};}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a5dcfdb6a6224fdcc481ef763e3081f7b}{AssignboundaryLevels}}\ (\textcolor{keyword}{const}\ unordered\_set<std::string>\&\ boundaryLevels)\ }
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \{boundaryLevels\_\ =\ boundaryLevels;\};}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a8be78c35e1a6b0c883128060e3b6cb6a}{AssigninteriorLevels}}\ (\textcolor{keyword}{const}\ unordered\_set<std::string>\&\ interiorLevels)}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \{interiorLevels\_\ =\ interiorLevels;\};}
+\DoxyCodeLine{00211\ }
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a8c02d20ee994eb84dbc03727e608ae6e}{UpdateNonLinearWgts}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ stage);}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a8c02d20ee994eb84dbc03727e608ae6e}{UpdateNonLinearWgts}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
 \DoxyCodeLine{00222\ }
-\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a95e50b64f63aaeb735b50c1eab378354}{ModifyReconstMethod}}(std::string\ key,\ vector<indice>\ newRecosntMethod);}
-\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a2fc7099d42794d50004af3dd7d68172a}{ModifyReconstMethod}}(\textcolor{keywordtype}{int}\ stencilSizeX,\ \textcolor{keywordtype}{int}\ stencilSizeY,\ vector<indice>\ newReconstMethod)}
-\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \{std::string\ key\ =\ \textcolor{charliteral}{'('}\ +\ std::to\_string(stencilSizeX)\ +\ \textcolor{charliteral}{','}\ +\ std::to\_string(stencilSizeY)\ +\ \textcolor{charliteral}{')'};}
-\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a95e50b64f63aaeb735b50c1eab378354}{ModifyReconstMethod}}(key,newReconstMethod);\};}
-\DoxyCodeLine{00234\ }
-\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a4e89f4d5565e42dc33d242397aab08ee}{SelectWenoReconstLevel}}(\textcolor{keyword}{const}\ unordered\_set<std::string>\&\ keys);}
-\DoxyCodeLine{00239\ }
-\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a4e89f4d5565e42dc33d242397aab08ee}{SelectWenoReconstLevel}}(\textcolor{keyword}{const}\ unordered\_set<std::string>\&\ keys,}
-\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare}{MLWENOPrepare}}\&\ mlpPtr);}
-\DoxyCodeLine{00245\ }
-\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a70786858095290dca009052ec1a5856a}{EvaluateMLWENO}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ vertex\ point,\ indice\ cell)\ \textcolor{keyword}{const};}
-\DoxyCodeLine{00250\ }
-\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ double>\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a201b574bfdde89c4fa0e084ca9e9155f}{EvaluateDerivMLWENO}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ }
-\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ vertex\&\ point,\ }
-\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ indice\&\ global)\ \textcolor{keyword}{const};}
-\DoxyCodeLine{00258\ }
-\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ double>\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a73721d16c5f7f62e05703ab6c4494f61}{EvaluateDerivMLWENOAdd}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,}
-\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ vertex\&\ point,\ }
-\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ indice\&\ global)\ \textcolor{keyword}{const};}
-\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ad6b899579725410e6fcf99669251fe71}{GetScale}}(std::string\ level,\ \textcolor{keywordtype}{int}\ s)}
-\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \ \ \ \ \{\textcolor{keywordflow}{return}\ reconstLevels\_[level]-\/>GetScale(s);\};}
-\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ab47424bf9713735c30c3cb80ca115f3f}{GetScale}}(std::string\ level,\ \textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ indice\&\ owner)}
-\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \ \ \ \ \{\textcolor{keywordflow}{return}\ reconstLevels\_[level]-\/>GetScale(mi,owner);\};}
-\DoxyCodeLine{00270\ }
-\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_aae16556d1618926f4c7d0eaf26cf7266}{GetInfo}}();}
-\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a9f698115f82ff91f1099dd1e339b4a5d}{PrintBoundaryLayer}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
-\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ab5aea8004802275c9c207f5771595fe7}{PrintSmoothnessIndicator}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
-\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_afe529c8508638beb32672ae2ed957a6d}{PrintNonLinearWgts}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
-\DoxyCodeLine{00276\ }
-\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_adb1265bfb32f082760cb6bb514f5d077}{Clear}}();}
-\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
-\DoxyCodeLine{00285\ }
-\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ eps0\_\ =\ 0.01;}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a169f18854eae5165e39d29810d98a68a}{UpdateNonLinearWgtsAndDerivs}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a95e50b64f63aaeb735b50c1eab378354}{ModifyReconstMethod}}(std::string\ key,\ vector<indice>\ newRecosntMethod);}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a2fc7099d42794d50004af3dd7d68172a}{ModifyReconstMethod}}(\textcolor{keywordtype}{int}\ stencilSizeX,\ \textcolor{keywordtype}{int}\ stencilSizeY,\ vector<indice>\ newReconstMethod)}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ \{std::string\ key\ =\ \textcolor{charliteral}{'('}\ +\ std::to\_string(stencilSizeX)\ +\ \textcolor{charliteral}{','}\ +\ std::to\_string(stencilSizeY)\ +\ \textcolor{charliteral}{')'};}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a95e50b64f63aaeb735b50c1eab378354}{ModifyReconstMethod}}(key,newReconstMethod);\};}
+\DoxyCodeLine{00236\ }
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a4e89f4d5565e42dc33d242397aab08ee}{SelectWenoReconstLevel}}(\textcolor{keyword}{const}\ unordered\_set<std::string>\&\ keys);}
+\DoxyCodeLine{00241\ }
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a4e89f4d5565e42dc33d242397aab08ee}{SelectWenoReconstLevel}}(\textcolor{keyword}{const}\ unordered\_set<std::string>\&\ keys,}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{classMLWENO_1_1MLWENOPrepare}{MLWENOPrepare}}\&\ mlpPtr);}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a70786858095290dca009052ec1a5856a}{EvaluateMLWENO}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ vertex\ point,\ indice\ cell)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ double>\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a201b574bfdde89c4fa0e084ca9e9155f}{EvaluateDerivMLWENO}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ }
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ vertex\&\ point,\ }
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ indice\&\ global)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ double>\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a73721d16c5f7f62e05703ab6c4494f61}{EvaluateDerivMLWENOAdd}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi,}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ vertex\&\ point,\ }
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ indice\&\ global)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ad6b899579725410e6fcf99669251fe71}{GetScale}}(std::string\ level,\ \textcolor{keywordtype}{int}\ s)}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \ \ \ \ \{\textcolor{keywordflow}{return}\ reconstLevels\_[level]-\/>GetScale(s);\};}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ab47424bf9713735c30c3cb80ca115f3f}{GetScale}}(std::string\ level,\ \textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keyword}{const}\ indice\&\ owner)}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ \{\textcolor{keywordflow}{return}\ reconstLevels\_[level]-\/>GetScale(mi,owner);\};}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_aae16556d1618926f4c7d0eaf26cf7266}{GetInfo}}();}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_a9f698115f82ff91f1099dd1e339b4a5d}{PrintBoundaryLayer}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_ab5aea8004802275c9c207f5771595fe7}{PrintSmoothnessIndicator}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_afe529c8508638beb32672ae2ed957a6d}{PrintNonLinearWgts}}(\textcolor{keyword}{const}\ MeshInfo\&\ mi);}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMLWENO_1_1multiLevelReconstruction_adb1265bfb32f082760cb6bb514f5d077}{Clear}}();}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
 \DoxyCodeLine{00287\ }
-\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ lowestLevel\_;}
-\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ highestLevel\_;}
-\DoxyCodeLine{00290\ }
-\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \ \ \ \ map<std::string,\ singleLevelReconstruction\ *>\ reconstLevels\_;\ }
-\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \ \ \ \ map<std::string,\ vector<indice>\ >\ reconstMethods\_;\ \ \ \ \ \ \ \ \ \ \ \ }
-\DoxyCodeLine{00293\ }
-\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<int>\ interiorCells\_;\ }
-\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<int>\ boundaryCells\_;\ }
-\DoxyCodeLine{00296\ }
-\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<std::string>\ wenoLevels\_;\ \ \ \ \ }
-\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<std::string>\ interiorLevels\_;\ }
-\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<std::string>\ boundaryLevels\_;\ }
-\DoxyCodeLine{00300\ }
-\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ totalLevels\_\ =\ 0;\ }
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ eps0\_\ =\ 0.01;}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ lowestLevel\_;}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ highestLevel\_;}
+\DoxyCodeLine{00292\ }
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ map<std::string,\ singleLevelReconstruction\ *>\ reconstLevels\_;\ }
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \ \ \ \ map<std::string,\ vector<indice>\ >\ reconstMethods\_;\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<int>\ interiorCells\_;\ }
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<int>\ boundaryCells\_;\ }
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<std::string>\ wenoLevels\_;\ \ \ \ \ }
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<std::string>\ interiorLevels\_;\ }
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_set<std::string>\ boundaryLevels\_;\ }
 \DoxyCodeLine{00302\ }
-\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ unordered\_map<std::string,\ unordered\_map<int,double>>>\ nonLinearWgts\_;\ }
-\DoxyCodeLine{00305\ }
-\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ most\ outside\ map\ creates\ map\ from\ global\ index\ of\ cells\ to\ a\ set\ of\ non\ linear\ weights}}
-\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ inner\ map\ from\ levels\ (std::string)\ to\ a\ set\ of\ non\ linear\ weights\ (within\ the\ same\ level)}}
-\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ most\ inside\ map\ connects\ derivatives\ (a\ map\ mapping\ with\ cells\ in\ the\ chosen\ stencil).}}
-\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ unordered\_map<std::string,\ unordered\_map<int,unordered\_map<int,double>>>>\ derivNonLinearWgts\_;}
-\DoxyCodeLine{00311\ }
-\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SeparateReconstMethods\_();}
-\DoxyCodeLine{00317\ }
-\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SeparateReconstMethods\_(\textcolor{keyword}{const}\ unordered\_set<std::string>\&\ additionalLevels);}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ totalLevels\_\ =\ 0;\ }
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ unordered\_map<std::string,\ unordered\_map<int,double>>>\ nonLinearWgts\_;\ }
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ most\ outside\ map\ creates\ map\ from\ global\ index\ of\ cells\ to\ a\ set\ of\ non\ linear\ weights}}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ inner\ map\ from\ levels\ (std::string)\ to\ a\ set\ of\ non\ linear\ weights\ (within\ the\ same\ level)}}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ most\ inside\ map\ connects\ derivatives\ (a\ map\ mapping\ with\ cells\ in\ the\ chosen\ stencil).}}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \ \ \ \ unordered\_map<int,\ unordered\_map<std::string,\ unordered\_map<int,unordered\_map<int,double>>>>\ derivNonLinearWgts\_;}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SeparateReconstMethods\_();}
 \DoxyCodeLine{00319\ }
-\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ UpdateOneStageNonLinearWgts\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ flatGlobal,\ }
-\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ levels);}
-\DoxyCodeLine{00326\ }
-\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ UpdateTwoStageNonLinearWgts\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ flatGlobal,}
-\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ levels);\ }
-\DoxyCodeLine{00329\ }
-\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ UpdateNonLinearWgtsAndDerivs\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ flatGlobal,}
-\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ levels);\ }
-\DoxyCodeLine{00336\ }
-\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ \ \ \ \ vector<\ map<int,\ int>\ >\ etaBias\_;}
-\DoxyCodeLine{00339\ }
-\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ prepare\_\ =\ \textcolor{keyword}{false};}
-\DoxyCodeLine{00342\ \ \ \ \ \};}
-\DoxyCodeLine{00343\ \}}
-\DoxyCodeLine{00344\ }
-\DoxyCodeLine{00345\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ SeparateReconstMethods\_(\textcolor{keyword}{const}\ unordered\_set<std::string>\&\ additionalLevels);}
+\DoxyCodeLine{00321\ }
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ UpdateOneStageNonLinearWgts\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ flatGlobal,\ }
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ levels);}
+\DoxyCodeLine{00328\ }
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ UpdateTwoStageNonLinearWgts\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ flatGlobal,}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ levels);\ }
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00336\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ UpdateNonLinearWgtsAndDerivs\_(\textcolor{keyword}{const}\ MeshInfo\&\ mi,\ \textcolor{keywordtype}{int}\ flatGlobal,}
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ unordered\_set<std::string>\&\ levels);\ }
+\DoxyCodeLine{00338\ }
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ \ \ \ \ vector<\ map<int,\ int>\ >\ etaBias\_;}
+\DoxyCodeLine{00341\ }
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ prepare\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00344\ \ \ \ \ \};}
+\DoxyCodeLine{00345\ \}}
+\DoxyCodeLine{00346\ }
+\DoxyCodeLine{00347\ \textcolor{preprocessor}{\#endif}}
 
 \end{DoxyCode}

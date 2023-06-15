@@ -5,42 +5,75 @@
 #include "stencil.h"
 
 namespace tensorProductPoly{
-    // Tensor product 2D polynomial for stencil basis
+    //! Tensor product 2D polynomial for stencil basis
     class basePolynomial {
 
         public:
+            //! Constructor for basePolynomial.
             basePolynomial() {};
             basePolynomial(const int maxDegree[2]);
             basePolynomial(const int maxDegree[2], double* coef);
+            //! Destructor for basePolynomial.
             ~basePolynomial();
  
             void setMaxDegree(const int maxDegree[2]);
             void setCoef(double* coef);
 
+            /*!
+             * Return a pointer pointing to a 
+             * copy of polynomial coefficient.
+             */
             double* getCoef() const;
+
+            /*!
+             * Directly return the pointer pointing
+             * to the polynomial coefficient.
+             */
+            double* getCoefPtr();
+
+            /*!
+             * Return a coefficient value
+             * with the given index.
+             */
+            double getCoef(int i) const;
+
+            /*!
+             * Set a coefficient value with
+             * the given index.
+             */
+            void setCoef(const int& i,  
+                         const double& v);
+
+            /*!
+             * Add a given value to an 
+             * existing coefficient.
+             */
+            void addCoef(const int& i,
+                         const double& v);
 
             // Return the size of the polynomial
             int getSize() const {return maxDegree_[0]*maxDegree_[1];};
 
-            // Return the size of degree x as I
+            //! Return the size of degree x as I
             int getI() const {return maxDegree_[0];};
-            // Return the size of degree y as J
+            //! Return the size of degree y as J
             int getJ() const {return maxDegree_[1];};
 
-            // Evaluation of point value for a given polynomial
+            /*! 
+             * Evaluation of point value
+             * with Horner's method
+             */
             double eval(double x, double y) const;
             double eval(vertex P) const {return eval(P[0],P[1]);};
             double operator() (double x, double y) const {return eval(x,y);};
             double operator() (vertex P) const {return eval(P);};
 
-            // Evaluation of derivative value for a given polynomial
+            //! Evaluation of derivative value for a given polynomial
             double der(int derX, int derY, double x, double y) const;
             double der(int derX, int derY, vertex P) const {return der(derX, derY, P[0], P[1]);};
 
-            // Print coefficients out
+            //! Print coefficients out
             void printCoef() const; 
-
-            double getCoef(int i) const;
 
         private:
 
@@ -112,13 +145,9 @@ namespace tensorProductPoly{
 
             stencil <basePolynomial*> stencilPolyn_;
 
-            void SetCollapsePolyn_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
             basePolynomial* collapsePolyn_ = nullptr;
 
             // Create polynomial smoothness indicator
-            void CreateXi_();
-            vector<double> Xi_;
-
             int maxR_;
             int minR_;
 
@@ -130,8 +159,7 @@ namespace tensorProductPoly{
             void EvalDerivSmoothnessIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
             double smoothnessIndic_ = -1;
-            unordered_map<int, double> derivSmoothnessIndic_;
-
+            derivative derivSmoothnessIndic_;
     };
 
 // End of using name space MLWENO

@@ -476,17 +476,14 @@ unordered_map<int,double> advection::derivEdgeFlux_(const MeshInfo& mi,
             double uOut = mlrPtr_->EvaluateMLWENO(mi,mapped,globalOut);
 
             // Compute derivative of flux at a given gauss point
-            unordered_map<int, double> derivflux = dflux_(uIn, uOut, unitNormal,
-                                                          mapped, uMax_, 
-                                                          derivIn, derivOut);
+            derivative derivflux = dflux_(uIn, uOut, unitNormal,
+                                          mapped, uMax_, 
+                                          derivIn, derivOut);
 
-            for (auto & derivf : derivflux){
-                if (work.count(derivf.first) > 0){
-                    work[derivf.first] += gwe[g]*derivf.second*len/2.0;
-                } else {
-                    work.insert(std::pair<int,double> (derivf.first, gwe[g]*derivf.second*len/2.0));
-                }
-            }
+            double multi = gwe[g]*len/2.0;
+
+            unordered_map_arithmetic(work,derivflux,std::plus<double>(),
+                                          multi,std::multiplies<double>());
         }
     } else {
         for (int g=0; g<gpe.size(); g++){
@@ -497,19 +494,13 @@ unordered_map<int,double> advection::derivEdgeFlux_(const MeshInfo& mi,
             double uIn = mlrPtr_->EvaluateMLWENO(mi,mapped,globalIn);
 
             // Compute derivative of flux at a given gauss point
-            unordered_map<int, double> derivflux = 
-                boundaryCondition_(uIn, unitNormal,mapped,uMax_, derivIn);
+            derivative derivflux = boundaryCondition_(uIn, unitNormal,mapped,uMax_, derivIn);
 
-            // On flux confined boundary.
-            // derivflux will be empty.
-            // loop will not excute.
-            for (auto & derivf : derivflux){
-                if (work.count(derivf.first) > 0){
-                    work[derivf.first] += gwe[g]*derivf.second*len/2.0;
-                } else {
-                    work.insert(std::pair<int,double> (derivf.first, gwe[g]*derivf.second*len/2.0));
-                }
-            }
+            double multi = gwe[g]*len/2.0;
+
+            unordered_map_arithmetic(work,derivflux,std::plus<double>(),
+                                          multi,std::multiplies<double>());
+
         }
     }
 
@@ -610,52 +601,68 @@ double advection::Flux(const MeshInfo& mi, const indice& global){
 
 unordered_map<int, double> advection::derivFlux(const MeshInfo& mi, const indice& global){
 
-    unordered_map<int,double> work;
+    derivative work;
 
-    // bottom horizontal edge
-    unordered_map<int,double> tmp = derivEdgeHoriFlux_[FlatIndic(mi,global)];
-
+    // Get scale variables relating to area of the target cell
     double area = mi.cellArea.at(FlatIndic(mi,global));
 
-    for (auto & derivf : tmp){
-        if (work.count(derivf.first) > 0){
-            work[derivf.first] += derivf.second/area;
-        } else {
-            work.insert(std::pair<int,double> (derivf.first, derivf.second/area));
-        }
-    }
+    double multi = -1.0/area;
+
+    // bottom horizontal edge
+    derivative tmp = derivEdgeHoriFlux_[FlatIndic(mi,global)];
+
+    unordered_map_arithmetic(work, tmp, std::plus<double>(),
+                                   area, std::divides<double>());
+
+//    for (auto & derivf : tmp){
+//        if (work.count(derivf.first) > 0){
+//            work[derivf.first] += derivf.second/area;
+//        } else {
+//            work.insert(std::pair<int,double> (derivf.first, derivf.second/area));
+//        }
+//    }
 
     // top horizontal edge
     tmp = derivEdgeHoriFlux_[FlatIndic(mi,global+mi.faceNormal[2])];
 
-    for (auto & derivf : tmp){
-        if (work.count(derivf.first) > 0){
-            work[derivf.first] += -1*derivf.second/area;
-        } else {
-            work.insert(std::pair<int,double> (derivf.first, -1*derivf.second/area));
-        }
-    }
+    unordered_map_arithmetic(work, tmp, std::plus<double>(),
+                                   multi, std::multiplies<double>());
+
+//    for (auto & derivf : tmp){
+//        if (work.count(derivf.first) > 0){
+//            work[derivf.first] += -1*derivf.second/area;
+//        } else {
+//            work.insert(std::pair<int,double> (derivf.first, -1*derivf.second/area));
+//        }
+//    }
 
     // right vertical edge
     tmp = derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global+mi.faceNormal[1])];
 
-    for (auto & derivf : tmp){
-        if (work.count(derivf.first) > 0){
-            work[derivf.first] += -1*derivf.second/area;
-        } else {
-            work.insert(std::pair<int,double> (derivf.first, -1*derivf.second/area));
-        }
-    }
+    unordered_map_arithmetic(work, tmp, std::plus<double>(),
+                                   multi, std::multiplies<double>());
+
+//    for (auto & derivf : tmp){
+//        if (work.count(derivf.first) > 0){
+//            work[derivf.first] += -1*derivf.second/area;
+//        } else {
+//            work.insert(std::pair<int,double> (derivf.first, -1*derivf.second/area));
+//        }
+//    }
 
     // left vertical edge
     tmp = derivEdgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)];
-    for (auto & derivf : tmp){
-        if (work.count(derivf.first) > 0){
-            work[derivf.first] += derivf.second/area;
-        } else {
-            work.insert(std::pair<int,double> (derivf.first, derivf.second/area));
-        }
-    }
+
+    unordered_map_arithmetic(work, tmp, std::plus<double>(),
+                                   area, std::divides<double>());
+
+//    for (auto & derivf : tmp){
+//        if (work.count(derivf.first) > 0){
+//            work[derivf.first] += derivf.second/area;
+//        } else {
+//            work.insert(std::pair<int,double> (derivf.first, derivf.second/area));
+//        }
+//    }
 
     return work;
 }
@@ -691,5 +698,3 @@ void advection::GetInfo(const MeshInfo& mi){
     mlrPtr_->PrintSmoothnessIndicator(mi);
     mlrPtr_->PrintNonLinearWgts(mi);
 }
-
-

@@ -81,6 +81,8 @@ add_executable(test
         test.cpp 
 )
 
+add_definitions(-DCGNS_ENABLE_HDF5=ON)
+
 # Link static libraries generated previously
 target_link_libraries(test 
     general_lib

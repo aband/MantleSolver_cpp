@@ -1,22 +1,23 @@
 #include "basis.h"
 
-// ===== Class element =====
-void element::GetCorners(const vertexSet& corners){
+// ===== Class basis =====
+// ===== Public members =====
+void basis::GetCorners(const vertexSet& corners){
     for (const auto& c: corners){
         corners_.push_back(c);
     }
 }
 
-double element::lambda(const int& e,
-                       const vertex& point) const{
+double basis::lambda(const int& e,
+                     const vertex& point) const{
     vertexSet edge {corners_.at((e+3)%4), 
                     corners_.at((e+4)%4)};
     return distance_(edge,point);
 }
 
-double element::lambda(const int& e1,
-                       const int& e2,
-                       const vertex& point) const{
+double basis::lambda(const int& e1,
+                     const int& e2,
+                     const vertex& point) const{
 
     vertexSet line {corners_.at(e1),
                     corners_.at(e2)};
@@ -24,20 +25,33 @@ double element::lambda(const int& e1,
     return (lambda(e1,point) - lambda(e2,point))/length(line);
 }
 
-double element::R(const int& e1,
-                  const int& e2,
-                  const vertex& point) const {
+double basis::R(const int& e1,
+                const int& e2,
+                const vertex& point) const {
 
     return (lambda(e1,point) - lambda(e2,point))/
            (lambda(e1,point) + lambda(e2,point));
 }
 
-double element::R(const int& e,
-                  const vertex& point) const{
+double basis::R(const int& e,
+                const vertex& point) const{
     return 0.5*(1-R(e,(e+3)%4,point));
 }
 
-double element::distance_(const vertexSet& edge, 
+bool basis::Phi(const int i,
+                const int j) const{
+    return (i==j);
+}
+
+double basis::phi() const{
+
+    double work;
+
+    return work;
+}
+
+// ===== Private members =====
+double basis::distance_(const vertexSet& edge, 
                           const vertex& point) const{
 
     //vertex tmp = point - (edge.at(0) + edge.at(1))/2;
@@ -51,11 +65,8 @@ double element::distance_(const vertexSet& edge,
                                  0.0);
 }
 
-// ===== Class basis =====
-
-
 // ===== Test =====
-void element::Test(const vertex& point){
+void basis::Test(const vertex& point){
 
     for (const auto& c: corners_){
         nodePrint(c);
@@ -65,5 +76,3 @@ void element::Test(const vertex& point){
         cout << "Distance is " << lambda(e,point)  << endl;
     }
 }
-
-

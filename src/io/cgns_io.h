@@ -15,6 +15,15 @@ typedef struct {
 
 //PetscErrorCode DMDACgnsOut2D(DM dmMesh, Vec * fullmesh, DM dmCell, Vec * Sol, char * filename);
 
+/**
+ * Write mesh grid to a cgns file.
+ */
 PetscErrorCode CGNSMeshWrite(DM dm, Vec * fullmesh);
+
+/**
+ * Read the existing grid file and add cell centered
+ * flow solution to it.
+ */
+PetscErrorCode CGNSCellSolWrite(DM dm, Vec * globalSol);
 
 #endif

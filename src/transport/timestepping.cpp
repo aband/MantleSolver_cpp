@@ -202,19 +202,25 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
     for (int row = rstart; row<rend; row++){
         indice global = Bend(*(user->mi), row);
 
-        // advection flux
-        deriv = user->trPtr->advection::derivFlux(*(user->mi), global);
+        double opp = -1.0;
+
+        // add advection flux to deriv
+        unordered_map_arithmetic(deriv, 
+                                 user->trPtr->advection::derivFlux(*(user->mi),global),
+                                 std::minus<double>());
+
+        // add diffusion flux to deriv
+        unordered_map_arithmetic(deriv,
+                                 user->trPtr->diffusion::derivFlux(*(user->mi),global),
+                                 std::plus<double>(),
+                                 user->trPtr->diffusion::D,
+                                 std::multiplies<double>());
 
         for (auto & dVal: deriv){
-            ierr = MatSetValue(J,row,dVal.first,-1*dVal.second,ADD_VALUES);CHKERRQ(ierr);
+            ierr = MatSetValue(J,row,dVal.first,dVal.second,INSERT_VALUES);CHKERRQ(ierr);
         }
 
-        // Diffusion flux
-        deriv = user->trPtr->diffusion::derivFlux(*(user->mi), global);
-
-        for (auto & dVal: deriv){
-            ierr = MatSetValue(J,row,dVal.first,user->trPtr->diffusion::D * dVal.second,ADD_VALUES);CHKERRQ(ierr);
-        }
+        deriv.clear();
 
     }
 
@@ -227,9 +233,9 @@ PetscErrorCode FormJacobian(TS ts, PetscReal time, Vec U, Mat J, Mat Jp, void* c
     }
 
     // Output Jacobian
-    std::string tmp = std::to_string(time);
+    //std::string tmp = std::to_string(time);
 
-    DrawMat(J,tmp.c_str());
+    //DrawMat(J,tmp.c_str());
 
     //! Restore array to local vectors
     DMDAVecRestoreArray(dmu, localu, &lu);
@@ -350,9 +356,9 @@ PetscErrorCode FormJacobianDiffusion(TS ts, PetscReal time, Vec U, Mat J, Mat Jp
     }
 
     // Output Jacobian
-    //std::string tmp = std::to_string(time);
+    std::string tmp = std::to_string(time);
 
-    //DrawMat(J,tmp.c_str());
+    DrawMat(J,tmp.c_str());
 
     //! Restore array to local vectors
     DMDAVecRestoreArray(dmu, localu, &lu);

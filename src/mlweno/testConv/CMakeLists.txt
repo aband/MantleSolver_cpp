@@ -22,7 +22,7 @@ set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH})
 
 set(LAPACK $ENV{LAPACK_DIR})
 
-#set(HDF5 $ENV{HDF5_DIR}/CMakeFiles)
+set(HDF5 $ENV{HDF5_DIR})
 
 # PKG_CONFIG_PATH is set mannually in bashrc
 
@@ -46,17 +46,19 @@ endif (FORTRAN_COMPILER)
 #find_package(ADOLC REQUIRED)
 
 project(test)
-add_executable(test test.cpp ../../integral.cpp ../../mesh.c ../polynomial.cpp ../../util.cpp ../../input.cpp ../../output.c ../reconstruction.cpp)
+add_executable(test test.cpp ../../integral.cpp ../../mesh.c ../polynomial.cpp ../../util.cpp ../../../src/io/input.cpp ../../../src/io/output.c ../reconstruction.cpp ../../../src/io/hdf5_io.c)
 
-include_directories(../../../include ../../../src/mlweno)
+add_executable(ph5test ph5example.c)
+
+include_directories(../../../include ../../../src/mlweno ../../../src/io)
 
 find_package(PkgConfig REQUIRED)
 find_package(MPI REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
 #pkg_search_module(ADOLC REQUIRED IMPORTED_TARGET adolc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
-#pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
+pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
 ##target_link_libraries(original_weno PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE PkgConfig::HDF5)
 #target_link_libraries(multilevel_weno PkgConfig::PETSC PkgConfig::ADOLC PkgConfig::LAPACKE PkgConfig::HDF5)
-target_link_libraries(test PkgConfig::PETSC PkgConfig::LAPACKE)
-
+target_link_libraries(test PkgConfig::PETSC PkgConfig::LAPACKE PkgConfig::HDF5)
+target_link_libraries(ph5test PkgConfig::HDF5)
