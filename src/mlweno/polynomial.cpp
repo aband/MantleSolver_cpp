@@ -159,9 +159,16 @@ void stencilPolynomial::ComputeStencilBasedScale_(const MeshInfo& mi, const sten
         for (auto & c: mi.faceCorner){
             int sj = start_[1]+siNow[1]+c[1] + mi.vertexGhostLayerSize;
             int si = start_[0]+siNow[0]+c[0] + mi.vertexGhostLayerSize;
-            work.push_back(mi.lmesh[sj*mi.MPIlocalVertexSizeFull.at(0)+si]);
+            int fulllocalj = sj - mi.MPIlocalCellStart[1];
+            int fulllocali = si - mi.MPIlocalCellStart[0];
+
+            work.push_back(mi.lmesh[fulllocalj*mi.MPIlocalVertexSizeFull.at(0)+fulllocali]);
         }
         scale_ += NumIntegralFace(work, {0,0}, {0.0,0.0}, 1.0, constFunc); 
+
+        //indice global = start_ + siNow; 
+
+        //scale_ += mi.cellArea.at(FlatIndic(mi,global));
 
         if (scale_ > maxScale_) {maxScale_ = scale_;};
 
@@ -194,7 +201,10 @@ void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi,
             int sj = currentCell[1] + c[1] + mi.vertexGhostLayerSize;
             int si = currentCell[0] + c[0] + mi.vertexGhostLayerSize;
 
-            work.push_back(mi.lmesh[sj*mi.MPIlocalVertexSizeFull.at(0)+si]);
+            int fulllocali = si - mi.MPIlocalCellStart[0];
+            int fulllocalj = sj - mi.MPIlocalCellStart[1];
+
+            work.push_back(mi.lmesh[fulllocalj*mi.MPIlocalVertexSizeFull.at(0)+fulllocali]);
         }
 
         for (int r = 0; r<n; r++){

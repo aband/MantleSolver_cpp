@@ -77,7 +77,7 @@ namespace MLWENO{
             stencil <indice> stencilIndice_;           //!< Indices with given x and y sizes
             unordered_set<int> interior_;              //!< Numbering the created stencils
             map<int, double> smoothnessIndic_;         //!< Smoothness indicators
-            unordered_map<int, unordered_map<int,double>> smoothnessIndicDeriv_;//!< Derivative of smoothness indicators
+            unordered_map<int, derivative> smoothnessIndicDeriv_;//!< Derivative of smoothness indicators
             map<int, tensorProductPoly::stencilPolynomial*> singleLevel_;       //!< Single level polynomials
 
             void IdentifyInteriorCell_(const MeshInfo& mi);
