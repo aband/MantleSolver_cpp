@@ -99,8 +99,18 @@ add_executable(test
         test.cpp 
 )
 
+add_executable(parallel
+        parallel.cpp
+)
+
 # Link static libraries generated previously
 target_link_libraries(test 
+    mlweno_lib
+    io_lib
+    PkgConfig::LAPACKE 
+)
+
+target_link_libraries(parallel
     mlweno_lib
     io_lib
     PkgConfig::LAPACKE 

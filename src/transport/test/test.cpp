@@ -15,6 +15,7 @@
 extern "C"{
 #include "mesh.h"
 #include "output.h"
+#include "cgns_io.h"
 }
 
 #include <chrono>
@@ -121,14 +122,14 @@ int main(int argc, char **argv){
 
     // Start testing mesh function
     // Initializing problem size with 3X3
-    int M = 5, N = 5;
+    int M = 10, N = 10;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
     // Create data management object
     DM    dm;
     Vec   fullmesh;
-    const int stencilWidth = 5;
+    const int stencilWidth = 3;
 
     ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidth, NULL, NULL, &dm);CHKERRQ(ierr);
     ierr = DMSetFromOptions(dm);               CHKERRQ(ierr);
@@ -182,7 +183,7 @@ int main(int argc, char **argv){
 
     DM dmu;
 
-    int cell_ghost = 3;
+    int cell_ghost = 2;
 
     ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_PERIODIC, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, cell_ghost, NULL, NULL, &dmu);CHKERRQ(ierr);
     ierr = DMSetFromOptions(dmu); CHKERRQ(ierr);
@@ -219,10 +220,10 @@ int main(int argc, char **argv){
 // ========================================================================================================================================
 
     // Ouptut of initial value
-    char * filename = (char *)"initial.txt";
+//    char * filename = (char *)"initial.txt";
 
-    PlainOutput(dmu, &globalu, filename);
-    PlainMeshOutput(dm, &fullmesh);
+//    PlainOutput(dmu, &globalu, filename);
+//    PlainMeshOutput(dm, &fullmesh);
 
 // ========================================================================================================================================
 
@@ -320,23 +321,25 @@ int main(int argc, char **argv){
     //TSSetTolerances(ts,1e-3,NULL,1e-3,NULL);
     //TSSetMaxSNESFailures(ts, 50);
 
-    TSMonitorSet(ts, Monitor, &ctx, NULL);
+    //TSMonitorSet(ts, Monitor, &ctx, NULL);
 
     TSSetFromOptions(ts);
     TSSetUp(ts);
 
-    cout << "Time stepping begins .. .. .. " << endl;
-    cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    PetscPrintf(PETSC_COMM_WORLD,"Time stepping begins .. .. .. \n");
+    PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");
 
-    //auto start = std::chrono::system_clock::now();
+    auto start = std::chrono::system_clock::now();
     TSSolve(ts,globalu);
-    //auto end = std::chrono::system_clock::now();
+    auto end = std::chrono::system_clock::now();
 
-    //std::chrono::duration<double> elapsed_seconds = end-start;
+    std::chrono::duration<double> elapsed_seconds = end-start;
 
-    //cout << "Elapsed time: " << elapsed_seconds.count() << endl;
+    PetscPrintf(PETSC_COMM_SELF, "Elapsed time: %f \n",  elapsed_seconds.count());
 
-    //TSView(ts,PETSC_VIEWER_STDOUT_WORLD);
+    TSView(ts,PETSC_VIEWER_STDOUT_WORLD);
+
+//    VecView(globalu, PETSC_VIEWER_STDOUT_WORLD);
 
 // ====================================================================================================================================
     // Ouptut of final result
@@ -345,6 +348,8 @@ int main(int argc, char **argv){
     //PlainOutput(dmu, &globalu, filename);
 
     //delete trPtr;
+
+    CGNSMeshWrite(dm, &fullmesh);
 
 // ====================================================================================================================================
     // Clear used objects

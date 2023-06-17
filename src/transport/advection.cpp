@@ -98,10 +98,15 @@ unordered_map<int,double> advection::dflux_(const double& uIn, const double& uOu
  */
 bool advection::Interior_(const MeshInfo& mi, const indice& target){
 
+    int rank;
+    MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
     if (target[0] < 0 || target[0] > mi.MPIglobalCellSize[0] -1 ||
         target[1] < 0 || target[1] > mi.MPIglobalCellSize[1] -1 ){
+
         return false;
     } else {
+
         return true;
     }
 }
@@ -257,8 +262,10 @@ unordered_map<int, double> advection::singleCellDerivFlux(const MeshInfo& mi, co
 void advection::UpdateEdgeFlux(const MeshInfo& mi){
 
     // Udpate every left and bottom edge for each cell
-    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1]; j++){
-    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0]; i++){
+    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + 1; j++){
+    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + 1; i++){
+
+        if (j<mi.MPIglobalCellSize[1] && i<mi.MPIglobalCellSize[0]){
 
         indice global {i,j};
 
@@ -293,6 +300,8 @@ void advection::UpdateEdgeFlux(const MeshInfo& mi){
             globalOut = global + mi.faceNormal[1];
             edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalOut)] = -1 * edgeFlux_(mi, global, globalOut, vert);
         }
+ 
+        }
     }}
 
 }
@@ -300,8 +309,8 @@ void advection::UpdateEdgeFlux(const MeshInfo& mi){
 void advection::UpdateEdgeFluxDerivative(const MeshInfo& mi){
 
     // Udpate every left and bottom edge for each cell
-    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] ; j++){
-    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] ; i++){
+    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1]; j++){
+    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0]; i++){
 
         indice global {i,j};
 
@@ -419,6 +428,9 @@ double advection::edgeFlux_(const MeshInfo& mi,
     // Get edge lendth and unit vector normal to the given edge
     double len = length(edge);
     vertex unitNormal = UnitNormal(edge,len);
+
+    int rank;   
+    MPI_Comm_rank(PETSC_COMM_WORLD, &rank); 
 
     if (Interior_(mi,globalOut)){
 
@@ -595,7 +607,11 @@ double advection::Flux(const MeshInfo& mi, const indice& global){
     work += edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)];
 
     work /= area;
-  
+
+    //int rank;
+    //MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+    //if (rank == 0) {cout << "Flux : " << work << endl;}
+
     return work;
 }
 

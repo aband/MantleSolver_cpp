@@ -749,9 +749,10 @@ void NonSymDiffusion::diffusion::UpdateEdgeFlux(const MeshInfo& mi){
     indice globalOut;
 
     // Update every left and bottom edge for each target cell
-    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] ; j++){
-    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] ; i++){
+    for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] +1; j++){
+    for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] +1; i++){
 
+        if (j<mi.MPIglobalCellSize[1] && i<mi.MPIglobalCellSize[0]){
         indice globalIn {i,j};
 
         const double scale = sqrt(mi.cellArea.at(FlatIndic(mi,globalIn)));
@@ -790,6 +791,9 @@ void NonSymDiffusion::diffusion::UpdateEdgeFlux(const MeshInfo& mi){
             posIn[1] = 1; posOut[1] = 3;
             edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalOut)] = edgeFlux_(mi, globalIn, globalOut, vert, scale, posIn, posOut, *(mlrPtrVertLeft_), *(mlrPtrVertRight_));      
         }
+
+        }
+
     }}
 }
 
