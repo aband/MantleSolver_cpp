@@ -198,20 +198,31 @@ int main(int argc, char **argv){
 
     mlrPtr->SelectWenoReconstLevel({"(1,1)","(2,2)","(3,3)"},(*mlpPtr));
 
+<<<<<<< HEAD:src/mlweno/test/parallel.cpp
     mlrPtr->ModifyReconstMethod("(3,3)",{{-1,-1}});
+=======
+    mlrPtr->ModifyReconstMethod("(3,3)",{{0,0}});
+>>>>>>> parallel_debug:src/mlweno/parallelTest/test.cpp
     mlrPtr->ModifyReconstMethod("(2,2)",{{0,0},{-1,0},{-1,-1},{0,-1}});
     mlrPtr->ModifyReconstMethod("(1,1)",{{0,0}});
 
     mlrPtr->SeparateBoundaryLayer(mi);
     mlrPtr->UpdateNonLinearWgts(mi,2);
+<<<<<<< HEAD:src/mlweno/test/parallel.cpp
 
     cout << "rank : " << rank << ".   Reconstruction value : " << mlrPtr->EvaluateMLWENO(mi, {0.0, 0.0}, {5,5}) << endl;
+=======
+>>>>>>> parallel_debug:src/mlweno/parallelTest/test.cpp
 
     //auto end = std::chrono::system_clock::now();
 
     t2 = MPI_Wtime();
 
+<<<<<<< HEAD:src/mlweno/test/parallel.cpp
     if (rank == 0 ){mlrPtr->PrintNonLinearWgts(mi);}
+=======
+    if (rank == 1 ){mlrPtr->PrintNonLinearWgts(mi);}
+>>>>>>> parallel_debug:src/mlweno/parallelTest/test.cpp
     //if (rank == 0 ){mlpPtr->PrintInfo();}
 
     //if (rank == 1 ){mlrPtr->PrintBoundaryLayer(mi);}
