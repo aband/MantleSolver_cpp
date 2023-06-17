@@ -195,6 +195,24 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
 
 }
 
+void printMeshInfo(MeshInfo& mi){
+    cout << "local size of Cells :" << mi.MPIlocalCellSize[0] << " " << mi.MPIlocalCellSize[1] << endl;
+
+    cout << "local size of Vertexs :" << mi.MPIlocalVertexSize[0] << " " << mi.MPIlocalVertexSize[1] << endl;
+
+    cout << "local start of Cells :" << mi.MPIlocalCellStart[0] << " " << mi.MPIlocalCellStart[1] << endl;
+
+    cout << "local start of Vertexs :" << mi.MPIlocalVertexStart[0] << " " << mi.MPIlocalVertexStart[1] << endl;
+
+
+    cout << "global size of cells :" << mi.MPIglobalCellSize[0]<< " " << mi.MPIglobalCellSize[1] << endl;
+
+    cout << "global size of vertexs :" << mi.MPIglobalVertexSize[0]<< " " << mi.MPIglobalVertexSize[1] << endl;
+
+
+    cout << endl;
+}
+
 //! Extract corners for the target cell
 vertexSet extractCorners(const MeshInfo& mi, const indice& global){
     vertexSet corner;

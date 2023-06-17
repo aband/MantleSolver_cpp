@@ -159,6 +159,8 @@ typedef struct {
 
 void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu);
 
+void printMeshInfo(MeshInfo& mi);
+
 /**
  * Generic auxiliary functions.
  * Function return constant value.
@@ -210,4 +212,5 @@ vertexSet extractCorners(const MeshInfo& mi, const indice& global);
 //! Compute normalized tangent vector.
 const vertex unitTangent(const vertexSet& edge, 
                          const double& len);
+
 #endif

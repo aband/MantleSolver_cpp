@@ -33,20 +33,52 @@ double singleLevelReconstruction::CalculateSmoothnessIndic(const MeshInfo& mi, i
     return singleLevel_[FlatIndic(mi, owner)]->GetSmoothIndic(mi,stencilIndice_);
 }
 
+/*
+ *void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
+ *    //! Should be called each time when a new level is added to reconstruction
+ *    for (int j=-2; j<mi.MPIlocalCellSize[1]; j++){
+ *    for (int i=-2; i<mi.MPIlocalCellSize[0]; i++){
+ *       //! Transform local indices to global indices
+ *       int globali = i+mi.MPIlocalCellStart[0];
+ *       int globalj = j+mi.MPIlocalCellStart[1];
+ *
+ *       if (globalj+stencilSizeY_-1<mi.MPIglobalCellSize[1] &&
+ *           globali+stencilSizeX_-1<mi.MPIglobalCellSize[0] &&
+ *           globalj > -1 && globali > -1 ){
+ *
+ *               interior_.insert(FlatIndic(mi,i,j));
+ *           }
+ *    }}
+ *}
+ */
+
 void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
-    //! Should be called each time when a new level is added to reconstruction
-    for (int j=-2; j<mi.MPIlocalCellSize[1]; j++){
-    for (int i=-2; i<mi.MPIlocalCellSize[0]; i++){
-       //! Transform local indices to global indices
-       int globali = i+mi.MPIlocalCellStart[0];
-       int globalj = j+mi.MPIlocalCellStart[1];
 
-       if (globalj+stencilSizeY_-1<mi.MPIglobalCellSize[1] &&
-           globali+stencilSizeX_-1<mi.MPIglobalCellSize[0] &&
-           globalj > -1 && globali > -1 ){
+    //int rank;
+    //MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
 
-               interior_.insert(FlatIndic(mi,i,j));
-           }
+    //cout << mi.MPIglobalCellSize[1] << endl;
+
+    for (int j=mi.MPIlocalCellStart[1]-mi.cellGhostLayerSize; 
+         j<mi.MPIlocalCellStart[1]+mi.MPIlocalCellSize[1]+mi.cellGhostLayerSize; j++){
+    for (int i=mi.MPIlocalCellStart[0]-mi.cellGhostLayerSize; 
+         i<mi.MPIlocalCellStart[0]+mi.MPIlocalCellSize[0]+mi.cellGhostLayerSize; i++){
+
+        //if(rank == 1){cout << "Before" << j << " " << i << endl;}
+
+        if (j+stencilSizeY_-1 < mi.MPIglobalCellSize[1] // The top of stencil does not exceed maximum Y 
+        &&  i+stencilSizeX_-1 < mi.MPIglobalCellSize[0] // The right side of stencil does not exceed maximum X
+        &&  j > -1                                      // The bottom of stencil does not exceed minimum Y
+        &&  i > -1                                      // The bottom of stencil does not exceed minimum X
+        &&  i+stencilSizeX_-1 < mi.MPIlocalCellStart[0]+mi.MPIlocalCellSize[0]+mi.cellGhostLayerSize		  
+        // The right side of stencil does not exceed mesh partition
+        &&  j+stencilSizeY_-1 < mi.MPIlocalCellStart[1]+mi.MPIlocalCellSize[1]+mi.cellGhostLayerSize		  
+        // The top side of stencil does not exceed mesh partition
+        ){
+            //if(rank == 1){cout << j << " " << i << endl;}
+            interior_.insert(FlatIndic(mi,i,j));
+        }
+
     }}
 }
 
@@ -62,11 +94,19 @@ void singleLevelReconstruction::CreateStencilPolynomials(const MeshInfo& mi){
 
 //! Calculate center vertex of a given stencil
 const vertex singleLevelReconstruction::ComputeStencilCenter_(const MeshInfo& mi, int flat){
+
+    int rank;
+    MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
     vertex work  = {0.0,0.0};
     indice original = Bend(mi,flat);
 
-    original[0] = original[0] + mi.vertexGhostLayerSize;
-    original[1] = original[1] + mi.vertexGhostLayerSize;
+    original[0] = original[0] + mi.vertexGhostLayerSize - mi.MPIlocalCellStart[0];
+    original[1] = original[1] + mi.vertexGhostLayerSize - mi.MPIlocalCellStart[1];
+
+//    if (rank == 1){cout << "Compute Stencil Center :" <<mi.lmesh.size() << " " << original[0] << " " << original[1] << " " << 
+//				mi.MPIlocalVertexSizeFull[0] << " " << 
+//				FlatIndic(mi.MPIlocalVertexSizeFull[0],original) << endl;}
 
     work += mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],original)];
 
@@ -185,6 +225,7 @@ void MLWENOPrepare::AddLevel(const MeshInfo& mi, const int& stencilSizeX,
 }
 
 void MLWENOPrepare::UpdateSmoothnessIndic(const MeshInfo& mi){
+
     for (auto const& singleLevel : allLevels_){
         singleLevel.second->UpdateSmoothnessIndic(mi);
         //singleLevel.second->PrintSmoothnessIndicator(mi);
@@ -249,14 +290,46 @@ void multiLevelReconstruction::AddLevel(const MeshInfo& mi, int stencilSizeX, in
 //! Specify boundary layers (cells near boundary that need additional reconstruciton level then interior cells)
 void multiLevelReconstruction::SeparateBoundaryLayer(const MeshInfo& mi, const int& layerSize){
 
-    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
-    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
-        indice shift {i,j}; 
-        indice global = mi.MPIlocalCellStart + shift;
-        if (global[0] == 0 + layerSize-1 || global[0] == mi.MPIglobalCellSize[0] - layerSize ||
-            global[1] == 0 + layerSize-1 || global[1] == mi.MPIglobalCellSize[1] - layerSize){
+/*
+ *    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+ *    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+ *        indice shift {i,j};
+ *        indice global = mi.MPIlocalCellStart + shift;
+ *        if (global[0] == 0 + layerSize-1 || global[0] == mi.MPIglobalCellSize[0] - layerSize ||
+ *            global[1] == 0 + layerSize-1 || global[1] == mi.MPIglobalCellSize[1] - layerSize){
+ *            boundaryCells_.insert(FlatIndic(mi,global));
+ *        } else {
+ *            interiorCells_.insert(FlatIndic(mi,global));
+ *        }
+ *    }}
+ *
+ */
+
+    int rank;
+    MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
+    for (int j=mi.MPIlocalCellStart[1] - mi.cellGhostLayerSize; 
+             j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + mi.cellGhostLayerSize; j++){
+    for (int i=mi.MPIlocalCellStart[0] - mi.cellGhostLayerSize;
+             i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + mi.cellGhostLayerSize; i++){
+
+        indice global {i,j};
+
+        if ((i > -1 && i < layerSize && j > -1 && j < mi.MPIglobalCellSize[0]) || 
+            (j > -1 && j < layerSize && i > -1 && i < mi.MPIglobalCellSize[0]) ||
+            (i > mi.MPIglobalCellSize[0] - layerSize - 1 && i < mi.MPIglobalCellSize[0] 
+                                                         && j > -1 && j < mi.MPIglobalCellSize[0]) ||
+            (j > mi.MPIglobalCellSize[1] - layerSize - 1 && j < mi.MPIglobalCellSize[1] && i > -1 
+                                                         && i < mi.MPIglobalCellSize[0]) ){
+
+            //if (rank == 1) {cout << "Boundary Cells :" << i << " " << j << endl;}
+
             boundaryCells_.insert(FlatIndic(mi,global));
-        } else {
+        } else if ((i > layerSize - 1 && i < mi.MPIglobalCellSize[0] - layerSize) &&
+                   (j > layerSize - 1 && j < mi.MPIglobalCellSize[1] - layerSize) ){
+
+            //if (rank == 1) {cout << "Interior Cells :" << i << " " << j << endl;}
+
             interiorCells_.insert(FlatIndic(mi,global));
         }
     }}
@@ -389,7 +462,7 @@ void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, 
         }
     }
 
-    //! Second stage of the calculatino of non linear weights
+    //! Second stage of the calculation of non linear weights
     sum = 0.0; 
     for (auto const& level : levels){
         const int sizeX = reconstLevels_[level]->GetSizeX();
@@ -831,22 +904,26 @@ void multiLevelReconstruction::PrintSmoothnessIndicator(const MeshInfo& mi){
 
 void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi){
 
-    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
-    for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+    for (int j=mi.MPIlocalCellStart[1] - mi.cellGhostLayerSize; 
+             j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + mi.cellGhostLayerSize; j++){
+    for (int i=mi.MPIlocalCellStart[0] - mi.cellGhostLayerSize; 
+             i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + mi.cellGhostLayerSize; i++){
 
-        indice add {i,j};
-        indice start = mi.MPIlocalCellStart + add;
-        unordered_map<std::string, unordered_map<int,double>> nlw = nonLinearWgts_[FlatIndic(mi,start)];
+        if (i>-1 && i<mi.MPIglobalCellSize[0] &&
+            j>-1 && j<mi.MPIglobalCellSize[1]){
+            indice start {i,j};
+            unordered_map<std::string, unordered_map<int,double>> nlw = nonLinearWgts_[FlatIndic(mi,start)];
 
-        cout << "Reconstruction at cell ( " << start[0] << ", " << start[1] << ")" << endl; 
-        for (auto const& level : wenoLevels_) {
-            int sizeX = reconstLevels_[level]->GetSizeX();
-
-            if (nlw[level].empty() == 0) {
-                for (auto & in:nlw[level]){
-                    indice m = Bend(sizeX,in.first);
-                    cout << "At Level " << level << " reconstruction at ( " << m[0] << ", "
-                         << m[1] << ") " << " with wgt " << in.second << endl;
+            cout << "Reconstruction at cell ( " << start[0] << ", " << start[1] << ")" << endl; 
+            for (auto const& level : wenoLevels_) {
+                int sizeX = reconstLevels_[level]->GetSizeX();
+    
+                if (nlw[level].empty() == 0) {
+                    for (auto & in:nlw[level]){
+                        indice m = Bend(sizeX,in.first);
+                        cout << "At Level " << level << " reconstruction at ( " << m[0] << ", "
+                             << m[1] << ") " << " with wgt " << in.second << endl;
+                    }
                 }
             }
         }
