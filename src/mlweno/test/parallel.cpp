@@ -205,13 +205,13 @@ int main(int argc, char **argv){
     mlrPtr->SeparateBoundaryLayer(mi);
     mlrPtr->UpdateNonLinearWgts(mi,2);
 
-    cout << "rank : " << rank << ".   Reconstruction value : " << mlrPtr->EvaluateMLWENO(mi, {0.0, 0.0}, {5,5}) << endl;
+    cout << "rank : " << rank << ".   Reconstruction value : " << mlrPtr->EvaluateMLWENO(mi, {0.0, 0.0}, {10,10}) << endl;
 
     //auto end = std::chrono::system_clock::now();
 
     t2 = MPI_Wtime();
 
-    if (rank == 1 ){mlrPtr->PrintNonLinearWgts(mi);}
+    //if (rank == 1 ){mlrPtr->PrintNonLinearWgts(mi);}
     //if (rank == 0 ){mlpPtr->PrintInfo();}
 
     //if (rank == 1 ){mlrPtr->PrintBoundaryLayer(mi);}

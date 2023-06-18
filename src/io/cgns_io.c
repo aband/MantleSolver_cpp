@@ -116,14 +116,17 @@ PetscErrorCode CGNSMeshWrite(DM dm, Vec * fullmesh){
     m_rmin[1]    = 1;
     m_rmax[1]    = numLocaly;
 
-    if (cgp_coord_general_write_data(index_file, index_base, index_zone, 1, s_rmin, s_rmax, 
-                                      CGNS_ENUMV(RealDouble),2,m_dimvals, m_rmin, m_rmax, x)) cgp_error_exit();
+    if (cgp_coord_general_write_data(index_file, index_base, index_zone, 1, 
+                                     s_rmin, s_rmax, CGNS_ENUMV(RealDouble),
+                                     2,m_dimvals, m_rmin, m_rmax, x)) cgp_error_exit();
    
     if (cgp_coord_general_write_data(index_file, index_base, index_zone, 2, s_rmin, s_rmax, 
                                       CGNS_ENUMV(RealDouble),2,m_dimvals, m_rmin, m_rmax, y)) cgp_error_exit();
 
     free(x);
     free(y);
+
+    cgp_close(index_file);
 
     PetscFunctionReturn(0);
 }
@@ -169,8 +172,8 @@ PetscErrorCode CGNSCellSolWrite(DM dm, Vec * globalSol){
             index_flow, "end");
 
     // Write rind information under FlowSolution_t node
-    int irinddata[6] = {1,1,1,1,0,0};
-    cg_rind_write(irinddata);
+    //int irinddata[6] = {1,1,1,1,0,0};
+    //cg_rind_write(irinddata);
     if (cgp_field_write(index_file, index_base, index_zone, index_flow,
                         CGNS_ENUMV(RealDouble), "u",
                         &index_field)) cgp_error_exit();
@@ -180,12 +183,9 @@ PetscErrorCode CGNSCellSolWrite(DM dm, Vec * globalSol){
     if (cg_zone_read(index_file, index_base, index_zone, zonename,
                      (cgsize_t*)zoneSize)) cg_error_exit();
 
-
     cgsize_t   s_rmin[2], s_rmax[2], m_dimvals[2], m_rmin[2], m_rmax[2];
 
     double *u = (double*)malloc(ym*xm*sizeof(double));
-
-    int ni,nj;
 
     // Get local information
     double ** sol; 
@@ -198,9 +198,9 @@ PetscErrorCode CGNSCellSolWrite(DM dm, Vec * globalSol){
  
     ierr = DMDAVecGetArray(dm, lsol, &sol);CHKERRQ(ierr);
 
-    for (int j=0; j<nj; j++){
-    for (int i=0; i<ni; i++){
-        int id = j*ni + i;
+    for (int j=0; j<ym; j++){
+    for (int i=0; i<xm; i++){
+        int id = j*xm + i;
         u[id] = sol[j+ys][i+xs];       
     }}
 
@@ -222,28 +222,30 @@ PetscErrorCode CGNSCellSolWrite(DM dm, Vec * globalSol){
     m_rmin[0] = 1;
     m_rmax[0] = ym;
 
+    PetscPrintf(PETSC_COMM_SELF, " %d, %d \n", xm, ym);
+
     if (cgp_field_general_write_data(index_file, index_base, index_zone,
                                      index_flow, 1,
                                      s_rmin, s_rmax, CGNS_ENUMV(RealDouble),
                                      2, m_dimvals, m_rmin, m_rmax,
                                      u)) cgp_error_exit();
- 
+
     free(u);
 
     // Close CGNS file
-    cg_close(index_file);
-    
+    cgp_close(index_file);
+
     PetscFunctionReturn(0);
 }
 
-/*
+
 PetscErrorCode  DMDACgnsOut2D(DM dmMesh, Vec *fullmesh, DM dmCell, Vec *Sol, char *filename)
 {
     // Cgns output code for 2D mesh  
     PetscErrorCode   ierr;
     PetscInt         xs, ys, xm, ym, M, N;
     int              size, rank;
-    Vec              fmesh;
+    Vec              fmesh,lmesh;
     PetscFunctionBeginUser;
 
     MPI_Comm_size(PETSC_COMM_WORLD, &size);
@@ -322,43 +324,23 @@ PetscErrorCode  DMDACgnsOut2D(DM dmMesh, Vec *fullmesh, DM dmCell, Vec *Sol, cha
     x = (double*)malloc(num_vertex*sizeof(double));
     y = (double*)malloc(num_vertex*sizeof(double));
 
-    // Assign uniform grids to all coordinates
-    Vector2D *data = (Vector2D *)malloc(numLocalx*numLocaly*sizeof(Vector2D));
-    Vector2D **localcoords = (Vector2D **)malloc(numLocaly * sizeof(Vector2D **));
-
-    for (int i=0; i<numLocaly; i++){
-        localcoords[i] = &(data[numLocalx*i]);
-    }
-
-    double hx = 1.0/(double)M;
-    double hy = 1.0/(double)N;
-
-    for (int j=0; j<numLocaly; j++){
-    for (int i=0; i<numLocalx; i++){
-        localcoords[j][i].x = (i+xs)*hx;
-        localcoords[j][i].y = (j+ys)*hy;
-    }}
-
     // Get Coordinates
     Vector2D **coords;
 
-    ierr = DMDAVecGetArray(dmMesh, fmesh, &coords);CHKERRQ(ierr);
-    for (int j=0; j<ym; j++){
-    for (int i=0; i<xm; i++){
-        localcoords[j][i].x = coords[j+ys][i+xs].x;
-        localcoords[j][i].y = coords[j+ys][i+xs].y;
-    }}
+    ierr = DMGetLocalVector(dmMesh, &lmesh);
+    ierr = DMGlobalToLocalBegin(dmMesh, fmesh, INSERT_VALUES, lmesh);
+    ierr = DMGlobalToLocalEnd(dmMesh, fmesh, INSERT_VALUES, lmesh);
 
-    ierr = DMDAVecRestoreArray(dmMesh, fmesh, &coords);CHKERRQ(ierr);
-
-    // assign 1d data thereafter
+    ierr = DMDAVecGetArray(dmMesh, lmesh, &coords);CHKERRQ(ierr);
     for (int j=0; j<numLocaly; j++){
     for (int i=0; i<numLocalx; i++){
-        int id = j*numLocalx+i;
-        x[id] = localcoords[j][i].x;
-        y[id] = localcoords[j][i].y;
+        int id = j*numLocalx + i;
+        x[id] = coords[j+ys][i+xs].x;
+        y[id] = coords[j+ys][i+xs].y;
     }}
 
+    ierr = DMDAVecRestoreArray(dmMesh, lmesh, &coords);CHKERRQ(ierr);
+    ierr = DMRestoreLocalVector(dmMesh, &lmesh);
 
     // Shape in file space
     s_rmin[0] = xs+1;
@@ -427,7 +409,7 @@ PetscErrorCode  DMDACgnsOut2D(DM dmMesh, Vec *fullmesh, DM dmCell, Vec *Sol, cha
 
     ierr = DMDAVecRestoreArrayRead(dmCell, gSol, &sol);CHKERRQ(ierr);
 
-    int c_s_rmin[2], c_s_rmax[2], c_m_dimvals[2], c_m_rmin[2], c_m_rmax[2];
+    cgsize_t c_s_rmin[2], c_s_rmax[2], c_m_dimvals[2], c_m_rmin[2], c_m_rmax[2];
 
     c_s_rmin[0] = cxs+1;
     c_s_rmax[0] = cxs+cxm;
@@ -450,4 +432,4 @@ PetscErrorCode  DMDACgnsOut2D(DM dmMesh, Vec *fullmesh, DM dmCell, Vec *Sol, cha
     cgp_close(index_file);
 
     PetscFunctionReturn(0);
-}*/
+}

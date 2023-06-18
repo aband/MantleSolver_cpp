@@ -44,19 +44,21 @@ pkg_search_module(CGNS REQUIRED IMPORTED_TARGET cgns)
 # Build library
 # Create a library from the files in src file
 add_library(general_lib
-        ../../integral.cpp 
-        ../../mesh.c 
-        ../../util.cpp
+        ../../general/integral.cpp 
+        ../../general/mesh.c 
+        ../../general/util.cpp
 )
 
 target_include_directories(general_lib
-    PUBLIC ../../../include
+    PUBLIC ../../general
 	 PUBLIC ${PETSC_DIR}/include
 )
 
 target_link_libraries(general_lib
     PkgConfig::PETSC
 )
+
+add_definitions(-DCGNS_ENABLE_HDF5=ON)
 
 add_library(io_lib
         ../../io/input.cpp
@@ -80,8 +82,6 @@ target_link_libraries(io_lib
 add_executable(test 
         test.cpp 
 )
-
-add_definitions(-DCGNS_ENABLE_HDF5=ON)
 
 # Link static libraries generated previously
 target_link_libraries(test 

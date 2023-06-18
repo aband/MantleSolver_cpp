@@ -14,15 +14,15 @@ extern "C"{
 using namespace std;
 
 double func(vertex& point, const vector<double>& param){
-	 if (point[0]<param[0]){
+//	 if (point[0]<param[0]){
 //		  return point[0]*point[0]+point[1]*point[1];
-	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
+//	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
 //        return sin(point[0] + point[1] + 0.1);
-	 } else {
+//	 } else {
 //		  return point[0]*point[0]*point[1]*point[1] + 1.0;
-	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1) + 10;
+//	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1) + 10;
 //        return sin(point[0] + point[1] + 0.1) + 10;
-	 }
+//	 }
 
     //return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
     //return sin(point[0] + point[1] + 0.1);
@@ -168,11 +168,14 @@ int main(int argc, char **argv){
 
 // ========================================================================================================================================
 
-    char filename[] = "testOut";
+    char newfilename[] = "testOut.cgns";
 
-    CGNSMeshWrite(dm, &fullmesh);
+    //CGNSMeshWrite(dm, &fullmesh);
 
-    CGNSCellSolWrite(dmu, &globalu);
+    //CGNSCellSolWrite(dmu, &globalu);
+
+    DMDACgnsOut2D(dm, &fullmesh, dmu, &globalu, newfilename);
+
 // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);

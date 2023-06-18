@@ -261,6 +261,9 @@ unordered_map<int, double> advection::singleCellDerivFlux(const MeshInfo& mi, co
 //! Collective flux update.
 void advection::UpdateEdgeFlux(const MeshInfo& mi){
 
+    int rank;
+    MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
     // Udpate every left and bottom edge for each cell
     for (int j=mi.MPIlocalCellStart[1]; j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + 1; j++){
     for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + 1; i++){
@@ -598,19 +601,18 @@ double advection::Flux(const MeshInfo& mi, const indice& global){
 
     double area = mi.cellArea.at(FlatIndic(mi,global));
 
+    int rank;
+    MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
+
     work += edgeHoriFlux_[FlatIndic(mi,global)]; 
 
     work += -1 * edgeHoriFlux_[FlatIndic(mi,global+mi.faceNormal[2])];
 
-    work += -1 * edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global+mi.faceNormal[1])];
+    work += -1 * edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,global+mi.faceNormal[1])];
 
-    work += edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)];
+    work += edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,global)];
 
     work /= area;
-
-    //int rank;
-    //MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
-    //if (rank == 0) {cout << "Flux : " << work << endl;}
 
     return work;
 }

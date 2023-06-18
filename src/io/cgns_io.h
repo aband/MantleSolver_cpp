@@ -13,8 +13,6 @@ typedef struct {
   double   y;
 } Vector2D;
 
-//PetscErrorCode DMDACgnsOut2D(DM dmMesh, Vec * fullmesh, DM dmCell, Vec * Sol, char * filename);
-
 /**
  * Write mesh grid to a cgns file.
  */
@@ -25,5 +23,11 @@ PetscErrorCode CGNSMeshWrite(DM dm, Vec * fullmesh);
  * flow solution to it.
  */
 PetscErrorCode CGNSCellSolWrite(DM dm, Vec * globalSol);
+
+/**
+ * Write mesh and solution at the same time.
+ * Temperory function because bugs in CGNSCellSolWrite.
+ */
+PetscErrorCode DMDACgnsOut2D(DM dmMesh, Vec *fullmesh, DM dmCell, Vec *Sol, char *filename); 
 
 #endif

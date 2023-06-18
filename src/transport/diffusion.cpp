@@ -912,9 +912,9 @@ double NonSymDiffusion::diffusion::Flux(const MeshInfo& mi, const indice& global
 
     work += -1 * edgeHoriFlux_[FlatIndic(mi,global+mi.faceNormal[2])];
 
-    work += -1 * edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global+mi.faceNormal[1])];
+    work += -1 * edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,global+mi.faceNormal[1])];
 
-    work += edgeVertFlux_[FlatIndic(mi.MPIlocalCellSize[0]+1,global)];
+    work += edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,global)];
 
     work /= area;
 
