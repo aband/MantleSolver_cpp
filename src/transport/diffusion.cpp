@@ -743,6 +743,9 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFluxFull_(const 
 
 void NonSymDiffusion::diffusion::UpdateEdgeFlux(const MeshInfo& mi){
 
+int rank;
+MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
     std::array<int,2> posIn;
     std::array<int,2> posOut;
 
@@ -771,6 +774,7 @@ void NonSymDiffusion::diffusion::UpdateEdgeFlux(const MeshInfo& mi){
         // Bottom hoizontal flux
         edgeHoriFlux_[FlatIndic(mi,globalIn)] = edgeFlux_(mi, globalIn, globalOut, hori, scale, posIn, posOut,
                                                           *(mlrPtrHoriUp_), *(mlrPtrHoriDown_));
+
         globalOut = {i-1,j};
         // Left vertical flux
         edgeVertFlux_[FlatIndic(mi.MPIglobalCellSize[0]+1,globalIn)] = edgeFlux_(mi, globalIn, globalOut, vert, scale, posIn, posOut, *(mlrPtrVertRight_), *(mlrPtrVertLeft_));

@@ -3,7 +3,7 @@
 
 #include "util.h"
 
-/**
+/*!
  * The class containing all the information
  * regarding element.
  * 3 - 2

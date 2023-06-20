@@ -42,13 +42,13 @@ pkg_search_module(CGNS REQUIRED IMPORTED_TARGET cgns)
 # Build library
 # Create a library from the files in src file
 add_library(general_lib
-        ../../integral.cpp 
-        ../../mesh.c 
-        ../../util.cpp
+        ../../general/integral.cpp 
+        ../../general/mesh.c 
+        ../../general/util.cpp
 )
 
 target_include_directories(general_lib
-    PUBLIC ../../../include
+    PUBLIC ../../general
 	 PUBLIC ${PETSC_DIR}/include
 )
 

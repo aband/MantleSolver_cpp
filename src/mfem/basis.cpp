@@ -1,6 +1,5 @@
 #include "basis.h"
 
-// ===== Class basis =====
 // ===== Public members =====
 void basis::GetCorners(const vertexSet& corners){
     for (const auto& c: corners){
