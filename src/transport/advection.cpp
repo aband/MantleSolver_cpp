@@ -59,8 +59,8 @@ double advection::flux_(const double& uIn, const double& uOut,
 
 unordered_map<int,double> advection::dflux_(const double& uIn, const double& uOut, const vertex& unitNormal, 
                                             const vertex& mapped, const double& alphaLF, 
-                                            const unordered_map<int, double>& duIn, 
-                                            const unordered_map<int, double>& duOut){
+                                            const derivative& duIn, 
+                                            const derivative& duOut){
     unordered_map<int, double> work;
 
     double in = 0.5*(dfuncX(mapped, uIn, 0)*unitNormal[0] + 

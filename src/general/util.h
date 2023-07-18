@@ -31,6 +31,12 @@ using vertexSet = vector<valarray<double>>;
 using indiceSet = vector<valarray<int>>;
 
 template <typename T>
+using tensor = valarray<T>;
+
+template <typename T>
+using tensorSet = vector<valarray<T>>;
+
+template <typename T>
 void delete_pointed_to(T const ptr){
     delete ptr;
 }

@@ -60,6 +60,7 @@ target_link_libraries(general_lib
 add_library(mfem_lib
         ../../basis.cpp
         ../../Hdivmixed.cpp
+        ../../interp.cpp
 )
 
 target_include_directories(mfem_lib

@@ -714,7 +714,6 @@ unordered_map<int, double> NonSymDiffusion::diffusion::derivEdgeFluxFull_(const 
 
             tmp1.clear(); tmp2.clear();
 
-
             tmp1 = mlrPtrIn.EvaluateDerivMLWENO(mi,mapped-unitNormal*beta *scale,globalIn);
             tmp2 = mlrPtrIn.EvaluateDerivMLWENOAdd(mi,mapped-unitNormal*beta *scale,globalIn);
 
