@@ -175,9 +175,10 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
 
-    for (int j=ys; j<ys+ym; j++){
-    for (int i=xs; i<xs+xm; i++){
+    for (int j=ys; j<ys+ym+1; j++){
+    for (int i=xs; i<xs+xm+1; i++){
 
+        if (j<N && i<M){
         vertexSet corner;
         //! Retrieve local cell indice (including ghost vertex)
         indice ghostlayerShift {ghostWidth, ghostWidth};
@@ -191,6 +192,8 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
         mi.cellArea.insert(std::make_pair<int,double>
                            (FlatIndic(mi.MPIglobalCellSize[0],i,j),
                             NumIntegralFace(corner,{0,0},{0.0,0.0},1.0,constFunc))); 
+
+        }
     }}
 
 }

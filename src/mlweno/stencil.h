@@ -8,7 +8,6 @@
 
 #include "util.h"
 
-
 enum stencilType {cellCentered, edgeCentered, vertexCentered};
 
 template <class T>

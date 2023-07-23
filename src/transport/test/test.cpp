@@ -292,7 +292,8 @@ int main(int argc, char **argv){
     PCSetFromOptions(pc);
 
     //TSSetRHSFunction(ts, globalu, Explicit, &ctx);
-    TSSetRHSFunction(ts, NULL, ExplicitAdvection, &ctx);
+    //TSSetRHSFunction(ts, NULL, ExplicitAdvection, &ctx);
+    TSSetRHSFunction(ts,NULL,ExplicitDiffusion,&ctx);
 
     // ===================================================================
     //! Explicit

@@ -755,6 +755,7 @@ MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
     for (int i=mi.MPIlocalCellStart[0]; i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] +1; i++){
 
         if (j<mi.MPIglobalCellSize[1] && i<mi.MPIglobalCellSize[0]){
+
         indice globalIn {i,j};
 
         const double scale = sqrt(mi.cellArea.at(FlatIndic(mi,globalIn)));
@@ -784,7 +785,7 @@ MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
             posIn[0] = 0; posOut[0] = 2;
             posIn[1] = 1; posOut[1] = 3;
             edgeHoriFlux_[FlatIndic(mi,globalOut)] = edgeFlux_(mi, globalIn, globalOut, hori, scale, posIn, posOut,
-                                                                *(mlrPtrHoriDown_), *(mlrPtrHoriUp_));       
+                                                                *(mlrPtrHoriDown_), *(mlrPtrHoriUp_));
         }
 
         if (i==mi.MPIglobalCellSize[0]-1){
@@ -796,7 +797,6 @@ MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
         }
 
         }
-
     }}
 }
 
