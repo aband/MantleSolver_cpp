@@ -3,12 +3,12 @@
 
 #include "util.h"
 
-namespace Lagrange{
-    class interpolation {
+namespace interpolation{
+    class Lagrange {
         public:
-            interpolation(){};
-            interpolation(const tensor<int>& order);
-            ~interpolation(){clear();};
+            Lagrange(){};
+            Lagrange(const tensor<int>& order);
+            ~Lagrange(){clear();};
 
             /*!
              * Initiate a lagrange polynomial.
@@ -46,12 +46,13 @@ namespace Lagrange{
             /*!
              * Polynomial order.
              */
-            tensor<int> order;
+            tensor<int> order_;
 
             /*!
              * Create chebyshev inerpolation points
              */
-            void chebyshevPoints_();
+            vertexSet chebyshevPoints_(const vertex& left,  
+                                       const vertex& right);
 
             /*!
              * Store interpolation points.

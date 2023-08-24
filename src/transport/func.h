@@ -25,7 +25,15 @@ double dDiffFunc(double u);
 /**
  * Initial distribution.
  */
-double InitialDistribution(vertex& point,
+double InitialDistribution(const vertex& point,
                            const vector<double>& param);
+
+/**
+ * True solution.
+ */
+
+double TrueSolution(const vertex& point, 
+                    const double& time,
+                    const vector<double>& param); 
 
 #endif

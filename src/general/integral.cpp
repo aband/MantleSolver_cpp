@@ -96,7 +96,7 @@ double length(const vector< valarray<double> >& corner){
 
 double NumIntegralFace(const vector< valarray<double> >& corner, const vector<double>& param,
                        const valarray<double>& center, const double& h, 
-                       double (*func)(valarray<double>& point, const vector<double>& param)){
+                       double (*func)(const valarray<double>& point, const vector<double>& param)){
 
     assert(corner.size() == 4);
 
@@ -129,7 +129,7 @@ double NumIntegralFace(const vector< valarray<double> >& corner, const vector<do
 
 double NumIntegralFace(const vector< valarray<double> >& corner, const vector<int>& param,
                        const valarray<double>& center, const double& h, 
-                       double (*func)(valarray<double>& point, const vector<int>& param)){
+                       double (*func)(const valarray<double>& point, const vector<int>& param)){
 
     assert(corner.size() == 4);
  
@@ -165,8 +165,8 @@ double NumIntegralFace(const vector< valarray<double> >& corner, const vector<in
  */
 
 double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<int>& param,
-                       double (*funcX)(valarray<double>& point, const vector<int>& param), 
-                       double (*funcY)(valarray<double>& point, const vector<int>& param)){
+                       double (*funcX)(const valarray<double>& point, const vector<int>& param), 
+                       double (*funcY)(const valarray<double>& point, const vector<int>& param)){
 
     assert(corner.size() == 2);
 
@@ -191,8 +191,8 @@ double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<in
 }
 
 double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<double>& param,
-                       double (*funcX)(valarray<double>& point, const vector<double>& param), 
-                       double (*funcY)(valarray<double>& point, const vector<double>& param)){
+                       double (*funcX)(const valarray<double>& point, const vector<double>& param), 
+                       double (*funcY)(const valarray<double>& point, const vector<double>& param)){
 
     assert(corner.size() == 2);
 

@@ -36,17 +36,17 @@ valarray<double> GaussMapPointsFace(valarray<double> ref, const vector< valarray
  */
 double NumIntegralFace(const vector< valarray<double> >& corner, const vector<double>& param,
                        const valarray<double>& center, const double& h, 
-                       double (*func)(valarray<double>& point, const vector<double>& param));
+                       double (*func)(const valarray<double>& point, const vector<double>& param));
 
 double NumIntegralFace(const vector< valarray<double> >& corner, const vector<int>& param,
                        const valarray<double>& center, const double& h, 
-                       double (*func)(valarray<double>& point, const vector<int>& param));
+                       double (*func)(const valarray<double>& point, const vector<int>& param));
 
 double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<int>& param,
-                       double (*funcX)(valarray<double>& point, const vector<int>& param),
-                       double (*funcY)(valarray<double>& point, const vector<int>& param));
+                       double (*funcX)(const valarray<double>& point, const vector<int>& param),
+                       double (*funcY)(const valarray<double>& point, const vector<int>& param));
 
 double NumIntegralEdge(const vector< valarray<double> >& corner, const vector<double>& param,
-                       double (*funcX)(valarray<double>& point, const vector<double>& param),
-                       double (*funcY)(valarray<double>& point, const vector<int>& param));
+                       double (*funcX)(const valarray<double>& point, const vector<double>& param),
+                       double (*funcY)(const valarray<double>& point, const vector<int>& param));
 #endif

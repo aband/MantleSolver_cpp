@@ -1,5 +1,15 @@
 #include "basis.h"
 
+//=================================
+//       e4 
+//   v4 ----- v3
+//   |        |
+// e1|        | e3
+//   |        |
+//   v1 ----- v2
+//       e2
+//=================================
+
 // ===== Public members =====
 void basis::GetCorners(const vertexSet& corners){
     for (const auto& c: corners){
@@ -9,8 +19,10 @@ void basis::GetCorners(const vertexSet& corners){
 
 double basis::lambda(const int& e,
                      const vertex& point) const{
-    vertexSet edge {corners_.at((e+3)%4), 
-                    corners_.at((e+4)%4)};
+    // e = {1,2,3,4}
+    assert(e>0 & e<5);
+    vertexSet edge {corners_.at((e+2)%4), 
+                    corners_.at((e+3)%4)};
     return distance_(edge,point);
 }
 
@@ -37,10 +49,13 @@ double basis::R(const int& e,
     return 0.5*(1-R(e,(e+3)%4,point));
 }
 
-bool basis::Phi(const int i,
-                const int j) const{
-    return (i==j);
+// Supplemental functions
+double basis::PhiSupp(const int& i,
+                      const vertex& point) const{
+
+    return lambda(i,point)*lambda(i+2,point);
 }
+
 
 double basis::phi() const{
 
@@ -51,7 +66,7 @@ double basis::phi() const{
 
 // ===== Private members =====
 double basis::distance_(const vertexSet& edge, 
-                          const vertex& point) const{
+                        const vertex& point) const{
 
     //vertex tmp = point - (edge.at(0) + edge.at(1))/2;
     vertex tmp = point - edge.at(0);
@@ -72,6 +87,6 @@ void basis::Test(const vertex& point){
     }cout << endl;
 
     for (int e = 0; e<4; e++){
-        cout << "Distance is " << lambda(e,point)  << endl;
+        cout << "Distance is " << lambda(e+1,point)  << endl;
     }
 }

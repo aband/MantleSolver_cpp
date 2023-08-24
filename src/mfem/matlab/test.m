@@ -9,4 +9,4 @@ y = linspace(0,1,10);
 % Sample points (0,0), (0.5,0.4) (0.3,0.6)
 % Interpo values 1, 1, 1
 
-lag = @(x,y) 
+shift = @(a,b,x) 0.5*(a+b) + 0.5*(b-a)*x

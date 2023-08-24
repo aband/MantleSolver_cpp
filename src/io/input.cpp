@@ -1,6 +1,6 @@
 #include "input.h"
 
-double constfun2(valarray<double>& point,const vector<double>& param){
+double constfun2(const valarray<double>& point,const vector<double>& param){
     return 1.0;
 }
 
@@ -70,7 +70,7 @@ PetscErrorCode ReadSolutionLocal(DM dmu, Vec *globalu, vector< vector<double> >&
 }
 
 PetscErrorCode SimpleInitialValue(DM dm, DM dmu, Vec *fullmesh, Vec *globalu, 
-                                  double (*func)(valarray<double>& point, const vector<double>& param)){
+                                  double (*func)(const valarray<double>& point, const vector<double>& param)){
 
     PetscErrorCode ierr;
     Vec            gu,fmesh,lmesh;
@@ -137,7 +137,7 @@ PetscErrorCode SimpleInitialValue(DM dm, DM dmu, Vec *fullmesh, Vec *globalu,
 }
 
 PetscErrorCode SimpleInitialValue(DM dm, DM dmu, Vec *fullmesh, Vec *globalu, const vector<double>& param,
-                                  double (*func)(valarray<double>& point, const vector<double>& param)){
+                                  double (*func)(const valarray<double>& point, const vector<double>& param)){
 
     PetscErrorCode ierr;
     Vec            gu,fmesh,lmesh;

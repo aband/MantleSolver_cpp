@@ -76,10 +76,8 @@ class basis{
         //! Define lagrange basis polynomials
         double lagrange(const vertex& point) const;
 
-        //! Basis functions on cell, edges and vertex
-        //! Satisfying unisolvence condition.
-        bool Phi(const int i,
-                 const int j) const;
+        double PhiSupp(const int& i, 
+                       const vertex& point) const; 
 
         double phi() const;
 

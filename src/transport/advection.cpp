@@ -698,7 +698,7 @@ void advection::CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& m
 }
 
 void advection::UpdateNonLinearWgts(const MeshInfo& mi){
-    mlrPtr_->UpdateNonLinearWgts(mi,2);
+    mlrPtr_->UpdateNonLinearWgts(mi,1);
 }
 
 void advection::UpdateNonLinearWgtsAndDerivative(const MeshInfo& mi){

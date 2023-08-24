@@ -327,6 +327,10 @@ namespace MLWENO{
             void UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, int flatGlobal,
                                               const unordered_set<std::string>& levels); 
 
+            void UpdateNonLinearWgts_(const MeshInfo& mi, int flatGlobal,
+                                      const unordered_set<std::string>& levels,
+                                      const unordered_map<std::string, int>& powerShift);
+
             /**
              * Update non linear weights and its 
              * corresponding derivatives at the same time.

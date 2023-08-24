@@ -171,9 +171,9 @@ void printMeshInfo(MeshInfo& mi);
  * Generic auxiliary functions.
  * Function return constant value.
  */
-double constFunc(valarray<double>& point,const vector<double>& param);
+double constFunc(const valarray<double>& point,const vector<double>& param);
 
-double constFunc(valarray<double>& point,const vector<double>& param, double c);
+double constFunc(const valarray<double>& point,const vector<double>& param, double c);
 
 double constFunc();
 
@@ -186,7 +186,7 @@ int factorial(int top, int bottom);
 
 int factorial(int top);
 
-double basePoly(vertex& point, const vector<int>& param);
+double basePoly(const vertex& point, const vector<int>& param);
 
 // Evaluation of polynomial using Horner's method
 double polyEval(double x, double * coef, int degree);

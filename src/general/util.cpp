@@ -1,11 +1,11 @@
 #include "util.h"
 
 // Couple of constant functions
-double constFunc(valarray<double>& point,const vector<double>& param){
+double constFunc(const valarray<double>& point,const vector<double>& param){
     return 1.0;
 }
 
-double constFunc(valarray<double>& point,const vector<double>& param, double c){
+double constFunc(const valarray<double>& point,const vector<double>& param, double c){
     return c;
 }
 
@@ -18,7 +18,7 @@ double constFunc(double c){
 }
 
 
-double basePoly(vertex& point, const vector<int>& param){
+double basePoly(const vertex& point, const vector<int>& param){
     return pow(point[0],param[0])*pow(point[1],param[1]);
 }
 
@@ -232,6 +232,6 @@ vertexSet extractCorners(const MeshInfo& mi, const indice& global){
     return corner;
 }
 
-const vertex unitTangent(const vertexSet& edge, const double& len){
+inline const vertex unitTangent(const vertexSet& edge, const double& len){
     return (edge.at(1) - edge.at(0))/len;
 }

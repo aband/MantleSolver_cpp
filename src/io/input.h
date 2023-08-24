@@ -17,13 +17,13 @@ using namespace std;
 
 PetscErrorCode ReadMeshPortion(DM dm, Vec *fullmesh, vector< valarray<double> >& mesh);
 PetscErrorCode SimpleInitialValue(DM dm, DM dmu, Vec *fullmesh, Vec *globalu, 
-                                  double (*func)(valarray<double>& point, const vector<double>& param));
+                                  double (*func)(const valarray<double>& point, const vector<double>& param));
 
 PetscErrorCode SimpleInitialValue(DM dm, DM dmu, Vec *fullmesh, Vec *globalu, const vector<double>& param,
-                                  double (*func)(valarray<double>& point, const vector<double>& param));
+                                  double (*func)(const valarray<double>& point, const vector<double>& param));
 
 PetscErrorCode ObliqueBurgers(DM dm, DM dmu, Vec *fullmesh, Vec *globalu, 
-                              double (*func)(valarray<double>& point, const vector<double>& param));
+                              double (*func)(const valarray<double>& point, const vector<double>& param));
 
 PetscErrorCode ReadSolutionLocal(DM dmu, Vec *globalu, vector< vector<double> >& sol);
 

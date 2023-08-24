@@ -495,6 +495,46 @@ void multiLevelReconstruction::UpdateTwoStageNonLinearWgts_(const MeshInfo& mi, 
 
 }
 
+void multiLevelReconstruction::UpdateNonLinearWgts_(const MeshInfo& mi, int flatGlobal,
+                                                    const unordered_set<std::string>& levels,
+                                                    const unordered_map<std::string, int>& powerShift){
+    // Incorporated both one stage and two stage non linear weights
+    // Power shift set default to be 0,0,0,0... for one stage
+    // non-linear weight. For two stage non-linear weighting,
+    // power shift are set according to r values.
+
+    unordered_map<std::string, unordered_map<int, double>> nlw;
+
+    double sum = 0.0;
+
+    for (auto const& level : levels){
+        const int sizeX = reconstLevels_[level]->GetSizeX();
+        const int sizeY = reconstLevels_[level]->GetSizeY();
+        for (auto const& rm : reconstMethods_[level]){
+            indice owner = Bend(mi,flatGlobal) + rm;
+            if (reconstLevels_[level]->CheckExist(mi,owner)){
+                double scale = reconstLevels_[level]->GetScale(FlatIndic(mi, owner));
+                double sm = reconstLevels_[level]->GetSmoothnessIndic(mi, owner);
+                double value = 1.0/pow(sm + scale*scale*eps0_ , sizeX+sizeY+powerShift.at(level));
+                nlw[level].insert(std::pair<int, double>(FlatIndic(sizeX,rm), value));
+                sum += value;
+            }
+        }
+    }
+
+    for (auto const& level: levels){
+        if (nlw[level].empty() == 0){
+            for (auto & in: nlw[level]){
+                in.second = in.second/sum;
+            }
+        }
+    }
+
+    nonLinearWgts_.erase(flatGlobal);
+    nonLinearWgts_.insert(std::pair<int, unordered_map<std::string, unordered_map<int, double>>>(flatGlobal,nlw));
+
+}
+
 void multiLevelReconstruction::UpdateNonLinearWgtsAndDerivs_(const MeshInfo& mi, int flatGlobal, 
                                                              const unordered_set<std::string>& levels){
 

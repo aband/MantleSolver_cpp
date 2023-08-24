@@ -1,12 +1,12 @@
 #include "interp.h"
 
-Lagrange::interpolation::interpolation(const tensor<int>& order){
+interpolation::Lagrange::Lagrange(const tensor<int>& order){
     for (int it = 0; it<order.size(); it++){
         order_[it] = order[it];
     }
 }
 
-void Lagrange::interpolation::init(const tensorSet<double>& points){
+void interpolation::Lagrange::init(const tensorSet<double>& points){
     assert(interpoPoints_.size() == 0);
 
     interpoPoints_.resize(points.size());
@@ -16,16 +16,22 @@ void Lagrange::interpolation::init(const tensorSet<double>& points){
     }
 }
 
-void Lagrange::interpolation::clear(){
+void interpolation::Lagrange::clear(){
     interpoPoints_.clear();
 }
 
-void Lagrange::interpolation::chebyshevPoints_(){
+vertexSet interpolation::Lagrange::chebyshevPoints_(const vertex& left, 
+                                                    const vertex& right){
+    // Create chebyshev points on a given edge
+    // The edge is defined by left and right vertices
+
+    vertexSet points;
 
 
+    return points;
 }
 
-double Lagrange::interpolation::eval(const tensor<double>& point) const {
+double interpolation::Lagrange::eval(const tensor<double>& point) const {
 
     double work = 0.0;
 
@@ -34,7 +40,7 @@ double Lagrange::interpolation::eval(const tensor<double>& point) const {
     return work;
 }
 
-double Lagrange::interpolation::evalDeriv(const tensor<double>& point) const {
+double interpolation::Lagrange::evalDeriv(const tensor<double>& point) const {
 
     double work = 0.0;
 
