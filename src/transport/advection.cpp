@@ -119,10 +119,13 @@ double advection::boundaryCondition_(const double& uIn,
                                      const vertex& unitNormal, const vertex& point,
                                      const double& alphaLF){
     // Mimicing "Dirichlet" boundary condition
+    //return flux_(uIn, fixed_, unitNormal, point, alphaLF);
     return flux_(uIn, fixed_, unitNormal, point, alphaLF);
+
 
     // Prescribe flux, Mimicing "Neumann" boundary condition
     //return 0.0;
+
 }
 
 unordered_map<int, double> advection::boundaryCondition_(const double& uIn, const vertex& unitNormal,
@@ -698,7 +701,7 @@ void advection::CreateMLWENO(const MLWENO::MLWENOPrepare& mlp, const MeshInfo& m
 }
 
 void advection::UpdateNonLinearWgts(const MeshInfo& mi){
-    mlrPtr_->UpdateNonLinearWgts(mi,1);
+    mlrPtr_->UpdateNonLinearWgts(mi,2);
 }
 
 void advection::UpdateNonLinearWgtsAndDerivative(const MeshInfo& mi){

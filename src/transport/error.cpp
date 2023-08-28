@@ -17,13 +17,13 @@ void L1Error(Vec *globalU,
     Vec localu, globalu; 
     Vec localE, globalE;
 
-    DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL); 
-
-    // Compute true cell averaged solution 
-    SimpleInitialValue(dm, dmu, fullmesh, &globalE, {time}, assistTrueSolution); 
+    DMDAGetCorners(dmu, &xs, &ys, NULL, &xm, &ym, NULL); 
 
     globalu = *globalU;
     globalE = *globalError;
+
+    // Compute true cell averaged solution 
+    SimpleInitialValue(dmMesh, dmu, fullmesh, &globalE, {time}, assistTrueSolution); 
 
     double **localuArray;
     double **localEArray;

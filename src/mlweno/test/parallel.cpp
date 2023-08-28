@@ -18,7 +18,7 @@ extern "C"{
 
 using namespace std;
 
-double func(vertex& point, const vector<double>& param){
+double func(const vertex& point, const vector<double>& param){
 	 if (point[0]<param[0]){
 //		  return point[0]*point[0]+point[1]*point[1];
 	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);

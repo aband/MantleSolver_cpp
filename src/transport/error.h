@@ -2,6 +2,7 @@
 #define ERROR_H_
 
 #include "transport.h"
+#include "input.h"
 
 // Calculate L1 error at the given time
 // if true solution is defined.
