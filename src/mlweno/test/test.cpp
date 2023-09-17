@@ -181,6 +181,17 @@ int main(int argc, char **argv){
 
     mlpPtr->PrintInfo();
 
+    MLWENO::multiLevelReconstruction * mlrIns = new MLWENO::multiLevelReconstruction();
+
+    mlrIns->SelectWenoReconstLevel({"(3,3)","(5,5)"},(*mlpPtr));
+
+    mlrIns->ModifyReconstMethod("(3,3)",{{0,0},{-2,0},{-2,-2},{0,-2}});
+    mlrIns->ModifyReconstMethod("(5,5)",{{-2,-2}});
+
+    mlrIns->SeparateBoundaryLayer(mi);
+    mlrIns->UpdateNonLinearWgts(mi,2); 
+
+    mlrIns->GetInfo();
 
     return 0;
 }
