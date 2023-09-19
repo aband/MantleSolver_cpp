@@ -31,15 +31,13 @@ int AssignInstance(const indice& globalCell){
 
 }
 
+
+
 double Evaluate(const vertex& point,
                 const indice& globalCell){
 
-    double work = 0.0;
+    // AssignInstance will decide which MLWENO reconstruction instance 
+    // should be used here.
 
-    for (){
-
-
-    }
-
-    return work;
+    return mlrIns_.at(AssignInstance(globalCell))->EvaluateMLWENO(mi,point,globalCell); 
 }
