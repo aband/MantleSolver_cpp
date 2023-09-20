@@ -13,7 +13,16 @@ void MLWENOUse::AddMLWENOInstance(const unordered_set<std::string>& selectLevels
 
 }
 
-int AssignInstance(const indice& globalCell){
+double Evaluate(const vertex& point,
+                const indice& globalCell){
+
+    // AssignInstance will decide which MLWENO reconstruction instance 
+    // should be used here.
+
+    return mlrIns_.at(AssignInstance_(globalCell))->EvaluateMLWENO(mi,point,globalCell); 
+}
+
+int AssignInstance_(const indice& globalCell){
 
     // No special treatment on boundary as default 
 
@@ -29,15 +38,4 @@ int AssignInstance(const indice& globalCell){
 //        return 2;
 //    }
 
-}
-
-
-
-double Evaluate(const vertex& point,
-                const indice& globalCell){
-
-    // AssignInstance will decide which MLWENO reconstruction instance 
-    // should be used here.
-
-    return mlrIns_.at(AssignInstance(globalCell))->EvaluateMLWENO(mi,point,globalCell); 
 }

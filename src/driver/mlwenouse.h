@@ -21,7 +21,7 @@ namespace MLWENO{
               * Construct a MLWENOUse class by assigning a meshinfo pointer to it.
               */
 
-             MLWENOUse(MeshInfo * mi) {mi_ = mi;};
+             MLWENOUse() {};
 
              /**! A destructor
               * Destruct a MLWENOUse class.
@@ -39,12 +39,6 @@ namespace MLWENO{
                                     MLWENOPrepare * mlpPtr);
 
              /**
-              * User-defined function.
-              * Use this function to treat boundary differently.
-              */
-             int AssignInstance(const indice& globalCell);
-
-             /**
               * Evaluate a reconstruction value using defined MLWENO instances.
               */
              double Evaluate(const vertex& point, 
@@ -52,9 +46,13 @@ namespace MLWENO{
 
         private:
 
-             vector<multiLevelReconstruction * mlrPtr> mlrIns_;
+             /**
+              * User-defined function.
+              * Use this function to treat boundary differently.
+              */
+             int AssignInstance_(const indice& globalCell);
 
-             MeshInfo * mi_;
+             vector<multiLevelReconstruction * mlrPtr> mlrIns_;
     };
 
 }
