@@ -1,6 +1,18 @@
 #include "driver.h"
 
-int Initialize::Prepare(){
+Driver::~Driver(){
+
+    // Clear used objects
+    DMDAVecRestoreArray(dmu_,localu_,&mi_.localVals);
+    DMRestoreLocalVector(dmu_, &localu_); 
+
+    VecDestroy(&globalu_); 
+    VecDestroy(&fullmesh_);
+    DMDestroy(&dmu_);
+    DMDestroy(&dmMesh_);
+}
+
+int Driver::Prepare(){
 
     PetscErrorCode ierr;
 
@@ -12,7 +24,7 @@ int Initialize::Prepare(){
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&globalN_,NULL));
 
     // Create data management object for solution.
-    stencilWidthMesh_ = 5;
+    int stencilWidthMesh_ = 5;
 
     PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
     DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, 
@@ -25,14 +37,14 @@ int Initialize::Prepare(){
     // Define physical domain
     // The default size is from -1 to 1
     L_ = 2.0, H_ = 2.0;
-    xstart_ = -1.0, ystart_ = -1.0;
+    double xstart_ = -1.0, ystart_ = -1.0;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L_,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H_,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart_, NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-ystart", &ystart_, NULL));
 
-    singleStencilTest_ = 0;
-    scale_ = 1;
+    int singleStencilTest_ = 0;
+    double scale_ = 1;
     PetscCall(PetscOptionsGetInt(NULL,NULL, "-single", &singleStencilTest_, NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL, "-scale", &scale_, NULL));
 
@@ -50,7 +62,7 @@ int Initialize::Prepare(){
     mp.L = L_;
     mp.H = H_;
 
-    meshtype_ = 0; 
+    int meshtype_ = 0; 
 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshtype_,NULL));
     switch(meshtype_){
@@ -68,7 +80,7 @@ int Initialize::Prepare(){
     }
 
     // Create data management for solution
-    stencilWidthU_ = 3;
+    int stencilWidthU_ = 3;
 
     PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
     DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, 
@@ -76,7 +88,6 @@ int Initialize::Prepare(){
     stencilWidthU_, NULL, NULL, &dmu_));
     PetscCall(DMSetFromOptions(dmu_));              
     PetscCall(DMSetUp(dmu_));                       
-
 
     // Create global vector
     PetscCall(DMCreateGlobalVector(dmu_,&globalu_));
@@ -86,29 +97,25 @@ int Initialize::Prepare(){
     return 0;
 }
 
-void Initialize::CellAveragedInitialCondition(double (*func)(const valarray<double>& point,
-                                                             const vector<double>& param)){
+void Driver::CellAveragedInit(double (*func)(const valarray<double>& point,
+                                             const vector<double>& param)){
 
     SimpleInitialValue(dmMesh_, dmu_, &fullmesh_, &globalu_, {-L_/(double)(2*globalM_)},func);
 }
 
-// ============================================================================================
-
-int MeshUse::CreateMeshInfo(){
-
-    PetscCall(DMGetLocalVector(dmu_, &localu_));
-
-    PetscCall(DMGlobalToLocalBegin(dmu_, globalu_, INSERT_VALUES, localu_));
-    PetscCall(DMGlobalToLocalENd(dmu_, globalu_, INSERT_VALUES, localu_));
-
-    PetscCall(DMDAVecGetArray(dmu_, localu_, &mi_.localVals));
+int Driver::CreateMeshInfo(){
 
     ReadMeshPortion(dmMesh_, &fullmesh_, mi_.lmesh);
 
-    return 0;
-}
+    // Create local vector
+    PetscCall(DMGetLocalVector(dmu_, &localu_));
 
-int MeshUse::Finalize(){
-    PetscCall(DMDAVecRestoreArray(dmu_,localu_,&mi_.localVals));
-    PetscCall(DMRestoreLocalVector(dmu_, &localu_));
+    PetscCall(DMGlobalToLocalBegin(dmu_, globalu_, INSERT_VALUES, localu_));
+    PetscCall(DMGlobalToLocalEnd(dmu_, globalu_, INSERT_VALUES, localu_));
+
+    DMDAVecGetArray(dmu_, localu_, &mi_.localVals);
+  
+    AssignValuesMeshInfo(mi_, dmMesh_, dmu_);
+
+    return 0;
 }

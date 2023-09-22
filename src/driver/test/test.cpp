@@ -35,11 +35,13 @@ int main(int argc, char **argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    Initialize * InitPtr = new Initialize();
+    Driver * driverPtr = new Driver();
 
-    InitPtr->Prepare();
+    driverPtr->Prepare();
 
-    InitPtr->CellAveragedInitialCondition(func);
+    driverPtr->CellAveragedInit(func);
+
+    PetscFinalize();
 
     return 0;
 }

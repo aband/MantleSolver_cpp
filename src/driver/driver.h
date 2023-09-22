@@ -10,7 +10,7 @@ extern "C"{
 #include "output.h"
 }
 
-class Initialize {
+class Driver {
     public:
         //! A constructor
         /**!
@@ -18,16 +18,13 @@ class Initialize {
          * This Initialize class containing information regarding data management,
          * and mesh.
          */
-        Initialize() {};
+        Driver() {};
 
         //! A destructor
         /**!
          * Destruct a Initialize class.
          */
-        ~Initialize() {VecDestroy(&globalu_); 
-                       VecDestroy(&fullmesh_);
-                       DMDestroy(&dmu_);
-                       DMDestroy(&dmMesh_);};
+        ~Driver();
 
         /**!
          * Function finish all the prepare work.
@@ -37,70 +34,32 @@ class Initialize {
         /**!
          * Initialize cell average values.
          */
-        void CellAveragedInitialCondition(double (*func)(const valarray<double>& point, 
-                                                         const vector<double>& param)); 
+        void CellAveragedInit(double (*func)(const valarray<double>& point, 
+                                             const vector<double>& param)); 
+
+        /**!
+         * Create MeshInfo object.
+         */
+        int CreateMeshInfo();
 
     private:
-        // Global cell(element) size.
+        // Storing global cell size.
         int globalM_, globalN_;
+
+        // Storing physical domain size.
+        double L_, H_;
 
         // Data management managing solution and mesh.
         DM dmu_, dmMesh_;
 
-        // Vector storing full mesh.
+        // Global vector storing full mesh.
         Vec fullmesh_;
 
-        // Ghost layer size.
-        int stencilWidthU_;
-        int stencilWidthMesh_;
+        // Global and local vector storing cell averaged solution.
+        Vec globalu_, localu_;
 
-        double L_, H_;
-        double xstart_, ystart_;
-
-        // Test a single stencil for convergence
-        int singleStencilTest_;
-        double scale_;
-
-        // Define type of mesh
-        int meshtype_;
-
-        Vec globalu_;
-
-        friend class MeshUse;
-};
-
-class MeshUse {
-    public:
-        //! A constructor
-        /**!
-         * Construct a MeshUse class 
-         * This MeshUse class containing meshInfo struct.
-         * This MeshUse class manipulate members in meshInfo struct.
-         * This MeshUse class is friend with MFEMUse and MLWENOUse class.
-         * MeshInfo should not be called directly.
-         */
-        MeshUse(){};
-
-        //! A destructor
-        /**!
-         * Destruct a MeshUse class.
-         */
-        ~MeshUse(){};
-
-        /**!
-         * Create mesh.
-         */
-        int CreateMeshInfo();
-
-        /**
-         * Finalize.
-         */
-        int Finalize();
-
-    private:
-        Vec localu_;
-
+        // MeshInfo struct
         MeshInfo mi_;
-
 };
+
 #endif
