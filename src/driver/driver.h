@@ -14,52 +14,29 @@ class Driver {
     public:
         //! A constructor
         /**!
-         * Construct a Initialize class 
-         * This Initialize class containing information regarding data management,
-         * and mesh.
+         * Construct a driver class.
+         * Driver class holding a pointer to meshInfo object.
+         * Driver class will be used to interact with underlaying functions.
          */
-        Driver() {};
+        Driver(MeshInfo * mi) {mi = &mi_;};
 
         //! A destructor
         /**!
          * Destruct a Initialize class.
          */
-        ~Driver();
+        ~Driver() {};
 
         /**!
-         * Function finish all the prepare work.
+         * Prepare for 
          */
-        int Prepare();
-
-        /**!
-         * Initialize cell average values.
-         */
-        void CellAveragedInit(double (*func)(const valarray<double>& point, 
-                                             const vector<double>& param)); 
-
-        /**!
-         * Create MeshInfo object.
-         */
-        int CreateMeshInfo();
+        int PrepareTransport();
 
     private:
-        // Storing global cell size.
-        int globalM_, globalN_;
-
-        // Storing physical domain size.
-        double L_, H_;
-
-        // Data management managing solution and mesh.
-        DM dmu_, dmMesh_;
-
-        // Global vector storing full mesh.
-        Vec fullmesh_;
-
-        // Global and local vector storing cell averaged solution.
-        Vec globalu_, localu_;
-
         // MeshInfo struct
         MeshInfo mi_;
+
+        // Transport pointer
+
 };
 
 #endif
