@@ -144,7 +144,4 @@ class advection {
         MLWENO::multiLevelReconstruction * mlrPtr_; 
 };
 
-
-
-
 #endif

@@ -1,4 +1,5 @@
 #include "driver.h"
+#include "mlwenouse.h"
 
 double func(const vertex& point, const vector<double>& param){
 	 if (point[0]<param[0]){
@@ -116,7 +117,6 @@ int main(int argc, char **argv){
 
     PetscCall(PetscPrintf(PETSC_COMM_WORLD, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n"));
 
-
     // Set up global vector holding cell averaged solution
     Vec globalu;
     PetscCall(DMCreateGlobalVector(dmu,&globalu));
@@ -131,22 +131,40 @@ int main(int argc, char **argv){
     PetscCall(DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, localu));
     PetscCall(DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, localu));
 
+    // Set up Driver class =====================================================
+    Driver * drivPtr = new Driver();
 
-    // Set up MeshInfo struct ==================================================
-    MeshInfo mi;
+    DMDAVecGetArray(dmu, localu, &drivPtr->mi.localVals);
 
-    DMDAVecGetArray(dmu, localu, &mi.localVals);
-
-    ReadMeshPortion(dmMesh, &globalmesh, mi.lmesh);
+    ReadMeshPortion(dmMesh, &globalmesh, drivPtr->mi.lmesh);
 
     // Assign meshinfo after mesh added to meshinfo
-    AssignValuesMeshInfo(mi,dmMesh,dmu); 
+    AssignValuesMeshInfo(drivPtr->mi,dmMesh,dmu); 
 
-    Driver * driPtr = new Driver(&mi);
+    drivPtr->UseWeno();
+    drivPtr->AddLevel(1,1);
+    drivPtr->AddLevel(2,2);
+    drivPtr->AddLevel(3,3);
+    drivPtr->AddLevel(4,4);
+    drivPtr->AddLevel(5,5);
 
+    // =========================================================================
+    MLWENO::MLWENOPrepare * mlpPtr = new MLWENO::MLWENOPrepare();
+
+    mlpPtr->AddLevel(drivPtr->mi,1,1);
+    mlpPtr->AddLevel(drivPtr->mi,2,2);
+    mlpPtr->AddLevel(drivPtr->mi,3,3);
+    mlpPtr->AddLevel(drivPtr->mi,4,4);
+    mlpPtr->AddLevel(drivPtr->mi,5,5);
+
+    mlpPtr->UpdateSmoothnessIndic(drivPtr->mi);
+
+    MLWENO::MLWENOUse * mluse = new MLWENO::MLWENOUse(); 
+
+    mluse->AddMLWENOInstance({"(3,3)","(5,5)"}, mlpPtr);
 
     // Finialie the program ====================================================
-    PetscCall(DMDAVecRestoreArray(dmu,localu,&mi.localVals));
+    PetscCall(DMDAVecRestoreArray(dmu,localu,&drivPtr->mi.localVals));
     PetscCall(DMRestoreLocalVector(dmu, &localu));
 
     PetscCall(VecDestroy(&globalu));

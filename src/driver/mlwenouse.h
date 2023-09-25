@@ -19,6 +19,8 @@ namespace MLWENO{
               * Construct a MLWENOUse class. 
               * This MLWENO containing multiple multi-level weno reconstruction instances.
               * Construct a MLWENOUse class by assigning a meshinfo pointer to it.
+              * By using this MLWENOUse class, there is no need to separate boundary.
+              * Different treatment can be applied to any place in the computational domain.
               */
 
              MLWENOUse() {};
@@ -42,7 +44,8 @@ namespace MLWENO{
               * Evaluate a reconstruction value using defined MLWENO instances.
               */
              double Evaluate(const vertex& point, 
-                             const indice& globalCell);
+                             const indice& globalCell,
+                             const MeshInfo& mi);
 
         private:
 
@@ -52,7 +55,7 @@ namespace MLWENO{
               */
              int AssignInstance_(const indice& globalCell);
 
-             vector<multiLevelReconstruction * mlrPtr> mlrIns_;
+             vector<multiLevelReconstruction *> mlrIns_;
     };
 
 }

@@ -5,10 +5,14 @@
 #include "input.h"
 #include <petsc.h>
 
+#include "transport.h"
+
 extern "C"{
 #include "mesh.h"
 #include "output.h"
 }
+
+enum transportType {adv, diff, adv_diff, adv_diff_react};
 
 class Driver {
     public:
@@ -18,7 +22,7 @@ class Driver {
          * Driver class holding a pointer to meshInfo object.
          * Driver class will be used to interact with underlaying functions.
          */
-        Driver(MeshInfo * mi) {mi = &mi_;};
+        Driver() {};
 
         //! A destructor
         /**!
@@ -27,15 +31,33 @@ class Driver {
         ~Driver() {};
 
         /**!
-         * Prepare for 
+         * MeshInfo struct
+         * Can be accessed from outside the class directly.
          */
-        int PrepareTransport();
+        MeshInfo mi;
+
+        /**!
+         * Use WENO for reconstruction.
+         * Allocate memory space for MLWENOPrepare class.
+         */
+        int UseWeno();
+
+        /**!
+         * Assign all possible stencil sizes to WENOPrepare class.
+         */
+        int AddLevel(const int& m, const int& n);
+
+        /**!
+         * Prepare for solving a transport problem 
+         */
+        int PrepareTransport(transportType type);
 
     private:
-        // MeshInfo struct
-        MeshInfo mi_;
 
-        // Transport pointer
+        /**!
+         * Hold MLWENOPrepare pointer
+         */
+        MLWENO::MLWENOPrepare * mlpPtr_ = NULL;
 
 };
 

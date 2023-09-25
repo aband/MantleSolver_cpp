@@ -1,20 +1,22 @@
-#include "mlweno.h"
+#include "reconstruction.h"
+#include "mlwenouse.h"
 
 using namespace MLWENO;
 
 void MLWENOUse::AddMLWENOInstance(const unordered_set<std::string>& selectLevels,
                                   MLWENOPrepare * mlpPtr){
 
-    multiLevelReconstruction * mlrins = new multiLevelreconstruction(); 
+    multiLevelReconstruction * mlrins = new multiLevelReconstruction(); 
 
     mlrins->SelectWenoReconstLevel(selectLevels, (*mlpPtr));
 
-    mlrIns.push_back(mlrins); 
+    mlrIns_.push_back(mlrins); 
 
 }
 
-double Evaluate(const vertex& point,
-                const indice& globalCell){
+double MLWENOUse::Evaluate(const vertex& point,
+                           const indice& globalCell,
+                           const MeshInfo& mi){
 
     // AssignInstance will decide which MLWENO reconstruction instance 
     // should be used here.
@@ -22,7 +24,7 @@ double Evaluate(const vertex& point,
     return mlrIns_.at(AssignInstance_(globalCell))->EvaluateMLWENO(mi,point,globalCell); 
 }
 
-int AssignInstance_(const indice& globalCell){
+int MLWENOUse::AssignInstance_(const indice& globalCell){
 
     // No special treatment on boundary as default 
 
