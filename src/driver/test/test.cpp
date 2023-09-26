@@ -161,9 +161,12 @@ int main(int argc, char **argv){
 
     MLWENO::MLWENOUse * mluse = new MLWENO::MLWENOUse(); 
 
-    mluse->AddMLWENOInstance({"(3,3)","(5,5)"}, mlpPtr);
+    mluse->AddMLWENOLevel("interior",{"(3,3)","(5,5)"}, mlpPtr);
 
-    // Finialie the program ====================================================
+    mluse->AssignWENOStencils("interior","(3,3)",{{0,0},{-2,0},{-2,-2},{0,-2}});
+    mluse->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
+
+    // Finialize the program ====================================================
     PetscCall(DMDAVecRestoreArray(dmu,localu,&drivPtr->mi.localVals));
     PetscCall(DMRestoreLocalVector(dmu, &localu));
 

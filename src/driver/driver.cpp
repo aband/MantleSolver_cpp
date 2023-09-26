@@ -2,6 +2,8 @@
 
 int Driver::UseWeno(){
 
+    // Allocate memory space for mlweno prepare class
+
     mlpPtr_ = new MLWENO::MLWENOPrepare();
 
     return 0;

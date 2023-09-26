@@ -3,16 +3,39 @@
 
 using namespace MLWENO;
 
-void MLWENOUse::AddMLWENOInstance(const unordered_set<std::string>& selectLevels,
-                                  MLWENOPrepare * mlpPtr){
+int MLWENOUse::AddMLWENOLevel(const std::string& location,
+                              const unordered_set<std::string>& selectLevels,
+                              MLWENOPrepare * mlpPtr){
 
-    multiLevelReconstruction * mlrins = new multiLevelReconstruction(); 
+    if (mlpPtr == NULL){
+        return -1;
+    } else {
+        multiLevelReconstruction * mlrins = new multiLevelReconstruction(); 
 
-    mlrins->SelectWenoReconstLevel(selectLevels, (*mlpPtr));
+        mlrins->SelectWenoReconstLevel(selectLevels, (*mlpPtr));
 
-    mlrIns_.push_back(mlrins); 
+        mlrIns_.push_back(mlrins); 
+
+        AssignMap_.insert(std::make_pair(location, mlrIns_.size()-1));
+
+        return 0;
+    }
 
 }
+
+void MLWENOUse::AssignWENOStencils(const int& location,
+                                   std::string level,
+                                   vector<indice> newReconstMethod){
+
+    mlrIns_.at(location)->ModifyReconstMethod(level, newReconstMethod);   
+}
+
+void MLWENOUse::AssignWENOStencils(const std::string& location,
+                                   std::string level, 
+                                   vector<indice> newReconstMethod){
+    mlrIns_.at(AssignMap_.at(location))->ModifyReconstMethod(level, newReconstMethod);   
+}
+
 
 double MLWENOUse::Evaluate(const vertex& point,
                            const indice& globalCell,
@@ -24,7 +47,7 @@ double MLWENOUse::Evaluate(const vertex& point,
     return mlrIns_.at(AssignInstance_(globalCell))->EvaluateMLWENO(mi,point,globalCell); 
 }
 
-int MLWENOUse::AssignInstance_(const indice& globalCell){
+int MLWENOUse::AssignInstance_(const indice& globalCell) const{
 
     // No special treatment on boundary as default 
 
@@ -39,5 +62,4 @@ int MLWENOUse::AssignInstance_(const indice& globalCell){
 //    } else {
 //        return 2;
 //    }
-
 }

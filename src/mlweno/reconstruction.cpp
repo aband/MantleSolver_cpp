@@ -54,10 +54,8 @@ double singleLevelReconstruction::CalculateSmoothnessIndic(const MeshInfo& mi, i
 
 void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
 
-    //int rank;
-    //MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
-
-    //cout << mi.MPIglobalCellSize[1] << endl;
+    // Function used to find interior stencils.
+    // Has nothing to do with physical domain.
 
     for (int j=mi.MPIlocalCellStart[1]-mi.cellGhostLayerSize; 
          j<mi.MPIlocalCellStart[1]+mi.MPIlocalCellSize[1]+mi.cellGhostLayerSize; j++){

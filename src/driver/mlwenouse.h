@@ -37,8 +37,21 @@ namespace MLWENO{
               * We can have different MLWENO class, but only one WENOPrepare.
               * Create an MLWENO instance with given levels.
               */
-             void AddMLWENOInstance(const unordered_set<std::string>& selectLevels,
-                                    MLWENOPrepare * mlpPtr);
+             int AddMLWENOLevel(const std::string& location,
+                                const unordered_set<std::string>& selectLevels,
+                                MLWENOPrepare * mlpPtr);
+
+             /**
+              * Modify reconstruction stencils.
+              * Assign ways to look for stencils.
+              */
+             void AssignWENOStencils(const std::string& location,
+                                     std::string level, 
+                                     vector<indice> newReconstMethod); 
+
+             void AssignWENOStencils(const int& location,
+                                     std::string level, 
+                                     vector<indice> newReconstMethod); 
 
              /**
               * Evaluate a reconstruction value using defined MLWENO instances.
@@ -46,14 +59,19 @@ namespace MLWENO{
              double Evaluate(const vertex& point, 
                              const indice& globalCell,
                              const MeshInfo& mi);
-
         private:
 
              /**
               * User-defined function.
               * Use this function to treat boundary differently.
               */
-             int AssignInstance_(const indice& globalCell);
+             int AssignInstance_(const indice& globalCell) const;
+
+             /**
+              * Location map.
+              * Storing the information indicating how to assign MLWENO instance.
+              */
+             unordered_map<std::string, int> AssignMap_;
 
              vector<multiLevelReconstruction *> mlrIns_;
     };

@@ -201,7 +201,7 @@ namespace MLWENO{
             const unordered_set<std::string>& GetinteriorLevels() const 
             {return interiorLevels_;};
 
-            //! Assing calculated boundary and interior levels
+            //! Assign calculated boundary and interior levels
             void AssignboundaryLevels (const unordered_set<std::string>& boundaryLevels) 
             {boundaryLevels_ = boundaryLevels;};
             void AssigninteriorLevels (const unordered_set<std::string>& interiorLevels)

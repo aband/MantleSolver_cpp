@@ -1,0 +1,194 @@
+#ifndef RECONSTMLWENO_H_
+#define RECONSTMLWENO_H_
+
+#include "polynomial.h"
+#include <map>
+
+/**!
+ * A new mlweno reconstuction header file.
+ * An alternative to reconstruction.h file.
+ * DONOT compile it with reconstruction.h. with cause fatal error.
+ */
+
+namespace MLWENO{
+
+    //! Single level reconstruction class
+    /**
+     * 1. Create non-overlap stencils with given stencil size.
+     * 2. Compute stencil polynomials with created stencils. 
+     * 3. Calculate smoothness indicators with stencil polynomials.
+     */
+    class singleLevelReconstruction {
+        public:
+            //! A constructor
+            /*!
+             * Default constructor for a single reconstruction level.
+             */
+            singleLevelReconstruction() {};
+            //! A constructor
+            /*!
+             * Costume constructor with given x and y stencil size.
+             */
+            singleLevelReconstruction(int stencilSizeX, int stencilSizeY); 
+           
+            //! A destructor
+            /*!
+             * Clear interior, single level polynomial and smoothness indicators
+             */
+            ~singleLevelReconstruction();
+
+            void CreateStencilPolynomials(const MeshInfo& mi);
+
+            bool CheckExist(const MeshInfo& mi, indice owner) const {return interior_.count(FlatIndic(mi,owner));};
+
+            const int GetSizeX() const {return stencilSizeX_;};
+            const int GetSizeY() const {return stencilSizeY_;};
+
+            const double GetScale(int s) {return singleLevel_[s]->GetScale();};
+            const double GetScale(const MeshInfo& mi, const indice& owner) {return singleLevel_[FlatIndic(mi,owner)]->GetScale();}; 
+            //! Directly calculate smoothness indicator of a given stencil
+            //! Should not be called directly for computational efficiency
+            double CalculateSmoothnessIndic(const MeshInfo& mi, indice owner);
+
+            /**
+             * Directly extract pre-calculateed smoothness indicator.
+             * Should always be the one to call when smoothness indicator is needed.
+             */
+            double GetSmoothnessIndic(const MeshInfo& mi, indice owner); 
+
+            unordered_map<int, double> GetSmoothnessIndicDeriv(const MeshInfo& mi, const indice& owner);
+
+            //! Update smoothness indicator for entire reconstruction level
+            void UpdateSmoothnessIndic(const MeshInfo& mi);
+
+            void UpdateDerivSmoothnessIndic(const MeshInfo& mi);
+            /**
+             * Evaluate polynomial
+             */
+            double Evaluate(const MeshInfo& mi, const indice& owner, const vertex& point);
+
+            double Evaluate(const MeshInfo& mi, const indice& owner, const vertex& point, const int& local);
+
+            // ======================================================================
+            //! class members for checking and verification
+            void CheckStencils() const {cout<< "Constructed "<< interior_.size() << " stencils with the size of " << stencilSizeX_ << " " << stencilSizeY_ << endl;};
+            void CheckStencilPolynomials(const MeshInfo& mi, indice start);
+            void PrintSmoothnessIndicator(const MeshInfo& mi);
+
+        private:
+
+            int stencilSizeX_ = -1; //!< Stencil size in x direction
+            int stencilSizeY_ = -1; //!< Stencil size in y direction
+
+            stencil <indice> stencilIndice_;           //!< Indices with given x and y sizes
+            unordered_set<int> interior_;              //!< Numbering the created stencils
+            map<int, double> smoothnessIndic_;         //!< Smoothness indicators
+            unordered_map<int, derivative> smoothnessIndicDeriv_;//!< Derivative of smoothness indicators
+            map<int, tensorProductPoly::stencilPolynomial*> singleLevel_;       //!< Single level polynomials
+
+            void IdentifyInteriorCell_(const MeshInfo& mi);
+
+            const vertex ComputeStencilCenter_(const MeshInfo& mi, int flat);
+
+            void ComputeStencilPolyn_(const MeshInfo& mi);
+    };
+
+    /**
+     * A class preparing for all possible multi-level weno reconstruciton using
+     * different single-level reconstruction.
+     * This class holding all single level reconstuctions.
+     * Let MLWENO "steal" single level reconstructions from it.
+     * Multi-level reconstruction class is declared as a friend of this class.
+     */
+    class MLWENOPrepare {
+        public:
+            MLWENOPrepare() {};
+
+            ~MLWENOPrepare();
+
+            /**
+             * Add single levels to the private allLevels_ member.
+             * Reconstruction method not required.
+             * Reconstruction method will be defined later in multiLevelReconstruction.
+             */
+            void AddLevel(const MeshInfo& mi, const int& stencilSizeX, 
+                                              const int& stencilSizeY);
+
+            /**
+             * Update smoothness indicator for all single level stencil polynomials.
+             * Should be called everytime non linear weights are being calculated.
+             */
+            void UpdateSmoothnessIndic(const MeshInfo& mi);
+
+            /**
+             * Update derivatives of smoothness indicator for all single level 
+             * stencil polynomials.
+             * Should be called before using fully implicit method.
+             */
+            void UpdateDerivSmoothnessIndic(const MeshInfo& mi);
+
+            /**
+             * Print information of all levels created.
+             */
+            void PrintInfo();
+
+        private:
+            friend class multiLevelReconstruction;
+
+            std::unordered_map<std::string, singleLevelReconstruction *> allLevels_;
+    };
+
+   
+   class multiLevelReconstruction {
+       public:
+            //! A constructor
+            /**!
+             * Construt multi-level weno reconstruction by specifying each single level
+             */
+            multiLevelReconstruction() {};
+
+            //! A destructor
+            /**
+             * Construct multi-level weno reconstruction by specifying each single level
+             */
+            ~multiLevelReconstruction() {Clear();};
+
+            /**!
+             * Specify the application range of this multilevel reconstruction.
+             */
+            void SpecifyComputDomain(const vector<int>& domain) {domain_ = domain;};
+
+            /**!
+             * Select levels will be used.
+             */
+            void SelectWenoReconstLevel(const unordered_set<std::string>& keys,
+                                        const MLWEN);
+
+            /**!
+             * Update Non linear weights.
+             */
+            void UpdateNonLinearWgts(const MeshInfo& mi);
+
+       private:
+
+            /**!
+             * The cells that use this multi level reconstruction.
+             */
+            vector<int> domain_;
+
+            /**!
+             * Storing all non linear weights mapping to each cells.
+             * An efficient way to reuse calculated non linear weights.
+             */
+            unordered_map<int, unordered_map<std::string, unordered_map<int, double>>> nonLinearWgts_;
+
+            /**!
+             * Update non linear weight for one target cell.
+             */
+            void UpdateNonLinearWgtsSingleCell(const MeshInfo& mi,
+                                               const int& globalCell);
+   }
+
+}
+
+#endif
