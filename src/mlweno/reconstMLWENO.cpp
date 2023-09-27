@@ -233,14 +233,51 @@ void MLWENOPrepare::PrintInfo(){
 }
 
 // ========= MultiLevelReconstruction ====================================
-void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
+/**!
+ * Select weno levels from mlweno preparation class.
+ * Pointers will be stored in an unordered_map.
+ */
+void multiLevelReconstruction::SelectWenoReconstLevel(const unordered_set<std::string>& keys,
+                                                      const MLWENOPrepare& mlpPtr){
+
+    // Insert selected keys
+    // Steal single level reconstruction pointer from MLWENOPrepare class
+    for (auto const& key: keys){
+        if (mlpPtr.allLevels_.count(key) == 0){
+            cout << "This given level " << key << " has not been defined in mlp ..." << endl;
+            break;
+        } else if (Levels_.count(key) == 1){
+            cout << "This given level " << key << " has already been included ..." << endl;
+            break;
+        } else {
+            Levels_.insert(std::make_pair(key, mlpPtr.allLevels_.at(key)));
+        }
+    }
+
+}
+
+/**!
+ * Modify reconst method with given key.
+ * Only modify existing reconst method.
+ * Please use AddLevel to add reconstruction levels.
+ */
+void multiLevelReconstruction::ModifyReconstMethod(const std::string& key,
+                                                   const vector<indice>& newReconstMethod){
+    if(Methods_.count(key) !=0){
+        Methods_.erase(key);
+    }
+
+    Methods_.insert(std::make_pair(key, newReconstMethod));
 
 }
 
 
+void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
 
-void multiLevelReconstruction::UpdateNonLinearWgtsSingleCell(const MeshInfo& mi,
-                                                             const int& globalCell){
+}
 
+void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
+                                                        const int& globalCell){
 
+    
 }

@@ -1,7 +1,7 @@
 #ifndef MLWENOUSE_H_
 #define MLWENOUSE_H_
 
-#include "reconstruction.h"
+#include "reconstMLWENO.h"
 #include "util.h"
 
 /**!
@@ -46,12 +46,12 @@ namespace MLWENO{
               * Assign ways to look for stencils.
               */
              void AssignWENOStencils(const std::string& location,
-                                     std::string level, 
-                                     vector<indice> newReconstMethod); 
+                                     const std::string& level, 
+                                     const vector<indice>& newReconstMethod); 
 
              void AssignWENOStencils(const int& location,
-                                     std::string level, 
-                                     vector<indice> newReconstMethod); 
+                                     const std::string& level, 
+                                     const vector<indice>& newReconstMethod); 
 
              /**
               * Evaluate a reconstruction value using defined MLWENO instances.

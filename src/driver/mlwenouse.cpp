@@ -1,4 +1,3 @@
-#include "reconstruction.h"
 #include "mlwenouse.h"
 
 using namespace MLWENO;
@@ -24,15 +23,15 @@ int MLWENOUse::AddMLWENOLevel(const std::string& location,
 }
 
 void MLWENOUse::AssignWENOStencils(const int& location,
-                                   std::string level,
-                                   vector<indice> newReconstMethod){
+                                   const std::string& level,
+                                   const vector<indice>& newReconstMethod){
 
     mlrIns_.at(location)->ModifyReconstMethod(level, newReconstMethod);   
 }
 
 void MLWENOUse::AssignWENOStencils(const std::string& location,
-                                   std::string level, 
-                                   vector<indice> newReconstMethod){
+                                   const std::string& level, 
+                                   const vector<indice>& newReconstMethod){
     mlrIns_.at(AssignMap_.at(location))->ModifyReconstMethod(level, newReconstMethod);   
 }
 
@@ -44,7 +43,8 @@ double MLWENOUse::Evaluate(const vertex& point,
     // AssignInstance will decide which MLWENO reconstruction instance 
     // should be used here.
 
-    return mlrIns_.at(AssignInstance_(globalCell))->EvaluateMLWENO(mi,point,globalCell); 
+    //return mlrIns_.at(AssignInstance_(globalCell))->EvaluateMLWENO(mi,point,globalCell); 
+    return 0.0;
 }
 
 int MLWENOUse::AssignInstance_(const indice& globalCell) const{

@@ -151,7 +151,7 @@ namespace MLWENO{
             /**
              * Construct multi-level weno reconstruction by specifying each single level
              */
-            ~multiLevelReconstruction() {Clear();};
+            ~multiLevelReconstruction() {};
 
             /**!
              * Specify the application range of this multilevel reconstruction.
@@ -162,7 +162,13 @@ namespace MLWENO{
              * Select levels will be used.
              */
             void SelectWenoReconstLevel(const unordered_set<std::string>& keys,
-                                        const MLWEN);
+                                        const MLWENOPrepare& mlpPtr);
+
+            /**!
+             * Assign reconstruction method to different levels.
+             */
+            void ModifyReconstMethod(const std::string& key,
+                                     const vector<indice>& newReconstMethod);
 
             /**!
              * Update Non linear weights.
@@ -183,11 +189,18 @@ namespace MLWENO{
             unordered_map<int, unordered_map<std::string, unordered_map<int, double>>> nonLinearWgts_;
 
             /**!
+             * Weno Levels and corresponding methods
+             */
+            unordered_map<std::string, singleLevelReconstruction *> Levels_;
+
+            unordered_map<std::string, vector<indice>> Methods_;
+
+            /**!
              * Update non linear weight for one target cell.
              */
-            void UpdateNonLinearWgtsSingleCell(const MeshInfo& mi,
-                                               const int& globalCell);
-   }
+            void UpdateNonLinearWgtsCell_(const MeshInfo& mi,
+                                          const int& globalCell);
+   };
 
 }
 

@@ -78,7 +78,8 @@ target_link_libraries(io_lib
 
 # Create a library from the files in the mlweno directory
 add_library(mlweno_lib 
-		  ${SRC}/mlweno/reconstruction.cpp 
+		  #${SRC}/mlweno/reconstruction.cpp
+		  ${SRC}/mlweno/reconstMLWENO.cpp
 		  ${SRC}/mlweno/polynomial.cpp 
 )
 
