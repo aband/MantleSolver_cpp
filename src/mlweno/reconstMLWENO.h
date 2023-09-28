@@ -177,6 +177,8 @@ namespace MLWENO{
 
        private:
 
+            double eps0_ = 0.01;
+
             /**!
              * The cells that use this multi level reconstruction.
              */
@@ -199,7 +201,8 @@ namespace MLWENO{
              * Update non linear weight for one target cell.
              */
             void UpdateNonLinearWgtsCell_(const MeshInfo& mi,
-                                          const int& globalCell);
+                                          const int& globalCell,
+                                          const std::string& weightType);
    };
 
 }

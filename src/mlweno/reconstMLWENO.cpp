@@ -276,8 +276,57 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
 
 }
 
-void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
-                                                        const int& globalCell){
+inline int powerShift(const int& r){
 
-    
+    switch (r) {
+        case -1:
+            return 0;
+        case 1:
+            return 1; 
+        case 2:
+            return 3;
+        default: 
+            return 4;
+    }
+}
+
+void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
+                                                        const int& globalCell,
+                                                        const std::string& weightType){
+    // Incorportated both one stage and two stage weighting scheme.
+    // Power shift set default to be 0,0,0 for one stage.
+   
+    unordered_map<std::string, unordered_map<int,double>> nlw;
+
+    double sum = 0.0;
+
+    for (auto const& level : Levels_){
+        const int sizeX = level.second->GetSizeX();
+        const int sizeY = level.second->GetSizeY();
+
+        for (auto const& rm : Methods_.at(level.first)){
+            indice owner = Bend(mi, globalCell) + rm; 
+            if (level.second->CheckExist(mi,owner)){
+                double scale = level.second->GetScale(FlatIndic(mi, owner));
+                double sm = level.second->GetSmoothnessIndic(mi, owner);
+                int order = max(sizeX, sizeY);
+                int r = (weightType=="two_stage") ? order : -1; 
+
+                double value = 1.0/pow(sm + scale*scale*eps0_, order + powerShift(r));
+                nlw[level.first].insert(std::make_pair(FlatIndic(sizeX, rm),value));
+                sum += value;
+            }
+        }
+    }
+
+    for (auto const& level: Levels_){
+        if (nlw.at(level.first).empty() == 0){
+            for (auto & in : nlw.at(level.first)){
+                in.second = in.second/sum;
+            }
+        }
+    }
+
+    nonLinearWgts_.erase(globalCell);
+    nonLinearWgts_.insert(std::make_pair(globalCell, nlw));
 }
