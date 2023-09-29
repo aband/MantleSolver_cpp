@@ -25,6 +25,24 @@ double func(const vertex& point, const vector<double>& param){
     //return 0.5;
 }
 
+bool left_boundary(const indice& globalCell){
+
+    if (globalCell[0] == 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool interior(const indice& globalCell){
+   if (left_boundary(globalCell)){
+       return false;
+   } else {
+       return true;
+   }
+
+}
+
 int main(int argc, char **argv){
 
     // Initializing petsc function
@@ -165,6 +183,8 @@ int main(int argc, char **argv){
 
     mluse->AssignWENOStencils("interior","(3,3)",{{0,0},{-2,0},{-2,-2},{0,-2}});
     mluse->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
+
+    mluse->UpdateNonLinearWgts(drivPtr->mi, "interior", "one_stage", interior);
 
     // Finialize the program ====================================================
     PetscCall(DMDAVecRestoreArray(dmu,localu,&drivPtr->mi.localVals));

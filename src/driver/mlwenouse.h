@@ -31,7 +31,7 @@ namespace MLWENO{
              
              ~MLWENOUse() {};
  
-             /**
+             /**!
               * Create MLWENO reconstruction instance from a given MLWENOPrepare class.
               * We prepare for weno reconstruction only once.
               * We can have different MLWENO class, but only one WENOPrepare.
@@ -41,7 +41,7 @@ namespace MLWENO{
                                 const unordered_set<std::string>& selectLevels,
                                 MLWENOPrepare * mlpPtr);
 
-             /**
+             /**!
               * Modify reconstruction stencils.
               * Assign ways to look for stencils.
               */
@@ -53,7 +53,19 @@ namespace MLWENO{
                                      const std::string& level, 
                                      const vector<indice>& newReconstMethod); 
 
-             /**
+             /**!
+              * Update non linear weights.
+              */
+             void UpdateNonLinearWgts(const MeshInfo& mi, 
+                                      const std::string& location,
+                                      const std::string:: weightType,
+                                      bool (*func)(const indice& globalCell));
+
+             void UpdateNonLinearWgts(const MeshInfo& mi, 
+                                      const int& location,
+                                      const std::string:: weightType,
+                                      bool (*func)(const indice& globalCell));
+             /**!
               * Evaluate a reconstruction value using defined MLWENO instances.
               */
              double Evaluate(const vertex& point, 
@@ -73,6 +85,9 @@ namespace MLWENO{
               */
              unordered_map<std::string, int> AssignMap_;
 
+             /**!
+              * Vector holding pointers to multi level reconstructions
+              */
              vector<multiLevelReconstruction *> mlrIns_;
     };
 

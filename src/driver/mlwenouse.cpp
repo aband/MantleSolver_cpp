@@ -22,6 +22,7 @@ int MLWENOUse::AddMLWENOLevel(const std::string& location,
 
 }
 
+// Assign WENO stencils to different mlweno instance pointers
 void MLWENOUse::AssignWENOStencils(const int& location,
                                    const std::string& level,
                                    const vector<indice>& newReconstMethod){
@@ -35,6 +36,21 @@ void MLWENOUse::AssignWENOStencils(const std::string& location,
     mlrIns_.at(AssignMap_.at(location))->ModifyReconstMethod(level, newReconstMethod);   
 }
 
+// Update Nonlinear weights
+void UpdateNonLinearWgts(const MeshInfo& mi, 
+                         const int& location,
+                         const std::string:: weightType,
+                         bool (*func)(const indice& globalCell)){
+    mlrIns_.at(location)->UpdateNonLinearWgts(mi, weightType, func);
+}
+
+void UpdateNonLinearWgts(const MeshInfo& mi, 
+                         const std::string& location,
+                         const std::string:: weightType,
+                         bool (*func)(const indice& globalCell)){
+
+    mlrIns_.at(AssignMap_.at(location))->UpdateNonLinearWgts(mi, weightType, func);
+}
 
 double MLWENOUse::Evaluate(const vertex& point,
                            const indice& globalCell,

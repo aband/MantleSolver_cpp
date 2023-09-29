@@ -271,8 +271,25 @@ void multiLevelReconstruction::ModifyReconstMethod(const std::string& key,
 
 }
 
+void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, 
+                                                   const std::string& weightType,
+                                                   bool (*assignML)(const indice& globalCell)){
+    // Update non linear weights for all cells in the target domain
+    if (nonLinearWgts_.empty()){
+        // Initialize non linear weights with assigned domain.
+        for (auto const& globalCell : mi.lmesh){
+            if (assignML(globalCell)){
+                UpdateNonLinearWgtsCell_(mi, FlatIndic(mi, globalCell), weightType);
+            }
+        }
 
-void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi){
+    } else {
+        // Update non linear weights.
+        for (auto const& nlw: nonLinearWgts_){
+            UpdateNonLinearWgtsCell_(mi, nlw.first, weightType);
+        }
+
+    }
 
 }
 

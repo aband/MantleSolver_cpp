@@ -154,11 +154,6 @@ namespace MLWENO{
             ~multiLevelReconstruction() {};
 
             /**!
-             * Specify the application range of this multilevel reconstruction.
-             */
-            void SpecifyComputDomain(const vector<int>& domain) {domain_ = domain;};
-
-            /**!
              * Select levels will be used.
              */
             void SelectWenoReconstLevel(const unordered_set<std::string>& keys,
@@ -173,16 +168,13 @@ namespace MLWENO{
             /**!
              * Update Non linear weights.
              */
-            void UpdateNonLinearWgts(const MeshInfo& mi);
+            void UpdateNonLinearWgts(const MeshInfo& mi,
+                                     const std::string& weightType,
+                                     bool (*assignML)(const indice& globalCell));
 
        private:
 
             double eps0_ = 0.01;
-
-            /**!
-             * The cells that use this multi level reconstruction.
-             */
-            vector<int> domain_;
 
             /**!
              * Storing all non linear weights mapping to each cells.
