@@ -25,20 +25,25 @@ double func(const vertex& point, const vector<double>& param){
     //return 0.5;
 }
 
-bool left_boundary(const indice& globalCell){
+bool left_boundary(const indice& globalCell,
+                   const MeshInfo& mi){
 
-    if (globalCell[0] == 0) {
+    if (globalCell[0] == 0 &&
+        globalCell[1] > 0 && 
+        globalCell[1] < mi.MPIglobalCellSize[1]-1) {
         return true;
     } else {
         return false;
     }
 }
 
-bool interior(const indice& globalCell){
-   if (left_boundary(globalCell)){
-       return false;
-   } else {
+bool interior(const indice& globalCell, 
+              const MeshInfo& mi){
+   if (globalCell[0] > 0 && globalCell[0] < mi.MPIglobalCellSize[0]-1 &&
+       globalCell[1] > 0 && globalCell[1] < mi.MPIglobalCellSize[1]-1){
        return true;
+   } else {
+       return false;
    }
 
 }
@@ -179,12 +184,39 @@ int main(int argc, char **argv){
 
     MLWENO::MLWENOUse * mluse = new MLWENO::MLWENOUse(); 
 
+    // Add reconstruction levels to interior cells
     mluse->AddMLWENOLevel("interior",{"(3,3)","(5,5)"}, mlpPtr);
 
     mluse->AssignWENOStencils("interior","(3,3)",{{0,0},{-2,0},{-2,-2},{0,-2}});
     mluse->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
 
     mluse->UpdateNonLinearWgts(drivPtr->mi, "interior", "one_stage", interior);
+
+    // Add reconstruction levels to boundary cells
+    mluse->AddMLWENOLevel("left_boundary",{"(3,3)","(1,1)"}, mlpPtr);
+
+    mluse->AssignWENOStencils("left_boundary","(3,3)",{{0,0},{0,-2}});
+    mluse->AssignWENOStencils(1,"(1,1)",{{0,0}});
+
+    mluse->UpdateNonLinearWgts(drivPtr->mi, "left_boundary", "one_stage", left_boundary);
+
+    /**!
+     * L_1 error
+     */
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussWeightsFace;
+    double work = 0.0;
+
+    indice cell {1,1}; 
+
+    vector<vertex> corner =  
+
+    for (int g=0; g<gpf.size(); g++){
+        work += gwf[g]*abs(func(GaussMapPointsFace))*GaussJacobian(); 
+    }
+
+    PetscCall(PetscPrintf(PETSC_SELF_WORLD,"The L1 Error at cell (%d, %d) is %f \n",
+                                           cell[0],cell[1],work));
 
     // Finialize the program ====================================================
     PetscCall(DMDAVecRestoreArray(dmu,localu,&drivPtr->mi.localVals));

@@ -273,7 +273,8 @@ void multiLevelReconstruction::ModifyReconstMethod(const std::string& key,
 
 void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, 
                                                    const std::string& weightType,
-                                                   bool (*assignML)(const indice& globalCell)){
+                                                   bool (*assignML)(const indice& globalCell,
+                                                                    const MeshInfo& mi)){
     // Update non linear weights for all cells in the target domain
     if (nonLinearWgts_.empty()){
         // Initialize non linear weights with assigned domain.
@@ -282,9 +283,9 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
         for (int j=mi.MPIlocalCellStart[1] - mi.cellGhostLayerSize; 
                  j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + mi.cellGhostLayerSize; j++){
         for (int i=mi.MPIlocalCellStart[0] - mi.cellGhostLayerSize; 
-                 i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + mi.cellGhostLayerSize; j++){
+                 i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + mi.cellGhostLayerSize; i++){
             indice globalCell {i,j};
-            if (assignML(globalCell)){
+            if (assignML(globalCell,mi)){
                 UpdateNonLinearWgtsCell_(mi, FlatIndic(mi, globalCell), weightType);
             }
         }}
@@ -294,7 +295,6 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
         for (auto const& nlw: nonLinearWgts_){
             UpdateNonLinearWgtsCell_(mi, nlw.first, weightType);
         }
-
     }
 
 }
@@ -343,7 +343,7 @@ void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
     }
 
     for (auto const& level: Levels_){
-        if (nlw.at(level.first).empty() == 0){
+        if (nlw[level.first].empty() == 0){
             for (auto & in : nlw.at(level.first)){
                 in.second = in.second/sum;
             }
@@ -353,3 +353,24 @@ void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
     nonLinearWgts_.erase(globalCell);
     nonLinearWgts_.insert(std::make_pair(globalCell, nlw));
 }
+
+double multiLevelReconstruction::EvaluateMLWENO (const MeshInfo& mi,
+                                                 const vertex& point,
+                                                 const indice& globalCell) const {
+    double work = 0.0;
+
+    unordered_map<std::string, unordered_map<int, double>> nlw = nonLinearWgts_.at(FlatIndic(mi,globalCell));
+
+    for (auto const& level : nlw){
+        if (nlw[level.first].empty() == 0){
+            for (auto const& wgts : level.second){
+                indice owner = globalCell + Bend(Levels_.at(level.first)->GetSizeX(), wgts.first);
+                work += wgts.second * Levels_.at(level.first)->Evaluate(mi, owner, point);
+            }
+        }
+    }
+
+    return work; 
+}
+
+void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi);

@@ -170,7 +170,20 @@ namespace MLWENO{
              */
             void UpdateNonLinearWgts(const MeshInfo& mi,
                                      const std::string& weightType,
-                                     bool (*assignML)(const indice& globalCell));
+                                     bool (*assignML)(const indice& globalCell,
+                                                      const MeshInfo& mi));
+
+            /**!
+             * Reconstruct point value with pre defined multi level WENO 
+             * reconstruction scheme.
+             */
+            double EvaluateMLWENO (const MeshInfo& mi, 
+                                   const vertex& point, 
+                                   const indice& globalCell) const ;
+            /**!
+             * Print information of non linear weights
+             */
+            void PrintNonLinearWgts(const MeshInfo& mi);
 
        private:
 

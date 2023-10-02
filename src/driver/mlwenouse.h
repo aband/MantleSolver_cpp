@@ -58,26 +58,29 @@ namespace MLWENO{
               */
              void UpdateNonLinearWgts(const MeshInfo& mi, 
                                       const std::string& location,
-                                      const std::string:: weightType,
-                                      bool (*func)(const indice& globalCell));
+                                      const std::string& weightType,
+                                      bool (*func)(const indice& globalCell,
+                                                   const MeshInfo& mi));
 
              void UpdateNonLinearWgts(const MeshInfo& mi, 
                                       const int& location,
-                                      const std::string:: weightType,
-                                      bool (*func)(const indice& globalCell));
+                                      const std::string& weightType,
+                                      bool (*func)(const indice& globalCell,
+                                                   const MeshInfo& mi));
              /**!
               * Evaluate a reconstruction value using defined MLWENO instances.
               */
              double Evaluate(const vertex& point, 
                              const indice& globalCell,
-                             const MeshInfo& mi);
-        private:
+                             const MeshInfo& mi,
+                             const int& location);
 
-             /**
-              * User-defined function.
-              * Use this function to treat boundary differently.
-              */
-             int AssignInstance_(const indice& globalCell) const;
+             double Evaluate(const vertex& point,
+                             const indice& globalCell,
+                             const MeshInfo& mi,
+                             const std::string& location);
+
+        private:
 
              /**
               * Location map.

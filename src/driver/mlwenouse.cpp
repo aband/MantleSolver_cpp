@@ -37,45 +37,35 @@ void MLWENOUse::AssignWENOStencils(const std::string& location,
 }
 
 // Update Nonlinear weights
-void UpdateNonLinearWgts(const MeshInfo& mi, 
-                         const int& location,
-                         const std::string:: weightType,
-                         bool (*func)(const indice& globalCell)){
+void MLWENOUse::UpdateNonLinearWgts(const MeshInfo& mi, 
+                                    const int& location,
+                                    const std::string& weightType,
+                                    bool (*func)(const indice& globalCell,
+                                                 const MeshInfo& mi)){
     mlrIns_.at(location)->UpdateNonLinearWgts(mi, weightType, func);
 }
 
-void UpdateNonLinearWgts(const MeshInfo& mi, 
-                         const std::string& location,
-                         const std::string:: weightType,
-                         bool (*func)(const indice& globalCell)){
+void MLWENOUse::UpdateNonLinearWgts(const MeshInfo& mi, 
+                                    const std::string& location,
+                                    const std::string& weightType,
+                                    bool (*func)(const indice& globalCell,
+                                                 const MeshInfo& mi)){
 
     mlrIns_.at(AssignMap_.at(location))->UpdateNonLinearWgts(mi, weightType, func);
 }
 
 double MLWENOUse::Evaluate(const vertex& point,
                            const indice& globalCell,
-                           const MeshInfo& mi){
+                           const MeshInfo& mi,
+                           const int& location){
 
-    // AssignInstance will decide which MLWENO reconstruction instance 
-    // should be used here.
-
-    //return mlrIns_.at(AssignInstance_(globalCell))->EvaluateMLWENO(mi,point,globalCell); 
-    return 0.0;
+    return mlrIns_.at(location)->EvaluateMLWENO(mi,point,globalCell); 
 }
 
-int MLWENOUse::AssignInstance_(const indice& globalCell) const{
+double MLWENOUse::Evaluate(const vertex& point,
+                           const indice& globalCell,
+                           const MeshInfo& mi,
+                           const std::string& location){
 
-    // No special treatment on boundary as default 
-
-    return 0;
-
-    // ==== template ========================
-    // These boundaryx function can be defined as inline functions in this file.
-//    if (boundary1(globalCell)) {
-//        return 0;
-//    } else if (boundary2(globalCell)){
-//        return 1;
-//    } else {
-//        return 2;
-//    }
+    return mlrIns_.at(AssignMap_.at(location))->EvaluateMLWENO(mi,point,globalCell); 
 }
