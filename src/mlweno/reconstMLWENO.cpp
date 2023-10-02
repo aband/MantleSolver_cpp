@@ -277,11 +277,17 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
     // Update non linear weights for all cells in the target domain
     if (nonLinearWgts_.empty()){
         // Initialize non linear weights with assigned domain.
-        for (auto const& globalCell : mi.lmesh){
+        // GlobalCells will be selected by assignML function.
+        // All local portion of the mesh will be looped through.
+        for (int j=mi.MPIlocalCellStart[1] - mi.cellGhostLayerSize; 
+                 j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + mi.cellGhostLayerSize; j++){
+        for (int i=mi.MPIlocalCellStart[0] - mi.cellGhostLayerSize; 
+                 i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + mi.cellGhostLayerSize; j++){
+            indice globalCell {i,j};
             if (assignML(globalCell)){
                 UpdateNonLinearWgtsCell_(mi, FlatIndic(mi, globalCell), weightType);
             }
-        }
+        }}
 
     } else {
         // Update non linear weights.
