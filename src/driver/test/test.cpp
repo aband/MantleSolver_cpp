@@ -1,7 +1,7 @@
 #include "driver.h"
 #include "mlwenouse.h"
 
-double func(const vertex& point, const vector<double>& param){
+double tmpfunc(const vertex& point, const vector<double>& param){
 	 if (point[0]<param[0]){
 //		  return point[0]*point[0]+point[1]*point[1];
 	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
@@ -45,7 +45,6 @@ bool interior(const indice& globalCell,
    } else {
        return false;
    }
-
 }
 
 int main(int argc, char **argv){
@@ -145,7 +144,7 @@ int main(int argc, char **argv){
     PetscCall(DMCreateGlobalVector(dmu,&globalu));
 
     // Set up initial values for cell averaged solution
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalu, func); 
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalu, {0.0,0.0},tmpfunc); 
 
     // Scattering global solution into local pieces
     Vec localu; 
@@ -187,10 +186,10 @@ int main(int argc, char **argv){
     // Add reconstruction levels to interior cells
     mluse->AddMLWENOLevel("interior",{"(3,3)","(5,5)"}, mlpPtr);
 
-    mluse->AssignWENOStencils("interior","(3,3)",{{0,0},{-2,0},{-2,-2},{0,-2}});
+    mluse->AssignWENOStencils("interior","(3,3)",{{-2,0},{-2,-2},{0,0},{0,-2}});
     mluse->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
 
-    mluse->UpdateNonLinearWgts(drivPtr->mi, "interior", "one_stage", interior);
+    mluse->UpdateNonLinearWgts(drivPtr->mi, "interior", "two_stage", interior);
 
     // Add reconstruction levels to boundary cells
     mluse->AddMLWENOLevel("left_boundary",{"(3,3)","(1,1)"}, mlpPtr);
@@ -202,30 +201,27 @@ int main(int argc, char **argv){
 
     mluse->PrintNonLinearWgts("interior",drivPtr->mi);
 
-	 /**!
+    /**!
      * L_1 error
      */
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>& gpf = GaussPointsFace;
     double work = 0.0;
 
-    indice cell {M/2,M/2}; 
+    indice cell {M/2,N/2}; 
 
     vector<vertex> corner = extractCorners(drivPtr->mi, cell); 
 
-    cout << mluse->Evaluate({0,0},{M/2,M/2},drivPtr->mi, "interior") << "  "
-         << func({0,0},{0,0}) << endl;
+    PetscCall(PetscPrintf(PETSC_COMM_SELF,"The point-wise error at point (%f, %f) is %.3e \n",
+                                           0.0,0.0,abs(mluse->Evaluate({0,0},{M/2,N/2},drivPtr->mi, "interior")-tmpfunc({0,0},{0,0}))));
 
     for (int g=0; g<gpf.size(); g++){
         vertex mapped = GaussMapPointsFace(gpf[g], corner);
         double jac = abs(GaussJacobian(gpf[g], corner));
-        work += gwf[g]*abs(func(mapped,{0,0}) - mluse->Evaluate(mapped, cell, drivPtr->mi, "interior"))*jac; 
-    
-	     cout << func(mapped,{0,0}) << "   " << mluse->Evaluate(mapped, cell, drivPtr->mi, "interior")  << endl;
-	 
-	 }
+        work += gwf[g]*abs(tmpfunc(mapped,{0,0}) - mluse->Evaluate(mapped, cell, drivPtr->mi, "interior"))*jac;
+    }
 
-    PetscCall(PetscPrintf(PETSC_COMM_SELF,"The L1 Error at cell (%d, %d) is %f \n",
+    PetscCall(PetscPrintf(PETSC_COMM_SELF,"The L1 Error at cell (%d, %d) is %.3e \n",
                                            cell[0],cell[1],work));
 
     // Finialize the program ====================================================

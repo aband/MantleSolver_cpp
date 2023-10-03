@@ -1,0 +1,1 @@
+/workspace/mpich-install-4.1.1/bin/mpicxx  -g  -rdynamic CMakeFiles/test.dir/test.cpp.o  -o test -Wl,-rpath,/workspace/newpetsc/petsc/PETSC_DIR/lib:/usr/lib/x86_64-linux-gnu/hdf5/serial libmlweno_lib.a libio_lib.a libgeneral_lib.a /workspace/newpetsc/petsc/PETSC_DIR/lib/libpetsc.so /usr/lib/x86_64-linux-gnu/hdf5/serial/libhdf5.so -llapacke 

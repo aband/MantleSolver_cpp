@@ -6,6 +6,7 @@
 #include "util.h"
 #include "input.h"
 #include "reconstruction.h"
+//#include <adolc/adolc.h>
 
 extern "C"{
 #include "mesh.h"
@@ -14,7 +15,6 @@ extern "C"{
 
 using namespace std;
 
-// true solution is defined here
 double func(const vertex& point, const vector<double>& param){
 	 if (point[0]<param[0]){
 //		  return point[0]*point[0]+point[1]*point[1];
@@ -26,19 +26,13 @@ double func(const vertex& point, const vector<double>& param){
 //        return sin(point[0] + point[1] + 0.1) + 10;
 	 }
 
-    // Infinitly smooth test case
+    //return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
     //return sin(point[0] + point[1] + 0.1);
-
-    // Quadratic test case
     //return point[0]*point[0] + point[1]*point[1];
-
-    // Linear test case
+    //return 0.5;
     //return point[0] + point[1];
 
-    // Constant test case
-    //return 0.5;
 }
-
 
 int main(int argc, char **argv){
 
@@ -51,9 +45,9 @@ int main(int argc, char **argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
+    //ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
 
-    ierr = PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");CHKERRQ(ierr);
+    //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
     // ==========================================================================================================================
 
@@ -161,14 +155,88 @@ int main(int argc, char **argv){
     // Create MeshInfo object
     MeshInfo mi; 
 
-    // Assign local mesh and local values to mesh information struct
+    // Assign local mesh and local values to mi
     mi.lmesh = mesh;
     mi.localVals = lu;
 
     AssignValuesMeshInfo(mi,dm,dmu); 
 
-    // ====================================================================================================================================
-    // Create WENOPrepare
+// ========================================================================================================================================
+
+    // Test multi level reconstruction
+    MLWENO::multiLevelReconstruction * mlrPtr = new MLWENO::multiLevelReconstruction(mi,2,2,{{-1,0},{-1,-1,},{0,-1},{0,0}});
+    //mlrPtr->AddLevel(mi,3,3,{{-1,-1}});
+    mlrPtr->AddLevel(mi,3,3,{{-2,0},{-2,-2},{0,0},{0,-2}});
+    //mlrPtr->AddLevel(mi,2,3,{{-1,-1},{0,-1}});
+    //mlrPtr->AddLevel(mi,3,2,{{-1,-1},{-1,0}});
+    mlrPtr->AddLevel(mi,5,5,{{-2,-2}});
+
+    mlrPtr->AddLevel(mi,1,1,{{0,0}});
+
+    // Test rearrange weno reconstruction levels
+
+    //mlrPtr->ModifyReconstMethod("(2,2)",{{-1,-1}});
+
+    mlrPtr->SelectWenoReconstLevel({"(5,5)","(3,3)","(1,1)"});
+
+    //mlrPtr->SelectWenoReconstLevel({"(2,2)","(1,1)"});
+
+    mlrPtr->SeparateBoundaryLayer(mi);
+
+    unordered_set <int> bl = mlrPtr->GetboundaryCells();
+    unordered_set <int> il = mlrPtr->GetinteriorCells();
+
+    mlrPtr->AssignboundaryCells(bl);
+    mlrPtr->AssigninteriorCells(il);
+
+    mlrPtr->UpdateNonLinearWgts(mi,1);
+
+    vertex center {0.0,0.0};
+
+    // Test point wise reconstruction
+    cout << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) << endl;
+    cout << "Point wise reconstruction error at center " << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) - func(center, {-L/(2*M)}) << endl;
+
+    // Test derivative of point wise reconstruction
+//    unordered_map<int, double> deriv = mlrPtr->EvaluateDerivMLWENO(mi,center,{M/2,N/2});
+
+//    for (auto & d: deriv){
+//        indice b = Bend(mi,d.first);
+//        cout << "( " << b[0] << ", " << b[1] << " )  " << d.second <<  endl;
+//    }
+
+    // Compute lr norm
+    int r=1;
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<valarray<double>>& gpf = GaussPointsFace;
+
+    vertex p0 = {-L/(2*M), -H/(2*N)};
+    vertex p1 = { L/(2*M), -H/(2*N)};
+    vertex p2 = { L/(2*M),  H/(2*N)};
+    vertex p3 = {-L/(2*M),  H/(2*N)};
+
+    vector<vertex> corner = {p0,p1,p2,p3};
+    double work = 0.0;
+
+    for (size_t i=0; i<gpf.size(); i++){
+        vertex mapped = GaussMapPointsFace(gpf[i],corner);
+        double jac = abs(GaussJacobian(gpf[i],corner));
+        double gw = gwf[i];
+        //work += jac*gw*pow(abs(mlrPtr->EvaluateMLWENO(mi,mapped,{1,1}) - func(mapped, {-L/(2*M)})),r);
+    }
+
+    work = work / ((L*H)/9);
+
+    //cout << "Average L 1 norm at center cell " << work << endl;
+
+    // Print required information
+    //mlrPtr->GetInfo();
+
+    //mlrPtr->PrintSmoothnessIndicator(mi);
+
+    //mlrPtr->PrintNonLinearWgts(mi); 
+
+    // ========== Test WENOPrepare class ====================
     MLWENO::MLWENOPrepare * mlpPtr = new MLWENO::MLWENOPrepare();
 
     mlpPtr->AddLevel(mi,1,1);
@@ -176,22 +244,95 @@ int main(int argc, char **argv){
     mlpPtr->AddLevel(mi,3,3);
     mlpPtr->AddLevel(mi,4,4);
     mlpPtr->AddLevel(mi,5,5);
+    mlpPtr->AddLevel(mi,4,5);
 
     mlpPtr->UpdateSmoothnessIndic(mi);
 
-    mlpPtr->PrintInfo();
+//    mlpPtr->PrintInfo();
 
-    MLWENO::multiLevelReconstruction * mlrIns = new MLWENO::multiLevelReconstruction();
+    MLWENO::multiLevelReconstruction * mlrIns1 = new MLWENO::multiLevelReconstruction();
+    MLWENO::multiLevelReconstruction * mlrIns2 = new MLWENO::multiLevelReconstruction();
 
-    mlrIns->SelectWenoReconstLevel({"(3,3)","(5,5)"},(*mlpPtr));
+    mlrIns1->SelectWenoReconstLevel({"(1,1)", "(2,2)", "(3,3)"},(*mlpPtr));
 
-    mlrIns->ModifyReconstMethod("(3,3)",{{0,0},{-2,0},{-2,-2},{0,-2}});
-    mlrIns->ModifyReconstMethod("(5,5)",{{-2,-2}});
+//    mlrIns1->ModifyReconstMethod("(2,2)",{{-1,-1}});
+//    mlrIns1->ModifyReconstMethod("(1,1)",{{0,0}});
+//    mlrIns1->ModifyReconstMethod("(3,3)",{{-1,-1}});
 
-    mlrIns->SeparateBoundaryLayer(mi);
-    mlrIns->UpdateNonLinearWgts(mi,2); 
+    //mlrIns1->ModifyReconstMethod("(1,1)",{{0,0}}); 
+    //mlrIns1->ModifyReconstMethod("(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}}); 
+    //trPtr->ModifyReconstMethod("(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}}); 
+    mlrIns1->ModifyReconstMethod("(3,3)",{{0,0},{-3,0},{-3,-2},{0,-2}});  
+    mlrIns1->ModifyReconstMethod("(4,5)",{{-2,-2}});            
 
-    mlrIns->GetInfo();
+    //mlrIns1->SeparateBoundaryLayer(mi);
+
+    //mlrIns1->UpdateNonLinearWgts(mi,2);
+
+    //mlrIns1->EvaluateMLWENO(mi,{-0.85 -0.98873}, {3,0}); 
+
+    //mlrIns1->GetInfo();
+
+    //mlrIns1->PrintSmoothnessIndicator(mi);
+
+    //mlrIns1->PrintNonLinearWgts(mi); 
+
+    mlrIns2->SelectWenoReconstLevel({"(3,3)", "(4,4)", "(5,5)"},(*mlpPtr));
+
+    mlrIns2->ModifyReconstMethod("(4,4)",{{0,0}});
+    mlrIns2->ModifyReconstMethod("(5,5)",{{0,0}});
+    mlrIns2->ModifyReconstMethod("(3,3)",{{-1,-1}});
+
+    mlrIns2->SeparateBoundaryLayer(mi);
+
+    //mlrIns2->UpdateNonLinearWgts(mi,1);
+
+    //mlrIns2->GetInfo();
+
+    //mlrIns1->PrintSmoothnessIndicator(mi);
+
+    //mlrIns1->PrintNonLinearWgts(mi); 
+/*
+    derivative testmap1 {{1,2},{2,7},{9,0.5}};
+    derivative testmap2 {{1,0.5},{2,5},{4,6},{-2,0.6},{1000,0.003}};
+    double modify = 10;
+    unordered_map_arithmetic(testmap2, modify, std::multiplies<double>());
+    unordered_map_arithmetic(testmap1, testmap2, std::multiplies<double>());
+    cout << endl;
+    for (const auto& t: testmap2){
+        cout << t.first << " " << t.second << endl;
+    }
+    cout << endl;
+    for (const auto& t: testmap1){
+        cout << t.first << " " << t.second << endl;
+    }
+
+    unordered_map_arithmetic(testmap1, testmap2, std::multiplies<double>(), modify, std::minus<double>());
+    cout << endl;
+    for (const auto& t: testmap1){
+        cout << t.first << " " << t.second << endl;
+    }
+
+    // Print initial condition
+    char * filename = (char*) "initial.txt"; 
+    PlainOutput(dmu, &globalu, filename);
+    PlainMeshOutput(dm, &fullmesh);
+*/
+    delete mlrPtr;
+    delete mlpPtr;
+    delete mlrIns1;
+    delete mlrIns2;
+	 // ====================================================================================================================================
+    // Clear used objects
+    DMDAVecRestoreArray(dmu,localu,&lu);
+    DMRestoreLocalVector(dmu, &localu); 
+
+    VecDestroy(&fullmesh);
+    VecDestroy(&globalu);
+    DMDestroy(&dm);
+    DMDestroy(&dmu);
+
+    PetscFinalize();
 
     return 0;
 }

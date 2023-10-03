@@ -267,26 +267,26 @@ void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi,
  */
 
 void stencilPolynomial::SetCollapsePolyn(const MeshInfo& mi, const stencil <indice>& stencilIndice) {
-	 stencil<indice> siNow = stencilIndice;
+    stencil<indice> siNow = stencilIndice;
 
-	 if (collapsePolyn_ == nullptr){
-		  int maxDegree[2] = {stencilPolyn_.getI(),stencilPolyn_.getJ()};
-		  collapsePolyn_ = new basePolynomial(maxDegree);
-	 }
+    if (collapsePolyn_ == nullptr){
+        int maxDegree[2] = {stencilPolyn_.getI(),stencilPolyn_.getJ()};
+        collapsePolyn_ = new basePolynomial(maxDegree);
+    }
 
-	 indice currentCell;
-	 double sum = 0.0;
+    indice currentCell;
+    double sum = 0.0;
 
-	 for (int i=0; i<stencilPolyn_.getSize(); i++){
-		  sum = 0.0;
-		  for (int j=0; j<stencilPolyn_.getSize(); j++){
-				currentCell = start_ + siNow(j);
+    for (int i=0; i<stencilPolyn_.getSize(); i++){
+        sum = 0.0;
+        for (int j=0; j<stencilPolyn_.getSize(); j++){
+            currentCell = start_ + siNow(j);
 
-				sum += stencilPolyn_(j)->getCoef(i)*
-					 mi.localVals[currentCell[1]][currentCell[0]];
-		  }
-		  collapsePolyn_->setCoef(i,sum);
-	 }
+            sum += stencilPolyn_(j)->getCoef(i)*
+                   mi.localVals[currentCell[1]][currentCell[0]];
+        }
+        collapsePolyn_->setCoef(i,sum);
+    }
 }
 
 //! Polyn smoothness indicator

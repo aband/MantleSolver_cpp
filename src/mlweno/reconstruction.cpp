@@ -513,6 +513,7 @@ void multiLevelReconstruction::UpdateNonLinearWgts_(const MeshInfo& mi, int flat
             if (reconstLevels_[level]->CheckExist(mi,owner)){
                 double scale = reconstLevels_[level]->GetScale(FlatIndic(mi, owner));
                 double sm = reconstLevels_[level]->GetSmoothnessIndic(mi, owner);
+
                 double value = 1.0/pow(sm + scale*scale*eps0_ , sizeX+sizeY+powerShift.at(level));
                 nlw[level].insert(std::pair<int, double>(FlatIndic(sizeX,rm), value));
                 sum += value;
@@ -810,7 +811,7 @@ double multiLevelReconstruction::EvaluateMLWENO (const MeshInfo& mi, vertex poin
         if (nlw[level].empty() == 0){
             for (auto & wgts: nlw[level]){
                 indice owner = globalCell + Bend(reconstLevels_.at(level)->GetSizeX(),wgts.first);
-                work += wgts.second * reconstLevels_.at(level)->Evaluate(mi, owner, point); 
+                work += wgts.second * reconstLevels_.at(level)->Evaluate(mi, owner, point);
             }
         }
     }
