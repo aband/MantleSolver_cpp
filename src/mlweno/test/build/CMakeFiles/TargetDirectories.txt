@@ -1,7 +1,0 @@
-/workspace/MantleSolver_cpp/src/mlweno/test/build/CMakeFiles/rebuild_cache.dir
-/workspace/MantleSolver_cpp/src/mlweno/test/build/CMakeFiles/edit_cache.dir
-/workspace/MantleSolver_cpp/src/mlweno/test/build/CMakeFiles/test.dir
-/workspace/MantleSolver_cpp/src/mlweno/test/build/CMakeFiles/mlweno_lib.dir
-/workspace/MantleSolver_cpp/src/mlweno/test/build/CMakeFiles/parallel.dir
-/workspace/MantleSolver_cpp/src/mlweno/test/build/CMakeFiles/io_lib.dir
-/workspace/MantleSolver_cpp/src/mlweno/test/build/CMakeFiles/general_lib.dir
