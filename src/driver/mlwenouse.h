@@ -80,6 +80,12 @@ namespace MLWENO{
                              const MeshInfo& mi,
                              const std::string& location);
 
+             void PrintNonLinearWgts(const int& location,
+                                    const MeshInfo& mi);
+
+             void PrintNonLinearWgts(const std::string& location,
+                                    const MeshInfo& mi);
+
         private:
 
              /**

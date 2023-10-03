@@ -373,4 +373,30 @@ double multiLevelReconstruction::EvaluateMLWENO (const MeshInfo& mi,
     return work; 
 }
 
-void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi);
+void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi){
+
+    for (int j=mi.MPIlocalCellStart[1] - mi.cellGhostLayerSize; 
+             j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + mi.cellGhostLayerSize; j++){
+    for (int i=mi.MPIlocalCellStart[0] - mi.cellGhostLayerSize; 
+             i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + mi.cellGhostLayerSize; i++){
+
+        if (i>-1 && i<mi.MPIglobalCellSize[0] &&
+            j>-1 && j<mi.MPIglobalCellSize[1]){
+            indice start {i,j};
+            unordered_map<std::string, unordered_map<int,double>> nlw = nonLinearWgts_[FlatIndic(mi,start)];
+
+            cout << "Reconstruction at cell ( " << start[0] << ", " << start[1] << ")" << endl; 
+            for (auto const& level : Levels_) {
+                int sizeX = level.second->GetSizeX();
+    
+                if (nlw[level.first].empty() == 0) {
+                    for (auto & in:nlw[level.first]){
+                        indice m = Bend(sizeX,in.first);
+                        cout << "At Level " << level.first << " reconstruction at ( " << m[0] << ", "
+                             << m[1] << ") " << " with wgt " << in.second << endl;
+                    }
+                }
+            }
+        }
+    }}
+}

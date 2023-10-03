@@ -192,7 +192,6 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
         mi.cellArea.insert(std::make_pair<int,double>
                            (FlatIndic(mi.MPIglobalCellSize[0],i,j),
                             NumIntegralFace(corner,{0,0},{0.0,0.0},1.0,constFunc))); 
-
         }
     }}
 

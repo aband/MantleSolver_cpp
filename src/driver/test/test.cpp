@@ -200,22 +200,32 @@ int main(int argc, char **argv){
 
     mluse->UpdateNonLinearWgts(drivPtr->mi, "left_boundary", "one_stage", left_boundary);
 
-    /**!
+    mluse->PrintNonLinearWgts("interior",drivPtr->mi);
+
+	 /**!
      * L_1 error
      */
     const valarray<double>& gwf = GaussWeightsFace;
-    const vector<vertex>& gpf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussPointsFace;
     double work = 0.0;
 
-    indice cell {1,1}; 
+    indice cell {M/2,M/2}; 
 
-    vector<vertex> corner =  
+    vector<vertex> corner = extractCorners(drivPtr->mi, cell); 
+
+    cout << mluse->Evaluate({0,0},{M/2,M/2},drivPtr->mi, "interior") << "  "
+         << func({0,0},{0,0}) << endl;
 
     for (int g=0; g<gpf.size(); g++){
-        work += gwf[g]*abs(func(GaussMapPointsFace))*GaussJacobian(); 
-    }
+        vertex mapped = GaussMapPointsFace(gpf[g], corner);
+        double jac = abs(GaussJacobian(gpf[g], corner));
+        work += gwf[g]*abs(func(mapped,{0,0}) - mluse->Evaluate(mapped, cell, drivPtr->mi, "interior"))*jac; 
+    
+	     cout << func(mapped,{0,0}) << "   " << mluse->Evaluate(mapped, cell, drivPtr->mi, "interior")  << endl;
+	 
+	 }
 
-    PetscCall(PetscPrintf(PETSC_SELF_WORLD,"The L1 Error at cell (%d, %d) is %f \n",
+    PetscCall(PetscPrintf(PETSC_COMM_SELF,"The L1 Error at cell (%d, %d) is %f \n",
                                            cell[0],cell[1],work));
 
     // Finialize the program ====================================================
