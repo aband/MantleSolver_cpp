@@ -80,6 +80,9 @@ namespace MLWENO{
                              const MeshInfo& mi,
                              const std::string& location);
 
+             /**!
+              * Print non-linear weights relating to weights.
+              */
              void PrintNonLinearWgts(const int& location,
                                     const MeshInfo& mi);
 
