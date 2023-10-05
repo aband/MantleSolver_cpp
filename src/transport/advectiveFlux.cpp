@@ -52,18 +52,17 @@ inline std::array<double,2> getAdvFluxEdge(const MLWENOUse& mlu,
 /**!
  * Compute advective interior of the domain.
  */
-
-inline double getAdvFluxInterior(const MLWENOUse& mlu,
-                                 const MeshInfo& mi,
-                                 const vertexSet& edge,
-                                 const vertex& unitNormal,
-                                 const double& len,
-                                 const indice& globalCellIn,
-                                 const indice& globalCellOut,
-                                 const int& location,
-                                 const valarray<double>& gwe,
-                                 const valarray<double>& gpe,
-                                 const double& alpha){
+double getAdvFluxInterior(const MLWENOUse& mlu,
+                          const MeshInfo& mi,
+                          const vertexSet& edge,
+                          const vertex& unitNormal,
+                          const double& len,
+                          const indice& globalCellIn,
+                          const indice& globalCellOut,
+                          const int& location,
+                          const valarray<double>& gwe,
+                          const valarray<double>& gpe,
+                          const double& alpha){
 
     std::array<double,2> In;
     std::array<double,2> Out;
@@ -74,19 +73,4 @@ inline double getAdvFluxInterior(const MLWENOUse& mlu,
     return numericalFlux(In[0], Out[0], In[1], Out[1], alpha);
 }
 
-/**!
- * Compute advective flux on the boundary.
- * Inflow and outflow boundary are discussed separately.
- */
-inline double getAdvFluxBoundary(const std::string& inflowType,
-                                 const std::string& outflowType,
-                                 const vertex& unitNormal){
-
-    switch
-}
-
-double getAdvFlux(const MLWENOUse& mlu,
-                  const MeshInfo& mi,
-                  const std::string& ){
-
-}
+// =========== Implicit =================================
