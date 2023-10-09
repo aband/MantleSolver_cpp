@@ -194,7 +194,7 @@ unordered_map<int, double> SymDiffusion::diffusion::derivFlux(const MeshInfo& mi
 
 double SymDiffusion::diffusion::boundaryCondition_(double * ru, int n, const int& flag){
 
-    // Reflecive boundary condition
+    // Reflective boundary condition
     if (flag == 2) {
         ru[0] = -ru[3];
         ru[1] = -ru[2];
