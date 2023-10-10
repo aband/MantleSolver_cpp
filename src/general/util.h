@@ -215,6 +215,18 @@ indice Bend(const int M, int flat);
 //! Extract corners for the target cell
 vertexSet extractCorners(const MeshInfo& mi, const indice& global);
 
+/**!
+ * Edges are arranged in the order that horizontal edges are numbered first,
+ * while vertical edges are the next.
+ * Three functions are defined as following representing the relationship 
+ * between global cell index and global edge index.
+ */
+std::array<double,4> extractEdges(const MeshInfo& mi, const indice& globalCell);
+
+vertexSet extractEdgeNbr(const MeshInfo& mi, const int& globalEdge);
+
+int edgeIndexLocalToGlobal(const MeshInfo& mi, const int& globalEdge);
+
 //! Compute normalized tangent vector.
 const vertex unitTangent(const vertexSet& edge, 
                          const double& len);

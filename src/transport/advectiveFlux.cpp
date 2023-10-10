@@ -68,8 +68,8 @@ double getAdvFluxInterior(const MLWENOUse& mlu,
     std::array<double,2> In;
     std::array<double,2> Out;
 
-    In  = getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellIn , location, gwe, gpe);
-    Out = getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellOut, location, gwe, gpe);
+    In  = getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellIn , locationIn , gwe, gpe);
+    Out = getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellOut, locationOut, gwe, gpe);
 
     return numericalFlux(In[0], Out[0], In[1], Out[1], alpha);
 }

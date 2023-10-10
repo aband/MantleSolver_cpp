@@ -2,23 +2,28 @@
 #include "lagrange_tmp.h"
 
 /**!
- * Compute values of D(u) along the normal line.
+ * Assign values evaluating diffusion functions along the normal direction.
  */
-inline std::vector<double> evaluateDiffusionFcns(const vector<double>& uR){
+inline void assignDiffVals(const MLWENOUse& mlu,
+                           const MeshInfo&mi,
+                           const indice& globalCellIn,
+                           const indice& globalCellOut,
+                           const int& locationIn,
+                           const int& locationOut,
+                           const vertex& unitNormal,
+                           const vertex& mapped,
+                           const double& dx,
+                           vector<vertex>& diffVals){
 
-    vector<double> work(samplePoints.size(), 0);
+    int halfnumPts = diffVals.size() / 2;
 
-    for (int it = 0; it<work.size(); it++){
-        work.at(it) = diffFunc(uR.at(it));   
+    for (int i=0; i<halfnumPts; i++){
+        vertex point0 = mapped - (halfnumPts - 0.5)*dx*unitNormal;
+        vertex point1 = mapped + 0.5*dx*unitNormal;
+
+        diffVals[i] = diffFunc(mlu.Evaluate(point0,globalCellIn,mi,locationIn));
+        diffVals[i+halfnumPts] = diffFunc(mlu.Evaluate(point1,globalCellOut,mi,locationOut));
     }
-
-    return work;
-}
-
-inline vector<vertex> assignPts(const vertex& unitNormal,
-                                const vertex& mapped,
-                                const double& dx){
-    int numPts = points.size();
 
 }
 
@@ -27,10 +32,10 @@ double getDiffusiveFluxInterior(const MLWENOUse& mlu,
                                 const vertexSet& edge,
                                 const vertex& unitNormal,
                                 const double& len,
-                                const indice& globalCellL,
-                                const indice& globalCellR,
-                                const int& locationL,
-                                const int& locationR,
+                                const indice& globalCellIn,
+                                const indice& globalCellOut,
+                                const int& locationIn,
+                                const int& locationOut,
                                 const valarray<double>& gwe,
                                 const valarray<double>& gpe,
                                 const double& scale){
@@ -41,10 +46,10 @@ double getDiffusiveFluxInterior(const MLWENOUse& mlu,
     const int numPts = std::ceil((degree+1)/2.0) * 2;
 
     // Get diameter
-    const double hL = mi.cellArea.at(FlatInidc(mi,globalCellL));
-    const double hR = mi.cellArea.at(FlatIndic(mi,globalCellR));
+    const double hIn  = mi.cellArea.at(FlatInidc(mi,globalCellIn));
+    const double hOut = mi.cellArea.at(FlatIndic(mi,globalCellOut));
     
-    const double h = scale * ((hL < hR) ? hL : hR);
+    const double h = scale * ((hIn < hOut) ? hIn : hOut);
 
     const double dx = h /(double)(numPts - 1);
 
@@ -57,10 +62,13 @@ double getDiffusiveFluxInterior(const MLWENOUse& mlu,
     vector<double> diffVals(numPts, 0);
 
     for (int g=0; g<gwe.size(); g++){
-        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+        assignDiffVals(mlu, mi, globalCellIn, globalCellOut, locationIn, 
+                       locationOut, unitNormal, GaussMapPointsEdge({gpe[g]}, edge), 
+                       dx, diffVals);
 
         for (int i=0; i<numPts; i++){
-            work -= lagDer.middle(numPts-1, i) / dx * diffVals.at(i) * gwe.at(g) * len/2.0;
+            work -= lagDer.middle(numPts-1, i) / dx * gwe.at(g) * len/2.0 *
+                    diffVals.at(i);
         }
     }
 

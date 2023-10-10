@@ -231,6 +231,43 @@ vertexSet extractCorners(const MeshInfo& mi, const indice& global){
     return corner;
 }
 
+// =============================================================================
+// local edges are ordered as following:
+//   __3___
+//  |      |
+// 0|      |2
+//  |______|
+//     1
+// =============================================================================
+std::array<double,4> extractEdges(const MeshInfo& mi, const indice& globalCell){
+    std::array<double, 4> work;
+
+    // Two horizontal edges counted first.
+    work[1] = FlatIndic(mi, globalCell); 
+
+    work[3] = FlatIndic(mi, {globalCell[0], globalCell[1]+1})
+
+    work[0] = mi.MPIglobalHoriEdgeSize + FlatIndic(mi.MPIglobalCellSize[0]+1, globalCell);
+
+    work[2] = mi.MPIglobalHoriEdgeSize + FlatIndic(mi.MPIglobalCellSize[0]+1, 
+                                         {globalCell[0]+1,globalCell[1]});
+
+    return work;
+}
+
+// Return two neighbours of this given edge index.
+vertexSet extractEdgeNbr(const MeshInfo& mi, const int& globalEdge){
+    vertexSet nBr.resize(2);
+
+    if (globalEdge < mi.MPIglobalHoriEdgeSize){
+
+    }
+
+    return nBr;
+}
+
+// =============================================================================
+
 inline const vertex unitTangent(const vertexSet& edge, const double& len){
     return (edge.at(1) - edge.at(0))/len;
 }
