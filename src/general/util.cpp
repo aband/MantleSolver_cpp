@@ -256,14 +256,42 @@ std::array<double,4> extractEdges(const MeshInfo& mi, const indice& globalCell){
 }
 
 // Return two neighbours of this given edge index.
-vertexSet extractEdgeNbr(const MeshInfo& mi, const int& globalEdge){
-    vertexSet nBr.resize(2);
+vector<indice> extractEdgeNbr(const MeshInfo& mi, const int& globalEdge){
+    vector<indice> nBr.resize(2);
 
     if (globalEdge < mi.MPIglobalHoriEdgeSize){
-
+        // Horizontal edge
+        nBr[0] = Bend(mi,globalEdge);
+        nBr[1] = {nBr.at(0)[0], nBr.at(0)[1]-1};
+    } else {
+        // Vertical edge
+        nBr[0] = Bend(mi.MPIglobalCellSize[0]+1,
+                      globalEdge-mi.MPIglobalHoriEdgeSize);
+        nBr[1] = {nBr.at(0)[0]-1, nBr.at(0)[1]};
     }
 
     return nBr;
+}
+
+// Return global edge index corresponding to local index
+int edgeIndexGlobalToLocal(const MeshInfo& mi,
+                           const int& globalEdge){
+
+    vector<indice> gcells = extractEdgeNbr(mi, globalEdge);
+
+    indice localcell = MPIGlobalToLocal(gcells[0],mi);
+   
+    int work = 0;
+
+    if (globalEdge < mi.MPIglobalHoriEdgeSize){
+        // Horizontal edge
+        work = FlatIndic(mi.MPIlocalCellSize[0], localcell);
+    } else {
+        // Vertical edge
+        work = FlatIndic(mi.MPIlocalCellSize[0]+1, localcell);
+    }
+  
+    return work;
 }
 
 // =============================================================================

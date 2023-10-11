@@ -223,7 +223,7 @@ vertexSet extractCorners(const MeshInfo& mi, const indice& global);
  */
 std::array<double,4> extractEdges(const MeshInfo& mi, const indice& globalCell);
 
-vertexSet extractEdgeNbr(const MeshInfo& mi, const int& globalEdge);
+vector<indice> extractEdgeNbr(const MeshInfo& mi, const int& globalEdge);
 
 int edgeIndexLocalToGlobal(const MeshInfo& mi, const int& globalEdge);
 
