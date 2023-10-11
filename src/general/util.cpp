@@ -274,6 +274,7 @@ vector<indice> extractEdgeNbr(const MeshInfo& mi, const int& globalEdge){
 }
 
 // Return global edge index corresponding to local index
+// ghost region not included.
 int edgeIndexGlobalToLocal(const MeshInfo& mi,
                            const int& globalEdge){
 
@@ -292,6 +293,22 @@ int edgeIndexGlobalToLocal(const MeshInfo& mi,
     }
   
     return work;
+}
+
+int edgeIndexLocalToGlobal(const MeshInfo& mi,
+                           const int& localEdge){
+
+    vertex localCell;
+
+    if (localEdge < mi.MPIlocalHoriEdgeSize){
+        // It is a Horizontal edge
+        localCell = Bend(mi.MPIlocalCellSize[0], localEdge);
+        return FlatIndic(mi, localCell+mi.MPIlocalCellStart); 
+    } else {
+        // It is a Vertical edge
+        localCell = Bend(mi.MPIlocalCellSize[0]+1, localEdge - mi.MPIlocalVertEdgeSize);
+        return FlatIndic(mi, localCell+mi.MPIlocalCellStart) + mi.MPIglobalHoriEdgeSize;
+    }
 }
 
 // =============================================================================

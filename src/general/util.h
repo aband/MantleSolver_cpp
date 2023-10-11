@@ -225,7 +225,8 @@ std::array<double,4> extractEdges(const MeshInfo& mi, const indice& globalCell);
 
 vector<indice> extractEdgeNbr(const MeshInfo& mi, const int& globalEdge);
 
-int edgeIndexLocalToGlobal(const MeshInfo& mi, const int& globalEdge);
+int edgeIndexLocalToGlobal(const MeshInfo& mi, const int& localEdge);
+int edgeIndexGlobalToLocal(const MeshInfo& mi, const int& globalEdge);
 
 //! Compute normalized tangent vector.
 const vertex unitTangent(const vertexSet& edge, 

@@ -1,31 +1,5 @@
 #include "edgeFlux.h"
 
-/**!
- * Update edge flux on a given edge.
- * cell "globalCellIn" and cell "globalCellOut" sharing this edge.
- */
-inline double getEdgeFluxBoundary(const MLWENOUse& mluAdv,
-                                  const MLWENOUse& mluDif,
-                                  const MeshInfo& mi,
-                                  const vertexSet& edge,
-                                  const vertex& unitNormal,
-                                  const double& len,
-                                  const indice& globalCellIn,
-                                  const indice& globalCellOut,
-                                  const int& locationIn,
-                                  const int& locationOut,
-                                  const valarray<double>& gwe,
-                                  const valarray<double>& gpe,
-                                  const double& alpha,
-                                  const double& scale,
-                                  const std::string& boundaryTypeAdv,
-                                  const std::string& boundaryTypeDif,){
-
-    double work = 0.0;
-
-    return work;
-}
-
 void Transport::edgeFlux(const MeshInfo& mi,
                          const std::array& flowType){
 
@@ -52,7 +26,33 @@ void Transport::edgeFlux(const MeshInfo& mi,
 
 /**!
  * Update flux on all the edges.
+ * Distinguish between different boundary condition here.
  */
-void Transport::getEdgeFlux(){
-    // Initialize map holding all edge flux.
+void Transport::getEdgeFlux(const MeshInfo& mi){
+    // Compute edge flux
+    for (int e=0 ;e<edgeFlux_.size(); i++){
+        // Switch local edge index to global edge index.
+        int globalEdge = edgeIndexLocalToGlobal(mi,e); 
+
+        // Extract two cell index sharing the given edge.
+        // Cells are given in global cell indice.
+        vertex nBrs = extractEdgeNbr(mi, globalEdge);
+
+        // Assign flux values to edges
+        edgeFlux_.at(e) = 0;
+
+        // Judging whether the edge is on the boundary or not.
+        if (){
+
+
+        }
+
+        if (isAdv == 1){
+            edgeFlux_.at(e) += getAdvFluxInterior;
+        }
+
+        if (isDif == 1){
+            edgeFlux_.at(e) += get;
+        }
+    }
 }
