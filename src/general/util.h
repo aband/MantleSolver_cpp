@@ -221,9 +221,11 @@ vertexSet extractCorners(const MeshInfo& mi, const indice& global);
  * Three functions are defined as following representing the relationship 
  * between global cell index and global edge index.
  */
-std::array<double,4> extractEdges(const MeshInfo& mi, const indice& globalCell);
+std::array<double,4> extractEdgeIndex(const MeshInfo& mi, const indice& globalCell);
 
-vector<indice> extractEdgeNbr(const MeshInfo& mi, const int& globalEdge);
+std::array<indice,2> extractEdgeNbr(const MeshInfo& mi, const int& globalEdge);
+
+std::array<vertex,2> extractEdge(const MeshInfo& mi, const int& globalEdge);
 
 int edgeIndexLocalToGlobal(const MeshInfo& mi, const int& localEdge);
 int edgeIndexGlobalToLocal(const MeshInfo& mi, const int& globalEdge);
@@ -231,5 +233,10 @@ int edgeIndexGlobalToLocal(const MeshInfo& mi, const int& globalEdge);
 //! Compute normalized tangent vector.
 const vertex unitTangent(const vertexSet& edge, 
                          const double& len);
+
+const vertex getUnitNormal(const std:array<vertex,2> edge,
+                           const double& len);
+
+const double getEdgeLength(const std::array<vertex, 2> edge);
 
 #endif

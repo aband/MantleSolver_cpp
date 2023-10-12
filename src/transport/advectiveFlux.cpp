@@ -3,11 +3,11 @@
 /**!
  * A Lax-Friedrich style numerical flux scheme
  */
-inline double numericalFlux(const double& uIn, const double& uOut,
-                            const double& fIn, const double& fOut,
+inline double numericalFlux(const double& uL, const double& uR,
+                            const double& fL, const double& fR,
                             const double& alpha){
 
-    return 0.5*(fIn + fOut - alpha*(uOut - uIn));
+    return 0.5*(fR + fL - alpha*(uR - uL));
 }
 
 /**!
@@ -57,21 +57,21 @@ double getAdvFluxInterior(const MLWENOUse& mlu,
                           const vertexSet& edge,
                           const vertex& unitNormal,
                           const double& len,
-                          const indice& globalCellIn,
-                          const indice& globalCellOut,
-                          const int& locationIn,
-                          const int& locationOut,
+                          const indice& globalCellL,
+                          const indice& globalCellR,
+                          const int& locationL,
+                          const int& locationR,
                           const valarray<double>& gwe,
                           const valarray<double>& gpe,
                           const double& alpha){
 
-    std::array<double,2> In;
-    std::array<double,2> Out;
+    std::array<double,2> LFlux;
+    std::array<double,2> RFlux;
 
-    In  = getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellIn , locationIn , gwe, gpe);
-    Out = getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellOut, locationOut, gwe, gpe);
+    LFlux = getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellL, locationL, gwe, gpe);
+    RFlux = getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellR, locationR, gwe, gpe);
 
-    return numericalFlux(In[0], Out[0], In[1], Out[1], alpha);
+    return numericalFlux(LFlux[0], RFlux[0], LFlux[1], RFlux[1], alpha);
 }
 
 // =========== Implicit =================================

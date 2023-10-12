@@ -239,7 +239,7 @@ vertexSet extractCorners(const MeshInfo& mi, const indice& global){
 //  |______|
 //     1
 // =============================================================================
-std::array<double,4> extractEdges(const MeshInfo& mi, const indice& globalCell){
+std::array<double,4> extractEdgeIndex(const MeshInfo& mi, const indice& globalCell){
     std::array<double, 4> work;
 
     // Two horizontal edges counted first.
@@ -256,8 +256,8 @@ std::array<double,4> extractEdges(const MeshInfo& mi, const indice& globalCell){
 }
 
 // Return two neighbours of this given edge index.
-vector<indice> extractEdgeNbr(const MeshInfo& mi, const int& globalEdge){
-    vector<indice> nBr.resize(2);
+std::array<indice,2> extractEdgeNbr(const MeshInfo& mi, const int& globalEdge){
+    std::array<indice,2> nBr.resize(2);
 
     if (globalEdge < mi.MPIglobalHoriEdgeSize){
         // Horizontal edge
@@ -271,6 +271,34 @@ vector<indice> extractEdgeNbr(const MeshInfo& mi, const int& globalEdge){
     }
 
     return nBr;
+}
+/**
+ * Extract begin and end points for the given global edge index.
+ * Two points are ordered the same,
+ * From left to right for horizontal edge
+ * From bottom to top for vertical edge
+ */
+std::array<vertex,2> extractEdge(const MeshInfo& mi, const int& globalEdge){
+
+    std::array<vertex,2> edge;
+
+    indice ghostlayerShift {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
+
+    if (globalEdge < mi.MPIglobalHoriEdgeSize){
+        indice leftVertexIndex = Bend(mi,globalEdge); 
+        edge.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], 
+                       leftVertexIndex-mi.localCellStart+ghostlayerShift)]);
+        edge.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], 
+                       leftVertexIndex-mi.localCellStart+ghostlayerShift + {1,0})]);
+    } else {
+        indice bottomVertexIndex = Bend(mi.MPIglobalVertexSize[0], globalEdge);
+        edge.push_back(mi.lmesh[FlatIndic(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],
+                       bottomVertexIndex-mi.localCellStart+ghostlayerShift)])]);
+        edge.push_back(mi.lmesh[FlatIndic(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],
+                       bottomVertexIndex-mi.localCellStart+ghostlayerShift)] + {0,1})]);
+    }
+
+    return edge;
 }
 
 // Return global edge index corresponding to local index
@@ -315,4 +343,23 @@ int edgeIndexLocalToGlobal(const MeshInfo& mi,
 
 inline const vertex unitTangent(const vertexSet& edge, const double& len){
     return (edge.at(1) - edge.at(0))/len;
+}
+
+const vertex getUnitNormal(const std::array<vertex, 2> edge, 
+                           const double& len){
+
+    vertex work;
+    work = edge[1] - ege[0];
+    work = work.cshift(1);
+    work[1] *= -1;
+    work /= len;
+
+    return work;
+}
+
+const double getEdgeLength(const std::array<vertex, 2> edge){
+
+    vertex vec = edge[1]-edge[0];
+    vec *= vec;
+    return sqrt(vec.sum);
 }

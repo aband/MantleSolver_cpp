@@ -1,5 +1,19 @@
 #include "edgeFlux.h"
 
+inline bool outsideBoundary(const indice& cell){
+
+
+}
+
+// Check if the edge is on boundary or not.
+inline bool onBoundary(const std::array<indice, 2>& nbr){
+
+    if (nbr.at(0)){
+
+        return true;
+    }
+}
+
 void Transport::edgeFlux(const MeshInfo& mi,
                          const std::array& flowType){
 
@@ -41,18 +55,26 @@ void Transport::getEdgeFlux(const MeshInfo& mi){
         // Assign flux values to edges
         edgeFlux_.at(e) = 0;
 
+        std::array<vertex, 2> edge = extractEdge(mi, globalEdge);
+
+        double len = getEdgeLength(edge); 
+
+        vertex unitNormal = getUnitNormal(edge,len);
+
         // Judging whether the edge is on the boundary or not.
-        if (){
+        if (onBoundary(nBrs)){
 
 
-        }
+        } else {
 
-        if (isAdv == 1){
-            edgeFlux_.at(e) += getAdvFluxInterior;
-        }
+            if (isAdv == 1){
+                edgeFlux_.at(e) += getAdvFluxInterior(mluAdv, mi, globalEdge);
+            }
 
-        if (isDif == 1){
-            edgeFlux_.at(e) += get;
+            if (isDif == 1){
+                edgeFlux_.at(e) += getDifFluxInterior();
+            }
+
         }
     }
 }
