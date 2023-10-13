@@ -1,16 +1,24 @@
 #include "edgeFlux.h"
 
-inline bool outsideBoundary(const indice& cell){
-
+inline bool outsideBoundary(const MeshInfo& mi,
+                            const indice& cell){
+    if (cell[0]<0 || cell[0]>mi.MPIglobalCellSize[0] || 
+        cell[1]<0 || cell[1]>mi.MPIglobalCellSIze[1]){
+        return 0;
+    } else {
+        return true;
+    }
 
 }
 
 // Check if the edge is on boundary or not.
-inline bool onBoundary(const std::array<indice, 2>& nbr){
+inline bool onBoundary(const MeshInfo& mi,
+                       const std::array<indice, 2>& nbr){
 
-    if (nbr.at(0)){
-
+    if (outsideBoundary(nbr.at(0)) || outsideBoundary(nbr.at(1))){
         return true;
+    } else {
+        return false;
     }
 }
 
@@ -62,17 +70,22 @@ void Transport::getEdgeFlux(const MeshInfo& mi){
         vertex unitNormal = getUnitNormal(edge,len);
 
         // Judging whether the edge is on the boundary or not.
-        if (onBoundary(nBrs)){
+        if (onBoundary(mi,nBrs)){
+            // Check if inflow or outflow
+            
 
-
-        } else {
+        } else { // Interior
 
             if (isAdv == 1){
-                edgeFlux_.at(e) += getAdvFluxInterior(mluAdv, mi, globalEdge);
+                edgeFlux_.at(e) += getAdvFluxInterior(mluAdv, mi, globalEdge, 
+                                     edge, unitNormal, len, nbr[1], nbr[0], 
+                                     locationL, locationR, gwe, gpe, alpha);
             }
 
             if (isDif == 1){
-                edgeFlux_.at(e) += getDifFluxInterior();
+                edgeFlux_.at(e) += getDifFluxInterior(mluDif, mi, globalEdge, 
+                                     edge, unitNormal, len, nbr[1], nbr[0], 
+                                     locationL, locationR, gwe, gpe, scale);
             }
 
         }

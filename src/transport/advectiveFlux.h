@@ -6,7 +6,7 @@
 
 double getAdvFluxInterior(const MLWENOUse& mlu,
                           const MeshInfo& mi,
-                          const vertexSet& edge,
+                          const std::array<vertex,2>& edge,
                           const vertex& unitNormal,
                           const double& len,
                           const indice& globalCellL,
