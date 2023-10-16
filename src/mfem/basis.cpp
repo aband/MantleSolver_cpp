@@ -19,10 +19,8 @@ void basis::GetCorners(const vertexSet& corners){
 
 double basis::lambda(const int& e,
                      const vertex& point) const{
-    // e = {1,2,3,4}
-    assert(e>0 & e<5);
-    vertexSet edge {corners_.at((e+2)%4), 
-                    corners_.at((e+3)%4)};
+    vertexSet edge {corners_.at((e+3)%4), 
+                    corners_.at(e)};
     return distance_(edge,point);
 }
 
@@ -46,7 +44,7 @@ double basis::R(const int& e1,
 
 double basis::R(const int& e,
                 const vertex& point) const{
-    return 0.5*(1-R(e,(e+3)%4,point));
+    return 0.5*(1-R(e,(e+2)%4,point));
 }
 
 // Supplemental functions
@@ -87,6 +85,31 @@ void basis::Test(const vertex& point){
     }cout << endl;
 
     for (int e = 0; e<4; e++){
-        cout << "Distance is " << lambda(e+1,point)  << endl;
+        cout << "Distance is " << lambda(e,point)  << endl;
+    }
+
+    // Test R function
+    int seed = 10;
+    std::array<int,2> list {0, 2};
+
+    for (int Case = 0; Case<4; Case ++){
+        cout << "Current edge is: " << Case << endl;
+        vertexSet edge {corners_.at((Case+3)%4), corners_.at(Case)};
+        vertex unittangent = unitTangent(edge, length(edge));
+        double dl = length(edge) / seed;
+        //cout << "On the edge " << e+1 << " the values are distributed as: " ;
+        for (int j=0; j<seed; j++){
+            cout << R(Case,corners_.at(Case) + j*unittangent*dl) << " "; 
+        } cout << endl;
+
+        // ======================================================================
+        cout << "Opposite edge is: " << (Case+2)%4 << endl;
+        edge = {corners_.at((Case+3+2)%4), corners_.at((Case+2)%4)};
+        unittangent = unitTangent(edge, length(edge));
+        dl = length(edge) / seed;
+        //cout << "On the edge " << e+1 << " the values are distributed as: " ;
+        for (int j=0; j<seed; j++){
+            cout << R(Case,corners_.at((Case+2)%4) + j*unittangent*dl) << " "; 
+        } cout << endl;
     }
 }

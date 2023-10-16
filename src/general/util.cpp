@@ -245,7 +245,7 @@ std::array<double,4> extractEdgeIndex(const MeshInfo& mi, const indice& globalCe
     // Two horizontal edges counted first.
     work[1] = FlatIndic(mi, globalCell); 
 
-    work[3] = FlatIndic(mi, {globalCell[0], globalCell[1]+1})
+    work[3] = FlatIndic(mi, {globalCell[0], globalCell[1]+1});
 
     work[0] = mi.MPIglobalHoriEdgeSize + FlatIndic(mi.MPIglobalCellSize[0]+1, globalCell);
 
@@ -257,7 +257,7 @@ std::array<double,4> extractEdgeIndex(const MeshInfo& mi, const indice& globalCe
 
 // Return two neighbours of this given edge index.
 std::array<indice,2> extractEdgeNbr(const MeshInfo& mi, const int& globalEdge){
-    std::array<indice,2> nBr.resize(2);
+    std::array<indice,2> nBr;
 
     if (globalEdge < mi.MPIglobalHoriEdgeSize){
         // Horizontal edge
@@ -285,17 +285,25 @@ std::array<vertex,2> extractEdge(const MeshInfo& mi, const int& globalEdge){
     indice ghostlayerShift {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
 
     if (globalEdge < mi.MPIglobalHoriEdgeSize){
-        indice leftVertexIndex = Bend(mi,globalEdge); 
-        edge.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], 
-                       leftVertexIndex-mi.localCellStart+ghostlayerShift)]);
-        edge.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], 
-                       leftVertexIndex-mi.localCellStart+ghostlayerShift + {1,0})]);
+        indice leftVertexIndex = Bend(mi,globalEdge) - mi.MPIlocalCellStart + 
+                                 ghostlayerShift;
+
+        edge[0] = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], leftVertexIndex)];
+
+        leftVertexIndex += {1,0};
+
+        edge[1] = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], leftVertexIndex)];
+
     } else {
-        indice bottomVertexIndex = Bend(mi.MPIglobalVertexSize[0], globalEdge);
-        edge.push_back(mi.lmesh[FlatIndic(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],
-                       bottomVertexIndex-mi.localCellStart+ghostlayerShift)])]);
-        edge.push_back(mi.lmesh[FlatIndic(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],
-                       bottomVertexIndex-mi.localCellStart+ghostlayerShift)] + {0,1})]);
+        indice bottomVertexIndex = Bend(mi.MPIglobalVertexSize[0], globalEdge) - mi.MPIlocalCellStart + ghostlayerShift;
+
+        edge[0] = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],
+                  bottomVertexIndex)];
+
+        bottomVertexIndex += {0,1};
+
+        edge[1] = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0],
+                  bottomVertexIndex)];
     }
 
     return edge;
@@ -306,7 +314,7 @@ std::array<vertex,2> extractEdge(const MeshInfo& mi, const int& globalEdge){
 int edgeIndexGlobalToLocal(const MeshInfo& mi,
                            const int& globalEdge){
 
-    vector<indice> gcells = extractEdgeNbr(mi, globalEdge);
+    std::array<indice,2> gcells = extractEdgeNbr(mi, globalEdge);
 
     indice localcell = MPIGlobalToLocal(gcells[0],mi);
    
@@ -326,7 +334,7 @@ int edgeIndexGlobalToLocal(const MeshInfo& mi,
 int edgeIndexLocalToGlobal(const MeshInfo& mi,
                            const int& localEdge){
 
-    vertex localCell;
+    indice localCell;
 
     if (localEdge < mi.MPIlocalHoriEdgeSize){
         // It is a Horizontal edge
@@ -341,7 +349,7 @@ int edgeIndexLocalToGlobal(const MeshInfo& mi,
 
 // =============================================================================
 
-inline const vertex unitTangent(const vertexSet& edge, const double& len){
+const vertex unitTangent(const vertexSet& edge, const double& len){
     return (edge.at(1) - edge.at(0))/len;
 }
 
@@ -349,7 +357,7 @@ const vertex getUnitNormal(const std::array<vertex, 2> edge,
                            const double& len){
 
     vertex work;
-    work = edge[1] - ege[0];
+    work = edge[1] - edge[0];
     work = work.cshift(1);
     work[1] *= -1;
     work /= len;
@@ -361,5 +369,5 @@ const double getEdgeLength(const std::array<vertex, 2> edge){
 
     vertex vec = edge[1]-edge[0];
     vec *= vec;
-    return sqrt(vec.sum);
+    return sqrt(vec.sum());
 }

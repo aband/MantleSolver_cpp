@@ -234,7 +234,7 @@ int edgeIndexGlobalToLocal(const MeshInfo& mi, const int& globalEdge);
 const vertex unitTangent(const vertexSet& edge, 
                          const double& len);
 
-const vertex getUnitNormal(const std:array<vertex,2> edge,
+const vertex getUnitNormal(const std::array<vertex,2> edge,
                            const double& len);
 
 const double getEdgeLength(const std::array<vertex, 2> edge);
