@@ -1,2 +1,0 @@
-/usr/bin/ar qc libio_lib.a CMakeFiles/io_lib.dir/home/renpo/Research/MantleSolver/src/io/input.cpp.o CMakeFiles/io_lib.dir/home/renpo/Research/MantleSolver/src/io/output.c.o CMakeFiles/io_lib.dir/home/renpo/Research/MantleSolver/src/io/cgns_io.c.o
-/usr/bin/ranlib libio_lib.a
