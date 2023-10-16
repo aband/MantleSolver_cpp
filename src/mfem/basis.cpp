@@ -49,11 +49,32 @@ double basis::R(const int& e,
 
 // Supplemental functions
 double basis::PhiSupp(const int& i,
-                      const vertex& point) const{
+                      const vertex& point,
+                      const int& r) const{
 
-    return lambda(i,point)*lambda(i+2,point);
+    assert(r>2);
+
+    switch(i){
+        case 0:
+            return lambda(2-1,point)*lambda(4-1,point)*pow(lambda(2-1,4-1),r-2,point)*R(1,3,point);
+        case 1:
+            return lambda(1-1,point)*lambda(3-1,point)*pow(lambda(1-1,3-1),r-2,point)*R(0,2,point);
+        default:
+            cout << "Supplement function not defined. " << endl;
+            return -1;
+    }
+
 }
 
+// Edge nodal basis functions
+double basis::phi_e() const{
+
+    double work = 0.0;
+
+
+
+    return work;
+}
 
 double basis::phi() const{
 
