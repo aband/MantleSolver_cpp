@@ -3,10 +3,15 @@
 
 #include "basis.h"
 
-class Hdivmixed: virtual public basis{
+// Second order H(div) conforming mixed space.
+// Basis functions are constructed based on method
+// mentioned in Direct Serendipity space.
+class Hdivmixed{
     public: 
         Hdivmixed() {};
         ~Hdivmixed() {};
+
+        double phi
 
         // ! Test function of H(div) mixed function space
         void Test();

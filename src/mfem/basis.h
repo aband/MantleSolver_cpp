@@ -46,8 +46,6 @@ class basis{
         // ===== Test =====
         void Test(const vertex& point);
 
-    protected:
-
         //! Defined linear polynomial giving the distance
         //! between point and edge opposite the normal
         //! direction.
@@ -68,23 +66,36 @@ class basis{
                  const vertex& point) const;
 
         //! Rational function with 1 on edge i
-        //! 0 ont the opposite edge
+        //! 0 on the opposite edge
         //! Arbitrary values on other edges.
         double R(const int& e,
                  const vertex& point) const;
 
+        //! Derivative of the rational auxilliary function
+        std::array<double, 2> dR(const int& e,
+                                 const vertex& point) const;
+
         //! Define lagrange basis polynomials
-        double lagrange(const vertex& point) const;
+        std::array<double, 3> lagrangeE(const vertex& point, int nEdge, int jNode) const;
+
+        std::array<double, 3> lagrangeV(const vertex& point, int nEdge, int i) const;
 
         double PhiSupp(const int& i, 
                        const vertex& point) const; 
 
-        double phi() const;
-
 
     private:
+        friend class Hdivmixed;
+        friend class BRmixed; 
 
+        //! Four corners of the given element
         vertexSet corners_;
+
+        //! Four unit normal vectors of the corresponding edges
+        vertexSet unitNormals_;
+
+        //! Four unit tangent vectors of the corresponding edges
+        vertexSet unitTangents_;
 
         //! Calculate the distance between point and edge
         //! opposite to normal direction.

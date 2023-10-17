@@ -15,6 +15,15 @@ void basis::GetCorners(const vertexSet& corners){
     for (const auto& c: corners){
         corners_.push_back(c);
     }
+
+    //! Create unit normal and unit tangent vectors for each edges
+    for (int c=0; c<4; c++){
+        vertexSet edge {corners_.at((e+3)%4), 
+                        corners_.at(e)};
+        unitNormals_.push_back(UnitNormal(edge, length(edge)));
+        unitTangents_.push_back(unitTangent(edge, length(edge)));
+    }
+
 }
 
 double basis::lambda(const int& e,
@@ -47,6 +56,41 @@ double basis::R(const int& e,
     return 0.5*(1-R(e,(e+2)%4,point));
 }
 
+// Returen derivative of R
+std::vertex basis::dR(const int& e,
+                      const vertex& point) const{
+
+    vertex work(2);
+
+    double l0 = lambda(e,point); 
+    double l2 = lambda((e+2)%4,point);
+
+    work = (-1*unitNormals_.at((e+2)%4)*l0 + 
+               unitNormals_.at(e)*l2) / pow(l0+l2,2);
+
+    return work;
+}
+
+// Two lagrangian interpolation on edge nodes and vertex nodes
+std::array<double, 3> lagrangeE() const{
+
+    std::array<double, 3> work;
+
+    int num_term = polynomial_degree_+1;
+
+
+
+    return work;
+}
+
+std::array<double, 3> lagrangeV() const{
+
+    std::array<double, 3> work;
+
+
+    return work;
+}
+
 // Supplemental functions
 double basis::PhiSupp(const int& i,
                       const vertex& point,
@@ -66,24 +110,6 @@ double basis::PhiSupp(const int& i,
 
 }
 
-// Edge nodal basis functions
-double basis::phi_e() const{
-
-    double work = 0.0;
-
-
-
-    return work;
-}
-
-double basis::phi() const{
-
-    double work;
-
-    return work;
-}
-
-// ===== Private members =====
 double basis::distance_(const vertexSet& edge, 
                         const vertex& point) const{
 
