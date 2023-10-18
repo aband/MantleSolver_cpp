@@ -77,12 +77,10 @@ class basis{
 
         //! Define lagrange basis polynomials
         std::array<double, 3> lagrangeE(const vertex& point, int nEdge, int jNode) const;
-
         std::array<double, 3> lagrangeV(const vertex& point, int nEdge, int i) const;
 
         double PhiSupp(const int& i, 
                        const vertex& point) const; 
-
 
     private:
         friend class Hdivmixed;

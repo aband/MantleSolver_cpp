@@ -72,19 +72,29 @@ std::vertex basis::dR(const int& e,
 }
 
 // Two lagrangian interpolation on edge nodes and vertex nodes
-std::array<double, 3> lagrangeE() const{
+std::array<double, 3> lagrangeE(const vertex& point, 
+                                int nEdge, int jNode) const{
 
+    // First value represents value evaluated at the given point
+    // Second and third values represent derivative values 
+    // evaluated at the given point.
     std::array<double, 3> work;
 
     int num_term = polynomial_degree_+1;
 
+    std::vector<double> grad_coef_part(num_term,1);
+    std::vector<vertex> term_grad(num_term);
 
 
     return work;
 }
 
-std::array<double, 3> lagrangeV() const{
+std::array<double, 3> lagrangeV(const vertex& point, 
+                                int nEdge, int i) const{
 
+    // First value represents value evaluated at the given point
+    // Second and third values represent derivative values
+    // evaluated at the given point.
     std::array<double, 3> work;
 
 
