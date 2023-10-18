@@ -18,8 +18,8 @@ void basis::GetCorners(const vertexSet& corners){
 
     //! Create unit normal and unit tangent vectors for each edges
     for (int c=0; c<4; c++){
-        vertexSet edge {corners_.at((e+3)%4), 
-                        corners_.at(e)};
+        vertexSet edge {corners_.at((c+3)%4), 
+                        corners_.at(c)};
         unitNormals_.push_back(UnitNormal(edge, length(edge)));
         unitTangents_.push_back(unitTangent(edge, length(edge)));
     }
@@ -57,8 +57,8 @@ double basis::R(const int& e,
 }
 
 // Returen derivative of R
-std::vertex basis::dR(const int& e,
-                      const vertex& point) const{
+vertex basis::dR(const int& e,
+                 const vertex& point) const{
 
     vertex work(2);
 
@@ -72,31 +72,105 @@ std::vertex basis::dR(const int& e,
 }
 
 // Two lagrangian interpolation on edge nodes and vertex nodes
-std::array<double, 3> lagrangeE(const vertex& point, 
-                                int nEdge, int jNode) const{
+std::array<double, 3> basis::lagrangeE(const vertex& point, 
+                                       int nEdge, int j) const{
 
     // First value represents value evaluated at the given point
     // Second and third values represent derivative values 
     // evaluated at the given point.
-    std::array<double, 3> work;
+    // This lagrangian polynomial evaluates 1 on x_nEdge_j, 
+    // and - on other nodes and two vertices on edge_nEdge
+    std::array<double, 3> work = {1.0,0.0,0.0};
 
     int num_term = polynomial_degree_+1;
 
-    std::vector<double> grad_coef_part(num_term,1);
-    std::vector<vertex> term_grad(num_term);
+    std::vector<double> term_grad_coef_part(num_term,1);
+    std::vector<vertex> term_grad(num_term, {0,0});
 
+    double tmp = 0.0;
+
+    vertex pNode = lagEdgeNode(FlatIndic(polynomial_degree_-1, j, nEdge));
+
+    // evaluation *= (point - x_{e,n,k})/(x_{e,n,j} - x_{e,n,k}) for all k != j
+    for (int k=0; k<polynomial_degree_-1; k++){
+        if (k == j){
+            continue;
+        } else {
+            // Project current point onto target edge.
+            double projPt = projToEdge_(nEdge, point);
+
+            vertex zeroNode = lagEdgeNode(FlatIndic(polynomial_degree_-1, k, nEdge));
+
+            tmp = (projPt - projToEdge_(nEdge, zeroNode) / 
+                  (projToEdge_(nEdge, pNode) - projToEdge_(nEdge, zeroNode));
+
+            work[0] *= tmp;
+
+            for (int m=0; m<num_term; m++){
+                term_grad_degree_part[m] *= (m==k) ? 1:tmp;
+            }
+            term_grad[k] = unitTangents_.at(nEdge) / (projToEdge_(nEdge, pNode) - 
+                                                      projToEdge_(nEdge, zeroNode));
+        }
+    }
+
+    // result *= (pt-x_{v,n})/(x_{e,n,j} - x_{v,n})
+    for (int n=nEdge-1+4; n<nEdge+4; n++){
+        vertex zeroNode = corners_.at(n%4);        
+        double projPt = projToEdge_(nEdge, point);
+        tmp = (projPt - projToEdge_(nEdge, zeroNode))/
+              (projToEdge_(nEdge, pNode) - projToEdge_(nEdge, zeroNode));
+        work[0] *= tmp;
+        for (int m=0; m<num_term; m++){
+            term_grad_coef_part[m] *= (m==polynomial_degree_+n-(nEdge+4)) ? 1 : tmp;
+        }
+        term_grad[polynomial_degree_+n-(nEdge+4)] = unitTangents_.at(nEdge) / 
+                                                    (projToEdge(nEdge,pNode) - 
+                                                     projToEdge(nEdge,zeroNode));
+    }
+
+    for (int i=0; i<num_term; i++){
+        work[1] += term_grad_coef_part.at(i) * term_grad.at(i)[0];
+        work[2] += term_grad_coef_part.at(i) * term_grad.at(i)[1];
+    }
 
     return work;
 }
 
-std::array<double, 3> lagrangeV(const vertex& point, 
-                                int nEdge, int i) const{
+std::array<double, 3> basis::lagrangeV(const vertex& point, 
+                                       int nEdge, int i) const{
 
     // First value represents value evaluated at the given point
     // Second and third values represent derivative values
     // evaluated at the given point.
-    std::array<double, 3> work;
 
+    assert(nEdge == i || nEdge = (i+3)%4);
+
+    std::array<double, 3> work = {1.0,0.0,0.0};
+
+    int num_term = polynomial_degree_;
+
+    double tmp;
+
+    vertex pNode = corners.at(i);
+
+    // result *= (pt - x_{e,n,k})/(x_{v,i} - x_{e,n,k}) for all k
+    for (int k=0; k<polynomial_degree_-1; k++){
+        vertex zeroNode = lagEdgeNode(FlatIndic(polynomial_degree_-1, k, nEdge));
+        double projPt = projToEdge(nEdge, point);
+
+        tmp = (projPt - projToEdge_(nEdge, zeroNode)) / 
+              (projToEdge_(nEdge, pNode) - projToEdge_(nEdge, zeroNode));
+        work[0] *= tmp;
+
+        for (int n=0; n<num_term; n++){
+            term_grad_coef_part[n] *= (n==k) ? 1 : tmp;
+        }
+        term_grad[k] = unitTangents_.at(nEdge) / (projToEdge_(nEdge, pNode) - 
+                                                  projToEdge_(nEdge, zeroNode));
+    }
+
+    
 
     return work;
 }
@@ -110,15 +184,29 @@ double basis::PhiSupp(const int& i,
 
     switch(i){
         case 0:
-            return lambda(2-1,point)*lambda(4-1,point)*pow(lambda(2-1,4-1),r-2,point)*R(1,3,point);
+            return lambda(2-1,point)*lambda(4-1,point)*pow(lambda(2-1,4-1,point),r-2)*R(1,3,point);
         case 1:
-            return lambda(1-1,point)*lambda(3-1,point)*pow(lambda(1-1,3-1),r-2,point)*R(0,2,point);
+            return lambda(1-1,point)*lambda(3-1,point)*pow(lambda(1-1,3-1,point),r-2)*R(0,2,point);
         default:
             cout << "Supplement function not defined. " << endl;
             return -1;
     }
 
 }
+
+// =======================================================================
+double basis::projToEdge_(int Edge, const vertex& point) const {
+
+    // The derivative of this projection is just tau 
+
+    vertex tmp = point - corners_.at((Edge+3)%4); 
+
+    return std::inner_product(std::begin(tmp),
+                              std::end(tmp),
+                              std::begin(unitTangents_.at(Edge)),
+                              0.0);   
+}
+
 
 double basis::distance_(const vertexSet& edge, 
                         const vertex& point) const{
@@ -169,4 +257,17 @@ void basis::Test(const vertex& point){
             cout << R(Case,corners_.at((Case+2)%4) + j*unittangent*dl) << " "; 
         } cout << endl;
     }
+
+    cout << "Test projection of points" << endl;
+
+    vertex tmp {0,0};
+
+    std::array<double, 3> projP = projToEdge_(0, tmp); 
+    cout << projP[0] << endl;
+    projP = projToEdge_(1, tmp); 
+    cout << projP[0] << endl;
+    projP = projToEdge_(2, tmp); 
+    cout << projP[0] << endl;
+    projP = projToEdge_(3, tmp); 
+    cout << projP[0] << endl;
 }

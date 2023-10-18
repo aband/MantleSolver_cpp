@@ -11,7 +11,6 @@ class Hdivmixed{
         Hdivmixed() {};
         ~Hdivmixed() {};
 
-        double phi
 
         // ! Test function of H(div) mixed function space
         void Test();

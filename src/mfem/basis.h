@@ -72,19 +72,22 @@ class basis{
                  const vertex& point) const;
 
         //! Derivative of the rational auxilliary function
-        std::array<double, 2> dR(const int& e,
-                                 const vertex& point) const;
+        vertex dR(const int& e,
+                  const vertex& point) const;
 
         //! Define lagrange basis polynomials
         std::array<double, 3> lagrangeE(const vertex& point, int nEdge, int jNode) const;
         std::array<double, 3> lagrangeV(const vertex& point, int nEdge, int i) const;
 
         double PhiSupp(const int& i, 
-                       const vertex& point) const; 
+                       const vertex& point,
+                       const int& r) const; 
 
     private:
         friend class Hdivmixed;
         friend class BRmixed; 
+
+        int polynomial_degree_;
 
         //! Four corners of the given element
         vertexSet corners_;
@@ -94,6 +97,12 @@ class basis{
 
         //! Four unit tangent vectors of the corresponding edges
         vertexSet unitTangents_;
+
+        //! Storing edge nodes for lagrangian interpolation
+        vertexSet lagEdgeNode_;
+
+        //! Projection functions
+        double projToEdge_(int Edge, const vertex& point) const;
 
         //! Calculate the distance between point and edge
         //! opposite to normal direction.
