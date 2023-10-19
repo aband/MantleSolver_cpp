@@ -89,7 +89,7 @@ std::array<double, 3> basis::lagrangeE(const vertex& point,
 
     double tmp = 0.0;
 
-    vertex pNode = lagEdgeNode(FlatIndic(polynomial_degree_-1, j, nEdge));
+    vertex pNode = lagEdgeNode_.at(FlatIndic(polynomial_degree_-1, j, nEdge));
 
     // evaluation *= (point - x_{e,n,k})/(x_{e,n,j} - x_{e,n,k}) for all k != j
     for (int k=0; k<polynomial_degree_-1; k++){
@@ -99,15 +99,15 @@ std::array<double, 3> basis::lagrangeE(const vertex& point,
             // Project current point onto target edge.
             double projPt = projToEdge_(nEdge, point);
 
-            vertex zeroNode = lagEdgeNode(FlatIndic(polynomial_degree_-1, k, nEdge));
+            vertex zeroNode = lagEdgeNode_.at(FlatIndic(polynomial_degree_-1, k, nEdge));
 
-            tmp = (projPt - projToEdge_(nEdge, zeroNode) / 
+            tmp = (projPt - projToEdge_(nEdge, zeroNode)) / 
                   (projToEdge_(nEdge, pNode) - projToEdge_(nEdge, zeroNode));
 
             work[0] *= tmp;
 
             for (int m=0; m<num_term; m++){
-                term_grad_degree_part[m] *= (m==k) ? 1:tmp;
+                term_grad_coef_part[m] *= (m==k) ? 1:tmp;
             }
             term_grad[k] = unitTangents_.at(nEdge) / (projToEdge_(nEdge, pNode) - 
                                                       projToEdge_(nEdge, zeroNode));
@@ -125,8 +125,8 @@ std::array<double, 3> basis::lagrangeE(const vertex& point,
             term_grad_coef_part[m] *= (m==polynomial_degree_+n-(nEdge+4)) ? 1 : tmp;
         }
         term_grad[polynomial_degree_+n-(nEdge+4)] = unitTangents_.at(nEdge) / 
-                                                    (projToEdge(nEdge,pNode) - 
-                                                     projToEdge(nEdge,zeroNode));
+                                                    (projToEdge_(nEdge,pNode) - 
+                                                     projToEdge_(nEdge,zeroNode));
     }
 
     for (int i=0; i<num_term; i++){
@@ -144,7 +144,7 @@ std::array<double, 3> basis::lagrangeV(const vertex& point,
     // Second and third values represent derivative values
     // evaluated at the given point.
 
-    assert(nEdge == i || nEdge = (i+3)%4);
+    assert(nEdge == i || nEdge == (i+3)%4);
 
     std::array<double, 3> work = {1.0,0.0,0.0};
 
@@ -152,12 +152,18 @@ std::array<double, 3> basis::lagrangeV(const vertex& point,
 
     double tmp;
 
-    vertex pNode = corners.at(i);
+    vertex pNode = corners_.at(i);
+    vertex zeroNode;
+
+    double projPt;
+
+    std::vector<double> term_grad_coef_part(num_term,1);
+    std::vector<vertex> term_grad(num_term, {0,0});
 
     // result *= (pt - x_{e,n,k})/(x_{v,i} - x_{e,n,k}) for all k
     for (int k=0; k<polynomial_degree_-1; k++){
-        vertex zeroNode = lagEdgeNode(FlatIndic(polynomial_degree_-1, k, nEdge));
-        double projPt = projToEdge(nEdge, point);
+        zeroNode = lagEdgeNode_.at(FlatIndic(polynomial_degree_-1, k, nEdge));
+        projPt = projToEdge_(nEdge, point);
 
         tmp = (projPt - projToEdge_(nEdge, zeroNode)) / 
               (projToEdge_(nEdge, pNode) - projToEdge_(nEdge, zeroNode));
@@ -170,7 +176,30 @@ std::array<double, 3> basis::lagrangeV(const vertex& point,
                                                   projToEdge_(nEdge, zeroNode));
     }
 
-    
+    if (nEdge == i){
+        zeroNode = corners_.at((i+3)%4);
+    } else {
+        zeroNode = corners_.at((i+1)%4);
+    }
+
+    projPt = projToEdge_(nEdge, point);
+
+    tmp = (projPt - projToEdge_(nEdge, zeroNode))/
+          (projToEdge_(nEdge, pNode) - projToEdge_(nEdge, zeroNode));
+
+    work[0] *= tmp; 
+
+    for (int n=0; n<num_term; n++){
+        term_grad_coef_part[n] *= (n==polynomial_degree_-1) ? 1:tmp;
+    }
+
+    term_grad[polynomial_degree_-1] = unitTangents_.at(nEdge) / 
+                                      (projToEdge_(nEdge,pNode) - projToEdge_(nEdge, zeroNode));
+
+    for (int i=0; i<num_term; i++){
+        work[1] += term_grad_coef_part.at(i) * term_grad.at(i)[0];
+        work[2] += term_grad_coef_part.at(i) * term_grad.at(i)[1];
+    }
 
     return work;
 }
@@ -262,12 +291,12 @@ void basis::Test(const vertex& point){
 
     vertex tmp {0,0};
 
-    std::array<double, 3> projP = projToEdge_(0, tmp); 
-    cout << projP[0] << endl;
+    double projP = projToEdge_(0, tmp); 
+    cout << projP << endl;
     projP = projToEdge_(1, tmp); 
-    cout << projP[0] << endl;
+    cout << projP << endl;
     projP = projToEdge_(2, tmp); 
-    cout << projP[0] << endl;
+    cout << projP << endl;
     projP = projToEdge_(3, tmp); 
-    cout << projP[0] << endl;
+    cout << projP << endl;
 }
