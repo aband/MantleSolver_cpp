@@ -71,6 +71,14 @@ vertex basis::dR(const int& e,
     return work;
 }
 
+double rational(const vertex& point) const{
+
+    return lambda()*lambda()/lambda()/lambda() - 
+           lambda()*lambda()/lambda()/lambda() + 
+           lambda()*lambda()/lambda()/lambda() -
+           lambda()*lambda()/lambda()/lambda();
+}
+
 // Two lagrangian interpolation on edge nodes and vertex nodes
 std::array<double, 3> basis::lagrangeE(const vertex& point, 
                                        int nEdge, int j) const{

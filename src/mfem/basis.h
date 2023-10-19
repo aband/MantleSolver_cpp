@@ -75,6 +75,8 @@ class basis{
         vertex dR(const int& e,
                   const vertex& point) const;
 
+        double rational(const vertex& point) const;
+
         //! Define lagrange basis polynomials
         std::array<double, 3> lagrangeE(const vertex& point, int nEdge, int jNode) const;
         std::array<double, 3> lagrangeV(const vertex& point, int nEdge, int i) const;
