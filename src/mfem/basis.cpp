@@ -71,12 +71,12 @@ vertex basis::dR(const int& e,
     return work;
 }
 
-double rational(const vertex& point) const{
+double basis::rational(const vertex& point) const{
 
-    return lambda()*lambda()/lambda()/lambda() - 
-           lambda()*lambda()/lambda()/lambda() + 
-           lambda()*lambda()/lambda()/lambda() -
-           lambda()*lambda()/lambda()/lambda();
+    return lambda(2,point)*lambda(3,point)/lambda(2,corners_.at(0))/lambda(3,corners_.at(0)) - 
+           lambda(3,point)*lambda(0,point)/lambda(3,corners_.at(1))/lambda(0,corners_.at(1)) + 
+           lambda(0,point)*lambda(1,point)/lambda(0,corners_.at(2))/lambda(1,corners_.at(2)) -
+           lambda(1,point)*lambda(2,point)/lambda(1,corners_.at(3))/lambda(2,corners_.at(3));
 }
 
 // Two lagrangian interpolation on edge nodes and vertex nodes

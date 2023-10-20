@@ -11,10 +11,23 @@ class Hdivmixed{
         Hdivmixed() {};
         ~Hdivmixed() {};
 
+        //! Constant part
+        double phic(const basis& auxilliary,
+                    const int& nEdge, 
+                    const vertex& point) const;
+
+        //! Linear part
+        double phil(const basis& auxilliary,
+                    const int& nEdge,
+                    const vertex& point) const;
 
         // ! Test function of H(div) mixed function space
         void Test();
-    
+   
+
+    private:
+        
+
 };
 
 #endif
