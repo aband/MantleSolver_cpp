@@ -1,6 +1,7 @@
 #ifndef FUNC_H_
 #define FUNC_H_
 
+//#include "reconstMLWENO.h"
 #include "reconstruction.h"
 
 //! Two dimension functions
@@ -14,6 +15,14 @@ double dfuncX(vertex x, double u, double t);
 double funcY(vertex x, double u, double t);
 
 double dfuncY(vertex x, double u, double t);
+
+double funcX(double u);
+
+double dfuncX(double u);
+
+double funcY(double u);
+
+double dfuncY(double u);
 
 /**
  * Diffusion.

@@ -1,4 +1,4 @@
-#include "advectionFlux.h"
+#include "advectiveFlux.h"
 
 /**!
  * A Lax-Friedrich style numerical flux scheme
@@ -14,19 +14,16 @@ inline double numericalFlux(const double& uL, const double& uR,
  * Compute the advective flux at a given point.
  * return a one-sided flux. 
  */
-inline double getAdvFluxPoint(const MLWENOUse& mlu, const MeshInfo& mi,
+inline double getAdvFluxPoint(const MLWENO::MLWENOUse& mlu, const MeshInfo& mi,
                               const double& uR, const vertex& unitNormal){
 
-   vertex work {funcX(uR), 
-                funcY(uR)}; 
-
-   return std::inner_product(work.begin(), work.end(), unitNormal.begin(), 0);
+   return funcX(uR)*unitNormal[0]+funcY(uR)*unitNormal[1];
 }
 
 /**!
  * Integrate one sided flux along the edge.
  */
-inline std::array<double,2> getAdvFluxEdge(const MLWENOUse& mlu, 
+inline std::array<double,2> getAdvFluxEdge(const MLWENO::MLWENOUse& mlu, 
                                            const MeshInfo& mi, 
                                            const std::array<vertex,2>& edge, 
                                            const vertex& unitNormal,
@@ -38,10 +35,12 @@ inline std::array<double,2> getAdvFluxEdge(const MLWENOUse& mlu,
     double work1 = 0.0;
     double work2 = 0.0;
 
+    vertexSet tmpEdge = {edge[0], edge[1]};
+
     for (int g=0; g<gpe.size(); g++){
-        vertex mapped = GaussMapPointsEdge({gpe[g]},edge);
+        vertex mapped = GaussMapPointsEdge({gpe[g]},tmpEdge);
         // Get reconstructed value at the given point
-        uR = mlu.Evaluate(point,globalCell,mi,location);
+        double uR = mlu.Evaluate(mapped,globalCell,mi,location);
         work1 += gwe[g]*getAdvFluxPoint(mlu,mi,uR,unitNormal) * len/2.0;
         work2 += gwe[g]*uR * len/2.0;
     }
@@ -52,7 +51,7 @@ inline std::array<double,2> getAdvFluxEdge(const MLWENOUse& mlu,
 /**!
  * Compute advective interior of the domain.
  */
-double getAdvFluxInterior(const MLWENOUse& mlu,
+double getAdvFluxInterior(const MLWENO::MLWENOUse& mlu,
                           const MeshInfo& mi,
                           const std::array<vertex,2>& edge,
                           const vertex& unitNormal,

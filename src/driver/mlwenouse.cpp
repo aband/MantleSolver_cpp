@@ -57,7 +57,7 @@ void MLWENOUse::UpdateNonLinearWgts(const MeshInfo& mi,
 double MLWENOUse::Evaluate(const vertex& point,
                            const indice& globalCell,
                            const MeshInfo& mi,
-                           const int& location){
+                           const int& location)const{
 
     return mlrIns_.at(location)->EvaluateMLWENO(mi,point,globalCell); 
 }
@@ -65,7 +65,7 @@ double MLWENOUse::Evaluate(const vertex& point,
 double MLWENOUse::Evaluate(const vertex& point,
                            const indice& globalCell,
                            const MeshInfo& mi,
-                           const std::string& location){
+                           const std::string& location)const{
 
     return mlrIns_.at(AssignMap_.at(location))->EvaluateMLWENO(mi,point,globalCell); 
 }

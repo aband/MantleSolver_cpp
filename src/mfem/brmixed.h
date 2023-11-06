@@ -1,26 +1,67 @@
 #ifndef BRMIXED_H_
 #define BRMIXED_H_
 
+#include "basis.h" 
+
+// An enriched DS1 H1 conforming finite element space
+
 class BRMixed {
 
     public:
 
-        BRMixed();
-        ~BRMixed();
+        BRMixed() {};
+        ~BRMixed() {};
 
         //! Mapping from local degree of freedom to
         //! global index of degree of freedom
-        vertex LocalToGlobal(); 
+        std::array<int,12> LocalToGlobal(const MeshInfo& mi,
+                                         const indice& globalElement) const; 
 
+        void ComputeTotalDOF(const MeshInfo& mi);
 
-        //! Mapping from global degree of freedom to
-        //! local index of degree of freedom
-        vertex GlobalToLocal();
+        int getDOF() const {return totalDOF_;};
+
+        //! Nodal basis function
+        double phiv(const basis& basis_,
+                    const int& nnodal,
+                    const vertex& point) const;
+
+        vertex dPhiv(const basis& basis_,
+                     const int& nnodal,
+                     const vertex& point) const;
+
+        //! Bubble function
+        double phie(const basis& basis_,
+                    const int& nEdge,
+                    const vertex& point) const;
+
+        vertex dPhie(const basis& basis_,
+                     const int& nEdge,
+                     const vertex& point)const;
+
+        void Test(const basis& basis_);
+
+        std::array<std::array<double,4>,12> ComputeGradBRmixed(const basis& basis_,
+                                                               const vertex& point) const;
 
     private:
 
+        double phie_(const basis& basis_,
+                     const int& nEdge,
+                     const vertex& point) const;
 
+        double R_(const basis& basis_,
+                  const vertex& point) const;
 
-}
+        vertex dR_(const basis& basis_,
+                   const vertex& point) const;
+
+        vertex dphie_(const basis& basis_,
+                      const int& nEdge,
+                      const vertex& point) const;
+
+        int totalDOF_;
+
+};
 
 #endif

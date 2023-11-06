@@ -4,7 +4,7 @@
 #include "mlwenouse.h"
 #include "func.h"
 
-double getAdvFluxInterior(const MLWENOUse& mlu,
+double getAdvFluxInterior(const MLWENO::MLWENOUse& mlu,
                           const MeshInfo& mi,
                           const std::array<vertex,2>& edge,
                           const vertex& unitNormal,

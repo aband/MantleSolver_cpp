@@ -3,7 +3,7 @@
 inline bool outsideBoundary(const MeshInfo& mi,
                             const indice& cell){
     if (cell[0]<0 || cell[0]>mi.MPIglobalCellSize[0] || 
-        cell[1]<0 || cell[1]>mi.MPIglobalCellSIze[1]){
+        cell[1]<0 || cell[1]>mi.MPIglobalCellSize[1]){
         return 0;
     } else {
         return true;
@@ -15,28 +15,29 @@ inline bool outsideBoundary(const MeshInfo& mi,
 inline bool onBoundary(const MeshInfo& mi,
                        const std::array<indice, 2>& nbr){
 
-    if (outsideBoundary(nbr.at(0)) || outsideBoundary(nbr.at(1))){
+    // Check if any cell is outside of the boundary
+    if (outsideBoundary(mi,nbr.at(0)) || outsideBoundary(mi,nbr.at(1))){
         return true;
     } else {
         return false;
     }
 }
 
-void Transport::edgeFlux(const MeshInfo& mi,
-                         const std::array& flowType){
+EdgeFlux::EdgeFlux(const MeshInfo& mi,
+                   const flowType& fT){
 
     edgeFlux_.resize(mi.MPIlocalHoriEdgeSize + 
                      mi.MPIlocalVertEdgeSize);
 
     // Assign flow type to the class edgeflux
-    switch(flowType){
-        case "advection":
+    switch(fT){
+        case advection:
             isAdv = true;
             break;
-        case "diffusion":
+        case diffusion:
             isDif = true;
             break;
-        case "adv-diff":
+        case adv_diff:
             isAdv = true;
             isDif = true;
             break;
@@ -50,20 +51,30 @@ void Transport::edgeFlux(const MeshInfo& mi,
  * Update flux on all the edges.
  * Distinguish between different boundary condition here.
  */
-void Transport::getEdgeFlux(const MeshInfo& mi){
+void EdgeFlux::getEdgeFlux(const MeshInfo& mi,
+                           const MLWENO::MLWENOUse& mluAdv,
+                           const MLWENO::MLWENOUse& mluDif){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    // Simplified example, where only interior location is identified
+    int locationL = 0;
+    int locationR = 0;
+
     // Compute edge flux
-    for (int e=0 ;e<edgeFlux_.size(); i++){
+    for (int e=0 ;e<edgeFlux_.size(); e++){
         // Switch local edge index to global edge index.
-        int globalEdge = edgeIndexLocalToGlobal(mi,e); 
+        const int globalEdge = edgeIndexLocalToGlobal(mi,e); 
 
         // Extract two cell index sharing the given edge.
         // Cells are given in global cell indice.
-        vertex nBrs = extractEdgeNbr(mi, globalEdge);
+		  const std::array<indice,2> nBrs = extractEdgeNbr(mi, globalEdge);
 
         // Assign flux values to edges
         edgeFlux_.at(e) = 0;
 
-        std::array<vertex, 2> edge = extractEdge(mi, globalEdge);
+        const std::array<vertex, 2> edge = extractEdge(mi, globalEdge);
 
         double len = getEdgeLength(edge); 
 
@@ -72,20 +83,21 @@ void Transport::getEdgeFlux(const MeshInfo& mi){
         // Judging whether the edge is on the boundary or not.
         if (onBoundary(mi,nBrs)){
             // Check if inflow or outflow
-            
+				// No flow condition
+            edgeFlux_.at(e) = 0; 
 
         } else { // Interior
 
             if (isAdv == 1){
-                edgeFlux_.at(e) += getAdvFluxInterior(mluAdv, mi, globalEdge, 
-                                     edge, unitNormal, len, nbr[1], nbr[0], 
-                                     locationL, locationR, gwe, gpe, alpha);
+                edgeFlux_.at(e) += getAdvFluxInterior(mluAdv, mi, 
+                                     edge, unitNormal, len, nBrs[1], nBrs[0], 
+                                     locationL, locationR, gwe, gpe, alpha_);
             }
 
             if (isDif == 1){
-                edgeFlux_.at(e) += getDifFluxInterior(mluDif, mi, globalEdge, 
-                                     edge, unitNormal, len, nbr[1], nbr[0], 
-                                     locationL, locationR, gwe, gpe, scale);
+                edgeFlux_.at(e) += getDifFluxInterior(mluDif, mi, 
+                                     edge, unitNormal, len, nBrs[1], nBrs[0], 
+                                     locationL, locationR, gwe, gpe, scale_);
             }
 
         }

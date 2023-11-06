@@ -59,6 +59,9 @@ class basis{
                       const int& e2,
                       const vertex& point) const;
 
+        double lambdad(const int& i,
+                       const vertex& point)const;
+
         //! Rational function +- 1 on opposite edges
         //! Arbitrary values on other edges.
         double R(const int& e1,
@@ -72,10 +75,20 @@ class basis{
                  const vertex& point) const;
 
         //! Derivative of the rational auxilliary function
+        vertex dR(const int& e1,
+                  const int& e2,
+                  const vertex& point) const;
+
         vertex dR(const int& e,
                   const vertex& point) const;
 
         double rational(const vertex& point) const;
+
+        vertex dRational(const vertex& point) const;
+
+        vertexSet corners() const {return corners_;}
+
+        vertex unitnormal(const int& e) const {return unitNormals_.at(e);};
 
         //! Define lagrange basis polynomials
         std::array<double, 3> lagrangeE(const vertex& point, int nEdge, int jNode) const;
@@ -86,8 +99,8 @@ class basis{
                        const int& r) const; 
 
     private:
+        friend class BRMixed; 
         friend class Hdivmixed;
-        friend class BRmixed; 
 
         int polynomial_degree_;
 
@@ -96,6 +109,9 @@ class basis{
 
         //! Four unit normal vectors of the corresponding edges
         vertexSet unitNormals_;
+
+        //! Two unit normal vectors of the diagonal edges
+        vertexSet unitNormals_d_;
 
         //! Four unit tangent vectors of the corresponding edges
         vertexSet unitTangents_;

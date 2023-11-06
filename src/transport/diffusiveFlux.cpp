@@ -4,7 +4,7 @@
 /**!
  * Assign values evaluating diffusion functions along the normal direction.
  */
-inline void assignDiffVals(const MLWENOUse& mlu,
+inline void assignDiffVals(const MLWENO::MLWENOUse& mlu,
                            const MeshInfo&mi,
                            const indice& globalCellIn,
                            const indice& globalCellOut,
@@ -13,7 +13,7 @@ inline void assignDiffVals(const MLWENOUse& mlu,
                            const vertex& unitNormal,
                            const vertex& mapped,
                            const double& dx,
-                           vector<vertex>& diffVals){
+                           vector<double>& diffVals){
 
     int halfnumPts = diffVals.size() / 2;
 
@@ -27,9 +27,9 @@ inline void assignDiffVals(const MLWENOUse& mlu,
 
 }
 
-double getDiffusiveFluxInterior(const MLWENOUse& mlu,
+double getDifFluxInterior(const MLWENO::MLWENOUse& mlu,
                                 const MeshInfo& mi,
-                                const vertexSet& edge,
+                                const std::array<vertex,2>& edge,
                                 const vertex& unitNormal,
                                 const double& len,
                                 const indice& globalCellIn,
@@ -46,7 +46,7 @@ double getDiffusiveFluxInterior(const MLWENOUse& mlu,
     const int numPts = std::ceil((degree+1)/2.0) * 2;
 
     // Get diameter
-    const double hIn  = mi.cellArea.at(FlatInidc(mi,globalCellIn));
+    const double hIn  = mi.cellArea.at(FlatIndic(mi,globalCellIn));
     const double hOut = mi.cellArea.at(FlatIndic(mi,globalCellOut));
     
     const double h = scale * ((hIn < hOut) ? hIn : hOut);
@@ -61,13 +61,15 @@ double getDiffusiveFluxInterior(const MLWENOUse& mlu,
     // from outside to inside.
     vector<double> diffVals(numPts, 0);
 
+    vertexSet tmpEdge = {edge[0], edge[1]};
+
     for (int g=0; g<gwe.size(); g++){
         assignDiffVals(mlu, mi, globalCellIn, globalCellOut, locationIn, 
-                       locationOut, unitNormal, GaussMapPointsEdge({gpe[g]}, edge), 
+                       locationOut, unitNormal, GaussMapPointsEdge({gpe[g]}, tmpEdge), 
                        dx, diffVals);
 
         for (int i=0; i<numPts; i++){
-            work -= lagDer.middle(numPts-1, i) / dx * gwe.at(g) * len/2.0 *
+            work -= lagDer.middle(numPts-1, i) / dx * gwe[g] * len/2.0 *
                     diffVals.at(i);
         }
     }

@@ -73,12 +73,12 @@ namespace MLWENO{
              double Evaluate(const vertex& point, 
                              const indice& globalCell,
                              const MeshInfo& mi,
-                             const int& location);
+                             const int& location) const;
 
              double Evaluate(const vertex& point,
                              const indice& globalCell,
                              const MeshInfo& mi,
-                             const std::string& location);
+                             const std::string& location) const;
 
              /**!
               * Print non-linear weights relating to weights.

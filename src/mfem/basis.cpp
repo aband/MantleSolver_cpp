@@ -24,6 +24,14 @@ void basis::GetCorners(const vertexSet& corners){
         unitTangents_.push_back(unitTangent(edge, length(edge)));
     }
 
+    vertexSet diag {corners_.at(0),corners_.at(2)};
+
+    unitNormals_d_.push_back(UnitNormal(diag, length(diag)));
+
+    diag = {corners_.at(1),corners_.at(3)};
+
+    unitNormals_d_.push_back(UnitNormal(diag, length(diag)));
+
 }
 
 double basis::lambda(const int& e,
@@ -43,6 +51,18 @@ double basis::lambda(const int& e1,
     return (lambda(e1,point) - lambda(e2,point))/length(line);
 }
 
+double basis::lambdad(const int& i,
+                      const vertex& point)const{
+
+    //! i = 0 or 1
+
+    vertex tmp = -1*(point - corners_.at(i));
+
+    return tmp[0]*unitNormals_d_.at(i)[0] + 
+           tmp[1]*unitNormals_d_.at(i)[1]; 
+
+}
+
 double basis::R(const int& e1,
                 const int& e2,
                 const vertex& point) const {
@@ -56,17 +76,15 @@ double basis::R(const int& e,
     return 0.5*(1-R(e,(e+2)%4,point));
 }
 
-// Returen derivative of R
+// Return derivative of R
 vertex basis::dR(const int& e,
                  const vertex& point) const{
 
     vertex work(2);
 
-    double l0 = lambda(e,point); 
-    double l2 = lambda((e+2)%4,point);
-
-    work = (-1*unitNormals_.at((e+2)%4)*l0 + 
-               unitNormals_.at(e)*l2) / pow(l0+l2,2);
+    work = 2*(lambda(e,point)*unitNormals_.at((e+2)%4)* -
+              unitNormals_.at(e)*lambda((e+2)%4,point)) / 
+              pow(lambda(e,point)+lambda((e+2)%4,point),2);
 
     return work;
 }
@@ -77,6 +95,22 @@ double basis::rational(const vertex& point) const{
            lambda(3,point)*lambda(0,point)/lambda(3,corners_.at(1))/lambda(0,corners_.at(1)) + 
            lambda(0,point)*lambda(1,point)/lambda(0,corners_.at(2))/lambda(1,corners_.at(2)) -
            lambda(1,point)*lambda(2,point)/lambda(1,corners_.at(3))/lambda(2,corners_.at(3));
+}
+
+vertex basis::dRational(const vertex& point) const{
+
+    return -1*(unitNormals_.at(2)*lambda(3,point)+
+               lambda(2,point)*unitNormals_.at(3))/
+           lambda(2,corners_.at(0))/lambda(3,corners_.at(0)) - 
+           -1*(unitNormals_.at(3)*lambda(0,point)+
+               lambda(3,point)*unitNormals_.at(0))/
+           lambda(3,corners_.at(1))/lambda(0,corners_.at(1)) + 
+           -1*(unitNormals_.at(0)*lambda(1,point)+
+               lambda(0,point)*unitNormals_.at(1))/
+           lambda(0,corners_.at(2))/lambda(1,corners_.at(2)) -
+           -1*(unitNormals_.at(1)*lambda(2,point)+
+               lambda(1,point)*unitNormals_.at(2))/
+           lambda(1,corners_.at(3))/lambda(2,corners_.at(3));  
 }
 
 // Two lagrangian interpolation on edge nodes and vertex nodes
@@ -249,14 +283,16 @@ double basis::distance_(const vertexSet& edge,
                         const vertex& point) const{
 
     //vertex tmp = point - (edge.at(0) + edge.at(1))/2;
-    vertex tmp = point - edge.at(0);
+    vertex tmp = point - edge.at(1);
 
     vertex unitNormal = UnitNormal(edge, length(edge));
 
-    return -1*std::inner_product(std::begin(tmp),
-                                 std::end(tmp),
-                                 std::begin(unitNormal),
-                                 0.0);
+    //return -1*std::inner_product(std::begin(tmp),
+    //                             std::end(tmp),
+    //                             std::begin(unitNormal),
+    //                             0.0);
+
+    return -1*(unitNormal[0]*tmp[0]+unitNormal[1]*tmp[1]);
 }
 
 // ===== Test =====

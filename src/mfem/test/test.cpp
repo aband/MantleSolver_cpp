@@ -3,7 +3,8 @@
 #include "integral.h"
 #include "input.h"
 #include "Hdivmixed.h"
-
+#include "brmixed.h"
+#include "assemble.h"
 #include "util.h"
 
 extern "C"{
@@ -161,11 +162,16 @@ int main(int argc, char **argv){
 
 // ========================================================================================================================================
 
+    // Define basis functions H(div) conforming and Direct Serendipity space
     basis * testBasis = new basis();
 
-    testBasis->GetCorners(mi,{1,1});
+    Hdivmixed * hdiv = new Hdivmixed();
 
-    testBasis->Test({0.0,0.0});
+    BRMixed * br = new BRMixed();
+
+    Matrix * matrix = (Matrix *)malloc(sizeof(Matrix));
+
+    SerialMatrixAssembleBlock();
 
 // ====================================================================================================================================
     // Clear used objects
