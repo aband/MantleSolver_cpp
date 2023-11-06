@@ -50,7 +50,7 @@ std::array<int,12> BRMixed::LocalToGlobal(const MeshInfo& mi,
 }
 
 void BRMixed::ComputeTotalDOF(const MeshInfo& mi){
-    totalDOF_ = mi.MPIglobalVertexSize[0] * mi.MPIglobalVertexSize[1] + 
+    totalDOF_ = 2*mi.MPIglobalVertexSize[0] * mi.MPIglobalVertexSize[1] + 
                 mi.MPIglobalHoriEdgeSize + mi.MPIglobalVertEdgeSize;
 }
 

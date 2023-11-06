@@ -1,5 +1,15 @@
 #include "assemble.h"
 
+void SerialMatrixPrepare(const MeshInfo& mi,
+                         Matrix * matrix){
+
+    // Create Petsc matrices in the serial fashion
+    // Create sparse matrix sequentially
+    MatCreateSeqAIJ(PETCS_COMM_SELF, );
+
+
+}
+
 void AssignLocMatrix(const MeshInfo& mi,
                      basis& basis_,
                      Hdivmixed& hdiv_,
@@ -39,7 +49,7 @@ void AssignLocMatrix(const MeshInfo& mi,
     phi_f_hat /= area;
 
     // Assign values to local matrix
-	 // Zeros out all local values first
+    // Zeros out all local values first
     for (unsigned int j=0; j<8; j++){(*locmatrix).bd[j] = 0.0;
         for (unsigned int i=0; i<8; i++){(*locmatrix).ad[j*8+i] = 0.0;}}
 
@@ -103,8 +113,8 @@ void AssignLocMatrix(const MeshInfo& mi,
     }
 
     // Define B matrix for the Darcy part
-	 // Compute with divergence theorem
-	 phi_f_hat = (phi_f_hat == 0.0 ? 1.0 : phi_f_hat);
+    // Compute with divergence theorem
+    phi_f_hat = (phi_f_hat == 0.0 ? 1.0 : phi_f_hat);
 
     vertexSet corners = basis_.corners();
  

@@ -171,7 +171,10 @@ int main(int argc, char **argv){
 
     Matrix * matrix = (Matrix *)malloc(sizeof(Matrix));
 
-    SerialMatrixAssembleBlock();
+    // Allocate space for matrix struct
+    SerialMatrixPrepare(matrix);
+
+    SerialMatrixAssembleBlock(mi, testBasis, hdiv, br, physproperty);
 
 // ====================================================================================================================================
     // Clear used objects
