@@ -8,7 +8,9 @@ set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH})
 
 set(LAPACK $ENV{LAPACK_DIR})
 
-#set(HDF5 $ENV{HDF5_DIR}/CMakeFiles)
+set(HDF5 $ENV{HDF5_DIR})
+
+set(SRC $ENV{MantleSolver}/src)
 
 # PKG_CONFIG_PATH is set mannually in bashrc
 
@@ -42,13 +44,13 @@ pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
 # Build library
 # Create a library from the files in src file
 add_library(general_lib
-        ../../general/integral.cpp 
-        ../../general/mesh.c 
-        ../../general/util.cpp
+        ${SRC}/general/integral.cpp 
+        ${SRC}/general/mesh.c 
+        ${SRC}/general/util.cpp
 )
 
 target_include_directories(general_lib
-    PUBLIC ../../general
+    PUBLIC ${SRC}/general
 	 PUBLIC ${PETSC_DIR}/include
 )
 
@@ -58,14 +60,14 @@ target_link_libraries(general_lib
 
 #Create a library from files in mfem file
 add_library(mfem_lib
-        ../../basis.cpp
-        ../../Hdivmixed.cpp
-        ../../brmixed.cpp
-        ../../assemble.cpp
+        ${SRC}/mfem/basis.cpp
+        ${SRC}/mfem/Hdivmixed.cpp
+        ${SRC}/mfem/brmixed.cpp
+        ${SRC}/mfem/assemble.cpp
 )
 
 target_include_directories(mfem_lib
-    PUBLIC ../../mfem
+    PUBLIC ${SRC}/mfem
 )
 
 target_link_libraries(mfem_lib
@@ -73,13 +75,13 @@ target_link_libraries(mfem_lib
 )
 
 add_library(io_lib
-        ../../io/input.cpp
-        ../../io/output.c
+        ${SRC}/io/input.cpp
+        ${SRC}/io/output.c
 #        ../../io/cgns_io.c
 )
 
 target_include_directories(io_lib
-		  PUBLIC ../../io
+		  PUBLIC ${SRC}/io
 		  PUBLIC ${PETSC_DIR}/include
 )
 
@@ -93,6 +95,7 @@ target_link_libraries(io_lib
 # Add to excutable
 add_executable(test 
         test.cpp 
+        myfunc.cpp
 )
 
 # Link static libraries generated previously

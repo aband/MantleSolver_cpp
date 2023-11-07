@@ -37,11 +37,13 @@ void AssignLocMatrix(const MeshInfo& mi,
                      const vector<vertex>& gpf);
 
 void SerialMatrixPrepare(const MeshInfo& mi,
-                         Matrix * matrix);
+                         Matrix * matrix,
+                         Vec * source);
 
 PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                          basis& basis_,
                                          Hdivmixed& hdiv_,
                                          BRMixed& br_,
+                                         PhysProperty * physpropety,
                                          Matrix * matrix,
                                          Vec * source);

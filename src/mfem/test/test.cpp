@@ -6,6 +6,7 @@
 #include "brmixed.h"
 #include "assemble.h"
 #include "util.h"
+#include "myFunc.h"
 
 extern "C"{
 #include "mesh.h"
@@ -171,10 +172,15 @@ int main(int argc, char **argv){
 
     Matrix * matrix = (Matrix *)malloc(sizeof(Matrix));
 
-    // Allocate space for matrix struct
-    SerialMatrixPrepare(matrix);
+    PhysProperty * physproperty = (PhysProperty *)malloc(sizeof(PhysProperty));
 
-    SerialMatrixAssembleBlock(mi, testBasis, hdiv, br, physproperty);
+    // Allocate space for matrix struct
+
+    Vec source;
+
+    SerialMatrixPrepare(mi, matrix, &source);
+
+    SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, matrix, &source);
 
 // ====================================================================================================================================
     // Clear used objects

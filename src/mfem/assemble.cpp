@@ -1,13 +1,28 @@
 #include "assemble.h"
 
 void SerialMatrixPrepare(const MeshInfo& mi,
-                         Matrix * matrix){
+                         Matrix * matrix,
+                         Vec * source){
 
     // Create Petsc matrices in the serial fashion
     // Create sparse matrix sequentially
-    MatCreateSeqAIJ(PETCS_COMM_SELF, );
 
+    int stokesDOF = 2*mi.MPIglobalVertexSize[0] * mi.MPIglobalVertexSize[1] +
+                    mi.MPIglobalHoriEdgeSize + mi.MPIglobalVertEdgeSize;
 
+    int darcyDOF = 2*(mi.MPIglobalHoriEdgeSize + mi.MPIglobalVertEdgeSize);
+
+    int pressureDOF = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
+
+    MatCreateSeqAIJ(PETSC_COMM_SELF,stokesDOF ,stokesDOF, 12 ,NULL , &matrix->As);
+    MatCreateSeqAIJ(PETSC_COMM_SELF,darcyDOF ,darcyDOF, 8 ,NULL ,&matrix->Ad);
+    MatCreateSeqAIJ(PETSC_COMM_SELF,stokesDOF ,pressureDOF ,12, NULL, &matrix->Bs);
+    MatCreateSeqAIJ(PETSC_COMM_SELF,darcyDOF ,pressureDOF ,8, NULL, &matrix->Bd);
+    MatCreateSeqAIJ(PETSC_COMM_SELF,pressureDOF, pressureDOF,1,NULL,&matrix->Cs);
+    MatCreateSeqAIJ(PETSC_COMM_SELF,pressureDOF, pressureDOF,1,NULL,&matrix->K);
+
+    VecCreate(PETSC_COMM_SELF, source);
+    VecSetSizes(*source, PETSC_DECIDE, stokesDOF);
 }
 
 void AssignLocMatrix(const MeshInfo& mi,
@@ -154,13 +169,13 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>& gpf = GaussPointsFace;
 
-    PetscCall(PETSC_COMM_WORLD,&(*matrix).Ad);CHKERRQ(ierr);
-    PetscCall(PETSC_COMM_WORLD,&(*matrix).As);CHKERRQ(ierr);
-    PetscCall(PETSC_COMM_WORLD,&(*matrix).Bs);CHKERRQ(ierr);
-    PetscCall(PETSC_COMM_WORLD,&(*matrix).Bd);CHKERRQ(ierr);
-    PetscCall(PETSC_COMM_WORLD,&(*matrix).Cs);CHKERRQ(ierr);
-    PetscCall(PETSC_COMM_WORLD,&(*matrix).Cd);CHKERRQ(ierr);
-    PetscCall(PETSC_COMM_WORLD,&(*matrix).K);CHKERRQ(ierr);
+    PetscCall(MatCreate(PETSC_COMM_SELF,&(*matrix).Ad));
+    PetscCall(MatCreate(PETSC_COMM_SELF,&(*matrix).As));
+    PetscCall(MatCreate(PETSC_COMM_SELF,&(*matrix).Bs));
+    PetscCall(MatCreate(PETSC_COMM_SELF,&(*matrix).Bd));
+    PetscCall(MatCreate(PETSC_COMM_SELF,&(*matrix).Cs));
+    PetscCall(MatCreate(PETSC_COMM_SELF,&(*matrix).Cd));
+    PetscCall(MatCreate(PETSC_COMM_SELF,&(*matrix).K));
 
     double *localrhs;
 
@@ -300,7 +315,7 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
 
     // Remove constent kernel from pressure coefficient matrix
     Mat Me;
-    MatCreate(PETSC_COMM_WORLD,&Me);
+    MatCreate(PETSC_COMM_SELF,&Me);
     ierr = MatSetSizes(Me,PETSC_DECIDE,PETSC_DECIDE,totalElem,totalElem);
     ierr = MatSetType(Me,MATMPIAIJ);
     ierr = MatSetUp(Me);
@@ -313,7 +328,7 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
     MatAssemblyBegin(Me,MAT_FINAL_ASSEMBLY);
     MatAssemblyEnd(Me,MAT_FINAL_ASSEMBLY);
 
-//    MatView(Me, PETSC_VIEWER_STDOUT_WORLD);
+//    MatView(Me, PETSC_VIEWER_STDOUT_SELF);
 
     MatAXPY(matrix->Cs,-1.0, Me,DIFFERENT_NONZERO_PATTERN);
     MatAXPY(matrix->Cd,-1.0, Me,DIFFERENT_NONZERO_PATTERN);
