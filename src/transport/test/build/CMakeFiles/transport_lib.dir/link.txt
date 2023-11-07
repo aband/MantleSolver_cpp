@@ -1,2 +1,0 @@
-/usr/bin/ar qc libtransport_lib.a  CMakeFiles/transport_lib.dir/workspace/MantleSolver_cpp/src/transport/transport.cpp.o CMakeFiles/transport_lib.dir/workspace/MantleSolver_cpp/src/transport/timestepping.cpp.o CMakeFiles/transport_lib.dir/workspace/MantleSolver_cpp/src/transport/diffusion.cpp.o CMakeFiles/transport_lib.dir/workspace/MantleSolver_cpp/src/transport/advection.cpp.o
-/usr/bin/ranlib libtransport_lib.a
