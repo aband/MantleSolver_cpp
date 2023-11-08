@@ -178,7 +178,11 @@ int main(int argc, char **argv){
 
     Vec source;
 
-    SerialMatrixPrepare(mi, matrix, &source);
+    br->ComputeTotalDOF(mi);
+
+    VecCreate(PETSC_COMM_SELF, &source);
+    VecSetSizes(source, br->getDOF(), br->getDOF());
+    VecSetUp(source);
 
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, matrix, &source);
 

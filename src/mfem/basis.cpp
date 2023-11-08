@@ -12,6 +12,7 @@
 
 // ===== Public members =====
 void basis::GetCorners(const vertexSet& corners){
+    corners_.clear();
     for (const auto& c: corners){
         corners_.push_back(c);
     }
