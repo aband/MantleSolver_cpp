@@ -202,8 +202,6 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
     int checkSizeM, checkSizeN;
     MatGetSize((*matrix).Ad, &checkSizeM, &checkSizeN);
 
-    cout << checkSizeM << " " << checkSizeN << endl;
-
     for (unsigned int n=0; n<totalElem; n++){
         indice globalElem = Bend(mi,n);
 

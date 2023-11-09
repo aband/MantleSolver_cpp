@@ -180,9 +180,7 @@ int main(int argc, char **argv){
 
     br->ComputeTotalDOF(mi);
 
-    VecCreate(PETSC_COMM_SELF, &source);
-    VecSetSizes(source, br->getDOF(), br->getDOF());
-    VecSetUp(source);
+    DMCreateGlobalVector(dm, &source);
 
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, matrix, &source);
 

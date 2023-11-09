@@ -157,17 +157,21 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
     DMDAGetCorners(dmv, &xs, &ys, NULL, &xm, &ym, NULL);
     DMDAGetInfo(dmv, &dim, &M, &N, NULL, NULL, NULL, NULL, NULL, &ghostWidth, NULL, NULL, NULL, NULL);
 
-    mi.MPIlocalVertexSize.push_back(xm);
-    mi.MPIlocalVertexSize.push_back(ym);
+    mi.MPIlocalVertexSize.push_back(xm+1);
+    mi.MPIlocalVertexSize.push_back(ym+1);
 
     mi.MPIlocalVertexStart = {xs,ys};
 
-    mi.MPIglobalVertexSize.push_back(M);
-    mi.MPIglobalVertexSize.push_back(N);
+    mi.MPIglobalVertexSize.push_back(M+1);
+    mi.MPIglobalVertexSize.push_back(N+1);
     mi.vertexGhostLayerSize = ghostWidth; 
 
     mi.MPIlocalVertexSizeFull.push_back(xm+2*ghostWidth);
     mi.MPIlocalVertexSizeFull.push_back(ym+2*ghostWidth);
+
+    // Assign values to edge number
+    mi.MPIglobalHoriEdgeSize = mi.MPIglobalCellSize[0]*mi.MPIglobalVertexSize[1];
+    mi.MPIglobalVertEdgeSize = mi.MPIglobalCellSize[1]*mi.MPIglobalVertexSize[0];
 
     // Pre calculate cell area for future computation.
     // Repeat calculation of cell areas cost a lot of computation resources.
@@ -211,6 +215,8 @@ void printMeshInfo(MeshInfo& mi){
 
     cout << "global size of vertexs :" << mi.MPIglobalVertexSize[0]<< " " << mi.MPIglobalVertexSize[1] << endl;
 
+    cout << "global size of vertical edges :" << mi.MPIglobalVertEdgeSize << endl;
+    cout << "global size of horizontal edges :" << mi.MPIglobalHoriEdgeSize << endl;
 
     cout << endl;
 }
