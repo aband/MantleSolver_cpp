@@ -15,7 +15,7 @@ void AssignLocMatrix(const MeshInfo& mi,
     double theta = 0;
     double mu_s = 1.0;
     double mu_f = 1.0;
-    double inv_k0 = 10e08;
+    double inv_k0 = 1;
     double rho_r = 2800/3300;
     double gx = 0;
     double gy = 10;
@@ -156,8 +156,6 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
 
     PetscCall(VecGetArray(*source, &localrhs));
 
-    hdiv_.ComputeTotalDOF(mi);
-
     // Set zeros to right hand side vector
     for (unsigned int k=0; k<br_.getDOF(); k++){localrhs[k] = 0.0;}
 
@@ -229,6 +227,7 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                    (*locmatrix).ad[2+l*8],(*locmatrix).ad[3+l*8],
                                    (*locmatrix).ad[4+l*8],(*locmatrix).ad[5+l*8],
                                    (*locmatrix).ad[6+l*8],(*locmatrix).ad[7+l*8]};
+
             const int idxm = ISDarcy[l];
             PetscCall(MatSetValuesBlocked((*matrix).Ad,1,&idxm,8,ISDarcy,Adv,ADD_VALUES));
         }

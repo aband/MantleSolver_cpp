@@ -16,8 +16,7 @@ std::array<int, 8> Hdivmixed::LocalToGlobal(const MeshInfo& mi,
 
     indice tmp = globalElement + add;
 
-    work[3] = mi.MPIglobalHoriEdgeSize +
-              FlatIndic(mi.MPIglobalVertexSize[0],tmp);
+    work[3] = FlatIndic(mi.MPIglobalVertexSize[0],tmp);
 
     int allEdge = mi.MPIglobalHoriEdgeSize + mi.MPIglobalVertEdgeSize;
 

@@ -174,13 +174,19 @@ int main(int argc, char **argv){
 
     PhysProperty * physproperty = (PhysProperty *)malloc(sizeof(PhysProperty));
 
+    (*physproperty).l = 20;
+
     // Allocate space for matrix struct
 
     Vec source;
 
     br->ComputeTotalDOF(mi);
 
-    DMCreateGlobalVector(dm, &source);
+    hdiv->ComputeTotalDOF(mi);
+
+    //DMCreateGlobalVector(dm, &source);
+
+    VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,br->getDOF(),&source);
 
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, matrix, &source);
 
