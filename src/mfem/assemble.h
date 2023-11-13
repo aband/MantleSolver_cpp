@@ -43,3 +43,6 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                          PhysProperty * physpropety,
                                          Matrix * matrix,
                                          Vec * source);
+
+PetscErrorCode CreateSchurComplement(Matrix * matrix, 
+                                     int nelem, int NS, int ND);

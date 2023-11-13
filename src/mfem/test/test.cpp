@@ -184,11 +184,20 @@ int main(int argc, char **argv){
 
     hdiv->ComputeTotalDOF(mi);
 
-    //DMCreateGlobalVector(dm, &source);
-
-    VecCreateMPI(PETSC_COMM_WORLD,PETSC_DECIDE,br->getDOF(),&source);
+    DMCreateGlobalVector(dm, &source);
 
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, matrix, &source);
+
+    const char *check1 = "MatrixCheck.dat";
+
+    // Check matrix shape
+    DrawMat(matrix->As,check1);
+
+    CreateSchurComplement(matrix, M*N, br->getDOF(), hdiv->getDOF());
+
+    const char *check2 = "schur.dat";
+
+    MatView(matrix->G, PETSC_VIEWER_STDOUT_WORLD);
 
 // ====================================================================================================================================
     // Clear used objects
