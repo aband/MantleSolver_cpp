@@ -195,7 +195,9 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
     ierr = MatSetUp((*matrix).K);CHKERRQ(ierr);
     ierr = MatSetUp((*matrix).Ad);CHKERRQ(ierr);
 
-    LocMatrix * locmatrix = (LocMatrix *)malloc(sizeof(LocMatrix));
+    //LocMatrix * locmatrix = (LocMatrix *)malloc(sizeof(LocMatrix));
+
+    LocMatrix * locmatrix = new LocMatrix;
 
     int checkSizeM, checkSizeN;
     MatGetSize((*matrix).Ad, &checkSizeM, &checkSizeN);
@@ -385,16 +387,6 @@ PetscErrorCode CreateSchurComplement(Matrix * matrix, int nelem, int NS, int ND)
     sub[3] = S2;
 
     MatCreateNest(PETSC_COMM_WORLD, 2, NULL, 2, NULL, sub, &matrix->G);
-
-    PetscFunctionReturn(0);
-}
-
-PetscErrorCode CreateRHS(const MeshInfo& mi){
-
-    PetscFunctionBeginUser;
-
-    Petsc
-
 
     PetscFunctionReturn(0);
 }
