@@ -43,12 +43,12 @@ PetscErrorCode AssignValuesRHS(int NS, int ND, int Nelem,
     PetscFunctionReturn(0);
 }
 
-double * ComputeBndryValsStokes(const unordered_map<int, int>& bndryStokes){
-
-    double * bndryvals = new double[(int)bndryStokes.size()];
+int ComputeBndryValsStokes(const unordered_map<int, int>& bndryStokes){
 
 
-    return bndryvals;
+
+
+    return 0;
 }
 
 double * ComputeBndryValsDarcy(const unordered_map<int, int>& bndryDarcy){

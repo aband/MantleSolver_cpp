@@ -8,7 +8,11 @@ using bndryVal = std::unordered_map<int, std::pari<int, double>>;
 
 /** !
  * Dirichlet and Neumann boundary conditions are created here.
+ *
+ * A L2 projection will be used for Dirichlet boundary conditions.
  */
+
+double
 
 
 #endif
