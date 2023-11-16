@@ -7,6 +7,7 @@
 #include "assemble.h"
 #include "util.h"
 #include "myFunc.h"
+#include "bndry.h"
 
 extern "C"{
 #include "mesh.h"
@@ -198,6 +199,12 @@ int main(int argc, char **argv){
     const char *check2 = "schur.dat";
 
     MatView(matrix->G, PETSC_VIEWER_STDOUT_WORLD);
+
+    bndryVal bndryStokes;
+    bndryVal bndryDarcy;
+    // Create right hand side vector
+    MarkBndryDOFStokes(bndryStokes, mi, (*br));
+    MarkBndryDOFDarcy(bndryDarcy, mi, (*hdiv));
 
 // ====================================================================================================================================
     // Clear used objects

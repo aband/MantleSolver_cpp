@@ -20,11 +20,6 @@ typedef struct{
 
 } LocMatrix;
 
-typedef struct{
-    Vec rhs, source;
-    Vec ad, bs, qs, qd;
-} RightHandSideVector;
-
 void AssignLocMatrix(const MeshInfo& mi,
                      basis& basis_,
                      Hdivmixed& hdiv_,
