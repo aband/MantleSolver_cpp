@@ -9,7 +9,13 @@
 // The boundary value data structure contains
 // 1. global index of degree of freedom and global index of element
 // 2. a pair object pairing local degree of freedom and value
-using bndryVal = std::unordered_map<int, vector<std::pair<int, double>>>;
+struct bndryInfo{
+    int    localDOF;
+    double DirichletVal;  
+    indice globalElem;
+};
+
+using bndryVal = std::unordered_map<int, bndryInfo>;
 
 typedef struct{
     Vec rhs, source;
