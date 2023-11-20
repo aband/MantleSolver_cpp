@@ -39,23 +39,19 @@ PetscErrorCode AssignValuesRHS(int NS, int ND, int Nelem,
  * Darcy and Stokes boundary values are assigned differently.
  */
 int MarkBndryDOFStokes(bndryVal& bndryStokes, 
-                                const MeshInfo& mi, BRMixed& br_);
+                       const MeshInfo& mi, BRMixed& br_);
 
 int MarkBndryDOFDarcy(bndryVal& bndryDarcy, 
-                               const MeshInfo& mi, Hdivmixed& hdiv_);
+                      const MeshInfo& mi, Hdivmixed& hdiv_);
 
 /** !
  * Compute Dirichlet values locally.
  * 1. Dirichlet values are assigned to Stokes part directly.
  * 2. Dirichlet values are assigned to Darcy part via L2 projection.
  */
-int LocBndryValsStokes(bndryVal& bndryStokdes, BRMixed& br_,
-                       const valarray<double>& gwe,
-                       const valarray<double>& gpe);
+int AssignBndryValsStokes(bndryVal& bndryStokdes, BRMixed& br_);
 
-int LocBndryValsDarcy(bndryVal& bndryDarcy, Hdivmixed& hdiv_,
-                      const valarray<double>& gwe,
-                      const valarray<double>& gpe);
+int AssignBndryValsDarcy(bndryVal& bndryDarcy, Hdivmixed& hdiv_);
 
 /** !
  * Assign Neumann or Dirichlet boundary to different elements.

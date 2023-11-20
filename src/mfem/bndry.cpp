@@ -66,8 +66,6 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
             if (i==0){
                 // Count left bottom vertex dof
                 // Count left sid
-
-
                 bndryStokes.insert(std::make_pair<int, bndryInfo>
                                    ((int)elementDOF[0], {0,0.0,global}));
 
@@ -168,8 +166,7 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
     return 0;
 }
 
-std::array<double,3> LocBndryValsStokes(bndryVal& bndryStokes, BRMixed& br_,
-                                        vector<int> locDOF){
+int AssignBndryValsStokes(bndryVal& bndryStokes, BRMixed& br_){
 
     // Assign point wise value directly
 
@@ -180,15 +177,17 @@ std::array<double,3> LocBndryValsStokes(bndryVal& bndryStokes, BRMixed& br_,
     return 0;
 }
 
-vector<double,2> LocBndryValsDarcy(bndryVal& bndryDarcy, Hdivmixed& hdiv_,
-                      const valarray<double>& gwe,
-                      const valarray<double>& gpe){
+int AssignBndryValsDarcy(bndryVal& bndryDarcy, Hdivmixed& hdiv_){
 
     // Assign Dirichlet boundary values to Darcy problem
     // requires a L2 projection.
 
+    for (auto& it: bndryDarcy){
 
-    return {};
+
+    }
+
+    return 0;
 }
 
 PetscErrorCode CreateRHS(const MeshInfo& mi,
