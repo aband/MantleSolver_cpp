@@ -1,4 +1,5 @@
 #include "bndry.h"
+#include "myFunc.h"
 
 PetscErrorCode AssignValuesRHS(int NS, int ND, int Nelem,
                                Vec * A, Vec * B,
@@ -45,120 +46,132 @@ PetscErrorCode AssignValuesRHS(int NS, int ND, int Nelem,
     PetscFunctionReturn(0);
 }
 
+bool Is_Dirichlet(const indice& global){
+
+    return true;
+}
+
 // Mark boundary dof in serial
-int MarkBndryDOFStokes(bndryVal& bndryStokes, const MeshInfo& mi, BRMixed& br_){
+int MarkBndryDOFStokes(bndryVal& bndryStokes, 
+                       const MeshInfo& mi, BRMixed& br_){
 
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
         indice global {i,j};
+        if (Is_Dirichlet(global)){
 
-        std::array<int,12> elementDOF = br_.LocalToGlobal(mi,global);
+            std::array<int,12> elementDOF = br_.LocalToGlobal(mi,global);
 
-        if (i==0){
-            // Count left bottom vertex dof
-            // Count left side
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[0], {0,0.0,global}));
+            if (i==0){
+                // Count left bottom vertex dof
+                // Count left sid
 
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[4], {4,0.0,global}));
 
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[8], {8,0.0,global}));
-        } else if (j==0){
-            // Count right bottom vertex dof
-            // Count bottom side
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[1], {1,0.0,global}));
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[0], {0,0.0,global}));
 
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[5], {5,0.0,global}));
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[4], {4,0.0,global}));
 
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[9], {9,0.0,global}));
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[8], {8,0.0,global}));
+            } else if (j==0){
+                // Count right bottom vertex dof
+                // Count bottom side
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[1], {1,0.0,global}));
+    
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[5], {5,0.0,global}));
+
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[9], {9,0.0,global}));
  
-        } else if (i==mi.MPIglobalCellSize[0]-1){
-            // Count right top vertex dof 
-            // Count right side
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[2], {2,0.0,global}));
+            } else if (i==mi.MPIglobalCellSize[0]-1){
+                // Count right top vertex dof 
+                // Count right side
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[2], {2,0.0,global}));
+    
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[6], {6,0.0,global}));
+    
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[10], {10,0.0,global}));
+     
+            } else if (j=mi.MPIglobalCellSize[0]-1){
+                // Count left top vertex dof
+                // Count top side
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[3], {3,0.0,global}));
+    
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[7], {7,0.0,global}));
 
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[6], {6,0.0,global}));
-
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[10], {10,0.0,global}));
- 
-        } else if (j=mi.MPIglobalCellSize[0]-1){
-            // Count left top vertex dof
-            // Count top side
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[3], {3,0.0,global}));
-
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[7], {7,0.0,global}));
-
-            bndryStokes.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[11], {11,0.0,global}));
- 
-        }
-
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[11], {11,0.0,global}));
+     
+            }
+        } // else (for Neumann situation) 
     }}
 
     return 0;
 }
 
-int MarkBndryDOFDarcy(bndryVal& bndryDarcy, const MeshInfo& mi, Hdivmixed& hdiv_){
+int MarkBndryDOFDarcy(bndryVal& bndryDarcy, 
+                      const MeshInfo& mi, Hdivmixed& hdiv_){
 
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
         indice global {i,j};
+        if (Is_Dirichlet(global)){
+            std::array<int,8> elementDOF = hdiv_.LocalToGlobal(mi,global);
 
-        std::array<int,8> elementDOF = hdiv_.LocalToGlobal(mi,global);
+            if (i==0){
+                // Count left side
+                bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[0], {0,0.0,global}));
 
-        if (i==0){
-            // Count left side
-            bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[0], {0,0.0,global}));
+                bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[4], {4,0.0,global}));
 
-            bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[4], {4,0.0,global}));
+            } else if (j==0){
+                // Count bottom side
+                bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[1], {1,0.0,global}));
 
-        } else if (j==0){
-            // Count bottom side
-            bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[1], {1,0.0,global}));
+                bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[5], {5,0.0,global}));
 
-            bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[5], {5,0.0,global}));
+            } else if (i==mi.MPIglobalCellSize[0]-1){
+                // Count right side
+                bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[2], {2,0.0,global}));
 
-        } else if (i==mi.MPIglobalCellSize[0]-1){
-            // Count right side
-            bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[2], {2,0.0,global}));
+                bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[6], {6,0.0,global}));
 
-            bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[6], {6,0.0,global}));
+            } else if (j=mi.MPIglobalCellSize[0]-1){
+                // Count top side
+                bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[3], {3,0.0,global}));
 
-        } else if (j=mi.MPIglobalCellSize[0]-1){
-            // Count top side
-            bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[3], {3,0.0,global}));
+                bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[7], {7,0.0,global}));
 
-            bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[7], {7,0.0,global}));
-
-        }
+            }
+        } // else (save later for neumann boundary condition)
     }}
 
     return 0;
 }
 
-int ComputeBndryValsStokes(bndryVal& bndryStokes, BRMixed& br_,
-                           const valarray<double>& gwe,
-                           const valarray<double>& gpe){
+std::array<double,3> LocBndryValsStokes(bndryVal& bndryStokes, BRMixed& br_,
+                                        vector<int> locDOF){
+
+    // Assign point wise value directly
 
     for(auto& it: bndryStokes){
 
@@ -167,12 +180,15 @@ int ComputeBndryValsStokes(bndryVal& bndryStokes, BRMixed& br_,
     return 0;
 }
 
-int ComputeBndryValsDarcy(bndryVal& bndryDarcy, Hdivmixed& hdiv_,
-                          const valarray<double>& gwe,
-                          const valarray<double>& gpe){
+vector<double,2> LocBndryValsDarcy(bndryVal& bndryDarcy, Hdivmixed& hdiv_,
+                      const valarray<double>& gwe,
+                      const valarray<double>& gpe){
+
+    // Assign Dirichlet boundary values to Darcy problem
+    // requires a L2 projection.
 
 
-    return 0;
+    return {};
 }
 
 PetscErrorCode CreateRHS(const MeshInfo& mi,

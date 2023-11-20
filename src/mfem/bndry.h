@@ -34,17 +34,35 @@ PetscErrorCode AssignValuesRHS(int NS, int ND, int Nelem,
                                const bndryVal& bndryStokes,
                                const bndryVal& bndryDarcy);
 
-int MarkBndryDOFStokes(bndryVal& bndryStokes, const MeshInfo& mi, BRMixed& br_);
+/** !
+ * Functions mark Dirichlet boundary values.
+ * Darcy and Stokes boundary values are assigned differently.
+ */
+int MarkBndryDOFStokes(bndryVal& bndryStokes, 
+                                const MeshInfo& mi, BRMixed& br_);
 
-int MarkBndryDOFDarcy(bndryVal& bndryDarcy, const MeshInfo& mi, Hdivmixed& hdiv_);
+int MarkBndryDOFDarcy(bndryVal& bndryDarcy, 
+                               const MeshInfo& mi, Hdivmixed& hdiv_);
 
-int ComputeBndryValsStokes(bndryVal& bndryStokdes, BRMixed& br_,
-                           const valarray<double>& gwe,
-                           const valarray<double>& gpe);
+/** !
+ * Compute Dirichlet values locally.
+ * 1. Dirichlet values are assigned to Stokes part directly.
+ * 2. Dirichlet values are assigned to Darcy part via L2 projection.
+ */
+int LocBndryValsStokes(bndryVal& bndryStokdes, BRMixed& br_,
+                       const valarray<double>& gwe,
+                       const valarray<double>& gpe);
 
-int ComputeBndryValsDarcy(bndryVal& bndryDarcy, Hdivmixed& hdiv_,
-                          const valarray<double>& gwe,
-                          const valarray<double>& gpe);
+int LocBndryValsDarcy(bndryVal& bndryDarcy, Hdivmixed& hdiv_,
+                      const valarray<double>& gwe,
+                      const valarray<double>& gpe);
+
+/** !
+ * Assign Neumann or Dirichlet boundary to different elements.
+ * A Neumann Dirichlet mixed boundary condition.
+ * Only two different kinds of boundary conditions.
+ */
+bool Is_Dirichlet(const indice& global);
 
 PetscErrorCode CreateRHS(const MeshInfo& mi, 
                          basis& basis_,
