@@ -42,7 +42,9 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
                        const MeshInfo& mi, BRMixed& br_);
 
 int MarkBndryDOFDarcy(bndryVal& bndryDarcy, 
-                      const MeshInfo& mi, Hdivmixed& hdiv_);
+                      const MeshInfo& mi,
+                      basis& basis_,
+                      Hdivmixed& hdiv_);
 
 /** !
  * Compute Dirichlet values locally.
@@ -51,7 +53,14 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
  */
 int AssignBndryValsStokes(bndryVal& bndryStokdes, BRMixed& br_);
 
-int AssignBndryValsDarcy(bndryVal& bndryDarcy, Hdivmixed& hdiv_);
+std::array<double, 2> AssignBndryValsDarcy(const indice& global, 
+                                           const int& edge, 
+                                           basis& basis_,
+                                           Hdivmixed& hdiv_,
+                                           const vertexSet& edgeCorner,
+                                           const double& len,
+                                           const valarray<double>& gwe,
+                                           const valarray<double>& gpe);
 
 /** !
  * Assign Neumann or Dirichlet boundary to different elements.

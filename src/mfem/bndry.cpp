@@ -118,48 +118,57 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
 }
 
 int MarkBndryDOFDarcy(bndryVal& bndryDarcy, 
-                      const MeshInfo& mi, Hdivmixed& hdiv_){
+                      const MeshInfo& mi, 
+                      basis& basis_,
+                      Hdivmixed& hdiv_){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
 
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
         indice global {i,j};
+
+        int edge = 0;
+
         if (Is_Dirichlet(global)){
+            // Assign corners of current element to basis functions
+            basis_.GetCorners(mi, global);
+
+            vertexSet fullCorners = basis_.corners();
+
             std::array<int,8> elementDOF = hdiv_.LocalToGlobal(mi,global);
 
             if (i==0){
                 // Count left side
-                bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[0], {0,0.0,global}));
-
-                bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[4], {4,0.0,global}));
-
+                edge = 0; 
             } else if (j==0){
                 // Count bottom side
-                bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[1], {1,0.0,global}));
-
-                bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[5], {5,0.0,global}));
-
+                edge = 1;
             } else if (i==mi.MPIglobalCellSize[0]-1){
                 // Count right side
-                bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[2], {2,0.0,global}));
-
-                bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[6], {6,0.0,global}));
-
+                edge = 2;
             } else if (j=mi.MPIglobalCellSize[0]-1){
                 // Count top side
-                bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[3], {3,0.0,global}));
-
-                bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[7], {7,0.0,global}));
-
+                edge = 3;
             }
+
+            // Extract two corners representing edge
+            vertexSet edgeCorner = {fullCorners.at((edge+3)%4), 
+                                    fullCorners.at(edge)};
+
+            double len = length(edgeCorner);
+
+            std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, basis_,hdiv_,
+                                                               edgeCorner, len, gwe, gpe);
+
+            bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                               ((int)elementDOF[edge], {edge,dVals[0],global}));
+
+            bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                               ((int)elementDOF[edge+4], {edge+4,dVals[1],global}));
+
         } // else (save later for neumann boundary condition)
     }}
 
@@ -177,17 +186,48 @@ int AssignBndryValsStokes(bndryVal& bndryStokes, BRMixed& br_){
     return 0;
 }
 
-int AssignBndryValsDarcy(bndryVal& bndryDarcy, Hdivmixed& hdiv_){
+std::array<double,2> AssignBndryValsDarcy(const indice& global,
+                                          const int& edge,
+                                          basis& basis_,
+                                          Hdivmixed& hdiv_,
+                                          const vertexSet& edgeCorner,
+                                          const double& len,
+                                          const valarray<double>& gwe,
+                                          const valarray<double>& gpe){
+
+    std::array<double, 2> work;
+
+    // Initialize the local linear system variables
+    double a = 0, b = 0, d = 0;
+
+    // Initialize the right hand side vector components
+    double l0 = 0, l1 = 0;
 
     // Assign Dirichlet boundary values to Darcy problem
     // requires a L2 projection.
+    // Vector based basis function cannot assign Dirichlet 
+    // boundary condition directly.
+    // A first order approximation minimization L2 error.
 
-    for (auto& it: bndryDarcy){
+    for (int g=0; g<gwe.size(); g++){
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edgeCorner);
+        std::array<vertex, 2> vals = hdiv_.ComputeHdivmixed(basis_, mapped, edge); 
+        a += len/2.0*gwe[g]*(vals[0][0]*vals[0][0] + vals[0][1]*vals[0][1]);
+        b += len/2.0*gwe[g]*(vals[0][0]*vals[1][0] + vals[0][1]*vals[1][1]);
+        d += len/2.0*gwe[g]*(vals[1][0]*vals[1][0] + vals[1][1]*vals[1][1]);
 
+        // Get local Dirichlet vector value
+        vertex dVal = Dirichlet_val(mapped); 
+
+        l0 += len/2.0*gwe[g]*(dVal[0]*vals[0][0] + dVal[1]*vals[0][1]);
+        l1 += len/2.0*gwe[g]*(dVal[0]*vals[1][0] + dVal[1]*vals[1][1]);
 
     }
 
-    return 0;
+    work[0] = (a*d-d*d)*(d*l0-b*l1);
+    work[1] = (a*d-d*d)*(a*l1-b*l0);
+
+    return work;
 }
 
 PetscErrorCode CreateRHS(const MeshInfo& mi,

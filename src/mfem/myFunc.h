@@ -22,6 +22,6 @@ double AssignPorosity(const vertex& point, const double& l);
 // Define boundary condition
 // ===================================================
 
-const std::array<double, 2> Dirichlet_val(const vertex& point);
+const vertex Dirichlet_val(const vertex& point);
 
 #endif

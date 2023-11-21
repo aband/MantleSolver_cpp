@@ -36,9 +36,15 @@ class Hdivmixed{
 
         // ! Test function of H(div) mixed function space
         void Test(const basis& basis_);
-  
+ 
+        // ! Return all basis function evaluated at a given point
         std::array<vertex,8> ComputeHdivmixed(const basis& basis_,
                                               const vertex& point) const;
+
+        // ! Return the basis function on the given edge evaluated at a given point
+        std::array<vertex,2> ComputeHdivmixed(const basis& basis_,
+                                              const vertex& point,
+                                              const int& edge) const;
 
     private:
        
