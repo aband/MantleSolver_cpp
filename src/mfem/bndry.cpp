@@ -37,9 +37,20 @@ PetscErrorCode AssignValuesRHS(int NS, int ND, int Nelem,
 
     // Initialize local arrays
     for (int k=0; k<ND; k++){localad[k] = 0.0;}
-    for (int k=0; k<NS; k++){localbs[k] = 0.0;}
+    for (int k=0; k<NS; k++){localbs[k] = -1*localsource[k];}
     for (int k=0; k<Nelem; k++) {localqd[k] = 0.0; localqs[k] = 0.0;}
 
+    // Extract values from Darcy matrix Ad 
+    for (unsigned int j=0; j<ND; j++){
+    for (unsigned int i=0; i<bndryDarcy.size(); i++){
+        const int idxm = id
+        const int idxn = j;
+        double v;
+        MatGetValues(matrix->Ad, 1, &idxm, 1, &idxn, &v);
+        localad[j] -= v*uDS[i];
+    }}
+
+    // Extract values from Stokes matrix As
 
 
 
@@ -56,6 +67,9 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
                        const MeshInfo& mi, 
                        basis& basis_,
                        BRMixed& br_){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
 
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
@@ -91,19 +105,29 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
             }
 
             // Extract two corners representing edge
-            vertexSet edgeCorner = ;
-         
-            bndryStokes.insert(std::make_pair<int,bndryInfo>
-                               ((int)elementDOF[edge], {edge, dVals[0], global}));
+            vertexSet edgeCorner = {fullCorners.at((edge+3)%4),
+                                    fullCorners.at(edge)};
+     
+            // Extract unit normal vector on the boundary edge
+            vertex nu = basis_.unitnormal(edge);
 
+            double len = length(edgeCorner);
+
+            vertex bndryVal = Dirichlet_val(fullCorners.at(edge));
+
+            // x direction
             bndryStokes.insert(std::make_pair<int,bndryInfo>
-                               ((int)elementDOF[edge], {edge+4, dVals[1], global}));
+                               ((int)elementDOF[edge], {edge, bndryVal[0], global}));
+
+            // y direction
+            bndryStokes.insert(std::make_pair<int,bndryInfo>
+                               ((int)elementDOF[edge+4], {edge+4, bndryVal[1], global}));
 
             // Assign values to edge supplement bubble function
-            double suppVal = AssignSupVal(edge, );
+            double suppVal = AssignBndrySupVal(edgeCorner, nu, gwe, gpe);
 
             bndryStokes.insert(std::make_pair<int,bndryInfo>
-                               ((int)elementDOF[edge], {edge+8, suppVal, global}));
+                               ((int)elementDOF[edge+8], {edge+8, suppVal, global}));
 
         } // else (for Neumann situation) 
     }}
@@ -158,7 +182,6 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
             std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, basis_,hdiv_,
                                                                edgeCorner, len, gwe, gpe);
 
-
             bndryDarcy.insert(std::make_pair<int, bndryInfo>
                                ((int)elementDOF[edge], {edge,dVals[0],global}));
 
@@ -167,17 +190,6 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
 
         } // else (save later for neumann boundary condition)
     }}
-
-    return 0;
-}
-
-int AssignBndryValsStokes(bndryVal& bndryStokes, BRMixed& br_){
-
-    // Assign point wise value directly
-
-    for(auto& it: bndryStokes){
-
-    }
 
     return 0;
 }
@@ -215,15 +227,46 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
         d += len/2.0*gwe[g]*(vals[1][0]*vals[1][0] + vals[1][1]*vals[1][1]);
 
         // Get local Dirichlet vector value
-        vertex dVal = Dirichlet_val(mapped); 
+        vertex DiriVal = Dirichlet_val(mapped); 
 
-        l0 += len/2.0*gwe[g]*(dVal[0]*vals[0][0] + dVal[1]*vals[0][1]);
-        l1 += len/2.0*gwe[g]*(dVal[0]*vals[1][0] + dVal[1]*vals[1][1]);
+        l0 += len/2.0*gwe[g]*(DiriVal[0]*vals[0][0] + DiriVal[1]*vals[0][1]);
+        l1 += len/2.0*gwe[g]*(DiriVal[0]*vals[1][0] + DiriVal[1]*vals[1][1]);
 
     }
 
     work[0] = (a*d-d*d)*(d*l0-b*l1);
     work[1] = (a*d-d*d)*(a*l1-b*l0);
+
+    return work;
+}
+
+double AssignBndrySupVal(const vertexSet& edgeCorner,
+                         const vertex& nu,
+                         const valarray<double>& gwe,
+                         const valarray<double>& gpe){
+
+    // Assign value to the degree of freedom of 
+    // the supplemental function on the edge
+    double work = 0.0;
+
+    // Extract values on both ends of the target edge
+    vertex DiriValL = Dirichlet_val(edgeCorner[0]); 
+    vertex DiriValR = Dirichlet_val(edgeCorner[1]);
+
+    // Calculate averaged unit normal component
+    // of assigned dirichlet boundary values
+    double averaged = 0.0;
+    for (int g=0; g<gwe.size(); g++) {
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edgeCorner);
+
+        vertex DiriVal = Dirichlet_val(mapped);
+        averaged += 1.0/2.0 *gwe[g] *(DiriVal[0] *nu[0] + DiriVal[1]*nu[1]);
+    }
+
+    work = averaged - 0.5*((DiriValL[0]+DiriValR[0])*nu[0] + 
+                           (DiriValL[1]+DiriValR[1])*nu[1]); 
+
+    work *= 3.0/2.0;
 
     return work;
 }

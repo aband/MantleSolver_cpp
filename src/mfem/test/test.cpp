@@ -205,6 +205,7 @@ int main(int argc, char **argv){
     // Create right hand side vector
     //MarkBndryDOFStokes(bndryStokes, mi, (*br));
     MarkBndryDOFDarcy(bndryDarcy, mi, (*testBasis), (*hdiv));
+    MarkBndryDOFStokes(bndryStokes, mi, (*testBasis), (*br));
 
 // ====================================================================================================================================
     // Clear used objects
