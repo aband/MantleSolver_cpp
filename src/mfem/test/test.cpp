@@ -189,22 +189,22 @@ int main(int argc, char **argv){
 
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, matrix, &source);
 
-    const char *check1 = "MatrixCheck.dat";
+    //const char *check1 = "MatrixCheck.dat";
 
     // Check matrix shape
-    DrawMat(matrix->As,check1);
+    //DrawMat(matrix->As,check1);
 
     CreateSchurComplement(matrix, M*N, br->getDOF(), hdiv->getDOF());
 
-    const char *check2 = "schur.dat";
+    //const char *check2 = "schur.dat";
 
-    MatView(matrix->G, PETSC_VIEWER_STDOUT_WORLD);
+    //MatView(matrix->G, PETSC_VIEWER_STDOUT_WORLD);
 
     bndryVal bndryStokes;
     bndryVal bndryDarcy;
     // Create right hand side vector
-    MarkBndryDOFStokes(bndryStokes, mi, (*br));
-    MarkBndryDOFDarcy(bndryDarcy, mi, (*hdiv));
+    //MarkBndryDOFStokes(bndryStokes, mi, (*br));
+    MarkBndryDOFDarcy(bndryDarcy, mi, (*testBasis), (*hdiv));
 
 // ====================================================================================================================================
     // Clear used objects
@@ -213,6 +213,7 @@ int main(int argc, char **argv){
 
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);
+    //VecDestroy(&source);
     DMDestroy(&dm);
     DMDestroy(&dmu);
 

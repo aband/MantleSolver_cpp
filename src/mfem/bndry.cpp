@@ -53,64 +53,58 @@ bool Is_Dirichlet(const indice& global){
 
 // Mark boundary dof in serial
 int MarkBndryDOFStokes(bndryVal& bndryStokes, 
-                       const MeshInfo& mi, BRMixed& br_){
+                       const MeshInfo& mi, 
+                       basis& basis_,
+                       BRMixed& br_){
 
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
         indice global {i,j};
+
+        int edge = 0;
+
         if (Is_Dirichlet(global)){
+            // Extract corners coordinates from basis class
+            basis_.GetCorners(mi, global);
+
+            vertexSet fullCorners = basis_.corners();
 
             std::array<int,12> elementDOF = br_.LocalToGlobal(mi,global);
 
             if (i==0){
                 // Count left bottom vertex dof
-                // Count left sid
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[0], {0,0.0,global}));
-
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[4], {4,0.0,global}));
-
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[8], {8,0.0,global}));
+                // Count left side
+                edge = 0; 
             } else if (j==0){
                 // Count right bottom vertex dof
                 // Count bottom side
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[1], {1,0.0,global}));
-    
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[5], {5,0.0,global}));
-
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[9], {9,0.0,global}));
- 
+                edge = 1;
             } else if (i==mi.MPIglobalCellSize[0]-1){
                 // Count right top vertex dof 
                 // Count right side
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[2], {2,0.0,global}));
-    
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[6], {6,0.0,global}));
-    
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[10], {10,0.0,global}));
-     
-            } else if (j=mi.MPIglobalCellSize[0]-1){
+                edge = 2; 
+            } else if (j==mi.MPIglobalCellSize[1]-1){
                 // Count left top vertex dof
                 // Count top side
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[3], {3,0.0,global}));
-    
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[7], {7,0.0,global}));
-
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[11], {11,0.0,global}));
-     
+                edge = 3;
             }
+
+            // Extract two corners representing edge
+            vertexSet edgeCorner = ;
+         
+            bndryStokes.insert(std::make_pair<int,bndryInfo>
+                               ((int)elementDOF[edge], {edge, dVals[0], global}));
+
+            bndryStokes.insert(std::make_pair<int,bndryInfo>
+                               ((int)elementDOF[edge], {edge+4, dVals[1], global}));
+
+            // Assign values to edge supplement bubble function
+            double suppVal = AssignSupVal(edge, );
+
+            bndryStokes.insert(std::make_pair<int,bndryInfo>
+                               ((int)elementDOF[edge], {edge+8, suppVal, global}));
+
         } // else (for Neumann situation) 
     }}
 
@@ -133,7 +127,7 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
         int edge = 0;
 
         if (Is_Dirichlet(global)){
-            // Assign corners of current element to basis functions
+            // Extract corners of current element to basis functions
             basis_.GetCorners(mi, global);
 
             vertexSet fullCorners = basis_.corners();
@@ -149,7 +143,7 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
             } else if (i==mi.MPIglobalCellSize[0]-1){
                 // Count right side
                 edge = 2;
-            } else if (j=mi.MPIglobalCellSize[0]-1){
+            } else if (j==mi.MPIglobalCellSize[1]-1){
                 // Count top side
                 edge = 3;
             }
@@ -160,8 +154,10 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
 
             double len = length(edgeCorner);
 
+            // Compute approximated Dirichlet boundary values locally
             std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, basis_,hdiv_,
                                                                edgeCorner, len, gwe, gpe);
+
 
             bndryDarcy.insert(std::make_pair<int, bndryInfo>
                                ((int)elementDOF[edge], {edge,dVals[0],global}));
@@ -211,7 +207,9 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
 
     for (int g=0; g<gwe.size(); g++){
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edgeCorner);
+
         std::array<vertex, 2> vals = hdiv_.ComputeHdivmixed(basis_, mapped, edge); 
+
         a += len/2.0*gwe[g]*(vals[0][0]*vals[0][0] + vals[0][1]*vals[0][1]);
         b += len/2.0*gwe[g]*(vals[0][0]*vals[1][0] + vals[0][1]*vals[1][1]);
         d += len/2.0*gwe[g]*(vals[1][0]*vals[1][0] + vals[1][1]*vals[1][1]);

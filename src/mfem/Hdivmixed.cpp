@@ -156,10 +156,10 @@ std::array<vertex,2> Hdivmixed::ComputeHdivmixed(const basis& basis_,
     if(edge < 2){
         // Corrected with unit normal direction
         work[0] = -1*phil(basis_,edge,point);
-        work[1] = -1*phic(basis_,edge+4,point);
+        work[1] = -1*phic(basis_,(edge+4)%4,point);
     } else {
         work[0] = phil(basis_,edge,point);
-        work[1] = phic(basis_,edge+4,point);
+        work[1] = phic(basis_,(edge+4)%4,point);
     }
 
     return work;
