@@ -40,19 +40,6 @@ PetscErrorCode AssignValuesRHS(int NS, int ND, int Nelem,
     for (int k=0; k<NS; k++){localbs[k] = -1*localsource[k];}
     for (int k=0; k<Nelem; k++) {localqd[k] = 0.0; localqs[k] = 0.0;}
 
-    // Extract values from Darcy matrix Ad 
-    for (unsigned int j=0; j<ND; j++){
-    for (unsigned int i=0; i<bndryDarcy.size(); i++){
-        const int idxm = id
-        const int idxn = j;
-        double v;
-        MatGetValues(matrix->Ad, 1, &idxm, 1, &idxn, &v);
-        localad[j] -= v*uDS[i];
-    }}
-
-    // Extract values from Stokes matrix As
-
-
 
     PetscFunctionReturn(0);
 }
@@ -270,6 +257,43 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
 
     return work;
 }
+
+//! Create Matrix Kg and g for Dirichlet boundary conditions in parallel 
+/*
+PetscErrorCode CreateDirichletMatVecParallel(Vec * localg,
+                                             const bndryVal& bndryvals){
+
+    // Copy vector and matrix
+    Vec lg = *localg;   
+
+    // Create with different size
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &lg));
+    PetscCall(VecSetSizes());
+
+    // Create 
+    for (auto & it: bndryvals){
+
+
+    }
+
+
+    return PETSC_SUCCESS;
+}
+*/
+
+PetscErrorCode CreateDirichletMatVecSerial(Vec *g, Mat *Kg,
+                                           const bndryVal& bndryval){
+
+    Vec gg = *g;
+
+    for (auto & it : bndryval){
+
+
+    }
+
+    return PETSC_SUCCESS;
+}
+
 
 PetscErrorCode CreateRHS(const MeshInfo& mi,
                          basis& basis_,

@@ -74,6 +74,13 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
  */
 bool Is_Dirichlet(const indice& global);
 
+/** !
+ * Create Matrix Kg and Vector g regarding Dirichlet boundary condition
+ * both serial and parallel versions of functions are provided.
+ */
+petscErrorCode CreateDirichletMatVecSerial();
+
+
 PetscErrorCode CreateRHS(const MeshInfo& mi, 
                          basis& basis_,
                          Hdivmixed& hdiv_,
