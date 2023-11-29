@@ -22,6 +22,11 @@ typedef struct{
     Vec ad, bs, qs, qd;
 } RHSVector;
 
+typedef struct{
+    Mat M, Kg;
+    Vec g;
+} ReducedSys;
+
 /** !
  * Dirichlet and Neumann boundary conditions are created here.
  *
@@ -78,8 +83,8 @@ bool Is_Dirichlet(const indice& global);
  * Create Matrix Kg and Vector g regarding Dirichlet boundary condition
  * both serial and parallel versions of functions are provided.
  */
-petscErrorCode CreateDirichletMatVecSerial();
-
+petscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
+                                   const bndryVal& bndryval);
 
 PetscErrorCode CreateRHS(const MeshInfo& mi, 
                          basis& basis_,

@@ -281,14 +281,54 @@ PetscErrorCode CreateDirichletMatVecParallel(Vec * localg,
 }
 */
 
-PetscErrorCode CreateDirichletMatVecSerial(Vec *g, Mat *Kg,
-                                           const bndryVal& bndryval){
+//! Create reduced system from full system
+PetscErrorCode CreateReducedSystemSerial(ReducedSys * reducedsys,
+                                         Mat * fullM,
+                                         const bndryVal& bndryval){
 
-    Vec gg = *g;
+    // Copy precalculated full matrix
+    Mat fM = *fullM;
+
+    // Get global number of rows and columns from full matrix
+    int rows;
+    int cols;
+
+    PetscCall(MatGetSize(fM,&rows,&cols));
+
+    assert(rows == cols);
+
+    int bndrySize = (int)bndryval.size();
+
+    int reducedSize = rows - bndrySize;
+
+    // Create reduced system
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &(*reducedsys).M));
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &(*reducedsys).Kg));
+
+    PetscCall(MatSetSizes(reducedsys->M, PETSC_DECIDE, PETSC_DECIDE, 
+              reducedSize, reducedSize);
+
+    PetscCall(MatSetSizes(reducedsys->Kg, PETSC_DECIDE, PETSC_DECIDE, 
+              reducedSize, bndrySize);
+
+    PetscCall(MatSetUp(reducedsys->M));
+    PetscCall(MatSetUp(reducedsys->Kg));
+
+    // Craete reduced system
+	 // Create bndry index array
+    std::array<int,bndrySize> bndryIndex;
+
+    int indexg = 0;
 
     for (auto & it : bndryval){
 
+        bndryIndex[indexg] = (int)it->first;
 
+        bndryInfo info = it->second;
+
+        arrayg[indexg] = it->second
+
+        indexg ++;
     }
 
     return PETSC_SUCCESS;
