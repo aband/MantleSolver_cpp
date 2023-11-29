@@ -282,9 +282,9 @@ PetscErrorCode CreateDirichletMatVecParallel(Vec * localg,
 */
 
 //! Create reduced system from full system
-PetscErrorCode CreateReducedSystemSerial(ReducedSys * reducedsys,
-                                         Mat * fullM,
-                                         const bndryVal& bndryval){
+PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
+                                   Mat * fullM,
+                                   const bndryVal& bndryval){
 
     // Copy precalculated full matrix
     Mat fM = *fullM;
@@ -302,34 +302,86 @@ PetscErrorCode CreateReducedSystemSerial(ReducedSys * reducedsys,
     int reducedSize = rows - bndrySize;
 
     // Create reduced system
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &(*reducedsys).M));
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &(*reducedsys).Kg));
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &reducedsys->M));
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &reducedsys->Kg));
 
     PetscCall(MatSetSizes(reducedsys->M, PETSC_DECIDE, PETSC_DECIDE, 
-              reducedSize, reducedSize);
-
+              reducedSize, reducedSize));
     PetscCall(MatSetSizes(reducedsys->Kg, PETSC_DECIDE, PETSC_DECIDE, 
-              reducedSize, bndrySize);
+              reducedSize, bndrySize));
 
     PetscCall(MatSetUp(reducedsys->M));
     PetscCall(MatSetUp(reducedsys->Kg));
 
+    // Create boundary vector
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &reducedsys->g));
+    PetscCall(VecSetSizes(reducedsys->g, PETSC_DECIDE, bndrySize));
+
+    PetscCall(VecSetUp(reducedsys->g));
+
+    int reducedRowIndex = 0;
+
     // Craete reduced system
-	 // Create bndry index array
-    std::array<int,bndrySize> bndryIndex;
+    for (int row = 0; row < rows; row++){
+  
+        int bndryIndex = 0;
+        int intrIndex  = 0;
 
-    int indexg = 0;
+        auto itFindRow = bndryval.find(row);
+        if (itFindRow == bndryval.end()){
+            // boundary vale is empty
+            // this dof is interior. Skip all the boundary dofs
 
-    for (auto & it : bndryval){
+            for (int col = 0; col < cols; col++){
 
-        bndryIndex[indexg] = (int)it->first;
+                const int idxm = reducedRowIndex;
 
-        bndryInfo info = it->second;
+                // Extract (row, col) value from the pre defined full matrix
+                double val;
+                MatGetValue(fM, row, col, &val);
 
-        arrayg[indexg] = it->second
+                // assign to a const variable.
+                const double assignVal = val;
 
-        indexg ++;
+                auto itFind = bndryval.find(col);
+                if (itFind != bndryval.end()){
+                    // boundary value not empty. 
+                    // Means this dof is right on the boundary
+                    // 1. Assign boundary value to right hand side
+                    // 2. Extract boundary dof related elements from full system
+
+                    const int idxn = bndryIndex; 
+
+                    MatSetValues(reducedsys->Kg, 1, &idxm, 1, &idxn, &assignVal, INSERT_VALUES);
+
+                    VecSetValues(reducedsys->g, 1, &idxn, &assignVal, INSERT_VALUES);
+
+                    bndryIndex ++;                    
+                } else {
+                    // boundry value is empty
+                    // this current dof is interior dof
+                    // assign the value to reduced system M
+
+                    const int idxn = intrIndex;
+
+                    MatSetValues(reducedsys->M , 1, &idxm, 1, &idxn, &assignVal, INSERT_VALUES);
+
+                    intrIndex ++;
+                }
+
+            }
+            // increment of the reducedRowIndex
+            reducedRowIndex ++;
+        }
     }
+
+    PetscCall(VecAssemblyBegin(reducedsys->g));
+    PetscCall(VecAssemblyEnd(reducedsys->g));
+
+    PetscCall(MatAssemblyBegin(reducedsys->M, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(reducedsys->M, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin(reducedsys->Kg, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(reducedsys->Kg, MAT_FINAL_ASSEMBLY));
 
     return PETSC_SUCCESS;
 }

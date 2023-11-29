@@ -207,6 +207,10 @@ int main(int argc, char **argv){
     MarkBndryDOFDarcy(bndryDarcy, mi, (*testBasis), (*hdiv));
     MarkBndryDOFStokes(bndryStokes, mi, (*testBasis), (*br));
 
+    ReducedSys * reducedsys = (ReducedSys *)malloc(sizeof(ReducedSys));
+
+    CreateReducedSerial(reducedsys, &matrix->Ad, bndryDarcy);
+
 // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);

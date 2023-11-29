@@ -83,7 +83,8 @@ bool Is_Dirichlet(const indice& global);
  * Create Matrix Kg and Vector g regarding Dirichlet boundary condition
  * both serial and parallel versions of functions are provided.
  */
-petscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
+PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
+                                   Mat * fullM,
                                    const bndryVal& bndryval);
 
 PetscErrorCode CreateRHS(const MeshInfo& mi, 
