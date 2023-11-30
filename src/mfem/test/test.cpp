@@ -211,6 +211,10 @@ int main(int argc, char **argv){
 
     CreateReducedSerial(reducedsys, &matrix->Ad, bndryDarcy);
 
+    const char *check = "reducedM.dat";
+
+    DrawMat(reducedsys->M, check);
+
 // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);
