@@ -211,9 +211,18 @@ int main(int argc, char **argv){
 
     CreateReducedSerial(reducedsys, &matrix->Ad, bndryDarcy);
 
-    const char *check = "reducedM.dat";
+    // Check mat size
+    int cM, cN;
+    PetscCall(MatGetSize(reducedsys->Kg, &cM, &cN));
+    cout << cM << " " << cN << endl;
 
-    DrawMat(reducedsys->M, check);
+    Vec g;
+    PetscCall(VecDuplicate(reducedsys->g, &g));
+    PetscCall(VecGetSize(g, &cN));
+    cout << cN << endl;
+
+    PetscCall(MatMult(reducedsys->Kg, reducedsys->g, g));
+
 
 // ====================================================================================================================================
     // Clear used objects
