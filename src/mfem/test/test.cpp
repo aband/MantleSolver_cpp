@@ -209,21 +209,119 @@ int main(int argc, char **argv){
 
     ReducedSys * reducedsys = (ReducedSys *)malloc(sizeof(ReducedSys));
 
-    CreateReducedSerial(reducedsys, &matrix->Ad, bndryDarcy);
+    CreateReducedSerial(reducedsys, &matrix->Ad, &matrix->Bd, bndryDarcy);
+
+    // Test Darcy part alone
+    Vec g1;
 
     // Check mat size
     int cM, cN;
-    PetscCall(MatGetSize(reducedsys->Kg, &cM, &cN));
+    PetscCall(MatGetSize(reducedsys->M, &cM, &cN));
 
-    // Test Darcy part alone
-    Vec g;
-
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &g));
-    PetscCall(VecSetSizes(g, PETSC_DECIDE, cM));
-    PetscCall(VecSetUp(g));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &g1));
+    PetscCall(VecSetSizes(g1, PETSC_DECIDE, cM));
+    PetscCall(VecSetUp(g1));
   
-    PetscCall(MatMult(reducedsys->Kg, reducedsys->g, g));
+    PetscCall(MatMult(reducedsys->Kg, reducedsys->g, g1));
 
+    Vec g2;
+    PetscCall(MatGetSize(reducedsys->B, &cM, &cN));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &g2));
+    PetscCall(VecSetSizes(g2, PETSC_DECIDE, cN));
+    PetscCall(VecSetUp(g2));
+
+    Mat BgT;
+    PetscCall(MatCreateTranspose(reducedsys->Bg, &BgT));
+ 
+    PetscCall(MatMult(BgT, reducedsys->g, g2));
+
+    // Create Schur complement
+    Mat sub[4];
+    Mat S1, S2, Sp1, Sp2;
+
+    sub[0] = reducedsys->M;
+    sub[1] = reducedsys->B;
+    Mat BT;
+
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &BT));
+    PetscCall(MatSetSizes(BT, PETSC_DECIDE, PETSC_DECIDE, cN, cM));
+    PetscCall(MatSetUp(BT));
+
+    sub[2] = BT;
+
+    // Create zero matrix
+    Mat Z;
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &Z));
+    PetscCall(MatSetSizes(Z, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
+    PetscCall(MatSetUp(Z));
+
+    PetscCall(MatZeroEntries(Z));
+    sub[3] = Z;
+
+    Mat G;
+    MatCreateNest(PETSC_COMM_WORLD, 2, NULL, 2, NULL, sub, &G);
+
+    VecScale(g1,-1);
+    VecScale(g2,-1);
+
+    Vec g[2];
+    g[0] = g1;
+    g[1] = g2;
+
+//    Vec rhs;
+//    VecCreateNest(PETSC_COMM_WORLD, 2, NULL, g, &rhs);
+
+    PetscCall(MatAssemblyBegin(G, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(G, MAT_FINAL_ASSEMBLY));
+
+//    MatView(G, PETSC_VIEWER_STDOUT_WORLD);
+//    VecView(rhs, PETSC_VIEWER_STDOUT_WORLD);
+
+    // Set up linear solver
+    KSP ksp;
+    PC pc;
+    KSPCreate(PETSC_COMM_WORLD, &ksp);
+    KSPSetOperators(ksp, G, G);
+    KSPSetType(ksp, KSPCG);
+    KSPSetInitialGuessNonzero(ksp, PETSC_TRUE);
+    KSPGetPC(ksp, &pc);
+    PCSetType(pc, PCJACOBI);
+
+    Vec rhs;
+    VecCreate(PETSC_COMM_WORLD, &rhs);
+    VecSetSizes(rhs, PETSC_DECIDE, cM + cN);
+    VecSetUp(rhs);
+
+    Vec x;
+
+    VecDuplicate(rhs, &x);
+
+    double * arrayg1;
+    double * arrayg2;
+    double * arrayrhs;
+
+    VecGetArray(g1, &arrayg1);
+    VecGetArray(g2, &arrayg2);
+    VecGetArray(rhs, &arrayrhs);
+
+    for (int i=0; i<cM; i++){
+        arrayrhs[i] = arrayg1[i]; 
+    }
+
+    for (int i=0; i<cN; i++){
+        arrayrhs[i+cM] = arrayg2[i]; 
+    }
+
+    VecRestoreArray(g1, &arrayg1); 
+    VecRestoreArray(g2, &arrayg2); 
+    VecRestoreArray(rhs, &arrayrhs);
+
+    KSPSolve(ksp, rhs, x);
+
+    MatView(reducedsys->B, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(g1, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(g2, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(x, PETSC_VIEWER_STDOUT_WORLD);
 
 // ====================================================================================================================================
     // Clear used objects

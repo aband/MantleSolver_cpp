@@ -283,15 +283,16 @@ PetscErrorCode CreateDirichletMatVecParallel(Vec * localg,
 
 //! Create reduced system from full system
 PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
-                                   Mat * fullM,
+                                   Mat * fullM, Mat * fullB,
                                    const bndryVal& bndryval){
 
     // Copy precalculated full matrix
     Mat fM = *fullM;
+  
+    Mat fB = *fullB; 
 
     // Get global number of rows and columns from full matrix
-    int rows;
-    int cols;
+    int rows, cols;
 
     PetscCall(MatGetSize(fM,&rows,&cols));
 
@@ -301,17 +302,31 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
 
     int reducedSize = rows - bndrySize;
 
+    int rowsB, colsB;
+    PetscCall(MatGetSize(fB, &rowsB, &colsB));
+
+    assert(colsB < rowsB);
+    assert(rowsB == cols);
+
     // Create reduced system
     PetscCall(MatCreate(PETSC_COMM_WORLD, &reducedsys->M));
     PetscCall(MatCreate(PETSC_COMM_WORLD, &reducedsys->Kg));
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &reducedsys->B));
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &reducedsys->Bg));
 
     PetscCall(MatSetSizes(reducedsys->M, PETSC_DECIDE, PETSC_DECIDE, 
               reducedSize, reducedSize));
     PetscCall(MatSetSizes(reducedsys->Kg, PETSC_DECIDE, PETSC_DECIDE, 
               reducedSize, bndrySize));
+    PetscCall(MatSetSizes(reducedsys->B, PETSC_DECIDE, PETSC_DECIDE, 
+              reducedSize, colsB));
+    PetscCall(MatSetSizes(reducedsys->Bg, PETSC_DECIDE, PETSC_DECIDE,
+              bndrySize, colsB));
 
     PetscCall(MatSetUp(reducedsys->M));
     PetscCall(MatSetUp(reducedsys->Kg));
+    PetscCall(MatSetUp(reducedsys->B));
+    PetscCall(MatSetUp(reducedsys->Bg));
 
     // Create boundary vector
     PetscCall(VecCreate(PETSC_COMM_WORLD, &reducedsys->g));
@@ -383,9 +398,38 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
     PetscCall(MatAssemblyBegin(reducedsys->Kg, MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyEnd(reducedsys->Kg, MAT_FINAL_ASSEMBLY));
 
+    // Create reduced B
+    for (int col =0; col < colsB; col++){
+        int bndryIndex = 0;
+        int intrIndex = 0;
+
+        for (int row =0; row < rowsB; row++){
+            const int idxn = col;
+            double val;
+            MatGetValue(fB, row, col, &val);
+            const double assignVal = val;
+ 
+            auto itFind = bndryval.find(row);
+            if (itFind != bndryval.end()){
+                const int idxm = bndryIndex;
+                MatSetValues(reducedsys->Bg, 1, &idxm, 1, &idxn, &assignVal, INSERT_VALUES);
+                bndryIndex ++;
+            } else {
+                const int idxm = intrIndex;
+                MatSetValues(reducedsys->B , 1, &idxm, 1, &idxn, &assignVal, INSERT_VALUES);
+                intrIndex ++;
+            }
+        }
+
+    }
+
+    PetscCall(MatAssemblyBegin(reducedsys->B, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(reducedsys->B, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin(reducedsys->Bg, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(reducedsys->Bg, MAT_FINAL_ASSEMBLY));
+
     return PETSC_SUCCESS;
 }
-
 
 PetscErrorCode CreateRHS(const MeshInfo& mi,
                          basis& basis_,

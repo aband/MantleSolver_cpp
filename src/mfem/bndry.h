@@ -23,7 +23,7 @@ typedef struct{
 } RHSVector;
 
 typedef struct{
-    Mat M, Kg;
+    Mat M, Kg, B, Bg;
     Vec g;
 } ReducedSys;
 
@@ -84,7 +84,7 @@ bool Is_Dirichlet(const indice& global);
  * both serial and parallel versions of functions are provided.
  */
 PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
-                                   Mat * fullM,
+                                   Mat * fullM, Mat * fullB,
                                    const bndryVal& bndryval);
 
 PetscErrorCode CreateRHS(const MeshInfo& mi, 

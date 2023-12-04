@@ -20,8 +20,8 @@ void AssignLocMatrix(const MeshInfo& mi,
     double gx = 0;
     double gy = 10;
 
-    double phi_f = 0.0;
-    double phi_s = 1.0;
+    double phi_f = 1.0;
+    double phi_s = 0.0;
 
     // Cell average fluid porosity
     double phi_f_hat = 0.0;
