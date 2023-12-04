@@ -214,13 +214,14 @@ int main(int argc, char **argv){
     // Check mat size
     int cM, cN;
     PetscCall(MatGetSize(reducedsys->Kg, &cM, &cN));
-    cout << cM << " " << cN << endl;
 
+    // Test Darcy part alone
     Vec g;
-    PetscCall(VecDuplicate(reducedsys->g, &g));
-    PetscCall(VecGetSize(g, &cN));
-    cout << cN << endl;
 
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &g));
+    PetscCall(VecSetSizes(g, PETSC_DECIDE, cM));
+    PetscCall(VecSetUp(g));
+  
     PetscCall(MatMult(reducedsys->Kg, reducedsys->g, g));
 
 
