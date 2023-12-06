@@ -113,6 +113,7 @@ void AssignLocMatrix(const MeshInfo& mi,
         vertexSet corner = {corners.at((e+3)%4),
                             corners.at(e)};
         double len = length(corner);
+        cout << "Input edge length is :" << len << endl;
         for (int g=0; g<gpe.size(); g++){
             vertex mapped = GaussMapPointsEdge({gpe[g]},corner);
             std::array<vertex, 8>  hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);

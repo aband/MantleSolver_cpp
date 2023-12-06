@@ -430,20 +430,3 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
 
     return PETSC_SUCCESS;
 }
-
-PetscErrorCode CreateRHS(const MeshInfo& mi,
-                         basis& basis_,
-                         Hdivmixed& hdiv_,
-                         BRMixed& br_,
-                         PhysProperty * physproperty,
-                         RHSVector * rhsv){
-
-    // Create right hand side vector
-    PetscFunctionBeginUser;
-
-    // Create auxilliary vectors
-//    PetscCall(VecCreateMPI(PETSC_COMM_WORLD, PETSC_DECIDE, ));
-
-
-    PetscFunctionReturn(0);
-}
