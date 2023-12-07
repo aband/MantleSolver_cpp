@@ -179,13 +179,14 @@ int main(int argc, char **argv){
 
     // Allocate space for matrix struct
 
-    Vec source;
-
     br->ComputeTotalDOF(mi);
 
     hdiv->ComputeTotalDOF(mi);
 
-    DMCreateGlobalVector(dm, &source);
+    Vec source;
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &source));
+    PetscCall(VecSetSizes(source, PETSC_DECIDE, br->getDOF()));
+    PetscCall(VecSetUp(source));
 
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, matrix, &source);
 
@@ -318,7 +319,14 @@ int main(int argc, char **argv){
 
     KSPSolve(ksp, rhs, x);
 
-    MatView(reducedsys->B, PETSC_VIEWER_STDOUT_WORLD);
+// Check computed system
+
+   for (const auto& it: bndryDarcy){
+       cout << it.first << endl;
+   }
+
+    MatView(matrix->Bd, PETSC_VIEWER_STDOUT_WORLD);
+    //MatView(reducedsys->B, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(g1, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(g2, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(x, PETSC_VIEWER_STDOUT_WORLD);

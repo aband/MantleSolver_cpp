@@ -113,7 +113,6 @@ void AssignLocMatrix(const MeshInfo& mi,
         vertexSet corner = {corners.at((e+3)%4),
                             corners.at(e)};
         double len = length(corner);
-        cout << "Input edge length is :" << len << endl;
         for (int g=0; g<gpe.size(); g++){
             vertex mapped = GaussMapPointsEdge({gpe[g]},corner);
             std::array<vertex, 8>  hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
@@ -215,6 +214,12 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
 
         const int ISDarcy[8] = 
            {tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7]};
+
+        if (n == 8){
+        for (int k=0; k<8; k++){
+            cout << "Check local dof index :"<< ISDarcy[k] << endl;
+        }
+        }
 
         const double Bdv[8] = {(*locmatrix).bd[0],(*locmatrix).bd[1],
                                (*locmatrix).bd[2],(*locmatrix).bd[3],
