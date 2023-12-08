@@ -135,7 +135,7 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
 
         indice global {i,j};
 
-        int edge = 0;
+        vector<int> edges;
 
         if (Is_Dirichlet(global)){
             // Extract corners of current element to basis functions
@@ -147,33 +147,48 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
 
             if (i==0){
                 // Count left side
-                edge = 0; 
-            } else if (j==0){
-                // Count bottom side
-                edge = 1;
-            } else if (i==mi.MPIglobalCellSize[0]-1){
-                // Count right side
-                edge = 2;
-            } else if (j==mi.MPIglobalCellSize[1]-1){
-                // Count top side
-                edge = 3;
+                edges.push_back(0); 
             }
 
-            // Extract two corners representing edge
-            vertexSet edgeCorner = {fullCorners.at((edge+3)%4), 
-                                    fullCorners.at(edge)};
+            if (j==0){
+                // Count bottom side
+                edges.push_back(1);
+            }
 
-            double len = length(edgeCorner);
+            if (i==mi.MPIglobalCellSize[0]-1){
+                // Count right side
+                edges.push_back(2);
+            } 
 
-            // Compute approximated Dirichlet boundary values locally
-            std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, basis_,hdiv_,
-                                                               edgeCorner, len, gwe, gpe);
+            if (j==mi.MPIglobalCellSize[1]-1){
+                // Count top side
+                edges.push_back(3);
+            }
 
-            bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[edge], {edge,dVals[0],global}));
+            //cout << "For the element ("<< i << ", " << j << "), the boundary edges are :"<< endl;
 
-            bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                               ((int)elementDOF[edge+4], {edge+4,dVals[1],global}));
+            for (const auto& edge : edges){
+             //   cout << edge << " " ;
+
+                // Extract two corners representing edge
+                vertexSet edgeCorner = {fullCorners.at((edge+3)%4), 
+                                        fullCorners.at(edge)};
+
+                double len = length(edgeCorner);
+
+                // Compute approximated Dirichlet boundary values locally
+                std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, basis_,hdiv_,
+                                                                   edgeCorner, len, gwe, gpe);
+    
+                bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[edge], {edge,dVals[0],global}));
+
+                bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[edge+4], {edge+4,dVals[1],global}));
+
+            }
+
+            //cout << endl;
 
         } // else (save later for neumann boundary condition)
     }}

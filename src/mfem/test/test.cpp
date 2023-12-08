@@ -321,15 +321,23 @@ int main(int argc, char **argv){
 
 // Check computed system
 
-   for (const auto& it: bndryDarcy){
-       cout << it.first << endl;
-   }
+    //cout << "Boundary dof size : " << bndryDarcy.size() << endl;
 
-    MatView(matrix->Bd, PETSC_VIEWER_STDOUT_WORLD);
+   //for (const auto& it: bndryDarcy){
+   //    cout << it.first << endl;
+   //}
+
+    const char *check1 = "MatrixCheck.dat";
+
+    // Check matrix shape
+    DrawMat(matrix->Ad,check1);
+
+    //MatView(matrix->Bd, PETSC_VIEWER_STDOUT_WORLD);
     //MatView(reducedsys->B, PETSC_VIEWER_STDOUT_WORLD);
+    MatView(reducedsys->M, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(g1, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(g2, PETSC_VIEWER_STDOUT_WORLD);
-    //VecView(x, PETSC_VIEWER_STDOUT_WORLD);
+    VecView(x, PETSC_VIEWER_STDOUT_WORLD);
 
 // ====================================================================================================================================
     // Clear used objects

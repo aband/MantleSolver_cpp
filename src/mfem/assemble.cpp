@@ -56,6 +56,8 @@ void AssignLocMatrix(const MeshInfo& mi,
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
 
+        cout << "The jac is computed to be: " << jac << endl;
+
         std::array<std::array<double,4>, 12> brwork = 
                            br_.ComputeGradBRmixed(basis_, mapped);
 
@@ -215,12 +217,6 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
         const int ISDarcy[8] = 
            {tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7]};
 
-        if (n == 8){
-        for (int k=0; k<8; k++){
-            cout << "Check local dof index :"<< ISDarcy[k] << endl;
-        }
-        }
-
         const double Bdv[8] = {(*locmatrix).bd[0],(*locmatrix).bd[1],
                                (*locmatrix).bd[2],(*locmatrix).bd[3],
                                (*locmatrix).bd[4],(*locmatrix).bd[5],
@@ -238,6 +234,10 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
 
             const int idxm = ISDarcy[l];
             PetscCall(MatSetValuesBlocked((*matrix).Ad,1,&idxm,8,ISDarcy,Adv,ADD_VALUES));
+
+            for (int k=0; k<8; k++){
+                cout << Adv[k] << " ";
+            }cout << endl;
         }
 
         PetscCall(MatSetValue((*matrix).Cd,n,n,(*locmatrix).cd,ADD_VALUES));
