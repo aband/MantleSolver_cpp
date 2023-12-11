@@ -150,7 +150,7 @@ PetscErrorCode DrawMat(Mat V, const char * myfile){
     int mm,nn;
     MatGetSize(V,&nn,&mm);
 
-    for (int j=nn-1; j>0; j--){
+    for (int j=nn-1; j>-1; j--){
     for (int i=0; i<mm; i++){
         double a;
         MatGetValues(V,1,&j,1,&i,&a);
@@ -160,6 +160,16 @@ PetscErrorCode DrawMat(Mat V, const char * myfile){
     fclose(f);
 
     PetscFunctionReturn(0);
+}
+
+PetscErrorCode WriteMat(){
+
+    // Write matrix out in correct order for matlab
+
+    PetscFunctionBeginUser;
+ 
+
+    return PETSC_SUCCESS;
 }
 
 PetscErrorCode MPIIO(){

@@ -330,7 +330,7 @@ int main(int argc, char **argv){
     const char *check1 = "MatrixCheck.dat";
 
     // Check matrix shape
-    DrawMat(matrix->Ad,check1);
+    DrawMat(reducedsys->M,check1);
 
     //MatView(matrix->Bd, PETSC_VIEWER_STDOUT_WORLD);
     //MatView(reducedsys->B, PETSC_VIEWER_STDOUT_WORLD);
