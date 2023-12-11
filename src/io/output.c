@@ -162,14 +162,57 @@ PetscErrorCode DrawMat(Mat V, const char * myfile){
     PetscFunctionReturn(0);
 }
 
-PetscErrorCode WriteMat(){
+PetscErrorCode WriteMat(Mat V, const char * myfile){
 
     // Write matrix out in correct order for matlab
 
     PetscFunctionBeginUser;
- 
 
-    return PETSC_SUCCESS;
+    FILE *f = fopen(myfile, "w");
+
+    if (f == NULL){
+        printf("Error opening file !\n");
+        exit(1);
+    }
+
+    int mm,nn;
+    MatGetSize(V,&nn,&mm);
+
+    for (int j=0; j<nn; j++){
+    for (int i=0; i<mm; i++){
+        double a;
+        MatGetValues(V,1,&j,1,&i,&a);
+        fprintf(f,"%f ",a);
+    }fprintf(f,"\n ");}
+
+    fclose(f);
+
+    PetscFunctionReturn(0);
+}
+
+PetscErrorCode WriteVec(Vec g, const char * myfile){
+
+    PetscFunctionBeginUser;
+
+    FILE *f = fopen(myfile, "w");
+
+    if (f == NULL){
+        printf("Error opening file !\n");
+        exit(1);
+    }
+
+    int m;
+    VecGetSize(g,&m);
+
+    for (int i=0; i<m; i++){
+        double a;
+        VecGetValues(g,1,&i,&a);
+        fprintf(f,"%f ",a);
+    }
+
+    fclose(f);
+
+    PetscFunctionReturn(0);
 }
 
 PetscErrorCode MPIIO(){

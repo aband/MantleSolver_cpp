@@ -327,17 +327,32 @@ int main(int argc, char **argv){
    //    cout << it.first << endl;
    //}
 
-    const char *check1 = "MatrixCheck.dat";
+    const char *checkA = "MatrixCheckA.dat";
 
     // Check matrix shape
-    DrawMat(reducedsys->M,check1);
+    WriteMat(reducedsys->M,checkA);
+
+    const char *checkB = "MatrixCheckB.dat";
+
+    // Check matrix shape
+    WriteMat(reducedsys->B,checkB);
+
+    const char *checkg1 = "MatrixCheckg1.dat";
+
+    WriteVec(g1, checkg1);   
+
+    WriteMat(reducedsys->B,checkB);
+
+    const char *checkg2 = "MatrixCheckg2.dat";
+
+    WriteVec(g2, checkg2);   
 
     //MatView(matrix->Bd, PETSC_VIEWER_STDOUT_WORLD);
     //MatView(reducedsys->B, PETSC_VIEWER_STDOUT_WORLD);
-    MatView(reducedsys->M, PETSC_VIEWER_STDOUT_WORLD);
+    //MatView(reducedsys->M, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(g1, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(g2, PETSC_VIEWER_STDOUT_WORLD);
-    VecView(x, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(x, PETSC_VIEWER_STDOUT_WORLD);
 
 // ====================================================================================================================================
     // Clear used objects

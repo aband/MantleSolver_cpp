@@ -33,6 +33,10 @@ PetscErrorCode PlainMeshOutput(DM dmMesh, Vec * fullmesh);
  */
 PetscErrorCode DrawMat(Mat V, const char * myfile);
 
+PetscErrorCode WriteMat(Mat V, const char * myfile);
+
+PetscErrorCode WriteVec(Vec g, const char * myfile);
+
 /**
  * Output with native mpi I/O format
  */
