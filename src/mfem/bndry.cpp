@@ -165,8 +165,6 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
                 edges.push_back(3);
             }
 
-            //cout << "For the element ("<< i << ", " << j << "), the boundary edges are :"<< endl;
-
             for (const auto& edge : edges){
              //   cout << edge << " " ;
 
@@ -187,8 +185,6 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
                                    ((int)elementDOF[edge+4], {edge+4,dVals[1],global}));
 
             }
-
-            //cout << endl;
 
         } // else (save later for neumann boundary condition)
     }}
@@ -236,8 +232,10 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
 
     }
 
-    work[0] = (a*d-d*d)*(d*l0-b*l1);
-    work[1] = (a*d-d*d)*(a*l1-b*l0);
+    work[0] = (d*l0-b*l1)/(a*d-b*b);
+    work[1] = (a*l1-b*l0)/(a*d-b*b);
+
+    cout << work[0] << " " << work[1] << endl;
 
     return work;
 }

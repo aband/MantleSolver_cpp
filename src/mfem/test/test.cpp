@@ -329,14 +329,15 @@ int main(int argc, char **argv){
 
     const char *checkA = "MatrixCheckA.dat";
 
-    // Check matrix shape
+    // Write A matrix
     WriteMat(reducedsys->M,checkA);
 
     const char *checkB = "MatrixCheckB.dat";
 
-    // Check matrix shape
+    // Write B matrix
     WriteMat(reducedsys->B,checkB);
 
+    // Write right two right hand side vectors
     const char *checkg1 = "MatrixCheckg1.dat";
 
     WriteVec(g1, checkg1);   
