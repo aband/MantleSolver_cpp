@@ -40,11 +40,13 @@ M = [A,B';B,zeros(dof2,dof2)];
 
 % Enlarge system M
 
-M = [M,zeros(dof1+dof2,1);zeros(1,dof1+dof2),1];
+lg = [zeros(dof1,1);ones(dof2,1)];
+
+M = [M,lg;lg',0];
 
 g = [g;0];
 
 % ============== Checking ==========================
 
-rank(B)
-rank([A,B'])
+
+
