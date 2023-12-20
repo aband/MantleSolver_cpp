@@ -390,3 +390,13 @@ PetscErrorCode CreateSchurComplement(Matrix * matrix, int nelem, int NS, int ND)
 
     PetscFunctionReturn(0);
 }
+
+PetscErrorCode AddlagrangeMultiplier(Mat * B){
+
+    PetscFunctionBeginUser;
+
+    //Add additional column for 
+
+
+    PetscFunctionReturn(0);
+}
