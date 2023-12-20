@@ -38,16 +38,32 @@ g = [g1';g2'];
 
 M = [A,B';B,zeros(dof2,dof2)];
 
+% ==================================================
+% Test 1
 % Enlarge system M
 
 lg = [zeros(dof1,1);ones(dof2,1)];
 
-M = [M,lg;lg',0];
+Ml = [M,lg;lg',0];
 
-g = [g;0];
+gl = [g;0];
 
-% ============== Solve for the solution ==========================
+Ml\gl;
 
-M\g
+% ==================================================
+% Test 2
+% Uzawa iteration
+
+z = A\g1';
+
+S = B/A * B'; % Schur complement
+
+y = S\(B*z);
+
+x = A\(z - B'*y);
+
+% ===================================================
+% Test 3
+% Preconditioned MINRES method
 
 
