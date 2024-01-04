@@ -1,6 +1,8 @@
 #ifndef SOLVE_H_
 #define SOLVE_H_
 
+#include <petsc.h>
+
 /*
  * Solve linear systems arised from mixed finite element scheme for 
  * Stokes and Darcy problems.
@@ -19,16 +21,9 @@ typedef struct{
 
 } linearSys; 
 
-PetscErrorCode PreconditionedUzawa(Mat * A, Mat * B, 
-                                   Vec * f, Vec * g, 
-                                   Vec * x, Vec * y){
+// Iterative solvers
+PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter);
 
-
-}
-
-PetscErrorCode InexectUzawa(Mat * A, Mat * B, Vec * f, Vec * g, Vec * x, Vec * y){
-
-
-}
+PetscErrorCode InexectUzawa(linearSys * ls, double tol, int MaxIter);
 
 #endif

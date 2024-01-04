@@ -1,6 +1,6 @@
 #include "solve.h"
 
-PetscErrorCode PreconditionedUzawa(linearSys * ls){
+PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter){
 
     /*
      * Using (preconditioned) CG for 
@@ -19,20 +19,65 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls){
     Mat BT;
     PetscCall(MatCreateTranspose(ls->B,&BT));
 
-    // Derive x1 and y1
-    Vec tmp1, tmp2;
-    PetscCall(MatMult(BT, ls->y, tmp1));
-    PetscCall(MatMult(ls->A, ls->x, tmp2));
+    double r = 1.0;
+    int    iter = 0;
 
-    PetscScalar alpha = 1.0;
-    PetscCall(VecAXPY(tmp2,alpha,tmp1));
-    alpha = -1.0;
-    PetscCall(VecAYPX(tmp2,alpha,ls->f));
+    int cM, cN;
 
-    KSPSolve(ksp,tmp2,tmp1); 
+    VecGetSize(ls->f, &cM);
+    VecGetSize(ls->g, &cN);
 
-    PetscCall(VecAXPY(ls->x,1,tmp1));
+    Vec tmp1, tmp2, tmp3;
 
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &tmp1));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &tmp2));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &tmp3));
 
+    PetscCall(VecSetSizes(tmp1,PETSC_DECIDE,cM));
+    PetscCall(VecSetSizes(tmp2,PETSC_DECIDE,cM));
+    PetscCall(VecSetSizes(tmp3,PETSC_DECIDE,cN));
 
+    PetscCall(VecSetUp(tmp1));
+    PetscCall(VecSetUp(tmp2));
+    PetscCall(VecSetUp(tmp3));
+
+    PetscCall(VecZeroEntries(tmp1));
+    PetscCall(VecZeroEntries(tmp2));
+    PetscCall(VecZeroEntries(tmp3));
+
+    while(r > tol && iter < MaxIter){
+        printf("iter = %d , r = %f \n",iter, r);
+
+        PetscCall(MatMult(BT, ls->y, tmp1));
+        PetscCall(MatMult(ls->A, ls->x, tmp2));
+
+        PetscScalar alpha = 1.0;
+        PetscCall(VecAXPY(tmp2,alpha,tmp1));
+        alpha = -1.0;
+        PetscCall(VecAYPX(tmp2,alpha,ls->f));
+
+        KSPSolve(ksp,tmp2,tmp1); 
+
+        PetscCall(VecAXPY(ls->x,1,tmp1)); // x1
+
+        PetscCall(MatMult(ls->B,ls->x,tmp3));
+        PetscCall(VecAXPY(tmp3, -1, ls->g));
+        PetscCall(VecAXPY(ls->y,1,tmp3));
+
+        PetscReal val1, val2;
+        PetscCall(VecNorm(tmp1,NORM_2,&val1));
+        PetscCall(VecNorm(tmp3,NORM_2,&val2));
+        r = val1 + val2; 
+
+        iter++;
+    }
+
+    printf("r = %f \n", r);
+
+    if (iter < MaxIter){
+        return PETSC_SUCCESS;
+    } else {
+        printf("r = %f \n", r);
+        return PETSC_ERR_CONV_FAILED;
+    }
 }

@@ -8,6 +8,7 @@
 #include "util.h"
 #include "myFunc.h"
 #include "bndry.h"
+#include "solve.h"
 
 extern "C"{
 #include "mesh.h"
@@ -354,6 +355,40 @@ int main(int argc, char **argv){
     //VecView(g1, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(g2, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(x, PETSC_VIEWER_STDOUT_WORLD);
+
+    cout << "here !" << endl;
+
+    // Test inexect Uzawa iteration algorithm
+    linearSys * ls = (linearSys *)malloc(sizeof(linearSys));
+
+    PetscCall(MatConvert(BT, MATSAME, MAT_INITIAL_MATRIX, &ls->B));
+    PetscCall(MatConvert(reducedsys->M, MATSAME, MAT_INITIAL_MATRIX, &ls->A));
+
+    PetscCall(VecDuplicate(g1,&ls->f));
+    PetscCall(VecDuplicate(g2,&ls->g));
+
+    VecCopy(g1, ls->f);
+    VecCopy(g2, ls->g);
+
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &ls->x));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &ls->y));
+
+    PetscCall(VecSetSizes(ls->x,PETSC_DECIDE,cM));
+    PetscCall(VecSetSizes(ls->y,PETSC_DECIDE,cN));
+
+    PetscCall(VecSetUp(ls->x));
+    PetscCall(VecSetUp(ls->y));
+
+    PetscCall(VecCopy(g1,ls->x));
+    PetscCall(VecCopy(g2,ls->y));
+   
+    PetscCall(VecZeroEntries(ls->x));
+    PetscCall(VecZeroEntries(ls->y));
+
+    PreconditionedUzawa(ls, 10e-10, 5);
+
+    VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
+    VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
 
 // ====================================================================================================================================
     // Clear used objects

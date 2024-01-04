@@ -36,31 +36,51 @@ B = reshape(B,dof2,dof1);
 
 g = [g1';g2'];
 
-M = [A,B';B,zeros(dof2,dof2)];
+Z = zeros(dof2,dof2);
+
+M = [A,B';B,Z];
 
 % ==================================================
 % Test 1
 % Enlarge system M
 
-lg = [zeros(dof1,1);ones(dof2,1)];
+%lg = [zeros(dof1,1);ones(dof2,1)];
 
-Ml = [M,lg;lg',0];
+%Ml = [M,lg;lg',0];
 
-gl = [g;0];
+%gl = [g;0];
 
-Ml\gl;
+%Ml\gl;
 
 % ==================================================
 % Test 2
 % Uzawa iteration
+r = 1.0;
+MaxIter = 10;
+iter = 0;
 
-z = A\g1';
+F = g1';
+G = g2';
 
-S = B/A * B'; % Schur complement
+x = zeros(dof1,1);
+y = zeros(dof2,1);
 
-y = S\(B*z);
+while (r > 1e-8) && (iter < MaxIter)
 
-x = A\(z - B'*y);
+    tmp1 = A\(F - (A*x + B'*y));
+
+    x = x + tmp1;
+
+    tmp2 = B*x-G;
+
+    y = y + tmp2;
+
+    iter = iter +1;
+
+    r = norm(tmp1) + norm(tmp2)
+
+end
+
 
 % ===================================================
 % Test 3

@@ -65,6 +65,7 @@ add_library(mfem_lib
         ${SRC}/mfem/brmixed.cpp
         ${SRC}/mfem/assemble.cpp
         ${SRC}/mfem/bndry.cpp
+        ${SRC}/mfem/solve.cpp
 )
 
 target_include_directories(mfem_lib
