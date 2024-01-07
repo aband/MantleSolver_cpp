@@ -385,10 +385,13 @@ int main(int argc, char **argv){
     PetscCall(VecZeroEntries(ls->x));
     PetscCall(VecZeroEntries(ls->y));
 
+    VecView(ls->f, PETSC_VIEWER_STDOUT_WORLD);
+    VecView(ls->g, PETSC_VIEWER_STDOUT_WORLD);
+
     PreconditionedUzawa(ls, 10e-10, 5);
 
-    VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
-    VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
 
 // ====================================================================================================================================
     // Clear used objects

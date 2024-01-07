@@ -56,7 +56,7 @@ M = [A,B';B,Z];
 % Test 2
 % Uzawa iteration
 r = 1.0;
-MaxIter = 10;
+MaxIter = 3;
 iter = 0;
 
 F = g1';
@@ -65,13 +65,14 @@ G = g2';
 x = zeros(dof1,1);
 y = zeros(dof2,1);
 
+
 while (r > 1e-8) && (iter < MaxIter)
 
-    tmp1 = A\(F - (A*x + B'*y));
+    tmp1 = A\(F - (A*x + B'*y))
 
     x = x + tmp1;
 
-    tmp2 = B*x-G;
+    tmp2 = B*x-G
 
     y = y + tmp2;
 
