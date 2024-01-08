@@ -324,9 +324,9 @@ int main(int argc, char **argv){
 
     //cout << "Boundary dof size : " << bndryDarcy.size() << endl;
 
-   //for (const auto& it: bndryDarcy){
-   //    cout << it.first << endl;
-   //}
+   for (const auto& it: bndryDarcy){
+       cout << it.first << " " << it.second.DirichletVal << endl;
+   }
 
     const char *checkA = "MatrixCheckA.dat";
     // Write A matrix

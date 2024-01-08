@@ -26,27 +26,27 @@ g2 = fscanf(fileID, '%f', [1,Inf]);
 
 fclose(fileID);
 
-fileID = fopen('build/VecCheckg.dat','r');
-
-g = fscanf(fileID, '%f', [1,Inf]);
-
-fclose(fileID);
-
-fileID = fopen('build/MatrixCheckKg.dat','r');
-
-Kg = fscanf(fileID, '%f', [1,Inf]);
-
-fclose(fileID);
+%fileID = fopen('build/VecCheckg.dat','r');
+%
+%og = fscanf(fileID, '%f', [1,Inf]);
+%
+%fclose(fileID);
+%
+%fileID = fopen('build/MatrixCheckKg.dat','r');
+%
+%Kg = fscanf(fileID, '%f', [1,Inf]);
+%
+%fclose(fileID);
 
 % ==================================================
 
 dof1 = size(g1,2);
 dof2 = size(g2,2);
-dof3 = size(g,2);
+%dof3 = size(og,2);
 
 A = reshape(A,dof1,dof1);
 B = reshape(B,dof2,dof1);
-
+%Kg = reshape(Kg,dof1,dof1);
 
 g = [g1';g2'];
 
@@ -70,7 +70,7 @@ M = [A,B';B,Z];
 % Test 2
 % Uzawa iteration
 r = 1.0;
-MaxIter = 3;
+MaxIter = 30;
 iter = 0;
 
 F = g1';
@@ -82,13 +82,13 @@ y = zeros(dof2,1);
 
 while (r > 1e-8) && (iter < MaxIter)
 
-    tmp1 = A\(F - (A*x + B'*y))
+    tmp1 = A\(F - (A*x - B'*y));
 
     x = x + tmp1;
 
-    tmp2 = B*x-G
+    tmp2 = -B*x+G;
 
-    y = y + tmp2;
+    y = y + 0.08*tmp2;
 
     iter = iter +1;
 
@@ -100,5 +100,3 @@ end
 % ===================================================
 % Test 3
 % Preconditioned MINRES method
-
-

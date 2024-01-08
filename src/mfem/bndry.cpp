@@ -235,8 +235,6 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
     work[0] = (d*l0-b*l1)/(a*d-b*b);
     work[1] = (a*l1-b*l0)/(a*d-b*b);
 
-    cout << work[0] << " " << work[1] << endl;
-
     return work;
 }
 
@@ -347,6 +345,13 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
 
     PetscCall(VecSetUp(reducedsys->g));
 
+
+    int count = 0;
+    for (const auto& it: bndryval){
+        VecSetValues(reducedsys->g, 1, &count, &it.second.DirichletVal, INSERT_VALUES);
+        count ++;
+    }
+
     int reducedRowIndex = 0;
 
     // Craete reduced system
@@ -381,8 +386,6 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
                     const int idxn = bndryIndex; 
 
                     MatSetValues(reducedsys->Kg, 1, &idxm, 1, &idxn, &assignVal, INSERT_VALUES);
-
-                    VecSetValues(reducedsys->g, 1, &idxn, &assignVal, INSERT_VALUES);
 
                     bndryIndex ++;                    
                 } else {
@@ -448,15 +451,15 @@ PetscErrorCode CreateFullSerial(Mat * fullM, Mat * fullB,
                                 const bndryVal& bndryval){
 
     Mat fM = *fullM;
-    mat fB = *fullB;
+    Mat fB = *fullB;
 
     int rows, cols;
-    PetscCall(MatGetSize(fM, &cows, &cols));
+    PetscCall(MatGetSize(fM, &rows, &cols));
     assert(rows == cols);
 
     for (int row = 0; row < rows; row++){
 
-        auto itFindRow = bndryval.find();
+        auto itFindRow = bndryval.find(row);
         if(itFindRow == bndryval.end()){
             for (int col = 0; col < cols; col++){
                 
