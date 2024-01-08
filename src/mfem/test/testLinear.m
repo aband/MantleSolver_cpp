@@ -26,13 +26,27 @@ g2 = fscanf(fileID, '%f', [1,Inf]);
 
 fclose(fileID);
 
+fileID = fopen('build/VecCheckg.dat','r');
+
+g = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+fileID = fopen('build/MatrixCheckKg.dat','r');
+
+Kg = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
 % ==================================================
 
 dof1 = size(g1,2);
 dof2 = size(g2,2);
+dof3 = size(g,2);
 
 A = reshape(A,dof1,dof1);
 B = reshape(B,dof2,dof1);
+
 
 g = [g1';g2'];
 

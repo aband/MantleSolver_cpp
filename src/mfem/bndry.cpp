@@ -443,3 +443,27 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
 
     return PETSC_SUCCESS;
 }
+
+PetscErrorCode CreateFullSerial(Mat * fullM, Mat * fullB, 
+                                const bndryVal& bndryval){
+
+    Mat fM = *fullM;
+    mat fB = *fullB;
+
+    int rows, cols;
+    PetscCall(MatGetSize(fM, &cows, &cols));
+    assert(rows == cols);
+
+    for (int row = 0; row < rows; row++){
+
+        auto itFindRow = bndryval.find();
+        if(itFindRow == bndryval.end()){
+            for (int col = 0; col < cols; col++){
+                
+            }
+        }
+    }
+
+
+    return PETSC_SUCCESS;
+}

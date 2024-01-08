@@ -329,25 +329,25 @@ int main(int argc, char **argv){
    //}
 
     const char *checkA = "MatrixCheckA.dat";
-
     // Write A matrix
     WriteMat(reducedsys->M,checkA);
 
     const char *checkB = "MatrixCheckB.dat";
-
     // Write B matrix
     WriteMat(reducedsys->B,checkB);
 
     // Write right two right hand side vectors
     const char *checkg1 = "MatrixCheckg1.dat";
-
     WriteVec(g1, checkg1);   
 
-    WriteMat(reducedsys->B,checkB);
-
     const char *checkg2 = "MatrixCheckg2.dat";
-
     WriteVec(g2, checkg2);   
+
+    const char *checkKg = "MatrixCheckKg.dat";
+    WriteMat(reducedsys->Kg,checkKg);
+
+    const char *checkg = "VecCheckg.dat";
+    WriteVec(reducedsys->g,checkg);
 
     //MatView(matrix->Bd, PETSC_VIEWER_STDOUT_WORLD);
     //MatView(reducedsys->B, PETSC_VIEWER_STDOUT_WORLD);
