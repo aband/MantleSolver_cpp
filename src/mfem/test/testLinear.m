@@ -70,7 +70,7 @@ M = [A,B';B,Z];
 % Test 2
 % Uzawa iteration
 r = 1.0;
-MaxIter = 30;
+MaxIter = 3000;
 iter = 0;
 
 F = g1';
@@ -88,7 +88,7 @@ while (r > 1e-8) && (iter < MaxIter)
 
     tmp2 = -B*x+G;
 
-    y = y + 0.08*tmp2;
+    y = y + 0.01*tmp2;
 
     iter = iter +1;
 
