@@ -9,6 +9,7 @@
 #include "myFunc.h"
 #include "bndry.h"
 #include "solve.h"
+#include "error.h"
 
 extern "C"{
 #include "mesh.h"
