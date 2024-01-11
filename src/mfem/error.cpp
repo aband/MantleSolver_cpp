@@ -1,6 +1,6 @@
 #include "error.h"
 
-std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryval, int M, int N){
+std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryval, int dof){
 
     Vec sol = *u;
 
@@ -10,21 +10,18 @@ std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryval, int M, int N){
 
     std::vector<double> work;
 
-    work.resize(M*N);
+    work.resize(floor(dof));
 
     int count = 0;
     // Combine computed solution and restricted boundary values
-    for (int j=0; j<N; j++){
-        for (int i=0; i<M; i++){
-
-            auto itFind = bndryval.find(j*M+i);
+    for (int j=0; j<dof; j++){
+            auto itFind = bndryval.find(j);
             if (itFind == bndryval.end()){
-                work[j*M+i] = arrayu[count]; 
+                work[j] = arrayu[count]; 
                 count ++;
             } else {
-                work[j*M+i] = itFind.second.DirichletVal;
+                work[j] = itFind->second.DirichletVal;
             }
-        }
     }
 
     VecRestoreArray(sol, &arrayu);

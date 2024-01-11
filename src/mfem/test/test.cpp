@@ -323,12 +323,6 @@ int main(int argc, char **argv){
 
 // Check computed system
 
-    //cout << "Boundary dof size : " << bndryDarcy.size() << endl;
-
-   for (const auto& it: bndryDarcy){
-       cout << it.first << " " << it.second.DirichletVal << endl;
-   }
-
     const char *checkA = "MatrixCheckA.dat";
     // Write A matrix
     WriteMat(reducedsys->M,checkA);
@@ -357,8 +351,6 @@ int main(int argc, char **argv){
     //VecView(g2, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(x, PETSC_VIEWER_STDOUT_WORLD);
 
-    cout << "here !" << endl;
-
     // Test inexect Uzawa iteration algorithm
     linearSys * ls = (linearSys *)malloc(sizeof(linearSys));
 
@@ -386,11 +378,47 @@ int main(int argc, char **argv){
     PetscCall(VecZeroEntries(ls->x));
     PetscCall(VecZeroEntries(ls->y));
 
-    VecView(ls->f, PETSC_VIEWER_STDOUT_WORLD);
-    VecView(ls->g, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(ls->f, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(ls->g, PETSC_VIEWER_STDOUT_WORLD);
 
     PreconditionedUzawa(ls, 10e-10, 5);
 
+    // Check solution created
+    Vec testFull;
+    Vec testReduced;
+
+    double * arraytestfull;
+    double * arraytestreduced;
+
+    VecCreate(PETSC_COMM_WORLD, &testFull);
+    VecCreate(PETSC_COMM_WORLD, &testReduced);
+
+    VecSetSizes(testFull, PETSC_DECIDE, hdiv->getDOF());
+    VecSetSizes(testReduced, PETSC_DECIDE, cM);
+    VecSetUp(testFull);
+    VecSetUp(testReduced);
+
+    VecGetArray(testFull, &arraytestfull);
+    VecGetArray(testReduced, &arraytestreduced);
+
+    for (int i=0; i<hdiv->getDOF(); i++){
+        arraytestfull[i] = i;
+    }
+
+    VecRestoreArray(testFull, &arraytestfull);
+    VecRestoreArray(testReduced, &arraytestreduced);
+
+    VecView(testFull, PETSC_VIEWER_STDOUT_WORLD); 
+
+    // Check error
+    std::vector<double> fullSol;
+    fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
+
+//    for (int j=0; j<hdiv->getDOF(); j++){
+//        cout << fullSol.at(j) << endl;
+//    }
+
+    std::array<double, 8> work = ExtractWeights(fullSol, *hdiv, {1,1}, mi);
     //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
 

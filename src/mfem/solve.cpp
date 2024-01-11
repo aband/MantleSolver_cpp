@@ -46,7 +46,6 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter){
     PetscCall(VecZeroEntries(tmp3));
 
     while(r > tol && iter < MaxIter){
-        printf("iter = %d , r = %f \n",iter, r);
 
         PetscCall(MatMult(BT, ls->y, tmp1));
         PetscCall(MatMult(ls->A, ls->x, tmp2));
@@ -72,12 +71,11 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter){
         iter++;
     }
 
-    printf("r = %f \n", r);
-
     if (iter < MaxIter){
+        printf("System converged successfully! r = %f \n", r);
         return PETSC_SUCCESS;
     } else {
-        printf("r = %f \n", r);
+        printf("System failed to converge! r = %f \n", r);
         return PETSC_ERR_CONV_FAILED;
     }
 }

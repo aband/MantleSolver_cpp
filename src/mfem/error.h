@@ -9,11 +9,11 @@
 #include "bndry.h"
 
 // Compbine boundary values and computed solution
-std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryvals, const indice& globalElem);
+std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryvals, int dof);
 
 // Extract correct weights
 std::array<double,8> ExtractWeights(const std::vector<double>& fullsol, 
-                                    const bndryVal& bndryvals,
+                                    const Hdivmixed& hdiv_,
                                     const indice& globalElem,
                                     const MeshInfo& mi);
 
