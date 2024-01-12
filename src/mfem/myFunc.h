@@ -24,4 +24,6 @@ double AssignPorosity(const vertex& point, const double& l);
 
 const vertex Dirichlet_val(const vertex& point);
 
+std::array<double, 3> trueSol1(const vertex& point);
+
 #endif

@@ -354,7 +354,7 @@ int main(int argc, char **argv){
     // Test inexect Uzawa iteration algorithm
     linearSys * ls = (linearSys *)malloc(sizeof(linearSys));
 
-    PetscCall(MatConvert(BT, MATSAME, MAT_INITIAL_MATRIX, &ls->B));
+    PetscCall(MatConvert(reducedsys->B, MATSAME, MAT_INITIAL_MATRIX, &ls->B));
     PetscCall(MatConvert(reducedsys->M, MATSAME, MAT_INITIAL_MATRIX, &ls->A));
 
     PetscCall(VecDuplicate(g1,&ls->f));
@@ -381,10 +381,10 @@ int main(int argc, char **argv){
     //VecView(ls->f, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->g, PETSC_VIEWER_STDOUT_WORLD);
 
-    PreconditionedUzawa(ls, 10e-10, 5);
+    PreconditionedUzawa(ls, 10e-10, 5, 1/(double)M/(double)N);
 
     // Check solution created
-    Vec testFull;
+/*    Vec testFull;
     Vec testReduced;
 
     double * arraytestfull;
@@ -405,20 +405,43 @@ int main(int argc, char **argv){
         arraytestfull[i] = i;
     }
 
+    // Create manufactured boundary values and corresponding data structure
+    bndryVal bndryTest;
+
+    for (const auto& bv : bndryDarcy){
+        bndryTest.insert(std::make_pair<int, bndryInfo>
+                         ((int)bv.first, {0,(double)bv.first,{0,0}}));
+
+    }
+
+    // Create Test reduced vector
+	 int count = 0; 
+    for (int i=0; i<hdiv->getDOF(); i++){
+   
+        auto ifFind = bndryTest.find(i);
+        if (ifFind == bndryTest.end()){
+            arraytestreduced[count] = i;
+            count ++; 
+        }
+    }
+
     VecRestoreArray(testFull, &arraytestfull);
     VecRestoreArray(testReduced, &arraytestreduced);
-
-    VecView(testFull, PETSC_VIEWER_STDOUT_WORLD); 
-
+*/
     // Check error
     std::vector<double> fullSol;
     fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
+    //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
 
-//    for (int j=0; j<hdiv->getDOF(); j++){
-//        cout << fullSol.at(j) << endl;
-//    }
+    std::array<double, 8> work = ExtractWeights(fullSol, 
+                                 hdiv->LocalToGlobal(mi,{1,1}));
 
-    std::array<double, 8> work = ExtractWeights(fullSol, *hdiv, {1,1}, mi);
+    // Fetch gauss points and gauss weights
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussPointsFace;
+
+    cout << "Error at (1,1): " << L2ErrorElem(work, {1,1}, trueSol1, gwf, gpf, *testBasis, *hdiv) << endl;
+
     //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
 

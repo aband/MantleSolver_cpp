@@ -22,7 +22,7 @@ typedef struct{
 } linearSys; 
 
 // Iterative solvers
-PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter);
+PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, double tau);
 
 PetscErrorCode InexectUzawa(linearSys * ls, double tol, int MaxIter);
 

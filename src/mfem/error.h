@@ -9,31 +9,21 @@
 #include "bndry.h"
 
 // Compbine boundary values and computed solution
+// Passed the test
+// Correct output guaranteed
 std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryvals, int dof);
 
 // Extract correct weights
 std::array<double,8> ExtractWeights(const std::vector<double>& fullsol, 
-                                    const Hdivmixed& hdiv_,
-                                    const indice& globalElem,
-                                    const MeshInfo& mi);
+                                    const std::array<int, 8> ltgMap);
 
 // Return error measured in energy norm or any arbitrary norm
-double L2ErrorElemInterior(const vector<double>& coeff,
-                           const indice& globalElemIndic,
-                           double (*func)(const vertex& point),
-                           const valarray<double>& gwf,
-                           const vector<vertex>& gpf,
-                           basis& basis_,
-                           Hdivmixed& hdiv_);
-
-double L2ErrorElemBndry(const vector<double>& coeff,
-                        const indice& globalElemIndic,
-                        double (*func));
-
-// Compute L2 error of divergence of u
-// Overload function with different gauss points
-double L2ErrorElemInterior();
-
-double L2ErrorElemBndry();
+double L2ErrorElem(const std::array<double,8>& coeff,
+                   const indice& globalElemIndic,
+                   std::array<double,3> (*func)(const vertex& point),
+                   const valarray<double>& gwf,
+                   const vector<vertex>& gpf,
+                   basis& basis_,
+                   Hdivmixed& hdiv_);
 
 #endif

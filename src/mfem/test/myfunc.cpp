@@ -24,7 +24,7 @@ const vertex Dirichlet_val(const vertex& point){
 
 }
 
-array<double, 3> trueSol1(const vertex& point){
+std::array<double, 3> trueSol1(const vertex& point){
 
     // return a predefined true solution
     // return <ux, uy, p> in this order

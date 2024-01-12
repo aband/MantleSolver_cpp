@@ -30,30 +30,24 @@ std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryval, int dof){
 }
 
 std::array<double, 8> ExtractWeights(const std::vector<double>& fullsol, 
-                                     const Hdivmixed& hdiv_,  
-                                     const indice& globalElem,
-                                     const MeshInfo& mi){
+                                     std::array<int, 8> ltgMap){
 
     std::array<double, 8> work;
 
-    int flatGlobal = FlatIndic(mi, globalElem);
-
-    std::array<int, 8> tmp = hdiv_.LocalToGlobal(mi, globalElem);
-
     for (int g=0; g<8; g++){
-        work[g] = fullsol.at(tmp[g]);
+        work[g] = fullsol.at(ltgMap[g]);
     }
 
     return work;
 }
 
-double L2ErrorElemInterior(const std::array<double,8>& weight, 
-                           const indice& globalElemIndic,
-                           std::array<double,3> (*func)(const vertex& point),
-                           const valarray<double>& gwf,
-                           const vector<vertex>& gpf,
-                           basis& basis_,
-                           Hdivmixed& hdiv_){
+double L2ErrorElem(const std::array<double,8>& weight, 
+                   const indice& globalElemIndic,
+                   std::array<double,3> (*func)(const vertex& point),
+                   const valarray<double>& gwf,
+                   const vector<vertex>& gpf,
+                   basis& basis_,
+                   Hdivmixed& hdiv_){
 
     double elemError = 0.0;
     // Calculate the L2 Error on the given interior element 

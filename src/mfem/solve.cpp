@@ -1,6 +1,6 @@
 #include "solve.h"
 
-PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter){
+PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, double tau){
 
     /*
      * Using (preconditioned) CG for 
@@ -16,8 +16,8 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter){
     PetscCall(KSPGetPC(ksp, &pc));
     PetscCall(PCSetType(pc, PCBJACOBI));
 
-    Mat BT;
-    PetscCall(MatCreateTranspose(ls->B,&BT));
+    Mat B;
+    PetscCall(MatCreateTranspose(ls->B,&B));
 
     double r = 1.0;
     int    iter = 0;
@@ -47,7 +47,7 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter){
 
     while(r > tol && iter < MaxIter){
 
-        PetscCall(MatMult(BT, ls->y, tmp1));
+        PetscCall(MatMult(ls->B, ls->y, tmp1));
         PetscCall(MatMult(ls->A, ls->x, tmp2));
 
         PetscScalar alpha = 1.0;
@@ -59,9 +59,9 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter){
 
         PetscCall(VecAXPY(ls->x,1,tmp1)); // x1
 
-        PetscCall(MatMult(ls->B,ls->x,tmp3));
+        PetscCall(MatMult(B,ls->x,tmp3));
         PetscCall(VecAXPY(tmp3, -1, ls->g));
-        PetscCall(VecAXPY(ls->y,1,tmp3));
+        PetscCall(VecAXPY(ls->y,tau,tmp3));
 
         PetscReal val1, val2;
         PetscCall(VecNorm(tmp1,NORM_2,&val1));
