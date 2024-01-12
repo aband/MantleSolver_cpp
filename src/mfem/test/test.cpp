@@ -381,7 +381,7 @@ int main(int argc, char **argv){
     //VecView(ls->f, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->g, PETSC_VIEWER_STDOUT_WORLD);
 
-    PreconditionedUzawa(ls, 10e-10, 5, 1/(double)M/(double)N);
+    PreconditionedUzawa(ls, 10e-10, 10, 1/(double)M/(double)N);
 
     // Check solution created
 /*    Vec testFull;
@@ -440,7 +440,16 @@ int main(int argc, char **argv){
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>& gpf = GaussPointsFace;
 
-    cout << "Error at (1,1): " << L2ErrorElem(work, {1,1}, trueSol1, gwf, gpf, *testBasis, *hdiv) << endl;
+    double errorSum = 0;
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+
+        std::array<double, 8> singleElemWeights = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi,{i,j})); 
+        errorSum += L2ErrorElem(singleElemWeights, {i,j}, trueSol1, gwf, gpf, *testBasis, *hdiv);
+    }}
+
+    cout << "||u-u_h||_L2 : " <<  pow(errorSum, 0.5) << endl;
 
     //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
