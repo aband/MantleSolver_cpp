@@ -70,8 +70,10 @@ int main(int argc, char **argv){
     ierr = DMSetUp(dm);                        CHKERRQ(ierr);
     ierr = DMCreateGlobalVector(dm, &fullmesh);CHKERRQ(ierr); 
 
-    double L = 2.0, H = 2.0;
-    double xstart = -1.0, ystart = -1.0;
+    //double L = 2.0, H = 2.0;
+    //double xstart = -1.0, ystart = -1.0;
+    double L = 1.0, H = 1.0;
+    double xstart = 1.0, ystart = 1.0;
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL); CHKERRQ(ierr);
@@ -197,7 +199,7 @@ int main(int argc, char **argv){
     // Check matrix shape
     //DrawMat(matrix->As,check1);
 
-    CreateSchurComplement(matrix, M*N, br->getDOF(), hdiv->getDOF());
+    //CreateSchurComplement(matrix, M*N, br->getDOF(), hdiv->getDOF());
 
     //const char *check2 = "schur.dat";
 
@@ -264,6 +266,7 @@ int main(int argc, char **argv){
     Mat G;
     MatCreateNest(PETSC_COMM_WORLD, 2, NULL, 2, NULL, sub, &G);
 
+    // Move boundary condition vectors to the right hand side of the 
     VecScale(g1,-1);
     VecScale(g2,-1);
 

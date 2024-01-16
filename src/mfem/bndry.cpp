@@ -345,15 +345,8 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
 
     PetscCall(VecSetUp(reducedsys->g));
 
-
-    int count = 0;
-    for (const auto& it: bndryval){
-        VecSetValues(reducedsys->g, 1, &count, &it.second.DirichletVal, INSERT_VALUES);
-        count ++;
-    }
-
     int reducedRowIndex = 0;
-
+    int countBndry = 0;
     // Craete reduced system
     for (int row = 0; row < rows; row++){
   
@@ -403,6 +396,13 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
             }
             // increment of the reducedRowIndex
             reducedRowIndex ++;
+        } else {
+            // This dof is on the boundary
+            // Put the boundary value into g
+            const bndryInfo& tmp = bndryval.at(row);
+            VecSetValues(reducedsys->g,1,&countBndry,
+                         &tmp.DirichletVal,INSERT_VALUES);
+            countBndry ++;
         }
     }
 
