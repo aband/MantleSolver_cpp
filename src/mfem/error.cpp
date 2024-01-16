@@ -17,7 +17,8 @@ std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryval, int dof){
     for (int j=0; j<dof; j++){
             auto itFind = bndryval.find(j);
             if (itFind == bndryval.end()){
-                work[j] = arrayu[count]; 
+                //work[j] = arrayu[count]; 
+                work[j] = -1*arrayu[count];
                 count ++;
             } else {
                 work[j] = itFind->second.DirichletVal;
@@ -69,8 +70,11 @@ double L2ErrorElem(const std::array<double,8>& weight,
 
         valarray<double> diff {0.0,0.0};
 
-        diff[0] = approxVal[0] - trueSol[0];
-        diff[1] = approxVal[0] - trueSol[0];
+        //diff[0] = approxVal[0] - trueSol[0];
+        //diff[1] = approxVal[0] - trueSol[0];
+
+        diff[0] = abs(approxVal[0]) - abs(trueSol[0]);
+        diff[1] = abs(approxVal[0]) - abs(trueSol[0]);
 
         elemError += gw*jac*(diff[0]*diff[0] + diff[1]*diff[1]);
     }

@@ -72,10 +72,10 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, doub
     }
 
     if (iter < MaxIter){
-        printf("System converged successfully! r = %f \n", r);
+        printf("Uzawa converged successfully! r = %.3e, Used %d iterations. \n", r, iter);
         return PETSC_SUCCESS;
     } else {
-        printf("System failed to converge! r = %f \n", r);
+        printf("Uzawa failed to converge! r = %.3e \n", r);
         return PETSC_ERR_CONV_FAILED;
     }
 }

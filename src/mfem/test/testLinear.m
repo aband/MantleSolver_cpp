@@ -79,7 +79,7 @@ G = g2';
 x = zeros(dof1,1);
 y = zeros(dof2,1);
 
-while (r > 1e-8) && (iter < MaxIter)
+while (r > 1e-6) && (iter < MaxIter)
 
     tmp1 = A\(F - (A*x - B'*y));
 
@@ -87,18 +87,17 @@ while (r > 1e-8) && (iter < MaxIter)
 
     tmp2 = -B*x+G;
   
-    y = y + 0.05*tmp2;
+    y = y + 0.06*tmp2;
 
     iter = iter +1;
 
-    r = norm(tmp1) + norm(tmp2)
+    r = norm(tmp1) + norm(tmp2);
 end
 
 % ======== Test of =========
 
 ux = @(x,y) -x./(x.^2+y.^2);
 uy = @(x,y) -y./(x.^2+y.^2);
-
 
 cx = linspace(1,2,20);
 cy = linspace(1,2,20);

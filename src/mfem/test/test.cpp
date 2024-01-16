@@ -384,7 +384,22 @@ int main(int argc, char **argv){
     //VecView(ls->f, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->g, PETSC_VIEWER_STDOUT_WORLD);
 
-    PreconditionedUzawa(ls, 10e-10, 10, 1/(double)M/(double)N);
+    // Control number of iterations and tolerance
+    int maxIter;
+    PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL);
+
+    double tauUzawa;
+    PetscOptionsGetReal(NULL, NULL, "-tau", &tauUzawa, NULL);
+
+    if (tauUzawa < 0){
+        // Use element size related tauUzawa
+        tauUzawa = 1.0/(double)N / (double) M;
+    }
+
+    double tolUzawa;
+    PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
+
+    PreconditionedUzawa(ls, tolUzawa, maxIter, tauUzawa);
 
     // Check solution created
 /*    Vec testFull;
@@ -453,6 +468,7 @@ int main(int argc, char **argv){
     }}
 
     cout << "||u-u_h||_L2 : " <<  pow(errorSum, 0.5) << endl;
+
 
     //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
