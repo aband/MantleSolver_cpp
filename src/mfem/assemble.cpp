@@ -133,8 +133,7 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                          Hdivmixed& hdiv_,
                                          BRMixed& br_,
                                          PhysProperty * physproperty,
-                                         Matrix * matrix,
-                                         Vec * source){
+                                         System * system){
  
     PetscErrorCode    ierr;
     PetscFunctionBeginUser;
@@ -144,63 +143,76 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>& gpf = GaussPointsFace;
 
-    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*matrix).Ad));
-    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*matrix).As));
-    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*matrix).Bs));
-    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*matrix).Bd));
-    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*matrix).Cs));
-    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*matrix).Cd));
-    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*matrix).K));
+    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).Ad));
+    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).As));
+    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).Bs));
+    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).Bd));
+    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).Cs));
+    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).Cd));
+    PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).K));
 
-    double *localrhs;
+    PetscCall(VecCreate(PETSC_COMM_WORLD,&system->sourceStokes));
+    PetscCall(VecCreate(PETSC_COMM_WORLD,&system->sourceDarcy));
 
-    PetscCall(VecGetArray(*source, &localrhs));
+    PetscCall(VecSetSizes(system->sourceStokes, PETSC_DECIDE, br_.getDOF()));
+    PetscCall(VecSetSizes(system->sourceDarcy, PETSC_DECIDE, hdiv_.getDOF()));
+
+    PetscCall(VecSetUp(system->sourceStokes));
+    PetscCall(VecSetUp(system->sourceDarcy));
+
+    double *sourcestokes;
+    double *sourcedarcy;
+
+    PetscCall(VecGetArray(system->sourceStokes, &sourcestokes));
+    PetscCall(VecGetArray(system->sourceDarcy, &sourcedarcy));
 
     // Set zeros to right hand side vector
-    for (unsigned int k=0; k<br_.getDOF(); k++){localrhs[k] = 0.0;}
+    for (unsigned int k=0; k<br_.getDOF(); k++){sourcestokes[k] = 0.0;}
+
+    for (unsigned int k=0; k<hdiv_.getDOF(); k++){sourcedarcy[k] = 0.0;}
 
     int totalElem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
 
-    PetscCall(MatSetSizes((*matrix).Ad,PETSC_DECIDE,PETSC_DECIDE,
+    PetscCall(MatSetSizes((*system).Ad,PETSC_DECIDE,PETSC_DECIDE,
                                        hdiv_.getDOF(),hdiv_.getDOF()));
-    PetscCall(MatSetSizes((*matrix).As,PETSC_DECIDE,PETSC_DECIDE,
+    PetscCall(MatSetSizes((*system).As,PETSC_DECIDE,PETSC_DECIDE,
                                        br_.getDOF(),br_.getDOF()));
 
-    PetscCall(MatSetSizes((*matrix).Bd,PETSC_DECIDE,PETSC_DECIDE,
+    PetscCall(MatSetSizes((*system).Bd,PETSC_DECIDE,PETSC_DECIDE,
                                        hdiv_.getDOF(),totalElem));
-    PetscCall(MatSetSizes((*matrix).Bs,PETSC_DECIDE,PETSC_DECIDE,
+    PetscCall(MatSetSizes((*system).Bs,PETSC_DECIDE,PETSC_DECIDE,
                                        br_.getDOF(),totalElem));
 
-    PetscCall(MatSetSizes((*matrix).Cd,PETSC_DECIDE,PETSC_DECIDE,
+    PetscCall(MatSetSizes((*system).Cd,PETSC_DECIDE,PETSC_DECIDE,
                                        totalElem,totalElem));
-    PetscCall(MatSetSizes((*matrix).Cs,PETSC_DECIDE,PETSC_DECIDE,
-                                       totalElem,totalElem));
-
-    PetscCall(MatSetSizes((*matrix).K,PETSC_DECIDE,PETSC_DECIDE,
+    PetscCall(MatSetSizes((*system).Cs,PETSC_DECIDE,PETSC_DECIDE,
                                        totalElem,totalElem));
 
-    PetscCall(MatSetType((*matrix).Ad,MATMPIAIJ));
-    PetscCall(MatSetType((*matrix).As,MATMPIAIJ));
-    PetscCall(MatSetType((*matrix).Bd,MATMPIAIJ));
-    PetscCall(MatSetType((*matrix).Bs,MATMPIAIJ));
-    PetscCall(MatSetType((*matrix).Cd,MATMPIAIJ));
-    PetscCall(MatSetType((*matrix).Cs,MATMPIAIJ));
-    PetscCall(MatSetType((*matrix).K,MATMPIAIJ));
+    PetscCall(MatSetSizes((*system).K,PETSC_DECIDE,PETSC_DECIDE,
+                                       totalElem,totalElem));
+
+    PetscCall(MatSetType((*system).Ad,MATMPIAIJ));
+    PetscCall(MatSetType((*system).As,MATMPIAIJ));
+    PetscCall(MatSetType((*system).Bd,MATMPIAIJ));
+    PetscCall(MatSetType((*system).Bs,MATMPIAIJ));
+    PetscCall(MatSetType((*system).Cd,MATMPIAIJ));
+    PetscCall(MatSetType((*system).Cs,MATMPIAIJ));
+    PetscCall(MatSetType((*system).K,MATMPIAIJ));
  
-    ierr = MatSetUp((*matrix).As);CHKERRQ(ierr);
-    ierr = MatSetUp((*matrix).Bs);CHKERRQ(ierr);
-    ierr = MatSetUp((*matrix).Bd);CHKERRQ(ierr);
-    ierr = MatSetUp((*matrix).Cs);CHKERRQ(ierr);
-    ierr = MatSetUp((*matrix).Cd);CHKERRQ(ierr);
-    ierr = MatSetUp((*matrix).K);CHKERRQ(ierr);
-    ierr = MatSetUp((*matrix).Ad);CHKERRQ(ierr);
+    ierr = MatSetUp((*system).As);CHKERRQ(ierr);
+    ierr = MatSetUp((*system).Bs);CHKERRQ(ierr);
+    ierr = MatSetUp((*system).Bd);CHKERRQ(ierr);
+    ierr = MatSetUp((*system).Cs);CHKERRQ(ierr);
+    ierr = MatSetUp((*system).Cd);CHKERRQ(ierr);
+    ierr = MatSetUp((*system).K);CHKERRQ(ierr);
+    ierr = MatSetUp((*system).Ad);CHKERRQ(ierr);
 
     //LocMatrix * locmatrix = (LocMatrix *)malloc(sizeof(LocMatrix));
 
     LocMatrix * locmatrix = new LocMatrix;
 
     int checkSizeM, checkSizeN;
-    MatGetSize((*matrix).Ad, &checkSizeM, &checkSizeN);
+    MatGetSize((*system).Ad, &checkSizeM, &checkSizeN);
 
     for (unsigned int n=0; n<totalElem; n++){
         indice globalElem = Bend(mi,n);
@@ -222,7 +234,7 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
 
         const int idxm = n;
 
-        PetscCall(MatSetValuesBlocked((*matrix).Bd, 8, ISDarcy, 1, &idxm, Bdv, ADD_VALUES));
+        PetscCall(MatSetValuesBlocked((*system).Bd, 8, ISDarcy, 1, &idxm, Bdv, ADD_VALUES));
 
         for (unsigned int l=0; l<8; l++){
             const double Adv[8] = {(*locmatrix).ad[0+l*8],(*locmatrix).ad[1+l*8],
@@ -231,10 +243,10 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                    (*locmatrix).ad[6+l*8],(*locmatrix).ad[7+l*8]};
 
             const int idxm = ISDarcy[l];
-            PetscCall(MatSetValuesBlocked((*matrix).Ad,1,&idxm,8,ISDarcy,Adv,ADD_VALUES));
+            PetscCall(MatSetValuesBlocked((*system).Ad,1,&idxm,8,ISDarcy,Adv,ADD_VALUES));
         }
 
-        PetscCall(MatSetValue((*matrix).Cd,n,n,(*locmatrix).cd,ADD_VALUES));
+        PetscCall(MatSetValue((*system).Cd,n,n,(*locmatrix).cd,ADD_VALUES));
 
         // Assemble Stokes part
 
@@ -245,7 +257,7 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                   tmp2[8],tmp2[9],tmp2[10],tmp2[11]};
 
         for (unsigned int k=0; k<12; k++){
-            localrhs[ISStokes[k]] += (*locmatrix).rhs[k];
+            sourcestokes[ISStokes[k]] += (*locmatrix).rhs[k];
         }
 
         const double Bsv[12] = {(*locmatrix).bs[0],(*locmatrix).bs[1],
@@ -256,7 +268,7 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                 (*locmatrix).bs[10],(*locmatrix).bs[11]};
 
         const int idxms = n;
-        PetscCall(MatSetValuesBlocked((*matrix).Bs,12,ISStokes,1,&idxms,Bsv,ADD_VALUES));
+        PetscCall(MatSetValuesBlocked((*system).Bs,12,ISStokes,1,&idxms,Bsv,ADD_VALUES));
 
         for (unsigned int l=0; l<12; l++){
             const double Asv[12] = {(*locmatrix).as[0+l*12], (*locmatrix).as[1+l*12],
@@ -267,32 +279,33 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                     (*locmatrix).as[10+l*12], (*locmatrix).as[11+l*12]};
 
             const int idxm = ISStokes[l];
-            PetscCall(MatSetValuesBlocked((*matrix).As, 1, &idxm, 12, ISStokes, Asv, ADD_VALUES));
+            PetscCall(MatSetValuesBlocked((*system).As, 1, &idxm, 12, ISStokes, Asv, ADD_VALUES));
         }
 
-        PetscCall(MatSetValue((*matrix).Cs, n, n, (*locmatrix).cs, ADD_VALUES));
+        PetscCall(MatSetValue((*system).Cs, n, n, (*locmatrix).cs, ADD_VALUES));
 
-        PetscCall(MatSetValue((*matrix).K, n, n, (*locmatrix).k, ADD_VALUES));
+        PetscCall(MatSetValue((*system).K, n, n, (*locmatrix).k, ADD_VALUES));
 
     }
 
-    PetscCall(VecRestoreArray(*source,&localrhs));
+    PetscCall(VecRestoreArray(system->sourceStokes,&sourcestokes));
+    PetscCall(VecRestoreArray(system->sourceDarcy,&sourcedarcy));
 
     // Assemble all block matrix
-    PetscCall(MatAssemblyBegin((*matrix).As,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd((*matrix).As,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyBegin((*matrix).Ad,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd((*matrix).Ad,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyBegin((*matrix).Bs,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd((*matrix).Bs,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyBegin((*matrix).Bd,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd((*matrix).Bd,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyBegin((*matrix).Cs,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd((*matrix).Cs,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyBegin((*matrix).Cd,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd((*matrix).Cd,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyBegin((*matrix).K,MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd((*matrix).K,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin((*system).As,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd((*system).As,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin((*system).Ad,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd((*system).Ad,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin((*system).Bs,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd((*system).Bs,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin((*system).Bd,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd((*system).Bd,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin((*system).Cs,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd((*system).Cs,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin((*system).Cd,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd((*system).Cd,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin((*system).K,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd((*system).K,MAT_FINAL_ASSEMBLY));
 
     // Remove constent kernel from pressure coefficient matrix
     Mat Me;
@@ -311,13 +324,13 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
 
 //    MatView(Me, PETSC_VIEWER_STDOUT_WORLD);
 
-    MatAXPY(matrix->Cs,-1.0, Me,DIFFERENT_NONZERO_PATTERN);
-    MatAXPY(matrix->Cd,-1.0, Me,DIFFERENT_NONZERO_PATTERN);
+    MatAXPY(system->Cs,-1.0, Me,DIFFERENT_NONZERO_PATTERN);
+    MatAXPY(system->Cd,-1.0, Me,DIFFERENT_NONZERO_PATTERN);
 
     PetscFunctionReturn(0);
 }
 
-PetscErrorCode CreateSchurComplement(Matrix * matrix, int nelem, int NS, int ND){
+PetscErrorCode CreateSchurComplement(System * matrix, int nelem, int NS, int ND){
 
     PetscFunctionBeginUser;
 
@@ -387,16 +400,6 @@ PetscErrorCode CreateSchurComplement(Matrix * matrix, int nelem, int NS, int ND)
     sub[3] = S2;
 
     MatCreateNest(PETSC_COMM_WORLD, 2, NULL, 2, NULL, sub, &matrix->G);
-
-    PetscFunctionReturn(0);
-}
-
-PetscErrorCode AddlagrangeMultiplier(Mat * B){
-
-    PetscFunctionBeginUser;
-
-    //Add additional column for 
-
 
     PetscFunctionReturn(0);
 }

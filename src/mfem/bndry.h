@@ -18,11 +18,6 @@ struct bndryInfo{
 using bndryVal = std::unordered_map<int, bndryInfo>;
 
 typedef struct{
-    Vec rhs, source;
-    Vec ad, bs, qs, qd;
-} RHSVector;
-
-typedef struct{
     Mat M, Kg, B, Bg;
     Vec g;
 } ReducedSys;
@@ -32,12 +27,6 @@ typedef struct{
  *
  * A L2 projection will be used for Dirichlet boundary conditions.
  */
-
-PetscErrorCode AssignValuesRHS(int NS, int ND, int Nelem,
-                               Vec * A, Vec * B,
-                               RHSVector * rhsv,
-                               const bndryVal& bndryStokes,
-                               const bndryVal& bndryDarcy);
 
 /** !
  * Functions mark Dirichlet boundary values.
@@ -87,10 +76,4 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
                                    Mat * fullM, Mat * fullB,
                                    const bndryVal& bndryval);
 
-PetscErrorCode CreateRHS(const MeshInfo& mi, 
-                         basis& basis_,
-                         Hdivmixed& hdiv_,
-                         BRMixed& br_,
-                         PhysProperty * physproperty,
-                         RHSVector * rhsv);
 #endif

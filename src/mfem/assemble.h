@@ -6,7 +6,8 @@
 
 typedef struct{
     Mat As,Ad,Bs,Bd,Cs,Cd,K,G,Gp;
-} Matrix;
+    Vec sourceDarcy, sourceStokes;
+} System;
 
 typedef struct{
   std::array<double, 64> ad;
@@ -36,8 +37,7 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                          Hdivmixed& hdiv_,
                                          BRMixed& br_,
                                          PhysProperty * physpropety,
-                                         Matrix * matrix,
-                                         Vec * source);
+                                         System * matrix);
 
-PetscErrorCode CreateSchurComplement(Matrix * matrix, 
+PetscErrorCode CreateSchurComplement(System * matrix, 
                                      int nelem, int NS, int ND);

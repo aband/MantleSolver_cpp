@@ -96,11 +96,13 @@ end
 
 % ======== Test of =========
 
-ux = @(x,y) -x./(x.^2+y.^2);
-uy = @(x,y) -y./(x.^2+y.^2);
+%ux = @(x,y) -x./(x.^2+y.^2);
+%uy = @(x,y) -y./(x.^2+y.^2);
+ux = @(x,y)  x;
+uy = @(x,y) -y;
 
-cx = linspace(1,2,20);
-cy = linspace(1,2,20);
+cx = linspace(-1,1,20);
+cy = linspace(-1,1,20);
 
 [X,Y] = meshgrid(cx,cy);
 U = ux(X,Y);

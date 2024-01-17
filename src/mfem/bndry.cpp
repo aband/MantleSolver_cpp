@@ -1,49 +1,6 @@
 #include "bndry.h"
 #include "myFunc.h"
 
-PetscErrorCode AssignValuesRHS(int NS, int ND, int Nelem,
-                               Vec * A, Vec * B,
-                               RHSVector * rhsv,
-                               const bndryVal& bndryStokes,
-                               const bndryVal& bndryDarcy){
-
-    PetscFunctionBeginUser;
-
-    Vec a, b;
-
-    a = *A;
-    b = *B;
-
-    PetscCall(VecCreateMPI(PETSC_COMM_WORLD, PETSC_DECIDE, ND, &rhsv->ad));
-    PetscCall(VecCreateMPI(PETSC_COMM_WORLD, PETSC_DECIDE, NS, &rhsv->bs));
-
-    PetscCall(VecCreateMPI(PETSC_COMM_WORLD, PETSC_DECIDE, Nelem, &rhsv->qd));
-    PetscCall(VecCreateMPI(PETSC_COMM_WORLD, PETSC_DECIDE, Nelem, &rhsv->qs));
-
-    // Assign local arrays
-    double *localad;
-    double *localbs;
-    double *localqd;
-    double *localqs;
-
-    double *localsource;
-
-    PetscCall(VecGetArray(rhsv->ad, &localad));
-    PetscCall(VecGetArray(rhsv->bs, &localbs));
-    PetscCall(VecGetArray(rhsv->qd, &localqd));
-    PetscCall(VecGetArray(rhsv->qs, &localqs));
-
-    PetscCall(VecGetArray(rhsv->source, &localsource));
-
-    // Initialize local arrays
-    for (int k=0; k<ND; k++){localad[k] = 0.0;}
-    for (int k=0; k<NS; k++){localbs[k] = -1*localsource[k];}
-    for (int k=0; k<Nelem; k++) {localqd[k] = 0.0; localqs[k] = 0.0;}
-
-
-    PetscFunctionReturn(0);
-}
-
 bool Is_Dirichlet(const indice& global){
 
     return true;
@@ -443,30 +400,6 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
     PetscCall(MatAssemblyEnd(reducedsys->B, MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyBegin(reducedsys->Bg, MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyEnd(reducedsys->Bg, MAT_FINAL_ASSEMBLY));
-
-    return PETSC_SUCCESS;
-}
-
-PetscErrorCode CreateFullSerial(Mat * fullM, Mat * fullB, 
-                                const bndryVal& bndryval){
-
-    Mat fM = *fullM;
-    Mat fB = *fullB;
-
-    int rows, cols;
-    PetscCall(MatGetSize(fM, &rows, &cols));
-    assert(rows == cols);
-
-    for (int row = 0; row < rows; row++){
-
-        auto itFindRow = bndryval.find(row);
-        if(itFindRow == bndryval.end()){
-            for (int col = 0; col < cols; col++){
-                
-            }
-        }
-    }
-
 
     return PETSC_SUCCESS;
 }

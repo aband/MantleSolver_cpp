@@ -14,17 +14,7 @@ double AssignPorosity(const vertex& point, const double& l){
 
 // ===================================================
 
-const vertex Dirichlet_val(const vertex& point){
-
-//    return {0.0,0.0};
-
-    // Test of Darcy part
-    return {-point[0]/(point[0]*point[0] + point[1]*point[1]),
-            -point[1]/(point[0]*point[0] + point[1]*point[1])};
-
-}
-
-std::array<double, 3> trueSol1(const vertex& point){
+std::array<double, 3> trueSol(const vertex& point){
 
     // return a predefined true solution
     // return <ux, uy, p> in this order
@@ -35,11 +25,45 @@ std::array<double, 3> trueSol1(const vertex& point){
     // uy = -y/(x^2+y^2)
     // p  = 1/2 ln(x^2+y^2)
 
+    // Second scenerio
+    // Divergence free linear velocity with arbitrary defined pressure field
+
     array<double, 3> work;
 
-    work[0] = -point[0]/(point[0]*point[0] + point[1]*point[1]);
-    work[1] = -point[1]/(point[0]*point[0] + point[1]*point[1]);
-    work[2] = 0.5*log(point[0]*point[0] + point[1]*point[1]);
+    //work[0] = -point[0]/(point[0]*point[0] + point[1]*point[1]);
+    //work[1] = -point[1]/(point[0]*point[0] + point[1]*point[1]);
+    //work[2] = 0.5*log(point[0]*point[0] + point[1]*point[1]);
+
+    work[0] = point[0];   
+    work[1] = -point[1];
+    work[2] = point[0] * point[1];
 
     return work;
 }
+
+const vertex Dirichlet_val(const vertex& point){
+
+    std::array<double, 3> truesol = trueSol(point);
+
+    // Test of Darcy part
+    return {truesol[0], truesol[1]};
+}
+
+const vertex darcyPressureGrad(const vertex& point){
+
+    // Auxiliary function.
+    // Returns the gradient of scalar pressure field
+    return {point[1], point[0]};
+}
+
+const vertex darcyForce(const vertex& point){
+
+    // Return the arbitrarily defined right hand side
+    // source term.
+    std::array<double, 3> truesol = trueSol(point);
+
+    vertex gradpressure = darcyPressureGrad(point);
+
+    return {truesol[0] + gradpressure[0], truesol[1] + gradpressure[1]};
+}
+

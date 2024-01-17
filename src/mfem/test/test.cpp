@@ -175,7 +175,7 @@ int main(int argc, char **argv){
 
     BRMixed * br = new BRMixed();
 
-    Matrix * matrix = (Matrix *)malloc(sizeof(Matrix));
+    System * system = (System *)malloc(sizeof(System));
 
     PhysProperty * physproperty = (PhysProperty *)malloc(sizeof(PhysProperty));
 
@@ -187,36 +187,22 @@ int main(int argc, char **argv){
 
     hdiv->ComputeTotalDOF(mi);
 
-    Vec source;
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &source));
-    PetscCall(VecSetSizes(source, PETSC_DECIDE, br->getDOF()));
-    PetscCall(VecSetUp(source));
+    SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, system);
 
-    SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, matrix, &source);
-
-    //const char *check1 = "MatrixCheck.dat";
-
-    // Check matrix shape
-    //DrawMat(matrix->As,check1);
-
-    //CreateSchurComplement(matrix, M*N, br->getDOF(), hdiv->getDOF());
-
-    //const char *check2 = "schur.dat";
-
-    //MatView(matrix->G, PETSC_VIEWER_STDOUT_WORLD);
-
+    // Create reduced system
+    // right hand side vectors stem from the created reduced system 
+    // Reduced system for Stokes and Darcy sytem are being created separately
     bndryVal bndryStokes;
     bndryVal bndryDarcy;
-    // Create right hand side vector
-    //MarkBndryDOFStokes(bndryStokes, mi, (*br));
+
     MarkBndryDOFDarcy(bndryDarcy, mi, (*testBasis), (*hdiv));
     MarkBndryDOFStokes(bndryStokes, mi, (*testBasis), (*br));
 
     ReducedSys * reducedsys = (ReducedSys *)malloc(sizeof(ReducedSys));
 
-    CreateReducedSerial(reducedsys, &matrix->Ad, &matrix->Bd, bndryDarcy);
+    CreateReducedSerial(reducedsys, &system->Ad, &system->Bd, bndryDarcy);
 
-    // Test Darcy part alone
+    // Test Darcy part alone ============================================================
     Vec g1;
 
     // Check mat size
@@ -240,6 +226,11 @@ int main(int argc, char **argv){
  
     PetscCall(MatMult(BgT, reducedsys->g, g2));
 
+    // Move boundary condition vectors to the right hand side of the 
+    VecScale(g1,-1);
+    VecScale(g2,-1);
+
+/*
     // Create Schur complement
     Mat sub[4];
     Mat S1, S2, Sp1, Sp2;
@@ -266,10 +257,6 @@ int main(int argc, char **argv){
     Mat G;
     MatCreateNest(PETSC_COMM_WORLD, 2, NULL, 2, NULL, sub, &G);
 
-    // Move boundary condition vectors to the right hand side of the 
-    VecScale(g1,-1);
-    VecScale(g2,-1);
-
     Vec g[2];
     g[0] = g1;
     g[1] = g2;
@@ -283,46 +270,7 @@ int main(int argc, char **argv){
 //    MatView(G, PETSC_VIEWER_STDOUT_WORLD);
 //    VecView(rhs, PETSC_VIEWER_STDOUT_WORLD);
 
-    // Set up linear solver
-    KSP ksp;
-    PC pc;
-    KSPCreate(PETSC_COMM_WORLD, &ksp);
-    KSPSetOperators(ksp, G, G);
-    KSPSetType(ksp, KSPCG);
-    KSPSetInitialGuessNonzero(ksp, PETSC_TRUE);
-    KSPGetPC(ksp, &pc);
-    PCSetType(pc, PCJACOBI);
-
-    Vec rhs;
-    VecCreate(PETSC_COMM_WORLD, &rhs);
-    VecSetSizes(rhs, PETSC_DECIDE, cM + cN);
-    VecSetUp(rhs);
-
-    Vec x;
-
-    VecDuplicate(rhs, &x);
-
-    double * arrayg1;
-    double * arrayg2;
-    double * arrayrhs;
-
-    VecGetArray(g1, &arrayg1);
-    VecGetArray(g2, &arrayg2);
-    VecGetArray(rhs, &arrayrhs);
-
-    for (int i=0; i<cM; i++){
-        arrayrhs[i] = arrayg1[i]; 
-    }
-
-    for (int i=0; i<cN; i++){
-        arrayrhs[i+cM] = arrayg2[i]; 
-    }
-
-    VecRestoreArray(g1, &arrayg1); 
-    VecRestoreArray(g2, &arrayg2); 
-    VecRestoreArray(rhs, &arrayrhs);
-
-    KSPSolve(ksp, rhs, x);
+*/
 
 // Check computed system
 
@@ -346,13 +294,6 @@ int main(int argc, char **argv){
 
     const char *checkg = "VecCheckg.dat";
     WriteVec(reducedsys->g,checkg);
-
-    //MatView(matrix->Bd, PETSC_VIEWER_STDOUT_WORLD);
-    //MatView(reducedsys->B, PETSC_VIEWER_STDOUT_WORLD);
-    //MatView(reducedsys->M, PETSC_VIEWER_STDOUT_WORLD);
-    //VecView(g1, PETSC_VIEWER_STDOUT_WORLD);
-    //VecView(g2, PETSC_VIEWER_STDOUT_WORLD);
-    //VecView(x, PETSC_VIEWER_STDOUT_WORLD);
 
     // Test inexect Uzawa iteration algorithm
     linearSys * ls = (linearSys *)malloc(sizeof(linearSys));
@@ -464,11 +405,10 @@ int main(int argc, char **argv){
     for (int i=0; i<M; i++){
 
         std::array<double, 8> singleElemWeights = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi,{i,j})); 
-        errorSum += L2ErrorElem(singleElemWeights, {i,j}, trueSol1, gwf, gpf, *testBasis, *hdiv);
+        errorSum += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
     }}
 
     cout << "||u-u_h||_L2 : " <<  pow(errorSum, 0.5) << endl;
-
 
     //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
@@ -480,7 +420,6 @@ int main(int argc, char **argv){
 
     VecDestroy(&fullmesh);
     VecDestroy(&globalu);
-    //VecDestroy(&source);
     DMDestroy(&dm);
     DMDestroy(&dmu);
 

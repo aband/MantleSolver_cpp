@@ -22,8 +22,13 @@ double AssignPorosity(const vertex& point, const double& l);
 // Define boundary condition
 // ===================================================
 
+// True solution
+std::array<double, 3> trueSol(const vertex& point);
+
+// Dirichlet value defined on the boundary
 const vertex Dirichlet_val(const vertex& point);
 
-std::array<double, 3> trueSol1(const vertex& point);
+// Return source term as sum of velocity and pressure gradient  
+const vertex darcyForce (const vertex& point);
 
 #endif
