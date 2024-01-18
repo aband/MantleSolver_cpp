@@ -16,27 +16,34 @@ double AssignPorosity(const vertex& point, const double& l){
 
 std::array<double, 3> trueSol(const vertex& point){
 
+    array<double, 3> work;
+
     // return a predefined true solution
     // return <ux, uy, p> in this order
     // A manufactured solution satisfying Darcy equation
+
+    // First scenerio
     // u + grad(p) = 0
     // div(u)      = 0
     // ux = -x/(x^2+y^2)
     // uy = -y/(x^2+y^2)
     // p  = 1/2 ln(x^2+y^2)
 
-    // Second scenerio
-    // Divergence free linear velocity with arbitrary defined pressure field
-
-    array<double, 3> work;
-
     //work[0] = -point[0]/(point[0]*point[0] + point[1]*point[1]);
     //work[1] = -point[1]/(point[0]*point[0] + point[1]*point[1]);
     //work[2] = 0.5*log(point[0]*point[0] + point[1]*point[1]);
 
-    work[0] = point[0];   
-    work[1] = -point[1];
-    work[2] = point[0] * point[1];
+    // Second scenerio
+    // Divergence free linear velocity with arbitrary defined pressure field
+
+    //work[0] = point[0];   
+    //work[1] = -point[1];
+    //work[2] = point[0] * point[1];
+
+    // Third scenerio
+    work[0] = 1;
+    work[1] = 1;
+    work[2] = -point[0];
 
     return work;
 }
@@ -53,7 +60,9 @@ const vertex darcyPressureGrad(const vertex& point){
 
     // Auxiliary function.
     // Returns the gradient of scalar pressure field
-    return {point[1], point[0]};
+    //return {point[1], point[0]};
+
+    return {-1,0};
 }
 
 const vertex darcyForce(const vertex& point){

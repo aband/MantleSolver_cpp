@@ -17,8 +17,7 @@ std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryval, int dof){
     for (int j=0; j<dof; j++){
             auto itFind = bndryval.find(j);
             if (itFind == bndryval.end()){
-                //work[j] = arrayu[count]; 
-                work[j] = -1*arrayu[count];
+                work[j] = arrayu[count]; 
                 count ++;
             } else {
                 work[j] = itFind->second.DirichletVal;
@@ -80,4 +79,32 @@ double L2ErrorElem(const std::array<double,8>& weight,
     }
 
     return pow(elemError,0.5);
+}
+
+// Compute L2 error for pressure
+double L2ErrorElem(const double& approxP,
+                   std::array<double,3> (*func)(const vertex& point),
+                   const valarray<double>& gwf,
+                   const vector<vertex>& gpf,
+                   basis& basis_,
+                   const double& area){
+
+    double elemError = 0.0;
+
+    for (int g=0; g<gwf.size(); g++){
+        vertex mapped = GaussMapPointsFace(gpf[g], basis_.corners());
+
+        double jac = abs(GaussJacobian(gpf[g], basis_.corners()));
+        double gw = gwf[g];
+
+        std::array<double, 3> trueP = func(mapped);
+
+        elemError += gw*jac*trueP[2];
+    }
+
+    elemError /= area;
+
+    elemError = abs(elemError) - abs(approxP);
+
+    return abs(elemError);
 }

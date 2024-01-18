@@ -26,4 +26,11 @@ double L2ErrorElem(const std::array<double,8>& coeff,
                    basis& basis_,
                    Hdivmixed& hdiv_);
 
+double L2ErrorElem(const double& approxP, 
+                   std::array<double, 3> (*func)(const vertex& point),
+                   const valarray<double>& gwf,
+                   const vector<vertex>& gpf,
+                   basis& basis_,
+                   const double& area);
+
 #endif

@@ -18,25 +18,6 @@ extern "C"{
 
 using namespace std;
 
-double func(const vertex& point, const vector<double>& param){
-	 if (point[0]<param[0]){
-//		  return point[0]*point[0]+point[1]*point[1];
-	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
-//        return sin(point[0] + point[1] + 0.1);
-	 } else {
-//		  return point[0]*point[0]*point[1]*point[1] + 1.0;
-	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1) + 10;
-//        return sin(point[0] + point[1] + 0.1) + 10;
-	 }
-
-    //return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
-    //return sin(point[0] + point[1] + 0.1);
-    //return point[0]*point[0] + point[1]*point[1];
-    //return 0.5;
-    //return point[0] + point[1];
-
-}
-
 int main(int argc, char **argv){
 
     // Initializing petsc function
@@ -70,10 +51,8 @@ int main(int argc, char **argv){
     ierr = DMSetUp(dm);                        CHKERRQ(ierr);
     ierr = DMCreateGlobalVector(dm, &fullmesh);CHKERRQ(ierr); 
 
-    //double L = 2.0, H = 2.0;
-    //double xstart = -1.0, ystart = -1.0;
-    double L = 1.0, H = 1.0;
-    double xstart = 1.0, ystart = 1.0;
+    double L = 2.0, H = 2.0;
+    double xstart = -1.0, ystart = -1.0;
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL); CHKERRQ(ierr);
@@ -143,7 +122,7 @@ int main(int argc, char **argv){
 
     // Initialize with oblique data for Burgers equation 
     //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,{-L/(2*M)},func);
+    //SimpleInitialValue(dm,dmu,&fullmesh,&globalu,{-L/(2*M)},func);
 
     Vec localu; 
     DMGetLocalVector(dmu, &localu);
@@ -188,7 +167,6 @@ int main(int argc, char **argv){
     hdiv->ComputeTotalDOF(mi);
 
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, system);
-
     // Create reduced system
     // right hand side vectors stem from the created reduced system 
     // Reduced system for Stokes and Darcy sytem are being created separately
@@ -200,7 +178,7 @@ int main(int argc, char **argv){
 
     ReducedSys * reducedsys = (ReducedSys *)malloc(sizeof(ReducedSys));
 
-    CreateReducedSerial(reducedsys, &system->Ad, &system->Bd, bndryDarcy);
+    CreateReducedSerial(reducedsys, &system->Ad, &system->Bd, &system->sourceDarcy, bndryDarcy);
 
     // Test Darcy part alone ============================================================
     Vec g1;
@@ -227,50 +205,9 @@ int main(int argc, char **argv){
     PetscCall(MatMult(BgT, reducedsys->g, g2));
 
     // Move boundary condition vectors to the right hand side of the 
-    VecScale(g1,-1);
-    VecScale(g2,-1);
-
-/*
-    // Create Schur complement
-    Mat sub[4];
-    Mat S1, S2, Sp1, Sp2;
-
-    sub[0] = reducedsys->M;
-    sub[1] = reducedsys->B;
-    Mat BT;
-
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &BT));
-    PetscCall(MatSetSizes(BT, PETSC_DECIDE, PETSC_DECIDE, cN, cM));
-    PetscCall(MatSetUp(BT));
-
-    sub[2] = BT;
-
-    // Create zero matrix
-    Mat Z;
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &Z));
-    PetscCall(MatSetSizes(Z, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
-    PetscCall(MatSetUp(Z));
-
-    PetscCall(MatZeroEntries(Z));
-    sub[3] = Z;
-
-    Mat G;
-    MatCreateNest(PETSC_COMM_WORLD, 2, NULL, 2, NULL, sub, &G);
-
-    Vec g[2];
-    g[0] = g1;
-    g[1] = g2;
-
-//    Vec rhs;
-//    VecCreateNest(PETSC_COMM_WORLD, 2, NULL, g, &rhs);
-
-    PetscCall(MatAssemblyBegin(G, MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd(G, MAT_FINAL_ASSEMBLY));
-
-//    MatView(G, PETSC_VIEWER_STDOUT_WORLD);
-//    VecView(rhs, PETSC_VIEWER_STDOUT_WORLD);
-
-*/
+    //VecScale(g1,-1);
+    PetscCall(VecAYPX(g1,-1,reducedsys->source));
+    PetscCall(VecScale(g2,-1));
 
 // Check computed system
 
@@ -321,9 +258,6 @@ int main(int argc, char **argv){
    
     PetscCall(VecZeroEntries(ls->x));
     PetscCall(VecZeroEntries(ls->y));
-
-    //VecView(ls->f, PETSC_VIEWER_STDOUT_WORLD);
-    //VecView(ls->g, PETSC_VIEWER_STDOUT_WORLD);
 
     // Control number of iterations and tolerance
     int maxIter;
@@ -392,24 +326,30 @@ int main(int argc, char **argv){
     fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
     //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
 
-    std::array<double, 8> work = ExtractWeights(fullSol, 
-                                 hdiv->LocalToGlobal(mi,{1,1}));
-
     // Fetch gauss points and gauss weights
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>& gpf = GaussPointsFace;
 
-    double errorSum = 0;
+    double errorSumu = 0.0;
+    double errorSump = 0.0;
+
+    double *arrayp;
+    PetscCall(VecGetArray(ls->y,&arrayp));
 
     for (int j=0; j<N; j++){
     for (int i=0; i<M; i++){
 
+        testBasis->GetCorners(mi,{i,j});
+
         std::array<double, 8> singleElemWeights = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi,{i,j})); 
-        errorSum += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
+        errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
+        errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));;
     }}
 
-    cout << "||u-u_h||_L2 : " <<  pow(errorSum, 0.5) << endl;
+    PetscCall(VecRestoreArray(ls->y,&arrayp));
 
+    cout << "||u-u_h||_L2 : " <<  errorSumu << endl;
+    cout << "||p-p_h||_L2 : " <<  errorSump << endl;
     //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
 

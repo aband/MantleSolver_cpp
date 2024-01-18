@@ -19,7 +19,7 @@ using bndryVal = std::unordered_map<int, bndryInfo>;
 
 typedef struct{
     Mat M, Kg, B, Bg;
-    Vec g;
+    Vec g, source;
 } ReducedSys;
 
 /** !
@@ -74,6 +74,7 @@ bool Is_Dirichlet(const indice& global);
  */
 PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
                                    Mat * fullM, Mat * fullB,
+                                   Vec * fullSource,
                                    const bndryVal& bndryval);
 
 #endif

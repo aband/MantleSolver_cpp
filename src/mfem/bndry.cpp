@@ -252,12 +252,15 @@ PetscErrorCode CreateDirichletMatVecParallel(Vec * localg,
 //! Create reduced system from full system
 PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
                                    Mat * fullM, Mat * fullB,
+                                   Vec * fullSource,
                                    const bndryVal& bndryval){
 
     // Copy precalculated full matrix
     Mat fM = *fullM;
   
     Mat fB = *fullB; 
+
+    Vec fs = *fullSource;
 
     // Get global number of rows and columns from full matrix
     int rows, cols;
@@ -298,9 +301,15 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
 
     // Create boundary vector
     PetscCall(VecCreate(PETSC_COMM_WORLD, &reducedsys->g));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &reducedsys->source)); 
     PetscCall(VecSetSizes(reducedsys->g, PETSC_DECIDE, bndrySize));
-
+    PetscCall(VecSetSizes(reducedsys->source, PETSC_DECIDE, reducedSize));
     PetscCall(VecSetUp(reducedsys->g));
+    PetscCall(VecSetUp(reducedsys->source));
+
+    double * arrayfullsource;
+
+    PetscCall(VecGetArray(fs, &arrayfullsource));
 
     int reducedRowIndex = 0;
     int countBndry = 0;
@@ -345,12 +354,15 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
 
                     const int idxn = intrIndex;
 
-                    MatSetValues(reducedsys->M , 1, &idxm, 1, &idxn, &assignVal, INSERT_VALUES);
+                    MatSetValues(reducedsys->M, 1, &idxm, 1, &idxn, &assignVal, INSERT_VALUES);
 
                     intrIndex ++;
                 }
 
             }
+            double val = arrayfullsource[row];
+            VecSetValues(reducedsys->source, 1, &reducedRowIndex, &val , INSERT_VALUES);
+
             // increment of the reducedRowIndex
             reducedRowIndex ++;
         } else {
@@ -362,6 +374,8 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
             countBndry ++;
         }
     }
+
+    PetscCall(VecRestoreArray(fs,&arrayfullsource));
 
     PetscCall(VecAssemblyBegin(reducedsys->g));
     PetscCall(VecAssemblyEnd(reducedsys->g));
