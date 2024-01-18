@@ -14,7 +14,8 @@ typedef struct{
   std::array<double, 144> as;
   std::array<double, 8> bd;
   std::array<double, 12> bs;
-  std::array<double, 12> rhs;
+  std::array<double, 12> sourcestokes;
+  std::array<double, 8> sourcedarcy;
   double cs;
   double cd;
   double k;

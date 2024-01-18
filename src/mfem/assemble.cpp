@@ -41,10 +41,11 @@ void AssignLocMatrix(const MeshInfo& mi,
     // Assign values to local matrix
     // Zeros out all local values first
     for (unsigned int j=0; j<8; j++){(*locmatrix).bd[j] = 0.0;
+                                     (*locmatrix).sourcedarcy[j] = 0.0;
         for (unsigned int i=0; i<8; i++){(*locmatrix).ad[j*8+i] = 0.0;}}
 
     for (unsigned int j=0; j<12; j++){(*locmatrix).bs[j] = 0.0;
-                                      (*locmatrix).rhs[j] = 0.0;
+                                      (*locmatrix).sourcestokes[j] = 0.0;
         for (unsigned int i=0; i<12; i++){(*locmatrix).as[j*12+i] = 0.0;}}
 
     (*locmatrix).cs = 0.0;
@@ -80,12 +81,14 @@ void AssignLocMatrix(const MeshInfo& mi,
 
             (*locmatrix).bs[j] += gw*jac*div1 * 1;
 
-            (*locmatrix).rhs[j] += gw*jac*(1-phi_f)*rho_r*(gx*brwork[j][0] + 
+            (*locmatrix).sourcestokes[j] += gw*jac*(1-phi_f)*rho_r*(gx*brwork[j][0] + 
                                                            gy*brwork[j][1]);
 
         }
 
         std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
+
+        vertex darcyforce = darcyForce(mapped);
 
         for (unsigned int j=0; j<8; j++){
             for (unsigned int i=0; i<8; i++){
@@ -93,6 +96,8 @@ void AssignLocMatrix(const MeshInfo& mi,
                                 (hdivwork[j][0]*hdivwork[i][0] + 
                                  hdivwork[j][1]*hdivwork[i][1]);
             }
+            (*locmatrix).sourcedarcy[j] += gw*jac*(darcyforce[0]*hdivwork[j][0] + 
+                                                   darcyforce[1]*hdivwork[j][1]);
         }
 
         (*locmatrix).cd += gw*jac*1.0/(mu_s*(1-phi_f))*1*1;
@@ -227,6 +232,10 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
         const int ISDarcy[8] = 
            {tmp[0],tmp[1],tmp[2],tmp[3],tmp[4],tmp[5],tmp[6],tmp[7]};
 
+        for (unsigned int k=0; k<8; k++){
+            sourcedarcy[ISDarcy[k]] += (*locmatrix).sourcedarcy[k];
+        }
+
         const double Bdv[8] = {(*locmatrix).bd[0],(*locmatrix).bd[1],
                                (*locmatrix).bd[2],(*locmatrix).bd[3],
                                (*locmatrix).bd[4],(*locmatrix).bd[5],
@@ -257,7 +266,7 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                   tmp2[8],tmp2[9],tmp2[10],tmp2[11]};
 
         for (unsigned int k=0; k<12; k++){
-            sourcestokes[ISStokes[k]] += (*locmatrix).rhs[k];
+            sourcestokes[ISStokes[k]] += (*locmatrix).sourcestokes[k];
         }
 
         const double Bsv[12] = {(*locmatrix).bs[0],(*locmatrix).bs[1],
