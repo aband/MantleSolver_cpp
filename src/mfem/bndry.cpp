@@ -181,6 +181,9 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
         b += len/2.0*gwe[g]*(vals[0][0]*vals[1][0] + vals[0][1]*vals[1][1]);
         d += len/2.0*gwe[g]*(vals[1][0]*vals[1][0] + vals[1][1]*vals[1][1]);
 
+        cout << "Element " << global[0] << " " << global[1] << " vals[0,0],[0,1] : " << 
+                    vals[0][0]<< " " << vals[0][1] << endl;
+
         // Get local Dirichlet vector value
         vertex DiriVal = Dirichlet_val(mapped); 
 
@@ -188,6 +191,8 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
         l1 += len/2.0*gwe[g]*(DiriVal[0]*vals[1][0] + DiriVal[1]*vals[1][1]);
 
     }
+
+    //cout << "Element " << global[0] << " " << global[1] << " l0,l1 : " << l0 << " " << l1 << endl;
 
     work[0] = (d*l0-b*l1)/(a*d-b*b);
     work[1] = (a*l1-b*l0)/(a*d-b*b);

@@ -326,6 +326,11 @@ int main(int argc, char **argv){
     fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
     //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
 
+    cout << hdiv->getDOF() << endl;
+    for (int k=0; k<hdiv->getDOF(); k++){
+        cout << fullSol.at(k) << endl;
+    }
+
     // Fetch gauss points and gauss weights
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>& gpf = GaussPointsFace;
