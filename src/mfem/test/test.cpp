@@ -326,11 +326,6 @@ int main(int argc, char **argv){
     fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
     //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
 
-    cout << hdiv->getDOF() << endl;
-    for (int k=0; k<hdiv->getDOF(); k++){
-        cout << fullSol.at(k) << endl;
-    }
-
     // Fetch gauss points and gauss weights
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>& gpf = GaussPointsFace;
@@ -357,6 +352,40 @@ int main(int argc, char **argv){
     cout << "||p-p_h||_L2 : " <<  errorSump << endl;
     //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
+
+/*
+    // Check Hdiv function space
+    // Check element {0,0}
+    // (designed for single element case
+    int seed = 5; 
+    // assume L = H here
+    double DX = L/(double)	M;
+	 
+    double h = DX / (double) seed;
+
+    int k = 0;
+    int shift = 0;
+    PetscOptionsGetInt(NULL,NULL,"-k",&k,NULL);
+    PetscOptionsGetInt(NULL,NULL,"-s",&shift,NULL);
+
+    testBasis->GetCorners(mi,{0,0});
+
+    std::array<double, 8> fakeweight = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi, {0,0}));;
+
+//    fakeweight = {0,0,0,0,1,1,1,1};
+
+    for (int j=seed; j>-1; j--){
+    for (int i=0; i<seed + 1; i++){
+        std::array<vertex, 8> tmp = hdiv->ComputeHdivmixed(*testBasis, {xstart+i*h, ystart+j*h});
+        //cout << "(" << tmp[k + 4*shift][0] << ", " << tmp[k + 4*shift][1] << ")  ";
+        vertex sum {0.0,0.0};
+        for (int g=0;g<8;g++){
+            sum += fakeweight[g]*tmp[g]; 
+        }
+        cout << "(" << sum[0] << ", " << sum[1] << ")  ";
+ 
+    }cout << endl;}
+*/
 
 // ====================================================================================================================================
     // Clear used objects

@@ -52,6 +52,17 @@ double L2ErrorElem(const std::array<double,8>& weight,
     double elemError = 0.0;
     // Calculate the L2 Error on the given interior element 
 
+    std::array<double, 8> fakeweight;
+
+    fakeweight[0] = 0.0;
+    fakeweight[1] = 0.0;
+    fakeweight[2] = 0.0;
+    fakeweight[3] = 0.0;
+    fakeweight[4] = 0.0;
+    fakeweight[5] = 0.0;
+    fakeweight[6] = 0.0;
+    fakeweight[7] = 1.0;
+
     for (int g=0; g<gwf.size(); g++){
         //Loop through gauess quadrature points
         vertex mapped = GaussMapPointsFace(gpf[g], basis_.corners());
@@ -64,16 +75,19 @@ double L2ErrorElem(const std::array<double,8>& weight,
         for (int i=0; i<8; i++){
             approxVal += weight[i]*hdivwork[i]; 
         }
+
+//        cout << "Evaluation on gauss points : " << approxVal[0] << " " << approxVal[1] << endl;
+
         // Get exact values
         std::array<double,3> trueSol = func(mapped);
 
         valarray<double> diff {0.0,0.0};
 
         //diff[0] = approxVal[0] - trueSol[0];
-        //diff[1] = approxVal[0] - trueSol[0];
+        //diff[1] = approxVal[1] - trueSol[1];
 
         diff[0] = abs(approxVal[0]) - abs(trueSol[0]);
-        diff[1] = abs(approxVal[0]) - abs(trueSol[0]);
+        diff[1] = abs(approxVal[1]) - abs(trueSol[1]);
 
         elemError += gw*jac*(diff[0]*diff[0] + diff[1]*diff[1]);
     }

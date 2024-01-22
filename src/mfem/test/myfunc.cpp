@@ -41,11 +41,18 @@ std::array<double, 3> trueSol(const vertex& point){
     //work[2] = point[0] * point[1];
 
     // Third scenerio
-    work[0] = 1;
-    work[1] = 1;
-    work[2] = -point[0];
+    work[0] = pow(point[0],2)*point[1];
+    work[1] = -pow(point[1],2)*point[0];
+    work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
 
     return work;
+}
+
+const vertex darcyPressureGrad(const vertex& point){
+
+    // Auxiliary function.
+    // Returns the gradient of scalar pressure field
+    return {-point[0], point[1]};
 }
 
 const vertex Dirichlet_val(const vertex& point){
@@ -54,15 +61,6 @@ const vertex Dirichlet_val(const vertex& point){
 
     // Test of Darcy part
     return {truesol[0], truesol[1]};
-}
-
-const vertex darcyPressureGrad(const vertex& point){
-
-    // Auxiliary function.
-    // Returns the gradient of scalar pressure field
-    //return {point[1], point[0]};
-
-    return {-1,0};
 }
 
 const vertex darcyForce(const vertex& point){
@@ -75,4 +73,3 @@ const vertex darcyForce(const vertex& point){
 
     return {truesol[0] + gradpressure[0], truesol[1] + gradpressure[1]};
 }
-

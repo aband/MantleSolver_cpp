@@ -139,7 +139,7 @@ std::array<vertex,8> Hdivmixed::ComputeHdivmixed(const basis& basis_,
 
     // Control with global unit normal direction
     for (unsigned int k=0; k<2; k++){
-        work[k] *= -1;
+        work[k] *= 1;
 
         work[k+4] *= -1;
     }
@@ -155,7 +155,7 @@ std::array<vertex,2> Hdivmixed::ComputeHdivmixed(const basis& basis_,
 
     if(edge < 2){
         // Corrected with unit normal direction
-        work[0] = -1*phil(basis_,edge,point);
+        work[0] = 1*phil(basis_,edge,point);
         work[1] = -1*phic(basis_,(edge+4)%4,point);
     } else {
         work[0] = phil(basis_,edge,point);

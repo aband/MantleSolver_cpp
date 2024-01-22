@@ -172,23 +172,27 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
     // boundary condition directly.
     // A first order approximation minimization L2 error.
 
+    vertex nu = basis_.unitnormal(edge);
+
     for (int g=0; g<gwe.size(); g++){
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edgeCorner);
 
         std::array<vertex, 2> vals = hdiv_.ComputeHdivmixed(basis_, mapped, edge); 
 
-        a += len/2.0*gwe[g]*(vals[0][0]*vals[0][0] + vals[0][1]*vals[0][1]);
-        b += len/2.0*gwe[g]*(vals[0][0]*vals[1][0] + vals[0][1]*vals[1][1]);
-        d += len/2.0*gwe[g]*(vals[1][0]*vals[1][0] + vals[1][1]*vals[1][1]);
-
-        cout << "Element " << global[0] << " " << global[1] << " vals[0,0],[0,1] : " << 
-                    vals[0][0]<< " " << vals[0][1] << endl;
+        a += len/2.0*gwe[g]*(vals[0][0]*vals[0][0]*nu[0]*nu[0] + 
+                             vals[0][1]*vals[0][1]*nu[1]*nu[1]);
+        b += len/2.0*gwe[g]*(vals[0][0]*vals[1][0]*nu[0]*nu[0] + 
+                             vals[0][1]*vals[1][1]*nu[1]*nu[1]);
+        d += len/2.0*gwe[g]*(vals[1][0]*vals[1][0]*nu[0]*nu[0] + 
+                             vals[1][1]*vals[1][1]*nu[1]*nu[1]);
 
         // Get local Dirichlet vector value
         vertex DiriVal = Dirichlet_val(mapped); 
 
-        l0 += len/2.0*gwe[g]*(DiriVal[0]*vals[0][0] + DiriVal[1]*vals[0][1]);
-        l1 += len/2.0*gwe[g]*(DiriVal[0]*vals[1][0] + DiriVal[1]*vals[1][1]);
+        l0 += len/2.0*gwe[g]*(DiriVal[0]*vals[0][0]*nu[0]*nu[0] + 
+                              DiriVal[1]*vals[0][1]*nu[1]*nu[1]);
+        l1 += len/2.0*gwe[g]*(DiriVal[0]*vals[1][0]*nu[0]*nu[0] + 
+                              DiriVal[1]*vals[1][1]*nu[1]*nu[1]);
 
     }
 
