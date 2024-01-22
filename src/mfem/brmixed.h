@@ -44,6 +44,9 @@ class BRMixed {
         std::array<std::array<double,4>,12> ComputeGradBRmixed(const basis& basis_,
                                                                const vertex& point) const;
 
+        std::array<double, 12> CompueBRmixed(const basis& basis_,
+                                             const vertex& point) const;
+
     private:
 
         double phie_(const basis& basis_,

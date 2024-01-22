@@ -353,14 +353,14 @@ int main(int argc, char **argv){
     //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
     //VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
 
-/*
-    // Check Hdiv function space
+    // =================================================================================
+    // Check FE function space
     // Check element {0,0}
     // (designed for single element case
     int seed = 5; 
     // assume L = H here
     double DX = L/(double)	M;
-	 
+
     double h = DX / (double) seed;
 
     int k = 0;
@@ -376,16 +376,17 @@ int main(int argc, char **argv){
 
     for (int j=seed; j>-1; j--){
     for (int i=0; i<seed + 1; i++){
-        std::array<vertex, 8> tmp = hdiv->ComputeHdivmixed(*testBasis, {xstart+i*h, ystart+j*h});
-        //cout << "(" << tmp[k + 4*shift][0] << ", " << tmp[k + 4*shift][1] << ")  ";
+        //std::array<vertex, 8> tmp = hdiv->ComputeHdivmixed(*testBasis, {xstart+i*h, ystart+j*h});
+        //std::array<vertex, 12> tmp = br->Compute 
+
+        cout << "(" << tmp[k + 4*shift][0] << ", " << tmp[k + 4*shift][1] << ")  ";
         vertex sum {0.0,0.0};
         for (int g=0;g<8;g++){
             sum += fakeweight[g]*tmp[g]; 
         }
-        cout << "(" << sum[0] << ", " << sum[1] << ")  ";
+        //cout << "(" << sum[0] << ", " << sum[1] << ")  ";
  
     }cout << endl;}
-*/
 
 // ====================================================================================================================================
     // Clear used objects
