@@ -87,7 +87,9 @@ while (r > 1e-6) && (iter < MaxIter)
 
     tmp2 = -B*x+G;
   
-    y = y + 0.06*tmp2;
+    y = y + 0.08*tmp2;
+
+    sum(y)
 
     iter = iter +1;
 

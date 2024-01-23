@@ -210,7 +210,7 @@ int main(int argc, char **argv){
     PetscCall(VecScale(g2,-1));
 
 // Check computed system
-
+/*
     const char *checkA = "MatrixCheckA.dat";
     // Write A matrix
     WriteMat(reducedsys->M,checkA);
@@ -231,7 +231,7 @@ int main(int argc, char **argv){
 
     const char *checkg = "VecCheckg.dat";
     WriteVec(reducedsys->g,checkg);
-
+*/
     // Test inexect Uzawa iteration algorithm
     linearSys * ls = (linearSys *)malloc(sizeof(linearSys));
 
@@ -308,7 +308,7 @@ int main(int argc, char **argv){
     }
 
     // Create Test reduced vector
-	 int count = 0; 
+    int count = 0; 
     for (int i=0; i<hdiv->getDOF(); i++){
    
         auto ifFind = bndryTest.find(i);
@@ -377,14 +377,15 @@ int main(int argc, char **argv){
     for (int j=seed; j>-1; j--){
     for (int i=0; i<seed + 1; i++){
         //std::array<vertex, 8> tmp = hdiv->ComputeHdivmixed(*testBasis, {xstart+i*h, ystart+j*h});
-        //std::array<vertex, 12> tmp = br->Compute 
+        std::array<std::array<double, 4>, 12> tmp = br->ComputeGradBRmixed(*testBasis, {xstart+i*h, ystart+j*h});
 
-        cout << "(" << tmp[k + 4*shift][0] << ", " << tmp[k + 4*shift][1] << ")  ";
-        vertex sum {0.0,0.0};
-        for (int g=0;g<8;g++){
-            sum += fakeweight[g]*tmp[g]; 
-        }
-        //cout << "(" << sum[0] << ", " << sum[1] << ")  ";
+        cout << "(" << tmp[k+4*shift][0] << ", " << tmp[k+4*shift][1] << ", " << 
+                       tmp[k+4*shift][2] << ", " << tmp[k+4*shift][3] <<  ")  ";
+//        vertex sum {0.0,0.0};
+//        for (int g=0;g<8;g++){
+//            sum += fakeweight[g]*tmp[g]; 
+//        }
+//        cout << "(" << sum[0] << ", " << sum[1] << ")  ";
  
     }cout << endl;}
 

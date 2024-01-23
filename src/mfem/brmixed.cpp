@@ -54,43 +54,6 @@ void BRMixed::ComputeTotalDOF(const MeshInfo& mi){
                 mi.MPIglobalHoriEdgeSize + mi.MPIglobalVertEdgeSize;
 }
 
-std::array<std::array<double,4>, 12> BRMixed::ComputeGradBRmixed(const basis& basis_,
-                                                                 const vertex& point)const {
-
-    std::array<std::array<double,4>, 12> work;
-
-    for (unsigned int j=0; j<4; j++){
-        vertex dphiv = dPhiv(basis_,j,point); 
-
-        work[j][0] = dphiv[0];
-        work[j][1] = dphiv[1];
-        work[j][2] = 0.0;
-        work[j][3] = 0.0;
-
-        work[j+4][0] = 0.0;
-        work[j+4][1] = 0.0;
-        work[j+4][2] = dphiv[0];
-        work[j+4][3] = dphiv[1];
-
-        vertex unitN = basis_.unitnormal(j);
-        vertex dphie = dPhie(basis_,j,point); 
-
-        work[j+8][0] = dphie[0] * unitN[0];
-        work[j+8][1] = dphie[1] * unitN[0];
-        work[j+8][2] = dphie[0] * unitN[1];
-        work[j+8][3] = dphie[1] * unitN[1];
-
-    }
-
-    // Fix global unit normal edge directions
-    for (unsigned int k=0; k<4; k++){
-        work[8][k] *= -1;
-        work[9][k] *= -1;
-    }
-
-    return work;
-}
-
 double BRMixed::phiv(const basis& basis_,
                      const int& nnodal,
                      const vertex& point) const {
@@ -150,6 +113,56 @@ vertex BRMixed::dPhiv(const basis& basis_,
 
     work /= basis_.lambdad(idiag,basis_.corners_.at(nnodal)) - 
             basis_.lambdad(idiag,basis_.corners_.at((nnodal+2)%4));
+
+    return work;
+}
+
+// Calculate gradient of corresponding basis functions
+std::array<std::array<double,4>, 12> BRMixed::ComputeGradBRmixed(const basis& basis_,
+                                                                 const vertex& point)const {
+
+    std::array<std::array<double,4>, 12> work;
+
+    for (unsigned int j=0; j<4; j++){
+        vertex dphiv = dPhiv(basis_,j,point); 
+
+        work[j][0] = dphiv[0];
+        work[j][1] = dphiv[1];
+        work[j][2] = 0.0;
+        work[j][3] = 0.0;
+
+        work[j+4][0] = 0.0;
+        work[j+4][1] = 0.0;
+        work[j+4][2] = dphiv[0];
+        work[j+4][3] = dphiv[1];
+
+        vertex unitN = basis_.unitnormal(j);
+        vertex dphie = dPhie(basis_,j,point); 
+
+        work[j+8][0] = dphie[0] * unitN[0];
+        work[j+8][1] = dphie[1] * unitN[0];
+        work[j+8][2] = dphie[0] * unitN[1];
+        work[j+8][3] = dphie[1] * unitN[1];
+
+    }
+
+    // Fix global unit normal edge directions
+    for (unsigned int k=0; k<4; k++){
+        work[8][k] *= -1;
+        work[9][k] *= -1;
+    }
+
+    return work;
+}
+
+// Does not needed in actual computation
+// Complete computation to check definition of basis functions
+std::array<vertex, 12> BRMixed::ComputeBRmixed(const basis& basis_,
+                                               const vertex& point) const{
+
+    std::array<vertex, 12> work;
+
+
 
     return work;
 }
