@@ -12,6 +12,9 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
                        basis& basis_,
                        BRMixed& br_){
 
+    // Mark all boundary degree of freedoms
+    // Including edge dofs and nodal dofs
+
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
 
@@ -20,7 +23,7 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
 
         indice global {i,j};
 
-        int edge = 0;
+        vector<int> edges;
 
         if (Is_Dirichlet(global)){
             // Extract corners coordinates from basis class
@@ -33,19 +36,23 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
             if (i==0){
                 // Count left bottom vertex dof
                 // Count left side
-                edge = 0; 
+                edge.push_back(0); 
             } else if (j==0){
                 // Count right bottom vertex dof
                 // Count bottom side
-                edge = 1;
+                edge.push_back(1);
             } else if (i==mi.MPIglobalCellSize[0]-1){
                 // Count right top vertex dof 
                 // Count right side
-                edge = 2; 
+                edge.push_back(2); 
             } else if (j==mi.MPIglobalCellSize[1]-1){
                 // Count left top vertex dof
                 // Count top side
-                edge = 3;
+                edge.push_back(3);
+            }
+
+            for (const auto& edge: edges){
+
             }
 
             // Extract two corners representing edge
@@ -233,6 +240,11 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
     work *= 3.0/2.0;
 
     return work;
+}
+
+double AssignBndryNodalVal(){
+
+
 }
 
 //! Create Matrix Kg and g for Dirichlet boundary conditions in parallel 

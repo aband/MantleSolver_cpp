@@ -274,7 +274,7 @@ int main(int argc, char **argv){
     double tolUzawa;
     PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
 
-    PreconditionedUzawa(ls, tolUzawa, maxIter, tauUzawa);
+    //PreconditionedUzawa(ls, tolUzawa, maxIter, tauUzawa);
 
     // Check solution created
 /*    Vec testFull;
@@ -322,36 +322,47 @@ int main(int argc, char **argv){
     VecRestoreArray(testReduced, &arraytestreduced);
 */
     // Check error
-    std::vector<double> fullSol;
-    fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
-    //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
 
-    // Fetch gauss points and gauss weights
-    const valarray<double>& gwf = GaussWeightsFace;
-    const vector<vertex>& gpf = GaussPointsFace;
+    int checkError = 0;
+    PetscOptionsGetInt(NULL, NULL, "-checkError", &checkError, NULL);
 
-    double errorSumu = 0.0;
-    double errorSump = 0.0;
+    if (checkError){
 
-    double *arrayp;
-    PetscCall(VecGetArray(ls->y,&arrayp));
+        std::vector<double> fullSol;
+        fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
+        //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
 
-    for (int j=0; j<N; j++){
-    for (int i=0; i<M; i++){
+        // Fetch gauss points and gauss weights
+        const valarray<double>& gwf = GaussWeightsFace;
+        const vector<vertex>& gpf = GaussPointsFace;
 
-        testBasis->GetCorners(mi,{i,j});
+        double errorSumu = 0.0;
+        double errorSump = 0.0;
 
-        std::array<double, 8> singleElemWeights = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi,{i,j})); 
-        errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
-        errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));;
-    }}
+        double *arrayp;
+        PetscCall(VecGetArray(ls->y,&arrayp));
 
-    PetscCall(VecRestoreArray(ls->y,&arrayp));
+        for (int j=0; j<N; j++){
+        for (int i=0; i<M; i++){
 
-    cout << "||u-u_h||_L2 : " <<  errorSumu << endl;
-    cout << "||p-p_h||_L2 : " <<  errorSump << endl;
-    //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
-    //VecView(ls->y, PETSC_VIEWER_STDOUT_WORLD);
+            testBasis->GetCorners(mi,{i,j});
+
+            std::array<double, 8> singleElemWeights = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi,{i,j})); 
+            errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
+            errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));;
+        }}
+
+        PetscCall(VecRestoreArray(ls->y,&arrayp));
+
+        cout << "||u-u_h||_L2 : " <<  errorSumu << endl;
+        cout << "||p-p_h||_L2 : " <<  errorSump << endl;
+
+    }
+    // =================================================================================
+    // End of test of Darcy equation (literally Poisson equation 
+    // turns second order equation into first linear system )
+    // Test of stokes equation starts from here
+
 
     // =================================================================================
     // Check FE function space
@@ -370,9 +381,9 @@ int main(int argc, char **argv){
 
     testBasis->GetCorners(mi,{0,0});
 
-    std::array<double, 8> fakeweight = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi, {0,0}));;
+    //std::array<double, 8> fakeweight = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi, {0,0}));;
 
-//    fakeweight = {0,0,0,0,1,1,1,1};
+    std::array<double, 8> fakeweight = {0,0,0,0,1,1,1,1};
 
     for (int j=seed; j>-1; j--){
     for (int i=0; i<seed + 1; i++){
