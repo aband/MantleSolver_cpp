@@ -218,6 +218,7 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
 
     // Assign value to the degree of freedom of 
     // the supplemental function on the edge
+    // Assign this value to the edge dofs
     double work = 0.0;
 
     // Extract values on both ends of the target edge
@@ -240,11 +241,6 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
     work *= 3.0/2.0;
 
     return work;
-}
-
-double AssignBndryNodalVal(){
-
-
 }
 
 //! Create Matrix Kg and g for Dirichlet boundary conditions in parallel 
