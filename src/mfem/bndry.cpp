@@ -36,50 +36,47 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
             if (i==0){
                 // Count left bottom vertex dof
                 // Count left side
-                edge.push_back(0); 
+                edges.push_back(0); 
             } else if (j==0){
                 // Count right bottom vertex dof
                 // Count bottom side
-                edge.push_back(1);
+                edges.push_back(1);
             } else if (i==mi.MPIglobalCellSize[0]-1){
                 // Count right top vertex dof 
                 // Count right side
-                edge.push_back(2); 
+                edges.push_back(2); 
             } else if (j==mi.MPIglobalCellSize[1]-1){
                 // Count left top vertex dof
                 // Count top side
-                edge.push_back(3);
+                edges.push_back(3);
             }
 
             for (const auto& edge: edges){
+                // For each edge 
+                // Assign values to only one nodal dofs and one edge dofs
+                // Associated local dof are 
+                // i, i + 4, i + 8
+                // All dofs will be counted without repeating
+                vertexSet edgeCorners = {fullCorners.at((edge+3)%4), 
+                                         fullCorners.at(edge)};
 
+                vertex nu = basis_.unitnormal(edge);
+         
+                // Compute values at supplemental bubble function
+                double supVal = AssignBndrySupVal(edgeCorners, nu, gwe, gpe);
+
+                // Compute values at nodal dof
+                vertex bndryVal = Dirichlet_val(edgeCorners[1]);
+
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[edge], {edge, bndryVal[0], global}));
+
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[edge+4], {edge+4, bndryVal[1], global}));
+
+                bndryStokes.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[edge+8], {edge+8, supVal, global}));
             }
-
-            // Extract two corners representing edge
-            vertexSet edgeCorner = {fullCorners.at((edge+3)%4),
-                                    fullCorners.at(edge)};
-     
-            // Extract unit normal vector on the boundary edge
-            vertex nu = basis_.unitnormal(edge);
-
-            double len = length(edgeCorner);
-
-            vertex bndryVal = Dirichlet_val(fullCorners.at(edge));
-
-            // x direction
-            bndryStokes.insert(std::make_pair<int,bndryInfo>
-                               ((int)elementDOF[edge], {edge, bndryVal[0], global}));
-
-            // y direction
-            bndryStokes.insert(std::make_pair<int,bndryInfo>
-                               ((int)elementDOF[edge+4], {edge+4, bndryVal[1], global}));
-
-            // Assign values to edge supplement bubble function
-            double suppVal = AssignBndrySupVal(edgeCorner, nu, gwe, gpe);
-
-            bndryStokes.insert(std::make_pair<int,bndryInfo>
-                               ((int)elementDOF[edge+8], {edge+8, suppVal, global}));
-
         } // else (for Neumann situation) 
     }}
 

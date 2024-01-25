@@ -63,6 +63,8 @@ void AssignLocMatrix(const MeshInfo& mi,
         phi_f = AssignPorosity(mapped, (*physproperty).l);
         phi_s = 1 - phi_f;
 
+        vertex stokesforce = stokesForce(mapped); 
+
         for (unsigned int j=0; j<12; j++){
                 double div1 = brwork[j][0] + brwork[j][3];
             for (unsigned int i=0; i<12; i++){
@@ -81,8 +83,8 @@ void AssignLocMatrix(const MeshInfo& mi,
 
             (*locmatrix).bs[j] += gw*jac*div1 * 1;
 
-            (*locmatrix).sourcestokes[j] += gw*jac*(1-phi_f)*rho_r*(gx*brwork[j][0] + 
-                                                           gy*brwork[j][1]);
+            (*locmatrix).sourcestokes[j] += gw*jac*(1-phi_f)*rho_r*(stokesforce[0]*brwork[j][0] + 
+                                                                    stokesforce[1]*brwork[j][1]);
 
         }
 

@@ -28,7 +28,10 @@ std::array<double, 3> trueSol(const vertex& point);
 // Dirichlet value defined on the boundary
 const vertex Dirichlet_val(const vertex& point);
 
-// Return source term as sum of velocity and pressure gradient  
-const vertex darcyForce (const vertex& point);
+// Return source term for darcy system as sum of velocity and pressure gradient  
+const vertex darcyForce(const vertex& point);
+
+// Return source term for stokes system as sum of true solutions 
+const vertex stokesForce(const vertex& point);
 
 #endif

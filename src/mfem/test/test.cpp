@@ -362,7 +362,58 @@ int main(int argc, char **argv){
     // End of test of Darcy equation (literally Poisson equation 
     // turns second order equation into first linear system )
     // Test of stokes equation starts from here
+    ReducedSys * reducedsysStokes = (ReducedSys *)malloc(sizeof(ReducedSys));
 
+    CreateReducedSerial(reducedsysStokes, &system->As, &system->Bs, &system->sourceStokes, bndryStokes);
+
+    Vec g1Stokes;
+    PetscCall(MatGetSize(reducedsysStokes->M, &cM, &cN));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &g1Stokes));
+    PetscCall(VecSetSizes(g1Stokes,PETSC_DECIDE,cM));
+    PetscCall(VecSetUp(g1Stokes));
+
+    PetscCall(MatMult(reducedsysStokes->Kg, reducedsysStokes->g, g1Stokes));
+ 
+    Vec g2Stokes;
+    PetscCall(MatGetSize(reducedsysStokes->B, &cM, &cN));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &g2Stokes));
+    PetscCall(VecSetSizes(g2Stokes,PETSC_DECIDE,cN));
+    PetscCall(VecSetUp(g2Stokes));
+
+    Mat BgTStokes;
+    PetscCall(MatCreateTranspose(reducedsysStokes->Bg, &BgTStokes));
+    PetscCall(MatMult(BgTStokes, reducedsysStokes->g, g2Stokes));
+
+    PetscCall(VecAYPX(g1Stokes, -1, reducedsysStokes->source));
+    PetscCall(VecScale(g2Stokes, -1));
+
+    linearSys * lsStokes = (linearSys *)malloc(sizeof(linearSys));
+
+    PetscCall(MatConvert(reducedsysStokes->B, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->B));
+    PetscCall(MatConvert(reducedsysStokes->M, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->A));
+
+    PetscCall(VecDuplicate(g1Stokes,&lsStokes->f));
+    PetscCall(VecDuplicate(g2Stokes,&lsStokes->g));
+
+    PetscCall(VecCopy(g1Stokes, lsStokes->f));
+    PetscCall(VecCopy(g2Stokes, lsStokes->g));
+
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &lsStokes->x));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &lsStokes->y));
+
+    PetscCall(VecSetSizes(lsStokes->x,PETSC_DECIDE,cM));
+    PetscCall(VecSetSizes(lsStokes->y,PETSC_DECIDE,cN));
+
+    PetscCall(VecSetUp(lsStokes->x));
+    PetscCall(VecSetUp(lsStokes->y));
+
+    PetscCall(VecCopy(g1Stokes,lsStokes->x));
+    PetscCall(VecCopy(g2Stokes,lsStokes->y));
+   
+    PetscCall(VecZeroEntries(lsStokes->x));
+    PetscCall(VecZeroEntries(lsStokes->y));
+
+    PreconditionedUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
 
     // =================================================================================
     // Check FE function space

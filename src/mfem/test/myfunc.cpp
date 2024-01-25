@@ -73,3 +73,8 @@ const vertex darcyForce(const vertex& point){
 
     return {truesol[0] + gradpressure[0], truesol[1] + gradpressure[1]};
 }
+
+const vertex stokesForce(const vertex& point){
+
+    return {0.0,0.0};
+}
