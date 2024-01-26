@@ -78,13 +78,21 @@ void AssignLocMatrix(const MeshInfo& mi,
  
                 double div2 = brwork[i][0] + brwork[i][3];
 
-                (*locmatrix).as[i+j*12] += gw*jac* 2*mu_s*phi_s * (A1*A2+B1*B2*2+C1*C2);
+                // Temperal
+                //(*locmatrix).as[i+j*12] += gw*jac* 2*mu_s*phi_s * (A1*A2+B1*B2*2+C1*C2);
+                (*locmatrix).as[i+j*12] += gw*jac*2*(A1*A2+B1*B2*2+C1*C2);
+
             }
 
             (*locmatrix).bs[j] += gw*jac*div1 * 1;
 
-            (*locmatrix).sourcestokes[j] += gw*jac*(1-phi_f)*rho_r*(stokesforce[0]*brwork[j][0] + 
-                                                                    stokesforce[1]*brwork[j][1]);
+            //(*locmatrix).sourcestokes[j] += gw*jac*(1-phi_f)*rho_r*(stokesforce[0]*brwork[j][0] + 
+            //                                                        stokesforce[1]*brwork[j][1]);
+
+            (*locmatrix).sourcestokes[j] += gw*jac*(stokesforce[0]*brwork[j][0] + 
+                                                    stokesforce[1]*brwork[j][1]);
+
+
 
         }
 

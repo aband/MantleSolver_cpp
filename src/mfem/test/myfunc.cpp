@@ -18,6 +18,8 @@ std::array<double, 3> trueSol(const vertex& point){
 
     array<double, 3> work;
 
+    // ======================================================
+    // Darcy test problem
     // return a predefined true solution
     // return <ux, uy, p> in this order
     // A manufactured solution satisfying Darcy equation
@@ -41,9 +43,15 @@ std::array<double, 3> trueSol(const vertex& point){
     //work[2] = point[0] * point[1];
 
     // Third scenerio
-    work[0] = pow(point[0],2)*point[1];
-    work[1] = -pow(point[1],2)*point[0];
-    work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
+    //work[0] = pow(point[0],2)*point[1];
+    //work[1] = -pow(point[1],2)*point[0];
+    //work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
+
+    // =================================================================
+    // Test for Stokes problem
+    work[0] = cos(point[0])*sin(point[1]);
+    work[1] = -sin(point[0])*cos(point[1]);
+    work[2] = sin(point[0])*sin(point[1]);
 
     return work;
 }
@@ -53,6 +61,18 @@ const vertex darcyPressureGrad(const vertex& point){
     // Auxiliary function.
     // Returns the gradient of scalar pressure field
     return {-point[0], point[1]};
+}
+
+const vertex stokesPressureGrad(const vertex& point){
+
+    return {cos(point[0])*sin(point[1]),
+            sin(point[0])*cos(point[1])};
+}
+
+const vertex divdivVel(const vertex& point){
+
+    return {-2*cos(point[0])*sin(point[1]),
+             2*sin(point[0])*sin(point[1])};
 }
 
 const vertex Dirichlet_val(const vertex& point){
@@ -76,5 +96,5 @@ const vertex darcyForce(const vertex& point){
 
 const vertex stokesForce(const vertex& point){
 
-    return {0.0,0.0};
+    return -1*divdivVel(point)+stokesPressureGrad(point);
 }

@@ -56,6 +56,8 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, doub
         PetscCall(VecAYPX(tmp2,alpha,ls->f));
 
         KSPSolve(ksp,tmp2,tmp1); 
+        VecView(tmp1, PETSC_VIEWER_STDOUT_WORLD);
+        VecView(tmp2, PETSC_VIEWER_STDOUT_WORLD);
 
         PetscCall(VecAXPY(ls->x,1,tmp1)); // x1
 
