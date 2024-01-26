@@ -415,6 +415,27 @@ int main(int argc, char **argv){
 
     PreconditionedUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
 
+    const char *checkA = "MatrixCheckA.dat";
+    // Write A matrix
+    WriteMat(reducedsysStokes->M,checkA);
+
+    const char *checkB = "MatrixCheckB.dat";
+    // Write B matrix
+    WriteMat(reducedsysStokes->B,checkB);
+
+    // Write right two right hand side vectors
+    const char *checkg1 = "MatrixCheckg1.dat";
+    WriteVec(g1Stokes, checkg1);   
+
+    const char *checkg2 = "MatrixCheckg2.dat";
+    WriteVec(g2Stokes, checkg2);   
+
+    const char *checkKg = "MatrixCheckKg.dat";
+    WriteMat(reducedsysStokes->Kg,checkKg);
+
+    const char *checkg = "VecCheckg.dat";
+    WriteVec(reducedsysStokes->g,checkg);
+
     // =================================================================================
     // Check FE function space
     // Check element {0,0}
@@ -433,7 +454,7 @@ int main(int argc, char **argv){
     testBasis->GetCorners(mi,{0,0});
 
     //std::array<double, 8> fakeweight = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi, {0,0}));;
-
+/*
     std::array<double, 8> fakeweight = {0,0,0,0,1,1,1,1};
 
     for (int j=seed; j>-1; j--){
@@ -443,13 +464,14 @@ int main(int argc, char **argv){
 
         cout << "(" << tmp[k+4*shift][0] << ", " << tmp[k+4*shift][1] << ", " << 
                        tmp[k+4*shift][2] << ", " << tmp[k+4*shift][3] <<  ")  ";
-//        vertex sum {0.0,0.0};
-//        for (int g=0;g<8;g++){
-//            sum += fakeweight[g]*tmp[g]; 
-//        }
-//        cout << "(" << sum[0] << ", " << sum[1] << ")  ";
+        vertex sum {0.0,0.0};
+        for (int g=0;g<8;g++){
+            sum += fakeweight[g]*tmp[g]; 
+        }
+        cout << "(" << sum[0] << ", " << sum[1] << ")  ";
  
     }cout << endl;}
+*/
 
 // ====================================================================================================================================
     // Clear used objects

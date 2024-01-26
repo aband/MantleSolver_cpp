@@ -37,15 +37,18 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
                 // Count left bottom vertex dof
                 // Count left side
                 edges.push_back(0); 
-            } else if (j==0){
+            } 
+            if (j==0){
                 // Count right bottom vertex dof
                 // Count bottom side
                 edges.push_back(1);
-            } else if (i==mi.MPIglobalCellSize[0]-1){
+            } 
+            if (i==mi.MPIglobalCellSize[0]-1){
                 // Count right top vertex dof 
                 // Count right side
                 edges.push_back(2); 
-            } else if (j==mi.MPIglobalCellSize[1]-1){
+            }
+            if (j==mi.MPIglobalCellSize[1]-1){
                 // Count left top vertex dof
                 // Count top side
                 edges.push_back(3);
