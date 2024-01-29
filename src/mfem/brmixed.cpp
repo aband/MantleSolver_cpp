@@ -155,13 +155,14 @@ std::array<std::array<double,4>, 12> BRMixed::ComputeGradBRmixed(const basis& ba
     return work;
 }
 
-// Does not needed in actual computation
-// Complete computation to check definition of basis functions
 std::array<vertex, 12> BRMixed::ComputeBRmixed(const basis& basis_,
                                                const vertex& point) const{
 
     std::array<vertex, 12> work;
 
+    for (unsigned int k=0; k<4; k++){
+
+    }
 
 
     return work;

@@ -41,6 +41,17 @@ std::array<double, 8> ExtractWeights(const std::vector<double>& fullsol,
     return work;
 }
 
+std::array<double, 12> ExtractWeights(const std::vector<double>& fullsol, 
+                                      std::array<int, 12> ltgMap){
+    std::array<double, 12> work;
+
+    for (int g=0; g<12; g++){
+        work[g] = fullsol.at(ltgMap[g]);
+    }
+
+    return work;
+}
+
 double L2ErrorElem(const std::array<double,8>& weight, 
                    const indice& globalElemIndic,
                    std::array<double,3> (*func)(const vertex& point),
@@ -51,17 +62,6 @@ double L2ErrorElem(const std::array<double,8>& weight,
 
     double elemError = 0.0;
     // Calculate the L2 Error on the given interior element 
-
-    std::array<double, 8> fakeweight;
-
-    fakeweight[0] = 0.0;
-    fakeweight[1] = 0.0;
-    fakeweight[2] = 0.0;
-    fakeweight[3] = 0.0;
-    fakeweight[4] = 0.0;
-    fakeweight[5] = 0.0;
-    fakeweight[6] = 0.0;
-    fakeweight[7] = 1.0;
 
     for (int g=0; g<gwf.size(); g++){
         //Loop through gauess quadrature points
@@ -85,6 +85,42 @@ double L2ErrorElem(const std::array<double,8>& weight,
 
         //diff[0] = approxVal[0] - trueSol[0];
         //diff[1] = approxVal[1] - trueSol[1];
+
+        diff[0] = abs(approxVal[0]) - abs(trueSol[0]);
+        diff[1] = abs(approxVal[1]) - abs(trueSol[1]);
+
+        elemError += gw*jac*(diff[0]*diff[0] + diff[1]*diff[1]);
+    }
+
+    return pow(elemError,0.5);
+}
+
+double L2ErrorElem(const std::array<double, 12>& weight,
+                   const indice& globalElemIndic,
+                   std::array<double, 3>(*func)(const vertex& point),
+                   const valarray<double>& gwf,
+                   const vector<vertex>& gpf,
+                   basis& basis_,
+                   Hdivmixed& br_){
+
+    double elemError = 0.0;
+
+    for (int g=0; g<gwf.size(); g++){
+        // Loop through gauess quadrature points
+        vertex mapped = GaussMapPointsFace(gpf[g], basis_.corners());
+        double jac = abs(GaussJacobian(gpf[g], basis_.corners()));
+        double gw = gwf[g];
+        // Evaluate all eight basis functions for the target element
+        std::array<vertex, 12> brwork = br_.ComputeBRmixed(basis_, mapped);
+        // Combine these values with weights (calculated solution)
+        valarray<double> approxVal = {0.0,0.0};
+        for (int i=0; 1<12; i++){
+            approxVal += weight[i]*brwork[i];
+        }
+
+        // Get exact values
+        std::array<double, 3> trueSol = func(mapped);
+        valarray<double> diff {0.0,0.0};
 
         diff[0] = abs(approxVal[0]) - abs(trueSol[0]);
         diff[1] = abs(approxVal[1]) - abs(trueSol[1]);

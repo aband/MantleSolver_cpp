@@ -276,88 +276,6 @@ int main(int argc, char **argv){
 
     //PreconditionedUzawa(ls, tolUzawa, maxIter, tauUzawa);
 
-    // Check solution created
-/*    Vec testFull;
-    Vec testReduced;
-
-    double * arraytestfull;
-    double * arraytestreduced;
-
-    VecCreate(PETSC_COMM_WORLD, &testFull);
-    VecCreate(PETSC_COMM_WORLD, &testReduced);
-
-    VecSetSizes(testFull, PETSC_DECIDE, hdiv->getDOF());
-    VecSetSizes(testReduced, PETSC_DECIDE, cM);
-    VecSetUp(testFull);
-    VecSetUp(testReduced);
-
-    VecGetArray(testFull, &arraytestfull);
-    VecGetArray(testReduced, &arraytestreduced);
-
-    for (int i=0; i<hdiv->getDOF(); i++){
-        arraytestfull[i] = i;
-    }
-
-    // Create manufactured boundary values and corresponding data structure
-    bndryVal bndryTest;
-
-    for (const auto& bv : bndryDarcy){
-        bndryTest.insert(std::make_pair<int, bndryInfo>
-                         ((int)bv.first, {0,(double)bv.first,{0,0}}));
-
-    }
-
-    // Create Test reduced vector
-    int count = 0; 
-    for (int i=0; i<hdiv->getDOF(); i++){
-   
-        auto ifFind = bndryTest.find(i);
-        if (ifFind == bndryTest.end()){
-            arraytestreduced[count] = i;
-            count ++; 
-        }
-    }
-
-    VecRestoreArray(testFull, &arraytestfull);
-    VecRestoreArray(testReduced, &arraytestreduced);
-*/
-    // Check error
-
-    int checkError = 0;
-    PetscOptionsGetInt(NULL, NULL, "-checkError", &checkError, NULL);
-
-    if (checkError){
-
-        std::vector<double> fullSol;
-        fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
-        //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
-
-        // Fetch gauss points and gauss weights
-        const valarray<double>& gwf = GaussWeightsFace;
-        const vector<vertex>& gpf = GaussPointsFace;
-
-        double errorSumu = 0.0;
-        double errorSump = 0.0;
-
-        double *arrayp;
-        PetscCall(VecGetArray(ls->y,&arrayp));
-
-        for (int j=0; j<N; j++){
-        for (int i=0; i<M; i++){
-
-            testBasis->GetCorners(mi,{i,j});
-
-            std::array<double, 8> singleElemWeights = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi,{i,j})); 
-            errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
-            errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));;
-        }}
-
-        PetscCall(VecRestoreArray(ls->y,&arrayp));
-
-        cout << "||u-u_h||_L2 : " <<  errorSumu << endl;
-        cout << "||p-p_h||_L2 : " <<  errorSump << endl;
-
-    }
     // =================================================================================
     // End of test of Darcy equation (literally Poisson equation 
     // turns second order equation into first linear system )
@@ -435,6 +353,91 @@ int main(int argc, char **argv){
 
     const char *checkg = "VecCheckg.dat";
     WriteVec(reducedsysStokes->g,checkg);
+
+    // =================================================================================
+    // Check solution created
+/*    Vec testFull;
+    Vec testReduced;
+
+    double * arraytestfull;
+    double * arraytestreduced;
+
+    VecCreate(PETSC_COMM_WORLD, &testFull);
+    VecCreate(PETSC_COMM_WORLD, &testReduced);
+
+    VecSetSizes(testFull, PETSC_DECIDE, hdiv->getDOF());
+    VecSetSizes(testReduced, PETSC_DECIDE, cM);
+    VecSetUp(testFull);
+    VecSetUp(testReduced);
+
+    VecGetArray(testFull, &arraytestfull);
+    VecGetArray(testReduced, &arraytestreduced);
+
+    for (int i=0; i<hdiv->getDOF(); i++){
+        arraytestfull[i] = i;
+    }
+
+    // Create manufactured boundary values and corresponding data structure
+    bndryVal bndryTest;
+
+    for (const auto& bv : bndryDarcy){
+        bndryTest.insert(std::make_pair<int, bndryInfo>
+                         ((int)bv.first, {0,(double)bv.first,{0,0}}));
+
+    }
+
+    // Create Test reduced vector
+    int count = 0; 
+    for (int i=0; i<hdiv->getDOF(); i++){
+   
+        auto ifFind = bndryTest.find(i);
+        if (ifFind == bndryTest.end()){
+            arraytestreduced[count] = i;
+            count ++; 
+        }
+    }
+
+    VecRestoreArray(testFull, &arraytestfull);
+    VecRestoreArray(testReduced, &arraytestreduced);
+*/
+
+    // Check computed error results
+    int checkError = 0;
+    PetscOptionsGetInt(NULL, NULL, "-checkError", &checkError, NULL);
+
+    if (checkError){
+
+        std::vector<double> fullSol;
+        //fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
+        //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
+        fullSol = GetFullSol(&ls->x, bndryStokes, br->getDOF());
+
+        // Fetch gauss points and gauss weights
+        const valarray<double>& gwf = GaussWeightsFace;
+        const vector<vertex>& gpf = GaussPointsFace;
+
+        double errorSumu = 0.0;
+        double errorSump = 0.0;
+
+        double *arrayp;
+        PetscCall(VecGetArray(ls->y,&arrayp));
+
+        for (int j=0; j<N; j++){
+        for (int i=0; i<M; i++){
+
+            testBasis->GetCorners(mi,{i,j});
+
+            std::array<double, 12> singleElemWeights = ExtractWeights(fullSol, br->LocalToGlobal(mi,{i,j})); 
+            errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
+            errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));;
+        }}
+
+        PetscCall(VecRestoreArray(ls->y,&arrayp));
+
+        cout << "||u-u_h||_L2 : " <<  errorSumu << endl;
+        cout << "||p-p_h||_L2 : " <<  errorSump << endl;
+
+    }
 
     // =================================================================================
     // Check FE function space
