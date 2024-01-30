@@ -101,7 +101,7 @@ double L2ErrorElem(const std::array<double, 12>& weight,
                    const valarray<double>& gwf,
                    const vector<vertex>& gpf,
                    basis& basis_,
-                   Hdivmixed& br_){
+                   BRMixed& br_){
 
     double elemError = 0.0;
 

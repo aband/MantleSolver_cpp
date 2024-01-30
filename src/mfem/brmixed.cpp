@@ -161,9 +161,13 @@ std::array<vertex, 12> BRMixed::ComputeBRmixed(const basis& basis_,
     std::array<vertex, 12> work;
 
     for (unsigned int k=0; k<4; k++){
-
+        work[k]   = {phiv(basis_,k,point), 0.0};
+        work[k+4] = {0.0, phiv(basis_,k,point)};
+        work[k+8] = basis_.unitnormal(k) * phie(basis_,k,point); 
     }
 
+    work[8] *= -1;
+    work[9] *= -1;
 
     return work;
 }
