@@ -8,8 +8,8 @@
  * Stokes and Darcy problems.
  *
  * Uzawa method solving for saddle point problem.
- * [A B^T] [x] = [f]
- * [B O  ] [y]   [g]
+ * [A  -B^T] [x] = [f]
+ * [-B -C  ] [y]   [-g]
  *
  * Preconditioned Uzawa solves A^{-1} exactly.
  * Inexact Uzawa solves A^{-1} exactly.

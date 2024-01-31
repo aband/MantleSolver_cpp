@@ -331,7 +331,15 @@ int main(int argc, char **argv){
     PetscCall(VecZeroEntries(lsStokes->x));
     PetscCall(VecZeroEntries(lsStokes->y));
 
+    //PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &lsStokes->C));
+    PetscCall(MatSetSizes(lsStokes->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
+    PetscCall(MatSetUp(lsStokes->C));
+
+    PetscCall(MatZeroEntries(lsStokes->C));
+
     PreconditionedUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
+
 
     const char *checkA = "MatrixCheckA.dat";
     // Write A matrix
@@ -353,6 +361,7 @@ int main(int argc, char **argv){
 
     const char *checkg = "VecCheckg.dat";
     WriteVec(reducedsysStokes->g,checkg);
+
 
     // =================================================================================
     // Check solution created
@@ -410,7 +419,7 @@ int main(int argc, char **argv){
         std::vector<double> fullSol;
         //fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
         //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
-        fullSol = GetFullSol(&ls->x, bndryStokes, br->getDOF());
+        fullSol = GetFullSol(&lsStokes->x, bndryStokes, br->getDOF());
 
         // Fetch gauss points and gauss weights
         const valarray<double>& gwf = GaussWeightsFace;
@@ -427,9 +436,16 @@ int main(int argc, char **argv){
 
             testBasis->GetCorners(mi,{i,j});
 
-//            std::array<double, 12> singleElemWeights = ExtractWeights(fullSol, br->LocalToGlobal(mi,{i,j})); 
-//            errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
-//            errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));;
+            // Stokes
+            std::array<double, 12> singleElemWeights = ExtractWeights(fullSol, br->LocalToGlobal(mi,{i,j})); 
+            errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *br);
+            errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
+
+            // Darcy
+            //std::array<double, 8> singleElemWeights = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi,{i,j})); 
+            //errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
+            //errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
+
         }}
 
         PetscCall(VecRestoreArray(ls->y,&arrayp));
@@ -459,7 +475,7 @@ int main(int argc, char **argv){
     //std::array<double, 8> fakeweight = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi, {0,0}));;
 
     std::array<double, 8> fakeweight = {0,0,0,0,1,1,1,1};
-
+/*
     for (int j=seed; j>-1; j--){
     for (int i=0; i<seed + 1; i++){
         //std::array<vertex, 8> tmp = hdiv->ComputeHdivmixed(*testBasis, {xstart+i*h, ystart+j*h});
@@ -478,7 +494,7 @@ int main(int argc, char **argv){
         //cout << "(" << sum[0] << ", " << sum[1] << ")  ";
  
     }cout << endl;}
-
+*/
 
 // ====================================================================================================================================
     // Clear used objects

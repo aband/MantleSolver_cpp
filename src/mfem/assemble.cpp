@@ -422,3 +422,18 @@ PetscErrorCode CreateSchurComplement(System * matrix, int nelem, int NS, int ND)
 
     PetscFunctionReturn(0);
 }
+
+PetscErrorCode CreateCoupledSystem(System * sys){
+   
+    PetscFunctionBeginUser;
+    // Create a coupled Darcy Stokes sytem
+    // Create two Schur complements and two coupling matrces K
+    Mat BsT, BdT, KT;
+
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &BsT));
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &BdT));
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &KT));
+    
+
+    return PETSC_SUCCESS;
+}

@@ -17,6 +17,9 @@ std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryvals, int dof);
 std::array<double,8> ExtractWeights(const std::vector<double>& fullsol, 
                                     const std::array<int, 8> ltgMap);
 
+std::array<double,12> ExtractWeights(const std::vector<double>& fullsol, 
+                                    const std::array<int, 12> ltgMap);
+
 // Return error measured in energy norm or any arbitrary norm
 double L2ErrorElem(const std::array<double,8>& coeff,
                    const indice& globalElemIndic,
@@ -25,6 +28,14 @@ double L2ErrorElem(const std::array<double,8>& coeff,
                    const vector<vertex>& gpf,
                    basis& basis_,
                    Hdivmixed& hdiv_);
+
+double L2ErrorElem(const std::array<double,12>& coeff,
+                   const indice& globalElemIndic,
+                   std::array<double,3> (*func)(const vertex& point),
+                   const valarray<double>& gwf,
+                   const vector<vertex>& gpf,
+                   basis& basis_,
+                   BRMixed& br_);
 
 double L2ErrorElem(const double& approxP, 
                    std::array<double, 3> (*func)(const vertex& point),

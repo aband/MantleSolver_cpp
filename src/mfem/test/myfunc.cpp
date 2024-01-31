@@ -46,6 +46,7 @@ std::array<double, 3> trueSol(const vertex& point){
     //work[0] = pow(point[0],2)*point[1];
     //work[1] = -pow(point[1],2)*point[0];
     //work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
+    //work[2] = sin(point[0]) * sin(point[1]);
 
     // =================================================================
     // Test for Stokes problem

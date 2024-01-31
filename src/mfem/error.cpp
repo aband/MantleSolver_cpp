@@ -114,7 +114,7 @@ double L2ErrorElem(const std::array<double, 12>& weight,
         std::array<vertex, 12> brwork = br_.ComputeBRmixed(basis_, mapped);
         // Combine these values with weights (calculated solution)
         valarray<double> approxVal = {0.0,0.0};
-        for (int i=0; 1<12; i++){
+        for (int i=0; i<12; i++){
             approxVal += weight[i]*brwork[i];
         }
 
@@ -156,5 +156,5 @@ double L2ErrorElem(const double& approxP,
 
     elemError = abs(elemError) - abs(approxP);
 
-    return abs(elemError);
+    return abs(elemError)*area;
 }
