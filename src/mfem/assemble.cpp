@@ -78,9 +78,12 @@ void AssignLocMatrix(const MeshInfo& mi,
  
                 double div2 = brwork[i][0] + brwork[i][3];
 
-                // Temperal
+                // Symmetrical formulation
                 //(*locmatrix).as[i+j*12] += gw*jac* 2*mu_s*phi_s * (A1*A2+B1*B2*2+C1*C2);
-                (*locmatrix).as[i+j*12] += gw*jac*2*(A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
+                //(*locmatrix).as[i+j*12] += gw*jac*2*(A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
+
+                // Nonsymmetrical formulation
+                (*locmatrix).as[i+j*12] += gw*jac*(A1*A2+C1*C2);
 
             }
 

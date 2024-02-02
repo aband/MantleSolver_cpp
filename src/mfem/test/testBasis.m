@@ -131,8 +131,8 @@ for ii = 0:1:seed
 xx = startp + ii*dh; 
 currentVec = [xx,yy];
 
-gradVec1 = grad_bubble_4x(currentVec);
-gradVec2 = grad_bubble_4y(currentVec);
+gradVec1 = grad_bubble_1x(currentVec);
+gradVec2 = grad_bubble_1y(currentVec);
 
 fprintf('(%.2f , %.2f, %.2f, %.2f) ', gradVec1(1), gradVec1(2),...
                                       gradVec2(1), gradVec2(2));

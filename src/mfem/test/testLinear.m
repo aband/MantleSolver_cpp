@@ -31,12 +31,16 @@ fileID = fopen('build/VecCheckg.dat','r');
 og = fscanf(fileID, '%f', [1,Inf]);
 
 fclose(fileID);
-%
-%fileID = fopen('build/MatrixCheckKg.dat','r');
-%
-%Kg = fscanf(fileID, '%f', [1,Inf]);
-%
-%fclose(fileID);
+
+fileID = fopen('build/MatrixCheckKg.dat','r');
+
+Kg = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+fileID = fopen('build/MatrixCheckFullA.dat','r');
+fullA = fscanf(fileID, '%f', [1,Inf]);
+fclose(fileID);
 
 % ==================================================
 
@@ -47,6 +51,8 @@ dof2 = size(g2,2);
 A = reshape(A,dof1,dof1);
 B = reshape(B,dof2,dof1);
 %Kg = reshape(Kg,dof1,dof1);
+
+fullA = reshape(fullA, 30, 30);
 
 g = [g1';g2'];
 

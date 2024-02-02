@@ -200,9 +200,17 @@ double BRMixed::R_(const basis& basis_,
 vertex BRMixed::dphie_(const basis& basis_,
                        const int& nEdge,
                        const vertex& point) const {
-    return -1*basis_.unitNormals_.at((nEdge+1)%4)*basis_.lambda((nEdge+3)%4,point) * basis_.R(nEdge,point) -
-              basis_.unitNormals_.at((nEdge+3)%4)*basis_.lambda((nEdge+1)%4,point) * basis_.R(nEdge,point) +
-              basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.dR(nEdge,point);
+    //return -1*basis_.unitNormals_.at((nEdge+1)%4)*basis_.lambda((nEdge+3)%4,point) * basis_.R(nEdge,point) -
+    //          basis_.unitNormals_.at((nEdge+3)%4)*basis_.lambda((nEdge+1)%4,point) * basis_.R(nEdge,point) +
+    //          basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.dR(nEdge,point);
+
+    return -1*(basis_.lambda(nEdge,point)+basis_.lambda((nEdge+2)%4,point)) *
+           (basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.unitNormals_.at((nEdge+2)%4) + 
+            basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+2)%4,point) * basis_.unitNormals_.at((nEdge+3)%4) + 
+            basis_.lambda((nEdge+2)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.unitNormals_.at((nEdge+1)%4) + 
+            basis_.lambda((nEdge+2)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.lambda((nEdge+4)%4,point) * (basis_.unitNormals_.at((nEdge+0)%4) + basis_.unitNormals_.at((nEdge+2)%4)))/ 
+            pow(basis_.lambda(nEdge,point) + basis_.lambda((nEdge+2)%4,point),2);
+ 
 }
 
 vertex BRMixed::dR_(const basis& basis_,
@@ -215,7 +223,7 @@ vertex BRMixed::dR_(const basis& basis_,
 
         work -= basis_.rational(mid)*dPhie(basis_,nedge,point);
 
-    }	
+    }
 
     return work;
 }
