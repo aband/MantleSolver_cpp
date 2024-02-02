@@ -340,7 +340,6 @@ int main(int argc, char **argv){
 
     PreconditionedUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
 
-
     const char *checkA = "MatrixCheckA.dat";
     // Write A matrix
     WriteMat(reducedsysStokes->M,checkA);
@@ -475,17 +474,17 @@ int main(int argc, char **argv){
     //std::array<double, 8> fakeweight = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi, {0,0}));;
 
     std::array<double, 8> fakeweight = {0,0,0,0,1,1,1,1};
-/*
+
     for (int j=seed; j>-1; j--){
     for (int i=0; i<seed + 1; i++){
         //std::array<vertex, 8> tmp = hdiv->ComputeHdivmixed(*testBasis, {xstart+i*h, ystart+j*h});
-        //std::array<std::array<double, 4>, 12> tmp = br->ComputeGradBRmixed(*testBasis, {xstart+i*h, ystart+j*h});
-        std::array<vertex, 12> tmp = br->ComputeBRmixed(*testBasis, {xstart+i*h, ystart+j*h});
+        std::array<std::array<double, 4>, 12> tmp = br->ComputeGradBRmixed(*testBasis, {xstart+i*h, ystart+j*h});
+        //std::array<vertex, 12> tmp = br->ComputeBRmixed(*testBasis, {xstart+i*h, ystart+j*h});
 
-        //cout << "(" << tmp[k+4*shift][0] << ", " << tmp[k+4*shift][1] << ", " << 
-        //               tmp[k+4*shift][2] << ", " << tmp[k+4*shift][3] <<  ")  ";
+        cout << "(" << tmp[k+4*shift][0] << ", " << tmp[k+4*shift][1] << ", " << 
+                       tmp[k+4*shift][2] << ", " << tmp[k+4*shift][3] <<  ")  ";
 
-        cout << "( " << tmp[k+4*shift][0] << ", " << tmp[k+4*shift][1] << " )" ;
+        //cout << "( " << tmp[k+4*shift][0] << ", " << tmp[k+4*shift][1] << " )" ;
 
         //vertex sum {0.0,0.0};
         //for (int g=0;g<8;g++){
@@ -494,7 +493,6 @@ int main(int argc, char **argv){
         //cout << "(" << sum[0] << ", " << sum[1] << ")  ";
  
     }cout << endl;}
-*/
 
 // ====================================================================================================================================
     // Clear used objects
