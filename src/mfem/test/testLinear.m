@@ -52,8 +52,6 @@ A = reshape(A,dof1,dof1);
 B = reshape(B,dof2,dof1);
 %Kg = reshape(Kg,dof1,dof1);
 
-fullA = reshape(fullA, 30, 30);
-
 g = [g1';g2'];
 
 Z = zeros(dof2,dof2);
@@ -93,7 +91,7 @@ while (r > 1e-6) && (iter < MaxIter)
 
     tmp2 = -B*x+G;
   
-    y = y + 0.08*tmp2;
+    y = y + 10*tmp2;
 
     iter = iter +1;
 
@@ -114,4 +112,4 @@ cy = linspace(-1,1,20);
 U = ux(X,Y);
 V = uy(X,Y);
 
-quiver(X,Y,U,V);
+%quiver(X,Y,U,V);

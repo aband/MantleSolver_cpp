@@ -87,7 +87,6 @@ void AssignLocMatrix(const MeshInfo& mi,
                                                    brwork[j][1]*brwork[i][1] + 
                                                    brwork[j][2]*brwork[i][2] + 
                                                    brwork[j][3]*brwork[i][3]);
-
             }
 
             (*locmatrix).bs[j] += gw*jac*div1 * 1;
@@ -97,9 +96,6 @@ void AssignLocMatrix(const MeshInfo& mi,
 
             (*locmatrix).sourcestokes[j] += gw*jac*(stokesforce[0]*brwork[j][0] + 
                                                     stokesforce[1]*brwork[j][1]);
-
-
-
         }
 
         std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);

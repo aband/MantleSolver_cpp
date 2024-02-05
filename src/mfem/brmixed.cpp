@@ -144,6 +144,8 @@ std::array<std::array<double,4>, 12> BRMixed::ComputeGradBRmixed(const basis& ba
         work[j+8][2] = dphie[0] * unitN[1];
         work[j+8][3] = dphie[1] * unitN[1];
 
+        //cout << work[j+8][0] << "  " << work[j+8][1] << "  " << work[j+8][2] << "  " << work[j+9][3] << endl; 
+
     }
 
     // Fix global unit normal edge directions
@@ -200,17 +202,45 @@ double BRMixed::R_(const basis& basis_,
 vertex BRMixed::dphie_(const basis& basis_,
                        const int& nEdge,
                        const vertex& point) const {
-    //return -1*basis_.unitNormals_.at((nEdge+1)%4)*basis_.lambda((nEdge+3)%4,point) * basis_.R(nEdge,point) -
-    //          basis_.unitNormals_.at((nEdge+3)%4)*basis_.lambda((nEdge+1)%4,point) * basis_.R(nEdge,point) +
-    //          basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.dR(nEdge,point);
+/*
+    return  -1*basis_.unitNormals_.at((nEdge+1)%4)*basis_.lambda((nEdge+3)%4,point) * basis_.R(nEdge,point) -
+               basis_.unitNormals_.at((nEdge+3)%4)*basis_.lambda((nEdge+1)%4,point) * basis_.R(nEdge,point) +
+               basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.dR(nEdge,point);
+*/
 
-    return -1*(basis_.lambda(nEdge,point)+basis_.lambda((nEdge+2)%4,point)) *
+/*
+    return (-1*(basis_.lambda(nEdge,point)+basis_.lambda((nEdge+2)%4,point)) *
            (basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.unitNormals_.at((nEdge+2)%4) + 
             basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+2)%4,point) * basis_.unitNormals_.at((nEdge+3)%4) + 
-            basis_.lambda((nEdge+2)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.unitNormals_.at((nEdge+1)%4) + 
+            basis_.lambda((nEdge+2)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.unitNormals_.at((nEdge+1)%4)) + 
             basis_.lambda((nEdge+2)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.lambda((nEdge+4)%4,point) * (basis_.unitNormals_.at((nEdge+0)%4) + basis_.unitNormals_.at((nEdge+2)%4)))/ 
             pow(basis_.lambda(nEdge,point) + basis_.lambda((nEdge+2)%4,point),2);
- 
+*/
+
+/*
+    return  -1*basis_.unitNormals_.at((nEdge+1)%4)*basis_.lambda((nEdge+3)%4,point) * basis_.R(nEdge,point) -
+               basis_.unitNormals_.at((nEdge+3)%4)*basis_.lambda((nEdge+1)%4,point) * basis_.R(nEdge,point) ;
+*/
+
+//return basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.dR(nEdge,point);
+
+
+
+   vertex work1;
+   vertex work2;
+
+    work1 =  -1 *
+            (basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+2)%4,point) * basis_.unitNormals_.at((nEdge+3)%4) + 
+            basis_.lambda((nEdge+2)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.unitNormals_.at((nEdge+1)%4)) /
+            (basis_.lambda(nEdge,point) + basis_.lambda((nEdge+2)%4,point)) ;
+
+    work2 =  (-1*(basis_.lambda(nEdge,point)+basis_.lambda((nEdge+2)%4,point)) * basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.unitNormals_.at((nEdge+2)%4) + 
+            basis_.lambda((nEdge+2)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.lambda((nEdge+4)%4,point) * (basis_.unitNormals_.at((nEdge+0)%4) + basis_.unitNormals_.at((nEdge+2)%4)))/ 
+            pow(basis_.lambda(nEdge,point) + basis_.lambda((nEdge+2)%4,point),2);
+
+
+   return work2;
+
 }
 
 vertex BRMixed::dR_(const basis& basis_,

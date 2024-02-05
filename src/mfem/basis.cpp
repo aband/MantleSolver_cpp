@@ -74,7 +74,7 @@ double basis::R(const int& e1,
 
 double basis::R(const int& e,
                 const vertex& point) const{
-    return 0.5*(1-R(e,(e+2)%4,point));
+    return lambda((e+2)%4,point)/(lambda(e,point) + lambda((e+2)%4,point));
 }
 
 // Return derivative of R

@@ -52,10 +52,13 @@ std::array<double, 3> trueSol(const vertex& point){
     // Test for Stokes problem
 //    work[0] = cos(point[0])*sin(point[1]);
 //    work[1] = -sin(point[0])*cos(point[1]);
-    work[0] = 1;
-    work[1] = 1;
 
-    work[2] = sin(point[0])*sin(point[1]);
+//    work[2] = sin(point[0])*sin(point[1]);
+
+    // Constant true solution
+    work[0] = -point[0];
+    work[1] = point[1];
+    work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
 
     return work;
 }
@@ -69,8 +72,10 @@ const vertex darcyPressureGrad(const vertex& point){
 
 const vertex stokesPressureGrad(const vertex& point){
 
-    return {cos(point[0])*sin(point[1]),
-            sin(point[0])*cos(point[1])};
+    //return {cos(point[0])*sin(point[1]),
+    //        sin(point[0])*cos(point[1])};
+
+    return {-point[0], point[1]};
 }
 
 const vertex divdivVel(const vertex& point){
