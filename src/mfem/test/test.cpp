@@ -166,6 +166,8 @@ int main(int argc, char **argv){
 
     hdiv->ComputeTotalDOF(mi);
 
+    // Create two physics system at the same time
+	 // Darcy and Stokes systems
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, system);
 
     const char *checkfullA = "MatrixCheckFullA.dat"; 
@@ -364,7 +366,6 @@ int main(int argc, char **argv){
 
     const char *checkg = "VecCheckg.dat";
     WriteVec(reducedsysStokes->g,checkg);
-
 
     // =================================================================================
     // Check solution created
