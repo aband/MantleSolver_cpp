@@ -202,11 +202,9 @@ double BRMixed::R_(const basis& basis_,
 vertex BRMixed::dphie_(const basis& basis_,
                        const int& nEdge,
                        const vertex& point) const {
-/*
     return  -1*basis_.unitNormals_.at((nEdge+1)%4)*basis_.lambda((nEdge+3)%4,point) * basis_.R(nEdge,point) -
                basis_.unitNormals_.at((nEdge+3)%4)*basis_.lambda((nEdge+1)%4,point) * basis_.R(nEdge,point) +
                basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.dR(nEdge,point);
-*/
 
 /*
     return (-1*(basis_.lambda(nEdge,point)+basis_.lambda((nEdge+2)%4,point)) *
@@ -216,30 +214,6 @@ vertex BRMixed::dphie_(const basis& basis_,
             basis_.lambda((nEdge+2)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.lambda((nEdge+4)%4,point) * (basis_.unitNormals_.at((nEdge+0)%4) + basis_.unitNormals_.at((nEdge+2)%4)))/ 
             pow(basis_.lambda(nEdge,point) + basis_.lambda((nEdge+2)%4,point),2);
 */
-
-/*
-    return  -1*basis_.unitNormals_.at((nEdge+1)%4)*basis_.lambda((nEdge+3)%4,point) * basis_.R(nEdge,point) -
-               basis_.unitNormals_.at((nEdge+3)%4)*basis_.lambda((nEdge+1)%4,point) * basis_.R(nEdge,point) ;
-*/
-
-//return basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.dR(nEdge,point);
-
-
-
-   vertex work1;
-   vertex work2;
-
-    work1 =  -1 *
-            (basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+2)%4,point) * basis_.unitNormals_.at((nEdge+3)%4) + 
-            basis_.lambda((nEdge+2)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.unitNormals_.at((nEdge+1)%4)) /
-            (basis_.lambda(nEdge,point) + basis_.lambda((nEdge+2)%4,point)) ;
-
-    work2 =  (-1*(basis_.lambda(nEdge,point)+basis_.lambda((nEdge+2)%4,point)) * basis_.lambda((nEdge+1)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.unitNormals_.at((nEdge+2)%4) + 
-            basis_.lambda((nEdge+2)%4,point) * basis_.lambda((nEdge+3)%4,point) * basis_.lambda((nEdge+4)%4,point) * (basis_.unitNormals_.at((nEdge+0)%4) + basis_.unitNormals_.at((nEdge+2)%4)))/ 
-            pow(basis_.lambda(nEdge,point) + basis_.lambda((nEdge+2)%4,point),2);
-
-
-   return work2;
 
 }
 

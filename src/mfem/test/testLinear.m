@@ -38,9 +38,9 @@ Kg = fscanf(fileID, '%f', [1,Inf]);
 
 fclose(fileID);
 
-fileID = fopen('build/MatrixCheckFullA.dat','r');
-fullA = fscanf(fileID, '%f', [1,Inf]);
-fclose(fileID);
+%fileID = fopen('build/MatrixCheckFullA.dat','r');
+%fullA = fscanf(fileID, '%f', [1,Inf]);
+%fclose(fileID);
 
 % ==================================================
 

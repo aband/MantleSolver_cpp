@@ -83,7 +83,7 @@ vertex basis::dR(const int& e,
 
     vertex work(2);
 
-    work = -1*(lambda(e,point)*unitNormals_.at((e+2)%4)* -
+    work =  (-1*lambda(e,point)*unitNormals_.at((e+2)%4) +
                unitNormals_.at(e)*lambda((e+2)%4,point)) / 
                pow(lambda(e,point)+lambda((e+2)%4,point),2);
 

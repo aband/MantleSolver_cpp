@@ -60,6 +60,8 @@ void AssignLocMatrix(const MeshInfo& mi,
         std::array<std::array<double,4>, 12> brwork = 
                            br_.ComputeGradBRmixed(basis_, mapped);
 
+        std::array<vertex, 12> brval = br_.ComputeBRmixed(basis_, mapped);
+
         phi_f = AssignPorosity(mapped, (*physproperty).l);
         phi_s = 1 - phi_f;
 
@@ -94,8 +96,8 @@ void AssignLocMatrix(const MeshInfo& mi,
             //(*locmatrix).sourcestokes[j] += gw*jac*(1-phi_f)*rho_r*(stokesforce[0]*brwork[j][0] + 
             //                                                        stokesforce[1]*brwork[j][1]);
 
-            (*locmatrix).sourcestokes[j] += gw*jac*(stokesforce[0]*brwork[j][0] + 
-                                                    stokesforce[1]*brwork[j][1]);
+            (*locmatrix).sourcestokes[j] += gw*jac*(stokesforce[0]*brval[j][0] + 
+                                                    stokesforce[1]*brval[j][1]);
         }
 
         std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);

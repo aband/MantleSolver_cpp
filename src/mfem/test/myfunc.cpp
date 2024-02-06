@@ -43,22 +43,21 @@ std::array<double, 3> trueSol(const vertex& point){
     //work[2] = point[0] * point[1];
 
     // Third scenerio
-    //work[0] = pow(point[0],2)*point[1];
-    //work[1] = -pow(point[1],2)*point[0];
-    //work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
-    //work[2] = sin(point[0]) * sin(point[1]);
+    work[0] = pow(point[0],2)*point[1];
+    work[1] = -pow(point[1],2)*point[0];
+    work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
 
     // =================================================================
     // Test for Stokes problem
-//    work[0] = cos(point[0])*sin(point[1]);
-//    work[1] = -sin(point[0])*cos(point[1]);
+    //work[0] = cos(point[0])*sin(point[1]);
+    //work[1] = -sin(point[0])*cos(point[1]);
 
-//    work[2] = sin(point[0])*sin(point[1]);
+    //work[2] = sin(point[0])*sin(point[1]);
 
     // Constant true solution
-    work[0] = -point[0];
-    work[1] = point[1];
-    work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
+    //work[0] = -point[0];
+    //work[1] = point[1];
+    //work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
 
     return work;
 }
@@ -83,8 +82,8 @@ const vertex divdivVel(const vertex& point){
     //return {-2*cos(point[0])*sin(point[1]),
     //         2*sin(point[0])*sin(point[1])};
 
-
-    return {0.0,0.0};
+    // return {0.0,0.0};
+    return {2*point[1],-2*point[0]};
 }
 
 const vertex Dirichlet_val(const vertex& point){

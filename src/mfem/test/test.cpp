@@ -287,6 +287,8 @@ int main(int argc, char **argv){
 
     CreateReducedSerial(reducedsysStokes, &system->As, &system->Bs, &system->sourceStokes, bndryStokes);
 
+//    VecView(system->sourceStokes, PETSC_VIEWER_STDOUT_WORLD);
+
     Vec g1Stokes;
     PetscCall(MatGetSize(reducedsysStokes->M, &cM, &cN));
     PetscCall(VecCreate(PETSC_COMM_WORLD, &g1Stokes));
@@ -430,7 +432,7 @@ int main(int argc, char **argv){
         double errorSump = 0.0;
 
         double *arrayp;
-        PetscCall(VecGetArray(ls->y,&arrayp));
+        PetscCall(VecGetArray(lsStokes->y,&arrayp));
 
         for (int j=0; j<N; j++){
         for (int i=0; i<M; i++){
@@ -449,11 +451,10 @@ int main(int argc, char **argv){
 
         }}
 
-        PetscCall(VecRestoreArray(ls->y,&arrayp));
+        PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
 
         cout << "||u-u_h||_L2 : " <<  errorSumu << endl;
         cout << "||p-p_h||_L2 : " <<  errorSump << endl;
-
     }
 
     // =================================================================================
@@ -477,6 +478,7 @@ int main(int argc, char **argv){
 
     std::array<double, 8> fakeweight = {0,0,0,0,1,1,1,1};
 
+	 /*
     for (int j=seed; j>-1; j--){
     for (int i=0; i<seed + 1; i++){
         //std::array<vertex, 8> tmp = hdiv->ComputeHdivmixed(*testBasis, {xstart+i*h, ystart+j*h});
@@ -498,6 +500,7 @@ int main(int argc, char **argv){
  
     }cout << endl;}
 
+	 */
 // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);
