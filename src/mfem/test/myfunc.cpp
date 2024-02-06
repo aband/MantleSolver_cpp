@@ -38,13 +38,16 @@ std::array<double, 3> trueSol(const vertex& point){
     // Second scenerio
     // Divergence free linear velocity with arbitrary defined pressure field
 
-    //work[0] = point[0];   
-    //work[1] = -point[1];
+    //work[0] = 1;   
+    //work[1] = 1;
     //work[2] = point[0] * point[1];
 
     // Third scenerio
     work[0] = pow(point[0],2)*point[1];
     work[1] = -pow(point[1],2)*point[0];
+    //work[0] = -point[0]*point[1];
+    //work[1] = 0.5*pow(point[1],2);
+
     work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
 
     // =================================================================
@@ -55,9 +58,11 @@ std::array<double, 3> trueSol(const vertex& point){
     //work[2] = sin(point[0])*sin(point[1]);
 
     // Constant true solution
-    //work[0] = -point[0];
-    //work[1] = point[1];
-    //work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
+    //work[0] = pow(point[1],3);
+    //work[1] = 0.0;
+    //work[0] = 1;
+    //work[1] = 1;
+    //work[2] = 0.0;
 
     return work;
 }
@@ -74,7 +79,7 @@ const vertex stokesPressureGrad(const vertex& point){
     //return {cos(point[0])*sin(point[1]),
     //        sin(point[0])*cos(point[1])};
 
-    return {-point[0], point[1]};
+    return {0.0,0.0};
 }
 
 const vertex divdivVel(const vertex& point){
@@ -82,8 +87,8 @@ const vertex divdivVel(const vertex& point){
     //return {-2*cos(point[0])*sin(point[1]),
     //         2*sin(point[0])*sin(point[1])};
 
-    // return {0.0,0.0};
-    return {2*point[1],-2*point[0]};
+    //return {2*point[1],-2*point[0]};
+    return {6*point[1],0.0};
 }
 
 const vertex Dirichlet_val(const vertex& point){

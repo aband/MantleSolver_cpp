@@ -277,7 +277,13 @@ int main(int argc, char **argv){
     double tolUzawa;
     PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
 
-    //PreconditionedUzawa(ls, tolUzawa, maxIter, tauUzawa);
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &ls->C));
+    PetscCall(MatSetSizes(ls->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
+    PetscCall(MatSetUp(ls->C));
+
+    PetscCall(MatZeroEntries(ls->C));
+
+    PreconditionedUzawa(ls, tolUzawa, maxIter, tauUzawa);
 
     // =================================================================================
     // End of test of Darcy equation (literally Poisson equation 
@@ -343,7 +349,7 @@ int main(int argc, char **argv){
 
     PetscCall(MatZeroEntries(lsStokes->C));
 
-    PreconditionedUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
+    //PreconditionedUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
 
     const char *checkA = "MatrixCheckA.dat";
     // Write A matrix
@@ -420,9 +426,9 @@ int main(int argc, char **argv){
     if (checkError){
 
         std::vector<double> fullSol;
-        //fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
+        fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
         //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
-        fullSol = GetFullSol(&lsStokes->x, bndryStokes, br->getDOF());
+        //fullSol = GetFullSol(&lsStokes->x, bndryStokes, br->getDOF());
 
         // Fetch gauss points and gauss weights
         const valarray<double>& gwf = GaussWeightsFace;
@@ -432,7 +438,8 @@ int main(int argc, char **argv){
         double errorSump = 0.0;
 
         double *arrayp;
-        PetscCall(VecGetArray(lsStokes->y,&arrayp));
+        //PetscCall(VecGetArray(lsStokes->y,&arrayp));
+        PetscCall(VecGetArray(ls->y,&arrayp));
 
         for (int j=0; j<N; j++){
         for (int i=0; i<M; i++){
@@ -440,21 +447,25 @@ int main(int argc, char **argv){
             testBasis->GetCorners(mi,{i,j});
 
             // Stokes
-            std::array<double, 12> singleElemWeights = ExtractWeights(fullSol, br->LocalToGlobal(mi,{i,j})); 
-            errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *br);
-            errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
-
-            // Darcy
-            //std::array<double, 8> singleElemWeights = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi,{i,j})); 
-            //errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
+            //std::array<double, 12> singleElemWeights = ExtractWeights(fullSol, br->LocalToGlobal(mi,{i,j})); 
+            //errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *br);
             //errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
 
-        }}
+            //cout << L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *br) << "  " ;
 
-        PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
+            // Darcy
+            std::array<double, 8> singleElemWeights = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi,{i,j})); 
+            errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
+            errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
 
-        cout << "||u-u_h||_L2 : " <<  errorSumu << endl;
-        cout << "||p-p_h||_L2 : " <<  errorSump << endl;
+            cout << L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i))<< "   " ;
+
+        } cout << endl; }
+        //PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
+        PetscCall(VecRestoreArray(ls->y,&arrayp));
+
+        cout << "||u-u_h||_L2 : " <<  pow(errorSumu,0.5) << endl;
+        cout << "||p-p_h||_L2 : " <<  pow(errorSump,0.5) << endl;
     }
 
     // =================================================================================

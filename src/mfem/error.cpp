@@ -86,13 +86,13 @@ double L2ErrorElem(const std::array<double,8>& weight,
         //diff[0] = approxVal[0] - trueSol[0];
         //diff[1] = approxVal[1] - trueSol[1];
 
-        diff[0] = abs(approxVal[0]) - abs(trueSol[0]);
-        diff[1] = abs(approxVal[1]) - abs(trueSol[1]);
+        diff[0] = abs(approxVal[0] - trueSol[0]);
+        diff[1] = abs(approxVal[1] - trueSol[1]);
 
         elemError += gw*jac*(diff[0]*diff[0] + diff[1]*diff[1]);
     }
 
-    return pow(elemError,0.5);
+    return elemError;
 }
 
 double L2ErrorElem(const std::array<double, 12>& weight,
@@ -122,13 +122,13 @@ double L2ErrorElem(const std::array<double, 12>& weight,
         std::array<double, 3> trueSol = func(mapped);
         valarray<double> diff {0.0,0.0};
 
-        diff[0] = abs(approxVal[0]) - abs(trueSol[0]);
-        diff[1] = abs(approxVal[1]) - abs(trueSol[1]);
+        diff[0] = abs(approxVal[0] - trueSol[0]);
+        diff[1] = abs(approxVal[1] - trueSol[1]);
 
         elemError += gw*jac*(diff[0]*diff[0] + diff[1]*diff[1]);
     }
 
-    return pow(elemError,0.5);
+    return elemError;
 }
 
 // Compute L2 error for pressure
@@ -149,12 +149,13 @@ double L2ErrorElem(const double& approxP,
 
         std::array<double, 3> trueP = func(mapped);
 
-        elemError += gw*jac*trueP[2];
+        elemError += gw*jac*pow(trueP[2] - approxP,2);
     }
 
-    elemError /= area;
+    //elemError /= area;
 
-    elemError = abs(elemError) - abs(approxP);
+    //elemError = abs(elemError - approxP);
 
-    return abs(elemError)*area;
+    //return elemError*area;
+    return elemError;
 }
