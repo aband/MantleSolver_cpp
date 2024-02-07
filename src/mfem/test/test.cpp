@@ -458,14 +458,14 @@ int main(int argc, char **argv){
             errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
             errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
 
-            cout << L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i))<< "   " ;
+            //cout << L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i))<< "   " ;
 
-        } cout << endl; }
+        } }
         //PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
         PetscCall(VecRestoreArray(ls->y,&arrayp));
 
         cout << "||u-u_h||_L2 : " <<  pow(errorSumu,0.5) << endl;
-        cout << "||p-p_h||_L2 : " <<  pow(errorSump,0.5) << endl;
+        cout << "||p-p_h||_L2 : " <<  errorSump << endl;
     }
 
     // =================================================================================
