@@ -45,10 +45,12 @@ std::array<double, 3> trueSol(const vertex& point){
     // Third scenerio
     work[0] = pow(point[0],2)*point[1];
     work[1] = -pow(point[1],2)*point[0];
+    //work[2] = -point[0] + point[1];
     //work[0] = -point[0]*point[1];
     //work[1] = 0.5*pow(point[1],2);
 
-    work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
+    //work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
+    work[2] = 1.0;
 
     // =================================================================
     // Test for Stokes problem
@@ -71,7 +73,7 @@ const vertex darcyPressureGrad(const vertex& point){
 
     // Auxiliary function.
     // Returns the gradient of scalar pressure field
-    return {-point[0], point[1]};
+    return {0.0,0.0};
 }
 
 const vertex stokesPressureGrad(const vertex& point){

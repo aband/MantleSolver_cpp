@@ -465,7 +465,7 @@ int main(int argc, char **argv){
         PetscCall(VecRestoreArray(ls->y,&arrayp));
 
         cout << "||u-u_h||_L2 : " <<  pow(errorSumu,0.5) << endl;
-        cout << "||p-p_h||_L2 : " <<  errorSump << endl;
+        cout << "||p-p_h||_L2 : " <<  pow(errorSump,0.5) << endl;
     }
 
     // =================================================================================
