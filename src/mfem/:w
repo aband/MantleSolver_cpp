@@ -1,5 +1,4 @@
 #include "solve.h"
-#include <iostream>
 
 PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, double tau){
 
@@ -52,26 +51,14 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, doub
         PetscCall(MatMult(ls->A, ls->x, tmp2));
 
         PetscCall(VecAXPY(tmp2,1.0,tmp1));
-
         PetscCall(VecAYPX(tmp2,-1.0,ls->f));
 
         KSPSolve(ksp,tmp2,tmp1); 
 
         PetscCall(VecAXPY(ls->x,1,tmp1)); // x1
 
-        std::cout << "x : " << std::endl;
-        VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
-
-        std::cout << "g : " << std::endl;
-        VecView(ls->g, PETSC_VIEWER_STDOUT_WORLD);
-
         PetscCall(MatMult(B,ls->x,tmp3));
         PetscCall(VecAXPY(tmp3, -1, ls->g));
-        PetscCall(VecScale(tmp3,-1.0));
-
-        std::cout << "tmp3 : " << std::endl;
-        VecView(tmp3, PETSC_VIEWER_STDOUT_WORLD);
-
         PetscCall(VecAXPY(ls->y,tau,tmp3));
 
         PetscReal val1, val2;

@@ -149,7 +149,7 @@ double L2ErrorElem(const double& approxP,
 
         std::array<double, 3> trueP = func(mapped);
 
-        elemError += gw*jac*pow(trueP[2] + approxP,2);
+        elemError += gw*jac*pow(trueP[2] - approxP,2);
     }
 
     // Element averaged values of the true solution

@@ -269,10 +269,10 @@ int main(int argc, char **argv){
     double tauUzawa;
     PetscOptionsGetReal(NULL, NULL, "-tau", &tauUzawa, NULL);
 
-    if (tauUzawa < 0){
+//    if (tauUzawa < 0){
         // Use element size related tauUzawa
-        tauUzawa = 1.0/(double)N / (double) M;
-    }
+//        tauUzawa = 1.0/(double)N / (double) M;
+//    }
 
     double tolUzawa;
     PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
@@ -468,6 +468,9 @@ int main(int argc, char **argv){
 
         cout << "||u-u_h||_L2 : " <<  pow(errorSumu,0.5) << endl;
         cout << "||p-p_h||_L2 : " <<  pow(errorSump,0.5) << endl;
+
+        VecView(lsStokes->y, PETSC_VIEWER_STDOUT_WORLD);
+
     }
 
     // =================================================================================

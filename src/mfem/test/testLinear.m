@@ -74,7 +74,7 @@ M = [A,B';B,Z];
 % Test 2
 % Uzawa iteration
 r = 1.0;
-MaxIter = 3000;
+MaxIter = 2;
 iter = 0;
 
 F = g1';
@@ -89,14 +89,19 @@ while (r > 1e-6) && (iter < MaxIter)
 
     x = x + tmp1;
 
-    tmp2 = -B*x+G;
+    x
+    G
+
+    tmp2 = -B*x+G
   
-    y = y + 10*tmp2;
+    y = y + 1*tmp2
 
     iter = iter +1;
 
     r = norm(tmp1) + norm(tmp2);
 end
+
+y
 
 % ======== Test of =========
 
