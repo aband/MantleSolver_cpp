@@ -83,18 +83,21 @@ G = g2';
 x = zeros(dof1,1);
 y = zeros(dof2,1);
 
-while (r > 1e-6) && (iter < MaxIter)
+while (r > 1e-8) && (iter < MaxIter)
+
+    iter + 1
 
     tmp1 = A\(F - (A*x - B'*y));
 
+    F-(A*x-B'*y)
+    A
+    tmp1 
+
     x = x + tmp1;
 
-    x
-    G
-
-    tmp2 = -B*x+G
+    tmp2 = -B*x+G;
   
-    y = y + 1*tmp2
+    y = y + 1*tmp2;
 
     iter = iter +1;
 
