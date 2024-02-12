@@ -470,6 +470,7 @@ int main(int argc, char **argv){
         cout << "||p-p_h||_L2 : " <<  pow(errorSump,0.5) << endl;
 
         VecView(lsStokes->y, PETSC_VIEWER_STDOUT_WORLD);
+        VecView(lsStokes->x, PETSC_VIEWER_STDOUT_WORLD);
 
     }
 

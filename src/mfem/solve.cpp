@@ -53,65 +53,45 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, doub
     PetscCall(VecSetUp(test));
     PetscCall(VecZeroEntries(test));
 
-    while(r > tol && iter < MaxIter){
+    double * arrayy;
 
-        std::cout << "Iter : " << iter+1 << std::endl << std::endl;
+    while(r > tol && iter < MaxIter){
 
         PetscCall(MatMult(ls->B, ls->y, tmp1));
         PetscCall(MatMult(ls->A, ls->x, tmp2));
 
-        PetscCall(VecAXPY(tmp2,1.0,tmp1));
+        PetscCall(VecAXPY(tmp2,-1.0,tmp1));
 
         PetscCall(VecAYPX(tmp2,-1.0,ls->f));
 
-        std::cout << "tmp2 : " << std::endl;
-        VecView(tmp1, PETSC_VIEWER_STDOUT_WORLD);
-        std::cout << std::endl;
-
-        std::cout << "A : " << std::endl;
-        MatView(ls->A, PETSC_VIEWER_STDOUT_WORLD);
-        std::cout << std::endl;
-
         KSPSolve(ksp,tmp2,tmp1); 
 
-        std::cout << "tmp1 : " << std::endl;
-        VecView(tmp1, PETSC_VIEWER_STDOUT_WORLD);
-        std::cout << std::endl;
-
-        PetscCall(MatMult(ls->A,tmp1,test));
-
-        std::cout << "test : " << std::endl;
-        VecView(test, PETSC_VIEWER_STDOUT_WORLD);
-        std::cout << std::endl;
-
         PetscCall(VecAXPY(ls->x,1,tmp1)); // x1
-
-        //std::cout << "tmp1 : " << std::endl;
-        //VecView(tmp1, PETSC_VIEWER_STDOUT_WORLD);
-        //std::cout << std::endl;
-
-        //std::cout << "x : " << std::endl;
-        //VecView(ls->x, PETSC_VIEWER_STDOUT_WORLD);
-        //std::cout << std::endl;
 
         PetscCall(MatMult(B,ls->x,tmp3));
         PetscCall(VecAXPY(tmp3, -1, ls->g));
         PetscCall(VecScale(tmp3,-1.0));
 
-        //std::cout << "tmp3 : " << std::endl;
-        //VecView(tmp3, PETSC_VIEWER_STDOUT_WORLD);
-        //std::cout << std::endl;
+        double ymean;
+        VecMean(ls->y, &ymean);
+        VecGetArray(ls->y, &arrayy);
+        for (int i=0; i<cN; i++){
+        arrayy[i] -= ymean;
+		  }
+		  //std::cout << arrayy[0] << " " << arrayy[1] << std::endl;
+        //arrayy[0] = 0.5;
+        //arrayy[1] = -0.5;
+        VecRestoreArray(ls->y, &arrayy);
 
         PetscCall(VecAXPY(ls->y,tau,tmp3));
-
-        //std::cout << "y : " << std::endl;
-        //VecView(tmp3, PETSC_VIEWER_STDOUT_WORLD);
-        //std::cout << std::endl;
 
         PetscReal val1, val2;
         PetscCall(VecNorm(tmp1,NORM_2,&val1));
         PetscCall(VecNorm(tmp3,NORM_2,&val2));
         r = val1 + val2; 
+
+        //VecView(tmp1,PETSC_VIEWER_STDOUT_WORLD);
+        //VecView(tmp3,PETSC_VIEWER_STDOUT_WORLD);
 
         iter++;
     }
@@ -123,4 +103,15 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, doub
         printf("Uzawa failed to converge! r = %.3e \n", r);
         return PETSC_ERR_CONV_FAILED;
     }
+}
+
+PetscErrorCode CoupledUzawaSolver(linearSys * ls1, linearSys * ls2,
+                                  Mat * K,
+                                  double tol, int MaxIter, double tau){
+
+    // Solve coupled system with Uzawa algorithm
+    // Create coupled system with two different linear system
+
+
+    return PETSC_SUCCESS;
 }

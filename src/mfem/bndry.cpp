@@ -216,6 +216,8 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
                          const valarray<double>& gwe,
                          const valarray<double>& gpe){
 
+    static bool firstCall = true;
+
     // Assign value to the degree of freedom of 
     // the supplemental function on the edge
     // Assign this value to the edge dofs
@@ -235,10 +237,19 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
         averaged += 1.0/2.0 *gwe[g] *(DiriVal[0] *nu[0] + DiriVal[1]*nu[1]);
     }
 
+    cout << "averaged : " << averaged << endl;
+
     work = averaged - 0.5*((DiriValL[0]+DiriValR[0])*nu[0] + 
                            (DiriValL[1]+DiriValR[1])*nu[1]); 
 
     work *= 3.0/2.0;
+
+    cout << work << endl;
+
+    if (firstCall){
+         work *= -1;
+			firstCall = false;
+    }
 
     return work;
 }

@@ -141,6 +141,8 @@ double L2ErrorElem(const double& approxP,
 
     double elemError = 0.0;
 
+    double elemSum = 0.0;
+
     for (int g=0; g<gwf.size(); g++){
         vertex mapped = GaussMapPointsFace(gpf[g], basis_.corners());
 
@@ -151,6 +153,19 @@ double L2ErrorElem(const double& approxP,
 
         elemError += gw*jac*pow(trueP[2] - approxP,2);
     }
+
+    for (int g=0; g<gwf.size(); g++){
+        vertex mapped = GaussMapPointsFace(gpf[g], basis_.corners());
+
+        double jac = abs(GaussJacobian(gpf[g], basis_.corners()));
+        double gw = gwf[g];
+
+        std::array<double, 3> trueP = func(mapped);
+
+        elemSum += gw*jac*trueP[2];
+    }
+
+    //cout << elemSum/area << "   " << approxP << endl;
 
     // Element averaged values of the true solution
     //elemError /= area;
