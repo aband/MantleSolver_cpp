@@ -53,8 +53,6 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, doub
     PetscCall(VecSetUp(test));
     PetscCall(VecZeroEntries(test));
 
-    double * arrayy;
-
     while(r > tol && iter < MaxIter){
 
         PetscCall(MatMult(ls->B, ls->y, tmp1));
@@ -72,26 +70,12 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, doub
         PetscCall(VecAXPY(tmp3, -1, ls->g));
         PetscCall(VecScale(tmp3,-1.0));
 
-        double ymean;
-        VecMean(ls->y, &ymean);
-        VecGetArray(ls->y, &arrayy);
-        for (int i=0; i<cN; i++){
-        arrayy[i] -= ymean;
-		  }
-		  //std::cout << arrayy[0] << " " << arrayy[1] << std::endl;
-        //arrayy[0] = 0.5;
-        //arrayy[1] = -0.5;
-        VecRestoreArray(ls->y, &arrayy);
-
         PetscCall(VecAXPY(ls->y,tau,tmp3));
 
         PetscReal val1, val2;
         PetscCall(VecNorm(tmp1,NORM_2,&val1));
         PetscCall(VecNorm(tmp3,NORM_2,&val2));
         r = val1 + val2; 
-
-        //VecView(tmp1,PETSC_VIEWER_STDOUT_WORLD);
-        //VecView(tmp3,PETSC_VIEWER_STDOUT_WORLD);
 
         iter++;
     }

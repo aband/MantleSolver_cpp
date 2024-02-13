@@ -60,11 +60,11 @@ std::array<double, 3> trueSol(const vertex& point){
     //work[2] = sin(point[0])*sin(point[1]);
 
     // Constant true solution
-    //work[0] = pow(point[0],3)*pow(point[1],2);
-    //work[1] = -pow(point[1],3)*pow(point[0],2);
+    work[0] = pow(point[0],3)*pow(point[1],2);
+    work[1] = -pow(point[1],3)*pow(point[0],2);
     //work[0] = point[1]*point[1];
-    work[0] = pow(point[1],2);
-    work[1] = 0;
+    //work[0] = pow(point[1],2);
+    //work[1] = 0;
     //work[2] = 0.0;
 
     return work;
@@ -91,9 +91,9 @@ const vertex divdivVel(const vertex& point){
     //return {-2*cos(point[0])*sin(point[1]),
     //         2*sin(point[0])*sin(point[1])};
 
-    //return {6*point[0]*pow(point[1],2) + 2*pow(point[0],3),
-    //        -6*point[1]*pow(point[0],2) - 2*pow(point[1],3)};
-    return {2,0.0};
+    return {6*point[0]*pow(point[1],2) + 2*pow(point[0],3),
+            -6*point[1]*pow(point[0],2) - 2*pow(point[1],3)};
+    //return {2,0.0};
     //return {2*point[1], -2*point[0]};
 
 }
