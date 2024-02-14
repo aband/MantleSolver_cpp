@@ -95,6 +95,17 @@ PetscErrorCode CoupledUzawaSolver(linearSys * ls1, linearSys * ls2,
 
     // Solve coupled system with Uzawa algorithm
     // Create coupled system with two different linear system
+    // The original system 
+    // As  -Bs               
+    // BsT  Cs       K      
+    //         Ad   -Bd     
+    //      K  BdT   Cd
+    // Symmetrically permutate the original system 
+    // As     | -Bs  
+    // ____Ad_|______-Bd 
+    // BsT    |  Cs   K
+    //     BdT| K    Cd
+    // Form a new saddle point system
 
 
     return PETSC_SUCCESS;
