@@ -213,28 +213,28 @@ int main(int argc, char **argv){
     PetscCall(VecScale(g2,-1));
 
 // Check computed system
-/*
-    const char *checkA = "MatrixCheckA.dat";
-    // Write A matrix
-    WriteMat(reducedsys->M,checkA);
 
-    const char *checkB = "MatrixCheckB.dat";
+    const char *checkAd = "MatrixCheckAd.dat";
+    // Write A matrix
+    WriteMat(reducedsys->M,checkAd);
+
+    const char *checkBd = "MatrixCheckBd.dat";
     // Write B matrix
-    WriteMat(reducedsys->B,checkB);
+    WriteMat(reducedsys->B,checkBd);
 
     // Write right two right hand side vectors
-    const char *checkg1 = "MatrixCheckg1.dat";
-    WriteVec(g1, checkg1);   
+    const char *checkgd1 = "MatrixCheckgd1.dat";
+    WriteVec(g1, checkgd1);   
 
-    const char *checkg2 = "MatrixCheckg2.dat";
-    WriteVec(g2, checkg2);   
+    const char *checkgd2 = "MatrixCheckgd2.dat";
+    WriteVec(g2, checkgd2);   
 
-    const char *checkKg = "MatrixCheckKg.dat";
-    WriteMat(reducedsys->Kg,checkKg);
+    const char *checkKgd = "MatrixCheckKgd.dat";
+    WriteMat(reducedsys->Kg,checkKgd);
 
-    const char *checkg = "VecCheckg.dat";
-    WriteVec(reducedsys->g,checkg);
-*/
+    const char *checkgd = "VecCheckgd.dat";
+    WriteVec(reducedsys->g,checkgd);
+
     // Test inexect Uzawa iteration algorithm
     linearSys * ls = (linearSys *)malloc(sizeof(linearSys));
 
@@ -347,30 +347,43 @@ int main(int argc, char **argv){
     PetscCall(MatSetSizes(lsStokes->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
     PetscCall(MatSetUp(lsStokes->C));
 
+    PetscCall(MatAssemblyBegin(lsStokes->C, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(lsStokes->C, MAT_FINAL_ASSEMBLY));
+
     PetscCall(MatZeroEntries(lsStokes->C));
 
-    PreconditionedUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
+    //PreconditionedUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
+    //InexactUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
 
-    const char *checkA = "MatrixCheckA.dat";
+    const char *checkAs = "MatrixCheckAs.dat";
     // Write A matrix
-    WriteMat(reducedsysStokes->M,checkA);
+    WriteMat(reducedsysStokes->M,checkAs);
 
-    const char *checkB = "MatrixCheckB.dat";
+    const char *checkBs = "MatrixCheckBs.dat";
     // Write B matrix
-    WriteMat(reducedsysStokes->B,checkB);
+    WriteMat(reducedsysStokes->B,checkBs);
 
     // Write right two right hand side vectors
-    const char *checkg1 = "MatrixCheckg1.dat";
-    WriteVec(g1Stokes, checkg1);   
+    const char *checkgs1 = "MatrixCheckgs1.dat";
+    WriteVec(g1Stokes, checkgs1);   
 
-    const char *checkg2 = "MatrixCheckg2.dat";
-    WriteVec(g2Stokes, checkg2);   
+    const char *checkgs2 = "MatrixCheckgs2.dat";
+    WriteVec(g2Stokes, checkgs2);   
 
-    const char *checkKg = "MatrixCheckKg.dat";
-    WriteMat(reducedsysStokes->Kg,checkKg);
+    const char *checkKgs = "MatrixCheckKgs.dat";
+    WriteMat(reducedsysStokes->Kg,checkKgs);
 
-    const char *checkg = "VecCheckg.dat";
-    WriteVec(reducedsysStokes->g,checkg);
+    const char *checkgs = "VecCheckgs.dat";
+    WriteVec(reducedsysStokes->g,checkgs);
+
+    // Solve a coupled system
+    // Couple two saddle point system
+
+    linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
+
+    CoupledSolver(lsStokes, ls, lsResult, &system->K, tolUzawa, maxIter, tauUzawa);
+
+
 
     // =================================================================================
     // Check solution created
