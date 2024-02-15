@@ -12,13 +12,13 @@ void AssignLocMatrix(const MeshInfo& mi,
                      const vector<vertex>& gpf){
 
     // Temporary physics parameters
-    double theta = 0;
-    double mu_s = 1.0;
-    double mu_f = 1.0;
+    double theta  = physproperty->theta;
+    double mu_s   = physproperty->mu_s;
+    double mu_f   = physproperty->mu_f;
     double inv_k0 = 1;
-    double rho_r = 2800/3300;
-    double gx = 0;
-    double gy = 10;
+    double rho_r  = physproperty->rho_f/physproperty->rho_s;
+    double gx     = physproperty->gx;
+    double gy     = physproperty->gy;
 
     double phi_f = 1.0;
     double phi_s = 0.0;
@@ -351,93 +351,4 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
     MatAXPY(system->Cd,-1.0, Me,DIFFERENT_NONZERO_PATTERN);
 
     PetscFunctionReturn(0);
-}
-
-PetscErrorCode CreateSchurComplement(System * matrix, int nelem, int NS, int ND){
-
-    PetscFunctionBeginUser;
-
-    // Create space for transpose matrices
-    Mat BsT, BdT, KT;
-
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &BsT));
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &BdT));
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &KT));
-
-    PetscCall(MatSetSizes(BdT, PETSC_DECIDE, PETSC_DECIDE, nelem, ND));
-    PetscCall(MatSetSizes(BsT, PETSC_DECIDE, PETSC_DECIDE, nelem, NS));
-    PetscCall(MatSetSizes(KT, PETSC_DECIDE, PETSC_DECIDE, nelem, nelem));
-
-    PetscCall(MatSetType(BsT,MATMPIAIJ));
-    PetscCall(MatSetType(BdT,MATMPIAIJ));
-    PetscCall(MatSetType(KT, MATMPIAIJ));
-
-    PetscCall(MatSetUp(BsT));
-    PetscCall(MatSetUp(BdT));
-    PetscCall(MatSetUp(KT));
-
-    PetscCall(MatScale((*matrix).Bd,-1.0));
-    PetscCall(MatScale((*matrix).Bs,-1.0));
-    PetscCall(MatScale((*matrix).K ,-1.0));
-
-    PetscCall(MatTranspose((*matrix).Bs, MAT_INITIAL_MATRIX, &BsT));
-    PetscCall(MatTranspose((*matrix).Bd, MAT_INITIAL_MATRIX, &BdT));
-    PetscCall(MatTranspose((*matrix).K,  MAT_INITIAL_MATRIX, &KT));
-
-    // Create space storing block matrices of schur complement
-    Mat sub[4];
-    Mat S1, S2, Sp1, Sp2;
-
-    PetscCall(MatCreateSchurComplement((*matrix).Ad, (*matrix).Ad, (*matrix).Bd, BdT, (*matrix).Cd, &S1));
-    PetscCall(MatCreateSchurComplement((*matrix).As, (*matrix).As, (*matrix).Bs, BsT, (*matrix).Cs, &S2));
-
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &Sp1));
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &Sp2));
-  
-    PetscCall(MatCreateSchurComplementPmat((*matrix).Ad, (*matrix).Bd, BdT, (*matrix).Cd, 
-    MAT_SCHUR_COMPLEMENT_AINV_DIAG,MAT_INITIAL_MATRIX,&Sp1));
-
-    PetscCall(MatSchurComplementGetPmat(S2, MAT_INITIAL_MATRIX,&Sp2));
-
-    // Create preconditioning matrix from sub matrices
-    Mat Z;  
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &Z));
-    PetscCall(MatSetSizes(Z,PETSC_DECIDE,PETSC_DECIDE,nelem,nelem));
-    PetscCall(MatSetType(Z,MATMPIAIJ));
-    PetscCall(MatSetUp(Z));
-
-    Mat subp[4];
-    subp[0] = Sp1;
-    subp[1] = Z;
-    subp[2] = Z;
-    subp[3] = Sp2;
-    PetscCall(MatCreateNest(PETSC_COMM_WORLD,2,NULL,2,NULL,subp,&matrix->Gp));
-
-    PetscCall(MatAssemblyBegin(matrix->Gp, MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd(matrix->Gp, MAT_FINAL_ASSEMBLY));
-
-    // Create Mass matrix from sub matrices
-    sub[0] = S1;
-    sub[1] = (*matrix).K;
-    sub[2] = KT;
-    sub[3] = S2;
-
-    MatCreateNest(PETSC_COMM_WORLD, 2, NULL, 2, NULL, sub, &matrix->G);
-
-    PetscFunctionReturn(0);
-}
-
-PetscErrorCode CreateCoupledSystem(System * sys){
-   
-    PetscFunctionBeginUser;
-    // Create a coupled Darcy Stokes sytem
-    // Create two Schur complements and two coupling matrces K
-    Mat BsT, BdT, KT;
-
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &BsT));
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &BdT));
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &KT));
-    
-
-    return PETSC_SUCCESS;
 }

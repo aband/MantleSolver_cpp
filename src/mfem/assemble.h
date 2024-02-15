@@ -39,8 +39,3 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                          BRMixed& br_,
                                          PhysProperty * physpropety,
                                          System * matrix);
-
-PetscErrorCode CreateSchurComplement(System * matrix, 
-                                     int nelem, int NS, int ND);
-
-PetscErrorCode CreateCoupledSystem(System * sys);

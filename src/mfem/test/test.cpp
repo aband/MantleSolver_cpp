@@ -281,6 +281,9 @@ int main(int argc, char **argv){
     PetscCall(MatSetSizes(ls->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
     PetscCall(MatSetUp(ls->C));
 
+    PetscCall(MatAssemblyBegin(ls->C, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(ls->C, MAT_FINAL_ASSEMBLY));
+
     PetscCall(MatZeroEntries(ls->C));
 
     //PreconditionedUzawa(ls, tolUzawa, maxIter, tauUzawa);
@@ -382,8 +385,6 @@ int main(int argc, char **argv){
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
 
     CoupledSolver(lsStokes, ls, lsResult, &system->K, tolUzawa, maxIter, tauUzawa);
-
-
 
     // =================================================================================
     // Check solution created

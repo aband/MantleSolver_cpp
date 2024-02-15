@@ -98,7 +98,7 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
     PetscCall(KSPCGSetType(ksp, KSP_CG_SYMMETRIC));
     PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE)); // zero initial guess
     PetscCall(KSPGetPC(ksp, &pc));
-    PetscCall(PCSetType(pc, PCBJACOBI));
+    //PetscCall(PCSetType(pc, PCBJACOBI));
 
     Mat B;
     PetscCall(MatCreateTranspose(ls->B,&B));
@@ -106,29 +106,12 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
     double r = 1.0;
     int    iter = 0;
 
-    int cM, cN;
-
-    VecGetSize(ls->f, &cM);
-    VecGetSize(ls->g, &cN);
-
-
-
     Vec tmp1, tmp2, tmp3, tmp4;
 
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &tmp1));
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &tmp2));
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &tmp3));
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &tmp4));
-
-    PetscCall(VecSetSizes(tmp1,PETSC_DECIDE,cM));
-    PetscCall(VecSetSizes(tmp2,PETSC_DECIDE,cM));
-    PetscCall(VecSetSizes(tmp3,PETSC_DECIDE,cN));
-    PetscCall(VecSetSizes(tmp4,PETSC_DECIDE,cN));
-
-    PetscCall(VecSetUp(tmp1));
-    PetscCall(VecSetUp(tmp2));
-    PetscCall(VecSetUp(tmp3));
-    PetscCall(VecSetUp(tmp4));
+    PetscCall(VecDuplicate(ls->f, &tmp1));
+    PetscCall(VecDuplicate(ls->f, &tmp2));
+    PetscCall(VecDuplicate(ls->g, &tmp3));
+    PetscCall(VecDuplicate(ls->g, &tmp4));
 
     PetscCall(VecZeroEntries(tmp1));
     PetscCall(VecZeroEntries(tmp2));
@@ -268,10 +251,8 @@ PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsRes
 
     PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayx,&lsResult->x));
     PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayy,&lsResult->y));
-    PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayx,&lsResult->f));
-    PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayy,&lsResult->g));
+    PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayf,&lsResult->f));
+    PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayg,&lsResult->g));
 
-    InexactUzawa(lsResult, tol, MaxIter, tau);
-
-    return PETSC_SUCCESS;
+    return InexactUzawa(lsResult, tol, MaxIter, tau);
 }
