@@ -20,8 +20,8 @@ void AssignLocMatrix(const MeshInfo& mi,
     double gx     = physproperty->gx;
     double gy     = physproperty->gy;
 
-    double phi_f = 1.0;
-    double phi_s = 0.0;
+    //double phi_f = 1.0;
+    //double phi_s = 0.0;
 
     // Cell average fluid porosity
     double phi_f_hat = 0.0;
@@ -53,17 +53,24 @@ void AssignLocMatrix(const MeshInfo& mi,
     (*locmatrix).k  = 0.0;
 
     for (unsigned int g=0; g<gwf.size(); g++){
+        // Calculate mapped gauss points and jacobian
         vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
 
+        // Calculate point wise porosity ===================================
+        phi_f = AssignPorosity(mapped, (*physproperty).l);  // Fluid porosity
+        phi_s = 1 - phi_f;                                  // Solid porosity
+
+        double omegaQ = 1.0;
+        double omegaf = pow(phi_f_hat,0.5) * omegaQ;
+        // =================================================================
+
+        // Stokes sub blocks ==============================================================
         std::array<std::array<double,4>, 12> brwork = 
                            br_.ComputeGradBRmixed(basis_, mapped);
 
         std::array<vertex, 12> brval = br_.ComputeBRmixed(basis_, mapped);
-
-        phi_f = AssignPorosity(mapped, (*physproperty).l);
-        phi_s = 1 - phi_f;
 
         vertex stokesforce = stokesForce(mapped); 
 
@@ -80,25 +87,34 @@ void AssignLocMatrix(const MeshInfo& mi,
  
                 double div2 = brwork[i][0] + brwork[i][3];
 
-                // Symmetrical formulation
-                //(*locmatrix).as[i+j*12] += gw*jac* 2*mu_s*phi_s * (A1*A2+B1*B2*2+C1*C2);
-                //(*locmatrix).as[i+j*12] += gw*jac*2*(A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
+                // Symmetrical formulation of A matrix
+                (*locmatrix).as[i+j*12] += 2*mu_s*phi_s*gw*jac*2*
+                                          (A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
 
+                // Defined for testing purpose only =======================================
                 // Nonsymmetrical formulation
-                (*locmatrix).as[i+j*12] += gw*jac*(brwork[j][0]*brwork[i][0] + 
-                                                   brwork[j][1]*brwork[i][1] + 
-                                                   brwork[j][2]*brwork[i][2] + 
-                                                   brwork[j][3]*brwork[i][3]);
+                //(*locmatrix).as[i+j*12] += gw*jac*(brwork[j][0]*brwork[i][0] + 
+                //                                   brwork[j][1]*brwork[i][1] + 
+                //                                   brwork[j][2]*brwork[i][2] + 
+                //                                   brwork[j][3]*brwork[i][3]);
+                // ========================================================================
             }
 
-            (*locmatrix).bs[j] += gw*jac*div1 * 1;
+            (*locmatrix).bs[j] += gw*jac*div1 * omegaQ;
 
-            //(*locmatrix).sourcestokes[j] += gw*jac*(1-phi_f)*rho_r*(stokesforce[0]*brwork[j][0] + 
-            //                                                        stokesforce[1]*brwork[j][1]);
+            // Right hand side given by gravity
+            (*locmatrix).sourcestokes[j] -= gw*jac*(1-phi_f)*rho_r*(gx*brwork[j][0] + 
+                                                                    gy*brwork[j][1]);
 
-            (*locmatrix).sourcestokes[j] += gw*jac*(stokesforce[0]*brval[j][0] + 
-                                                    stokesforce[1]*brval[j][1]);
+            // Defined for testing purpose only ===========================================
+            //(*locmatrix).sourcestokes[j] += gw*jac*(stokesforce[0]*brval[j][0] + 
+            //                                        stokesforce[1]*brval[j][1]);
+            // ============================================================================
         }
+
+        (*locmatrix).cs += gw*jac*phi_f_hat/(mu_s*(1-phi_f))*omegaQ*omegaQ;
+
+        // Control Darcy part ================================================================
 
         std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
 
@@ -107,18 +123,18 @@ void AssignLocMatrix(const MeshInfo& mi,
         for (unsigned int j=0; j<8; j++){
             for (unsigned int i=0; i<8; i++){
                 (*locmatrix).ad[i+j*8] += gw*jac*mu_f*inv_k0* 
-                                (hdivwork[j][0]*hdivwork[i][0] + 
-                                 hdivwork[j][1]*hdivwork[i][1]);
+                                         (hdivwork[j][0]*hdivwork[i][0] + 
+                                          hdivwork[j][1]*hdivwork[i][1]);
             }
+            // darctforce is set to be zero here
             (*locmatrix).sourcedarcy[j] += gw*jac*(darcyforce[0]*hdivwork[j][0] + 
                                                    darcyforce[1]*hdivwork[j][1]);
         }
 
-        (*locmatrix).cd += gw*jac*1.0/(mu_s*(1-phi_f))*1*1;
+        (*locmatrix).cd += gw*jac*1.0/(mu_s*(1-phi_f))*omegaf*omegaf;
 
-        (*locmatrix).cs += gw*jac*phi_f_hat/(mu_s*(1-phi_f))*1*1;
-
-        (*locmatrix).k += gw*jac*pow(phi_f_hat,0.5) * 1*1;
+        // Calculate coupling matrix
+        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5) * omegaf*omegaQ;
     }
 
     // Define B matrix for the Darcy part

@@ -2,14 +2,13 @@
 
 double AssignPorosity(const vertex& point, const double& l){
 
-//    if (point[1] < 12000 && abs(point[0]) < point[1] + l){
-//        return 0.05*pow(1.0-point[1]/120000,2) * (1-abs(point[0])/(l+point[1]));
-//    } else {
-//        return 0.0;
-//    }
+    if (point[1] < 120000 && abs(point[0]) < point[1] + l){
+        return 0.05*pow(1.0-point[1]/120000,2) * (1-abs(point[0])/(l+point[1]));
+    } else {
+        return 0.0;
+    }
 
     return 1.0;
-
 }
 
 // ===================================================
@@ -38,30 +37,17 @@ std::array<double, 3> trueSol(const vertex& point){
     // Second scenerio
     // Divergence free linear velocity with arbitrary defined pressure field
 
-    //work[0] = 1;   
-    //work[1] = 1;
-    //work[2] = point[0] * point[1];
-
     // Third scenerio
     work[0] = pow(point[0],2)*point[1];
     work[1] = -pow(point[1],2)*point[0];
     work[2] = -point[0] + point[1];
-    //work[0] = -point[0]*point[1];
-    //work[1] = 0.5*pow(point[1],2);
-
-    //work[2] = -0.5*point[0]*point[0] + 0.5*point[1]*point[1];
-    //work[2] = 1.0;
 
     // =================================================================
     // Test for Stokes problem
-    //work[0] = cos(point[0])*sin(point[1]);
-    //work[1] = -sin(point[0])*cos(point[1]);
-
-    //work[2] = sin(point[0])*sin(point[1]);
 
     // Constant true solution
-    work[0] = pow(point[0],3)*pow(point[1],2);
-    work[1] = -pow(point[1],3)*pow(point[0],2);
+    //work[0] = pow(point[0],3)*pow(point[1],2);
+    //work[1] = -pow(point[1],3)*pow(point[0],2);
     //work[0] = point[1]*point[1];
     //work[0] = pow(point[1],2);
     //work[1] = 0;
@@ -114,10 +100,44 @@ const vertex darcyForce(const vertex& point){
 
     vertex gradpressure = darcyPressureGrad(point);
 
-    return {truesol[0] + gradpressure[0], truesol[1] + gradpressure[1]};
+    //return {truesol[0] + gradpressure[0], truesol[1] + gradpressure[1]};
+
+    return {0.0,0.0};
 }
 
 const vertex stokesForce(const vertex& point){
 
     return -1*divdivVel(point)+stokesPressureGrad(point);
+}
+
+// Boundary values
+
+std::array<double, 2> bndryVs(const vertex& point, PhysProperty * pp){
+
+    std::array<double, 2> work {0.0,0.0};
+
+    double coef = 2*pp->U0/(3.14159265358979323846*(point[0]*point[0]+point[1]*point[1]));
+
+    work[0] = coef * pow(tan(point[0]/point[1]),-1)*
+              (point[0]*point[0]+point[1]*point[1]) - point[0]*point[1];
+
+    work[1] = coef*(-point[1]*point[1]);
+
+    return work;
+}
+
+std::array<double, 2> bndryu(const vertex& point, PhysProperty * pp){
+
+    std::array<double, 2> work {0.0,0.0};
+
+    double coef1 = 1.0/pp->invk0 * (1-pp->phi0) * pow(pp->phi0,2+2*pp->theta)/ pp->mu_f;
+    double coef2 = 4*mu_s*pp->U0/(3.14159265358979323846*(point[0]*point[0]+point[1]*point[1]));
+
+    work[0] = coef1*coef2*2*point[0]*point[1];
+    work[1] = coef1*coef2*(pow(point[1],2) - pow(point[0],2));
+
+    work[0] += coef1 * pp->rho_f/pp->rho_s * pp->gx;
+    work[0] += coef1 * pp->rho_f/pp->rho_s * pp->gy;
+
+    return work;
 }

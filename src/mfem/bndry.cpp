@@ -10,7 +10,8 @@ bool Is_Dirichlet(const indice& global){
 int MarkBndryDOFStokes(bndryVal& bndryStokes, 
                        const MeshInfo& mi, 
                        basis& basis_,
-                       BRMixed& br_){
+                       BRMixed& br_,
+                       PhysProperty * pp){
 
     // Mark all boundary degree of freedoms
     // Including edge dofs and nodal dofs
@@ -69,7 +70,8 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
                 double supVal = AssignBndrySupVal(edgeCorners, nu, gwe, gpe);
 
                 // Compute values at nodal dof
-                vertex bndryVal = Dirichlet_val(edgeCorners[1]);
+                //vertex bndryVal = Dirichlet_val(edgeCorners[1]);
+                vertex bndryVal = bndryVs(edgeCorners[1], pp); 
 
                 bndryStokes.insert(std::make_pair<int, bndryInfo>
                                    ((int)elementDOF[edge], {edge, bndryVal[0], global}));
@@ -89,7 +91,8 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
 int MarkBndryDOFDarcy(bndryVal& bndryDarcy, 
                       const MeshInfo& mi, 
                       basis& basis_,
-                      Hdivmixed& hdiv_){
+                      Hdivmixed& hdiv_,
+                      PhysProperty * pp){
 
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
