@@ -35,12 +35,14 @@ typedef struct{
 int MarkBndryDOFStokes(bndryVal& bndryStokes, 
                        const MeshInfo& mi, 
                        basis& basis_,
-                       BRMixed& br_);
+                       BRMixed& br_,
+                       PhysProperty * pp);
 
 int MarkBndryDOFDarcy(bndryVal& bndryDarcy, 
                       const MeshInfo& mi,
                       basis& basis_,
-                      Hdivmixed& hdiv_);
+                      Hdivmixed& hdiv_,
+                      PhysProperty * pp);
 
 /** !
  * Compute Dirichlet values locally.

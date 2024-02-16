@@ -15,13 +15,13 @@ void AssignLocMatrix(const MeshInfo& mi,
     double theta  = physproperty->theta;
     double mu_s   = physproperty->mu_s;
     double mu_f   = physproperty->mu_f;
-    double inv_k0 = 1;
+    double inv_k0 = 1.0/physproperty->invk0;
     double rho_r  = physproperty->rho_f/physproperty->rho_s;
     double gx     = physproperty->gx;
     double gy     = physproperty->gy;
 
-    //double phi_f = 1.0;
-    //double phi_s = 0.0;
+    double phi_f = physproperty->phi0;
+    double phi_s = 1-phi_f;
 
     // Cell average fluid porosity
     double phi_f_hat = 0.0;
@@ -90,7 +90,7 @@ void AssignLocMatrix(const MeshInfo& mi,
                 // Symmetrical formulation of A matrix
                 (*locmatrix).as[i+j*12] += 2*mu_s*phi_s*gw*jac*2*
                                           (A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
-
+ 
                 // Defined for testing purpose only =======================================
                 // Nonsymmetrical formulation
                 //(*locmatrix).as[i+j*12] += gw*jac*(brwork[j][0]*brwork[i][0] + 
@@ -125,6 +125,9 @@ void AssignLocMatrix(const MeshInfo& mi,
                 (*locmatrix).ad[i+j*8] += gw*jac*mu_f*inv_k0* 
                                          (hdivwork[j][0]*hdivwork[i][0] + 
                                           hdivwork[j][1]*hdivwork[i][1]);
+
+                cout << (*locmatrix).ad[i+j*8] << endl;
+
             }
             // darctforce is set to be zero here
             (*locmatrix).sourcedarcy[j] += gw*jac*(darcyforce[0]*hdivwork[j][0] + 

@@ -158,7 +158,7 @@ int main(int argc, char **argv){
 
     PhysProperty * physproperty = (PhysProperty *)malloc(sizeof(PhysProperty));
 
-    (*physproperty).l = 20;
+    AssignPhyProperties(physproperty);
 
     // Allocate space for matrix struct
 
@@ -176,8 +176,8 @@ int main(int argc, char **argv){
     bndryVal bndryStokes;
     bndryVal bndryDarcy;
 
-    MarkBndryDOFDarcy(bndryDarcy, mi, (*testBasis), (*hdiv));
-    MarkBndryDOFStokes(bndryStokes, mi, (*testBasis), (*br));
+    MarkBndryDOFDarcy(bndryDarcy, mi, (*testBasis), (*hdiv), physproperty);
+    MarkBndryDOFStokes(bndryStokes, mi, (*testBasis), (*br), physproperty);
 
     ReducedSys * reducedsys = (ReducedSys *)malloc(sizeof(ReducedSys));
 

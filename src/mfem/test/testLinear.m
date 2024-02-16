@@ -6,8 +6,6 @@ fileID = fopen('build/MatrixCheckA.dat','r');
 
 A = fscanf(fileID, '%f', [1,Inf]);
 
-fclose(fileID);
-
 fileID = fopen('build/MatrixCheckB.dat','r');
 
 B = fscanf(fileID, '%f', [1,Inf]);

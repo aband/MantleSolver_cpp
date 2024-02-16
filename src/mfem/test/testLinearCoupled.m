@@ -1,0 +1,65 @@
+clc; clear
+
+fileID = fopen('build/MatrixCheckAs.dat','r');
+
+As = fscanf(fileID, '%f', [1,Inf]);
+
+fileID = fopen('build/MatrixCheckAd.dat','r');
+
+Ad = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+fileID = fopen('build/MatrixCheckBs.dat','r');
+
+Bs = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+fileID = fopen('build/MatrixCheckBd.dat','r');
+
+Bd = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+fileID = fopen('build/MatrixCheckgs1.dat','r');
+
+gs1 = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+fileID = fopen('build/MatrixCheckgs2.dat','r');
+
+gs2 = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+fileID = fopen('build/MatrixCheckgd1.dat','r');
+
+gd1 = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+fileID = fopen('build/MatrixCheckgd2.dat','r');
+
+gd2 = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+% =====================================================================
+
+dofs1 = size(gs1,2);
+dofs2 = size(gs2,2);
+
+dofd1 = size(gd1,2);
+dofd2 = size(gd2,2);
+
+As = reshape(As,dofs1,dofs1);
+Bs = reshape(Bs,dofs2,dofs1);
+
+Ad = reshape(Ad,dofd1,dofd1);
+Bd = reshape(Bd,dofd2,dofd1);
+
+
+
+

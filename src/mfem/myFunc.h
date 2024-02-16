@@ -21,6 +21,7 @@ typedef struct {
 
 double AssignPorosity(const vertex& point, const double& l);
 
+void AssignPhyProperties(PhysProperty * pp);
 // ===================================================
 // Define boundary condition
 // ===================================================
@@ -38,8 +39,8 @@ const vertex darcyForce(const vertex& point);
 const vertex stokesForce(const vertex& point);
 
 // Boundary Condition
-std::array<double, 2> bndryVs(const vertex& point, PhysProperty * pp);
+vertex bndryVs(const vertex& point, PhysProperty * pp);
 
-std::array<double, 2> bndryu(const vertex& point, PhysProperty * pp);
+vertex bndryu(const vertex& point, PhysProperty * pp);
 
 #endif

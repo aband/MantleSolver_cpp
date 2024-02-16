@@ -2,13 +2,29 @@
 
 double AssignPorosity(const vertex& point, const double& l){
 
-    if (point[1] < 120000 && abs(point[0]) < point[1] + l){
-        return 0.05*pow(1.0-point[1]/120000,2) * (1-abs(point[0])/(l+point[1]));
-    } else {
-        return 0.0;
-    }
+    //if (point[1] < 120000 && abs(point[0]) < point[1] + l){
+    //    return 0.05*pow(1.0-point[1]/120000,2) * (1-abs(point[0])/(l+point[1]));
+    //} else {
+    //    return 0.0;
+    //}
 
-    return 1.0;
+    return 0.5;
+}
+
+void AssignPhyProperties(PhysProperty * pp){
+
+    pp->theta = 0.0;
+    pp->mu_s  = 10e19;
+    pp->mu_f  = 1.0;
+    pp->rho_f = 2800;
+    pp->rho_s = 3300;
+    pp->gx    = 0.0;
+    pp->gy    = -10.0;
+    pp->invk0 = 1.0/(10e-8);
+    pp->phi0  = 0.5;
+    pp->U0    = 10e-9;
+
+    pp->l = 20.0;
 }
 
 // ===================================================
@@ -112,9 +128,9 @@ const vertex stokesForce(const vertex& point){
 
 // Boundary values
 
-std::array<double, 2> bndryVs(const vertex& point, PhysProperty * pp){
+vertex bndryVs(const vertex& point, PhysProperty * pp){
 
-    std::array<double, 2> work {0.0,0.0};
+    vertex work {0.0,0.0};
 
     double coef = 2*pp->U0/(3.14159265358979323846*(point[0]*point[0]+point[1]*point[1]));
 
@@ -126,12 +142,12 @@ std::array<double, 2> bndryVs(const vertex& point, PhysProperty * pp){
     return work;
 }
 
-std::array<double, 2> bndryu(const vertex& point, PhysProperty * pp){
+vertex bndryu(const vertex& point, PhysProperty * pp){
 
-    std::array<double, 2> work {0.0,0.0};
+    vertex work {0.0,0.0};
 
     double coef1 = 1.0/pp->invk0 * (1-pp->phi0) * pow(pp->phi0,2+2*pp->theta)/ pp->mu_f;
-    double coef2 = 4*mu_s*pp->U0/(3.14159265358979323846*(point[0]*point[0]+point[1]*point[1]));
+    double coef2 = 4*pp->mu_s*pp->U0/(3.14159265358979323846*(point[0]*point[0]+point[1]*point[1]));
 
     work[0] = coef1*coef2*2*point[0]*point[1];
     work[1] = coef1*coef2*(pow(point[1],2) - pow(point[0],2));
