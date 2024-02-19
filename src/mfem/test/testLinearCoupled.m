@@ -1,8 +1,12 @@
 clc; clear
 
+% Read matrix
+
 fileID = fopen('build/MatrixCheckAs.dat','r');
 
 As = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
 
 fileID = fopen('build/MatrixCheckAd.dat','r');
 
@@ -46,6 +50,23 @@ gd2 = fscanf(fileID, '%f', [1,Inf]);
 
 fclose(fileID);
 
+fileID = fopen('build/MatrixCheckCs.dat','r');
+
+Cs = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+fileID = fopen('build/MatrixCheckCd.dat','r');
+
+Cd = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
+
+fileID = fopen('build/MatCheckK.dat','r');
+
+K = fscanf(fileID, '%f', [1,Inf]);
+
+fclose(fileID);
 % =====================================================================
 
 dofs1 = size(gs1,2);
@@ -60,6 +81,7 @@ Bs = reshape(Bs,dofs2,dofs1);
 Ad = reshape(Ad,dofd1,dofd1);
 Bd = reshape(Bd,dofd2,dofd1);
 
-
-
+K = reshape(K,dofs2,dofs2);
+Cs = reshape(K,dofs2,dofs2);
+Cd = reshape(K,dofs2,dofs2);
 

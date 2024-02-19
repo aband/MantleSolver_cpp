@@ -15,7 +15,7 @@ void AssignLocMatrix(const MeshInfo& mi,
     double theta  = physproperty->theta;
     double mu_s   = physproperty->mu_s;
     double mu_f   = physproperty->mu_f;
-    double inv_k0 = 1.0/physproperty->invk0;
+    double inv_k0 = physproperty->invk0;
     double rho_r  = physproperty->rho_f/physproperty->rho_s;
     double gx     = physproperty->gx;
     double gy     = physproperty->gy;
@@ -52,6 +52,9 @@ void AssignLocMatrix(const MeshInfo& mi,
     (*locmatrix).cd = 0.0;
     (*locmatrix).k  = 0.0;
 
+    double omegaQ = 1.0;
+    double omegaf = pow(phi_f_hat,0.5) * omegaQ;
+
     for (unsigned int g=0; g<gwf.size(); g++){
         // Calculate mapped gauss points and jacobian
         vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
@@ -62,9 +65,7 @@ void AssignLocMatrix(const MeshInfo& mi,
         phi_f = AssignPorosity(mapped, (*physproperty).l);  // Fluid porosity
         phi_s = 1 - phi_f;                                  // Solid porosity
 
-        double omegaQ = 1.0;
-        double omegaf = pow(phi_f_hat,0.5) * omegaQ;
-        // =================================================================
+       // =================================================================
 
         // Stokes sub blocks ==============================================================
         std::array<std::array<double,4>, 12> brwork = 
@@ -125,9 +126,7 @@ void AssignLocMatrix(const MeshInfo& mi,
                 (*locmatrix).ad[i+j*8] += gw*jac*mu_f*inv_k0* 
                                          (hdivwork[j][0]*hdivwork[i][0] + 
                                           hdivwork[j][1]*hdivwork[i][1]);
-
-                cout << (*locmatrix).ad[i+j*8] << endl;
-
+              
             }
             // darctforce is set to be zero here
             (*locmatrix).sourcedarcy[j] += gw*jac*(darcyforce[0]*hdivwork[j][0] + 

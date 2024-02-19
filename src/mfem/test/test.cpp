@@ -51,8 +51,8 @@ int main(int argc, char **argv){
     ierr = DMSetUp(dm);                        CHKERRQ(ierr);
     ierr = DMCreateGlobalVector(dm, &fullmesh);CHKERRQ(ierr); 
 
-    double L = 2.0, H = 2.0;
-    double xstart = -1.0, ystart = -1.0;
+    double L = 320*1000, H = 160*1000;
+    double xstart = -160*1000, ystart = 0;
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL); CHKERRQ(ierr);
@@ -229,11 +229,14 @@ int main(int argc, char **argv){
     const char *checkgd2 = "MatrixCheckgd2.dat";
     WriteVec(g2, checkgd2);   
 
-    const char *checkKgd = "MatrixCheckKgd.dat";
-    WriteMat(reducedsys->Kg,checkKgd);
+    const char *checkCd = "MatrixCheckCd.dat";
+    WriteMat(system->Cd,checkCd);
 
-    const char *checkgd = "VecCheckgd.dat";
-    WriteVec(reducedsys->g,checkgd);
+    const char *checkCs = "MatrixCheckCs.dat";
+    WriteMat(system->Cs,checkCs);
+
+    const char *checkK = "MatCheckK.dat";
+    WriteMat(system->K,checkK);
 
     // Test inexect Uzawa iteration algorithm
     linearSys * ls = (linearSys *)malloc(sizeof(linearSys));
