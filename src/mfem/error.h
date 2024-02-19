@@ -37,6 +37,25 @@ double L2ErrorElem(const std::array<double,12>& coeff,
                    basis& basis_,
                    BRMixed& br_);
 
+
+double L2ErrorElem(const std::array<double,8>& coeff,
+                   const indice& globalElemIndic,
+                   vertex (*func)(const vertex& point, PhysProperty * pp),
+                   PhysProperty * pp,
+                   const valarray<double>& gwf,
+                   const vector<vertex>& gpf,
+                   basis& basis_,
+                   Hdivmixed& hdiv_);
+
+double L2ErrorElem(const std::array<double,12>& coeff,
+                   const indice& globalElemIndic,
+                   vertex (*func)(const vertex& point, PhysProperty * pp),
+                   PhysProperty * pp,
+                   const valarray<double>& gwf,
+                   const vector<vertex>& gpf,
+                   basis& basis_,
+                   BRMixed& br_);
+
 double L2ErrorElem(const double& approxP, 
                    std::array<double, 3> (*func)(const vertex& point),
                    const valarray<double>& gwf,

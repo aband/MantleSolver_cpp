@@ -299,8 +299,6 @@ int main(int argc, char **argv){
 
     CreateReducedSerial(reducedsysStokes, &system->As, &system->Bs, &system->sourceStokes, bndryStokes);
 
-//    VecView(system->sourceStokes, PETSC_VIEWER_STDOUT_WORLD);
-
     Vec g1Stokes;
     PetscCall(MatGetSize(reducedsysStokes->M, &cM, &cN));
     PetscCall(VecCreate(PETSC_COMM_WORLD, &g1Stokes));
@@ -308,7 +306,7 @@ int main(int argc, char **argv){
     PetscCall(VecSetUp(g1Stokes));
 
     PetscCall(MatMult(reducedsysStokes->Kg, reducedsysStokes->g, g1Stokes));
- 
+
     Vec g2Stokes;
     PetscCall(MatGetSize(reducedsysStokes->B, &cM, &cN));
     PetscCall(VecCreate(PETSC_COMM_WORLD, &g2Stokes));
@@ -436,16 +434,31 @@ int main(int argc, char **argv){
     VecRestoreArray(testReduced, &arraytestreduced);
 */
 
+// extract sub vectors from nest vector
+
+    Vec stokesx;
+    Vec darcyx;
+
+    VecNestGetSubVec(lsResult->x, 0, &stokesx);
+    VecNestGetSubVec(lsResult->x, 1, &darcyx);
+
+    VecView(stokesx,PETSC_VIEWER_STDOUT_WORLD);
+    VecView(darcyx,PETSC_VIEWER_STDOUT_WORLD);
+
     // Check computed error results
     int checkError = 0;
     PetscOptionsGetInt(NULL, NULL, "-checkError", &checkError, NULL);
 
     if (checkError){
 
-        std::vector<double> fullSol;
+        std::vector<double> fullSolStokes;
+        std::vector<double> fullSolDarcy;
         //fullSol = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
         //fullSol = GetFullSol(&testReduced, bndryTest, hdiv->getDOF());
-        fullSol = GetFullSol(&lsStokes->x, bndryStokes, br->getDOF());
+        //fullSol = GetFullSol(&lsStokes->x, bndryStokes, br->getDOF());
+
+        fullSolStokes = GetFullSol(&stokesx, bndryStokes, br->getDOF());
+        fullSolDarcy  = GetFullSol(&darcyx, bndryDarcy, hdiv->getDOF());
 
         // Fetch gauss points and gauss weights
         const valarray<double>& gwf = GaussWeightsFace;
@@ -453,6 +466,9 @@ int main(int argc, char **argv){
 
         double errorSumu = 0.0;
         double errorSump = 0.0;
+
+        double errorSumuStokes = 0.0;
+        double errorSumuDarcy  = 0.0;
 
         double *arrayp;
         PetscCall(VecGetArray(lsStokes->y,&arrayp));
@@ -464,9 +480,9 @@ int main(int argc, char **argv){
             testBasis->GetCorners(mi,{i,j});
 
             // Stokes
-            std::array<double, 12> singleElemWeights = ExtractWeights(fullSol, br->LocalToGlobal(mi,{i,j})); 
-            errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *br);
-            errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
+            //std::array<double, 12> singleElemWeights = ExtractWeights(fullSol, br->LocalToGlobal(mi,{i,j})); 
+            //errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *br);
+            //errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
 
 //            cout << i << "  " << j << endl;
 
@@ -478,14 +494,22 @@ int main(int argc, char **argv){
             //errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
 
             //cout << L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i))<< "   " ;
+
+            // Coupled
+            std::array<double, 12> singleWgtsStokes = ExtractWeights(fullSolStokes, br->LocalToGlobal(mi,{i,j}));
+            std::array<double, 8> singleWgtsDarcy = ExtractWeights(fullSolDarcy, hdiv->LocalToGlobal(mi,{i,j}));
+
+            errorSumuStokes += L2ErrorElem(singleWgtsStokes,{i,j},bndryVs,physproperty,gwf,gpf,*testBasis,*br);
+            errorSumuDarcy  += L2ErrorElem(singleWgtsDarcy, {i,j},bndryu, physproperty,gwf,gpf,*testBasis,*hdiv);
 }}
 //        }cout << endl; }
         PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
         //PetscCall(VecRestoreArray(ls->y,&arrayp));
 
-        cout << "||u-u_h||_L2 : " <<  pow(errorSumu,0.5) << endl;
-        cout << "||p-p_h||_L2 : " <<  pow(errorSump,0.5) << endl;
-
+        //cout << "||u-u_h||_L2 : " <<  pow(errorSumu,0.5) << endl;
+        //cout << "||p-p_h||_L2 : " <<  pow(errorSump,0.5) << endl;
+        cout << "Stokes : ||u-u_h||_L2 : " <<  pow(errorSumuStokes,0.5) << endl;
+        cout << "Darcy  : ||u-u_h||_L2 : " <<  pow(errorSumuDarcy,0.5) << endl;
     }
 
     // =================================================================================

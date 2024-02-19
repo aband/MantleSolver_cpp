@@ -132,12 +132,22 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     vertex work {0.0,0.0};
 
-    double coef = 2*pp->U0/(3.14159265358979323846*(point[0]*point[0]+point[1]*point[1]));
+    double x, z;
 
-    work[0] = coef * pow(tan(point[0]/point[1]),-1)*
-              (point[0]*point[0]+point[1]*point[1]) - point[0]*point[1];
+    if (point[0] < 0.0) {
+        x = point[0] - pp->l;
+    }else{
+        x = point[0] + pp->l;
+    }
 
-    work[1] = coef*(-point[1]*point[1]);
+    z = point[1];
+
+    double coef = 2*pp->U0/(3.14159265358979323846*(x*x+z*z));
+
+    work =  {atan(x/z)*(x*x+z*z) - x*z,
+             -z*z};
+
+    work *= coef;
 
     return work;
 }

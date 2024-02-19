@@ -142,7 +142,7 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
                 double len = length(edgeCorner);
 
                 // Compute approximated Dirichlet boundary values locally
-                std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, basis_,hdiv_,
+                std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, basis_,hdiv_, pp,
                                                                    edgeCorner, len, gwe, gpe);
     
                 bndryDarcy.insert(std::make_pair<int, bndryInfo>
@@ -163,6 +163,7 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
                                           const int& edge,
                                           basis& basis_,
                                           Hdivmixed& hdiv_,
+                                          PhysProperty * pp, 
                                           const vertexSet& edgeCorner,
                                           const double& len,
                                           const valarray<double>& gwe,
@@ -197,7 +198,8 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
                              vals[1][1]*vals[1][1]*nu[1]*nu[1]);
 
         // Get local Dirichlet vector value
-        vertex DiriVal = Dirichlet_val(mapped); 
+        //vertex DiriVal = Dirichlet_val(mapped); 
+        vertex DiriVal = bndryu(mapped,pp);
 
         l0 += len/2.0*gwe[g]*(DiriVal[0]*vals[0][0]*nu[0]*nu[0] + 
                               DiriVal[1]*vals[0][1]*nu[1]*nu[1]);

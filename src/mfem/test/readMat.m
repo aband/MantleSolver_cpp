@@ -85,3 +85,15 @@ K = reshape(K,dofs2,dofs2);
 Cs = reshape(K,dofs2,dofs2);
 Cd = reshape(K,dofs2,dofs2);
 
+
+A = [As, zeros(dofs1,dofd1);...
+     zeros(dofd1,dofs1),Ad];
+
+B = [Bs, zeros(dofs2,dofd1);...
+     zeros(dofd2,dofs1), Bd];
+
+C = [Cs, K; K, Cd];
+
+F = [gs1';gd1'];
+
+G = [gs2';gd2'];
