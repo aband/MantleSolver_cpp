@@ -5,18 +5,19 @@
 
 typedef struct {
 
-    double theta = 0.0;
-    double mu_s  = 10e19;
-    double mu_f  = 1.0;
-    double rho_f = 2800;
-    double rho_s = 3300;
-    double gx    = 0.0;
-    double gy    = -10.0;
-    double invk0 = 1.0/(10e-8);
-    double phi0  = 0.5;
-    double U0    = 10e-9;
+    double theta ;
+    double mu_s  ;
+    double mu_f  ;
+    double rho_f ;
+    double rho_s ;
+    double gx    ;
+    double gy    ;
+    double invk0 ;
+    double phi0  ;
+    double U0    ;
+    double x0    ;
 
-    double l = 20.0;
+    double l;
 } PhysProperty;
 
 double AssignPorosity(const vertex& point, const double& l);

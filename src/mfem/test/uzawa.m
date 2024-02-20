@@ -20,7 +20,7 @@ while (r>tol) && (iter < maxIter)
 
     iter = iter +1;
 
-    r = norm(tmp1) + norm(tmp2);
+    r = norm(tmp1) + norm(tmp2)
 
 end
 

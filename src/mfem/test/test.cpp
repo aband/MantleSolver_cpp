@@ -51,8 +51,8 @@ int main(int argc, char **argv){
     ierr = DMSetUp(dm);                        CHKERRQ(ierr);
     ierr = DMCreateGlobalVector(dm, &fullmesh);CHKERRQ(ierr); 
 
-    double L = 320*1000, H = 160*1000;
-    double xstart = -160*1000, ystart = 0;
+    double L = 2, H = 1;
+    double xstart = -1, ystart = 0;
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL); CHKERRQ(ierr);
@@ -442,8 +442,8 @@ int main(int argc, char **argv){
     VecNestGetSubVec(lsResult->x, 0, &stokesx);
     VecNestGetSubVec(lsResult->x, 1, &darcyx);
 
-    VecView(stokesx,PETSC_VIEWER_STDOUT_WORLD);
-    VecView(darcyx,PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(stokesx,PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(darcyx,PETSC_VIEWER_STDOUT_WORLD);
 
     // Check computed error results
     int checkError = 0;

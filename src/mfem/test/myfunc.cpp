@@ -14,15 +14,16 @@ double AssignPorosity(const vertex& point, const double& l){
 void AssignPhyProperties(PhysProperty * pp){
 
     pp->theta = 0.0;
-    pp->mu_s  = 10e19;
+    pp->mu_s  = 1e19;
     pp->mu_f  = 1.0;
     pp->rho_f = 2800;
     pp->rho_s = 3300;
     pp->gx    = 0.0;
     pp->gy    = -10.0;
-    pp->invk0 = 1.0/(10e-8);
+    pp->invk0 = 1.0/(1e-8);
     pp->phi0  = 0.5;
-    pp->U0    = 10e-9;
+    pp->U0    = 1e-9;
+    pp->x0    = 160*1000;
 
     pp->l = 20.0;
 }
@@ -130,6 +131,8 @@ const vertex stokesForce(const vertex& point){
 
 vertex bndryVs(const vertex& point, PhysProperty * pp){
 
+    // Rewrite it with non dimensionalized versioin
+
     vertex work {0.0,0.0};
 
     double x, z;
@@ -142,7 +145,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     z = point[1];
 
-    double coef = 2*pp->U0/(3.14159265358979323846*(x*x+z*z));
+    double coef = 2/(3.14159265358979323846*(x*x+z*z));
 
     work =  {atan(x/z)*(x*x+z*z) - x*z,
              -z*z};
@@ -157,13 +160,15 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     vertex work {0.0,0.0};
 
     double coef1 = 1.0/pp->invk0 * (1-pp->phi0) * pow(pp->phi0,2+2*pp->theta)/ pp->mu_f;
-    double coef2 = 4*pp->mu_s*pp->U0/(3.14159265358979323846*(point[0]*point[0]+point[1]*point[1]));
+    double coef2 = 4*pp->mu_s/(3.14159265358979323846*(point[0]*point[0]+point[1]*point[1]));
 
-    work[0] = coef1*coef2*2*point[0]*point[1];
-    work[1] = coef1*coef2*(pow(point[1],2) - pow(point[0],2));
+    double rho_r = pp->rho_f*pp->phi0 + pp->rho_s*pp->phi0;
 
-    work[0] += coef1 * pp->rho_f/pp->rho_s * pp->gx;
-    work[0] += coef1 * pp->rho_f/pp->rho_s * pp->gy;
+    work[0] = coef1*coef2*2*point[0]*point[1]/pp->x0/pp->x0;
+    work[1] = coef1*coef2*(pow(point[1],2) - pow(point[0],2))/pp->x0/pp->x0;
+
+    work[0] += coef1 * rho_r * pp->gx;
+    work[0] += coef1 * rho_r * pp->gy;
 
     return work;
 }

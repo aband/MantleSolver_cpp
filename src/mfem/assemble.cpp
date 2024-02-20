@@ -1,5 +1,7 @@
 #include "assemble.h"
 
+// Assemble a nondimensionalized system
+
 void AssignLocMatrix(const MeshInfo& mi,
                      basis& basis_,
                      Hdivmixed& hdiv_,
@@ -11,14 +13,17 @@ void AssignLocMatrix(const MeshInfo& mi,
                      const valarray<double>& gwf,
                      const vector<vertex>& gpf){
 
-    // Temporary physics parameters
+    // Unpack physical parameters
     double theta  = physproperty->theta;
     double mu_s   = physproperty->mu_s;
     double mu_f   = physproperty->mu_f;
     double inv_k0 = physproperty->invk0;
-    double rho_r  = physproperty->rho_f/physproperty->rho_s;
     double gx     = physproperty->gx;
     double gy     = physproperty->gy;
+    double x0     = physproperty->x0;
+    double U0     = physproperty->U0;
+    double rho_f  = physproperty->rho_f;
+    double rho_s  = physproperty->rho_s;
 
     double phi_f = physproperty->phi0;
     double phi_s = 1-phi_f;
@@ -26,6 +31,9 @@ void AssignLocMatrix(const MeshInfo& mi,
     // Cell average fluid porosity
     double phi_f_hat = 0.0;
     double area = 0.0;
+
+    // Non dimensionalization term
+    double NonDimCoeff = mu_f*x0*x0*inv_k0/mu_s;
 
     // Perpare with area and cell averaged porosity
     for (unsigned int g=0; g<gwf.size(); g++){
@@ -89,9 +97,16 @@ void AssignLocMatrix(const MeshInfo& mi,
                 double div2 = brwork[i][0] + brwork[i][3];
 
                 // Symmetrical formulation of A matrix
-                (*locmatrix).as[i+j*12] += 2*mu_s*phi_s*gw*jac*2*
-                                          (A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
- 
+
+                // With dimension version
+                //(*locmatrix).as[i+j*12] += 2*mu_s*phi_s*gw*jac*2*
+                //                          (A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
+
+                // Non dimensionalized version
+                (*locmatrix).as[i+j*12] += 2*phi_s*gw*jac*2*
+                                          (A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2)/
+                                           NonDimCoeff;
+
                 // Defined for testing purpose only =======================================
                 // Nonsymmetrical formulation
                 //(*locmatrix).as[i+j*12] += gw*jac*(brwork[j][0]*brwork[i][0] + 
@@ -100,20 +115,30 @@ void AssignLocMatrix(const MeshInfo& mi,
                 //                                   brwork[j][3]*brwork[i][3]);
                 // ========================================================================
             }
-
+            // With dimension version
             (*locmatrix).bs[j] += gw*jac*div1 * omegaQ;
 
             // Right hand side given by gravity
-            (*locmatrix).sourcestokes[j] -= gw*jac*(1-phi_f)*rho_r*(gx*brwork[j][0] + 
-                                                                    gy*brwork[j][1]);
+            double rho_r = rho_f*phi_f + rho_s*phi_s;
+            // With dimension version
+            //(*locmatrix).sourcestokes[j] -= gw*jac*(1-phi_f)*rho_r*(gx*brwork[j][0] + 
+            //                                                        gy*brwork[j][1]);
+
+            // Non dimensionalized version
+            (*locmatrix).sourcestokes[j] -= gw*jac*(1-phi_f)*rho_r*
+                                            (gx*brwork[j][0] + gy*brwork[j][1]) / 
+                                            (mu_f*U0*inv_k0);
 
             // Defined for testing purpose only ===========================================
             //(*locmatrix).sourcestokes[j] += gw*jac*(stokesforce[0]*brval[j][0] + 
             //                                        stokesforce[1]*brval[j][1]);
             // ============================================================================
         }
+        // With dimension version
+        //(*locmatrix).cs += gw*jac*phi_f_hat/(mu_s*(1-phi_f))*omegaQ*omegaQ;
 
-        (*locmatrix).cs += gw*jac*phi_f_hat/(mu_s*(1-phi_f))*omegaQ*omegaQ;
+        // Non dimensionalized version
+        (*locmatrix).cs += gw*jac*phi_f_hat/(mu_s*(1-phi_f))*omegaQ*omegaQ *NonDimCoeff;
 
         // Control Darcy part ================================================================
 
@@ -123,20 +148,33 @@ void AssignLocMatrix(const MeshInfo& mi,
 
         for (unsigned int j=0; j<8; j++){
             for (unsigned int i=0; i<8; i++){
-                (*locmatrix).ad[i+j*8] += gw*jac*mu_f*inv_k0* 
+                // With dimension version
+                //(*locmatrix).ad[i+j*8] += gw*jac*mu_f*inv_k0* 
+                //                         (hdivwork[j][0]*hdivwork[i][0] + 
+                //                          hdivwork[j][1]*hdivwork[i][1]);
+
+                // Non dimensionalized version
+                (*locmatrix).ad[i+j*8] += gw*jac* 
                                          (hdivwork[j][0]*hdivwork[i][0] + 
                                           hdivwork[j][1]*hdivwork[i][1]);
-              
             }
             // darctforce is set to be zero here
             (*locmatrix).sourcedarcy[j] += gw*jac*(darcyforce[0]*hdivwork[j][0] + 
                                                    darcyforce[1]*hdivwork[j][1]);
         }
 
-        (*locmatrix).cd += gw*jac*1.0/(mu_s*(1-phi_f))*omegaf*omegaf;
+        // With dimension version
+        //(*locmatrix).cd += gw*jac*1.0/(mu_s*(1-phi_f))*omegaf*omegaf;
+
+        // dimensionalized version
+        (*locmatrix).cd += gw*jac*1.0/(1-phi_f)*omegaf*omegaf *NonDimCoeff;
 
         // Calculate coupling matrix
-        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5) * omegaf*omegaQ;
+        // With dimension version
+        //(*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5) * omegaf*omegaQ;
+
+        // Non Dimensionalized version
+        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5) * omegaf*omegaQ * NonDimCoeff;
     }
 
     // Define B matrix for the Darcy part
@@ -156,6 +194,7 @@ void AssignLocMatrix(const MeshInfo& mi,
             // Zeroth order constant pressure basis is always 1
             vertex nu = basis_.unitnormal(e);
             for (int j=0; j<8; j++){
+                // With dimension version
                 (*locmatrix).bd[j] += len/2.0*gwe[g]*
                                       pow(phi_f_hat,-0.5) * pow(phi_f, 1+theta) *
                                      (hdivwork[j][0] * nu[0]+
