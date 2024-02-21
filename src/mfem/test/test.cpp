@@ -280,14 +280,16 @@ int main(int argc, char **argv){
     double tolUzawa;
     PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
 
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &ls->C));
-    PetscCall(MatSetSizes(ls->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
-    PetscCall(MatSetUp(ls->C));
+    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
+ 
+    //PetscCall(MatCreate(PETSC_COMM_WORLD, &ls->C));
+    //PetscCall(MatSetSizes(ls->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
+    //PetscCall(MatSetUp(ls->C));
 
-    PetscCall(MatAssemblyBegin(ls->C, MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd(ls->C, MAT_FINAL_ASSEMBLY));
+    //PetscCall(MatAssemblyBegin(ls->C, MAT_FINAL_ASSEMBLY));
+    //PetscCall(MatAssemblyEnd(ls->C, MAT_FINAL_ASSEMBLY));
 
-    PetscCall(MatZeroEntries(ls->C));
+    //PetscCall(MatZeroEntries(ls->C));
 
     //PreconditionedUzawa(ls, tolUzawa, maxIter, tauUzawa);
 
@@ -346,15 +348,15 @@ int main(int argc, char **argv){
     PetscCall(VecZeroEntries(lsStokes->x));
     PetscCall(VecZeroEntries(lsStokes->y));
 
-    //PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &lsStokes->C));
-    PetscCall(MatSetSizes(lsStokes->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
-    PetscCall(MatSetUp(lsStokes->C));
+    PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
+    //PetscCall(MatCreate(PETSC_COMM_WORLD, &lsStokes->C));
+    //PetscCall(MatSetSizes(lsStokes->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
+    //PetscCall(MatSetUp(lsStokes->C));
 
-    PetscCall(MatAssemblyBegin(lsStokes->C, MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd(lsStokes->C, MAT_FINAL_ASSEMBLY));
+    //PetscCall(MatAssemblyBegin(lsStokes->C, MAT_FINAL_ASSEMBLY));
+    //PetscCall(MatAssemblyEnd(lsStokes->C, MAT_FINAL_ASSEMBLY));
 
-    PetscCall(MatZeroEntries(lsStokes->C));
+    //PetscCall(MatZeroEntries(lsStokes->C));
 
     //PreconditionedUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
     //InexactUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
@@ -384,6 +386,9 @@ int main(int argc, char **argv){
     // Couple two saddle point system
 
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
+
+//    MatView(lsStokes->C, PETSC_VIEWER_STDOUT_WORLD);
+//    MatView(ls->C, PETSC_VIEWER_STDOUT_WORLD);
 
     CoupledSolver(lsStokes, ls, lsResult, &system->K, tolUzawa, maxIter, tauUzawa);
 

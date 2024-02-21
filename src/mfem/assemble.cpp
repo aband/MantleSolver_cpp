@@ -138,7 +138,7 @@ void AssignLocMatrix(const MeshInfo& mi,
         //(*locmatrix).cs += gw*jac*phi_f_hat/(mu_s*(1-phi_f))*omegaQ*omegaQ;
 
         // Non dimensionalized version
-        (*locmatrix).cs += gw*jac*phi_f_hat/(mu_s*(1-phi_f))*omegaQ*omegaQ *NonDimCoeff;
+        (*locmatrix).cs += gw*jac*phi_f_hat/(1-phi_f)*omegaQ*omegaQ *NonDimCoeff;
 
         // Control Darcy part ================================================================
 
@@ -174,7 +174,8 @@ void AssignLocMatrix(const MeshInfo& mi,
         //(*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5) * omegaf*omegaQ;
 
         // Non Dimensionalized version
-        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5) * omegaf*omegaQ * NonDimCoeff;
+        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5)/(1-phi_f) * omegaf*omegaQ * NonDimCoeff;
+
     }
 
     // Define B matrix for the Darcy part
@@ -386,26 +387,6 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
     PetscCall(MatAssemblyEnd((*system).Cd,MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyBegin((*system).K,MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyEnd((*system).K,MAT_FINAL_ASSEMBLY));
-
-    // Remove constent kernel from pressure coefficient matrix
-    Mat Me;
-    MatCreate(PETSC_COMM_WORLD,&Me);
-    ierr = MatSetSizes(Me,PETSC_DECIDE,PETSC_DECIDE,totalElem,totalElem);
-    ierr = MatSetType(Me,MATMPIAIJ);
-    ierr = MatSetUp(Me);
-
-    for (int j=0; j<totalElem; j++){
-    for (int i=0; i<totalElem; i++){
-       MatSetValue(Me,j,i,1.0/(double)totalElem,INSERT_VALUES); 
-    }}
-
-    MatAssemblyBegin(Me,MAT_FINAL_ASSEMBLY);
-    MatAssemblyEnd(Me,MAT_FINAL_ASSEMBLY);
-
-//    MatView(Me, PETSC_VIEWER_STDOUT_WORLD);
-
-    MatAXPY(system->Cs,-1.0, Me,DIFFERENT_NONZERO_PATTERN);
-    MatAXPY(system->Cd,-1.0, Me,DIFFERENT_NONZERO_PATTERN);
 
     PetscFunctionReturn(0);
 }

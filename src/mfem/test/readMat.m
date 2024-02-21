@@ -82,9 +82,8 @@ Ad = reshape(Ad,dofd1,dofd1);
 Bd = reshape(Bd,dofd2,dofd1);
 
 K = reshape(K,dofs2,dofs2);
-Cs = reshape(K,dofs2,dofs2);
-Cd = reshape(K,dofs2,dofs2);
-
+Cs = reshape(Cs,dofs2,dofs2);
+Cd = reshape(Cd,dofs2,dofs2);
 
 A = [As, zeros(dofs1,dofd1);...
      zeros(dofd1,dofs1),Ad];
