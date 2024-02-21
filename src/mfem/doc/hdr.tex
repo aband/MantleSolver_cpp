@@ -1,0 +1,86 @@
+\documentclass[final,leqno]{siamart190516}
+\usepackage{amsmath,amsfonts,amssymb,amscd}
+
+%\usepackage[dvipsnames]{xcolor}
+
+\usepackage{graphicx}
+\graphicspath{{../pics/},{./pics/}}
+%\usepackage{subfigure}
+\usepackage{CJK}
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\usepackage{cases}
+\renewcommand\topfraction{1.0}
+\renewcommand\textfraction{0.0}
+
+\setlength{\oddsidemargin}{0.75in}
+\setlength{\evensidemargin}{0.75in}
+
+\newtheorem{remark}{Remark}[section]
+%\newtheorem{assumption}{Assumption}[section]
+
+%\let\itemOld=\item
+%\def\item{\parskip=0pt\itemsep=0pt\itemOld}
+
+%====================================================================
+
+\def\0{\phantom{0}}
+\def\d{\partial}
+\def\twoVec(#1,#2){\left(\begin{matrix}#1\\#2\end{matrix}\right)}
+\def\grad{\nabla}
+\def\div{\nabla\cdot}
+\def\Div{\textrm{div}}
+\def\Curl{\textrm{curl}}
+\def\Grad{\textrm{grad}}
+\def\spn{\textrm{span}}
+
+\def\Bu{\mathbb B}
+\def\Po{\mathbb P}
+\def\Supp{\mathbb S}
+\def\Re{\mathbb R}
+
+\def\a{{\mathbf a}}
+\def\p{{\mathbf p}}
+\def\F{{\mathbf F}}
+\def\V{{\mathbf V}}
+\let\vv=\v
+\def\v{{\mathbf v}}
+\def\u{{\mathbf u}}
+\def\x{{\mathbf x}}
+\def\y{{\mathbf y}}
+\def\bfpsi{\pmb\psi}
+\def\bfsigma{\pmb\sigma}
+\def\bfphi{\pmb\phi}
+
+\def\cA{{\cal A}}
+\def\cB{{\cal B}}
+\def\cC{{\cal C}}
+\def\cDS{{\cal{DS}}}
+%\def\cF{{\cal F}}
+\def\cI{{\cal I}}
+\def\cL{{\cal L}}
+\def\cN{{\cal N}}
+\def\cO{{\cal O}}
+\def\cP{{\cal P}}
+\def\cS{{\cal S}}
+\def\cT{{\cal T}}
+
+\def\myStrut{\vphantom{\int^H}}
+\def\Line(#1,#2)(#3,#4){\qbezier(#1,#2)(#1,#2)(#3,#4)}
+\def\longlongrightarrow%
+{\DOTSB\protect\relbar\protect\joinrel\protect\relbar\protect\joinrel\protect\relbar\protect\joinrel\rightarrow}
+\def\hooklongrightarrow{\DOTSB\lhook\joinrel\longrightarrow}
+
+%\def\addB{\bgroup\color{blue}}
+%\def\addO{\bgroup\color{BurntOrange}}
+%\def\addR{\bgroup\color{Maroon}}
+\def\add{\bgroup\color{blue}}
+\def\endAdd{\egroup}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Stokes Element}
+
+\begin{document}
+
+
