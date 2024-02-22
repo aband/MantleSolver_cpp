@@ -20,18 +20,19 @@ List SI units
 
 Non dimensionalization choice
 \begin{itemize}
-		  \item $\check{\b{v}} = \frac{\tilde{\b{v}_r}}{U_0}$
-					 \item $\check{q} = \frac{q}{\mu_f U_0 l_0/k_0 }$
+		  \item $\check{\b{v}} = \frac{\tilde{\b{v}_r}}{k_0 \rho_r g_y/\mu_f}$
+					 \item $\check{q} = \frac{q}{\rho_r g_y l_0 }$
 					 \item $\check{x} = \frac{x}{l_0}$
+					 \item $l_0 = (\frac{k_0 \mu_s}{\mu_f})^{1/2}$
 \end{itemize}
 
 The resulting non dimensionalized form is therefore
 \begin{equation}
 		  \begin{aligned}
 					 \check{\b{v}}_r + \phi_f^{1+\Theta}\nabla (\phi_f^{-1/2}\check{q}_f) &= 0\\
-					 \phi_f^{-1/2}\nabla \cdot (\phi_f^{1+\Theta} \check{\b{v}}_r) + \frac{\mu_f l_0^2}{\mu_s k_0(1-\phi_f)}(\check{q}_f - \phi_f^{1/2}\check{q}) &=0 \\
-					 \nabla \check{q} - \frac{2\mu_s k_0}{\mu_f l_0^2}(1-\phi_f) \nabla \cdot \hat{\sigma}(\check{\b{v}}_s) &= -\frac{k_0}{\mu_f U_0}(1-\phi_f)\rho_r \b{g} \\
-					 \nabla \cdot \check{\b{v}}_s - \frac{\mu_f l_0^2}{\mu_s k_0} \frac{\phi_f^{1/2}}{1-\phi_f}(\check{q}_f - \phi_f^{1/2}\check{q}) &= 0
+					 \phi_f^{-1/2}\nabla \cdot (\phi_f^{1+\Theta} \check{\b{v}}_r) + \frac{1}{1-\phi_f}(\check{q}_f - \phi_f^{1/2}\check{q}) &=0 \\
+					 \nabla \check{q} - \nabla \cdot \hat{\sigma}(\check{\b{v}}_s) &= -(1-\phi_f)\rho_r \hat{\b{g}} \\
+					 \nabla \cdot \check{\b{v}}_s - \frac{\phi_f^{1/2}}{1-\phi_f}(\check{q}_f - \phi_f^{1/2}\check{q}) &= 0
 		  \end{aligned}
 \end{equation}
 

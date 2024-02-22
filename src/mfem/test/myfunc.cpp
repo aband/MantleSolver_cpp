@@ -23,7 +23,7 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->invk0 = 1.0/(1e-8);
     pp->phi0  = 0.5;
     pp->U0    = 1e-9;
-    pp->x0    = 160*1000;
+    pp->x0    = pow(pp->mu_s/pp->invk0/pp->mu_f,0.5);
 
     pp->l = 20.0;
 }
@@ -169,16 +169,17 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
 
     z = point[1];
 
-    double coef1 = 1.0/pp->invk0 * (1-pp->phi0) * pow(pp->phi0,2+2*pp->theta)/ pp->mu_f;
-    double coef2 = 4*pp->mu_s/(3.14159265358979323846*(x*x+z*z)*pp->x0*pp->x0);
-
     double rho_r = pp->rho_f*pp->phi0 + pp->rho_s*pp->phi0;
+
+    double coef1 = (1-pp->phi0) * pow(pp->phi0,2+2*pp->theta);
+    double coef2 = 4*pp->mu_s*pp->U0/(3.14159265358979323846*(x*x+z*z)*pp->x0*pp->x0) /rho_r /pp->gy;
+
 
     work[0] = coef1*coef2*2*x*z;
     work[1] = coef1*coef2*(pow(z,2) - pow(x,2));
 
-    work[0] += coef1 * rho_r * pp->gx/pp->U0;
-    work[1] += coef1 * rho_r * pp->gy/pp->U0;
+    work[0] += coef1 * 0;
+    work[1] += coef1 * 1;
 
     return work;
 }

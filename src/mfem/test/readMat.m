@@ -96,3 +96,9 @@ C = [Cs, K; K, Cd];
 F = [gs1';gd1'];
 
 G = [gs2';gd2'];
+
+tau1 = 10;
+tau2 = 0.15;
+
+tau = [tau1*eye(size(Cs)),zeros(dofs2,dofs2);
+       zeros(dofs2,dofs2),tau2*eye(size(Cd))];

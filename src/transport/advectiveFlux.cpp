@@ -17,7 +17,9 @@ inline double numericalFlux(const double& uL, const double& uR,
 inline double getAdvFluxPoint(const MLWENO::MLWENOUse& mlu, const MeshInfo& mi,
                               const double& uR, const vertex& unitNormal){
 
-   return funcX(uR)*unitNormal[0]+funcY(uR)*unitNormal[1];
+   std::array<double,2> work = advFunc(uR);
+
+   return work[0]*unitNormal[0]+work[1]*unitNormal[1];
 }
 
 /**!

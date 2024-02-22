@@ -143,13 +143,13 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
         PetscCall(VecScale(tmp3,-1.0));
 
         // Take out tmp3 constant kernal =====
-        double mean;
-        VecMean(tmp3, &mean);
-        PetscCall(VecGetArray(tmp3, &arraytmp));
-        for (unsigned int k=0; k<size; k++){
-            arraytmp[k] -= mean;
-        }
-        PetscCall(VecRestoreArray(tmp3, &arraytmp));
+        //double mean;
+        //VecMean(tmp3, &mean);
+        //PetscCall(VecGetArray(tmp3, &arraytmp));
+        //for (unsigned int k=0; k<size; k++){
+        //    arraytmp[k] -= mean;
+        //}
+        //PetscCall(VecRestoreArray(tmp3, &arraytmp));
 
         // ===================================
 

@@ -15,11 +15,11 @@ const std::array<double, 2> dAdvFunc(double u){
 }
 
 // ======== Diffusion =======================
-double diffFunc(double u){
+const double diffFunc(double u){
     return u;
 }
 
-double dDiffFunc(double u){
+const double dDiffFunc(double u){
     return 1;
 }
 
@@ -122,15 +122,15 @@ Location assignLocation(const indice& globalCell,
                         const MeshInfo& mi){
 
    if (left_boundary(globalCell, mi)){
-       return leftBndry;
+       return LeftBndry;
    } else if (right_boundary(globalCell, mi)){
-       return rightBndry;
+       return RightBndry;
    } else if (top_boundary(globalCell, mi)){
-       return topBndry;
+       return TopBndry;
    } else if (bottom_boundary(globalCell, mi)){
-       return bottomBndry
+       return BottomBndry;
    } else {
-       return interior;
+       return Interior;
    }
 
 }

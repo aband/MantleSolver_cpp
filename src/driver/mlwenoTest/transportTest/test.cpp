@@ -157,11 +157,13 @@ int main(int argc, char **argv){
     mluseDif->AddMLWENOLevel("interior",{"(5,5)","(3,3)"}, mlpPtr);
 
     mluseDif->AssignWENOStencils(0,"(3,3)",{{-2,0},{-2,-2},{0,0},{0,-2}});
-    mluseDif->AssignWENOStencils(0,"(5,5)",{{-2.-2}});
+    mluseDif->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
 
     /**!
      * L_1 error
      */
+
+/*
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>& gpf = GaussPointsFace;
     double work = 0.0;
@@ -171,16 +173,17 @@ int main(int argc, char **argv){
     vector<vertex> corner = extractCorners(drivPtr->mi, cell); 
 
     PetscCall(PetscPrintf(PETSC_COMM_SELF,"The point-wise error at point (%f, %f) is %.3e \n",
-                                           0.0,0.0,abs(mluse->Evaluate({0,0},{M/2,N/2},drivPtr->mi, "interior")-Distribution({0,0},{0,0}))));
+                                           0.0,0.0,abs(mluseDif->Evaluate({0,0},{M/2,N/2},drivPtr->mi, "interior")-Distribution({0,0},{0,0}))));
 
     for (int g=0; g<gpf.size(); g++){
         vertex mapped = GaussMapPointsFace(gpf[g], corner);
         double jac = abs(GaussJacobian(gpf[g], corner));
-        work += gwf[g]*abs(Distribution(mapped,{0,0}) - mluse->Evaluate(mapped, cell, drivPtr->mi, "interior"))*jac;
+        work += gwf[g]*abs(Distribution(mapped,{0,0}) - mluseDif->Evaluate(mapped, cell, drivPtr->mi, "interior"))*jac;
     }
 
     PetscCall(PetscPrintf(PETSC_COMM_SELF,"The L1 Error at cell (%d, %d) is %.3e \n",
                                            cell[0],cell[1],work));
+*/
 
     // Finialize the program ====================================================
     PetscCall(DMDAVecRestoreArray(dmu,localu,&drivPtr->mi.localVals));

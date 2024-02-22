@@ -513,8 +513,9 @@ int main(int argc, char **argv){
 
         //cout << "||u-u_h||_L2 : " <<  pow(errorSumu,0.5) << endl;
         //cout << "||p-p_h||_L2 : " <<  pow(errorSump,0.5) << endl;
-        cout << "Stokes : ||u-u_h||_L2 : " <<  pow(errorSumuStokes,0.5) << endl;
-        cout << "Darcy  : ||u-u_h||_L2 : " <<  pow(errorSumuDarcy,0.5) << endl;
+        cout << "Coupled : ||u-h_h||_L2 : " << pow(errorSumuStokes+errorSumuDarcy,0.5) << endl;
+        cout << "Stokes  : ||u-u_h||_L2 : " <<  pow(errorSumuStokes,0.5) << endl;
+        cout << "Darcy   : ||u-u_h||_L2 : " <<  pow(errorSumuDarcy,0.5) << endl;
     }
 
     // =================================================================================

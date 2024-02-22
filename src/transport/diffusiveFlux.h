@@ -2,7 +2,7 @@
 #define DIFFUSIVEFLUX_H_
 
 #include "mlwenouse.h"
-#include "func.h"
+#include "../driver/mlwenoTest/transportTest/myfunc.h"
 
 double getDifFluxInterior(const MLWENO::MLWENOUse& mlu,
                           const MeshInfo& mi,

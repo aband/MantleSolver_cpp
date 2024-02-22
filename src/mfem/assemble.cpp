@@ -33,7 +33,8 @@ void AssignLocMatrix(const MeshInfo& mi,
     double area = 0.0;
 
     // Non dimensionalization term
-    double NonDimCoeff = mu_f*x0*x0*inv_k0/mu_s;
+    //double NonDimCoeff = mu_f*x0*x0*inv_k0/mu_s;
+    double NonDimCoeff = 1.0;
 
     // Perpare with area and cell averaged porosity
     for (unsigned int g=0; g<gwf.size(); g++){
@@ -103,9 +104,8 @@ void AssignLocMatrix(const MeshInfo& mi,
                 //                          (A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
 
                 // Non dimensionalized version
-                (*locmatrix).as[i+j*12] += 2*phi_s*gw*jac*2*
-                                          (A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2)/
-                                           NonDimCoeff;
+                (*locmatrix).as[i+j*12] += 2*phi_s*gw*jac*
+                                          (A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
 
                 // Defined for testing purpose only =======================================
                 // Nonsymmetrical formulation
@@ -125,11 +125,8 @@ void AssignLocMatrix(const MeshInfo& mi,
             //                                                        gy*brwork[j][1]);
 
             // Non dimensionalized version
-            (*locmatrix).sourcestokes[j] -= gw*jac*(1-phi_f)*rho_r*
-                                            (gx*brwork[j][0] + gy*brwork[j][1]) / 
-                                            (mu_f*U0*inv_k0);
-
-				std::cout << (*locmatrix).sourcestokes[j] << std::endl;
+            (*locmatrix).sourcestokes[j] -= gw*jac*(1-phi_f)*
+                                            (gx*brwork[j][0]/gy + gy*brwork[j][1]/gy);
 
             // Defined for testing purpose only ===========================================
             //(*locmatrix).sourcestokes[j] += gw*jac*(stokesforce[0]*brval[j][0] + 
@@ -169,14 +166,14 @@ void AssignLocMatrix(const MeshInfo& mi,
         //(*locmatrix).cd += gw*jac*1.0/(mu_s*(1-phi_f))*omegaf*omegaf;
 
         // dimensionalized version
-        (*locmatrix).cd += gw*jac*1.0/(1-phi_f)*omegaf*omegaf *NonDimCoeff;
+        (*locmatrix).cd += gw*jac*1.0/(1-phi_f)*omegaf*omegaf;
 
         // Calculate coupling matrix
         // With dimension version
         //(*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5) * omegaf*omegaQ;
 
         // Non Dimensionalized version
-        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5)/(1-phi_f) * omegaf*omegaQ * NonDimCoeff;
+        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5)/(1-phi_f) * omegaf*omegaQ;
 
     }
 
