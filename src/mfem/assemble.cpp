@@ -129,6 +129,8 @@ void AssignLocMatrix(const MeshInfo& mi,
                                             (gx*brwork[j][0] + gy*brwork[j][1]) / 
                                             (mu_f*U0*inv_k0);
 
+				std::cout << (*locmatrix).sourcestokes[j] << std::endl;
+
             // Defined for testing purpose only ===========================================
             //(*locmatrix).sourcestokes[j] += gw*jac*(stokesforce[0]*brval[j][0] + 
             //                                        stokesforce[1]*brval[j][1]);

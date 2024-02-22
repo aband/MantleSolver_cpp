@@ -1,4 +1,4 @@
-#include "func.h"
+#include "myfunc.h"
 
 /**
  * Change functions for transport part here.
@@ -124,7 +124,13 @@ Location assignLocation(const indice& globalCell,
    if (left_boundary(globalCell, mi)){
        return leftBndry;
    } else if (right_boundary(globalCell, mi)){
-
+       return rightBndry;
+   } else if (top_boundary(globalCell, mi)){
+       return topBndry;
+   } else if (bottom_boundary(globalCell, mi)){
+       return bottomBndry
+   } else {
+       return interior;
    }
 
 }

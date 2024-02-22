@@ -2,7 +2,7 @@
 #define ADVECTIVEFLUX_H_
 
 #include "mlwenouse.h"
-#include "func.h"
+#include "../driver/mlwenoTest/transportTest/myfunc.h"
 
 double getAdvFluxInterior(const MLWENO::MLWENOUse& mlu,
                           const MeshInfo& mi,
