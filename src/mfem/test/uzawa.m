@@ -15,7 +15,7 @@ while (r>tol) && (iter < maxIter)
     x = x + tmp1;
 
     tmp2 = -B*x - C*y + G;
-    tmp2 = tmp2 - mean(tmp2);
+    %tmp2 = tmp2 - mean(tmp2);
 
     y = y + tau*tmp2;
 

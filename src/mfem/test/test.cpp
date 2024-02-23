@@ -51,8 +51,12 @@ int main(int argc, char **argv){
     ierr = DMSetUp(dm);                        CHKERRQ(ierr);
     ierr = DMCreateGlobalVector(dm, &fullmesh);CHKERRQ(ierr); 
 
-    double L = 2, H = 1;
-    double xstart = -1, ystart = 0;
+    PhysProperty * physproperty = (PhysProperty *)malloc(sizeof(PhysProperty));
+
+    AssignPhyProperties(physproperty);
+
+    double L = 2*160000/physproperty->x0, H = 1*160000/physproperty->x0;
+    double xstart = -1*160000/physproperty->x0, ystart = 0;
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL); CHKERRQ(ierr);
@@ -156,10 +160,6 @@ int main(int argc, char **argv){
 
     System * system = (System *)malloc(sizeof(System));
 
-    PhysProperty * physproperty = (PhysProperty *)malloc(sizeof(PhysProperty));
-
-    AssignPhyProperties(physproperty);
-
     // Allocate space for matrix struct
 
     br->ComputeTotalDOF(mi);
@@ -204,7 +204,9 @@ int main(int argc, char **argv){
 
     Mat BgT;
     PetscCall(MatCreateTranspose(reducedsys->Bg, &BgT));
- 
+
+    MatView(reducedsys->Bg, PETSC_VIEWER_STDOUT_WORLD);
+
     PetscCall(MatMult(BgT, reducedsys->g, g2));
 
     // Move boundary condition vectors to the right hand side of the 
@@ -317,6 +319,9 @@ int main(int argc, char **argv){
 
     Mat BgTStokes;
     PetscCall(MatCreateTranspose(reducedsysStokes->Bg, &BgTStokes));
+
+    MatView(reducedsysStokes->Bg, PETSC_VIEWER_STDOUT_WORLD);
+
     PetscCall(MatMult(BgTStokes, reducedsysStokes->g, g2Stokes));
 
     PetscCall(VecAYPX(g1Stokes, -1, reducedsysStokes->source));

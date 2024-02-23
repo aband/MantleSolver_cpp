@@ -15,7 +15,10 @@ typedef struct {
     double invk0 ;
     double phi0  ;
     double U0    ;
+
     double x0    ;
+    double u0    ;
+    double p0    ;
 
     double l;
 } PhysProperty;

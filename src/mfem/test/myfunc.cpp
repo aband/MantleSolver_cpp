@@ -23,9 +23,17 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->invk0 = 1.0/(1e-8);
     pp->phi0  = 0.5;
     pp->U0    = 1e-9;
-    pp->x0    = pow(pp->mu_s/pp->invk0/pp->mu_f,0.5);
 
-    pp->l = 20.0;
+    // Non dimensionalization parameters
+
+    double rho_r = pp->rho_f*pp->phi0 + 
+                   pp->rho_s*(1-pp->phi0); 
+
+    pp->x0    = pow(pp->mu_s/pp->invk0/pp->mu_f,0.5);
+    pp->p0    = pp->gy*pp->x0*rho_r;
+    pp->u0    = pp->gy*rho_r/pp->mu_f/pp->invk0;
+
+    pp->l = 2.0;
 }
 
 // ===================================================
@@ -145,12 +153,16 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     z = point[1];
 
-    double coef = 2/(3.14159265358979323846*(x*x+z*z));
+    double coef = 2*pp->U0/(3.14159265358979323846*(x*x+z*z))/pp->u0;
 
     work =  {atan(x/z)*(x*x+z*z) - x*z,
              -z*z};
 
     work *= coef;
+
+    // ====== Test ======
+    work[0] = point[0]*point[0]*point[1];
+    work[1] = -point[1]*point[1]*point[0];
 
     return work;
 }
@@ -174,12 +186,15 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     double coef1 = (1-pp->phi0) * pow(pp->phi0,2+2*pp->theta);
     double coef2 = 4*pp->mu_s*pp->U0/(3.14159265358979323846*(x*x+z*z)*pp->x0*pp->x0) /rho_r /pp->gy;
 
-
     work[0] = coef1*coef2*2*x*z;
     work[1] = coef1*coef2*(pow(z,2) - pow(x,2));
 
     work[0] += coef1 * 0;
     work[1] += coef1 * 1;
+
+    // ====== Test ======
+    work[0] = point[0]*point[0]*point[1];
+    work[1] = -point[1]*point[1]*point[0];
 
     return work;
 }
