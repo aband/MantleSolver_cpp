@@ -127,6 +127,8 @@ void AssignLocMatrix(const MeshInfo& mi,
             // Non dimensionalized version
             (*locmatrix).sourcestokes[j] -= gw*jac*(1-phi_f)*
                                             (gx*brwork[j][0]/gy + gy*brwork[j][1]/gy);
+            //(*locmatrix).sourcestokes[j] -= 0.0;
+
             //(*locmatrix).sourcestokes[j] += gw*jac*phi_s*
             //                                (stokesforce[0]*brwork[j][0] + 
             //                                 stokesforce[1]*brwork[j][1]);
@@ -163,7 +165,7 @@ void AssignLocMatrix(const MeshInfo& mi,
             }
             // darctforce is set to be zero here
             (*locmatrix).sourcedarcy[j] += gw*jac*(darcyforce[0]*hdivwork[j][0] + 
-                                                   darcyforce[1]*hdivwork[j][1]);
+                                                   darcyforce[1]*hdivwork[j][1])*0.0;
         }
 
         // With dimension version

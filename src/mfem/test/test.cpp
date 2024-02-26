@@ -418,8 +418,8 @@ int main(int argc, char **argv){
 
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
 
-//    MatView(lsStokes->C, PETSC_VIEWER_STDOUT_WORLD);
-//    MatView(ls->C, PETSC_VIEWER_STDOUT_WORLD);
+    //MatView(lsStokes->C, PETSC_VIEWER_STDOUT_WORLD);
+    //MatView(ls->C, PETSC_VIEWER_STDOUT_WORLD);
 
     CoupledSolver(lsStokes, ls, lsResult, &system->K, tolUzawa, maxIter, tauUzawa);
 
@@ -545,6 +545,9 @@ int main(int argc, char **argv){
         cout << "Stokes  : ||u-u_h||_L2 : " <<  pow(errorSumuStokes,0.5) << endl;
         cout << "Darcy   : ||u-u_h||_L2 : " <<  pow(errorSumuDarcy,0.5) << endl;
     }
+
+    //VecView(lsResult->y,PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(lsResult->x,PETSC_VIEWER_STDOUT_WORLD);
 
     // =================================================================================
     // Check FE function space

@@ -133,9 +133,9 @@ const vertex darcyForce(const vertex& point){
 
     vertex gradpressure = darcyPressureGrad(point);
 
-    return {truesol[0] + gradpressure[0], truesol[1] + gradpressure[1]};
+    //return {truesol[0] + gradpressure[0], truesol[1] + gradpressure[1]};
 
-    //return {0.0,0.0};
+    return {0.0,0.0};
 }
 
 const vertex stokesForce(const vertex& point){
@@ -156,6 +156,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     if (point[0] < 0.0) {
         x = point[0] - pp->l/pp->x0;
+        x*= -1;
     }else{
         x = point[0] + pp->l/pp->x0;
     }
@@ -184,6 +185,7 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
 
     if (point[0] < 0.0){
         x = point[0] - pp->l/pp->x0;
+        x *= -1;
     }else {
         x = point[0] + pp->l/pp->x0;
     }
