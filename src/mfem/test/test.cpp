@@ -151,6 +151,9 @@ int main(int argc, char **argv){
 
 // ========================================================================================================================================
 
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussPointsFace;
+
     // Define basis functions H(div) conforming and Direct Serendipity space
     basis * testBasis = new basis();
 
@@ -181,6 +184,8 @@ int main(int argc, char **argv){
 
     ReducedSys * reducedsys = (ReducedSys *)malloc(sizeof(ReducedSys));
 
+    // Two systems are created at the same time.
+    // returns A, B, C, K matrices
     CreateReducedSerial(reducedsys, &system->Ad, &system->Bd, &system->sourceDarcy, bndryDarcy);
 
     // Test Darcy part alone ============================================================
@@ -189,7 +194,6 @@ int main(int argc, char **argv){
     // Check mat size
     int cM, cN;
     PetscCall(MatGetSize(reducedsys->M, &cM, &cN));
-
     PetscCall(VecCreate(PETSC_COMM_WORLD, &g1));
     PetscCall(VecSetSizes(g1, PETSC_DECIDE, cM));
     PetscCall(VecSetUp(g1));
@@ -205,8 +209,6 @@ int main(int argc, char **argv){
     Mat BgT;
     PetscCall(MatCreateTranspose(reducedsys->Bg, &BgT));
 
-    MatView(reducedsys->Bg, PETSC_VIEWER_STDOUT_WORLD);
-
     PetscCall(MatMult(BgT, reducedsys->g, g2));
 
     // Move boundary condition vectors to the right hand side of the 
@@ -214,8 +216,7 @@ int main(int argc, char **argv){
     PetscCall(VecAYPX(g1,-1,reducedsys->source));
     PetscCall(VecScale(g2,-1));
 
-// Check computed system
-
+    // Write generated matrices ===============================
     const char *checkAd = "MatrixCheckAd.dat";
     // Write A matrix
     WriteMat(reducedsys->M,checkAd);
@@ -267,37 +268,34 @@ int main(int argc, char **argv){
     PetscCall(VecZeroEntries(ls->x));
     PetscCall(VecZeroEntries(ls->y));
 
-    // Control number of iterations and tolerance
-    int maxIter;
-    PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL);
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &ls->C));
+    PetscCall(MatSetSizes(ls->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
+    PetscCall(MatSetUp(ls->C));
 
-    double tauUzawa;
-    PetscOptionsGetReal(NULL, NULL, "-tau", &tauUzawa, NULL);
+    PetscCall(MatAssemblyBegin(ls->C, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(ls->C, MAT_FINAL_ASSEMBLY));
 
-//    if (tauUzawa < 0){
-        // Use element size related tauUzawa
-//        tauUzawa = 1.0/(double)N / (double) M;
-//    }
+    PetscCall(MatZeroEntries(ls->C));
 
-    double tolUzawa;
-    PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
+/*
+    PreconditionedUzawa(ls, 10e-7, 30000, 0.08);
 
-    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
- 
-    //PetscCall(MatCreate(PETSC_COMM_WORLD, &ls->C));
-    //PetscCall(MatSetSizes(ls->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
-    //PetscCall(MatSetUp(ls->C));
+    // Write out L2 error for Darcy only system
+    std::vector<double> fullSolDarcyOnly = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
+    double errorSumuDarcyOnly = 0.0;
+        for (int j=0; j<N; j++){
+        for (int i=0; i<M; i++){
 
-    //PetscCall(MatAssemblyBegin(ls->C, MAT_FINAL_ASSEMBLY));
-    //PetscCall(MatAssemblyEnd(ls->C, MAT_FINAL_ASSEMBLY));
+            testBasis->GetCorners(mi,{i,j});
 
-    //PetscCall(MatZeroEntries(ls->C));
-
-    //PreconditionedUzawa(ls, tolUzawa, maxIter, tauUzawa);
+            // Darcy
+            std::array<double, 8> sewD = ExtractWeights(fullSolDarcyOnly, hdiv->LocalToGlobal(mi,{i,j})); 
+            errorSumuDarcyOnly += L2ErrorElem(sewD, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
+}}
+        cout << "Darcy Only: ||u-u_h||_L2 : " <<  pow(errorSumuDarcyOnly,0.5) << endl;
+*/
 
     // =================================================================================
-    // End of test of Darcy equation (literally Poisson equation 
-    // turns second order equation into first linear system )
     // Test of stokes equation starts from here
     ReducedSys * reducedsysStokes = (ReducedSys *)malloc(sizeof(ReducedSys));
 
@@ -319,8 +317,6 @@ int main(int argc, char **argv){
 
     Mat BgTStokes;
     PetscCall(MatCreateTranspose(reducedsysStokes->Bg, &BgTStokes));
-
-    MatView(reducedsysStokes->Bg, PETSC_VIEWER_STDOUT_WORLD);
 
     PetscCall(MatMult(BgTStokes, reducedsysStokes->g, g2Stokes));
 
@@ -353,18 +349,34 @@ int main(int argc, char **argv){
     PetscCall(VecZeroEntries(lsStokes->x));
     PetscCall(VecZeroEntries(lsStokes->y));
 
-    PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
-    //PetscCall(MatCreate(PETSC_COMM_WORLD, &lsStokes->C));
-    //PetscCall(MatSetSizes(lsStokes->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
-    //PetscCall(MatSetUp(lsStokes->C));
+    //PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &lsStokes->C));
+    PetscCall(MatSetSizes(lsStokes->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
+    PetscCall(MatSetUp(lsStokes->C));
 
-    //PetscCall(MatAssemblyBegin(lsStokes->C, MAT_FINAL_ASSEMBLY));
-    //PetscCall(MatAssemblyEnd(lsStokes->C, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin(lsStokes->C, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(lsStokes->C, MAT_FINAL_ASSEMBLY));
 
-    //PetscCall(MatZeroEntries(lsStokes->C));
+    PetscCall(MatZeroEntries(lsStokes->C));
 
-    //PreconditionedUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
-    //InexactUzawa(lsStokes, tolUzawa, maxIter, tauUzawa);
+/*
+    PreconditionedUzawa(lsStokes, 10e-7, 30000, 10);
+    std::vector<double> fullSolStokesOnly = GetFullSol(&lsStokes->x, bndryStokes, br->getDOF());
+
+    double errorSumuStokesOnly = 0.0;
+
+        for (int j=0; j<N; j++){
+        for (int i=0; i<M; i++){
+
+            testBasis->GetCorners(mi,{i,j});
+
+            // Stokes
+            std::array<double, 12> sewStokes = ExtractWeights(fullSolStokesOnly, br->LocalToGlobal(mi,{i,j})); 
+            errorSumuStokesOnly += L2ErrorElem(sewStokes, {i,j}, trueSol, gwf, gpf, *testBasis, *br);
+
+}}
+        cout << "Stokes  Only: ||u-u_h||_L2 : " <<  pow(errorSumuStokesOnly,0.5) << endl;
+*/
 
     const char *checkAs = "MatrixCheckAs.dat";
     // Write A matrix
@@ -389,6 +401,20 @@ int main(int argc, char **argv){
 
     // Solve a coupled system
     // Couple two saddle point system
+
+    // Control number of iterations and tolerance
+    int maxIter;
+    PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL);
+
+    double tauUzawa;
+    PetscOptionsGetReal(NULL, NULL, "-tau", &tauUzawa, NULL);
+
+    double tolUzawa;
+    PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
+
+    // Assign correct C matrix to the target system
+    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
+    PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
 
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
 
@@ -471,17 +497,14 @@ int main(int argc, char **argv){
         fullSolDarcy  = GetFullSol(&darcyx, bndryDarcy, hdiv->getDOF());
 
         // Fetch gauss points and gauss weights
-        const valarray<double>& gwf = GaussWeightsFace;
-        const vector<vertex>& gpf = GaussPointsFace;
-
         double errorSumu = 0.0;
         double errorSump = 0.0;
 
         double errorSumuStokes = 0.0;
         double errorSumuDarcy  = 0.0;
 
-        double *arrayp;
-        PetscCall(VecGetArray(lsStokes->y,&arrayp));
+        //double *arrayp;
+        //PetscCall(VecGetArray(lsStokes->y,&arrayp));
         //PetscCall(VecGetArray(ls->y,&arrayp));
 
         for (int j=0; j<N; j++){
@@ -513,7 +536,7 @@ int main(int argc, char **argv){
             errorSumuDarcy  += L2ErrorElem(singleWgtsDarcy, {i,j},bndryu, physproperty,gwf,gpf,*testBasis,*hdiv);
 }}
 //        }cout << endl; }
-        PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
+        //PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
         //PetscCall(VecRestoreArray(ls->y,&arrayp));
 
         //cout << "||u-u_h||_L2 : " <<  pow(errorSumu,0.5) << endl;

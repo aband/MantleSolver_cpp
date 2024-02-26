@@ -67,7 +67,7 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
                 vertex nu = basis_.unitnormal(edge);
          
                 // Compute values at supplemental bubble function
-                double supVal = AssignBndrySupVal(edgeCorners, nu, gwe, gpe);
+                double supVal = AssignBndrySupVal(edgeCorners, nu, gwe, gpe, pp);
 
                 // Compute values at nodal dof
                 //vertex bndryVal = Dirichlet_val(edgeCorners[1]);
@@ -219,7 +219,8 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
 double AssignBndrySupVal(const vertexSet& edgeCorner,
                          const vertex& nu,
                          const valarray<double>& gwe,
-                         const valarray<double>& gpe){
+                         const valarray<double>& gpe,
+                         PhysProperty * pp){
 
     // Assign value to the degree of freedom of 
     // the supplemental function on the edge
@@ -227,8 +228,10 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
     double work = 0.0;
 
     // Extract values on both ends of the target edge
-    vertex DiriValL = Dirichlet_val(edgeCorner[0]); 
-    vertex DiriValR = Dirichlet_val(edgeCorner[1]);
+    //vertex DiriValL = Dirichlet_val(edgeCorner[0]); 
+    //vertex DiriValR = Dirichlet_val(edgeCorner[1]);
+    vertex DiriValL = bndryVs(edgeCorner[0], pp); 
+    vertex DiriValR = bndryVs(edgeCorner[1], pp);
 
     // Calculate averaged unit normal component
     // of assigned dirichlet boundary values
@@ -236,7 +239,8 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
     for (int g=0; g<gwe.size(); g++) {
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edgeCorner);
 
-        vertex DiriVal = Dirichlet_val(mapped);
+        //vertex DiriVal = Dirichlet_val(mapped);
+        vertex DiriVal = bndryVs(mapped, pp);
         averaged += 1.0/2.0 *gwe[g] *(DiriVal[0] *nu[0] + DiriVal[1]*nu[1]);
     }
 

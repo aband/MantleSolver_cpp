@@ -62,7 +62,8 @@ std::array<double, 2> AssignBndryValsDarcy(const indice& global,
 double AssignBndrySupVal(const vertexSet& edgeCorner, 
                          const vertex& nu,
                          const valarray<double>& gwe,
-                         const valarray<double>& gpe);
+                         const valarray<double>& gpe,
+                         PhysProperty * pp);
 
 /** !
  * Assign Neumann or Dirichlet boundary to different elements.

@@ -127,6 +127,10 @@ void AssignLocMatrix(const MeshInfo& mi,
             // Non dimensionalized version
             (*locmatrix).sourcestokes[j] -= gw*jac*(1-phi_f)*
                                             (gx*brwork[j][0]/gy + gy*brwork[j][1]/gy);
+            //(*locmatrix).sourcestokes[j] += gw*jac*phi_s*
+            //                                (stokesforce[0]*brwork[j][0] + 
+            //                                 stokesforce[1]*brwork[j][1]);
+
 
             // Defined for testing purpose only ===========================================
             //(*locmatrix).sourcestokes[j] += gw*jac*(stokesforce[0]*brval[j][0] + 
@@ -137,7 +141,7 @@ void AssignLocMatrix(const MeshInfo& mi,
         //(*locmatrix).cs += gw*jac*phi_f_hat/(mu_s*(1-phi_f))*omegaQ*omegaQ;
 
         // Non dimensionalized version
-        (*locmatrix).cs += gw*jac*phi_f_hat/(1-phi_f)*omegaQ*omegaQ *NonDimCoeff;
+        (*locmatrix).cs += gw*jac*phi_f_hat/phi_s*omegaQ*omegaQ *NonDimCoeff;
 
         // Control Darcy part ================================================================
 
@@ -166,14 +170,14 @@ void AssignLocMatrix(const MeshInfo& mi,
         //(*locmatrix).cd += gw*jac*1.0/(mu_s*(1-phi_f))*omegaf*omegaf;
 
         // dimensionalized version
-        (*locmatrix).cd += gw*jac*1.0/(1-phi_f)*omegaf*omegaf;
+        (*locmatrix).cd += gw*jac*1.0/phi_s*omegaf*omegaf;
 
         // Calculate coupling matrix
         // With dimension version
         //(*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5) * omegaf*omegaQ;
 
         // Non Dimensionalized version
-        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5)/(1-phi_f) * omegaf*omegaQ;
+        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * omegaf*omegaQ;
 
     }
 

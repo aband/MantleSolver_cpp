@@ -85,7 +85,7 @@ const vertex darcyPressureGrad(const vertex& point){
 
     // Auxiliary function.
     // Returns the gradient of scalar pressure field
-    return {0.0,0.0};
+    return {-1.0,1.0};
 }
 
 const vertex stokesPressureGrad(const vertex& point){
@@ -102,11 +102,19 @@ const vertex divdivVel(const vertex& point){
     //return {-2*cos(point[0])*sin(point[1]),
     //         2*sin(point[0])*sin(point[1])};
 
-    return {6*point[0]*pow(point[1],2) + 2*pow(point[0],3),
-            -6*point[1]*pow(point[0],2) - 2*pow(point[1],3)};
+    //return {6*point[0]*pow(point[1],2) + 2*pow(point[0],3),
+    //        -6*point[1]*pow(point[0],2) - 2*pow(point[1],3)};
     //return {2,0.0};
-    //return {2*point[1], -2*point[0]};
+    return {2*point[1], -2*point[0]};
 
+}
+
+const vertex stress(const vertex& point){
+
+    // Calculate deviatoric stress
+    
+    return { 2*point[1] + 2*point[1] + 2*point[0],
+            -2*point[0] - 2*point[1] - 2*point[0]};
 }
 
 const vertex Dirichlet_val(const vertex& point){
@@ -125,14 +133,15 @@ const vertex darcyForce(const vertex& point){
 
     vertex gradpressure = darcyPressureGrad(point);
 
-    //return {truesol[0] + gradpressure[0], truesol[1] + gradpressure[1]};
+    return {truesol[0] + gradpressure[0], truesol[1] + gradpressure[1]};
 
-    return {0.0,0.0};
+    //return {0.0,0.0};
 }
 
 const vertex stokesForce(const vertex& point){
 
     return -1*divdivVel(point)+stokesPressureGrad(point);
+    //return -1*stress(point) + stokesPressureGrad(point);
 }
 
 // Boundary values
@@ -161,8 +170,8 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     work *= coef;
 
     // ====== Test ======
-    work[0] = point[0]*point[0]*point[1];
-    work[1] = -point[1]*point[1]*point[0];
+    //work[0] = point[0]*point[0]*point[1];
+    //work[1] = -point[1]*point[1]*point[0];
 
     return work;
 }
@@ -193,8 +202,8 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     work[1] += coef1 * 1;
 
     // ====== Test ======
-    work[0] = point[0]*point[0]*point[1];
-    work[1] = -point[1]*point[1]*point[0];
+    ////work[0] = point[0]*point[0]*point[1];
+    //work[1] = -point[1]*point[1]*point[0];
 
     return work;
 }

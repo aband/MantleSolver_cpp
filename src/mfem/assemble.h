@@ -5,7 +5,7 @@
 #include "myFunc.h"
 
 typedef struct{
-    Mat As,Ad,Bs,Bd,Cs,Cd,K,G,Gp;
+    Mat As,Ad,Bs,Bd,Cs,Cd,K;
     Vec sourceDarcy, sourceStokes;
 } System;
 
