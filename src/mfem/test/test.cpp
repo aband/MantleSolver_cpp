@@ -534,8 +534,10 @@ int main(int argc, char **argv){
 
             errorSumuStokes += L2ErrorElem(singleWgtsStokes,{i,j},bndryVs,physproperty,gwf,gpf,*testBasis,*br);
             errorSumuDarcy  += L2ErrorElem(singleWgtsDarcy, {i,j},bndryu, physproperty,gwf,gpf,*testBasis,*hdiv);
-}}
-//        }cout << endl; }
+
+            cout << "( " << j << ", " << i << ") : " << errorSumuStokes  << ", " << errorSumuDarcy << " ";
+//}}
+        }cout << endl; }
         //PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
         //PetscCall(VecRestoreArray(ls->y,&arrayp));
 

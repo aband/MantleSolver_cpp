@@ -85,7 +85,7 @@ const vertex darcyPressureGrad(const vertex& point){
 
     // Auxiliary function.
     // Returns the gradient of scalar pressure field
-    return {-1.0,1.0};
+    return {-1.0*pow(0.5,0.5),1.0*pow(0.5,0.5)};
 }
 
 const vertex stokesPressureGrad(const vertex& point){
@@ -117,25 +117,21 @@ const vertex stress(const vertex& point){
             -2*point[0] - 2*point[1] - 2*point[0]};
 }
 
-const vertex Dirichlet_val(const vertex& point){
-
-    std::array<double, 3> truesol = trueSol(point);
-
-    // Test of Darcy part
-    return {truesol[0], truesol[1]};
-}
+// ====================================================================
 
 const vertex darcyForce(const vertex& point){
 
     // Return the arbitrarily defined right hand side
     // source term.
-    std::array<double, 3> truesol = trueSol(point);
+    vertex work {0.0,0.0};
+    work [0] = point[0]*point[0]*point[1];
+    work [1] = -1*point[1]*point[1]*point[0];
 
     vertex gradpressure = darcyPressureGrad(point);
 
-    //return {truesol[0] + gradpressure[0], truesol[1] + gradpressure[1]};
+    return {work[0] + gradpressure[0], work[1] + gradpressure[1]};
 
-    return {0.0,0.0};
+    //return {0.0,0.0};
 }
 
 const vertex stokesForce(const vertex& point){
@@ -171,8 +167,8 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     work *= coef;
 
     // ====== Test ======
-    //work[0] = point[0]*point[0]*point[1];
-    //work[1] = -point[1]*point[1]*point[0];
+    work[0] = point[0]*point[0]*point[1]*0;
+    work[1] = -point[1]*point[1]*point[0]*0;
 
     return work;
 }
@@ -204,8 +200,8 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     work[1] += coef1 * 1;
 
     // ====== Test ======
-    ////work[0] = point[0]*point[0]*point[1];
-    //work[1] = -point[1]*point[1]*point[0];
+    work[0] = point[0]*point[0]*point[1];
+    work[1] = -point[1]*point[1]*point[0];
 
     return work;
 }

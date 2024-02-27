@@ -71,7 +71,8 @@ void AssignLocMatrix(const MeshInfo& mi,
         double gw = gwf[g];
 
         // Calculate point wise porosity ===================================
-        phi_f = AssignPorosity(mapped, (*physproperty).l);  // Fluid porosity
+        //phi_f = AssignPorosity(mapped, (*physproperty).l);  // Fluid porosity
+        phi_f = physproperty->phi0;
         phi_s = 1 - phi_f;                                  // Solid porosity
 
        // =================================================================
@@ -125,13 +126,13 @@ void AssignLocMatrix(const MeshInfo& mi,
             //                                                        gy*brwork[j][1]);
 
             // Non dimensionalized version
-            (*locmatrix).sourcestokes[j] -= gw*jac*(1-phi_f)*
-                                            (gx*brwork[j][0]/gy + gy*brwork[j][1]/gy);
+            //(*locmatrix).sourcestokes[j] -= gw*jac*(1-phi_f)*
+            //                                (gx*brwork[j][0]/gy + gy*brwork[j][1]/gy);
             //(*locmatrix).sourcestokes[j] -= 0.0;
 
-            //(*locmatrix).sourcestokes[j] += gw*jac*phi_s*
-            //                                (stokesforce[0]*brwork[j][0] + 
-            //                                 stokesforce[1]*brwork[j][1]);
+            (*locmatrix).sourcestokes[j] += gw*jac*phi_s*
+                                            (stokesforce[0]*brwork[j][0] + 
+                                             stokesforce[1]*brwork[j][1]);
 
 
             // Defined for testing purpose only ===========================================
