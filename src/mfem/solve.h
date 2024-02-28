@@ -25,6 +25,7 @@ typedef struct{
 
 // Iterative solvers
 PetscErrorCode CreateLinearSys(linearSys * ls, ReducedSys * reducedsys);
+
 PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, double tau);
 
 PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau);

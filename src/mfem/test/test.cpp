@@ -176,6 +176,17 @@ int main(int argc, char **argv){
     // Darcy and Stokes systems
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, system);
 
+    // Write coupling and compaction matrix ===================================
+    const char *checkCd = "MatrixCheckCd.dat";
+    WriteMat(system->Cd,checkCd);
+
+    const char *checkCs = "MatrixCheckCs.dat";
+    WriteMat(system->Cs,checkCs);
+
+    const char *checkK = "MatCheckK.dat";
+    WriteMat(system->K,checkK);
+    // ========================================================================
+
     // Create reduced system
     // right hand side vectors stem from the created reduced system 
     // Reduced system for Stokes and Darcy sytem are being created separately
@@ -191,97 +202,30 @@ int main(int argc, char **argv){
     // returns A, B, C, K matrices
     CreateReducedSerial(reducedsys, &system->Ad, &system->Bd, &system->sourceDarcy, bndryDarcy);
 
-    // Test Darcy part alone ============================================================
-    Vec g1;
+    linearSys * ls = (linearSys *)malloc(sizeof(linearSys));
 
-    // Check mat size
-    int cM, cN;
-    PetscCall(MatGetSize(reducedsys->M, &cM, &cN));
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &g1));
-    PetscCall(VecSetSizes(g1, PETSC_DECIDE, cM));
-    PetscCall(VecSetUp(g1));
-  
-    PetscCall(MatMult(reducedsys->Kg, reducedsys->g, g1));
+    // Create Target linear system
+    CreateLinearSys(ls, reducedsys);
 
-    Vec g2;
-    PetscCall(MatGetSize(reducedsys->B, &cM, &cN));
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &g2));
-    PetscCall(VecSetSizes(g2, PETSC_DECIDE, cN));
-    PetscCall(VecSetUp(g2));
+    // Test inexect Uzawa iteration algorithm
+    PreconditionedUzawa(ls, 10e-10, 30000, 0.08);
 
-    Mat BgT;
-    PetscCall(MatCreateTranspose(reducedsys->Bg, &BgT));
-
-    PetscCall(MatMult(BgT, reducedsys->g, g2));
-
-    // Move boundary condition vectors to the right hand side of the 
-    //VecScale(g1,-1);
-    PetscCall(VecAYPX(g1,-1,reducedsys->source));
-    PetscCall(VecScale(g2,-1));
-
-    // Write generated matrices ===============================
+    // Write generated reduced matrices =======================================
     const char *checkAd = "MatrixCheckAd.dat";
     // Write A matrix
-    WriteMat(reducedsys->M,checkAd);
+    WriteMat(ls->A,checkAd);
 
     const char *checkBd = "MatrixCheckBd.dat";
     // Write B matrix
-    WriteMat(reducedsys->B,checkBd);
+    WriteMat(ls->B,checkBd);
 
     // Write right two right hand side vectors
     const char *checkgd1 = "MatrixCheckgd1.dat";
-    WriteVec(g1, checkgd1);   
+    WriteVec(ls->f, checkgd1);   
 
     const char *checkgd2 = "MatrixCheckgd2.dat";
-    WriteVec(g2, checkgd2);   
-
-    const char *checkCd = "MatrixCheckCd.dat";
-    WriteMat(system->Cd,checkCd);
-
-    const char *checkCs = "MatrixCheckCs.dat";
-    WriteMat(system->Cs,checkCs);
-
-    const char *checkK = "MatCheckK.dat";
-    WriteMat(system->K,checkK);
-
-    // Test inexect Uzawa iteration algorithm
-    linearSys * ls = (linearSys *)malloc(sizeof(linearSys));
-
-    PetscCall(MatConvert(reducedsys->B, MATSAME, MAT_INITIAL_MATRIX, &ls->B));
-    PetscCall(MatConvert(reducedsys->M, MATSAME, MAT_INITIAL_MATRIX, &ls->A));
-
-    PetscCall(VecDuplicate(g1,&ls->f));
-    PetscCall(VecDuplicate(g2,&ls->g));
-
-    VecCopy(g1, ls->f);
-    VecCopy(g2, ls->g);
-
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &ls->x));
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &ls->y));
-
-    PetscCall(VecSetSizes(ls->x,PETSC_DECIDE,cM));
-    PetscCall(VecSetSizes(ls->y,PETSC_DECIDE,cN));
-
-    PetscCall(VecSetUp(ls->x));
-    PetscCall(VecSetUp(ls->y));
-
-    PetscCall(VecCopy(g1,ls->x));
-    PetscCall(VecCopy(g2,ls->y));
-   
-    PetscCall(VecZeroEntries(ls->x));
-    PetscCall(VecZeroEntries(ls->y));
-
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &ls->C));
-    PetscCall(MatSetSizes(ls->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
-    PetscCall(MatSetUp(ls->C));
-
-    PetscCall(MatAssemblyBegin(ls->C, MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd(ls->C, MAT_FINAL_ASSEMBLY));
-
-    PetscCall(MatZeroEntries(ls->C));
-
-
-    PreconditionedUzawa(ls, 10e-10, 30000, 0.08);
+    WriteVec(ls->g, checkgd2);   
+    // ========================================================================
 
     // Write out L2 error for Darcy only system
     std::vector<double> fullSolDarcyOnly = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
@@ -304,66 +248,29 @@ int main(int argc, char **argv){
 
     CreateReducedSerial(reducedsysStokes, &system->As, &system->Bs, &system->sourceStokes, bndryStokes);
 
-    Vec g1Stokes;
-    PetscCall(MatGetSize(reducedsysStokes->M, &cM, &cN));
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &g1Stokes));
-    PetscCall(VecSetSizes(g1Stokes,PETSC_DECIDE,cM));
-    PetscCall(VecSetUp(g1Stokes));
-
-    PetscCall(MatMult(reducedsysStokes->Kg, reducedsysStokes->g, g1Stokes));
-
-    Vec g2Stokes;
-    PetscCall(MatGetSize(reducedsysStokes->B, &cM, &cN));
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &g2Stokes));
-    PetscCall(VecSetSizes(g2Stokes,PETSC_DECIDE,cN));
-    PetscCall(VecSetUp(g2Stokes));
-
-    Mat BgTStokes;
-    PetscCall(MatCreateTranspose(reducedsysStokes->Bg, &BgTStokes));
-
-    PetscCall(MatMult(BgTStokes, reducedsysStokes->g, g2Stokes));
-
-    PetscCall(VecAYPX(g1Stokes, -1, reducedsysStokes->source));
-    PetscCall(VecScale(g2Stokes, -1));
-
     linearSys * lsStokes = (linearSys *)malloc(sizeof(linearSys));
 
-    PetscCall(MatConvert(reducedsysStokes->B, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->B));
-    PetscCall(MatConvert(reducedsysStokes->M, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->A));
+    CreateLinearSys(lsStokes, reducedsysStokes);
 
-    PetscCall(VecDuplicate(g1Stokes,&lsStokes->f));
-    PetscCall(VecDuplicate(g2Stokes,&lsStokes->g));
+    PreconditionedUzawa(lsStokes, 10e-10, 30000, 1);
 
-    PetscCall(VecCopy(g1Stokes, lsStokes->f));
-    PetscCall(VecCopy(g2Stokes, lsStokes->g));
+    // Write out linear system ====================================================
+    const char *checkAs = "MatrixCheckAs.dat";
+    // Write A matrix
+    WriteMat(lsStokes->A,checkAs);
 
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &lsStokes->x));
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &lsStokes->y));
+    const char *checkBs = "MatrixCheckBs.dat";
+    // Write B matrix
+    WriteMat(lsStokes->B,checkBs);
 
-    PetscCall(VecSetSizes(lsStokes->x,PETSC_DECIDE,cM));
-    PetscCall(VecSetSizes(lsStokes->y,PETSC_DECIDE,cN));
+    // Write right two right hand side vectors
+    const char *checkgs1 = "MatrixCheckgs1.dat";
+    WriteVec(lsStokes->f, checkgs1);   
 
-    PetscCall(VecSetUp(lsStokes->x));
-    PetscCall(VecSetUp(lsStokes->y));
+    const char *checkgs2 = "MatrixCheckgs2.dat";
+    WriteVec(lsStokes->g, checkgs2);   
+    // ============================================================================
 
-    PetscCall(VecCopy(g1Stokes,lsStokes->x));
-    PetscCall(VecCopy(g2Stokes,lsStokes->y));
-   
-    PetscCall(VecZeroEntries(lsStokes->x));
-    PetscCall(VecZeroEntries(lsStokes->y));
-
-    //PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
-    PetscCall(MatCreate(PETSC_COMM_WORLD, &lsStokes->C));
-    PetscCall(MatSetSizes(lsStokes->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
-    PetscCall(MatSetUp(lsStokes->C));
-
-    PetscCall(MatAssemblyBegin(lsStokes->C, MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd(lsStokes->C, MAT_FINAL_ASSEMBLY));
-
-    PetscCall(MatZeroEntries(lsStokes->C));
-
-
-    PreconditionedUzawa(lsStokes, 10e-10, 30000, 5);
     std::vector<double> fullSolStokesOnly = GetFullSol(&lsStokes->x, bndryStokes, br->getDOF());
 
     double errorSumuStokesOnly = 0.0;
@@ -380,31 +287,8 @@ int main(int argc, char **argv){
 }}
         cout << "Stokes  Only: ||u-u_h||_L2 : " <<  pow(errorSumuStokesOnly,0.5) << endl;
 
-
-    const char *checkAs = "MatrixCheckAs.dat";
-    // Write A matrix
-    WriteMat(reducedsysStokes->M,checkAs);
-
-    const char *checkBs = "MatrixCheckBs.dat";
-    // Write B matrix
-    WriteMat(reducedsysStokes->B,checkBs);
-
-    // Write right two right hand side vectors
-    const char *checkgs1 = "MatrixCheckgs1.dat";
-    WriteVec(g1Stokes, checkgs1);   
-
-    const char *checkgs2 = "MatrixCheckgs2.dat";
-    WriteVec(g2Stokes, checkgs2);   
-
-    const char *checkKgs = "MatrixCheckKgs.dat";
-    WriteMat(reducedsysStokes->Kg,checkKgs);
-
-    const char *checkgs = "VecCheckgs.dat";
-    WriteVec(reducedsysStokes->g,checkgs);
-
-    // Solve a coupled system
+    // Solve a coupled system =====================================================
     // Couple two saddle point system
-
     // Control number of iterations and tolerance
     int maxIter;
     PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL);
@@ -418,6 +302,14 @@ int main(int argc, char **argv){
     // Assign correct C matrix to the target system
     PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
     PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
+
+    //VecView(ls->x,PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(ls->y,PETSC_VIEWER_STDOUT_WORLD);
+
+    VecZeroEntries(ls->x);
+    VecZeroEntries(ls->y);
+    VecZeroEntries(lsStokes->x);
+    VecZeroEntries(lsStokes->y);
 
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
 

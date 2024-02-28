@@ -21,7 +21,7 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->gx    = 0.0;
     pp->gy    = -10.0;
     pp->invk0 = 1.0/(1e-8);
-    pp->phi0  = 0.5;
+    pp->phi0  = 0.1;
     pp->U0    = 1e-9;
 
     // Non dimensionalization parameters
@@ -81,23 +81,24 @@ std::array<double, 3> trueSol(const vertex& point){
     return work;
 }
 
-const vertex darcyPressureGrad(const vertex& point){
+const vertex darcyPressureGrad(const vertex& point, PhysProperty * pp){
 
     // Auxiliary function.
     // Returns the gradient of scalar pressure field
-    return {-1.0*pow(0.5,0.5),1.0*pow(0.5,0.5)};
+    return {-1.0*pow(0.1,0.5),1.0*pow(0.1,0.5)};
+    //return {-1,1};
 }
 
-const vertex stokesPressureGrad(const vertex& point){
+const vertex stokesPressureGrad(const vertex& point, PhysProperty * pp){
 
     //return {cos(point[0])*sin(point[1]),
     //        sin(point[0])*cos(point[1])};
 
-    return {-1.0,1.0};
+    return {-1.0*pow(10,0.5),1.0*pow(10,0.5)};
     //return {-point[0], point[1]};
 }
 
-const vertex divdivVel(const vertex& point){
+const vertex divdivVel(const vertex& point, PhysProperty * pp){
 
     //return {-2*cos(point[0])*sin(point[1]),
     //         2*sin(point[0])*sin(point[1])};
@@ -109,12 +110,12 @@ const vertex divdivVel(const vertex& point){
 
 }
 
-const vertex stress(const vertex& point){
+const vertex stress(const vertex& point, PhysProperty * pp){
 
     // Calculate deviatoric stress
     
-    return { 2*point[1] + 2*point[1] + 2*point[0],
-            -2*point[0] - 2*point[1] - 2*point[0]};
+    return { 2*point[1] *0.9,
+            -2*point[0] *0.9};
 }
 
 // ====================================================================
@@ -136,8 +137,8 @@ const vertex darcyForce(const vertex& point){
 
 const vertex stokesForce(const vertex& point){
 
-    return -1*divdivVel(point)+stokesPressureGrad(point);
-    //return -1*stress(point) + stokesPressureGrad(point);
+    //return -1*divdivVel(point)+stokesPressureGrad(point);
+    return -1*stress(point) + stokesPressureGrad(point);
 }
 
 // Boundary values
