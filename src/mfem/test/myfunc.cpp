@@ -167,8 +167,8 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     work *= coef;
 
     // ====== Test ======
-    work[0] = point[0]*point[0]*point[1]*0;
-    work[1] = -point[1]*point[1]*point[0]*0;
+    work[0] = point[0]*point[0]*point[1];
+    work[1] = -point[1]*point[1]*point[0];
 
     return work;
 }

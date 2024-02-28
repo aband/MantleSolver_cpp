@@ -25,9 +25,6 @@ void AssignLocMatrix(const MeshInfo& mi,
     double rho_f  = physproperty->rho_f;
     double rho_s  = physproperty->rho_s;
 
-    double phi_f = physproperty->phi0;
-    double phi_s = 1-phi_f;
-
     // Cell average fluid porosity
     double phi_f_hat = 0.0;
     double area = 0.0;
@@ -64,6 +61,9 @@ void AssignLocMatrix(const MeshInfo& mi,
     double omegaQ = 1.0;
     double omegaf = pow(phi_f_hat,0.5) * omegaQ;
 
+    double phi_f = 0.0;
+    double phi_s = 0.0;
+
     for (unsigned int g=0; g<gwf.size(); g++){
         // Calculate mapped gauss points and jacobian
         vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
@@ -72,8 +72,8 @@ void AssignLocMatrix(const MeshInfo& mi,
 
         // Calculate point wise porosity ===================================
         //phi_f = AssignPorosity(mapped, (*physproperty).l);  // Fluid porosity
-        phi_f = physproperty->phi0;
-        phi_s = 1 - phi_f;                                  // Solid porosity
+        double phi_f = physproperty->phi0;
+        double phi_s = 1 - phi_f;                                  // Solid porosity
 
        // =================================================================
 
@@ -144,7 +144,7 @@ void AssignLocMatrix(const MeshInfo& mi,
         //(*locmatrix).cs += gw*jac*phi_f_hat/(mu_s*(1-phi_f))*omegaQ*omegaQ;
 
         // Non dimensionalized version
-        (*locmatrix).cs += gw*jac*phi_f_hat/phi_s*omegaQ*omegaQ *NonDimCoeff;
+        (*locmatrix).cs += gw*jac*phi_f_hat/phi_s*omegaQ*omegaQ *NonDimCoeff*0.0;
 
         // Control Darcy part ================================================================
 
@@ -173,14 +173,14 @@ void AssignLocMatrix(const MeshInfo& mi,
         //(*locmatrix).cd += gw*jac*1.0/(mu_s*(1-phi_f))*omegaf*omegaf;
 
         // dimensionalized version
-        (*locmatrix).cd += gw*jac*1.0/phi_s*omegaf*omegaf;
+        (*locmatrix).cd += gw*jac*1.0/phi_s*omegaf*omegaf*0.0;
 
         // Calculate coupling matrix
         // With dimension version
         //(*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5) * omegaf*omegaQ;
 
         // Non Dimensionalized version
-        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * omegaf*omegaQ;
+        (*locmatrix).k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * omegaf*omegaQ*0.0;
 
     }
 

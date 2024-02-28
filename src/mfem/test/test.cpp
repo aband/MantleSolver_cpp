@@ -55,8 +55,11 @@ int main(int argc, char **argv){
 
     AssignPhyProperties(physproperty);
 
-    double L = 2*160000/physproperty->x0, H = 1*160000/physproperty->x0;
-    double xstart = -1*160000/physproperty->x0, ystart = 0;
+//    double L = 2*160000/physproperty->x0, H = 1*160000/physproperty->x0;
+//    double xstart = -1*160000/physproperty->x0, ystart = 0;
+    double L = 2.0, H = 2.0;
+    double xstart = -1.0, ystart = -1.0;
+
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL); CHKERRQ(ierr);
@@ -277,8 +280,8 @@ int main(int argc, char **argv){
 
     PetscCall(MatZeroEntries(ls->C));
 
-/*
-    PreconditionedUzawa(ls, 10e-7, 30000, 0.08);
+
+    PreconditionedUzawa(ls, 10e-10, 30000, 0.08);
 
     // Write out L2 error for Darcy only system
     std::vector<double> fullSolDarcyOnly = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
@@ -290,10 +293,10 @@ int main(int argc, char **argv){
 
             // Darcy
             std::array<double, 8> sewD = ExtractWeights(fullSolDarcyOnly, hdiv->LocalToGlobal(mi,{i,j})); 
-            errorSumuDarcyOnly += L2ErrorElem(sewD, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
+            errorSumuDarcyOnly += L2ErrorElem(sewD, {i,j}, bndryu,physproperty, gwf, gpf, *testBasis, *hdiv);
 }}
         cout << "Darcy Only: ||u-u_h||_L2 : " <<  pow(errorSumuDarcyOnly,0.5) << endl;
-*/
+
 
     // =================================================================================
     // Test of stokes equation starts from here
@@ -359,8 +362,8 @@ int main(int argc, char **argv){
 
     PetscCall(MatZeroEntries(lsStokes->C));
 
-/*
-    PreconditionedUzawa(lsStokes, 10e-7, 30000, 10);
+
+    PreconditionedUzawa(lsStokes, 10e-10, 30000, 5);
     std::vector<double> fullSolStokesOnly = GetFullSol(&lsStokes->x, bndryStokes, br->getDOF());
 
     double errorSumuStokesOnly = 0.0;
@@ -372,11 +375,11 @@ int main(int argc, char **argv){
 
             // Stokes
             std::array<double, 12> sewStokes = ExtractWeights(fullSolStokesOnly, br->LocalToGlobal(mi,{i,j})); 
-            errorSumuStokesOnly += L2ErrorElem(sewStokes, {i,j}, trueSol, gwf, gpf, *testBasis, *br);
+            errorSumuStokesOnly += L2ErrorElem(sewStokes, {i,j}, bndryVs, physproperty, gwf, gpf, *testBasis, *br);
 
 }}
         cout << "Stokes  Only: ||u-u_h||_L2 : " <<  pow(errorSumuStokesOnly,0.5) << endl;
-*/
+
 
     const char *checkAs = "MatrixCheckAs.dat";
     // Write A matrix
@@ -535,9 +538,9 @@ int main(int argc, char **argv){
             errorSumuStokes += L2ErrorElem(singleWgtsStokes,{i,j},bndryVs,physproperty,gwf,gpf,*testBasis,*br);
             errorSumuDarcy  += L2ErrorElem(singleWgtsDarcy, {i,j},bndryu, physproperty,gwf,gpf,*testBasis,*hdiv);
 
-            cout << "( " << j << ", " << i << ") : " << errorSumuStokes  << ", " << errorSumuDarcy << " ";
-//}}
-        }cout << endl; }
+            //cout << "( " << j << ", " << i << ") : " << errorSumuStokes  << ", " << errorSumuDarcy << " ";
+}}
+//        }cout << endl; }
         //PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
         //PetscCall(VecRestoreArray(ls->y,&arrayp));
 

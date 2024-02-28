@@ -2,6 +2,8 @@
 #define SOLVE_H_
 
 #include <petsc.h>
+#include <iostream>
+#include "bndry.h"
 
 /*
  * Solve linear systems arised from mixed finite element scheme for 
@@ -22,6 +24,7 @@ typedef struct{
 } linearSys; 
 
 // Iterative solvers
+PetscErrorCode CreateLinearSys(linearSys * ls, ReducedSys * reducedsys);
 PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, double tau);
 
 PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau);

@@ -1,5 +1,76 @@
 #include "solve.h"
-#include <iostream>
+
+PetscErrorCode CreateLinearSys(linearSys * ls, ReducedSys * reducedsys){
+
+    // Compute target linear system
+    // returns
+    // A B F
+    // B O G
+    // C will be assigned separately
+    int M, N;
+
+    // Boundary term right hand side
+    // velocity
+    Vec g1;
+    PetscCall(MatGetSize(reducedsys->M, &M, &N));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &g1));
+    PetscCall(VecSetSizes(g1, PETSC_DECIDE, M));
+    PetscCall(VecSetUp(g1));
+  
+    PetscCall(MatMult(reducedsys->Kg, reducedsys->g, g1));
+
+    // pressure
+    Vec g2;
+    PetscCall(MatGetSize(reducedsys->B, &M, &N));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &g2));
+    PetscCall(VecSetSizes(g2, PETSC_DECIDE, N));
+    PetscCall(VecSetUp(g2));
+
+    Mat BgT;
+    PetscCall(MatCreateTranspose(reducedsys->Bg, &BgT));
+
+    PetscCall(MatMult(BgT, reducedsys->g, g2));
+
+    // Move boundary condition vectors to the right hand side of the 
+    PetscCall(VecAYPX(g1,-1,reducedsys->source));
+    PetscCall(VecScale(g2,-1));
+
+    // Copy computed vectors to 
+    PetscCall(MatConvert(reducedsys->B, MATSAME, MAT_INITIAL_MATRIX, &ls->B));
+    PetscCall(MatConvert(reducedsys->M, MATSAME, MAT_INITIAL_MATRIX, &ls->A));
+
+    PetscCall(VecDuplicate(g1,&ls->f));
+    PetscCall(VecDuplicate(g2,&ls->g));
+
+    VecCopy(g1, ls->f);
+    VecCopy(g2, ls->g);
+
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &ls->x));
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &ls->y));
+
+    PetscCall(VecSetSizes(ls->x,PETSC_DECIDE,M));
+    PetscCall(VecSetSizes(ls->y,PETSC_DECIDE,N));
+
+    PetscCall(VecSetUp(ls->x));
+    PetscCall(VecSetUp(ls->y));
+
+    PetscCall(VecCopy(g1,ls->x));
+    PetscCall(VecCopy(g2,ls->y));
+   
+    PetscCall(VecZeroEntries(ls->x));
+    PetscCall(VecZeroEntries(ls->y));
+
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &ls->C));
+    PetscCall(MatSetSizes(ls->C, PETSC_DECIDE, PETSC_DECIDE, M*N, M*N));
+    PetscCall(MatSetUp(ls->C));
+
+    PetscCall(MatAssemblyBegin(ls->C, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(ls->C, MAT_FINAL_ASSEMBLY));
+
+    PetscCall(MatZeroEntries(ls->C));
+
+    return PETSC_SUCCESS;
+}
 
 PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, double tau){
 
