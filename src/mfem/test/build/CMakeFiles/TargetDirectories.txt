@@ -1,6 +1,0 @@
-/home/renpo/Research/MantleSolver/src/mfem/test/build/CMakeFiles/general_lib.dir
-/home/renpo/Research/MantleSolver/src/mfem/test/build/CMakeFiles/mfem_lib.dir
-/home/renpo/Research/MantleSolver/src/mfem/test/build/CMakeFiles/io_lib.dir
-/home/renpo/Research/MantleSolver/src/mfem/test/build/CMakeFiles/test.dir
-/home/renpo/Research/MantleSolver/src/mfem/test/build/CMakeFiles/edit_cache.dir
-/home/renpo/Research/MantleSolver/src/mfem/test/build/CMakeFiles/rebuild_cache.dir
