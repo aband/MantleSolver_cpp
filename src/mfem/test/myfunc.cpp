@@ -85,7 +85,7 @@ const vertex darcyPressureGrad(const vertex& point, PhysProperty * pp){
 
     // Auxiliary function.
     // Returns the gradient of scalar pressure field
-    return {-1.0*pow(0.1,0.5),1.0*pow(0.1,0.5)};
+    return {-1.0*pow(pp->phi0,0.5),1.0*pow(pp->phi0,0.5)};
     //return {-1,1};
 }
 
@@ -94,7 +94,7 @@ const vertex stokesPressureGrad(const vertex& point, PhysProperty * pp){
     //return {cos(point[0])*sin(point[1]),
     //        sin(point[0])*cos(point[1])};
 
-    return {-1.0*pow(10,0.5),1.0*pow(10,0.5)};
+    return {-1.0/pow(pp->phi0,0.5),1.0/pow(pp->phi0,0.5)};
     //return {-point[0], point[1]};
 }
 
@@ -114,13 +114,13 @@ const vertex stress(const vertex& point, PhysProperty * pp){
 
     // Calculate deviatoric stress
     
-    return { 2*point[1] *0.9,
-            -2*point[0] *0.9};
+    return { 2*point[1] *(1-pp->phi0),
+            -2*point[0] *(1-pp->phi0)};
 }
 
 // ====================================================================
 
-const vertex darcyForce(const vertex& point){
+const vertex darcyForce(const vertex& point, PhysProperty * pp){
 
     // Return the arbitrarily defined right hand side
     // source term.
@@ -128,17 +128,17 @@ const vertex darcyForce(const vertex& point){
     work [0] = point[0]*point[0]*point[1];
     work [1] = -1*point[1]*point[1]*point[0];
 
-    vertex gradpressure = darcyPressureGrad(point);
+    vertex gradpressure = darcyPressureGrad(point,pp);
 
     return {work[0] + gradpressure[0], work[1] + gradpressure[1]};
 
     //return {0.0,0.0};
 }
 
-const vertex stokesForce(const vertex& point){
+const vertex stokesForce(const vertex& point, PhysProperty * pp){
 
     //return -1*divdivVel(point)+stokesPressureGrad(point);
-    return -1*stress(point) + stokesPressureGrad(point);
+    return -1*stress(point,pp) + stokesPressureGrad(point,pp);
 }
 
 // Boundary values

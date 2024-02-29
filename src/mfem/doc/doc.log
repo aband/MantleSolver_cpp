@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.6.6)  22 FEB 2024 13:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.5.30)  28 FEB 2024 21:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**../doc/doc.tex
-(../doc/doc.tex
+**doc.tex
+(./doc.tex
 LaTeX2e <2021-11-15> patch level 1
 L3 programming layer <2022-01-21> (./hdr.tex (./siamart190516.cls
 Document Class: siamart190516 2019/05/16 v1.4.3 LaTeX document e-class
@@ -633,67 +633,8 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 5.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
-LaTeX Warning: Command \b invalid in math mode on input line 7.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 7.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 8.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 8.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 9.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 9.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 10.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 23.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 23.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 23.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 23.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 32.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 32.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 33.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 33.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 34.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 34.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 34.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 34.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 35.
-
-
-LaTeX Warning: Command \b invalid in math mode on input line 35.
+Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
+d on input line 7.
 
 \tf@thm=\write4
 \openout4 = `doc.thm'.
@@ -705,26 +646,28 @@ Package rerunfilecheck Info: File `doc.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 14996 strings out of 478287
- 230552 string characters out of 5849290
- 525618 words of memory out of 5000000
- 31421 multiletter control sequences out of 15000+600000
- 471257 words of font info for 37 fonts, out of 8000000 for 9000
+ 15002 strings out of 478287
+ 230602 string characters out of 5849289
+ 530617 words of memory out of 5000000
+ 31424 multiletter control sequences out of 15000+600000
+ 472184 words of font info for 40 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
- 75i,15n,77p,302b,336s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf
--dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmsy7.pfb>
-Output written on doc.pdf (1 page, 90106 bytes).
+ 75i,11n,77p,295b,336s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
+Output written on doc.pdf (1 page, 117908 bytes).
 PDF statistics:
- 60 PDF objects out of 1000 (max. 8388607)
- 38 compressed objects within 1 object stream
- 4 named destinations out of 1000 (max. 500000)
+ 76 PDF objects out of 1000 (max. 8388607)
+ 48 compressed objects within 1 object stream
+ 5 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

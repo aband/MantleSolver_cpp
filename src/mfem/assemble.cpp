@@ -85,7 +85,7 @@ void AssignLocMatrix(const MeshInfo& mi,
 
         std::array<vertex, 12> brval = br_.ComputeBRmixed(basis_, mapped);
 
-        vertex stokesforce = stokesForce(mapped); 
+        vertex stokesforce = stokesForce(mapped,physproperty); 
 
         for (unsigned int j=0; j<12; j++){
                 double div1 = brwork[j][0] + brwork[j][3];
@@ -128,7 +128,7 @@ void AssignLocMatrix(const MeshInfo& mi,
 
         std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
 
-        vertex darcyforce = darcyForce(mapped);
+        vertex darcyforce = darcyForce(mapped,physproperty);
 
         for (unsigned int j=0; j<8; j++){
             for (unsigned int i=0; i<8; i++){
