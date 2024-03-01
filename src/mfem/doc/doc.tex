@@ -1,6 +1,5 @@
 \input hdr.tex
-
-
+\section{A coupled partial melting Stokes-Darcy system}
 Strong form
 \begin{equation}
 \begin{aligned}
@@ -37,7 +36,7 @@ The resulting non dimensionalized form is therefore
 \end{equation}
 
 scaled nondimensionalized weak form
-let $\check{\sigma} = 2(\mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bold{\text{I}})$
+let $\check{\sigma} = \mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bold{\text{I}}$
 
 \begin{equation}
 		  \begin{aligned}
@@ -47,6 +46,105 @@ let $\check{\sigma} = 2(\mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \
 					 (\bold{\check{v}}_{r,h},\Psi_r)  - (\check{q}_{f,h},\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\Psi_r)) &= 0\\
 					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\Psi_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0
 		  \end{aligned}
+\end{equation}
+
+\newpage
+
+\section{Linear system and Uzawa type algorithm}
+
+original linear system
+\begin{equation}
+\begin{bmatrix}
+\bold{A}_s   & -\bold{B}_s & \bold{0}     &  \bold{0}   \\
+\bold{B}_s^T &  \bold{C}_s & \bold{0}     & -\bold{K}   \\
+\bold{0}     &  \bold{0}   & \bold{A}_d   & -\bold{B}_d \\
+\bold{0}     & -\bold{K}   & \bold{B}_d^T &  \bold{C}_d
+\end{bmatrix} \begin{bmatrix}
+\bold{x}_s\\
+\bold{y}_s\\
+\bold{x}_d\\
+\bold{y}_d
+\end{bmatrix}= 
+\begin{bmatrix}
+\bold{f}\\
+\bold{0}\\
+\bold{0}\\
+\bold{0}
+\end{bmatrix}
+\end{equation}
+
+This is a double saddle point system. 
+Symmetrically permutate original linear system and form a enlarged saddle point system.
+\begin{equation}
+\begin{bmatrix}
+\bold{A}_s   & \bold{0}     & -\bold{B}_s &  \bold{0}   \\
+\bold{0}     & \bold{A}_d   &  \bold{0}   & -\bold{B}_d \\
+\bold{B}_s^T & \bold{0}     &  \bold{C}_s & -\bold{K}   \\
+\bold{0}     & \bold{B}_d^T & -\bold{K}   &  \bold{C}_d
+\end{bmatrix} \begin{bmatrix}
+\bold{x}_s\\
+\bold{x}_d\\
+\bold{y}_s\\
+\bold{y}_d
+\end{bmatrix}= 
+\begin{bmatrix}
+\bold{f}\\
+\bold{0}\\
+\bold{0}\\
+\bold{0}
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\tilde{\bold{A}} = \begin{bmatrix}
+\bold{A}_s   & \bold{0}    \\
+\bold{0}     & \bold{A}_d  
+\end{bmatrix}
+\quad
+\tilde{\bold{B}} = \begin{bmatrix}
+\bold{B}_s & \bold{0}   \\
+\bold{0}   & \bold{B}_d
+\end{bmatrix}
+\quad
+\tilde{\bold{C}} = \begin{bmatrix}
+ \bold{C}_s & -\bold{K}   \\
+-\bold{K}   &  \bold{C}_d
+\end{bmatrix}
+\end{equation}
+In this newly formed system, the $\tilde{\bold{A}}$ matrix maintains as a positive definite matrix.
+we solve this typical saddle point system with uzawa iteration.
+
+\subsection{Convergence and stability analysis}
+
+\section{Test cases}
+We test the linear system a little bit different from the linear system above. 
+\subsection{Constant porosity and balanced pressure (divergence free velocity field)}
+
+
+\subsection{Const porosity and unbalanced pressure}
+\begin{equation}
+\check{q} = 0 \quad \quad \check{q}_f = 2(x+y) \quad \quad 
+\check{\bold{v}}_r = -\frac{\phi_f^{-1/2}}{1-\phi_f}\begin{pmatrix}x^2 \\ y^2 \end{pmatrix} 
+\quad \quad \check{\bold{v}}_s = \frac{\phi_f^{1/2}}{1-\phi_f} \begin{pmatrix}x^2 \\ y^2 \end{pmatrix}
+\end{equation}
+\begin{equation}
+\nabla \cdot \check{\bold{v}}_r = \frac{-2\phi_f^{-1/2}}{1-\phi_f}(x+y) 
+\end{equation}
+\begin{equation}
+\mathcal{D}\check{\bold{v}}_s = \frac{2\phi_f^{1/2}}{1-\phi_f}\begin{bmatrix} x & 0 \\ 0 & y \end{bmatrix}
+\quad \quad 
+(\nabla \cdot \check{\bold{v}}_s) \bold{\text{I}} = \frac{2\phi_f^{1/2}}{1-\phi_f} \begin{bmatrix} x+y & 0 \\ 0 & x+y \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\tilde{\bold{v}}_r + \phi_f^{1/2}\nabla\check{q}_f &= 
+-\frac{\phi_f^{-1/2}}{1-\phi_f}\begin{pmatrix}x^2 \\ y^2 \end{pmatrix} + \phi_f^{1/2}\begin{pmatrix} 2 \\ 2 \end{pmatrix}\\
+\phi_f^{1/2}\nabla \cdot (\check{\bold{v}}_r) + \frac{1}{1-\phi_f}\check{q}_f  &= \frac{-2}{1-\phi_f}(x+y) + \frac{1}{1-\phi_f}2(x+y)=0\\
+\nabla \cdot \check{\bold{v}}_s - \frac{\phi_f^{1/2}}{1-\phi_f}\check{q}_f &= \frac{2\phi_f^{1/2}}{1-\phi_f}(x+y) - \frac{2\phi_f^{1/2}}{1-\phi_f}(x+y) = 0\\
+-2(1-\phi_f)\nabla \cdot \sigma(\check{\bold{v}}_s) &= -2(1-\phi_f)\nabla \cdot (\mathcal{D}\check{\bold{v}}_s - \frac{1}{3}(\nabla \cdot \check{\bold{v}}_s) \bold{\text{I}}) = 
+-\frac{8\phi_f^{1/2}}{3} \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+\end{aligned}
 \end{equation}
 
 \end{document}

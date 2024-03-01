@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 
     ierr = PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");CHKERRQ(ierr);
 
-    // ==========================================================================================================================
+    // =================================================================================
 
     // Start testing mesh function
     // Initializing problem size with 3X3
@@ -103,7 +103,7 @@ int main(int argc, char **argv){
     //cout << "Mesh Created. To check full mesh, rerun with -printmesh 1 " << endl;
     //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-    // ==========================================================================================================================
+    // =================================================================================
 
     // Contain defined mesh in vector container.
     // and verify it.
@@ -114,7 +114,7 @@ int main(int argc, char **argv){
     //cout << "Converted c array of local mesh into vector container c++ " << endl;
     //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
 
-    // ====================================================================================================================================
+    // =================================================================================
 
     DM dmu;
 
@@ -141,7 +141,7 @@ int main(int argc, char **argv){
     double ** lu;
     DMDAVecGetArray(dmu, localu, &lu);
 
-    // ====================================================================================================================================
+    // =================================================================================
 
     // Create MeshInfo object
     MeshInfo mi; 
@@ -152,7 +152,7 @@ int main(int argc, char **argv){
 
     AssignValuesMeshInfo(mi,dm,dmu); 
 
-// ========================================================================================================================================
+    // =================================================================================
 
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>& gpf = GaussPointsFace;
@@ -176,7 +176,7 @@ int main(int argc, char **argv){
     // Darcy and Stokes systems
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, system);
 
-    // Write coupling and compaction matrix ===================================
+    // Write coupling and compaction matrix ============================================
     const char *checkCd = "MatrixCheckCd.dat";
     WriteMat(system->Cd,checkCd);
 
@@ -185,7 +185,7 @@ int main(int argc, char **argv){
 
     const char *checkK = "MatCheckK.dat";
     WriteMat(system->K,checkK);
-    // ========================================================================
+    // =================================================================================
 
     // Create reduced system
     // right hand side vectors stem from the created reduced system 
@@ -208,9 +208,9 @@ int main(int argc, char **argv){
     CreateLinearSys(ls, reducedsys);
 
     // Test inexect Uzawa iteration algorithm
-    PreconditionedUzawa(ls, 10e-10, 30000, 0.08);
+    //PreconditionedUzawa(ls, 10e-10, 30000, 0.08);
 
-    // Write generated reduced matrices =======================================
+    // Write generated reduced matrices ================================================
     const char *checkAd = "MatrixCheckAd.dat";
     // Write A matrix
     WriteMat(ls->A,checkAd);
@@ -225,8 +225,8 @@ int main(int argc, char **argv){
 
     const char *checkgd2 = "MatrixCheckgd2.dat";
     WriteVec(ls->g, checkgd2);   
-    // ========================================================================
-
+    // =================================================================================
+/*
     // Write out L2 error for Darcy only system
     std::vector<double> fullSolDarcyOnly = GetFullSol(&ls->x,bndryDarcy,hdiv->getDOF());
     double errorSumuDarcyOnly = 0.0;
@@ -240,7 +240,7 @@ int main(int argc, char **argv){
             errorSumuDarcyOnly += L2ErrorElem(sewD, {i,j}, bndryu,physproperty, gwf, gpf, *testBasis, *hdiv);
 }}
         cout << "Darcy Only: ||u-u_h||_L2 : " <<  pow(errorSumuDarcyOnly,0.5) << endl;
-
+*/
 
     // =================================================================================
     // Test of stokes equation starts from here
@@ -252,9 +252,9 @@ int main(int argc, char **argv){
 
     CreateLinearSys(lsStokes, reducedsysStokes);
 
-    PreconditionedUzawa(lsStokes, 10e-10, 30000, 1);
+    //PreconditionedUzawa(lsStokes, 10e-10, 30000, 1);
 
-    // Write out linear system ====================================================
+    // Write out linear system =========================================================
     const char *checkAs = "MatrixCheckAs.dat";
     // Write A matrix
     WriteMat(lsStokes->A,checkAs);
@@ -269,25 +269,26 @@ int main(int argc, char **argv){
 
     const char *checkgs2 = "MatrixCheckgs2.dat";
     WriteVec(lsStokes->g, checkgs2);   
-    // ============================================================================
-
+    // =================================================================================
+/*
     std::vector<double> fullSolStokesOnly = GetFullSol(&lsStokes->x, bndryStokes, br->getDOF());
 
     double errorSumuStokesOnly = 0.0;
 
-        for (int j=0; j<N; j++){
-        for (int i=0; i<M; i++){
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
 
-            testBasis->GetCorners(mi,{i,j});
+        testBasis->GetCorners(mi,{i,j});
 
-            // Stokes
-            std::array<double, 12> sewStokes = ExtractWeights(fullSolStokesOnly, br->LocalToGlobal(mi,{i,j})); 
-            errorSumuStokesOnly += L2ErrorElem(sewStokes, {i,j}, bndryVs, physproperty, gwf, gpf, *testBasis, *br);
+        // Stokes
+        std::array<double, 12> sewStokes = ExtractWeights(fullSolStokesOnly, br->LocalToGlobal(mi,{i,j})); 
+        errorSumuStokesOnly += L2ErrorElem(sewStokes, {i,j}, bndryVs, physproperty, gwf, gpf, *testBasis, *br);
 
 }}
-        cout << "Stokes  Only: ||u-u_h||_L2 : " <<  pow(errorSumuStokesOnly,0.5) << endl;
+    cout << "Stokes  Only: ||u-u_h||_L2 : " <<  pow(errorSumuStokesOnly,0.5) << endl;
+*/
 
-    // Solve a coupled system =====================================================
+    // Solve a coupled system ==========================================================
     // Couple two saddle point system
     // Control number of iterations and tolerance
     int maxIter;

@@ -21,7 +21,7 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->gx    = 0.0;
     pp->gy    = -10.0;
     pp->invk0 = 1.0/(1e-8);
-    pp->phi0  = 0.1;
+    pp->phi0  = 0.4;
     pp->U0    = 1e-9;
 
     // Non dimensionalization parameters
@@ -38,74 +38,27 @@ void AssignPhyProperties(PhysProperty * pp){
 
 // ===================================================
 
-std::array<double, 3> trueSol(const vertex& point){
-
-    array<double, 3> work;
-
-    // ======================================================
-    // Darcy test problem
-    // return a predefined true solution
-    // return <ux, uy, p> in this order
-    // A manufactured solution satisfying Darcy equation
-
-    // First scenerio
-    // u + grad(p) = 0
-    // div(u)      = 0
-    // ux = -x/(x^2+y^2)
-    // uy = -y/(x^2+y^2)
-    // p  = 1/2 ln(x^2+y^2)
-
-    //work[0] = -point[0]/(point[0]*point[0] + point[1]*point[1]);
-    //work[1] = -point[1]/(point[0]*point[0] + point[1]*point[1]);
-    //work[2] = 0.5*log(point[0]*point[0] + point[1]*point[1]);
-
-    // Second scenerio
-    // Divergence free linear velocity with arbitrary defined pressure field
-
-    // Third scenerio
-    work[0] = pow(point[0],2)*point[1];
-    work[1] = -pow(point[1],2)*point[0];
-    work[2] = -point[0] + point[1];
-
-    // =================================================================
-    // Test for Stokes problem
-
-    // Constant true solution
-    //work[0] = pow(point[0],3)*pow(point[1],2);
-    //work[1] = -pow(point[1],3)*pow(point[0],2);
-    //work[0] = point[1]*point[1];
-    //work[0] = pow(point[1],2);
-    //work[1] = 0;
-    //work[2] = 0.0;
-
-    return work;
-}
-
 const vertex darcyPressureGrad(const vertex& point, PhysProperty * pp){
 
-    // Auxiliary function.
-    // Returns the gradient of scalar pressure field
-    return {-1.0*pow(pp->phi0,0.5),1.0*pow(pp->phi0,0.5)};
-    //return {-1,1};
+    // Test balanced pressure
+    //return {-1.0,1.0};
+
+    // Test unbalanced pressure
+    return {0.0,0.0};
 }
 
 const vertex stokesPressureGrad(const vertex& point, PhysProperty * pp){
 
-    //return {cos(point[0])*sin(point[1]),
-    //        sin(point[0])*cos(point[1])};
+    // Test balanced pressure
+    //return {-1.0/pow(pp->phi0,0.5),1.0/pow(pp->phi0,0.5)};
 
-    return {-1.0/pow(pp->phi0,0.5),1.0/pow(pp->phi0,0.5)};
-    //return {-point[0], point[1]};
+    // Test unbalanced pressure
+    return {2,2};
+
 }
 
 const vertex divdivVel(const vertex& point, PhysProperty * pp){
 
-    //return {-2*cos(point[0])*sin(point[1]),
-    //         2*sin(point[0])*sin(point[1])};
-
-    //return {6*point[0]*pow(point[1],2) + 2*pow(point[0],3),
-    //        -6*point[1]*pow(point[0],2) - 2*pow(point[1],3)};
-    //return {2,0.0};
     return {2*point[1], -2*point[0]};
 
 }
@@ -113,37 +66,22 @@ const vertex divdivVel(const vertex& point, PhysProperty * pp){
 const vertex stress(const vertex& point, PhysProperty * pp){
 
     // Calculate deviatoric stress
-    
-    return { 2*point[1] *(1-pp->phi0),
-            -2*point[0] *(1-pp->phi0)};
+    double coef = 4*pow(pp->phi0,0.5)/(3*(1-pp->phi0));
+
+    // Test balanced pressure
+    //return { point[1],
+    //        -point[0]};
+
+    // Test unbalanced pressure
+    return {coef, coef};
 }
 
 // ====================================================================
 
-const vertex darcyForce(const vertex& point, PhysProperty * pp){
-
-    // Return the arbitrarily defined right hand side
-    // source term.
-    vertex work {0.0,0.0};
-    work [0] = point[0]*point[0]*point[1];
-    work [1] = -1*point[1]*point[1]*point[0];
-
-    vertex gradpressure = darcyPressureGrad(point,pp);
-
-    return {work[0] + gradpressure[0], work[1] + gradpressure[1]};
-
-    //return {0.0,0.0};
-}
-
-const vertex stokesForce(const vertex& point, PhysProperty * pp){
-
-    //return -1*divdivVel(point)+stokesPressureGrad(point);
-    return -1*stress(point,pp) + stokesPressureGrad(point,pp);
-}
-
 // Boundary values
 
 vertex bndryVs(const vertex& point, PhysProperty * pp){
+    // Stokes
 
     // Rewrite it with non dimensionalized versioin
 
@@ -167,14 +105,20 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     work *= coef;
 
-    // ====== Test ======
-    work[0] = point[0]*point[0]*point[1];
-    work[1] = -point[1]*point[1]*point[0];
+    // ====== Test Balanced pressure ======
+    //work[0] = point[0]*point[0]*point[1];
+    //work[1] = -point[1]*point[1]*point[0];
+ 
+    // ====== Test Unbalanced pressusre ======
+    coef = pow(pp->phi0,0.5)/(1-pp->phi0);
+    work[0] = coef * point[0]*point[0];
+    work[1] = coef * point[1]*point[1];
 
     return work;
 }
 
 vertex bndryu(const vertex& point, PhysProperty * pp){
+    // Darcy
 
     vertex work {0.0,0.0};
 
@@ -200,9 +144,30 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     work[0] += coef1 * 0;
     work[1] += coef1 * 1;
 
-    // ====== Test ======
-    work[0] = point[0]*point[0]*point[1];
-    work[1] = -point[1]*point[1]*point[0];
+    // ====== Test Balanced pressure ========
+    //work[0] = point[0]*point[0]*point[1];
+    //work[1] = -point[1]*point[1]*point[0];
+
+    // ====== Test unbalanced pressure ======
+    double coef = -1.0/pow(pp->phi0,0.5)/(1-pp->phi0);
+    work[0] = coef * point[0]*point[0];
+    work[1] = coef * point[1]*point[1];
 
     return work;
 }
+
+// ==============================================================
+const vertex darcyForce(const vertex& point, PhysProperty * pp){
+
+    // Return the arbitrarily defined right hand side
+    // source term.
+    return bndryu(point,pp) + pow(pp->phi0,0.5)*darcyPressureGrad(point,pp);
+}
+
+const vertex stokesForce(const vertex& point, PhysProperty * pp){
+
+    //return -1*divdivVel(point)+stokesPressureGrad(point);
+    return -1*2*(1-pp->phi0)*stress(point,pp) + stokesPressureGrad(point,pp);
+}
+
+

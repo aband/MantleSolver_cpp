@@ -116,9 +116,8 @@ void AssignLocMatrix(const MeshInfo& mi,
             (*locmatrix).bs[j] += gw*jac*div1 * omegaQ;
 
             // Non dimensionalized version
-            (*locmatrix).sourcestokes[j] += gw*jac*
-                                            (stokesforce[0]*brval[j][0] + 
-                                             stokesforce[1]*brval[j][1]);
+            (*locmatrix).sourcestokes[j] += gw*jac* (stokesforce[0]*brval[j][0] + 
+                                                     stokesforce[1]*brval[j][1]);
         }
 
         // Non dimensionalized version
