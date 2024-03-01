@@ -57,8 +57,10 @@ int main(int argc, char **argv){
 
 //    double L = 2*160000/physproperty->x0, H = 1*160000/physproperty->x0;
 //    double xstart = -1*160000/physproperty->x0, ystart = 0;
-    double L = 2.0, H = 2.0;
-    double xstart = -1.0, ystart = -1.0;
+    double L = 2, H = 1;
+    double xstart = -1, ystart = 0;
+//    double L = 2.0, H = 2.0;
+//    double xstart = -1.0, ystart = -1.0;
 
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
@@ -142,7 +144,6 @@ int main(int argc, char **argv){
     DMDAVecGetArray(dmu, localu, &lu);
 
     // =================================================================================
-
     // Create MeshInfo object
     MeshInfo mi; 
 
@@ -207,8 +208,10 @@ int main(int argc, char **argv){
     // Create Target linear system
     CreateLinearSys(ls, reducedsys);
 
+    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
+
     // Test inexect Uzawa iteration algorithm
-    //PreconditionedUzawa(ls, 10e-10, 30000, 0.08);
+    //InexactUzawa(ls, 10e-10, 30000, 0.08);
 
     // Write generated reduced matrices ================================================
     const char *checkAd = "MatrixCheckAd.dat";
@@ -241,7 +244,6 @@ int main(int argc, char **argv){
 }}
         cout << "Darcy Only: ||u-u_h||_L2 : " <<  pow(errorSumuDarcyOnly,0.5) << endl;
 */
-
     // =================================================================================
     // Test of stokes equation starts from here
     ReducedSys * reducedsysStokes = (ReducedSys *)malloc(sizeof(ReducedSys));
@@ -301,7 +303,7 @@ int main(int argc, char **argv){
     PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
 
     // Assign correct C matrix to the target system
-    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
+//    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
     PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
 
     //VecView(ls->x,PETSC_VIEWER_STDOUT_WORLD);
@@ -313,9 +315,6 @@ int main(int argc, char **argv){
     VecZeroEntries(lsStokes->y);
 
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
-
-    //MatView(lsStokes->C, PETSC_VIEWER_STDOUT_WORLD);
-    //MatView(ls->C, PETSC_VIEWER_STDOUT_WORLD);
 
     CoupledSolver(lsStokes, ls, lsResult, &system->K, tolUzawa, maxIter, tauUzawa);
 
@@ -366,22 +365,18 @@ int main(int argc, char **argv){
     VecRestoreArray(testReduced, &arraytestreduced);
 */
 
-// extract sub vectors from nest vector
-
-    Vec stokesx;
-    Vec darcyx;
-
-    VecNestGetSubVec(lsResult->x, 0, &stokesx);
-    VecNestGetSubVec(lsResult->x, 1, &darcyx);
-
-    //VecView(stokesx,PETSC_VIEWER_STDOUT_WORLD);
-    //VecView(darcyx,PETSC_VIEWER_STDOUT_WORLD);
-
     // Check computed error results
     int checkError = 0;
     PetscOptionsGetInt(NULL, NULL, "-checkError", &checkError, NULL);
 
     if (checkError){
+
+        // extract sub vectors from nest vector
+        Vec stokesx;
+        Vec darcyx;
+
+        VecNestGetSubVec(lsResult->x, 0, &stokesx);
+        VecNestGetSubVec(lsResult->x, 1, &darcyx);
 
         std::vector<double> fullSolStokes;
         std::vector<double> fullSolDarcy;
@@ -431,9 +426,9 @@ int main(int argc, char **argv){
             errorSumuStokes += L2ErrorElem(singleWgtsStokes,{i,j},bndryVs,physproperty,gwf,gpf,*testBasis,*br);
             errorSumuDarcy  += L2ErrorElem(singleWgtsDarcy, {i,j},bndryu, physproperty,gwf,gpf,*testBasis,*hdiv);
 
-            //cout << "( " << j << ", " << i << ") : " << errorSumuStokes  << ", " << errorSumuDarcy << " ";
-}}
-//        }cout << endl; }
+            cout << "( " << j << ", " << i << ") : " << errorSumuStokes  << ", " << errorSumuDarcy << " ";
+//}}
+        }cout << endl; }
         //PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
         //PetscCall(VecRestoreArray(ls->y,&arrayp));
 
@@ -446,6 +441,8 @@ int main(int argc, char **argv){
 
     //VecView(lsResult->y,PETSC_VIEWER_STDOUT_WORLD);
     //VecView(lsResult->x,PETSC_VIEWER_STDOUT_WORLD);
+
+    PlainMeshOutput(dm,&fullmesh);
 
     // =================================================================================
     // Check FE function space

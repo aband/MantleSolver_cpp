@@ -112,9 +112,36 @@ Symmetrically permutate original linear system and form a enlarged saddle point 
 \end{bmatrix}
 \end{equation}
 In this newly formed system, the $\tilde{\bold{A}}$ matrix maintains as a positive definite matrix.
-we solve this typical saddle point system with uzawa iteration.
+we solve this typical saddle point system with uzawa iteration. Uzawa algorithm has been discussed
+extensively at \cite{InexactUzawa_Elam_Golub}, \cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}.
+
+Consider the linear system of equation:
+\begin{equation}
+\begin{bmatrix}
+\bold{A}   & -\bold{B} \\
+\bold{B}^T &  \bold{C}
+\end{bmatrix} \begin{bmatrix}
+\bold{x} \\ \bold{y}
+\end{bmatrix} = \begin{bmatrix}
+\bold{f} \\
+\bold{0}
+\end{bmatrix}
+\end{equation}
+
+\begin{algorithm}
+\caption{Inexact Uzawa Iteration}
+Initialize solution
+\end{algorithm}
 
 \subsection{Convergence and stability analysis}
+Uzawa iteration is in fact a fixed point iteration procedure.
+Usually, uzawa iteration convergences slowly.
+
+\subsubsection{Anderson acceleration}
+Accelerating uzawa iteration has been discussed in the previously literatures.
+Anderson acceleration (Anderson mixing) \cite{AcceleratingUzawa_ho_Olson_Walker}
+
+\newpage
 
 \section{Test cases}
 We test the linear system a little bit different from the linear system above. 
@@ -146,5 +173,10 @@ We test the linear system a little bit different from the linear system above.
 -\frac{8\phi_f^{1/2}}{3} \begin{pmatrix} 1 \\ 1 \end{pmatrix}
 \end{aligned}
 \end{equation}
+
+% ====================
+\newpage
+\bibliographystyle{siam}
+\bibliography{ref}
 
 \end{document}

@@ -38,7 +38,7 @@ void AssignLocMatrix(const MeshInfo& mi,
         vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
-        phi_f_hat += gw * jac * AssignPorosity(mapped,(*physproperty).l);
+        phi_f_hat += gw * jac * AssignPorosity(mapped,physproperty);
         area += gw * jac; 
     }
 
@@ -76,6 +76,7 @@ void AssignLocMatrix(const MeshInfo& mi,
         //phi_f = AssignPorosity(mapped, (*physproperty).l);  // Fluid porosity
         phi_f = physproperty->phi0;
         phi_s = 1 - phi_f;                             // Solid porosity
+        //phi_s = 1.0;
 
         // =================================================================
 

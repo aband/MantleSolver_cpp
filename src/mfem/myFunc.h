@@ -23,7 +23,7 @@ typedef struct {
     double l;
 } PhysProperty;
 
-double AssignPorosity(const vertex& point, const double& l);
+double AssignPorosity(const vertex& point, PhysProperty * pp);
 
 void AssignPhyProperties(PhysProperty * pp);
 // ===================================================

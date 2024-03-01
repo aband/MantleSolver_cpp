@@ -1,0 +1,17 @@
+\begin{thebibliography}{1}
+
+\bibitem{InexactUzawa_Elam_Golub}
+{\sc H.~C. Elman and G.~H. Golub}, {\em Inexact and preconditioned uzawa
+  algorithms for saddle point problems}, SIAM. J. Numer. Anal., 31 (1994),
+  pp.~1645--1661.
+
+\bibitem{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}
+{\sc A.~T.~V. James H.~Bramble, Joseph E.~Pasciak}, {\em Analysis of the
+  inexact uzawa algorithm for saddle point problems}, SIAM. J. Numer. Anal., 34
+  (1997), pp.~1072--1092.
+
+\bibitem{AcceleratingUzawa_ho_Olson_Walker}
+{\sc H.~F.~W. Nguyenho~Ho, Sarah D.~Olson}, {\em Accelerating the uzawa
+  algorithm}, SIAM. J. Sci. Comput., 39 (2017), pp.~S461--S476.
+
+\end{thebibliography}
