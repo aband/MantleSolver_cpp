@@ -38,12 +38,6 @@ PetscErrorCode WriteMat(Mat V, const char * myfile);
 PetscErrorCode WriteVec(Vec g, const char * myfile);
 
 /**
- * Out put a quiver recognizable file
- * containing x, y coordinates and coresponding velocity vectors.
- */
-PetscErrorCode WriteQuiver();
-
-/**
  * Output with native mpi I/O format
  */
 PetscErrorCode MPIIO();

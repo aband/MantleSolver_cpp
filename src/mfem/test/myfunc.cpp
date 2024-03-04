@@ -50,6 +50,8 @@ const vertex darcyPressureGrad(const vertex& point, PhysProperty * pp){
     // Unbalanced pressure
     // return {2.0,2.0};
 
+    // =========================================================
+
     // Test case 3:
     // Constant porosity
     return {0.0,0.0}; 
@@ -106,11 +108,15 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     //work[0] = point[0]*point[0]*point[1];
     //work[1] = -point[1]*point[1]*point[0];
 
+    // ==================================================
+
     // Test case 2:
     // ====== Test Unbalanced pressusre ======
     //coef = pow(pp->phi0,0.5)/(1-pp->phi0);
     //work[0] = coef * point[0]*point[0];
     //work[1] = coef * point[1]*point[1];
+
+    // ==================================================
 
     // Test case 3:
     // Constant porosity
@@ -118,7 +124,6 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     if (point[0] < 0.0) {
         x = point[0] - pp->l/pp->x0;
-        x*= -1;
     }else{
         x = point[0] + pp->l/pp->x0;
     }
@@ -132,6 +137,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
              -z*z};
 
     work *= coef;
+
 
     return work;
 }
@@ -153,13 +159,13 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     //work[0] = coef * point[0]*point[0];
     //work[1] = coef * point[1]*point[1];
 
+
     // Test case 3:
     // Constant porosity
     double x,z;
 
     if (point[0] < 0.0){
         x = point[0] - pp->l/pp->x0;
-        x *= -1;
     }else {
         x = point[0] + pp->l/pp->x0;
     }
@@ -181,6 +187,7 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     // Scale the velocity
     work[0] /= pp->phi0;
     work[1] /= pp->phi0;
+
 
     return work;
 }

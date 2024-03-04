@@ -215,12 +215,6 @@ PetscErrorCode WriteVec(Vec g, const char * myfile){
     PetscFunctionReturn(0);
 }
 
-PetscErrorCode WriteQuiver(){
-
-
-    return PETSC_SUCCESS;
-}
-
 PetscErrorCode MPIIO(){
     PetscFunctionBeginUser;
 

@@ -368,6 +368,8 @@ int main(int argc, char **argv){
     // Check computed error results
     int checkError = 0;
     PetscOptionsGetInt(NULL, NULL, "-checkError", &checkError, NULL);
+    int quiverType = 1;
+    PetscOptionsGetInt(NULL, NULL, "-qt", &quiverType, NULL);
 
     if (checkError){
 
@@ -403,22 +405,6 @@ int main(int argc, char **argv){
 
             testBasis->GetCorners(mi,{i,j});
 
-            // Stokes
-            //std::array<double, 12> singleElemWeights = ExtractWeights(fullSol, br->LocalToGlobal(mi,{i,j})); 
-            //errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *br);
-            //errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
-
-//            cout << i << "  " << j << endl;
-
- //           cout << L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i)) << "  " ;
-
-            // Darcy
-            //std::array<double, 8> singleElemWeights = ExtractWeights(fullSol, hdiv->LocalToGlobal(mi,{i,j})); 
-            //errorSumu += L2ErrorElem(singleElemWeights, {i,j}, trueSol, gwf, gpf, *testBasis, *hdiv);
-            //errorSump += L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i));
-
-            //cout << L2ErrorElem(arrayp[j*M+i],trueSol,gwf,gpf,*testBasis,mi.cellArea.at(j*M+i))<< "   " ;
-
             // Coupled
             std::array<double, 12> singleWgtsStokes = ExtractWeights(fullSolStokes, br->LocalToGlobal(mi,{i,j}));
             std::array<double, 8> singleWgtsDarcy = ExtractWeights(fullSolDarcy, hdiv->LocalToGlobal(mi,{i,j}));
@@ -426,9 +412,12 @@ int main(int argc, char **argv){
             errorSumuStokes += L2ErrorElem(singleWgtsStokes,{i,j},bndryVs,physproperty,gwf,gpf,*testBasis,*br);
             errorSumuDarcy  += L2ErrorElem(singleWgtsDarcy, {i,j},bndryu, physproperty,gwf,gpf,*testBasis,*hdiv);
 
-            cout << "( " << j << ", " << i << ") : " << errorSumuStokes  << ", " << errorSumuDarcy << " ";
-//}}
-        }cout << endl; }
+            // Output approximation and exact velocity for quiver plot
+
+            // Center of element
+            //cout << "( " << j << ", " << i << ") : " << errorSumuStokes  << ", " << errorSumuDarcy << " ";
+}}
+//        }cout << endl; }
         //PetscCall(VecRestoreArray(lsStokes->y,&arrayp));
         //PetscCall(VecRestoreArray(ls->y,&arrayp));
 
@@ -437,12 +426,16 @@ int main(int argc, char **argv){
         cout << "Coupled : ||u-h_h||_L2 : " << pow(errorSumuStokes+errorSumuDarcy,0.5) << endl;
         cout << "Stokes  : ||u-u_h||_L2 : " <<  pow(errorSumuStokes,0.5) << endl;
         cout << "Darcy   : ||u-u_h||_L2 : " <<  pow(errorSumuDarcy,0.5) << endl;
+
+        if (quiverType == 1){
+            quiverOutput(mi,fullSolDarcy,M,N,*testBasis,*br,*hdiv,physproperty,1);
+        } else {
+            quiverOutput(mi,fullSolStokes,M,N,*testBasis,*br,*hdiv,physproperty,2);
+        }
     }
 
     //VecView(lsResult->y,PETSC_VIEWER_STDOUT_WORLD);
     //VecView(lsResult->x,PETSC_VIEWER_STDOUT_WORLD);
-
-    PlainMeshOutput(dm,&fullmesh);
 
     // =================================================================================
     // Check FE function space

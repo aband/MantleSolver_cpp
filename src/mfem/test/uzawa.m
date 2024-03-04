@@ -15,13 +15,16 @@ while (r>tol) && (iter < maxIter)
     x = x + tmp1;
 
     tmp2 = -B*x - C*y + G;
-    %tmp2 = tmp2 - mean(tmp2);
+    tmp2 = tmp2 - mean(tmp2);
+
+    norm(tmp1)
+    norm(tmp2)
 
     y = y + tau*tmp2;
 
     iter = iter +1;
 
-    r = norm(tmp1) + norm(tmp2)
+    r = norm(tmp1) + norm(tmp2);
 
 end
 

@@ -249,4 +249,109 @@ double L2ErrorElem(const std::array<double, 12>& weight,
     return elemError;
 }
 
+// Stokes
+std::array<vertex, 3> quiverPrepare(const std::array<double, 12>& weight,
+                                    const indice& globalELemIndic,
+                                    const vertex& local,
+                                    basis& basis_,
+                                    BRMixed& br_,
+                                    PhysProperty * pp){
 
+    std::array<vertex, 3> work;
+
+    vertex global = GaussMapPointsFace(local, basis_.corners());
+
+    std::array<vertex, 12> brwork = br_.ComputeBRmixed(basis_, global);
+
+    valarray<double> approxVal = {0.0,0.0};
+
+    for (int i=0; i<12; i++){
+        approxVal += weight[i]*brwork[i];
+    }
+
+    work[0] = global;
+    work[1] = approxVal;
+    work[2] = bndryVs(global, pp);
+
+    return work;
+}
+
+// Darcy
+std::array<vertex, 3> quiverPrepare(const std::array<double, 8>& weight,
+                                    const indice& globalElemIndic,
+                                    const vertex& local,
+                                    basis& basis_,
+                                    Hdivmixed& hdiv_,
+                                    PhysProperty * pp){
+
+    std::array<vertex, 3> work;
+
+    vertex global = GaussMapPointsFace(local, basis_.corners());
+
+    std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_, global);
+
+    valarray<double> approxVal = {0.0,0.0};
+
+    for (int i=0; i<8; i++){
+        approxVal += weight[i]*hdivwork[i];
+    }
+
+    work[0] = global;
+    work[1] = approxVal;
+    work[2] = bndryu(global, pp);
+
+    return work;
+}
+
+int quiverOutput(const MeshInfo& mi, const std::vector<double>& fullSol, int M, int N, 
+                 basis& basis_, BRMixed& br, Hdivmixed& hdiv, PhysProperty * pp, int flag){
+
+    FILE *fx = fopen("gridX.dat","w");
+    FILE *fy = fopen("gridY.dat","w");
+    FILE *fvx = fopen("aprxVx.dat","w");
+    FILE *fvy = fopen("aprxVy.dat","w");
+    FILE *fvxx = fopen("exctVx.dat","w");
+    FILE *fvyy = fopen("exctVy.dat","w");
+    // =============================================
+    for (int j=0; j<N; j++){
+        for (int i=0; i<M; i++){
+
+            vertex local {0.0,0.0};
+            std::array<vertex, 3> work;
+
+            basis_.GetCorners(mi,{i,j});
+
+            if (flag == 1){
+                // Darcy
+                std::array<double, 8> singleWgt = ExtractWeights(fullSol, hdiv.LocalToGlobal(mi,{i,j}));
+                work = quiverPrepare(singleWgt, {i,j}, local, basis_, hdiv, pp);
+            } else {
+                // Stokes
+                std::array<double, 12> singleWgt = ExtractWeights(fullSol, br.LocalToGlobal(mi,{i,j}));
+                work = quiverPrepare(singleWgt, {i,j}, local, basis_, br, pp);
+            }
+
+            fprintf(fx,"%f ",work[0][0]);
+            fprintf(fy,"%f ",work[0][1]);
+            fprintf(fvx,"%f ",work[1][0]);
+            fprintf(fvy,"%f ",work[1][1]);
+            fprintf(fvxx,"%f ",work[2][0]);
+            fprintf(fvyy,"%f ",work[2][1]);
+        }
+        fprintf(fx,"\n");
+        fprintf(fy,"\n");
+        fprintf(fvx,"\n");
+        fprintf(fvy,"\n");
+        fprintf(fvxx,"\n");
+        fprintf(fvyy,"\n");
+    }
+    // =============================================
+    fclose(fx);
+    fclose(fy);
+    fclose(fvx);
+    fclose(fvy);
+    fclose(fvxx);
+    fclose(fvyy);
+
+    return 0;
+}

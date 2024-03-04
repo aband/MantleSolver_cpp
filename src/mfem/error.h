@@ -63,4 +63,26 @@ double L2ErrorElem(const double& approxP,
                    basis& basis_,
                    const double& area);
 
+/**
+ * containing x, y coordinates and coresponding velocity vectors.
+ * [x,y;vx,vy;exactx,exacty]
+ * Data output to check error
+ */
+std::array<vertex, 3> quiverPrepare(const std::array<double, 12>& weight,
+                                    const indice& globalElemIndic,
+                                    const vertex& local,
+                                    basis& basis_,
+                                    BRMixed& br_,
+                                    PhysProperty * pp);
+
+std::array<vertex, 3> quiverPrepare(const std::array<double, 8>& weight,
+                                    const indice& globalElemIndic,
+                                    const vertex& local,
+                                    basis& basis_,
+                                    Hdivmixed& hdiv_,
+                                    PhysProperty * pp);
+
+int quiverOutput(const MeshInfo& mi, const std::vector<double>& fullSol, int M, int N, 
+                 basis& basis_, BRMixed& br, Hdivmixed& hdiv, PhysProperty * pp, int flag);
+
 #endif
