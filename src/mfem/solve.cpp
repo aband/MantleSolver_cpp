@@ -213,6 +213,7 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
         PetscCall(VecAXPY(tmp3, -1, ls->g));
         PetscCall(VecScale(tmp3,-1.0));
 
+/*
         // Take out tmp3 constant kernal =====
         double mean;
         VecMean(tmp3, &mean);
@@ -223,6 +224,7 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
         PetscCall(VecRestoreArray(tmp3, &arraytmp));
 
         // ===================================
+*/
 
         PetscCall(VecAXPY(ls->y,tau,tmp3));
 

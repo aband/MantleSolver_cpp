@@ -58,7 +58,7 @@ int main(int argc, char **argv){
 //    double L = 2*160000/physproperty->x0, H = 1*160000/physproperty->x0;
 //    double xstart = -1*160000/physproperty->x0, ystart = 0;
     double L = 2, H = 1;
-    double xstart = -1, ystart = 0;
+    double xstart = -1, ystart = 0.0001;
 //    double L = 2.0, H = 2.0;
 //    double xstart = -1.0, ystart = -1.0;
 
@@ -208,7 +208,7 @@ int main(int argc, char **argv){
     // Create Target linear system
     CreateLinearSys(ls, reducedsys);
 
-    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
+    //PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
 
     // Test inexect Uzawa iteration algorithm
     //InexactUzawa(ls, 10e-10, 30000, 0.08);
@@ -303,7 +303,7 @@ int main(int argc, char **argv){
     PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
 
     // Assign correct C matrix to the target system
-//    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
+    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &ls->C));
     PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
 
     //VecView(ls->x,PETSC_VIEWER_STDOUT_WORLD);
@@ -434,6 +434,19 @@ int main(int argc, char **argv){
         }
     }
 
+        Vec stokesp;
+        Vec darcyp;
+
+        VecNestGetSubVec(lsResult->y, 0, &stokesp);
+        VecNestGetSubVec(lsResult->y, 1, &darcyp);
+
+    double stokesmean = 0.0;
+    double darcymean = 0.0;
+
+    VecMean(stokesp, &stokesmean);
+    VecMean(darcyp, &darcymean);
+
+    cout << stokesmean << " " << darcymean << endl;
     //VecView(lsResult->y,PETSC_VIEWER_STDOUT_WORLD);
     //VecView(lsResult->x,PETSC_VIEWER_STDOUT_WORLD);
 
