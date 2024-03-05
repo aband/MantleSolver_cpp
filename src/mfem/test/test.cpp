@@ -57,8 +57,8 @@ int main(int argc, char **argv){
 
 //    double L = 2*160000/physproperty->x0, H = 1*160000/physproperty->x0;
 //    double xstart = -1*160000/physproperty->x0, ystart = 0;
-    double L = 2, H = 1;
-    double xstart = -1, ystart = 0.0001;
+    double L = 1, H = 1;
+    double xstart = 0.1, ystart = 0.1;
 //    double L = 2.0, H = 2.0;
 //    double xstart = -1.0, ystart = -1.0;
 
@@ -434,11 +434,11 @@ int main(int argc, char **argv){
         }
     }
 
-        Vec stokesp;
-        Vec darcyp;
+    Vec stokesp;
+    Vec darcyp;
 
-        VecNestGetSubVec(lsResult->y, 0, &stokesp);
-        VecNestGetSubVec(lsResult->y, 1, &darcyp);
+    VecNestGetSubVec(lsResult->y, 0, &stokesp);
+    VecNestGetSubVec(lsResult->y, 1, &darcyp);
 
     double stokesmean = 0.0;
     double darcymean = 0.0;

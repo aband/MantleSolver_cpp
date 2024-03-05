@@ -189,7 +189,6 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     work[0] /= pp->phi0;
     work[1] /= pp->phi0;
 
-
     return work;
 }
 
