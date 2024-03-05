@@ -252,14 +252,12 @@ double L2ErrorElem(const std::array<double, 12>& weight,
 // Stokes
 std::array<vertex, 3> quiverPrepare(const std::array<double, 12>& weight,
                                     const indice& globalELemIndic,
-                                    const vertex& local,
+                                    const vertex& global,
                                     basis& basis_,
                                     BRMixed& br_,
                                     PhysProperty * pp){
 
     std::array<vertex, 3> work;
-
-    vertex global = GaussMapPointsFace(local, basis_.corners());
 
     std::array<vertex, 12> brwork = br_.ComputeBRmixed(basis_, global);
 
@@ -279,14 +277,12 @@ std::array<vertex, 3> quiverPrepare(const std::array<double, 12>& weight,
 // Darcy
 std::array<vertex, 3> quiverPrepare(const std::array<double, 8>& weight,
                                     const indice& globalElemIndic,
-                                    const vertex& local,
+                                    const vertex& global,
                                     basis& basis_,
                                     Hdivmixed& hdiv_,
                                     PhysProperty * pp){
 
     std::array<vertex, 3> work;
-
-    vertex global = GaussMapPointsFace(local, basis_.corners());
 
     std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_, global);
 
@@ -312,6 +308,7 @@ int quiverOutput(const MeshInfo& mi, const std::vector<double>& fullSol, int M, 
     FILE *fvy = fopen("aprxVy.dat","w");
     FILE *fvxx = fopen("exctVx.dat","w");
     FILE *fvyy = fopen("exctVy.dat","w");
+    FILE *fporo = fopen("porosity.dat","w");
     // =============================================
     for (int j=0; j<N; j++){
         for (int i=0; i<M; i++){
@@ -321,14 +318,16 @@ int quiverOutput(const MeshInfo& mi, const std::vector<double>& fullSol, int M, 
 
             basis_.GetCorners(mi,{i,j});
 
+            vertex global = GaussMapPointsFace(local, basis_.corners());
+
             if (flag == 1){
                 // Darcy
                 std::array<double, 8> singleWgt = ExtractWeights(fullSol, hdiv.LocalToGlobal(mi,{i,j}));
-                work = quiverPrepare(singleWgt, {i,j}, local, basis_, hdiv, pp);
+                work = quiverPrepare(singleWgt, {i,j}, global, basis_, hdiv, pp);
             } else {
                 // Stokes
                 std::array<double, 12> singleWgt = ExtractWeights(fullSol, br.LocalToGlobal(mi,{i,j}));
-                work = quiverPrepare(singleWgt, {i,j}, local, basis_, br, pp);
+                work = quiverPrepare(singleWgt, {i,j}, global, basis_, br, pp);
             }
 
             fprintf(fx,"%f ",work[0][0]);
@@ -337,6 +336,7 @@ int quiverOutput(const MeshInfo& mi, const std::vector<double>& fullSol, int M, 
             fprintf(fvy,"%f ",work[1][1]);
             fprintf(fvxx,"%f ",work[2][0]);
             fprintf(fvyy,"%f ",work[2][1]);
+            fprintf(fporo, "%f", AssignPorosity(global,pp));
         }
         fprintf(fx,"\n");
         fprintf(fy,"\n");
@@ -344,6 +344,7 @@ int quiverOutput(const MeshInfo& mi, const std::vector<double>& fullSol, int M, 
         fprintf(fvy,"\n");
         fprintf(fvxx,"\n");
         fprintf(fvyy,"\n");
+        fprintf(fporo, "\n");
     }
     // =============================================
     fclose(fx);

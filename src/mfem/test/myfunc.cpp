@@ -10,7 +10,7 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->gx    = 0.0;
     pp->gy    = -10.0;
     pp->invk0 = 1.0/(1e-8);
-    pp->phi0  = 0.6;
+    pp->phi0  = 0.4;
     pp->U0    = 1e-9;
 
     // Non dimensionalization parameters
@@ -27,13 +27,16 @@ void AssignPhyProperties(PhysProperty * pp){
 
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
-    //if (point[1] < 120000 && abs(point[0]) < point[1] + l){
-    //    return 0.05*pow(1.0-point[1]/120000,2) * (1-abs(point[0])/(l+point[1]));
-    //} else {
-    //    return 0.0;
-    //}
+    if (abs(point[1]) < 0.75 && abs(point[0]) < abs(point[1])){
+        double value = 2.0*pow(1.0-abs(point[1])/0.75,2) * (1-abs(point[0]/point[1]));
 
-    return pp->phi0;
+        return value;
+    } else {
+        return 0.0;
+    }
+
+    // Constant porosity
+    //return pp->phi0;
 }
 
 // ===================================================
@@ -139,7 +142,6 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     work *= -1*coef;
 
-
     return work;
 }
 
@@ -188,6 +190,9 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     // Scale the velocity
     work[0] /= pp->phi0;
     work[1] /= pp->phi0;
+
+    //work[0] = 0.0;
+    //work[1] = 0.0;
 
     return work;
 }

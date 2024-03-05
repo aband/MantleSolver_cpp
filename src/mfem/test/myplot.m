@@ -21,20 +21,25 @@ vXX = fscanf(fileID, '%f', [1,Inf]);
 fileID = fopen('build/exctVy.dat','r');
 vYY = fscanf(fileID, '%f', [1,Inf]);
 
+fileID = fopen('build/porosity.dat','r');
+poro = fscanf(fileID, '%f', [1,Inf]);
+
 fclose(fileID);
 
 % ==========================================
 
-M = size(X,2);
+%M = size(X,2)
+M = 80;
+N = 40;
+%M = sqrt(M); 
 
-M = sqrt(M); 
-
-X = reshape(X,M,M);
-Y = reshape(Y,M,M);
-vX = reshape(vX,M,M);
-vY = reshape(vY,M,M);
-vXX = reshape(vXX,M,M);
-vYY = reshape(vYY,M,M);
+X = reshape(X,M,N);
+Y = reshape(Y,M,N);
+vX = reshape(vX,M,N);
+vY = reshape(vY,M,N);
+vXX = reshape(vXX,M,N);
+vYY = reshape(vYY,M,N);
+poro = reshape(poro,M,N);
 
 figure
 quiver(X,Y,vX,vY);
@@ -44,6 +49,8 @@ figure
 quiver(X,Y,vXX,vYY);
 title("Exact Velocity");
 
-
+figure
+contour(X,Y,poro);
+title("Porosity");
 
 

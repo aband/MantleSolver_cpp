@@ -73,10 +73,9 @@ void AssignLocMatrix(const MeshInfo& mi,
         double gw = gwf[g];
 
         // Calculate point wise porosity ===================================
-        //phi_f = AssignPorosity(mapped, (*physproperty).l);  // Fluid porosity
-        phi_f = physproperty->phi0;
+        phi_f = AssignPorosity(mapped, physproperty);  // Fluid porosity
+        //phi_f = physproperty->phi0;
         phi_s = 1 - phi_f;                             // Solid porosity
-        //phi_s = 1.0;
 
         // =================================================================
 
