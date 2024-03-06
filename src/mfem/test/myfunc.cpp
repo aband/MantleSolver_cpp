@@ -22,13 +22,13 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->p0    = pp->gy*pp->x0*rho_r;
     pp->u0    = pp->gy*rho_r/pp->mu_f/pp->invk0;
 
-    pp->l = 20.0;
+    pp->l = 0.3;
 }
 
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
     if (abs(point[1]) < 0.75 && abs(point[0]) < abs(point[1])){
-        double value = 2.0*pow(1.0-abs(point[1])/0.75,2) * (1-abs(point[0]/point[1]));
+        double value = 1.5*pow(1.0-abs(point[1])/0.75,2) * (1-abs(point[0]/point[1]));
 
         return value;
     } else {
@@ -127,9 +127,9 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     double x, z;
 
     if (point[0] < 0.0) {
-        x = point[0] - pp->l/pp->x0;
+        x = point[0] - pp->l;
     }else{
-        x = point[0] + pp->l/pp->x0;
+        x = point[0] + pp->l;
     }
 
     z = point[1];
@@ -168,9 +168,9 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     double x,z;
 
     if (point[0] < 0.0){
-        x = point[0] - pp->l/pp->x0;
+        x = point[0] - pp->l;
     }else {
-        x = point[0] + pp->l/pp->x0;
+        x = point[0] + pp->l;
     }
 
     z = point[1];

@@ -28,10 +28,9 @@ fclose(fileID);
 
 % ==========================================
 
-%M = size(X,2)
-M = 80;
-N = 40;
-%M = sqrt(M); 
+M = size(X,2)
+M = sqrt(M); 
+N = M;
 
 X = reshape(X,M,N);
 Y = reshape(Y,M,N);
