@@ -28,7 +28,7 @@ void AssignPhyProperties(PhysProperty * pp){
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
     if (abs(point[1]) < 0.75 && abs(point[0]) < abs(point[1])){
-        double value = 1.5*pow(1.0-abs(point[1])/0.75,2) * (1-abs(point[0]/point[1]));
+        double value = 2.0*pow(1.0-abs(point[1])/0.75,2) * (1-abs(point[0]/point[1]));
 
         return value;
     } else {
@@ -121,7 +121,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     // ==================================================
 
-
+/*
     // Test case 3:
     // Constant porosity
     double x, z;
@@ -141,6 +141,22 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
              -z*z};
 
     work *= -1*coef;
+*/
+
+    // ==================================================
+
+    // Test Case 4:
+    double scale = 0.01;
+    if (point[1] < -0.99){
+        work[0] = 0.0;
+        work[1] = scale;
+    } else if (point[0] < -0.99 || point[0] > 0.99) {
+        work[0] = scale * point[0] / abs(point[0]);
+        work[1] = 0.0;
+    } else if (point[1] > 0.99){
+        work[0] = scale * point[0] / abs(point[0]);
+        work[1] = 0.0;
+    }
 
     return work;
 }

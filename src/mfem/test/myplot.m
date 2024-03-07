@@ -44,9 +44,9 @@ figure
 quiver(X,Y,vX,vY);
 title("Approximation Velocity");
 
-figure
-quiver(X,Y,vXX,vYY);
-title("Exact Velocity");
+%figure
+%quiver(X,Y,vXX,vYY);
+%title("Exact Velocity");
 
 figure
 contour(X,Y,poro);
