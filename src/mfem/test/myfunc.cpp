@@ -146,7 +146,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     // ==================================================
 
     // Test Case 4:
-    double scale = 0.01;
+    double scale = 0.005;
     if (point[1] < -0.99){
         work[0] = 0.0;
         work[1] = scale;
@@ -207,8 +207,8 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     work[0] /= pp->phi0;
     work[1] /= pp->phi0;
 
-    //work[0] = 0.0;
-    //work[1] = 0.0;
+    work[0] = 0.0;
+    work[1] = 0.0;
 
     return work;
 }

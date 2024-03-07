@@ -6,13 +6,16 @@
 #include "Hdivmixed.h"
 #include "brmixed.h"
 
+enum bndryType {dirichlet, neumann, robin};
+
 // The boundary value data structure contains
 // 1. global index of degree of freedom and global index of element
 // 2. a pair object pairing local degree of freedom and value
 struct bndryInfo{
-    int    localDOF;
-    double DirichletVal;  
-    indice globalElem;
+    int        localDOF;
+    double     DirichletVal;  
+    indice     globalElem;
+    bndryType  bt;
 };
 
 using bndryVal = std::unordered_map<int, bndryInfo>;
