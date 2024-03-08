@@ -74,13 +74,12 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
                 vertex bndryVal = bndryVs(edgeCorners[1], pp); 
 
                 bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[edge], {edge, bndryVal[0], global}));
+                                   ((int)elementDOF[edge], {edge, bndryVal[0], global,dirichlet}));
 
                 bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[edge+4], {edge+4, bndryVal[1], global}));
-
+                                   ((int)elementDOF[edge+4], {edge+4, bndryVal[1], global,dirichlet}));
                 bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[edge+8], {edge+8, supVal, global}));
+                                   ((int)elementDOF[edge+8], {edge+8, supVal, global,dirichlet}));
             }
         } // else (for Neumann situation) 
     }}
@@ -146,10 +145,10 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
                                                                    edgeCorner, len, gwe, gpe);
     
                 bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[edge], {edge,dVals[0],global}));
+                                   ((int)elementDOF[edge], {edge,dVals[0],global,dirichlet}));
 
                 bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[edge+4], {edge+4,dVals[1],global}));
+                                   ((int)elementDOF[edge+4], {edge+4,dVals[1],global,dirichlet}));
 
             }
 

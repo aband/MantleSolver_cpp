@@ -48,28 +48,74 @@ let $\check{\sigma} = \mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bo
 		  \end{aligned}
 \end{equation}
 
+\newpage
+
 \subsection{Variational form and discretization}
 
 \subsubsection{Stokes}
 \begin{equation}
 \begin{aligned}
--\Delta u + \nabla p &= f \\
-\nabla \cdot u &= 0
+-\Delta \bold{u} + \nabla p &= \bold{f} \\
+\nabla \cdot \bold{u} &= 0
 \end{aligned}
 \end{equation}
 
+weak form
+
+%\begin{equation}
+%\begin{aligned}
+%(\nabla \bold{u} , \nabla \bold{v})_{\Omega} - <(\nabla \bold{u}) \nu, \bold{v}>_{\Gamma_i} - (p,\nabla \cdot \bold{v})_{\Omega} + <\bold{v}\cdot \nu, p_0>_{\Gamma_i} &= (\bold{f},\bold{v})_{\Omega}\\
+%(\nabla \cdot \bold{u}, \omega) &= 0
+%\end{aligned}
+%\end{equation}
+
 \begin{equation}
 \begin{aligned}
-(\nabla u , \nabla v)_{\Omega} - <\nabla u \nu, v>_{\Gamma}
+(\nabla \bold{u} , \nabla \bold{v})_{\Omega} - (p,\nabla \cdot \bold{v})_{\Omega} &= (\bold{f},\bold{v})_{\Omega} + 
+<\tau^T \nabla \bold{u} \nu, \bold{v}\cdot \tau>_{\Gamma_i}\\
+&+ <\nu^T \nabla \bold{u} \nu - p_0, \bold{v}\cdot \nu>_{\Gamma_i} - <\nabla \bold{u}_0, \nabla \bold{v}>_{\Gamma_u}\\
+(\nabla \cdot \bold{u}, \omega) &= 0
 \end{aligned}
 \end{equation}
+
+let stress $\bold{s} = ((\nabla \bold{u} \nu) \cdot \tau)\tau + (((\nabla \bold{u} - p_0\bold{I})\nu)\cdot \nu)\nu$, 
+we have traction boundary condition term defined on $\Gamma_i$ which is $<\bold{s},\bold{v}>_{\Gamma_i}$.
+Test space $\{ \bold{v} \in H^1(\Omega) : \bold{v} = 0$ on $\Gamma_u \}$.
+
+\begin{equation}
+\begin{aligned}
+(\nabla \bold{u} , \nabla \bold{v})_{\Omega} - (p,\nabla \cdot \bold{v})_{\Omega} &= (\bold{f},\bold{v})_{\Omega} + 
+<s, \bold{v}>_{\Gamma_i} - <\nabla \bold{u}_0, \nabla \bold{v}>_{\Gamma_u}\\
+(\nabla \cdot \bold{u}, \omega) &= 0
+\end{aligned}
+\end{equation}
+
+\subsection{Darcy}
+\begin{equation}
+\begin{aligned}
+\bold{u} + \nabla p & = \bold{g}\\
+\nabla \cdot \bold{u} & = 0
+\end{aligned}
+\end{equation}
+
+weak form
+
+\begin{equation}
+\begin{aligned}
+(\bold{u}, \bold{v})_{\Omega} - (p, \nabla \cdot \bold{v})_{\Omega} &= (\bold{g},\bold{v})_{\Omega} 
+- <p_0, v_n>_{\Gamma_i} - <\bold{u}_0, \bold{v}>_{\Gamma_u}\\
+(\nabla \cdot \bold{u}, \omega) &= 0
+\end{aligned}
+\end{equation}
+
+Test space $\{\bold{v} \in H(\text{div},\Omega): v_n =0$ on $\Gamma_u\}$.
+
+\newpage
 
 \subsubsection{Modified BR element}
 
 The error estimate 
-\begin{equation}
 
-\end{equation}
 
 \newpage
 
