@@ -80,14 +80,22 @@ weak form
 
 let stress $\bold{s} = ((\nabla \bold{u} \nu) \cdot \tau)\tau + (((\nabla \bold{u} - p_0\bold{I})\nu)\cdot \nu)\nu$, 
 we have traction boundary condition term defined on $\Gamma_i$ which is $<\bold{s},\bold{v}>_{\Gamma_i}$.
-Test space $\{ \bold{v} \in H^1(\Omega) : \bold{v} = 0$ on $\Gamma_u \}$.
+Traditionally a test space $\{ \bold{v} \in H^1(\Omega) : \bold{v} = 0$ on $\Gamma_u \}$ is employed here.
 
 \begin{equation}
 \begin{aligned}
-(\nabla \bold{u} , \nabla \bold{v})_{\Omega} - (p,\nabla \cdot \bold{v})_{\Omega} &= (\bold{f},\bold{v})_{\Omega} + 
-<s, \bold{v}>_{\Gamma_i} - <\nabla \bold{u}_0, \nabla \bold{v}>_{\Gamma_u}\\
+(\nabla \bold{u}_h , \nabla \bold{v}_h)_{\Omega_h} - (p_h,\nabla \cdot \bold{v}_h)_{\Omega_h} &= (\bold{f},\bold{v}_h)_{\Omega_h} + 
+		  <\bold{s}, \bold{v}_h>_{\Gamma_{i,h}} - <\nabla \bold{u}_{0,h}, \nabla \bold{v}_h>_{\Gamma_{u,h}}\\
 (\nabla \cdot \bold{u}, \omega) &= 0
 \end{aligned}
+\end{equation}
+
+We can further separate dofs on the boundary $\Gamma_h$ to gain completely control on each dofs.
+
+\begin{equation}
+		  \bold{v} = \begin{bmatrix}v_x\\0\end{bmatrix} + 
+					    \begin{bmatrix}0\\v_y\end{bmatrix} + 
+									\bold{b}
 \end{equation}
 
 \subsection{Darcy}

@@ -6,6 +6,32 @@ bool Is_Dirichlet(const indice& global){
     return true;
 }
 
+void markBndryEdge(const MeshInfo& mi,
+                   vector<int>& edges,
+                   const int& i, const int& j){
+
+    if (i==0){
+        // Count left bottom vertex dof
+        // Count left side
+        edges.push_back(0); 
+    } 
+    if (j==0){
+        // Count right bottom vertex dof
+        // Count bottom side
+        edges.push_back(1);
+    } 
+    if (i==mi.MPIglobalCellSize[0]-1){
+        // Count right top vertex dof 
+        // Count right side
+        edges.push_back(2); 
+    }
+    if (j==mi.MPIglobalCellSize[1]-1){
+        // Count left top vertex dof
+        // Count top side
+        edges.push_back(3);
+    }
+}
+
 // Mark boundary dof in serial
 int MarkBndryDOFStokes(bndryVal& bndryStokes, 
                        const MeshInfo& mi, 
@@ -34,26 +60,7 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
 
             std::array<int,12> elementDOF = br_.LocalToGlobal(mi,global);
 
-            if (i==0){
-                // Count left bottom vertex dof
-                // Count left side
-                edges.push_back(0); 
-            } 
-            if (j==0){
-                // Count right bottom vertex dof
-                // Count bottom side
-                edges.push_back(1);
-            } 
-            if (i==mi.MPIglobalCellSize[0]-1){
-                // Count right top vertex dof 
-                // Count right side
-                edges.push_back(2); 
-            }
-            if (j==mi.MPIglobalCellSize[1]-1){
-                // Count left top vertex dof
-                // Count top side
-                edges.push_back(3);
-            }
+            markBndryEdge(mi, edges, i, j);
 
             for (const auto& edge: edges){
                 // For each edge 
@@ -111,25 +118,7 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
 
             std::array<int,8> elementDOF = hdiv_.LocalToGlobal(mi,global);
 
-            if (i==0){
-                // Count left side
-                edges.push_back(0); 
-            }
-
-            if (j==0){
-                // Count bottom side
-                edges.push_back(1);
-            }
-
-            if (i==mi.MPIglobalCellSize[0]-1){
-                // Count right side
-                edges.push_back(2);
-            } 
-
-            if (j==mi.MPIglobalCellSize[1]-1){
-                // Count top side
-                edges.push_back(3);
-            }
+            markBndryEdge(mi, edges, i, j);
 
             for (const auto& edge : edges){
              //   cout << edge << " " ;
