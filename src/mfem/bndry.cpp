@@ -312,25 +312,66 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
 double neumValStokes(const indice& global, 
                      const int& edge,
                      const int& local,
+                     const int& dofi, 
+                     basis&   basis_,
                      BRMixed& br_,
                      const valarray<double>& gwe,
                      const valarray<double>& gpe){
 
     double work = 0.0;
 
-    // Find integral range
-    switch (edge){
-        case 0:
+    // Owner element of the shape function
+    vector<indice> owner;
+    vector<int> localdof;
+    vector<int> intEdges;
 
-        case 1:
+    // Add the first integral range to the vector
+    owner.push_back(global);
+    lcoaldof.push_back(local);
+    intEdges.push_back(edge);
 
-        case 2:
+    // Find the second integral range
+    if (local < 8){
+        // Nodal dof
 
-        case 3:
+        switch (edge){
+            case 0:
+                // This element is on the left boundary
+                // need edge 0 (i,j) and (i,j-1), expect corner
+                if (global[1] == 0 ){ // corner
+                    owner.push_back(global);
+                    intEdges.push_back((edge+1)%4);
+                    localdof.push_back(local);
 
-        default:
-            cout << "Undefined edge." << endl;
-            break;
+                } else { // edge
+                    owner.push_back({global[0], global[1]-1});
+                    intEdges.push_backd((edge+3)%4);
+                    localdof.push_back((edge+3)%4 + dofi*4);
+                }
+
+                break;
+            case 1:
+                // This element is on the bottom boundary
+                // need edge 1 (i,j) and (i+1,j), expect corner
+
+                break;
+            case 2:
+                // This element is on the right boundary
+                // need edge 2 (i,j) and (i,j+1), expect corner
+
+                break;
+            case 3:
+                // This element is on the top boundary
+                // need edge 3 (i,j) and (i-1,j), expect corner
+
+                break;
+            default:
+                cout << "Undefined edge." << endl;
+                break;
+        }
+    } else {
+        // supplemental bubble function dof
+
     }
 
     return work;
