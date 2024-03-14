@@ -3,6 +3,8 @@
 
 #include "util.h"
 
+enum bndryType {dirichlet, neumann, robin, missed};
+
 typedef struct {
 
     double theta ;
@@ -46,5 +48,9 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp);
 vertex bndryVs(const vertex& point, PhysProperty * pp);
 
 vertex bndryu(const vertex& point, PhysProperty * pp);
+
+const bndryType bndryTypeMarker(const MeshInfo& mi, 
+                                const indice& global,
+                                const int& local);
 
 #endif

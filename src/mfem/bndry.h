@@ -6,8 +6,6 @@
 #include "Hdivmixed.h"
 #include "brmixed.h"
 
-enum bndryType {dirichlet, neumann, robin};
-
 // The boundary value data structure contains
 // 1. global index of degree of freedom and global index of element
 // 2. a pair object pairing local degree of freedom and value
@@ -15,7 +13,6 @@ struct bndryInfo{
     int        localDOF;
     double     DirichletVal;  
     indice     globalElem;
-    bndryType  bt;
 };
 
 using bndryVal = std::unordered_map<int, bndryInfo>;
@@ -68,12 +65,19 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
                          const valarray<double>& gpe,
                          PhysProperty * pp);
 
+double neumValStokes(const indice& global, 
+                     const int& edge,
+                     const int& local, 
+                     BRMixed& br_,
+                     const valarray<double>& gwe,
+                     const valarray<double>& gpe);
+
 /** !
- * Assign Neumann or Dirichlet boundary to different elements.
+ * Assign Neumann or Dirichlet boundary to boundary dofs.
  * A Neumann Dirichlet mixed boundary condition.
  * Only two different kinds of boundary conditions.
  */
-bool Is_Dirichlet(const indice& global);
+
 
 /** !
  * Create Matrix Kg and Vector g regarding Dirichlet boundary condition

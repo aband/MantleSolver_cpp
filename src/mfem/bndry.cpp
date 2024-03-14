@@ -1,11 +1,6 @@
 #include "bndry.h"
 #include "myFunc.h"
 
-bool Is_Dirichlet(const indice& global){
-
-    return true;
-}
-
 void markBndryEdge(const MeshInfo& mi,
                    vector<int>& edges,
                    const int& i, const int& j){
@@ -32,7 +27,82 @@ void markBndryEdge(const MeshInfo& mi,
     }
 }
 
+// Mark boundary dof in a general way
+// Dirichlet and Neumann boundary condition
+int MarkBndryDOFStokes(const MeshInfo& mi,
+                       bndryVal& bndryDiri,
+                       bndryVal& bndryNeum,
+                       basis& basis_,
+                       BRMixed& br_,
+                       PhysProperty * pp){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        // Global element index
+        indice global{i,j};
+
+        // Extract corners of this element
+        basis_.GetCorners(mi, global);
+
+        vertexSet fullCorners = basis_.corners();
+
+        // Get global numbering of the dofs associating with this element
+        std::array<int, 12> elementDOF = br_.LocalToGlobal(mi, global);
+
+        // Mark all the edges of this element that laying on the boundary
+        vector<int> edges;
+        markBndryEdge(mi, edges, i, j); 
+
+        for (const auto& edge: edges){
+            // Get corners corresponding to this boundary edge
+            vertexSet edgeCorners = {fullCorners.at((edge+3%4)),
+                                     fullCorners.at(edge)};
+
+            // Get unit normal vector to this boundary edge
+            vertex nu = basis_.unitnormal(edge);
+
+            // Get dirichlet boundary nodal value
+				// and supplemental bubble function value
+            vertex bndryVal = bndryVs(edgeCorners[1], pp);
+            double supVal = AssignBndrySupVal(edgeCorners, nu, gwe, gpe, pp);
+
+            std::array<double,3> tmpVal {bndryVal[0], bndryVal[1], supVal};
+
+            double neumVal = 0.0;
+
+            // Three dofs associated with this edge are counted here
+            for (int dofi = 0; dofi < 3; dofi++){
+                int locdof = edge + dofi*4;
+                switch (bndryTypeMarker(mi, global, locdof)){
+                    case dirichlet:
+                        // Dirichlet boundary condition
+                        bndryDiri.insert(std::make_pair<int, bndryInfo>
+                             ((int)elementDOF[edge],{locdof, tmpVal[dofi], global}));
+                        break;
+                     
+                    case neumann:
+                        // Neumann boundary condition
+                        // Calculate boundry integration relates to this dof
+                        neumVal = neumValStokes(global,locdof,br_,gwe,gpe);
+                        break;
+
+                    case missed:
+                        cout << "This dof is missed." << endl;
+                        break;
+                }
+            }
+        }
+    }}
+
+    return 0; 
+}
+
 // Mark boundary dof in serial
+// Dirichlet only function
 int MarkBndryDOFStokes(bndryVal& bndryStokes, 
                        const MeshInfo& mi, 
                        basis& basis_,
@@ -52,48 +122,48 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
 
         vector<int> edges;
 
-        if (Is_Dirichlet(global)){
-            // Extract corners coordinates from basis class
-            basis_.GetCorners(mi, global);
+        // Extract corners coordinates from basis class
+        basis_.GetCorners(mi, global);
 
-            vertexSet fullCorners = basis_.corners();
+        vertexSet fullCorners = basis_.corners();
 
-            std::array<int,12> elementDOF = br_.LocalToGlobal(mi,global);
+        std::array<int,12> elementDOF = br_.LocalToGlobal(mi,global);
 
-            markBndryEdge(mi, edges, i, j);
+        markBndryEdge(mi, edges, i, j);
 
-            for (const auto& edge: edges){
-                // For each edge 
-                // Assign values to only one nodal dofs and one edge dofs
-                // Associated local dof are 
-                // i, i + 4, i + 8
-                // All dofs will be counted without repeating
-                vertexSet edgeCorners = {fullCorners.at((edge+3)%4), 
-                                         fullCorners.at(edge)};
+        for (const auto& edge: edges){
+            // For each edge 
+            // Assign values to only one nodal dofs and one edge dofs
+            // Associated local dof are 
+            // i, i + 4, i + 8
+            // All dofs will be counted without repeating
+            vertexSet edgeCorners = {fullCorners.at((edge+3)%4), 
+                                     fullCorners.at(edge)};
 
-                vertex nu = basis_.unitnormal(edge);
+            vertex nu = basis_.unitnormal(edge);
          
-                // Compute values at supplemental bubble function
-                double supVal = AssignBndrySupVal(edgeCorners, nu, gwe, gpe, pp);
+            // Compute values at supplemental bubble function
+            double supVal = AssignBndrySupVal(edgeCorners, nu, gwe, gpe, pp);
 
-                // Compute values at nodal dof
-                //vertex bndryVal = Dirichlet_val(edgeCorners[1]);
-                vertex bndryVal = bndryVs(edgeCorners[1], pp); 
+            // Compute values at nodal dof
+            //vertex bndryVal = Dirichlet_val(edgeCorners[1]);
+            vertex bndryVal = bndryVs(edgeCorners[1], pp); 
 
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[edge], {edge, bndryVal[0], global,dirichlet}));
+            bndryStokes.insert(std::make_pair<int, bndryInfo>
+                 ((int)elementDOF[edge], {edge, bndryVal[0], global}));
 
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[edge+4], {edge+4, bndryVal[1], global,dirichlet}));
-                bndryStokes.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[edge+8], {edge+8, supVal, global,dirichlet}));
-            }
-        } // else (for Neumann situation) 
+            bndryStokes.insert(std::make_pair<int, bndryInfo>
+                 ((int)elementDOF[edge+4], {edge+4, bndryVal[1], global}));
+
+            bndryStokes.insert(std::make_pair<int, bndryInfo>
+                 ((int)elementDOF[edge+8], {edge+8, supVal, global}));
+        }
     }}
 
     return 0;
 }
 
+// Dirichlet only function
 int MarkBndryDOFDarcy(bndryVal& bndryDarcy, 
                       const MeshInfo& mi, 
                       basis& basis_,
@@ -110,38 +180,33 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
 
         vector<int> edges;
 
-        if (Is_Dirichlet(global)){
-            // Extract corners of current element to basis functions
-            basis_.GetCorners(mi, global);
+        // Extract corners of current element to basis functions
+        basis_.GetCorners(mi, global);
 
-            vertexSet fullCorners = basis_.corners();
+        vertexSet fullCorners = basis_.corners();
 
-            std::array<int,8> elementDOF = hdiv_.LocalToGlobal(mi,global);
+        std::array<int,8> elementDOF = hdiv_.LocalToGlobal(mi,global);
 
-            markBndryEdge(mi, edges, i, j);
+        markBndryEdge(mi, edges, i, j);
 
-            for (const auto& edge : edges){
-             //   cout << edge << " " ;
+        for (const auto& edge : edges){
 
-                // Extract two corners representing edge
-                vertexSet edgeCorner = {fullCorners.at((edge+3)%4), 
-                                        fullCorners.at(edge)};
+            // Extract two corners representing edge
+            vertexSet edgeCorner = {fullCorners.at((edge+3)%4), 
+                                    fullCorners.at(edge)};
 
-                double len = length(edgeCorner);
+            double len = length(edgeCorner);
 
-                // Compute approximated Dirichlet boundary values locally
-                std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, basis_,hdiv_, pp,
-                                                                   edgeCorner, len, gwe, gpe);
+            // Compute approximated Dirichlet boundary values locally
+            std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, 
+                 basis_,hdiv_, pp, edgeCorner, len, gwe, gpe);
     
-                bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[edge], {edge,dVals[0],global,dirichlet}));
+            bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                    ((int)elementDOF[edge], {edge,dVals[0],global}));
 
-                bndryDarcy.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[edge+4], {edge+4,dVals[1],global,dirichlet}));
-
-            }
-
-        } // else (save later for neumann boundary condition)
+            bndryDarcy.insert(std::make_pair<int, bndryInfo>
+                    ((int)elementDOF[edge+4], {edge+4,dVals[1],global}));
+        }
     }}
 
     return 0;
@@ -244,28 +309,32 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
     return work;
 }
 
-//! Create Matrix Kg and g for Dirichlet boundary conditions in parallel 
-/*
-PetscErrorCode CreateDirichletMatVecParallel(Vec * localg,
-                                             const bndryVal& bndryvals){
+double neumValStokes(const indice& global, 
+                     const int& edge,
+                     const int& local,
+                     BRMixed& br_,
+                     const valarray<double>& gwe,
+                     const valarray<double>& gpe){
 
-    // Copy vector and matrix
-    Vec lg = *localg;   
+    double work = 0.0;
 
-    // Create with different size
-    PetscCall(VecCreate(PETSC_COMM_WORLD, &lg));
-    PetscCall(VecSetSizes());
+    // Find integral range
+    switch (edge){
+        case 0:
 
-    // Create 
-    for (auto & it: bndryvals){
+        case 1:
 
+        case 2:
 
+        case 3:
+
+        default:
+            cout << "Undefined edge." << endl;
+            break;
     }
 
-
-    return PETSC_SUCCESS;
+    return work;
 }
-*/
 
 //! Create reduced system from full system
 PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
@@ -425,9 +494,7 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
                 intrIndex ++;
             }
         }
-
     }
-
     PetscCall(MatAssemblyBegin(reducedsys->B, MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyEnd(reducedsys->B, MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyBegin(reducedsys->Bg, MAT_FINAL_ASSEMBLY));

@@ -243,4 +243,68 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     return {0.0,0.0};
 }
 
+// =========================================================================
+const bndryType bndryTypeMarker(const MeshInfo& mi,
+                                const indice& global, 
+                                const int& local){
 
+    // Current problem setup:
+    // inflow dirichlet on the bottom
+    // outflow dirichlet on the left and right sides
+    // tangential dirichlet on the top side
+
+    bndryType type = missed;
+
+    if (global[0] == 0){
+        // left side
+        if (local == 0 || local == 3 || local == 8){
+            type = dirichlet;
+        } else {
+            type = neumann;
+        } 
+    } 
+
+    if (global[0] == mi.MPIglobalCellSize[0]-1){
+        // right side
+        if (local == 1 || local == 2 || local == 10){
+            type = dirichlet;
+        } else {
+            type = neumann;
+        } 
+    } 
+
+    if (global[1] == 0){
+        // bottom side
+        if (local == 4 || local == 5 || local == 9){
+            type = dirichlet;
+        } else {
+            type = neumann;
+        }
+    }
+   
+    if (global[1] == mi.MPIglobalCellSize[1]-1){
+        // top side
+        if (local == 2 || local == 3){
+            type = dirichlet;
+        } else {
+            type = neumann;
+        }
+    }
+
+    // Bottom two dofs are dealt with separately
+    if (global[0] == 0 && global[1] == 0){
+        // bottom left
+        if (local == 0 || local == 4){
+            type = dirichlet;
+        }
+    }
+
+    if (global[0] == mi.MPIglobalCellSize[1]-1 && global[1] == 0){
+        if (local == 1 || local == 5){
+            type = dirichlet;
+        }
+    }
+
+    // the dof is missed during the marking process
+    return type;
+} 
