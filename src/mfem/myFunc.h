@@ -44,6 +44,9 @@ const vertex darcyForce(const vertex& point, PhysProperty * pp);
 // Return source term for stokes system as sum of true solutions 
 const vertex stokesForce(const vertex& point, PhysProperty * pp);
 
+// Return traction defined on the boundary
+const vertex traction(const vertex& point, PhysProperty * pp);
+
 // Boundary Condition
 vertex bndryVs(const vertex& point, PhysProperty * pp);
 

@@ -27,11 +27,25 @@ void markBndryEdge(const MeshInfo& mi,
     }
 }
 
+/*
+bool isCorner(const MeshInfo& mi, 
+              const indice& global){
+    // Judge if the element is a corner element or not 
+    if (global[0] == 0 || global[0] == mi.MPIglobalCellSize[0]-1){
+        if (global[1] == 0 || global[1] = mi.MPIglobalCellSize[1]-1){
+            return true;
+        }
+    } else {
+        return false;
+    }
+}
+*/
+
 // Mark boundary dof in a general way
 // Dirichlet and Neumann boundary condition
-int MarkBndryDOFStokes(const MeshInfo& mi,
-                       bndryVal& bndryDiri,
+int MarkBndryDOFStokes(bndryVal& bndryDiri,
                        bndryVal& bndryNeum,
+                       const MeshInfo& mi,
                        basis& basis_,
                        BRMixed& br_,
                        PhysProperty * pp){
@@ -55,18 +69,20 @@ int MarkBndryDOFStokes(const MeshInfo& mi,
 
         // Mark all the edges of this element that laying on the boundary
         vector<int> edges;
+
         markBndryEdge(mi, edges, i, j); 
 
         for (const auto& edge: edges){
             // Get corners corresponding to this boundary edge
-            vertexSet edgeCorners = {fullCorners.at((edge+3%4)),
+
+            vertexSet edgeCorners = {fullCorners.at((edge+3)%4),
                                      fullCorners.at(edge)};
 
             // Get unit normal vector to this boundary edge
             vertex nu = basis_.unitnormal(edge);
 
             // Get dirichlet boundary nodal value
-				// and supplemental bubble function value
+            // and supplemental bubble function value
             vertex bndryVal = bndryVs(edgeCorners[1], pp);
             double supVal = AssignBndrySupVal(edgeCorners, nu, gwe, gpe, pp);
 
@@ -77,6 +93,7 @@ int MarkBndryDOFStokes(const MeshInfo& mi,
             // Three dofs associated with this edge are counted here
             for (int dofi = 0; dofi < 3; dofi++){
                 int locdof = edge + dofi*4;
+
                 switch (bndryTypeMarker(mi, global, locdof)){
                     case dirichlet:
                         // Dirichlet boundary condition
@@ -87,7 +104,10 @@ int MarkBndryDOFStokes(const MeshInfo& mi,
                     case neumann:
                         // Neumann boundary condition
                         // Calculate boundry integration relates to this dof
-                        neumVal = neumValStokes(global,locdof,br_,gwe,gpe);
+                        neumVal = neumValStokes(
+                                  mi,global,edge,locdof,dofi,basis_,br_,gwe,gpe,pp);
+                        bndryNeum.insert(std::make_pair<int, bndryInfo>
+                             ((int)elementDOF[edge],{locdof, neumVal, global}));
                         break;
 
                     case missed:
@@ -309,14 +329,16 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
     return work;
 }
 
-double neumValStokes(const indice& global, 
+double neumValStokes(const MeshInfo& mi,
+                     const indice& global, 
                      const int& edge,
                      const int& local,
                      const int& dofi, 
                      basis&   basis_,
                      BRMixed& br_,
                      const valarray<double>& gwe,
-                     const valarray<double>& gpe){
+                     const valarray<double>& gpe,
+                     PhysProperty * pp){
 
     double work = 0.0;
 
@@ -327,8 +349,12 @@ double neumValStokes(const indice& global,
 
     // Add the first integral range to the vector
     owner.push_back(global);
-    lcoaldof.push_back(local);
+    localdof.push_back(local);
     intEdges.push_back(edge);
+ 
+    bool is_corner = false;
+
+    indiceSet addSet {{0,-1},{1,0},{0,1},{-1,0}};
 
     // Find the second integral range
     if (local < 8){
@@ -339,39 +365,81 @@ double neumValStokes(const indice& global,
                 // This element is on the left boundary
                 // need edge 0 (i,j) and (i,j-1), expect corner
                 if (global[1] == 0 ){ // corner
-                    owner.push_back(global);
-                    intEdges.push_back((edge+1)%4);
-                    localdof.push_back(local);
-
+                    is_corner = true; 
                 } else { // edge
-                    owner.push_back({global[0], global[1]-1});
-                    intEdges.push_backd((edge+3)%4);
-                    localdof.push_back((edge+3)%4 + dofi*4);
-                }
+                    is_corner = false;
+               }
 
                 break;
             case 1:
                 // This element is on the bottom boundary
                 // need edge 1 (i,j) and (i+1,j), expect corner
+                if (global[0] == mi.MPIglobalCellSize[0]-1){ // corner
+                    is_corner = true;
+                } else {
+                    is_corner = false;
+                }
 
                 break;
             case 2:
                 // This element is on the right boundary
                 // need edge 2 (i,j) and (i,j+1), expect corner
+                if (global[1] == mi.MPIglobalCellSize[1]-1){
+                    is_corner = true;
+                } else {
+                    is_corner = false;
+                }
 
                 break;
             case 3:
                 // This element is on the top boundary
                 // need edge 3 (i,j) and (i-1,j), expect corner
+                if (global[1] == 0){
+                    is_corner = true;
+                } else {
+                    is_corner = false;
+                }
 
                 break;
             default:
                 cout << "Undefined edge." << endl;
                 break;
         }
-    } else {
-        // supplemental bubble function dof
 
+        if (is_corner){
+            owner.push_back(global);
+            intEdges.push_back((edge+1)%4);
+            localdof.push_back(local);
+        } else {
+            owner.push_back(global + addSet[edge]);
+            intEdges.push_back(edge);
+            localdof.push_back((edge+3)%4 + dofi*4);
+        }
+
+    } else { // else the dof is supplemental bubble function 
+             // The integral domain is confined to the edge
+
+         // Integrate over domain
+         for (int d = 0; d<owner.size(); d++){
+
+             basis_.GetCorners(mi, owner.at(d));
+             vertexSet corners = basis_.corners();
+
+             vertexSet corner = {corners.at((intEdges.at(d)+3)%4),
+                                 corners.at(intEdges.at(d))};
+
+             double len = length(corner);
+             for (int g = 0; g<gpe.size(); g++){
+                 vertex mapped = GaussMapPointsEdge({gpe[g]}, corner);
+                 vertex evap = br_.ComputeBRmixed(basis_,mapped,localdof.at(d));
+
+                 // Evaluate traction on the boundary
+                 vertex tract = traction(mapped, pp);
+
+                 work += len/2.0 * gwe[g] * tract[0]*evap[0] + 
+                                            tract[1]*evap[1];  
+             }
+         }
     }
 
     return work;

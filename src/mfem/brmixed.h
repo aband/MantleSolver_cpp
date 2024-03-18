@@ -43,9 +43,14 @@ class BRMixed {
 
         std::array<std::array<double,4>,12> ComputeGradBRmixed(const basis& basis_,
                                                                const vertex& point) const;
-
+        // ! Return all basis functions evaluated at a given point
         std::array<vertex, 12> ComputeBRmixed(const basis& basis_,
                                               const vertex& point) const;
+
+        // ! Return the basis function on the given edge evaluated at a given point
+        vertex ComputeBRmixed(const basis& basis_, 
+                              const vertex& point,
+                              const int& local) const;
 
     private:
 

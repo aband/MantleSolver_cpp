@@ -174,6 +174,26 @@ std::array<vertex, 12> BRMixed::ComputeBRmixed(const basis& basis_,
     return work;
 }
 
+vertex BRMixed::ComputeBRmixed(const basis& basis_,
+                               const vertex& point,
+                               const int& local) const{
+
+    vertex work;
+
+    std::array<double, 4> coef {-1.0,-1.0,0.0,0.0};
+
+    if (local < 4){
+        work = {phiv(basis_,local,point), 0.0};
+    } else if (local < 8){
+        work = {0.0, phiv(basis_,local-4,point)};
+    } else {
+        work = basis_.unitnormal(local-8) * 
+               phie(basis_,local-8,point) * coef[local-8];
+    }
+
+    return work;
+}
+
 // ==================================================================
 
 double BRMixed::phie_(const basis& basis_,

@@ -44,6 +44,14 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
                       Hdivmixed& hdiv_,
                       PhysProperty * pp);
 
+
+int MarkBndryDOFStokes(bndryVal& bndryDiri,
+                       bndryVal& bndryNeum,
+                       const MeshInfo& mi,
+                       basis& basis_,
+                       BRMixed& br_,
+                       PhysProperty * pp);
+
 /** !
  * Compute Dirichlet values locally.
  * 1. Dirichlet values are assigned to Stokes part directly.
@@ -65,12 +73,16 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
                          const valarray<double>& gpe,
                          PhysProperty * pp);
 
-double neumValStokes(const indice& global, 
+double neumValStokes(const MeshInfo& mi,
+                     const indice& global, 
                      const int& edge,
-                     const int& local, 
+                     const int& local,
+                     const int& dofi,
+                     basis&   basis_,
                      BRMixed& br_,
                      const valarray<double>& gwe,
-                     const valarray<double>& gpe);
+                     const valarray<double>& gpe,
+                     PhysProperty * pp);
 
 /** !
  * Assign Neumann or Dirichlet boundary to boundary dofs.

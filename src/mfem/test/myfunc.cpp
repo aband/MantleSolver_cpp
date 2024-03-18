@@ -243,6 +243,12 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     return {0.0,0.0};
 }
 
+const vertex traction(const vertex& point, PhysProperty * pp){
+    // return traction defined on the boundary
+
+    return {0.0,0.0};
+}
+
 // =========================================================================
 const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global, 

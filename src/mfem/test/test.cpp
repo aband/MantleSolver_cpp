@@ -197,6 +197,18 @@ int main(int argc, char **argv){
     MarkBndryDOFDarcy(bndryDarcy, mi, (*testBasis), (*hdiv), physproperty);
     MarkBndryDOFStokes(bndryStokes, mi, (*testBasis), (*br), physproperty);
 
+    // Separate Dirichlet and Neumann boundary condition
+    bndryVal bndryStokesDiri;
+    bndryVal bndryStokesNeum;
+
+    MarkBndryDOFStokes(bndryStokesDiri,bndryStokesNeum,mi,(*testBasis),(*br),physproperty);
+
+    // Test reduced system
+    ReducedSys * redTest = (ReducedSys *)malloc(sizeof(ReducedSys));
+    CreateReducedSerial(redTest, &system->As, &system->Bs, &system->sourceStokes, bndryStokesDiri);
+
+    // ==================================================================================
+
     ReducedSys * reducedsys = (ReducedSys *)malloc(sizeof(ReducedSys));
 
     // Two systems are created at the same time.
