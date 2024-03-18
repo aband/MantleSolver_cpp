@@ -19,7 +19,7 @@ using bndryVal = std::unordered_map<int, bndryInfo>;
 
 typedef struct{
     Mat M, Kg, B, Bg;
-    Vec g, source;
+    Vec g, source, neum;
 } ReducedSys;
 
 /** !
@@ -99,5 +99,10 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
                                    Mat * fullM, Mat * fullB,
                                    Vec * fullSource,
                                    const bndryVal& bndryval);
+
+PetscErrorCode CreateNeumBndryVec(const int& totalDof,
+                                  const int& diriDof,
+                                  ReducedSys * resys,
+                                  bndryVal& bndryNeum);
 
 #endif

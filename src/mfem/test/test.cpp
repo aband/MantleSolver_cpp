@@ -197,16 +197,6 @@ int main(int argc, char **argv){
     MarkBndryDOFDarcy(bndryDarcy, mi, (*testBasis), (*hdiv), physproperty);
     MarkBndryDOFStokes(bndryStokes, mi, (*testBasis), (*br), physproperty);
 
-    // Separate Dirichlet and Neumann boundary condition
-    bndryVal bndryStokesDiri;
-    bndryVal bndryStokesNeum;
-
-    MarkBndryDOFStokes(bndryStokesDiri,bndryStokesNeum,mi,(*testBasis),(*br),physproperty);
-
-    // Test reduced system
-    ReducedSys * redTest = (ReducedSys *)malloc(sizeof(ReducedSys));
-    CreateReducedSerial(redTest, &system->As, &system->Bs, &system->sourceStokes, bndryStokesDiri);
-
     // ==================================================================================
 
     ReducedSys * reducedsys = (ReducedSys *)malloc(sizeof(ReducedSys));
@@ -328,7 +318,39 @@ int main(int argc, char **argv){
 
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
 
-    CoupledSolver(lsStokes, ls, lsResult, &system->K, tolUzawa, maxIter, tauUzawa);
+    //CoupledSolver(lsStokes, ls, lsResult, &system->K, tolUzawa, maxIter, tauUzawa);
+
+    // Separate Dirichlet and Neumann boundary condition
+    bndryVal bndryStokesDiri;
+    bndryVal bndryStokesNeum;
+
+    MarkBndryDOFStokes(bndryStokesDiri,bndryStokesNeum,mi,(*testBasis),(*br),physproperty);
+
+    // Test reduced system
+    ReducedSys * redTest = (ReducedSys *)malloc(sizeof(ReducedSys));
+    CreateReducedSerial(redTest, &system->As, &system->Bs, &system->sourceStokes, bndryStokesDiri);
+
+    CreateNeumBndryVec(br->getDOF(), bndryStokesDiri.size(), redTest, bndryStokesNeum);
+
+    linearSys * lsTest = (linearSys *)malloc(sizeof(linearSys));
+
+    CreateLinearSys(lsTest, redTest);
+
+    PreconditionedUzawa(lsTest, tolUzawa, maxIter, tauUzawa);
+
+    std::vector<double> fullSolTest = GetFullSol(&lsTest->x, bndryStokesDiri, br->getDOF());
+
+    quiverOutput(mi, fullSolTest, M, N, *testBasis, *br, *hdiv, physproperty, 2);
+
+    const char *checkATest = "MatrixCheckATest.dat";
+    // Write A matrix
+    WriteMat(lsTest->A,checkATest);
+
+    const char *checkBTest = "MatrixCheckBTest.dat";
+    // Write B matrix
+    WriteMat(lsTest->B,checkBTest);
+
+
 
     // =================================================================================
     // Check solution created
@@ -377,6 +399,7 @@ int main(int argc, char **argv){
     VecRestoreArray(testReduced, &arraytestreduced);
 */
 
+/*
     // Check computed error results
     int checkError = 0;
     PetscOptionsGetInt(NULL, NULL, "-checkError", &checkError, NULL);
@@ -483,7 +506,6 @@ int main(int argc, char **argv){
 
     std::array<double, 8> fakeweight = {0,0,0,0,1,1,1,1};
 
-	 /*
     for (int j=seed; j>-1; j--){
     for (int i=0; i<seed + 1; i++){
         //std::array<vertex, 8> tmp = hdiv->ComputeHdivmixed(*testBasis, {xstart+i*h, ystart+j*h});
@@ -505,7 +527,8 @@ int main(int argc, char **argv){
  
     }cout << endl;}
 
-	 */
+
+*/
 // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);

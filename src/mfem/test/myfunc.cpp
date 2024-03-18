@@ -246,7 +246,7 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
 const vertex traction(const vertex& point, PhysProperty * pp){
     // return traction defined on the boundary
 
-    return {0.0,0.0};
+    return {0.0,-1*abs(point[1])};
 }
 
 // =========================================================================

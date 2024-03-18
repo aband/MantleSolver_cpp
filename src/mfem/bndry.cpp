@@ -429,6 +429,7 @@ double neumValStokes(const MeshInfo& mi,
                                  corners.at(intEdges.at(d))};
 
              double len = length(corner);
+
              for (int g = 0; g<gpe.size(); g++){
                  vertex mapped = GaussMapPointsEdge({gpe[g]}, corner);
                  vertex evap = br_.ComputeBRmixed(basis_,mapped,localdof.at(d));
@@ -608,6 +609,30 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
     PetscCall(MatAssemblyEnd(reducedsys->B, MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyBegin(reducedsys->Bg, MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyEnd(reducedsys->Bg, MAT_FINAL_ASSEMBLY));
+
+    return PETSC_SUCCESS;
+}
+
+PetscErrorCode CreateNeumBndryVec(const int& totalDof,
+                                  const int& diriDof,
+                                  ReducedSys * resys,
+                                  bndryVal& bndryNeum){
+
+    // Create Neumann boundary vector in serial manner
+
+    PetscCall(VecCreate(PETSC_COMM_WORLD, &resys->neum));
+    PetscCall(VecSetSizes(resys->neum, PETSC_DECIDE, totalDof - diriDof));
+    PetscCall(VecSetUp(resys->neum));
+
+    VecZeroEntries(resys->neum);
+
+    for (int globDof=0; globDof<totalDof; globDof++){
+
+        auto keyFind = bndryNeum.find(globDof);
+        if(keyFind != bndryNeum.end()) {
+            VecSetValues(resys->neum, 1, &globDof, &keyFind->second.DirichletVal, INSERT_VALUES);
+        }
+    }
 
     return PETSC_SUCCESS;
 }
