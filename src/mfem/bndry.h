@@ -11,7 +11,7 @@
 // 2. a pair object pairing local degree of freedom and value
 struct bndryInfo{
     int        localDOF;
-    double     DirichletVal;  
+    double     val;  
     indice     globalElem;
 };
 

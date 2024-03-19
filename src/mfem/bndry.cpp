@@ -98,7 +98,8 @@ int MarkBndryDOFStokes(bndryVal& bndryDiri,
                     case dirichlet:
                         // Dirichlet boundary condition
                         bndryDiri.insert(std::make_pair<int, bndryInfo>
-                             ((int)elementDOF[edge],{locdof, tmpVal[dofi], global}));
+                             ((int)elementDOF[locdof],{locdof, tmpVal[dofi], global}));
+
                         break;
                      
                     case neumann:
@@ -107,7 +108,7 @@ int MarkBndryDOFStokes(bndryVal& bndryDiri,
                         neumVal = neumValStokes(
                                   mi,global,edge,locdof,dofi,basis_,br_,gwe,gpe,pp);
                         bndryNeum.insert(std::make_pair<int, bndryInfo>
-                             ((int)elementDOF[edge],{locdof, neumVal, global}));
+                             ((int)elementDOF[locdof],{locdof, neumVal, global}));
                         break;
 
                     case missed:
@@ -567,7 +568,7 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
             // Put the boundary value into g
             const bndryInfo& tmp = bndryval.at(row);
             VecSetValues(reducedsys->g,1,&countBndry,
-                         &tmp.DirichletVal,INSERT_VALUES);
+                         &tmp.val,INSERT_VALUES);
             countBndry ++;
         }
     }
@@ -630,7 +631,7 @@ PetscErrorCode CreateNeumBndryVec(const int& totalDof,
 
         auto keyFind = bndryNeum.find(globDof);
         if(keyFind != bndryNeum.end()) {
-            VecSetValues(resys->neum, 1, &globDof, &keyFind->second.DirichletVal, INSERT_VALUES);
+            VecSetValues(resys->neum, 1, &globDof, &keyFind->second.val, INSERT_VALUES);
         }
     }
 

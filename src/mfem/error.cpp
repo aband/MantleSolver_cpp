@@ -20,7 +20,7 @@ std::vector<double> GetFullSol(Vec * u, const bndryVal& bndryval, int dof){
                 work[j] = arrayu[count]; 
                 count ++;
             } else {
-                work[j] = itFind->second.DirichletVal;
+                work[j] = itFind->second.val;
             }
     }
 

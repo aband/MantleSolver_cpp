@@ -197,6 +197,12 @@ int main(int argc, char **argv){
     MarkBndryDOFDarcy(bndryDarcy, mi, (*testBasis), (*hdiv), physproperty);
     MarkBndryDOFStokes(bndryStokes, mi, (*testBasis), (*br), physproperty);
 
+    for (const auto& bd: bndryStokes){
+        cout << "Dirichlet Dof : "<< bd.first << "  " << bd.second.val << " " 
+             << bd.second.globalElem[0] << " " << bd.second.globalElem[1] << endl;
+
+    } cout << endl;
+
     // ==================================================================================
 
     ReducedSys * reducedsys = (ReducedSys *)malloc(sizeof(ReducedSys));
@@ -326,6 +332,18 @@ int main(int argc, char **argv){
 
     MarkBndryDOFStokes(bndryStokesDiri,bndryStokesNeum,mi,(*testBasis),(*br),physproperty);
 
+    for (const auto& bd: bndryStokesDiri){
+        cout << "Dirichlet Dof : "<< bd.first << "  " << bd.second.val << " " 
+             << bd.second.globalElem[0] << " " << bd.second.globalElem[1] << endl;
+
+    }
+
+    for (const auto& bn: bndryStokesNeum){
+        cout <<   "Neumann Dof : "<< bn.first << "  " << bn.second.val << " "
+             << bn.second.globalElem[0] << " " << bn.second.globalElem[1] << endl;
+
+    }
+
     // Test reduced system
     ReducedSys * redTest = (ReducedSys *)malloc(sizeof(ReducedSys));
     CreateReducedSerial(redTest, &system->As, &system->Bs, &system->sourceStokes, bndryStokesDiri);
@@ -349,8 +367,6 @@ int main(int argc, char **argv){
     const char *checkBTest = "MatrixCheckBTest.dat";
     // Write B matrix
     WriteMat(lsTest->B,checkBTest);
-
-
 
     // =================================================================================
     // Check solution created
