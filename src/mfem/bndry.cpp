@@ -417,30 +417,29 @@ double neumValStokes(const MeshInfo& mi,
             localdof.push_back((edge+3)%4 + dofi*4);
         }
 
-    } else { // else the dof is supplemental bubble function 
-             // The integral domain is confined to the edge
+    }  // else the dof is supplemental bubble function 
+       // The integral domain is then confined to the edge
 
-         // Integrate over domain
-         for (int d = 0; d<owner.size(); d++){
+    // Integrate over domain
+    for (int d = 0; d<owner.size(); d++){
 
-             basis_.GetCorners(mi, owner.at(d));
-             vertexSet corners = basis_.corners();
+         basis_.GetCorners(mi, owner.at(d));
+         vertexSet corners = basis_.corners();
 
-             vertexSet corner = {corners.at((intEdges.at(d)+3)%4),
-                                 corners.at(intEdges.at(d))};
+         vertexSet corner = {corners.at((intEdges.at(d)+3)%4),
+                             corners.at(intEdges.at(d))};
 
-             double len = length(corner);
+         double len = length(corner);
 
-             for (int g = 0; g<gpe.size(); g++){
-                 vertex mapped = GaussMapPointsEdge({gpe[g]}, corner);
-                 vertex evap = br_.ComputeBRmixed(basis_,mapped,localdof.at(d));
+         for (int g = 0; g<gpe.size(); g++){
+             vertex mapped = GaussMapPointsEdge({gpe[g]}, corner);
+             vertex evap = br_.ComputeBRmixed(basis_,mapped,localdof.at(d));
 
-                 // Evaluate traction on the boundary
-                 vertex tract = traction(mapped, pp);
+             // Evaluate traction on the boundary
+             vertex tract = traction(mapped, pp);
 
-                 work += len/2.0 * gwe[g] * tract[0]*evap[0] + 
-                                            tract[1]*evap[1];  
-             }
+             work += len/2.0 * gwe[g] * tract[0]*evap[0] + 
+                                        tract[1]*evap[1];  
          }
     }
 
@@ -617,9 +616,10 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
 PetscErrorCode CreateNeumBndryVec(const int& totalDof,
                                   const int& diriDof,
                                   ReducedSys * resys,
-                                  bndryVal& bndryNeum){
+                                  bndryVal& bndryNeum,
+                                  bndryVal& bndryDiri){
 
-    // Create Neumann boundary vector in serial manner
+    // Create Neumann boundary vector in the serial manner
 
     PetscCall(VecCreate(PETSC_COMM_WORLD, &resys->neum));
     PetscCall(VecSetSizes(resys->neum, PETSC_DECIDE, totalDof - diriDof));
@@ -627,13 +627,26 @@ PetscErrorCode CreateNeumBndryVec(const int& totalDof,
 
     VecZeroEntries(resys->neum);
 
+    int count = 0;
+
+    // Loop through all degree of freedoms
     for (int globDof=0; globDof<totalDof; globDof++){
 
-        auto keyFind = bndryNeum.find(globDof);
-        if(keyFind != bndryNeum.end()) {
-            VecSetValues(resys->neum, 1, &globDof, &keyFind->second.val, INSERT_VALUES);
+        // skip when it is dirichlet dof
+        auto keyDiri = bndryDiri.find(globDof);
+
+        if (keyDiri == bndryDiri.end()){
+
+            auto keyFind = bndryNeum.find(globDof);
+            if(keyFind != bndryNeum.end()) {
+                VecSetValues(resys->neum, 1, &count, &keyFind->second.val, INSERT_VALUES);
+            }
+            
+            count++;
         }
     }
+
+    assert(count == totalDof - diriDof);
 
     return PETSC_SUCCESS;
 }

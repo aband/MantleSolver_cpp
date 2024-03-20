@@ -197,11 +197,13 @@ int main(int argc, char **argv){
     MarkBndryDOFDarcy(bndryDarcy, mi, (*testBasis), (*hdiv), physproperty);
     MarkBndryDOFStokes(bndryStokes, mi, (*testBasis), (*br), physproperty);
 
+/*
     for (const auto& bd: bndryStokes){
         cout << "Dirichlet Dof : "<< bd.first << "  " << bd.second.val << " " 
              << bd.second.globalElem[0] << " " << bd.second.globalElem[1] << endl;
 
     } cout << endl;
+*/
 
     // ==================================================================================
 
@@ -332,6 +334,7 @@ int main(int argc, char **argv){
 
     MarkBndryDOFStokes(bndryStokesDiri,bndryStokesNeum,mi,(*testBasis),(*br),physproperty);
 
+/*
     for (const auto& bd: bndryStokesDiri){
         cout << "Dirichlet Dof : "<< bd.first << "  " << bd.second.val << " " 
              << bd.second.globalElem[0] << " " << bd.second.globalElem[1] << endl;
@@ -343,12 +346,13 @@ int main(int argc, char **argv){
              << bn.second.globalElem[0] << " " << bn.second.globalElem[1] << endl;
 
     }
+*/
 
-    // Test reduced system
+    // Test dirichlet neumann mixed system
     ReducedSys * redTest = (ReducedSys *)malloc(sizeof(ReducedSys));
     CreateReducedSerial(redTest, &system->As, &system->Bs, &system->sourceStokes, bndryStokesDiri);
 
-    CreateNeumBndryVec(br->getDOF(), bndryStokesDiri.size(), redTest, bndryStokesNeum);
+    CreateNeumBndryVec(br->getDOF(), bndryStokesDiri.size(), redTest, bndryStokesNeum, bndryStokesDiri);
 
     linearSys * lsTest = (linearSys *)malloc(sizeof(linearSys));
 

@@ -103,6 +103,7 @@ PetscErrorCode CreateReducedSerial(ReducedSys * reducedsys,
 PetscErrorCode CreateNeumBndryVec(const int& totalDof,
                                   const int& diriDof,
                                   ReducedSys * resys,
-                                  bndryVal& bndryNeum);
+                                  bndryVal& bndryNeum,
+                                  bndryVal& bndryDiri);
 
 #endif

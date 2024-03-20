@@ -28,7 +28,7 @@ void AssignPhyProperties(PhysProperty * pp){
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
     if (abs(point[1]) < 0.75 && abs(point[0]) < abs(point[1])){
-        double value = 2.0*pow(1.0-abs(point[1])/0.75,2) * (1-abs(point[0]/point[1]));
+        double value = 3.5*pow(1.0-abs(point[1])/0.75,2) * (1-abs(point[0]/point[1]));
 
         return value;
     } else {
@@ -146,15 +146,15 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     // ==================================================
 
     // Test Case 4:
-    double scale = 0.005;
+    double scale = 0.0005;
     if (point[1] < -0.999){
         work[0] = 0.0;
         work[1] = scale;
-    } else if (point[0] < -0.999 || point[0] > 0.999) {
+    } else if (point[0] < 0 || point[0] > 0){
         work[0] = scale * point[0] / abs(point[0]);
         work[1] = 0.0;
-    } else if (point[1] > 0.999){
-        work[0] = scale * point[0] / abs(point[0]);
+    } else {
+        work[0] = 0.0;
         work[1] = 0.0;
     }
 
@@ -252,7 +252,8 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
 const vertex traction(const vertex& point, PhysProperty * pp){
     // return traction defined on the boundary
 
-    return {0.0,-1*abs(point[1])};
+    //return {0.0,-1*abs(point[1])};
+    return {0.0,0.0}; // free stress
 }
 
 // =========================================================================

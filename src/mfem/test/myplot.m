@@ -52,4 +52,3 @@ figure
 contour(X,Y,poro);
 title("Porosity");
 
-
