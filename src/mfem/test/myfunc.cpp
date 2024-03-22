@@ -28,7 +28,7 @@ void AssignPhyProperties(PhysProperty * pp){
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
     if (abs(point[1]) < 0.75 && abs(point[0]) < abs(point[1])){
-        double value = 3.5*pow(1.0-abs(point[1])/0.75,2) * (1-abs(point[0]/point[1]));
+        double value = 0.05*pow(1.0-abs(point[1])/0.75,2) * (1-abs(point[0]/point[1]));
 
         return value;
     } else {
@@ -146,7 +146,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     // ==================================================
 
     // Test Case 4:
-    double scale = 0.0005;
+    double scale = 0.001;
     if (point[1] < -0.999){
         work[0] = 0.0;
         work[1] = scale;
@@ -246,7 +246,7 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Test case 3:
     // Constant porosity.
     // Returns nondimensionalized gravity.
-    return {0.0,0.0};
+    return {0.0,-1*(1-AssignPorosity(point, pp))};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
@@ -302,6 +302,8 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         } else if (local == 11 || local == 7){
             type = neumann;
         }
+
+        //type = dirichlet;
     }
 
     // Bottom two dofs are dealt with separately

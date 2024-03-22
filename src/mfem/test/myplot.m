@@ -44,9 +44,11 @@ figure
 quiver(X,Y,vX,vY);
 title("Approximation Velocity");
 
+%[startX, startY] = meshgrid(-1:0.2:1,-1);
+
 %figure
-%quiver(X,Y,vXX,vYY);
-%title("Exact Velocity");
+%streamline(X,Y,vX,vY,startX,startY);
+%title("Stream line plot");
 
 figure
 contour(X,Y,poro);
