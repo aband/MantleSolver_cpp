@@ -12,6 +12,8 @@ set(HDF5 $ENV{HDF5_DIR})
 
 set(SRC $ENV{MantleSolver}/src)
 
+set(CGNS $ENV{CGNS_DIR})
+
 # PKG_CONFIG_PATH is set mannually in bashrc
 
 # Remove the lines below if you do not wish to have PETSc determine the compilers
@@ -67,10 +69,13 @@ add_library(mfem_lib
         ${SRC}/mfem/bndry.cpp
         ${SRC}/mfem/solve.cpp
         ${SRC}/mfem/error.cpp
+        ${SRC}/mfem/cgns_io_serial.cpp
 )
 
 target_include_directories(mfem_lib
-    PUBLIC ${SRC}/mfem
+		  PUBLIC ${SRC}/mfem
+		  PUBLIC /workspace/CGNS/src
+		  PUBLIC /workspace/CGNS/build/src
 )
 
 target_link_libraries(mfem_lib
@@ -80,7 +85,6 @@ target_link_libraries(mfem_lib
 add_library(io_lib
         ${SRC}/io/input.cpp
         ${SRC}/io/output.c
-#        ../../io/cgns_io.c
 )
 
 target_include_directories(io_lib
@@ -92,6 +96,7 @@ target_link_libraries(io_lib
     general_lib
     PkgConfig::PETSC
     PkgConfig::HDF5
+    ${CGNS}/libcgns.a
 #	 PkgConfig::CGNS
 )
 
