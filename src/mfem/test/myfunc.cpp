@@ -18,8 +18,8 @@ void AssignPhyProperties(PhysProperty * pp){
     double rho_r = pp->rho_f*pp->phi0 + 
                    pp->rho_s*(1-pp->phi0); 
 
-    pp->x0    = pow(pp->mu_s/pp->invk0/pp->mu_f,0.5);
-    pp->p0    = pp->gy*pp->x0*rho_r;
+    pp->l0    = pow(pp->mu_s/pp->invk0/pp->mu_f,0.5);
+    pp->p0    = pp->gy*pp->l0*rho_r;
     pp->u0    = pp->gy*rho_r/pp->mu_f/pp->invk0;
 
     pp->l = 0.3;
@@ -146,7 +146,8 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     // ==================================================
 
     // Test Case 4:
-    double scale = 0.001;
+    double scale = -1*pp->U0/pp->u0;
+    //double scale = 0.002;
     if (point[1] < -0.999){
         work[0] = 0.0;
         work[1] = scale;
@@ -246,14 +247,15 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Test case 3:
     // Constant porosity.
     // Returns nondimensionalized gravity.
-    return {0.0,-1*(1-AssignPorosity(point, pp))};
+    //return {0.0,-1*(1-AssignPorosity(point, pp))/pp->l0};
+    return {0.0, -1*(1-AssignPorosity(point, pp))};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
     // return traction defined on the boundary
 
-    //return {0.0,-1*abs(point[1])};
-    return {0.0,0.0}; // free stress
+    return {0.0,-1*abs(point[1])/pp->l0};
+    //return {0.0,0.0}; // free stress
 }
 
 // =========================================================================

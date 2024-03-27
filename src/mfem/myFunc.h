@@ -18,7 +18,7 @@ typedef struct {
     double phi0  ;
     double U0    ;
 
-    double x0    ;
+    double l0    ;
     double u0    ;
     double p0    ;
 

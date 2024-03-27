@@ -32,7 +32,11 @@ PetscErrorCode CreateLinearSys(linearSys * ls, ReducedSys * reducedsys){
     PetscCall(MatMult(BgT, reducedsys->g, g2));
 
     // Move boundary condition vectors to the right hand side of the 
+    // rhs = g-dirichlet+neumann
     PetscCall(VecAYPX(g1,-1,reducedsys->source));
+
+    //PetscCall(VecAXPY(g1,1.0,reducedsys->neum));
+
     PetscCall(VecScale(g2,-1));
 
     // Copy computed vectors to 

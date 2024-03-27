@@ -20,7 +20,7 @@ void AssignLocMatrix(const MeshInfo& mi,
     double inv_k0 = physproperty->invk0;
     double gx     = physproperty->gx;
     double gy     = physproperty->gy;
-    double x0     = physproperty->x0;
+    double x0     = physproperty->l0;
     double U0     = physproperty->U0;
     double rho_f  = physproperty->rho_f;
     double rho_s  = physproperty->rho_s;

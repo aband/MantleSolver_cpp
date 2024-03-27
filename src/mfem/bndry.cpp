@@ -646,6 +646,9 @@ PetscErrorCode CreateNeumBndryVec(const int& totalDof,
         }
     }
 
+    PetscCall(VecAssemblyBegin(resys->neum));
+    PetscCall(VecAssemblyEnd(resys->neum));
+
     assert(count == totalDof - diriDof);
 
     return PETSC_SUCCESS;

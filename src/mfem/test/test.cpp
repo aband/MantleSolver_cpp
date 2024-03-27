@@ -355,6 +355,8 @@ int main(int argc, char **argv){
 
     CreateNeumBndryVec(br->getDOF(), bndryStokesDiri.size(), redTest, bndryStokesNeum, bndryStokesDiri);
 
+    PetscCall(VecAXPY(redTest->source,1.0, redTest->neum));
+
     linearSys * lsTest = (linearSys *)malloc(sizeof(linearSys));
 
     CreateLinearSys(lsTest, redTest);
@@ -364,6 +366,8 @@ int main(int argc, char **argv){
     std::vector<double> fullSolTest = GetFullSol(&lsTest->x, bndryStokesDiri, br->getDOF());
 
     quiverOutput(mi, fullSolTest, M, N, *testBasis, *br, *hdiv, physproperty, 2);
+
+    //CgnsOutSerial(mi, fullSolTest, M, N, *testBasis, *br, *hdiv, physproperty, 2);
 
     const char *checkATest = "MatrixCheckATest.dat";
     // Write A matrix

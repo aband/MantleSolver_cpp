@@ -8,7 +8,7 @@ set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH})
 
 set(LAPACK $ENV{LAPACK_DIR})
 
-set(HDF5 $ENV{HDF5_DIR})
+set(HDF5 $ENV{HDF5_CMAKE})
 
 set(SRC $ENV{MantleSolver}/src)
 

@@ -1,5 +1,6 @@
-clc; clear
+%clc; clear
 
+function [] = myplot(M, N)
 % Read mesh points
 % Read form gridX and gridY text file
 
@@ -28,9 +29,12 @@ fclose(fileID);
 
 % ==========================================
 
-M = size(X,2)
-M = sqrt(M); 
-N = M;
+%M = size(X,2)
+%M = sqrt(M); 
+%N = M;
+
+%M = 30;
+%N = 15;
 
 X = reshape(X,M,N);
 Y = reshape(Y,M,N);
@@ -43,6 +47,10 @@ poro = reshape(poro,M,N);
 figure
 quiver(X,Y,vX,vY);
 title("Approximation Velocity");
+
+figure
+streamslice(X',Y',vX',vY',0.1);
+title("Streamline plot");
 
 %[startX, startY] = meshgrid(-1:0.2:1,-1);
 
