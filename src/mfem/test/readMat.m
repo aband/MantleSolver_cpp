@@ -82,7 +82,7 @@ dofd2 = size(gd2,2);
 As = reshape(As,dofs1,dofs1);
 Bs = reshape(Bs,dofs2,dofs1);
 
-ATest = reshape(ATest, 24, 24);
+%ATest = reshape(ATest, 24, 24);
 
 Ad = reshape(Ad,dofd1,dofd1);
 Bd = reshape(Bd,dofd2,dofd1);

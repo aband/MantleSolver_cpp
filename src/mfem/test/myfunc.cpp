@@ -12,6 +12,7 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->invk0 = 1.0/(1e-8);
     pp->phi0  = 0.4;
     pp->U0    = 1e-9;
+    pp->L0    = 160*1000;
 
     // Non dimensionalization parameters
 
@@ -22,13 +23,13 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->p0    = pp->gy*pp->l0*rho_r;
     pp->u0    = pp->gy*rho_r/pp->mu_f/pp->invk0;
 
-    pp->l = 0.3;
+    pp->l = 20/pp->l0;
 }
 
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
-    if (abs(point[1]) < 0.75 && abs(point[0]) < abs(point[1])){
-        double value = 0.05*pow(1.0-abs(point[1])/0.75,2) * (1-abs(point[0]/point[1]));
+    if (abs(point[1]) < 120*1000/pp->l0 && abs(point[0]) < abs(point[1])){
+        double value = 0.05*pow(1.0-abs(point[1])/(120*1000/pp->l0),2) * (1-abs(point[0]/point[1]));
 
         return value;
     } else {
@@ -121,9 +122,8 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     // ==================================================
 
-/*
     // Test case 3:
-    // Constant porosity
+    // Corner Flow
     double x, z;
 
     if (point[0] < 0.0) {
@@ -134,21 +134,20 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     z = point[1];
 
-    //coef = 2*pp->U0/(3.14159265358979323846*(x*x+z*z))/pp->u0;
-    coef = 2/(3.14159265358979323846*(x*x+z*z));
+    coef = 2*pp->U0/(3.14159265358979323846*(x*x+z*z))/pp->u0;
+    //coef = 2/(3.14159265358979323846*(x*x+z*z));
 
     work =  {atan(x/z)*(x*x+z*z) - x*z,
              -z*z};
 
-    work *= -1*coef;
-*/
+    work *= coef;
 
     // ==================================================
-
+/*
     // Test Case 4:
     double scale = -1*pp->U0/pp->u0;
     //double scale = 0.002;
-    if (point[1] < -0.999){
+    if (point[1] < -0.999*pp->L0/pp->l0){
         work[0] = 0.0;
         work[1] = scale;
     } else if (point[0] < 0 || point[0] > 0){
@@ -160,10 +159,11 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     }
 
     // bottom corner
-    if (point[1] < -0.999 && (point[0] < -0.999 || point[0] > 0.999)){
-        work[0] = scale * point[0]/abs(point[0]);
-        work[1] = scale;
-    }
+    //if (point[1] < -0.999/pp->l0 && (point[0] < -0.999/pp->l0 || point[0] > 0.999/pp->l0)){
+    //    work[0] = scale * point[0]/abs(point[0]);
+    //    work[1] = scale;
+    //}
+*/
 
     return work;
 }
@@ -248,13 +248,18 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Constant porosity.
     // Returns nondimensionalized gravity.
     //return {0.0,-1*(1-AssignPorosity(point, pp))/pp->l0};
-    return {0.0, -1*(1-AssignPorosity(point, pp))};
+    return {0.0, -0.01*(1-AssignPorosity(point, pp))};
+    //return {0.0,0.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
     // return traction defined on the boundary
 
-    return {0.0,-1*abs(point[1])/pp->l0};
+    if (point[0] < -0.999*pp->L0/pp->l0 || point[0] > 0.999*pp->L0/pp->l0) {
+        return {0.0,abs(point[1])*pp->L0/pp->l0};
+    } else {
+        return {0.0,0.0};
+    }
     //return {0.0,0.0}; // free stress
 }
 
@@ -295,6 +300,7 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         } else if (local == 1){
             type = neumann;
         }
+        type = dirichlet;
     }
    
     if (global[1] == mi.MPIglobalCellSize[1]-1){
@@ -304,8 +310,6 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         } else if (local == 11 || local == 7){
             type = neumann;
         }
-
-        //type = dirichlet;
     }
 
     // Bottom two dofs are dealt with separately

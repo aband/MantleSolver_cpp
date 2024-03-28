@@ -22,6 +22,8 @@ typedef struct {
     double u0    ;
     double p0    ;
 
+    double L0    ;
+
     double l;
 } PhysProperty;
 

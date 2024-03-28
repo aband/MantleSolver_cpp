@@ -56,12 +56,11 @@ int main(int argc, char **argv){
 
     AssignPhyProperties(physproperty);
 
-//    double L = 2*160000/physproperty->x0, H = 1*160000/physproperty->x0;
-//    double xstart = -1*160000/physproperty->x0, ystart = 0;
-    double L = 2, H = 1;
-    double xstart = -1, ystart = -1.1;
-//    double L = 2.0, H = 2.0;
-//    double xstart = -1.0, ystart = -1.0;
+    double physscale = physproperty->L0/physproperty->l0;
+    double L = 2*physscale, H = 1*physscale;
+    double xstart = -1*physscale, ystart = -1.001*physscale;
+//    double L = 2, H = 1;
+//    double xstart = -1, ystart = -1.1;
 
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
