@@ -69,13 +69,13 @@ add_library(mfem_lib
         ${SRC}/mfem/bndry.cpp
         ${SRC}/mfem/solve.cpp
         ${SRC}/mfem/error.cpp
-        ${SRC}/mfem/cgns_io_serial.cpp
+		  #        ${SRC}/mfem/cgns_io_serial.cpp
 )
 
 target_include_directories(mfem_lib
 		  PUBLIC ${SRC}/mfem
-		  PUBLIC /workspace/CGNS/src
-		  PUBLIC /workspace/CGNS/build/src
+		  #		  PUBLIC /workspace/CGNS/src
+		  #		  PUBLIC /workspace/CGNS/build/src
 )
 
 target_link_libraries(mfem_lib
@@ -96,7 +96,7 @@ target_link_libraries(io_lib
     general_lib
     PkgConfig::PETSC
     PkgConfig::HDF5
-    ${CGNS}/libcgns.a
+	 #    ${CGNS}/libcgns.a
 #	 PkgConfig::CGNS
 )
 

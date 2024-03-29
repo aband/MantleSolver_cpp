@@ -49,7 +49,7 @@ quiver(X,Y,vX,vY);
 title("Approximation Velocity");
 
 figure
-streamslice(X',Y',vX',vY',0.1);
+streamslice(X',Y',vX',vY',0.5);
 title("Streamline plot");
 
 %[startX, startY] = meshgrid(-1:0.2:1,-1);

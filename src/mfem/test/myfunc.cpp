@@ -36,6 +36,8 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
         return 0.0;
     }
 
+//    return 0.0;
+
     // Constant porosity
     //return pp->phi0;
 }
@@ -248,19 +250,20 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Constant porosity.
     // Returns nondimensionalized gravity.
     //return {0.0,-1*(1-AssignPorosity(point, pp))/pp->l0};
-    return {0.0, -0.01*(1-AssignPorosity(point, pp))};
+    return {0.0, -1*(1-AssignPorosity(point, pp))};
     //return {0.0,0.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
     // return traction defined on the boundary
-
+/*
     if (point[0] < -0.999*pp->L0/pp->l0 || point[0] > 0.999*pp->L0/pp->l0) {
         return {0.0,abs(point[1])*pp->L0/pp->l0};
     } else {
         return {0.0,0.0};
     }
-    //return {0.0,0.0}; // free stress
+*/
+    return {0.0,0.0}; // free stress
 }
 
 // =========================================================================

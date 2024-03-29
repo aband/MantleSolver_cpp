@@ -10,7 +10,7 @@
 #include "bndry.h"
 #include "solve.h"
 #include "error.h"
-#include "cgns_io_serial.h"
+//#include "cgns_io_serial.h"
 
 extern "C"{
 #include "mesh.h"
