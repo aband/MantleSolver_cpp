@@ -356,3 +356,73 @@ int quiverOutput(const MeshInfo& mi, const std::vector<double>& fullSol, int M, 
 
     return 0;
 }
+
+int quiverOutput(const MeshInfo& mi, 
+                 const std::vector<double>& fullSolStokes, 
+                 const std::vector<double>& fullSolDarcy,
+                 int M, int N,
+                 basis& basis_, BRMixed& br, Hdivmixed& hdiv, PhysProperty * pp){
+
+    FILE *gridx = fopen("gridX.dat", "w");
+    FILE *gridy = fopen("gridY.dat", "w");
+
+    FILE *vx = fopen("vx.dat","w");
+    FILE *vy = fopen("vy.dat","w");
+
+    FILE *ux = fopen("ux.dat","w");
+    FILE *uy = fopen("uy.dat","w");
+
+    FILE *fp = fopen("porosity.dat","w");
+
+    // =============================================
+    for (int j=0; j<N; j++){
+        for (int i=0; i<M; i++){
+
+            vertex local {0.0,0.0};
+            std::array<vertex, 3> workDarcy;
+            std::array<vertex, 3> workStokes;
+
+            basis_.GetCorners(mi,{i,j});
+
+            vertex global = GaussMapPointsFace(local, basis_.corners());
+
+            //Darcy
+            std::array<double, 8> singleWgtDarcy = 
+                                  ExtractWeights(fullSolDarcy, hdiv.LocalToGlobal(mi,{i,j}));
+
+            workDarcy = quiverPrepare(singleWgtDarcy, {i,j}, global, basis_, hdiv, pp);
+            // Stokes
+            std::array<double, 12> singleWgtStokes = 
+                                  ExtractWeights(fullSolStokes, br.LocalToGlobal(mi,{i,j}));
+
+            workStokes = quiverPrepare(singleWgtStokes, {i,j}, global, basis_, br, pp);
+
+            fprintf(gridx,"%f ",workDarcy[0][0]);
+            fprintf(gridy,"%f ",workDarcy[0][1]);
+            fprintf(vx,"%f ",workStokes[1][0]);
+            fprintf(vy,"%f ",workStokes[1][1]);
+            fprintf(ux,"%f ",workDarcy[1][0]);
+            fprintf(uy,"%f ",workDarcy[1][1]);
+            fprintf(fp, "%f", AssignPorosity(global,pp));
+        }
+
+        fprintf(gridx,"\n");
+        fprintf(gridy,"\n");
+        fprintf(vx,"\n");
+        fprintf(vy,"\n");
+        fprintf(ux,"\n");
+        fprintf(uy,"\n");
+        fprintf(fp, "\n");
+    }
+    // =============================================
+
+    fclose(gridx);
+    fclose(gridy);
+    fclose(vx);
+    fclose(vy);
+    fclose(ux);
+    fclose(uy);
+    fclose(fp);
+
+    return 0;
+}

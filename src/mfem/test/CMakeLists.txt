@@ -102,7 +102,7 @@ target_link_libraries(io_lib
 
 # Add to excutable
 add_executable(test 
-        test.cpp 
+        testCoupled.cpp 
         myfunc.cpp
 )
 

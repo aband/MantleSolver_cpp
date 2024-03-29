@@ -85,4 +85,10 @@ std::array<vertex, 3> quiverPrepare(const std::array<double, 8>& weight,
 int quiverOutput(const MeshInfo& mi, const std::vector<double>& fullSol, int M, int N, 
                  basis& basis_, BRMixed& br, Hdivmixed& hdiv, PhysProperty * pp, int flag);
 
+int quiverOutput(const MeshInfo& mi, 
+                 const std::vector<double>& fullSolStokes, 
+                 const std::vector<double>& fullSolDarcy,
+                 int M, int N,
+                 basis& basis_, BRMixed& br, Hdivmixed& hdiv, PhysProperty * pp);
+
 #endif
