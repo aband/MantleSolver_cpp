@@ -195,8 +195,10 @@ int main(int argc, char ** argv){
     int maxIter;
     PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL);
 
-    double tauUzawa;
-    PetscOptionsGetReal(NULL, NULL, "-tau", &tauUzawa, NULL);
+    double tauUzawa1;
+    double tauUzawa2;
+    PetscOptionsGetReal(NULL, NULL, "-tau1", &tauUzawa1, NULL);
+    PetscOptionsGetReal(NULL, NULL, "-tau2", &tauUzawa2, NULL);
 
     double tolUzawa;
     PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
@@ -212,7 +214,7 @@ int main(int argc, char ** argv){
 
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
 
-    CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa);
+    CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1, tauUzawa2);
 
     // Result output
     Vec stokesv;

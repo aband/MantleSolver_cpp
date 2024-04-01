@@ -158,7 +158,7 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, doub
     }
 }
 
-PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau){
+PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1, double tau2){
 
     /*
      * Using (preconditioned) CG for 
@@ -229,8 +229,20 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
 
         // ===================================
 */
+        // Uniform tau value
+        //PetscCall(VecAXPY(ls->y,tau,tmp3));
 
-        PetscCall(VecAXPY(ls->y,tau,tmp3));
+        // Different tau values
+        Vec tmp31, tmp32;
+        PetscCall(VecNestGetSubVec(tmp3, 0, &tmp31));
+        PetscCall(VecNestGetSubVec(tmp3, 1, &tmp32));
+
+        PetscCall(VecScale(tmp31,tau1));
+        PetscCall(VecScale(tmp32,tau2));
+
+        //PetscCall(VecView(tmp3,PETSC_VIEWER_STDOUT_WORLD));
+
+        PetscCall(VecAXPY(ls->y,1.0,tmp3));
 
         PetscReal val1, val2;
         PetscCall(VecNorm(tmp1,NORM_2,&val1));
@@ -252,7 +264,7 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
 
 
 PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsResult, Mat * K,
-                             double tol, int MaxIter, double tau){
+                             double tol, int MaxIter, double tau1, double tau2){
 
     // Solve coupled system with Uzawa algorithm
     // Create coupled system with two different linear system
@@ -347,5 +359,5 @@ PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsRes
     PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayf,&lsResult->f));
     PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayg,&lsResult->g));
 
-    return InexactUzawa(lsResult, tol, MaxIter, tau);
+    return InexactUzawa(lsResult, tol, MaxIter, tau1, tau2);
 }
