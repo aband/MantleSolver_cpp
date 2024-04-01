@@ -6,65 +6,47 @@ fileID = fopen('build/MatrixCheckAs.dat','r');
 
 As = fscanf(fileID, '%f', [1,Inf]);
 
-fileID = fopen('build/MatrixCheckATest.dat','r');
+%fileID = fopen('build/MatrixCheckATest.dat','r');
 
-ATest = fscanf(fileID, '%f', [1,Inf]);
+%ATest = fscanf(fileID, '%f', [1,Inf]);
 
-fclose(fileID);
+%fclose(fileID);
 
 fileID = fopen('build/MatrixCheckAd.dat','r');
 
 Ad = fscanf(fileID, '%f', [1,Inf]);
 
-fclose(fileID);
-
 fileID = fopen('build/MatrixCheckBs.dat','r');
 
 Bs = fscanf(fileID, '%f', [1,Inf]);
-
-fclose(fileID);
 
 fileID = fopen('build/MatrixCheckBd.dat','r');
 
 Bd = fscanf(fileID, '%f', [1,Inf]);
 
-fclose(fileID);
-
 fileID = fopen('build/MatrixCheckgs1.dat','r');
 
 gs1 = fscanf(fileID, '%f', [1,Inf]);
-
-fclose(fileID);
 
 fileID = fopen('build/MatrixCheckgs2.dat','r');
 
 gs2 = fscanf(fileID, '%f', [1,Inf]);
 
-fclose(fileID);
-
 fileID = fopen('build/MatrixCheckgd1.dat','r');
 
 gd1 = fscanf(fileID, '%f', [1,Inf]);
-
-fclose(fileID);
 
 fileID = fopen('build/MatrixCheckgd2.dat','r');
 
 gd2 = fscanf(fileID, '%f', [1,Inf]);
 
-fclose(fileID);
-
 fileID = fopen('build/MatrixCheckCs.dat','r');
 
 Cs = fscanf(fileID, '%f', [1,Inf]);
 
-fclose(fileID);
-
 fileID = fopen('build/MatrixCheckCd.dat','r');
 
 Cd = fscanf(fileID, '%f', [1,Inf]);
-
-fclose(fileID);
 
 fileID = fopen('build/MatCheckK.dat','r');
 

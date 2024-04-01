@@ -59,7 +59,7 @@ int main(int argc, char ** argv){
 
     double physscale = physproperty->L0/physproperty->l0;
     double L = 2*physscale, H = 1*physscale;
-    double xstart = -1*physscale, ystart = -1.001*physscale;
+    double xstart = -1*physscale, ystart = -1.0*physscale;
 //    double L = 2, H = 1;
 //    double xstart = -1, ystart = -1.1;
 
@@ -189,6 +189,37 @@ int main(int argc, char ** argv){
     CreateLinearSys(lsStokes, reducedStokes);
     CreateLinearSys(lsDarcy, reducedDarcy);
 
+    // Check linear system component
+    const char *checkAd = "MatrixCheckAd.dat";
+    // Write A matrix
+    WriteMat(lsDarcy->A,checkAd);
+
+    const char *checkBd = "MatrixCheckBd.dat";
+    // Write B matrix
+    WriteMat(lsDarcy->B,checkBd);
+
+    // Write right two right hand side vectors
+    const char *checkgd1 = "MatrixCheckgd1.dat";
+    WriteVec(lsDarcy->f, checkgd1);   
+
+    const char *checkgd2 = "MatrixCheckgd2.dat";
+    WriteVec(lsDarcy->g, checkgd2);   
+
+    const char *checkAs = "MatrixCheckAs.dat";
+    // Write A matrix
+    WriteMat(lsStokes->A,checkAs);
+
+    const char *checkBs = "MatrixCheckBs.dat";
+    // Write B matrix
+    WriteMat(lsStokes->B,checkBs);
+
+    // Write right two right hand side vectors
+    const char *checkgs1 = "MatrixCheckgs1.dat";
+    WriteVec(lsStokes->f, checkgs1);   
+
+    const char *checkgs2 = "MatrixCheckgs2.dat";
+    WriteVec(lsStokes->g, checkgs2);   
+
     // Solve a coupled system ==========================================================
     // Couple two saddle point system
     // Control number of iterations and tolerance
@@ -206,6 +237,15 @@ int main(int argc, char ** argv){
     // Assign correct C matrix to the target system
     PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &lsDarcy->C));
     PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
+
+    const char *checkCd = "MatrixCheckCd.dat";
+    WriteMat(system->Cd,checkCd);
+
+    const char *checkCs = "MatrixCheckCs.dat";
+    WriteMat(system->Cs,checkCs);
+
+    const char *checkK = "MatCheckK.dat";
+    WriteMat(system->K,checkK);
 
     PetscCall(VecZeroEntries(lsDarcy->x));
     PetscCall(VecZeroEntries(lsDarcy->y));
