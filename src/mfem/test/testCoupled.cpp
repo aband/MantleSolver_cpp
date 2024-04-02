@@ -59,7 +59,7 @@ int main(int argc, char ** argv){
 
     double physscale = physproperty->L0/physproperty->l0;
     double L = 2*physscale, H = 1*physscale;
-    double xstart = -1*physscale, ystart = -1.0*physscale;
+    double xstart = -1*physscale, ystart = -1.0001*physscale;
 //    double L = 2, H = 1;
 //    double xstart = -1, ystart = -1.1;
 

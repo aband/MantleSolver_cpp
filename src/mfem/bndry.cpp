@@ -74,7 +74,6 @@ int MarkBndryDOFStokes(bndryVal& bndryDiri,
 
         for (const auto& edge: edges){
             // Get corners corresponding to this boundary edge
-
             vertexSet edgeCorners = {fullCorners.at((edge+3)%4),
                                      fullCorners.at(edge)};
 
@@ -120,6 +119,60 @@ int MarkBndryDOFStokes(bndryVal& bndryDiri,
     }}
 
     return 0; 
+}
+
+int MarkBndryDOFDarcy(bndryVal& bndryDiri,
+                      bndryVal& bndryNeum,
+                      const MeshInfo& mi,
+                      basis& basis_,
+                      Hdivmixed& hdiv_,
+                      PhysProperty * pp){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        // Global element index
+        indice global {i,j};
+
+        // Extract corners of this element
+        basis_.GetCorners(mi, global);
+
+        vertexSet fullCorners = basis_.corners();
+
+        // Get global numbering of the dofs associating with this element
+        std::array<int, 8> elementDOF = hdiv_.LocalToGlobal(mi, global);
+
+        // Mark all the edges of this element that laying on the boundary
+        vector<int> edges;
+
+        markBndryEdge(mi, edges, i, j); 
+
+        for (const auto& edge: edges){
+            // Get corners corresponding to this boundary edge
+            vertexSet edgeCorners = {fullCorners.at((edge+3)%4),
+                                     fullCorners.at(edge)};
+
+            // Get unit normal vector to this boundary edge
+            vertex nu = basis_.unitnormal(edge);
+
+            double len = length(edgeCorner);
+
+            // Get dirichlet boundary value assigned to boundary dofs
+            std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, 
+                 basis_,hdiv_, pp, edgeCorner, len, gwe, gpe);
+ 
+
+
+
+
+        }
+
+    }}
+
+    return 0;
 }
 
 // Mark boundary dof in serial
@@ -281,8 +334,6 @@ std::array<double,2> AssignBndryValsDarcy(const indice& global,
                               DiriVal[1]*vals[1][1]*nu[1]*nu[1]);
 
     }
-
-    //cout << "Element " << global[0] << " " << global[1] << " l0,l1 : " << l0 << " " << l1 << endl;
 
     work[0] = (d*l0-b*l1)/(a*d-b*b);
     work[1] = (a*l1-b*l0)/(a*d-b*b);

@@ -28,8 +28,9 @@ void AssignPhyProperties(PhysProperty * pp){
 
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
-    if (abs(point[1]) < 120*1000/pp->l0 && abs(point[0]) < abs(point[1])){
-        double value = 0.05*pow(1.0-abs(point[1])/(120*1000/pp->l0),2) * (1-abs(point[0]/point[1]));
+    if (abs(point[1]) < 120*1000/pp->l0 && abs(point[0]) < abs(point[1]) + pp->l){
+        double value = 0.05*pow((120*1000/pp->l0 - abs(point[1]))/(120*1000/pp->l0),2) * 
+                               (1-abs(point[0])/(abs(point[1])+pp->l));
 
         return value;
     } else {
@@ -200,24 +201,28 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
 
     z = point[1];
 
-    double rho_r = pp->rho_f*pp->phi0 + pp->rho_s*pp->phi0;
+    // Point wise porosity
+    double phi_f = AssignPorosity(point, pp);
 
-    double coef1 = (1-pp->phi0) * pow(pp->phi0,2+2*pp->theta);
+    double rho_r = pp->rho_f*phi_f + pp->rho_s*(1-phi_f);
+
+    //double coef1 = (1-pp->phi0) * pow(pp->phi0,2+2*pp->theta);
     //double coef2 = 4*pp->mu_s*pp->U0/(3.14159265358979323846*(x*x+z*z)*pp->x0*pp->x0) /rho_r /pp->gy;
-    double coef2 = 4/(3.14159265358979323846*(x*x+z*z)*(x*x+z*z));
+    double coef1 = (1-phi_f)*pow(phi_f,2+2*pp->theta); 
+
+    double coef2 = 4*pp->U0/pp->u0/(3.14159265358979323846*(x*x+z*z)*(x*x+z*z));
 
     work[0] = coef1*coef2*2*x*z;
     work[1] = coef1*coef2*(z*z-x*x);
 
     work[0] += coef1 * 0;
-    work[1] += coef1 * 0;
+    work[1] += coef1 * 1;
+
+    //cout << point[0] << " " << point[1] << "  " << phi_f << " " << work[1] << endl;
 
     // Scale the velocity
-    work[0] /= pp->phi0;
-    work[1] /= pp->phi0;
-
-    work[0] = 0.0;
-    work[1] = 0.0;
+    //work[0] /= pp->phi0;
+    //work[1] /= pp->phi0;
 
     return work;
 }
