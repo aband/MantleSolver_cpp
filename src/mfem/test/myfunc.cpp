@@ -337,3 +337,27 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
     // the dof is missed during the marking process
     return dirichlet;
 } 
+
+bool exit(double range, int M, int i){
+
+    if (i < M/2 + range && i > M/2 - range){
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+const bndryType bndryTypeMarker(const MeshInfo& mi,
+                                const indice& global){
+
+    bndryType type = missed;
+
+    if (global[1] == mi.MPIglobalCellSize[1]-1 && exit(1.05, mi.MPIglobalCellSize[0], global[0]) ){
+        type = neumann; 
+    } else {
+        type = dirichlet;
+    }
+
+    return type;
+}

@@ -52,6 +52,13 @@ int MarkBndryDOFStokes(bndryVal& bndryDiri,
                        BRMixed& br_,
                        PhysProperty * pp);
 
+int MarkBndryDOFDarcy(bndryVal& bndryDrir,
+                      bndryVal& bndryNeum,
+                      const MeshInfo& mi,
+                      basis& basis_,
+                      Hdivmixed& hdiv_,
+                      PhysProperty * pp);
+
 /** !
  * Compute Dirichlet values locally.
  * 1. Dirichlet values are assigned to Stokes part directly.

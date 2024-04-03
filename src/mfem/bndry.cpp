@@ -150,6 +150,8 @@ int MarkBndryDOFDarcy(bndryVal& bndryDiri,
 
         markBndryEdge(mi, edges, i, j); 
 
+        double neumVal;
+
         for (const auto& edge: edges){
             // Get corners corresponding to this boundary edge
             vertexSet edgeCorners = {fullCorners.at((edge+3)%4),
@@ -158,15 +160,38 @@ int MarkBndryDOFDarcy(bndryVal& bndryDiri,
             // Get unit normal vector to this boundary edge
             vertex nu = basis_.unitnormal(edge);
 
-            double len = length(edgeCorner);
+            double len = length(edgeCorners);
 
             // Get dirichlet boundary value assigned to boundary dofs
             std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, 
-                 basis_,hdiv_, pp, edgeCorner, len, gwe, gpe);
+                 basis_,hdiv_, pp, edgeCorners, len, gwe, gpe);
  
+            switch (bndryTypeMarker(mi, global)){
+                case dirichlet:
+                    // Dirichlet boundary condition
+                    bndryDiri.insert(std::make_pair<int, bndryInfo>
+                         ((int)elementDOF[edge], {edge, dVals[0], global}));
+                    bndryDiri.insert(std::make_pair<int, bndryInfo>
+                         ((int)elementDOF[edge+4], {edge+4, dVals[1], global}));
+                    break;
 
+                case neumann:
+                    // Neumann boundary condition
+                    //double neumVal = neumValDarcy(mi,basis_,hdiv_,gwe,gpe,pp);
+                    neumVal = 0.0;
+ 
+                    bndryNeum.insert(std::make_pair<int, bndryInfo>
+                         ((int)elementDOF[edge], {edge, neumVal, global}));
 
+                    bndryNeum.insert(std::make_pair<int, bndryInfo>
+                         ((int)elementDOF[edge+4], {edge+4, neumVal, global}));
 
+                    break;
+             
+                case missed:
+                    cout << "This dof is missed." << endl;
+                    break;
+            }
 
         }
 

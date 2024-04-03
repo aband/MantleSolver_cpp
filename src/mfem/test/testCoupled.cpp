@@ -167,19 +167,24 @@ int main(int argc, char ** argv){
     // Assign boundary conditions
     bndryVal bndryStokesDiri;
     bndryVal bndryStokesNeum;
-    bndryVal bndryDarcy;
+    bndryVal bndryDarcyDiri;
+    bndryVal bndryDarcyNeum;
 
     MarkBndryDOFStokes(bndryStokesDiri, bndryStokesNeum, mi, *basis_, *br, physproperty);
-    MarkBndryDOFDarcy(bndryDarcy, mi, *basis_, *hdiv, physproperty); 
+    MarkBndryDOFDarcy(bndryDarcyDiri, bndryDarcyNeum, mi, *basis_, *hdiv, physproperty); 
 
     // Create reduced system
     ReducedSys * reducedDarcy = (ReducedSys *)malloc(sizeof(ReducedSys));
     ReducedSys * reducedStokes = (ReducedSys *)malloc(sizeof(ReducedSys));
 
-    CreateReducedSerial(reducedDarcy, &system->Ad, &system->Bd, &system->sourceDarcy, bndryDarcy);
+    CreateReducedSerial(reducedDarcy, &system->Ad, &system->Bd, &system->sourceDarcy, bndryDarcyDiri);
     CreateReducedSerial(reducedStokes, &system->As, &system->Bs, &system->sourceStokes, bndryStokesDiri);
 
     CreateNeumBndryVec(br->getDOF(), bndryStokesDiri.size(), reducedStokes, bndryStokesNeum, bndryStokesDiri);
+
+    CreateNeumBndryVec(hdiv->getDOF(), bndryDarcyDiri.size(), reducedDarcy, bndryDarcyNeum, bndryDarcyDiri);
+
+    cout << bndryDarcyNeum.size() << endl;
 
     PetscCall(VecAXPY(reducedStokes->source, 1.0, reducedStokes->neum));
 
@@ -264,7 +269,7 @@ int main(int argc, char ** argv){
     PetscCall(VecNestGetSubVec(lsResult->x, 1, &darcyv));
 
     std::vector<double> fullsolStokes = GetFullSol(&stokesv, bndryStokesDiri, br->getDOF());
-    std::vector<double> fullsolDarcy  = GetFullSol(&darcyv, bndryDarcy, hdiv->getDOF());
+    std::vector<double> fullsolDarcy  = GetFullSol(&darcyv, bndryDarcyDiri, hdiv->getDOF());
 
     // Stokes quiver output
     quiverOutput(mi, fullsolStokes, fullsolDarcy, M, N, *basis_, *br, *hdiv, physproperty);

@@ -58,4 +58,6 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global,
                                 const int& local);
 
+const bndryType bndryTypeMarker(const MeshInfo& mi,
+                                const indice& global);
 #endif
