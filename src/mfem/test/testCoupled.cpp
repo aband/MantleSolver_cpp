@@ -184,8 +184,6 @@ int main(int argc, char ** argv){
 
     CreateNeumBndryVec(hdiv->getDOF(), bndryDarcyDiri.size(), reducedDarcy, bndryDarcyNeum, bndryDarcyDiri);
 
-    cout << bndryDarcyNeum.size() << endl;
-
     PetscCall(VecAXPY(reducedStokes->source, 1.0, reducedStokes->neum));
 
     linearSys * lsStokes = (linearSys *)malloc(sizeof(linearSys));
@@ -259,8 +257,10 @@ int main(int argc, char ** argv){
 
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
 
-    CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1, tauUzawa2);
+    //CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1, tauUzawa2);
+    CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1);
 
+/*
     // Result output
     Vec stokesv;
     Vec darcyv;
@@ -273,6 +273,7 @@ int main(int argc, char ** argv){
 
     // Stokes quiver output
     quiverOutput(mi, fullsolStokes, fullsolDarcy, M, N, *basis_, *br, *hdiv, physproperty);
+*/
 
     // =================================================================================
     // Clear used objects

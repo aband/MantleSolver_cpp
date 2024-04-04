@@ -262,6 +262,43 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1
 
 }
 
+PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter){
+
+    // Create Schur complement for Darcy part
+
+    /*
+     * Using (preconditioned) CG for 
+     * Using zero vectors as initial guesses.
+     * x and y are zero vectors.
+     */
+    KSP ksp;
+    PC  pc;
+    PetscCall(KSPCreate(PETSC_COMM_WORLD, &ksp));
+    PetscCall(KSPSetOperators(ksp, ls->A, ls->A));
+    PetscCall(KSPSetType(ksp, KSPCG));
+    PetscCall(KSPCGSetType(ksp, KSP_CG_SYMMETRIC));
+    PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE)); // zero initial guess
+    PetscCall(KSPGetPC(ksp, &pc));
+
+    Mat B;
+    PetscCall(MatCreateTranspose(ls->B, &B));
+
+    double r = 1.0;
+    int    iter = 0;
+
+    Vec tmp1, tmp2, tmp3, tmp4;
+
+
+
+
+    if (iter < MaxIter){
+        printf("Uzawa converged successfully! r = %.3e, Used %d iterations. \n", r, iter);
+        return PETSC_SUCCESS;
+    } else {
+        printf("Uzawa failed to converge! r = %.3e \n", r);
+        return PETSC_ERR_CONV_FAILED;
+    }
+}
 
 PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsResult, Mat * K,
                              double tol, int MaxIter, double tau1, double tau2){
@@ -360,4 +397,48 @@ PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsRes
     PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayg,&lsResult->g));
 
     return InexactUzawa(lsResult, tol, MaxIter, tau1, tau2);
+}
+
+PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsResult, Mat * K, 
+                             double tol, int MaxIter, double tau){
+
+    // Convert Darcy part to corresponding schur complement
+    // The new resulting system
+    // As  -Bs        xs    fs
+    // BsT  Cs  K   * ys  = gs
+    //      K   Sd    yd    gd - BdT Ad^-1 fd
+    // Form a smaller saddle point system
+    // Ad is guaranteed positive definite
+    
+    int M1, N1, M2, N2;
+    PetscCall(VecGetSize(ls1->f,&M1));
+    PetscCall(VecGetSize(ls1->g,&N1));
+    PetscCall(VecGetSize(ls2->f,&M2));
+    PetscCall(VecGetSize(ls2->g,&N2));
+
+    // Create A matrix for linear system
+    PetscCall(MatConvert(ls1->A, MATSAME, MAT_INITIAL_MATRIX, &lsResult->A));
+
+    // Create B matrix for linear system 
+    Mat arrayB[2], Zb; 
+    PetscCall(MatCreate(PETSC_COMM_WORLD, &Zb));
+    PetscCall(MatSetSizes(Zb,PETSC_DECIDE, PETSC_DECIDE, M1, N2));
+    PetscCall(MatSetUp(Zb));
+    PetscCall(MatAssemblyBegin(Zb,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(Zb,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatZeroEntries(Zb));
+
+    arrayB[0] = ls1->B;
+    arrayB[1] = Zb;
+
+    PetscCall(MatCreateNest(PETSC_COMM_WORLD, 1, NULL, 2, NULL, arrayB, &lsResult->B));
+
+    // Create Coupled C matrix
+    Mat arrayC[4];
+
+    // Create schur complement for Darcy system
+    
+
+
+    return PETSC_SUCCESS;
 }

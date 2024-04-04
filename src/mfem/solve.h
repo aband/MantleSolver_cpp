@@ -33,4 +33,6 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1
 PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsResult, Mat * K, 
                              double tol, int MaxIter, double tau1, double tau2);
 
+PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsResult, Mat * K, 
+                             double tol, int MaxIter, double tau1);
 #endif
