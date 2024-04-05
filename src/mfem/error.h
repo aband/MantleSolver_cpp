@@ -91,4 +91,9 @@ int quiverOutput(const MeshInfo& mi,
                  int M, int N,
                  basis& basis_, BRMixed& br, Hdivmixed& hdiv, PhysProperty * pp);
 
+int quiverOutput(const MeshInfo& mi, 
+                 const std::vector<double>& fullSolStokes, 
+                 int M, int N,
+                 basis& basis_, BRMixed& br, PhysProperty * pp);
+
 #endif

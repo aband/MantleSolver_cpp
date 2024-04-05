@@ -426,3 +426,60 @@ int quiverOutput(const MeshInfo& mi,
 
     return 0;
 }
+
+// Stokes only
+int quiverOutput(const MeshInfo& mi, 
+                 const std::vector<double>& fullSolStokes, 
+                 int M, int N,
+                 basis& basis_, BRMixed& br, PhysProperty * pp){
+
+    FILE *gridx = fopen("gridX.dat", "w");
+    FILE *gridy = fopen("gridY.dat", "w");
+
+    FILE *vx = fopen("vx.dat","w");
+    FILE *vy = fopen("vy.dat","w");
+
+    FILE *fp = fopen("porosity.dat","w");
+
+    // =============================================
+    for (int j=0; j<N; j++){
+        for (int i=0; i<M; i++){
+
+            vertex local {0.0,0.0};
+            std::array<vertex, 3> workStokes;
+
+            basis_.GetCorners(mi,{i,j});
+
+            vertex global = GaussMapPointsFace(local, basis_.corners());
+
+            // Stokes
+            std::array<double, 12> singleWgtStokes = 
+                                  ExtractWeights(fullSolStokes, br.LocalToGlobal(mi,{i,j}));
+
+            workStokes = quiverPrepare(singleWgtStokes, {i,j}, global, basis_, br, pp);
+
+            fprintf(gridx,"%f ",workStokes[0][0]);
+            fprintf(gridy,"%f ",workStokes[0][1]);
+            fprintf(vx,"%f ",workStokes[1][0]);
+            fprintf(vy,"%f ",workStokes[1][1]);
+            fprintf(fp, "%f", AssignPorosity(global,pp));
+        }
+
+        fprintf(gridx,"\n");
+        fprintf(gridy,"\n");
+        fprintf(vx,"\n");
+        fprintf(vy,"\n");
+        fprintf(fp, "\n");
+    }
+    // =============================================
+
+    fclose(gridx);
+    fclose(gridy);
+    fclose(vx);
+    fclose(vy);
+    fclose(fp);
+
+    return 0;
+}
+
+

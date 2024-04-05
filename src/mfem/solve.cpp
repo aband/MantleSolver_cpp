@@ -262,7 +262,7 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1
 
 }
 
-PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter){
+PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau){
 
     // Create Schur complement for Darcy part
 
@@ -279,6 +279,7 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter){
     PetscCall(KSPCGSetType(ksp, KSP_CG_SYMMETRIC));
     PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE)); // zero initial guess
     PetscCall(KSPGetPC(ksp, &pc));
+    PetscCall(PCSetType(pc, PCBJACOBI));
 
     Mat B;
     PetscCall(MatCreateTranspose(ls->B, &B));
@@ -288,8 +289,49 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter){
 
     Vec tmp1, tmp2, tmp3, tmp4;
 
+    PetscCall(VecDuplicate(ls->f, &tmp1));
+    PetscCall(VecDuplicate(ls->f, &tmp2));
+    PetscCall(VecDuplicate(ls->g, &tmp3));
+    PetscCall(VecDuplicate(ls->g, &tmp4));
 
+    PetscCall(VecZeroEntries(tmp1));
+    PetscCall(VecZeroEntries(tmp2));
+    PetscCall(VecZeroEntries(tmp3));
+    PetscCall(VecZeroEntries(tmp4));
 
+    int size;
+    VecGetSize(tmp3, &size);
+
+    // Uzawa loop
+    while(r>tol && iter < MaxIter){
+        PetscCall(MatMult(ls->B, ls->y, tmp1));
+        PetscCall(MatMult(ls->A, ls->x, tmp2));
+
+        PetscCall(VecAXPY(tmp2,-1.0,tmp1));
+
+        PetscCall(VecAYPX(tmp2,-1.0,ls->f));
+
+        KSPSolve(ksp,tmp2,tmp1); 
+
+        PetscCall(VecAXPY(ls->x,1,tmp1)); // x1
+
+        PetscCall(MatMult(B,ls->x,tmp3));
+        PetscCall(MatMult(ls->C,ls->y,tmp4));
+        PetscCall(VecAXPY(tmp3,1.0,tmp4));
+        PetscCall(VecAXPY(tmp3, -1, ls->g));
+        PetscCall(VecScale(tmp3,-1.0));
+
+        PetscCall(VecAXPY(ls->y,tau,tmp3));
+
+        PetscCall(VecAXPY(ls->y,1.0,tmp3));
+
+        PetscReal val1, val2;
+        PetscCall(VecNorm(tmp1,NORM_2,&val1));
+        PetscCall(VecNorm(tmp3,NORM_2,&val2));
+        r = val1 + val2; 
+
+        iter++;
+    }
 
     if (iter < MaxIter){
         printf("Uzawa converged successfully! r = %.3e, Used %d iterations. \n", r, iter);
@@ -437,7 +479,58 @@ PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsRes
     Mat arrayC[4];
 
     // Create schur complement for Darcy system
-    
+    Mat Sd,BT;
+
+    PetscCall(MatCreateTranspose(ls2->B, &BT));
+
+    PetscCall(MatCreateSchurComplement(ls2->A, ls2->A, ls2->B, BT, ls2->C, &Sd));
+
+    arrayC[0] = ls1->C;
+    arrayC[1] = *K;
+    arrayC[2] = *K;
+    arrayC[3] = Sd;
+
+    PetscCall(MatCreateNest(PETSC_COMM_WORLD, 2, NULL, 2, NULL, arrayC, &lsResult->C));
+
+    // Create right hand side vectors
+    // new right hand side gd - BdT Ad-1 fd
+
+    Vec arrayy[2];
+
+    PetscCall(VecDuplicate(ls1->f, &lsResult->f));
+    PetscCall(VecCopy(ls1->f, lsResult->f));
+
+    arrayy[0] = ls1->g;
+    arrayy[1] = ls2->g; // temperory
+    PetscCall(VecCreateNest(PETSC_COMM_WORLD, 2, NULL, arrayy, &lsResult->g));
+
+    // Create solution vectors
+    PetscCall(VecDuplicate(ls1->x, &lsResult->x));
+    PetscCall(VecZeroEntries(lsResult->x));
+
+    PetscCall(VecDuplicate(lsResult->g, &lsResult->y));
+    PetscCall(VecZeroEntries(lsResult->y));
+
+    return InexactUzawa(lsResult, tol, MaxIter, tau);
+}
+
+PetscErrorCode RetrieveDarcy(linearSys * ls, Vec * darcy){
+
+    // Retrieve darcy velocity from schur complement
+
+    KSP ksp;
+    PC  pc;
+    PetscCall(KSPCreate(PETSC_COMM_WORLD, &ksp));
+    PetscCall(KSPSetOperators(ksp, ls->A, ls->A));
+    PetscCall(KSPSetType(ksp, KSPCG));
+    PetscCall(KSPCGSetType(ksp, KSP_CG_SYMMETRIC));
+    PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE)); // zero initial guess
+    PetscCall(KSPGetPC(ksp, &pc));
+    PetscCall(PCSetType(pc, PCBJACOBI));
+
+    Vec darcyy;
+
+    PetscCall(VecNestGetSubVec(ls->y,1,&darcyy));
 
 
     return PETSC_SUCCESS;

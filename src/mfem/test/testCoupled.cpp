@@ -258,7 +258,7 @@ int main(int argc, char ** argv){
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
 
     //CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1, tauUzawa2);
-    CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1);
+//    CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1);
 
 /*
     // Result output
@@ -274,6 +274,11 @@ int main(int argc, char ** argv){
     // Stokes quiver output
     quiverOutput(mi, fullsolStokes, fullsolDarcy, M, N, *basis_, *br, *hdiv, physproperty);
 */
+
+    // Result output
+//    std::vector<double> fullsolStokes = GetFullSol(&lsResult->x, bndryStokesDiri, br->getDOF());
+
+//    quiverOutput(mi, fullsolStokes, M, N, *basis_,*br, physproperty);
 
     // =================================================================================
     // Clear used objects
