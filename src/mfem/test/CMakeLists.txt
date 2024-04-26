@@ -101,13 +101,34 @@ target_link_libraries(io_lib
 )
 
 # Add to excutable
-add_executable(test 
+add_executable(testCoupled
         testCoupled.cpp 
         myfunc.cpp
 )
 
+add_executable(testSeparate
+        testSeparate.cpp
+        myfunc2.cpp
+)
+
+add_executable(testBasis
+        testBasis.cpp
+)
+
 # Link static libraries generated previously
-target_link_libraries(test 
+target_link_libraries(testCoupled 
+    mfem_lib
+    io_lib
+    PkgConfig::LAPACKE 
+)
+
+target_link_libraries(testSeparate
+    mfem_lib
+    io_lib
+    PkgConfig::LAPACKE 
+)
+
+target_link_libraries(testBasis
     mfem_lib
     io_lib
     PkgConfig::LAPACKE 

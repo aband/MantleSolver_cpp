@@ -29,6 +29,8 @@ typedef struct {
 
 double AssignPorosity(const vertex& point, PhysProperty * pp);
 
+double AssignPorosity(double phi_f);
+
 void AssignPhyProperties(PhysProperty * pp);
 // ===================================================
 // Define boundary condition

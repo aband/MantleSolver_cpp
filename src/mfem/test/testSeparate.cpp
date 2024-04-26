@@ -1,3 +1,5 @@
+// Test Darcy ans Stokes system separately
+// A decoupled system
 #include <iostream>
 #include <petsc.h>
 #include "integral.h"
@@ -18,7 +20,7 @@ extern "C"{
 
 using namespace std;
 
-int main(int argc, char ** argv){
+int main(int argc, char **argv){
 
     // Initializing petsc function
     PetscErrorCode ierr;
@@ -29,19 +31,19 @@ int main(int argc, char ** argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Testing coupled Stokes-Darcy system \n"));
-
-    PetscCall(PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size));
-
-    PetscCall(PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n"));
-
-    // =================================================================================
-
     // Start testing mesh function
     // Initializing problem size with 3X3
     int M = 2, N = 2;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
+
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
+
+    PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Mesh size : %d, %d.\n", M, N));
+
+    ierr = PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");CHKERRQ(ierr);
+
+    // =================================================================================
 
     // Create data management object
     DM    dm;
@@ -57,9 +59,10 @@ int main(int argc, char ** argv){
 
     AssignPhyProperties(physproperty);
 
-    double physscale = physproperty->L0/physproperty->l0;
+    //double physscale = physproperty->L0/physproperty->l0;
+    double physscale = 1.0;
     double L = 2*physscale, H = 1*physscale;
-    double xstart = -1*physscale, ystart = -1.0001*physscale;
+    double xstart = -1*physscale, ystart = -1.00*physscale;
 //    double L = 2, H = 1;
 //    double xstart = -1, ystart = -1.1;
 
@@ -151,29 +154,36 @@ int main(int argc, char ** argv){
     AssignValuesMeshInfo(mi,dm,dmu); 
 
     // =================================================================================
-    // Declare classes for shape functions
-    basis * basis_   = new basis();
-    Hdivmixed * hdiv = new Hdivmixed();
-    BRMixed * br     = new BRMixed();
 
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussPointsFace;
+
+    // Define basis functions H(div) conforming space
+    basis * testBasis = new basis();
+    Hdivmixed * hdiv  = new Hdivmixed();
+    BRMixed * br      = new BRMixed();
+
+    // Allocate space for matrix struct
     br->ComputeTotalDOF(mi);
+
     hdiv->ComputeTotalDOF(mi);
 
-    // Assemble matrices, create full system
+    // Allocate memory space for linear system
     System * system = (System *)malloc(sizeof(System));
 
-    SerialMatrixAssembleBlock(mi, *basis_, *hdiv, *br, physproperty, system);
+    SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, system);
 
-    // Assign boundary conditions
+    // Mark boundary condition
     bndryVal bndryStokesDiri;
     bndryVal bndryStokesNeum;
     bndryVal bndryDarcyDiri;
     bndryVal bndryDarcyNeum;
 
-    MarkBndryDOFStokes(bndryStokesDiri, bndryStokesNeum, mi, *basis_, *br, physproperty);
-    MarkBndryDOFDarcy(bndryDarcyDiri, bndryDarcyNeum, mi, *basis_, *hdiv, physproperty); 
+    MarkBndryDOFStokes(bndryStokesDiri, bndryStokesNeum, mi, *testBasis, *br, physproperty);
+    MarkBndryDOFDarcy(bndryDarcyDiri, bndryDarcyNeum, mi, *testBasis, *hdiv, physproperty); 
 
     // Create reduced system
+
     ReducedSys * reducedDarcy = (ReducedSys *)malloc(sizeof(ReducedSys));
     ReducedSys * reducedStokes = (ReducedSys *)malloc(sizeof(ReducedSys));
 
@@ -184,7 +194,8 @@ int main(int argc, char ** argv){
 
     CreateNeumBndryVec(hdiv->getDOF(), bndryDarcyDiri.size(), reducedDarcy, bndryDarcyNeum, bndryDarcyDiri);
 
-    PetscCall(VecAXPY(reducedStokes->source, 1.0, reducedStokes->neum));
+    // Test Dirichlet problem first
+    //PetscCall(VecAXPY(reducedStokes->source, 1.0, reducedStokes->neum));
 
     linearSys * lsStokes = (linearSys *)malloc(sizeof(linearSys));
     linearSys * lsDarcy  = (linearSys *)malloc(sizeof(linearSys));
@@ -192,7 +203,12 @@ int main(int argc, char ** argv){
     CreateLinearSys(lsStokes, reducedStokes);
     CreateLinearSys(lsDarcy, reducedDarcy);
 
-    // Check linear system component
+    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &lsDarcy->C));
+    PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
+
+    PetscCall(MatZeroEntries(lsDarcy->C));
+    PetscCall(MatZeroEntries(lsStokes->C));
+
     const char *checkAd = "MatrixCheckAd.dat";
     // Write A matrix
     WriteMat(lsDarcy->A,checkAd);
@@ -207,6 +223,7 @@ int main(int argc, char ** argv){
 
     const char *checkgd2 = "MatrixCheckgd2.dat";
     WriteVec(lsDarcy->g, checkgd2);   
+
 
     const char *checkAs = "MatrixCheckAs.dat";
     // Write A matrix
@@ -223,101 +240,77 @@ int main(int argc, char ** argv){
     const char *checkgs2 = "MatrixCheckgs2.dat";
     WriteVec(lsStokes->g, checkgs2);   
 
-//    VecView(lsStokes->g, PETSC_VIEWER_STDOUT_WORLD);
-    // Solve a coupled system ==========================================================
-    // Couple two saddle point system
-    // Control number of iterations and tolerance
-    int maxIter = 1;
-    PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL);
+    // =======================================================================
+    int maxIterStokes = 1;
+    PetscOptionsGetInt(NULL, NULL, "-maxIterStokes", &maxIterStokes, NULL);
 
-    double tauUzawa1 = 10;
-    double tauUzawa2 = 1;
-    PetscOptionsGetReal(NULL, NULL, "-tau1", &tauUzawa1, NULL);
-    PetscOptionsGetReal(NULL, NULL, "-tau2", &tauUzawa2, NULL);
+    int maxIterDarcy = 1;
+    PetscOptionsGetInt(NULL, NULL, "-maxIterDarcy", &maxIterDarcy, NULL);
 
-    double tolUzawa = 10e-7;
-    PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
+    double tauUzawaStokes = 20;
+    PetscOptionsGetReal(NULL, NULL, "-tauStokes", &tauUzawaStokes, NULL);
 
-    // Assign correct C matrix to the target system
-    PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &lsDarcy->C));
-    PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
+    double tauUzawaDarcy = 1;
+    PetscOptionsGetReal(NULL, NULL, "-tauDarcy", &tauUzawaDarcy, NULL);
 
-    const char *checkCd = "MatrixCheckCd.dat";
-    WriteMat(system->Cd,checkCd);
+    double tolUzawaStokes = 10e-7;
+    PetscOptionsGetReal(NULL, NULL, "-tolStokes", &tolUzawaStokes, NULL);
 
-    const char *checkCs = "MatrixCheckCs.dat";
-    WriteMat(system->Cs,checkCs);
+    double tolUzawaDarcy = 10e-7;
+    PetscOptionsGetReal(NULL, NULL, "-tolDarcy", &tolUzawaDarcy, NULL);
 
-    const char *checkK = "MatCheckK.dat";
-    WriteMat(system->K,checkK);
-
-    PetscCall(VecZeroEntries(lsDarcy->x));
-    PetscCall(VecZeroEntries(lsDarcy->y));
-    PetscCall(VecZeroEntries(lsStokes->x));
-    PetscCall(VecZeroEntries(lsStokes->y));
-
-    linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
-
-    int precondType = 1;
+    int precondType = 0;
     PetscOptionsGetInt(NULL, NULL, "-pType", &precondType, NULL);
 
-    // ================================================================
-    PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Mesh size : %d, %d.\nUzawa tolerance : %f \nMaximum Iteration : %d \nPreconditioner type : %d \n", M, N, tolUzawa,maxIter, precondType));
-    switch (precondType){
-        case 0:
-            PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Single tau : %f\n", tauUzawa1));
-        break;
+    // Solve Stokes and Darcy sub problems separately
+    // Using simple uzawa here with C = 0 (no coupling matrix)
 
-        case 1:
-            PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Split tau : %f, %f\n", tauUzawa1, tauUzawa2));
-        break;
+    PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Summary of Darcy problem. \nUzawa tolerance : %f \nMaximum Iteration : %d \nTau : %f\n", tolUzawaDarcy,maxIterDarcy,tauUzawaDarcy));
+    //SimpleUzawa(lsDarcy, tolUzawaDarcy, maxIterDarcy, tauUzawaDarcy, precondType);
+    ExactUzawa(lsDarcy, tolUzawaDarcy, maxIterDarcy);
 
-        case 2:
-            PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Stokes tau : %f\n", tauUzawa1));
-        break;
+    // ============================================================================
+    // Write out L2 error for Darcy only system
+    std::vector<double> fullSolDarcy = GetFullSol(&lsDarcy->x,bndryDarcyDiri,hdiv->getDOF());
+    double errorSumuDarcy = 0.0;
+        for (int j=0; j<N; j++){
+        for (int i=0; i<M; i++){
 
-        default:
-            PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Incorrect preconditioner type %d \n",precondType));
-        break;
-    }
+            testBasis->GetCorners(mi,{i,j});
+
+            // Darcy
+            std::array<double, 8> sewD = ExtractWeights(fullSolDarcy, hdiv->LocalToGlobal(mi,{i,j})); 
+            errorSumuDarcy += L2ErrorElem(sewD, {i,j}, bndryu,physproperty, gwf, gpf, *testBasis, *hdiv);
+}}
+
+    cout << "Darcy Only: ||u-u_h||_L2 : " <<  pow(errorSumuDarcy,0.5) << endl;
+
     PetscCall(PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n"));
-    // ================================================================
 
-    CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1, tauUzawa2, precondType);
-    //CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1);
+    // Write out L2 error for Stokes only system
 
+    PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Summary of Stokes problem. \nUzawa tolerance : %f \nMaximum Iteration : %d \nTau : %f\n", tolUzawaStokes,maxIterStokes,tauUzawaStokes));
 
-    // Result output - Stokes and Darcy
-    Vec stokesv;
-    Vec darcyv;
+    SimpleUzawa(lsStokes, tolUzawaStokes, maxIterStokes, tauUzawaStokes, 0);
 
-    PetscCall(VecNestGetSubVec(lsResult->x, 0, &stokesv));
-    PetscCall(VecNestGetSubVec(lsResult->x, 1, &darcyv));
+    std::vector<double> fullSolStokes = GetFullSol(&lsStokes->x, bndryStokesDiri, br->getDOF());
 
-    std::vector<double> fullsolStokes = GetFullSol(&stokesv, bndryStokesDiri, br->getDOF());
-    std::vector<double> fullsolDarcy  = GetFullSol(&darcyv, bndryDarcyDiri, hdiv->getDOF());
+    double errorSumuStokes = 0.0;
 
-    // Stokes quiver output
-    quiverOutput(mi, fullsolStokes, fullsolDarcy, M, N, *basis_, *br, *hdiv, physproperty);
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
 
-    // =============================================================================
-    // Result output - Single Stokes
-    //std::vector<double> fullsolStokes = GetFullSol(&lsResult->x, bndryStokesDiri, br->getDOF());
+        testBasis->GetCorners(mi,{i,j});
 
-    //quiverOutput(mi, fullsolStokes, M, N, *basis_,*br, physproperty);
+        // Stokes
+        std::array<double, 12> sewStokes = ExtractWeights(fullSolStokes, br->LocalToGlobal(mi,{i,j})); 
+        errorSumuStokes += L2ErrorElem(sewStokes, {i,j}, bndryVs, physproperty, gwf, gpf, *testBasis, *br);
 
-    // =================================================================================
-    // Clear used objects
-    DMDAVecRestoreArray(dmu,localu,&lu);
-    DMRestoreLocalVector(dmu, &localu); 
+}}
 
-    VecDestroy(&fullmesh);
-    VecDestroy(&globalu);
-    DMDestroy(&dm);
-    DMDestroy(&dmu);
+    cout << "Stokes Only: ||u-u_h||_L2 : " <<  pow(errorSumuStokes,0.5) << endl;
 
-    PetscFinalize();
+    PetscCall(PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n"));
 
     return 0;
-
 }

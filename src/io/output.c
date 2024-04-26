@@ -182,7 +182,7 @@ PetscErrorCode WriteMat(Mat V, const char * myfile){
     for (int i=0; i<mm; i++){
         double a;
         MatGetValues(V,1,&j,1,&i,&a);
-        fprintf(f,"%f ",a);
+        fprintf(f,"%.16lf ",a);
     }fprintf(f,"\n ");}
 
     fclose(f);
@@ -207,7 +207,8 @@ PetscErrorCode WriteVec(Vec g, const char * myfile){
     for (int i=0; i<m; i++){
         double a;
         VecGetValues(g,1,&i,&a);
-        fprintf(f,"%f ",a);
+
+        fprintf(f,"%.16lf ",a);
     }
 
     fclose(f);

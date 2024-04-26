@@ -10,7 +10,7 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->gx    = 0.0;
     pp->gy    = -10.0;
     pp->invk0 = 1.0/(1e-8);
-    pp->phi0  = 0.4;
+    pp->phi0  = 1.0;
     pp->U0    = 1e-9;
     pp->L0    = 160*1000;
 
@@ -28,23 +28,12 @@ void AssignPhyProperties(PhysProperty * pp){
 
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
-    if (abs(point[1]) < 120*1000/pp->l0 && abs(point[0]) < abs(point[1]) + pp->l){
-        double value = 0.05*pow((120*1000/pp->l0 - abs(point[1]))/(120*1000/pp->l0),2) * 
-                               (1-abs(point[0])/(abs(point[1])+pp->l));
-
-        return value;
-    } else {
-        return 0.0;
-    }
-
-//    return 0.0;
-
-    // Constant porosity
-    //return pp->phi0;
+    return 1.0;
 }
 
 double AssignPorosity(double phi_f){
-    return 1-phi_f;
+
+    return 1.0;
 }
 
 // ===================================================
@@ -53,7 +42,7 @@ const vertex darcyPressureGrad(const vertex& point, PhysProperty * pp){
 
     // Test case 1: 
     // Balanced pressure (divergence free)
-    // return {-1.0,1.0};
+     return {-1.0,1.0};
 
     // =========================================================
 
@@ -65,7 +54,7 @@ const vertex darcyPressureGrad(const vertex& point, PhysProperty * pp){
 
     // Test case 3:
     // Constant porosity
-    return {0.0,0.0}; 
+    //return {0.0,0.0}; 
 }
 
 const vertex stokesPressureGrad(const vertex& point, PhysProperty * pp){
@@ -73,12 +62,13 @@ const vertex stokesPressureGrad(const vertex& point, PhysProperty * pp){
     // Test case 1:
     // Balanced pressure (divergence free)
     // return {-1.0/pow(pp->phi0,0.5),1.0/pow(pp->phi0,0.5)};
+    return {-1.0, 1.0};
 
     // =========================================================
 
     // Test case 2:
     // Unbalanced pressure
-    return {0.0,0.0};
+    //return {0.0,0.0};
 }
 
 const vertex divdivVel(const vertex& point, PhysProperty * pp){
@@ -94,14 +84,14 @@ const vertex stress(const vertex& point, PhysProperty * pp){
 
     // Test case 1:
     // Balanced pressure
-    // return { point[1],
-    //         -point[0]};
+     return { point[1],
+             -point[0]};
 
     // =========================================================
 
     // Test case 2:
     // Unbalanced pressure
-    return {coef, coef};
+    //return {coef, coef};
 }
 
 // =============================================================
@@ -116,8 +106,8 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     // Test case 1:
     // ====== Test Balanced pressure ======
-    //work[0] = point[0]*point[0]*point[1];
-    //work[1] = -point[1]*point[1]*point[0];
+    work[0] = point[0]*point[0]*point[1];
+    work[1] = -point[1]*point[1]*point[0];
 
     // ==================================================
 
@@ -131,6 +121,8 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     // Test case 3:
     // Corner Flow
+
+/*
     double x, z;
 
     if (point[0] < 0.0) {
@@ -148,6 +140,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
              -z*z};
 
     work *= coef;
+*/
 
     // ==================================================
 /*
@@ -183,8 +176,8 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
 
     // Test case 1:
     // ====== Test Balanced pressure ========
-    //work[0] = point[0]*point[0]*point[1];
-    //work[1] = -point[1]*point[1]*point[0];
+    work[0] = point[0]*point[0]*point[1];
+    work[1] = -point[1]*point[1]*point[0];
 
     // Test case 2:
     // ====== Test unbalanced pressure ======
@@ -195,6 +188,7 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
 
     // Test case 3:
     // Constant porosity
+/*
     double x,z;
 
     if (point[0] < 0.0){
@@ -227,6 +221,7 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     // Scale the velocity
     //work[0] /= pp->phi0;
     //work[1] /= pp->phi0;
+*/
 
     return work;
 }
@@ -237,13 +232,13 @@ const vertex darcyForce(const vertex& point, PhysProperty * pp){
     // Test case 1,2:
     // Return the arbitrarily defined right hand side
     // source term are determined exactly.
-    // return bndryu(point,pp) + pow(pp->phi0,0.5)*darcyPressureGrad(point,pp);
+     return bndryu(point,pp) + pow(pp->phi0,0.5)*darcyPressureGrad(point,pp);
 
     // ==========================================================
     
     // Test case 3:
     // Constant porosity.
-    return {0.0,0.0};
+    //return {0.0,0.0};
 }
 
 const vertex stokesForce(const vertex& point, PhysProperty * pp){
@@ -252,6 +247,7 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Source term is determined exactly.
     // return -1*divdivVel(point)+stokesPressureGrad(point);
     // return -1*2*(1-pp->phi0)*stress(point,pp) + stokesPressureGrad(point,pp);
+    return -2*stress(point,pp) + stokesPressureGrad(point,pp);
  
     // ==========================================================
 
@@ -259,7 +255,7 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Constant porosity.
     // Returns nondimensionalized gravity.
     //return {0.0,-1*(1-AssignPorosity(point, pp))/pp->l0};
-    return {0.0, -1*(1-AssignPorosity(point, pp))};
+    //return {0.0, -1*(1-AssignPorosity(point, pp))};
     //return {0.0,0.0};
 }
 

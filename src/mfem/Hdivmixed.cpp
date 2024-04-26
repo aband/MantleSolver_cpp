@@ -91,6 +91,7 @@ vertex Hdivmixed::phil(const basis& basis_,
     double len = length(edge); 
 
     return phil_(basis_, nEdge, point) / phie_(basis_, nEdge, mid) * len /4;
+
 }
 
 double Hdivmixed::divphic(const basis& basis_,
@@ -135,14 +136,23 @@ std::array<vertex,8> Hdivmixed::ComputeHdivmixed(const basis& basis_,
         work[k] = vlinear;
 
         work[k+4] = vconst;
+
+        /*
+        work[k] = (vlinear+vconst)/2;
+
+        work[k+4] = (vlinear-vconst)/2;
+        */
+
     }
 
     // Control with global unit normal direction
+
     for (unsigned int k=0; k<2; k++){
         work[k] *= 1;
 
         work[k+4] *= -1;
     }
+
 
     return work;
 }
@@ -152,6 +162,7 @@ std::array<vertex,2> Hdivmixed::ComputeHdivmixed(const basis& basis_,
                                                  const int& edge) const{
 
     std::array<vertex, 2> work;
+
 
     if(edge < 2){
         // Corrected with unit normal direction

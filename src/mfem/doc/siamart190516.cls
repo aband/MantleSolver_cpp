@@ -1353,6 +1353,7 @@ Vol.\ #3, No.\ #4, pp.\ #5
 \RequirePackage{algorithm}[0.1]
 \renewcommand{\ALG@name}{Algorithm}
 \renewcommand\thealgorithm{\siamprelabel\@arabic\c@algorithm}
+\usepackage{algpseudocode}
 %%
 %% <<tgk<<
 %%

@@ -367,8 +367,6 @@ int main(int argc, char **argv){
     quiverOutput(mi, fullSolTest, M, N, *testBasis, *br, *hdiv, physproperty, 2);
 
 
-
-
     const char *checkATest = "MatrixCheckATest.dat";
     // Write A matrix
     WriteMat(lsTest->A,checkATest);

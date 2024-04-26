@@ -26,12 +26,14 @@ typedef struct{
 // Iterative solvers
 PetscErrorCode CreateLinearSys(linearSys * ls, ReducedSys * reducedsys);
 
-PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, double tau);
+PetscErrorCode SimpleUzawa(linearSys * ls, double tol, int MaxIter, double tau, int precondType);
 
-PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1, double tau2);
+PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1, double tau2, int flag);
+
+PetscErrorCode ExactUzawa(linearSys * ls, double tol, int MaxIter);
 
 PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsResult, Mat * K, 
-                             double tol, int MaxIter, double tau1, double tau2);
+                             double tol, int MaxIter, double tau1, double tau2, int flag);
 
 PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsResult, Mat * K, 
                              double tol, int MaxIter, double tau1);

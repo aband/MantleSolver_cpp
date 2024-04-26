@@ -76,7 +76,9 @@ PetscErrorCode CreateLinearSys(linearSys * ls, ReducedSys * reducedsys){
     return PETSC_SUCCESS;
 }
 
-PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, double tau){
+PetscErrorCode SimpleUzawa(linearSys * ls, 
+                           double tol, int MaxIter, 
+                           double tau, int precondType){
 
     /*
      * Using (preconditioned) CG for 
@@ -139,7 +141,48 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, doub
         PetscCall(VecAXPY(tmp3, -1, ls->g));
         PetscCall(VecScale(tmp3,-1.0));
 
-        PetscCall(VecAXPY(ls->y,tau,tmp3));
+        switch(precondType) {
+            case 0:
+                // Choice 1
+                // Uniform tau value
+                PetscCall(VecScale(tmp3, tau));
+                break;
+
+            case 1:
+                KSP kspQ;
+                Mat BT, Sd; 
+
+                PetscCall(KSPCreate(PETSC_COMM_WORLD, &kspQ));
+                PetscCall(MatCreateTranspose(ls->B, &BT));
+
+                PetscCall(MatCreateSchurComplement(ls->A, ls->A, ls->B, BT, NULL , &Sd));
+
+                KSP kspschur;
+                PC  pc;
+                PetscCall(MatSchurComplementGetKSP(Sd, &kspschur));
+                KSPSetType(kspschur,KSPCG);
+                KSPCGSetType(kspschur,KSP_CG_SYMMETRIC);
+                KSPSetInitialGuessNonzero(kspschur, PETSC_FALSE);
+                KSPSetTolerances(kspschur, 10e-7, 10e-12, 5, 2);
+
+                //MatView(Sd, PETSC_VIEWER_STDOUT_WORLD); 
+
+                PetscCall(KSPSetOperators(kspQ, Sd, Sd));
+                PetscCall(KSPSetType(kspQ, KSPGMRES));
+                PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE));
+
+                VecView(tmp3, PETSC_VIEWER_STDOUT_WORLD);
+
+                KSPSolve(kspQ, tmp3, tmp3);
+
+                VecView(tmp3, PETSC_VIEWER_STDOUT_WORLD);
+
+                break;
+
+        }
+
+//        PetscCall(VecAXPY(ls->y,tau,tmp3));
+        PetscCall(VecAXPY(ls->y,1.0,tmp3));
 
         PetscReal val1, val2;
         PetscCall(VecNorm(tmp1,NORM_2,&val1));
@@ -158,7 +201,7 @@ PetscErrorCode PreconditionedUzawa(linearSys * ls, double tol, int MaxIter, doub
     }
 }
 
-PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1, double tau2){
+PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1, double tau2, int flag){
 
     /*
      * Using (preconditioned) CG for 
@@ -173,6 +216,7 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1
     PetscCall(KSPCGSetType(ksp, KSP_CG_SYMMETRIC));
     PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE)); // zero initial guess
     PetscCall(KSPGetPC(ksp, &pc));
+    //KSPSetTolerances(ksp, 10e-7, 10e-7, 10e-7, 10000);
     //PetscCall(PCSetType(pc, PCBJACOBI));
 
     Mat B;
@@ -217,8 +261,9 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1
         PetscCall(VecAXPY(tmp3, -1, ls->g));
         PetscCall(VecScale(tmp3,-1.0));
 
-/*
+/* ====================================================================================
         // Take out tmp3 constant kernal =====
+        // Should not be used if uzawa iteration is implemented correctly
         double mean;
         VecMean(tmp3, &mean);
         PetscCall(VecGetArray(tmp3, &arraytmp));
@@ -226,24 +271,97 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau1
             arraytmp[k] -= mean;
         }
         PetscCall(VecRestoreArray(tmp3, &arraytmp));
+======================================================================================= */
 
-        // ===================================
-*/
-        // Uniform tau value
-        //PetscCall(VecAXPY(ls->y,tau,tmp3));
-
-        // Different tau values
         Vec tmp31, tmp32;
-        PetscCall(VecNestGetSubVec(tmp3, 0, &tmp31));
-        PetscCall(VecNestGetSubVec(tmp3, 1, &tmp32));
 
-        PetscCall(VecScale(tmp31,tau1));
-        PetscCall(VecScale(tmp32,tau2));
+        switch(flag){
+            case 0:
+                // Choice 1
+                // Uniform tau value
+                PetscCall(VecScale(tmp3, tau1));
+                break;
 
-        //PetscCall(VecView(tmp3,PETSC_VIEWER_STDOUT_WORLD));
+            case 1:
+                // Choice 2
+                // Different tau values
+ 
+                PetscCall(VecNestGetSubVec(tmp3, 0, &tmp31));
+                PetscCall(VecNestGetSubVec(tmp3, 1, &tmp32));
+
+                PetscCall(VecScale(tmp31,tau1));
+                PetscCall(VecScale(tmp32,tau2));
+
+                //PetscCall(VecView(tmp3,PETSC_VIEWER_STDOUT_WORLD));
+                break;
+
+            case 2:
+                // Choice 3
+                KSP kspQ;
+                Mat AQ, As, Ad, Bd, BdT, tmp, Sd, Cd;
+                int M, N;
+                Vec D, xd;
+
+                PetscCall(VecNestGetSubVec(ls->x,1,&xd));
+                PetscCall(VecDuplicate(xd, &D));
+
+                // Extracting diagonal of A as approximation of A matrix
+                PetscCall(KSPCreate(PETSC_COMM_WORLD, &kspQ));
+                // Extract Ad and Bd from sub matrix
+                PetscCall(MatNestGetSubMat(ls->A, 1, 1, &Ad));
+                PetscCall(MatNestGetSubMat(ls->B, 1, 1, &Bd));
+                PetscCall(MatNestGetSubMat(ls->C, 1, 1, &Cd));
+                PetscCall(MatCreateTranspose(Bd, &BdT));
+
+                PetscCall(MatGetSize(Ad, &M, &N));
+
+                // Extract diagonal from Darcy mass matrix
+                // Get the inverse value from it
+                PetscCall(MatGetDiagonal(Ad, D));
+                PetscCall(VecReciprocal(D));
+
+                PetscCall(MatDuplicate(Ad, MAT_DO_NOT_COPY_VALUES, &AQ));
+
+                PetscCall(MatDiagonalSet(AQ, D, INSERT_VALUES));
+
+                // Compute schur complement explicitly
+                // Sd = BT A^-1 B + C
+                PetscCall(MatMatMult(AQ, Bd, MAT_INITIAL_MATRIX, PETSC_DEFAULT, &tmp));
+
+                PetscCall(MatMatMult(BdT, tmp, MAT_INITIAL_MATRIX, PETSC_DEFAULT, &Sd));
+                PetscCall(MatAXPY(Sd, 1.0, Cd, DIFFERENT_NONZERO_PATTERN));
+
+                PetscCall(VecNestGetSubVec(tmp3, 0, &tmp31));
+                PetscCall(VecNestGetSubVec(tmp3, 1, &tmp32));
+                //PetscCall(KSPSetOperators(kspQ, ))
+                PetscCall(VecScale(tmp31, tau1));
+
+                MatView(Sd, PETSC_VIEWER_STDOUT_WORLD);
+
+                PetscCall(KSPSetOperators(kspQ, Sd, Sd));
+                PetscCall(KSPSetType(kspQ, KSPCG));
+                PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE));
+
+                KSPSolve(kspQ, tmp32, tmp32);
+
+                break;
+ 
+            case 3:
+                // Choice 4
+                // Using incomplete CG to generate approximated spectrum
+
+
+                break;
+
+            default:
+                cout << "No valid flad defined in Uzawa Solver." << endl;
+                break;
+        }
+
 
         PetscCall(VecAXPY(ls->y,1.0,tmp3));
 
+        // Check norm of increment
         PetscReal val1, val2;
         PetscCall(VecNorm(tmp1,NORM_2,&val1));
         PetscCall(VecNorm(tmp3,NORM_2,&val2));
@@ -278,6 +396,8 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
     PetscCall(KSPSetType(ksp, KSPCG));
     PetscCall(KSPCGSetType(ksp, KSP_CG_SYMMETRIC));
     PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE)); // zero initial guess
+    //PetscCall(KSPSetTolerances(ksp,10e-7, 10e-12, 10e-12, 100));
+
     PetscCall(KSPGetPC(ksp, &pc));
     PetscCall(PCSetType(pc, PCBJACOBI));
 
@@ -317,18 +437,23 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
 
         PetscCall(MatMult(B,ls->x,tmp3));
         PetscCall(MatMult(ls->C,ls->y,tmp4));
+
+        //VecView(tmp3, PETSC_VIEWER_STDOUT_WORLD);
+        //VecView(tmp4, PETSC_VIEWER_STDOUT_WORLD);
+        //VecView(ls->g, PETSC_VIEWER_STDOUT_WORLD);
+
         PetscCall(VecAXPY(tmp3,1.0,tmp4));
         PetscCall(VecAXPY(tmp3, -1, ls->g));
         PetscCall(VecScale(tmp3,-1.0));
 
         PetscCall(VecAXPY(ls->y,tau,tmp3));
 
-        PetscCall(VecAXPY(ls->y,1.0,tmp3));
-
         PetscReal val1, val2;
         PetscCall(VecNorm(tmp1,NORM_2,&val1));
         PetscCall(VecNorm(tmp3,NORM_2,&val2));
         r = val1 + val2; 
+
+        //cout << val1 << "  " << val2 << endl << endl;
 
         iter++;
     }
@@ -343,7 +468,7 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
 }
 
 PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsResult, Mat * K,
-                             double tol, int MaxIter, double tau1, double tau2){
+                             double tol, int MaxIter, double tau1, double tau2, int flag){
 
     // Solve coupled system with Uzawa algorithm
     // Create coupled system with two different linear system
@@ -438,7 +563,7 @@ PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsRes
     PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayf,&lsResult->f));
     PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayg,&lsResult->g));
 
-    return InexactUzawa(lsResult, tol, MaxIter, tau1, tau2);
+    return InexactUzawa(lsResult, tol, MaxIter, tau1, tau2, flag);
 }
 
 PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsResult, Mat * K, 
@@ -479,11 +604,27 @@ PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsRes
     Mat arrayC[4];
 
     // Create schur complement for Darcy system
-    Mat Sd,BT;
+    Mat Sd,BT,mC;
 
     PetscCall(MatCreateTranspose(ls2->B, &BT));
 
-    PetscCall(MatCreateSchurComplement(ls2->A, ls2->A, ls2->B, BT, ls2->C, &Sd));
+    PetscCall(MatDuplicate(ls2->C, MAT_COPY_VALUES, &mC));
+    PetscCall(MatScale(mC, -1));
+
+    PetscCall(MatCreateSchurComplement(ls2->A, ls2->A, ls2->B, BT, mC, &Sd));
+
+    KSP kspschur;
+    PC  pc;
+    PetscCall(MatSchurComplementGetKSP(Sd, &kspschur));
+    KSPSetType(kspschur,KSPCG);
+    KSPCGSetType(kspschur,KSP_CG_SYMMETRIC);
+    KSPSetInitialGuessNonzero(kspschur, PETSC_FALSE);
+    KSPSetTolerances(kspschur, 10e-7, 10e-12, 5, 1000);
+
+    PetscCall(KSPGetPC(kspschur, &pc));
+    PetscCall(PCSetType(pc, PCBJACOBI));
+
+    MatView(Sd, PETSC_VIEWER_STDOUT_WORLD);
 
     arrayC[0] = ls1->C;
     arrayC[1] = *K;
@@ -534,4 +675,104 @@ PetscErrorCode RetrieveDarcy(linearSys * ls, Vec * darcy){
 
 
     return PETSC_SUCCESS;
+}
+
+// ================================================================================
+
+PetscErrorCode ExactUzawa(linearSys * ls, double tol, int MaxIter){
+    // Variant of traditional uzawa solver
+    // Solve singular schur complement system with MINRES
+   
+    MatScale(ls->B, -1);
+    MatScale(ls->C, -1);
+    VecScale(ls->g, -1);
+
+    KSP kspCG;
+    PC  pcCG; 
+    PetscCall(KSPCreate(PETSC_COMM_WORLD, &kspCG));
+    PetscCall(KSPSetOperators(kspCG, ls->A, ls->A));
+    PetscCall(KSPSetType(kspCG, KSPCG));
+    PetscCall(KSPCGSetType(kspCG, KSP_CG_SYMMETRIC));
+    PetscCall(KSPSetInitialGuessNonzero(kspCG, PETSC_FALSE));
+    // Set up preconditioner
+    //PetscCall(KSPSetTolerances(kspCG, 10e-7, 10e-7, 1000, 1000));
+    //PetscCall(KSPGetPC(kspCG, &pcCG));
+    //PetscCall(PCSetType(pcCG, PCBJACOBI));
+
+    // Create B transpose
+    Mat BT;
+    PetscCall(MatCreateTranspose(ls->B, &BT));
+
+    KSP  kspMINRES, kspSchur;
+    PC   pcMINRES;
+    Mat  S;
+
+    PetscCall(KSPCreate(PETSC_COMM_WORLD, &kspMINRES));
+    PetscCall(MatCreateSchurComplement(ls->A, ls->A, ls->B, BT, ls->C, &S));
+    
+    PetscCall(MatSchurComplementGetKSP(S, &kspSchur));
+    PetscCall(KSPSetType(kspSchur, KSPCG));
+    PetscCall(KSPCGSetType(kspSchur, KSP_CG_SYMMETRIC));
+    PetscCall(KSPSetInitialGuessNonzero(kspSchur, PETSC_FALSE));
+
+    PetscCall(KSPSetOperators(kspMINRES, S, S));
+    PetscCall(KSPSetType(kspMINRES, KSPMINRES)); 
+    PetscCall(KSPSetInitialGuessNonzero(kspMINRES, PETSC_FALSE));
+    PetscCall(KSPSetTolerances(kspMINRES, 10e-10, 10e-16, 10, 10000));
+ 
+    double r = 1.0;
+    int    iter = 0;
+
+    Vec tmp1, tmp2, tmp3, tmp4;
+
+    PetscCall(VecDuplicate(ls->f, &tmp1));
+    PetscCall(VecDuplicate(ls->f, &tmp2));
+    PetscCall(VecDuplicate(ls->g, &tmp3));
+    PetscCall(VecDuplicate(ls->g, &tmp4));
+
+    PetscCall(VecZeroEntries(tmp1));
+    PetscCall(VecZeroEntries(tmp2));
+    PetscCall(VecZeroEntries(tmp3));
+    PetscCall(VecZeroEntries(tmp4));
+
+    while(r > tol && iter < MaxIter){
+        PetscCall(MatMult(ls->B, ls->y, tmp1));
+        PetscCall(MatMult(ls->A, ls->x, tmp2));
+
+        // tmp2 = ls-f - (Ax + B'y)
+        PetscCall(VecAXPBYPCZ(tmp2, 1.0, -1.0, -1.0, ls->f, tmp1));
+
+        // tmp1 = A^-1 tmp2
+        PetscCall(KSPSolve(kspCG,tmp2,tmp1));
+         
+		  PetscCall(VecAXPY(ls->x,1,tmp1)); 
+
+        PetscCall(MatMult(BT,ls->x,tmp3));
+        PetscCall(MatMult(ls->C,ls->y,tmp4));
+
+        // tmp3 = Bx + Cy - G
+        PetscCall(VecAXPBYPCZ(tmp3, -1.0, 1.0, 1.0, ls->g, tmp4));
+
+        PetscCall(KSPSolve(kspMINRES,tmp3, tmp3));
+
+        //KSPView(kspMINRES,PETSC_VIEWER_STDOUT_WORLD);
+
+        PetscCall(VecAXPY(ls->y, -1.0, tmp3));
+
+        // Check norm of increment
+        PetscReal val1, val2;
+        PetscCall(VecNorm(tmp1,NORM_2,&val1));
+        PetscCall(VecNorm(tmp3,NORM_2,&val2));
+        r = val1 + val2; 
+
+        iter++;
+    }
+
+    if (iter < MaxIter){
+        printf("Uzawa converged successfully! r = %.3e, Used %d iterations. \n", r, iter);
+        return PETSC_SUCCESS;
+    } else {
+        printf("Uzawa failed to converge! r = %.3e \n", r);
+        return PETSC_ERR_CONV_FAILED;
+    }
 }

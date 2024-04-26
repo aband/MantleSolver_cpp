@@ -1,0 +1,39 @@
+% MINRES solver from Wikipedia
+function [x, r] = minres(A, b, x0, maxit, tol)
+  x = x0;
+  r = b - A * x0;
+  p0 = r;
+
+  if (r'*r>tol^2)
+
+      s0 = A * p0;
+      p1 = p0;
+      s1 = s0;
+      for iter = 1:maxit
+        p2 = p1; p1 = p0;
+        s2 = s1; s1 = s0;
+        alpha = r'*s1 / (s1'*s1);
+        x = x + alpha * p1;
+        r = r - alpha * s1;
+        if (r'*r < tol^2)
+          break
+        end
+        p0 = s1;
+        s0 = A * s1;
+        beta1 = s0'*s1 / (s1'*s1);
+        p0 = p0 - beta1 * p1;
+        s0 = s0 - beta1 * s1;
+        if iter > 1
+          beta2 = s0'*s2 / (s2'*s2);
+          p0 = p0 - beta2 * p2;
+          s0 = s0 - beta2 * s2;
+        end
+      end
+
+  else
+
+      x = p0;
+
+  end
+
+end

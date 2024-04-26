@@ -75,7 +75,8 @@ void AssignLocMatrix(const MeshInfo& mi,
         // Calculate point wise porosity ===================================
         phi_f = AssignPorosity(mapped, physproperty);  // Fluid porosity
         //phi_f = physproperty->phi0;
-        phi_s = 1 - phi_f;                             // Solid porosity
+        //phi_s = 1 - phi_f;                           // Solid porosity
+        phi_s = AssignPorosity(phi_f);
 
         // =================================================================
 
@@ -183,7 +184,13 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                          BRMixed& br_,
                                          PhysProperty * physproperty,
                                          System * system){
- 
+
+    /*
+     * Sparsity pattern of As and Ad
+     *
+     *
+     */
+
     PetscErrorCode    ierr;
     PetscFunctionBeginUser;
 
