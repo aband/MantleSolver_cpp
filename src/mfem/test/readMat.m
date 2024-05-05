@@ -43,15 +43,15 @@ gd2 = fscanf(fileID, '%f', [1,Inf]);
 %fileID = fopen('build/MatrixCheckCs.dat','r');
 
 %Cs = fscanf(fileID, '%f', [1,Inf]);
-
+%
 %fileID = fopen('build/MatrixCheckCd.dat','r');
-
+%
 %Cd = fscanf(fileID, '%f', [1,Inf]);
-
+%
 %fileID = fopen('build/MatCheckK.dat','r');
-
+%
 %K = fscanf(fileID, '%f', [1,Inf]);
-
+%
 fclose(fileID);
 % =====================================================================
 
@@ -68,8 +68,6 @@ Bs = reshape(Bs,dofs2,dofs1);
 
 Ad = reshape(Ad,dofd1,dofd1);
 Bd = reshape(Bd,dofd2,dofd1);
-
-Cd = zeros(dofd2,dofd2);
 
 %K = reshape(K,dofs2,dofs2);
 %Cs = reshape(Cs,dofs2,dofs2);
@@ -88,8 +86,18 @@ F = [gs1';gd1'];
 
 G = [gs2';gd2'];
 
-tau1 = 10;
-tau2 = 0.15;
+Bd = -1*Bd;
+Bs = -1*Bs;
+%Cd = -1*Cd;
+%Cs = -1*Cs;
+%K  = -1*K;
+gs2= -1*gs2;
+gd2= -1*gd2;
 
-%tau = [tau1*eye(size(Cs)),zeros(dofs2,dofs2);
-%       zeros(dofs2,dofs2),tau2*eye(size(Cd))];
+%Ss = Cs - Bs*inv(As)*Bs';
+%Sd = Cd - Bd*inv(Ad)*Bd';
+%
+%Sgs = gs2' - Bs*inv(As)*gs1';
+%Sgd = gd2' - Bd*inv(Ad)*gd1';
+%
+%uzawa(Ss,K,Sd,Sgs,Sgd,1e-9,1.0,100);

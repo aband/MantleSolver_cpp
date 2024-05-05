@@ -37,4 +37,8 @@ PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsRes
 
 PetscErrorCode CoupledSolver(linearSys * ls1, linearSys * ls2, linearSys * lsResult, Mat * K, 
                              double tol, int MaxIter, double tau1);
+
+PetscErrorCode CoupledExactUzawa(linearSys * ls, double tau1, double tau2, 
+                                 double tol, int MaxIter, int pType);
+
 #endif

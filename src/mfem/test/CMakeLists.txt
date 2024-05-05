@@ -108,7 +108,7 @@ add_executable(testCoupled
 
 add_executable(testSeparate
         testSeparate.cpp
-        myfunc2.cpp
+        myfunc4.cpp
 )
 
 add_executable(testBasis

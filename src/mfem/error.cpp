@@ -482,4 +482,31 @@ int quiverOutput(const MeshInfo& mi,
     return 0;
 }
 
+// Darcy only
+int quiverOutput(const MeshInfo& mi,
+                 const std::vector<double>& fullSolDarcy,
+                 int M, int N,
+                 basis& basis_, Hdivmixed& hdiv_){
 
+    FILE * gridx = fopen("grdiX.dat", "w");
+    FILE * gridy = fopen("gridY.dat", "w");
+
+    FILE * ux = fopen("ux.dat", "w");
+    FILE * uy = fopen("uy.dat", "w");
+
+    FILE * fp = fopen("porosity.dat", "w");
+
+    for (int j=0; j<N; j++){
+        for (int i=0; i<M; i++){
+            vertex local {0.0,0.0};
+            std::array<vertex, 3> workDarcy;
+            basis_.GetCorners(mi, {i,j});
+
+            vertex global = GaussMapPointsFace(local, basis_.corners());
+            // Darcy 
+
+        }
+    }
+
+    return 0; 
+}

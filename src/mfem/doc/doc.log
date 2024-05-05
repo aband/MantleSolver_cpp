@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.5.30)  11 APR 2024 13:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.5.30)  3 MAY 2024 10:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -658,23 +658,30 @@ d on input line 6.
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] [4]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 216.
- [4] [5]
-(./doc.bbl)
+put line 264.
+
+
+LaTeX Warning: Citation `SolSparseIndef_Paige_Saunders' on page 5 undefined on 
+input line 287.
+
+[5] [6] (./doc.bbl)
 \tf@thm=\write4
 \openout4 = `doc.thm'.
 
- [6] (./doc.aux)
+ [7] (./doc.aux)
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `doc.out' has not changed.
-(rerunfilecheck)             Checksum: 485C085ED97A3FCFD720CDB422A7E62C;2564.
+(rerunfilecheck)             Checksum: 65825DF1743CA36DC134C48D621FD3F4;2795.
  ) 
 Here is how much of TeX's memory you used:
- 15559 strings out of 478287
- 239334 string characters out of 5849289
+ 15574 strings out of 478287
+ 239507 string characters out of 5849289
  538271 words of memory out of 5000000
- 31935 multiletter control sequences out of 15000+600000
+ 31936 multiletter control sequences out of 15000+600000
  472184 words of font info for 40 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
  75i,13n,77p,505b,391s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -689,10 +696,10 @@ ublic/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
 sfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
 .pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on doc.pdf (6 pages, 153430 bytes).
+Output written on doc.pdf (7 pages, 160421 bytes).
 PDF statistics:
- 177 PDF objects out of 1000 (max. 8388607)
- 143 compressed objects within 2 object streams
- 41 named destinations out of 1000 (max. 500000)
- 97 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 203 PDF objects out of 1000 (max. 8388607)
+ 168 compressed objects within 2 object streams
+ 55 named destinations out of 1000 (max. 500000)
+ 105 words of extra memory for PDF output out of 10000 (max. 10000000)
 

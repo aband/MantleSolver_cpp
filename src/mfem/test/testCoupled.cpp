@@ -242,6 +242,8 @@ int main(int argc, char ** argv){
     PetscCall(MatConvert(system->Cd, MATSAME, MAT_INITIAL_MATRIX, &lsDarcy->C));
     PetscCall(MatConvert(system->Cs, MATSAME, MAT_INITIAL_MATRIX, &lsStokes->C));
 
+    //MatView(system->Cd, PETSC_VIEWER_STDOUT_WORLD);
+
     const char *checkCd = "MatrixCheckCd.dat";
     WriteMat(system->Cd,checkCd);
 

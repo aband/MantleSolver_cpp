@@ -60,11 +60,11 @@ int main(int argc, char **argv){
     AssignPhyProperties(physproperty);
 
     //double physscale = physproperty->L0/physproperty->l0;
-    double physscale = 1.0;
-    double L = 2*physscale, H = 1*physscale;
-    double xstart = -1*physscale, ystart = -1.00*physscale;
-//    double L = 2, H = 1;
-//    double xstart = -1, ystart = -1.1;
+//    double physscale = 1.0;
+//    double L = 2*physscale, H = 1*physscale;
+//    double xstart = -1*physscale, ystart = -1.00*physscale;
+    double L = 2, H = 2;
+    double xstart = -1, ystart = -1;
 
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
@@ -291,7 +291,8 @@ int main(int argc, char **argv){
 
     PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Summary of Stokes problem. \nUzawa tolerance : %f \nMaximum Iteration : %d \nTau : %f\n", tolUzawaStokes,maxIterStokes,tauUzawaStokes));
 
-    SimpleUzawa(lsStokes, tolUzawaStokes, maxIterStokes, tauUzawaStokes, 0);
+    //SimpleUzawa(lsStokes, tolUzawaStokes, maxIterStokes, tauUzawaStokes, 0);
+    ExactUzawa(lsStokes, tolUzawaStokes, maxIterStokes);
 
     std::vector<double> fullSolStokes = GetFullSol(&lsStokes->x, bndryStokesDiri, br->getDOF());
 
@@ -311,6 +312,9 @@ int main(int argc, char **argv){
     cout << "Stokes Only: ||u-u_h||_L2 : " <<  pow(errorSumuStokes,0.5) << endl;
 
     PetscCall(PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n"));
+
+    // Output quiver plot data
+    quiverOutput(mi, fullSolStokes, fullSolDarcy, M, N, *testBasis, *br, *hdiv, physproperty);
 
     return 0;
 }

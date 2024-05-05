@@ -167,10 +167,11 @@ void AssignLocMatrix(const MeshInfo& mi,
             std::array<vertex, 8>  hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
             // Zeroth order constant pressure basis is always 1
             vertex nu = basis_.unitnormal(e);
+            double phi_f_e = AssignPorosity(mapped, physproperty);
             for (int j=0; j<8; j++){
                 // With dimension version
                 (*locmatrix).bd[j] += len/2.0*gwe[g]*
-                                      pow(phi_f_hat,-0.5) * pow(phi_f, 1+theta) *
+                                      pow(phi_f_hat,-0.5) * pow(phi_f_e, 1+theta) *
                                      (hdivwork[j][0] * nu[0]+
                                       hdivwork[j][1] * nu[1]);
             } 
@@ -187,8 +188,6 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
 
     /*
      * Sparsity pattern of As and Ad
-     *
-     *
      */
 
     PetscErrorCode    ierr;
@@ -200,6 +199,14 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
     const vector<vertex>& gpf = GaussPointsFace;
 
     PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).Ad));
+    PetscCall(MatSetSizes((*system).Ad,PETSC_DECIDE,PETSC_DECIDE,
+                                       hdiv_.getDOF(),hdiv_.getDOF()));
+    PetscCall(MatSetType((*system).Ad,MATMPIAIJ));
+    PetscCall(MatSetUp((*system).Ad));
+
+//    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
+//    hdiv_.getDOF(), hdiv_.getDOF(),));
+
     PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).As));
     PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).Bs));
     PetscCall(MatCreate(PETSC_COMM_WORLD,&(*system).Bd));
@@ -229,8 +236,6 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
 
     int totalElem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
 
-    PetscCall(MatSetSizes((*system).Ad,PETSC_DECIDE,PETSC_DECIDE,
-                                       hdiv_.getDOF(),hdiv_.getDOF()));
     PetscCall(MatSetSizes((*system).As,PETSC_DECIDE,PETSC_DECIDE,
                                        br_.getDOF(),br_.getDOF()));
 
@@ -247,7 +252,6 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
     PetscCall(MatSetSizes((*system).K,PETSC_DECIDE,PETSC_DECIDE,
                                        totalElem,totalElem));
 
-    PetscCall(MatSetType((*system).Ad,MATMPIAIJ));
     PetscCall(MatSetType((*system).As,MATMPIAIJ));
     PetscCall(MatSetType((*system).Bd,MATMPIAIJ));
     PetscCall(MatSetType((*system).Bs,MATMPIAIJ));
@@ -261,7 +265,6 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
     ierr = MatSetUp((*system).Cs);CHKERRQ(ierr);
     ierr = MatSetUp((*system).Cd);CHKERRQ(ierr);
     ierr = MatSetUp((*system).K);CHKERRQ(ierr);
-    ierr = MatSetUp((*system).Ad);CHKERRQ(ierr);
 
     //LocMatrix * locmatrix = (LocMatrix *)malloc(sizeof(LocMatrix));
 

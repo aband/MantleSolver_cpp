@@ -21,6 +21,29 @@ uY = fscanf(fileID, '%f', [1,Inf]);
 fileID = fopen('build/porosity.dat','r');
 poro = fscanf(fileID, '%f', [1,Inf]);
 
+%{
+fileID = fopen('sample/gridX.dat','r');
+X = fscanf(fileID, '%f', [1,Inf]);
+
+fileID = fopen('sample/gridY.dat','r');
+Y = fscanf(fileID, '%f', [1,Inf]);
+
+fileID = fopen('sample/vx.dat','r');
+vX = fscanf(fileID, '%f', [1,Inf]);
+
+fileID = fopen('sample/vy.dat','r');
+vY = fscanf(fileID, '%f', [1,Inf]);
+
+fileID = fopen('sample/ux.dat','r');
+uX = fscanf(fileID, '%f', [1,Inf]);
+
+fileID = fopen('sample/uy.dat','r');
+uY = fscanf(fileID, '%f', [1,Inf]);
+
+fileID = fopen('sample/porosity.dat','r');
+poro = fscanf(fileID, '%f', [1,Inf]);
+%}
+
 fclose(fileID);
 
 % =========================================
@@ -50,6 +73,5 @@ streamslice(X',Y',uX',uY',0.5);
 title("Darcy Streamline");
 
 figure
-contour(X,Y,poro);
+contour(X,Y,poro,20);
 title("Porosity");
-

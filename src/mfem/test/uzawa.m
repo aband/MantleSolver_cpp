@@ -14,16 +14,19 @@ while (r>tol) && (iter < maxIter)
 
     iter + 1;
 
-    tmp1 = A\(F - (A*x - B'*y));
+    %tmp1 = A\(F - (A*x - B'*y));
+    tmp1 = F - (A*x + B'*y);
+    [tmp1, minr] = minres(A,tmp1,zeros(size(tmp1)),5000,1e-11);
 
     x = x + tmp1;
 
-    tmp2 = -B*x - C*y + G;
+    %tmp2 = -B*x - C*y + G;
     %tmp2 = tmp2 - mean(tmp2);
+    tmp2 = B*x + C*y - G;
 
     % =====================================
     % MINRES
-    [tmp2, minr] = minres(S,tmp2,zeros(size(tmp2)),5000,1e-10);
+    [tmp2, minr] = minres(S,tmp2,zeros(size(tmp2)),5000,1e-11);
 
     % Unique solution for 
     %tmp2(1) = tmp2(1)/(S(1,1)-S(1,2));
