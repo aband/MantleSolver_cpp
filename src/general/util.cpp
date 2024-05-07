@@ -153,6 +153,9 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
     mi.MPIlocalCellSizeFull.push_back(xm+2*ghostWidth);
     mi.MPIlocalCellSizeFull.push_back(ym+2*ghostWidth);
 
+    int rank;
+    MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
+
     // Extract information of vertex dm
     DMDAGetCorners(dmv, &xs, &ys, NULL, &xm, &ym, NULL);
     DMDAGetInfo(dmv, &dim, &M, &N, NULL, NULL, NULL, NULL, NULL, &ghostWidth, NULL, NULL, NULL, NULL);
@@ -182,21 +185,22 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
     for (int j=ys; j<ys+ym+1; j++){
     for (int i=xs; i<xs+xm+1; i++){
 
+
         if (j<N && i<M){
-        vertexSet corner;
-        //! Retrieve local cell indice (including ghost vertex)
-        indice ghostlayerShift {ghostWidth, ghostWidth};
-        indice global {i,j};
-        indice fullLocal = global - mi.MPIlocalCellStart + ghostlayerShift;
+            vertexSet corner;
+            //! Retrieve local cell indice (including ghost vertex)
+            indice ghostlayerShift {ghostWidth, ghostWidth};
+            indice global {i,j};
+            indice fullLocal = global - mi.MPIlocalCellStart + ghostlayerShift;
 
-        for (auto & fcorner : mi.faceCorner){
-            corner.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], fullLocal+fcorner)]); 
-        }
+            for (auto & fcorner : mi.faceCorner){
+                corner.push_back(mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], fullLocal+fcorner)]); 
+            }
 
-        mi.cellArea.insert(std::make_pair<int,double>
-                           (FlatIndic(mi.MPIglobalCellSize[0],i,j),
-                            NumIntegralFace(corner,{0,0},{0.0,0.0},1.0,constFunc))); 
-        }
+            mi.cellArea.insert(std::make_pair<int,double>
+                               (FlatIndic(mi.MPIglobalCellSize[0],i,j),
+                                NumIntegralFace(corner,{0,0},{0.0,0.0},1.0,constFunc)));
+            }
     }}
 
 }

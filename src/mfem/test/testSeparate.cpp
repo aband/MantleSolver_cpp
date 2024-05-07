@@ -173,6 +173,17 @@ int main(int argc, char **argv){
 
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, system);
 
+    MatView(system->As, PETSC_VIEWER_STDOUT_WORLD);
+    MatView(system->Ad, PETSC_VIEWER_STDOUT_WORLD);
+
+    int m, n;
+    MatGetLocalSize(system->As, &m, &n);
+    cout << m << "  " << n << endl << endl;
+
+    MatGetLocalSize(system->Ad, &m, &n);
+    cout << m << "  " << n << endl << endl;
+
+
     // Mark boundary condition
     bndryVal bndryStokesDiri;
     bndryVal bndryStokesNeum;

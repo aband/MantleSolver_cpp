@@ -69,11 +69,13 @@ add_library(mfem_lib
         ${SRC}/mfem/bndry.cpp
         ${SRC}/mfem/solve.cpp
         ${SRC}/mfem/error.cpp
-		  #        ${SRC}/mfem/cgns_io_serial.cpp
+		  ${SRC}/mfem/parallel/pbndry.cpp
+		  ${SRC}/mfem/parallel/passemble.cpp
 )
 
 target_include_directories(mfem_lib
 		  PUBLIC ${SRC}/mfem
+		  PUBLIC ${SRC}/mfem/parallel
 		  #		  PUBLIC /workspace/CGNS/src
 		  #		  PUBLIC /workspace/CGNS/build/src
 )
@@ -103,7 +105,8 @@ target_link_libraries(io_lib
 # Add to excutable
 add_executable(testCoupled
         testCoupled.cpp 
-        myfunc.cpp
+		  myfunc.cpp
+		  #myfunc_mixedBndry.cpp
 )
 
 add_executable(testSeparate
@@ -113,6 +116,11 @@ add_executable(testSeparate
 
 add_executable(testBasis
         testBasis.cpp
+)
+
+add_executable(testParallel
+        testParallel.cpp
+		  myfunc4.cpp
 )
 
 # Link static libraries generated previously
@@ -129,6 +137,12 @@ target_link_libraries(testSeparate
 )
 
 target_link_libraries(testBasis
+    mfem_lib
+    io_lib
+    PkgConfig::LAPACKE 
+)
+
+target_link_libraries(testParallel
     mfem_lib
     io_lib
     PkgConfig::LAPACKE 

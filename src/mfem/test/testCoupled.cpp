@@ -10,6 +10,8 @@
 #include "bndry.h"
 #include "solve.h"
 #include "error.h"
+#include <ctime>
+#include <chrono>
 
 extern "C"{
 #include "mesh.h"
@@ -285,9 +287,17 @@ int main(int argc, char ** argv){
     PetscCall(PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n"));
     // ================================================================
 
+    auto start = std::chrono::system_clock::now();
     CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1, tauUzawa2, precondType);
     //CoupledSolver(lsStokes, lsDarcy, lsResult, &system->K, tolUzawa, maxIter, tauUzawa1);
-
+    auto end = std::chrono::system_clock::now();
+ 
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+ 
+    std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s"
+              << std::endl;
 
     // Result output - Stokes and Darcy
     Vec stokesv;

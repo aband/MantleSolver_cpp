@@ -219,19 +219,19 @@ Symmetrically permutate original linear system and form a enlarged saddle point 
 \end{equation}
 
 \begin{equation}
-\tilde{\bold{A}} = \begin{bmatrix}
+\bold{A} = \begin{bmatrix}
 \bold{A}_s   & \bold{0}    \\
 \bold{0}     & \bold{A}_d  
 \end{bmatrix}
 \quad
-\tilde{\bold{B}} = \begin{bmatrix}
-\bold{B}_s & \bold{0}   \\
-\bold{0}   & \bold{B}_d
+\bold{B} = \begin{bmatrix}
+-\bold{B}_s & \bold{0}   \\
+\bold{0}   & -\bold{B}_d
 \end{bmatrix}
 \quad
-\tilde{\bold{C}} = \begin{bmatrix}
- \bold{C}_s &  \bold{K}   \\
- \bold{K}   &  \bold{C}_d
+\bold{C} = \begin{bmatrix}
+- \bold{C}_s &  -\bold{K}   \\
+- \bold{K}   &  -\bold{C}_d
 \end{bmatrix}
 \quad \bold{F} = \begin{bmatrix}
 \bold{f}_s \\
@@ -239,24 +239,24 @@ Symmetrically permutate original linear system and form a enlarged saddle point 
 \end{bmatrix}
 \quad
 \quad \bold{G} = \begin{bmatrix}
-\bold{f}_d \\
-\bold{g}_d
+-\bold{f}_d \\
+-\bold{g}_d
 \end{bmatrix}
 \end{equation}
-In this newly formed system, the $\tilde{\bold{A}}$ matrix maintains as a positive definite matrix.
+In this newly formed system, the $\bold{A}$ matrix maintains as a positive definite matrix.
 we solve this typical saddle point system with uzawa iteration. Uzawa algorithm has been discussed
 extensively at \cite{InexactUzawa_Elam_Golub}, \cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}.
 
 Consider the linear system of equation:
 \begin{equation}
 \begin{bmatrix}
- \bold{A}   & -\bold{B} \\
--\bold{B}^T & -\bold{C}
+		  \bold{A}   & \bold{B} \\
+		  \bold{B}^T & \bold{C}
 \end{bmatrix} \begin{bmatrix}
 \bold{x} \\ \bold{y}
 \end{bmatrix} = \begin{bmatrix}
-\bold{F} \\
--\bold{G}
+		  \bold{F} \\
+		  \bold{G}
 \end{bmatrix}
 \end{equation}
 
@@ -264,28 +264,39 @@ Consider the linear system of equation:
 \caption{Preconditioned Inexact Uzawa Iteration}
 		  \begin{algorithmic}[1]
 					 \State Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
-					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i - \bold{B}\bold{y}_i))$
-					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \bold{Q}^{-1} (\bold{G} - \bold{B}^T\bold{x}_{i+1} - \bold{C}\bold{y}_{i})$
+					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
+					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \bold{Q}^{-1} ( \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G})$
 \end{algorithmic}
 \end{algorithm}
 
 In the previous literature \cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}, 
-$\bold{Q}$ is approximated with $\tau \bold{I}$, which works very well with the 
+$\bold{Q}$ is approximated with $\tau \bold{I}$, which works well with the 
 stokes part. However, it converges very slow with the same approximation when 
-applied to Darcy part. Hence we proposed a more accuate Uzawa iteration procedure.
+applied to the Darcy part. We need a better preconditioner approximating 
+inverse of the corresponding schur complement.
+We use MINRES algorithm \cite{SolSparseIndef_Paige_Saunders} due to schur 
+complement being symmtetric and indefinite.
 
 \begin{algorithm}
 \caption{Preconditioned Inexact Uzawa Iteration}
 		  \begin{algorithmic}[1]
 					 \State Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
-					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i - \bold{B}\bold{y}_i))$
-					 \State Obtain $\bold{r} = \bold{G} - \bold{B}^T\bold{x}_{i+1} - \bold{C}\bold{y}_{i}$
+					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
+					 \State Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$
 					 \State Obtain $\tilde{\bold{y}} =\text{argmin}_{\bold{x}\in V} ||(\bold{B}^T\bold{A}^{-1}\bold{B} - \bold{C})^{-1}\tilde{\bold{y}}-\bold{r} ||$
 					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
 \end{algorithmic}
 \end{algorithm}
-We use MINRES algorithm \cite{SolSparseIndef_Paige_Saunders} due to schur 
-complement being symmtetric and indefinite.
+
+Based on the above algorithm, we proposed a new block preconditioner for our
+coupled linear system.
+\begin{equation}
+		  \bold{Q}^{-1} = \begin{bmatrix}
+					 \bold{S}_s^{-1} & \bold{0} \\
+					 \bold{0} & \bold{S}_d^{-1}
+		  \end{bmatrix}
+\end{equation}
+where the schur complement matrices are approximated with MINRES method.
 
 \subsection{Convergence and stability analysis}
 Uzawa iteration is in fact a fixed point iteration procedure.

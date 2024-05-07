@@ -1,3 +1,6 @@
+#ifndef ASSEMBLE_H_
+#define ASSEMBLE_H_
+
 #include <petsc.h>
 #include "Hdivmixed.h"
 #include "brmixed.h"
@@ -39,3 +42,5 @@ PetscErrorCode SerialMatrixAssembleBlock(const MeshInfo& mi,
                                          BRMixed& br_,
                                          PhysProperty * physpropety,
                                          System * matrix);
+
+#endif

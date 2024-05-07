@@ -830,7 +830,7 @@ PetscErrorCode CoupledExactUzawa(linearSys * ls, double tau1, double tau2,
     PetscCall(KSPSetOperators(kspMINRESd, Sd, Sd));
     PetscCall(KSPSetType(kspMINRESd, KSPMINRES)); 
     PetscCall(KSPSetInitialGuessNonzero(kspMINRESd, PETSC_FALSE));
-    PetscCall(KSPSetTolerances(kspMINRESd, 10e-8, 10e-16, 10, 500));
+    PetscCall(KSPSetTolerances(kspMINRESd, 1e-7, 10e-16, 10, 500));
 
     // ===================================================================
     PetscCall(MatNestGetSubMat(ls->A, 0, 0, &As));
@@ -849,9 +849,7 @@ PetscErrorCode CoupledExactUzawa(linearSys * ls, double tau1, double tau2,
     PetscCall(KSPSetOperators(kspMINRESs, Ss, Ss));
     PetscCall(KSPSetType(kspMINRESs, KSPMINRES)); 
     PetscCall(KSPSetInitialGuessNonzero(kspMINRESs, PETSC_FALSE));
-    PetscCall(KSPSetTolerances(kspMINRESs, 10e-8, 10e-16, 10, 500));
-
-    cout << "here " << endl;
+    PetscCall(KSPSetTolerances(kspMINRESs, 1e-7, 10e-16, 10, 500));
 
     double r = 1.0;
     int    iter = 0;
