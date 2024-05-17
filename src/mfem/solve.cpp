@@ -33,6 +33,9 @@ PetscErrorCode CreateLinearSys(linearSys * ls, ReducedSys * reducedsys){
 
     // Move boundary condition vectors to the right hand side of the 
     // rhs = g-dirichlet+neumann
+
+    VecView(g1, PETSC_VIEWER_STDOUT_WORLD);
+
     PetscCall(VecAYPX(g1,-1,reducedsys->source));
 
     //PetscCall(VecAXPY(g1,1.0,reducedsys->neum));
@@ -436,7 +439,7 @@ PetscErrorCode InexactUzawa(linearSys * ls, double tol, int MaxIter, double tau)
 
         KSPSolve(ksp,tmp2,tmp1); 
 
-        VecView(tmp1, PETSC_VIEWER_STDOUT_WORLD);
+        //VecView(tmp1, PETSC_VIEWER_STDOUT_WORLD);
 
         PetscCall(VecAXPY(ls->x,1,tmp1)); // x1
 
@@ -867,6 +870,8 @@ PetscErrorCode CoupledExactUzawa(linearSys * ls, double tau1, double tau2,
     PetscCall(VecZeroEntries(tmp4));
 
     Vec tmp31, tmp32;
+
+    VecView(ls->f, PETSC_VIEWER_STDOUT_WORLD);
 
     while(r>tol && iter < MaxIter){
         PetscCall(MatMult(ls->B, ls->y, tmp1));

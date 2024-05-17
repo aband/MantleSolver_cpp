@@ -194,6 +194,9 @@ int main(int argc, char ** argv){
     CreateLinearSys(lsStokes, reducedStokes);
     CreateLinearSys(lsDarcy, reducedDarcy);
 
+    MatView(reducedStokes->Kg, PETSC_VIEWER_STDOUT_WORLD);
+    MatView(reducedDarcy->Kg , PETSC_VIEWER_STDOUT_WORLD);
+
     // Check linear system component
     const char *checkAd = "MatrixCheckAd.dat";
     // Write A matrix

@@ -52,6 +52,25 @@ class BRMixed {
                               const vertex& point,
                               const int& local) const;
 
+        // ! Standarized function usage
+        std::vector<vertex> EvaluateAll(const basis& basis_,
+                                        const vertex& point) const;
+
+        vertex Evaluate(const basis& basis_,
+                        const vertex& point,
+                        const int& localdof) const;
+
+        std::vector<std::array<double,4>> EvaluateGradAll(const basis& basis_,
+                                                          const vertex& point) const;
+
+        std::vector<int> LocalGlobalMap(const MeshInfo& mi,
+                                        const indice& global) const;
+
+        bool onBndry(const MeshInfo& mi,
+                     const int& globaldof)const;
+
+        double Pressure() const {return 1.0;};
+
     private:
 
         double phie_(const basis& basis_,

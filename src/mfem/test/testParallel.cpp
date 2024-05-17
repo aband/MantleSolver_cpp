@@ -10,7 +10,10 @@
 #include "bndry.h"
 #include "solve.h"
 #include "error.h"
-#include "pbndry.h"
+#include "passemble.h"
+#include "psolve.h"
+#include <ctime>
+#include <chrono>
 
 extern "C"{
 #include "mesh.h"
@@ -152,6 +155,8 @@ int main(int argc, char ** argv){
 
     AssignValuesMeshInfo(mi,dm,dmu); 
 
+    //ParallelAssembleTest();
+
     // =================================================================================
     // Declare classes for shape functions
     basis * basis_   = new basis();
@@ -161,14 +166,105 @@ int main(int argc, char ** argv){
     br->ComputeTotalDOF(mi);
     hdiv->ComputeTotalDOF(mi);
 
+    // Mark boundary values
+    bndryVal bndryStokesEssen;
+    bndryVal bndryStokesNatur;
+    bndryVal bndryDarcyEssen;
+    bndryVal bndryDarcyNatur;
+
+    MarkBndryDOFStokes(bndryStokesEssen, bndryStokesNatur, mi, *basis_, *br, physproperty);
+    MarkBndryDOFDarcy(bndryDarcyEssen, bndryDarcyNatur, mi, *basis_, *hdiv, physproperty);
+
+    // Create linear system
+    ReducedSys * reducedDarcy = (ReducedSys *)malloc(sizeof(ReducedSys));
+    ReducedSys * reducedStokes = (ReducedSys *)malloc(sizeof(ReducedSys));
+
+    Mat K;
+
+    ParallelMatrixAssemble(mi, *basis_, physproperty, bndryStokesEssen, reducedStokes, bndryDarcyEssen, reducedDarcy, &K, *br, *hdiv );
+
+    int nelem = M*N;
+    CreateLinearSys(reducedStokes, nelem);
+    CreateLinearSys(reducedDarcy , nelem); 
+
+    // ======================================================================
+    // Create Reduced system using previous routine
+/*
     // Assemble matrices, create full system
     System * system = (System *)malloc(sizeof(System));
 
-    bndryVal bndryStokesDiri;
-    bndryVal bndryStokesNeum;
+    SerialMatrixAssembleBlock(mi, *basis_, *hdiv, *br, physproperty, system);
 
-    ParallelMarkBndryDOFs(mi, bndryStokesDiri, bndryStokesNeum,
-                          *basis_, physproperty, *br);
+    ReducedSys * reducedDarcySerial = (ReducedSys *)malloc(sizeof(ReducedSys));
+    ReducedSys * reducedStokesSerial = (ReducedSys *)malloc(sizeof(ReducedSys));
+
+    CreateReducedSerial(reducedDarcySerial, &system->Ad, &system->Bd, &system->sourceDarcy, bndryDarcyEssen);
+    CreateReducedSerial(reducedStokesSerial, &system->As, &system->Bs, &system->sourceStokes, bndryStokesEssen);
+
+   CreateLinearSys(reducedStokesSerial, nelem);
+   CreateLinearSys(reducedDarcySerial, nelem);
+
+   MatAXPY(reducedDarcySerial->M, -1.0,reducedDarcy->M,SUBSET_NONZERO_PATTERN);  
+   MatAXPY(reducedStokesSerial->M, -1.0,reducedStokes->M,SUBSET_NONZERO_PATTERN); 
+   MatView(reducedDarcySerial->M, PETSC_VIEWER_STDOUT_WORLD);
+   MatView(reducedStokesSerial->M, PETSC_VIEWER_STDOUT_WORLD);
+
+   MatAXPY(reducedDarcySerial->B, -1.0,reducedDarcy->B,SUBSET_NONZERO_PATTERN);  
+   MatAXPY(reducedStokesSerial->B, -1.0,reducedStokes->B,SUBSET_NONZERO_PATTERN); 
+   MatView(reducedDarcySerial->B, PETSC_VIEWER_STDOUT_WORLD);
+   MatView(reducedStokesSerial->B, PETSC_VIEWER_STDOUT_WORLD);
+
+   MatAXPY(system->Cd, -1.0,reducedDarcy->C,SUBSET_NONZERO_PATTERN);  
+   MatAXPY(system->Cs, -1.0,reducedStokes->C,SUBSET_NONZERO_PATTERN); 
+   MatView(system->Cd, PETSC_VIEWER_STDOUT_WORLD);
+   MatView(system->Cs, PETSC_VIEWER_STDOUT_WORLD);
+
+   VecAXPY(reducedStokesSerial->F, -1.0, reducedStokes->F);
+   VecView(reducedStokesSerial->F, PETSC_VIEWER_STDOUT_WORLD);
+
+   VecAXPY(reducedDarcySerial->F, -1.0, reducedDarcy->F);
+   VecView(reducedDarcySerial->F, PETSC_VIEWER_STDOUT_WORLD);
+*/
+//    MatConvert(reducedStokesSerial->Kg, MATAIJ, MAT_INITIAL_MATRIX, &reducedStokes->Kg);
+//    MatConvert(reducedStokesSerial->M, MATAIJ, MAT_INITIAL_MATRIX, &reducedStokes->M);
+
+    // ======================================================================
+
+    // Create the coupled saddle point system
+    // Attention, stokes system should be used as the first input
+    ReducedSys * reducedResult = (ReducedSys *)malloc(sizeof(ReducedSys));
+
+    CreateCoupledSystem(reducedStokes, reducedDarcy, reducedResult, &K);
+
+    // Solve with Uzawa solver
+    int maxIter = 1;
+    PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL);
+    double tolUzawa = 10e-7;
+    PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
+
+    auto start = std::chrono::system_clock::now();
+    CoupledUzawa(reducedResult, tolUzawa, maxIter);    
+    auto end = std::chrono::system_clock::now();
+ 
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+
+    PetscCall(PetscPrintf(PETSC_COMM_SELF, "Current rank is %d : Computation time is : %f s \n", rank, elapsed_seconds.count()));
+
+    // Finalize Petsc code
+
+    DMDAVecRestoreArray(dmu,localu,&lu);
+    DMRestoreLocalVector(dmu, &localu); 
+
+    VecDestroy(&fullmesh);
+    VecDestroy(&globalu);
+
+    DMDestroy(&dm);
+    DMDestroy(&dmu);
+
+    PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Run in parallel successfully! ^_^\n"));
+
+    PetscFinalize();
 
     return 0;
 }

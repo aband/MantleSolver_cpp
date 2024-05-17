@@ -177,6 +177,85 @@ std::array<vertex,2> Hdivmixed::ComputeHdivmixed(const basis& basis_,
 
 }
 
+// ========================================================================================
+
+std::vector<vertex> Hdivmixed::EvaluateAll(const basis& basis_,
+                                           const vertex& point)const{
+
+    std::array<vertex,8> tmp = ComputeHdivmixed(basis_, point);
+    std::vector<vertex>  work (tmp.begin(), tmp.end());
+
+    return work;
+}
+
+vertex Hdivmixed::Evaluate(const basis& basis_,
+                           const vertex& point,
+                           const int& localdof)const {
+
+    std::array<vertex,8> tmp = ComputeHdivmixed(basis_, point);
+
+    return tmp.at(localdof); 
+} 
+
+std::vector<std::array<double,4>> Hdivmixed::EvaluateGradAll(const basis& basis_,
+                                                             const vertex& point)const{
+    std::vector<std::array<double,4>> work;
+
+    cout << "Evaluate gradient of Hdiv space not defined. Incorrectly called \n" << endl;
+
+    return work;
+}
+
+std::vector<int> Hdivmixed::LocalGlobalMap(const MeshInfo& mi,
+                                           const indice& global) const{
+
+    std::array<int, 8> tmp = LocalToGlobal(mi, global);
+    std::vector<int> work (tmp.begin(), tmp.end());
+    return work;
+}
+
+bool Hdivmixed::onBndry(const MeshInfo& mi,
+                        const int& globaldof) const{
+
+    // return a bool variable determining whether this global dof is 
+    // on boundary or not.
+
+    bool result = false;
+
+    int allEdge = mi.MPIglobalHoriEdgeSize + mi.MPIglobalVertEdgeSize;
+
+    int moddof = 0;
+
+    if (globaldof > allEdge-1) {
+        // This is the second dof on edge
+        moddof = globaldof - allEdge;
+    } else {
+        moddof = globaldof;
+    }
+
+    // Horizontal edges are counted first
+    if (moddof > mi.MPIglobalHoriEdgeSize - 1){
+        // It is a dof on vetical edge
+        moddof -= mi.MPIglobalHoriEdgeSize;
+        indice bend = Bend(mi.MPIglobalVertexSize[0], moddof);
+
+        if (bend[0] == 0 || bend[0] == mi.MPIglobalVertexSize[0]-1){
+            result = true;
+        }
+
+    } else {
+        // It is a dof on horizontal edge
+        indice bend = Bend(mi.MPIglobalCellSize[0], moddof);
+        if (bend[1] == 0 || bend[1] == mi.MPIglobalVertexSize[1]-1){
+            result = true;
+        }
+    }
+
+    return result;
+}
+
+// ===============================================================
+
 vertex Hdivmixed::curlLambda_(const basis& basis_,
                               const int& e) const{
 

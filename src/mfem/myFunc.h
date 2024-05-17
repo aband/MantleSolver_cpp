@@ -17,6 +17,7 @@ typedef struct {
     double invk0 ;
     double phi0  ;
     double U0    ;
+    double phi_f_hat ;
 
     double l0    ;
     double u0    ;

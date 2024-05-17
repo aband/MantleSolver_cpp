@@ -1,0 +1,58 @@
+#ifndef LOCMATRIX_H_
+#define LOCMATRIC_H_
+
+#include <petsc.h>
+#include "Hdivmixed.h"
+#include "brmixed.h"
+#include "util.h"
+#include "shape.h"
+#include "myFunc.h"
+
+typedef struct{
+
+  std::vector<double> A;
+  std::vector<double> B;
+  double C;
+  std::vector<double> f;
+
+} LocMat;
+
+int CellAvePorosity(const MeshInfo& mi, 
+                    PhysProperty * pp,
+                    basis& basis_,
+                    const valarray<double>& gwf,
+                    const vector<vertex>& gpf);
+
+// Stokes
+int AssignLocMat(const MeshInfo& mi,
+                 BRMixed& br_,
+                 basis& basis_,
+                 LocMat * loc,
+                 PhysProperty * pp,
+                 const valarray<double>& gwe, 
+                 const valarray<double>& gpe,
+                 const valarray<double>& gwf,
+                 const vector<vertex>& gpf);
+
+// Darcy
+int AssignLocMat(const MeshInfo& mi,
+                 Hdivmixed& hdiv_,
+                 basis& basis_,
+                 LocMat * loc,
+                 PhysProperty * pp,
+                 const valarray<double>& gwe, 
+                 const valarray<double>& gpe,
+                 const valarray<double>& gwf,
+                 const vector<vertex>& gpf);
+
+// Coupling term
+int AssignLocMat(const MeshInfo& mi,
+                 BRMixed& br_,
+                 Hdivmixed& hdiv_,
+                 basis& basis_,
+                 PhysProperty * pp,
+                 double * k,
+                 const valarray<double>& gwf,
+                 const vector<vertex>& gpf);
+
+#endif

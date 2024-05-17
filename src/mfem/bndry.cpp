@@ -53,8 +53,11 @@ int MarkBndryDOFStokes(bndryVal& bndryDiri,
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
 
-    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
-    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+    int jstart = mi.MPIlocalCellStart[1];
+    int istart = mi.MPIlocalCellStart[0];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
 
         // Global element index
         indice global{i,j};
@@ -131,8 +134,11 @@ int MarkBndryDOFDarcy(bndryVal& bndryDiri,
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
 
-    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
-    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+    int jstart = mi.MPIlocalCellStart[1];
+    int istart = mi.MPIlocalCellStart[0];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
 
         // Global element index
         indice global {i,j};
@@ -210,6 +216,8 @@ int MarkBndryDOFStokes(bndryVal& bndryStokes,
 
     // Mark all boundary degree of freedoms
     // Including edge dofs and nodal dofs
+    // Essential boundary condition only
+    // Sequential problem only
 
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
@@ -268,6 +276,9 @@ int MarkBndryDOFDarcy(bndryVal& bndryDarcy,
                       basis& basis_,
                       Hdivmixed& hdiv_,
                       PhysProperty * pp){
+
+    // Essential boundary condition only
+    // Sequential problem only
 
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;

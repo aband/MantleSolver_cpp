@@ -168,7 +168,9 @@ int main(int argc, char ** argv){
     for (int j=0; j<seed; j++){
     for (int i=0; i<seed; i++){
         vertex sample {i*h, j*h};
-        std::array<vertex, 8>  values = hdiv->ComputeHdivmixed(*basis_, sample);   
+        std::array<vertex, 8>  values = hdiv->ComputeHdivmixed(*basis_, sample);
+        std::vector<vertex> newvalues = hdiv->EvaluateAll(*basis_, sample);
+
         fprintf(fx, "%f ", i*h);
         fprintf(fy, "%f ", j*h);
         fprintf(vx, "%f ", values[dof][0]);

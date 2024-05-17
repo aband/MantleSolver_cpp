@@ -69,8 +69,10 @@ add_library(mfem_lib
         ${SRC}/mfem/bndry.cpp
         ${SRC}/mfem/solve.cpp
         ${SRC}/mfem/error.cpp
-		  ${SRC}/mfem/parallel/pbndry.cpp
+		  ${SRC}/mfem/shape.tpp
 		  ${SRC}/mfem/parallel/passemble.cpp
+		  ${SRC}/mfem/parallel/locmat.cpp
+		  ${SRC}/mfem/parallel/psolve.cpp
 )
 
 target_include_directories(mfem_lib
@@ -120,7 +122,7 @@ add_executable(testBasis
 
 add_executable(testParallel
         testParallel.cpp
-		  myfunc4.cpp
+		  myfunc.cpp
 )
 
 # Link static libraries generated previously

@@ -194,6 +194,98 @@ vertex BRMixed::ComputeBRmixed(const basis& basis_,
     return work;
 }
 
+// =============================================================================
+
+std::vector<vertex> BRMixed::EvaluateAll(const basis& basis_,
+                                         const vertex& point) const{
+    std::array<vertex, 12> tmp = ComputeBRmixed(basis_, point);
+    std::vector<vertex> work (tmp.begin(), tmp.end()); 
+
+    return work;
+}
+
+vertex BRMixed::Evaluate(const basis& basis_,
+                         const vertex& point, 
+                         const int& localdof) const{
+
+    return ComputeBRmixed(basis_,point,localdof);
+}
+
+std::vector<std::array<double,4>> BRMixed::EvaluateGradAll(const basis& basis_,
+                                                           const vertex& point) const{
+
+    std::array<std::array<double, 4>, 12> tmp = ComputeGradBRmixed(basis_, point); 
+
+    std::vector<std::array<double,4>> work (tmp.begin(), tmp.end());
+
+    return work;
+}
+
+std::vector<int> BRMixed::LocalGlobalMap(const MeshInfo& mi,
+                                         const indice& global) const{
+  
+    std::array<int, 12> tmp = LocalToGlobal(mi, global);
+    std::vector<int> work (tmp.begin(), tmp.end());
+    return work;
+}
+
+bool BRMixed::onBndry(const MeshInfo& mi,
+                      const int& globaldof) const{
+
+    bool result = false;
+
+    int totalNodal = mi.MPIglobalVertexSize[0] * mi.MPIglobalVertexSize[1];
+
+    int moddof;
+
+    indice bend;
+
+    if (globaldof > totalNodal*2-1){
+        // It is a bubble function dof
+        moddof = globaldof - totalNodal*2;
+
+        // Count horizontal edges first
+        if (moddof > mi.MPIglobalHoriEdgeSize-1){
+            moddof -= mi.MPIglobalHoriEdgeSize;
+            bend = Bend(mi.MPIglobalVertexSize[0],moddof); 
+
+            if (bend[0] == 0 || bend[0] == mi.MPIglobalVertexSize[0]-1){
+                result = true;
+            }
+
+        } else {
+            bend = Bend(mi.MPIglobalCellSize[0], moddof);
+            if (bend[1] == 0 || bend[1] == mi.MPIglobalVertexSize[1]-1){
+                result = true;
+            }
+        }
+
+    }else if (globaldof > totalNodal-1){
+        moddof = globaldof - totalNodal;
+        bend = Bend(mi.MPIglobalVertexSize[0], moddof);
+
+        if (bend[0] == 0 || bend[1] == 0 || 
+            bend[0] == mi.MPIglobalVertexSize[0]-1 ||
+            bend[1] == mi.MPIglobalVertexSize[1]-1){
+            result = true;
+        }
+
+    }else {
+
+        moddof = globaldof;
+        bend = Bend(mi.MPIglobalVertexSize[0], moddof);
+
+        if (bend[0] == 0 || bend[1] == 0 || 
+            bend[0] == mi.MPIglobalVertexSize[0]-1 ||
+            bend[1] == mi.MPIglobalVertexSize[1]-1){
+            result = true;
+        }
+
+    }
+
+    return result;
+}
+
 // ==================================================================
 
 double BRMixed::phie_(const basis& basis_,

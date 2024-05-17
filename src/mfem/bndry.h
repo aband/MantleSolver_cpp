@@ -18,8 +18,11 @@ struct bndryInfo{
 using bndryVal = std::unordered_map<int, bndryInfo>;
 
 typedef struct{
-    Mat M, Kg, B, Bg;
+    Mat M, Kg, B, Bg, C;
     Vec g, source, neum;
+    // Later added vectors
+    Vec F, G;
+    Vec x, y;
 } ReducedSys;
 
 /** !
@@ -27,6 +30,10 @@ typedef struct{
  *
  * A L2 projection will be used for Dirichlet boundary conditions.
  */
+
+void markBndryEdge(const MeshInfo& mi,
+                   vector<int>& edges,
+                   const int& i, const int& j);
 
 /** !
  * Functions mark Dirichlet boundary values.

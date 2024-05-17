@@ -7,12 +7,22 @@
 #include "util.h"
 #include "myFunc.h"
 #include "assemble.h"
+#include "locmat.h"
+#include "bndry.h"
+#include "solve.h"
+#include "shape.h"
 
-PetscErrorCode ParallelMatrixAssembleBlock(const MeshInfo& mi, 
-                                           basis& basis_,
-                                           Hdivmixed& hdiv_,
-                                           BRMixed& br_,
-                                           PhysProperty * pp,
-                                           System * system);
+PetscErrorCode ParallelAssembleTest();
+
+PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
+                                      basis& basis_,
+                                      PhysProperty * pp,
+                                      const bndryVal& bndryEssenStokes,
+                                      ReducedSys * redsysStokes,
+                                      const bndryVal& bndryEssenDarcy,
+                                      ReducedSys * redsysDarcy,
+                                      Mat * K,
+                                      BRMixed& br_,
+                                      Hdivmixed& hdiv_);
 
 #endif

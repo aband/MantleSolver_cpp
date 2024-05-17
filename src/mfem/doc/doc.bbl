@@ -1,5 +1,13 @@
 \begin{thebibliography}{1}
 
+\bibitem{SolSparseIndef_Paige_Saunders}
+{\sc M.~A.~S. C.~C.~Paige}, {\em Solution of sparse indefinite systems of
+  linear equations}, SIAM. J. Numer. Anal., 12 (1975), pp.~617--629.
+
+\bibitem{AnalysisFiniteElemStokes_Bernardi_Raugel}
+{\sc G.~R. Christine~Bernardi}, {\em Analysis of some finite elements for the
+  stokes problem}, Math. of Comput., 44 (1985), pp.~71--79.
+
 \bibitem{InexactUzawa_Elam_Golub}
 {\sc H.~C. Elman and G.~H. Golub}, {\em Inexact and preconditioned uzawa
   algorithms for saddle point problems}, SIAM. J. Numer. Anal., 31 (1994),
