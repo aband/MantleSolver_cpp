@@ -44,9 +44,10 @@ inline bool elemOnBndry(const MeshInfo& mi,
     }
 }
 
+/*
 template <typename T>
-inline int CreateRefMap(T& funcSp, int * refArray, 
-                        const MeshInfo& mi, int * bndryDOFEssen){
+int CreateRefMap(T& funcSp, int * refArray, 
+                 const MeshInfo& mi, int * bndryDOFEssen){
 
     // Each processor has to create its own mapping
     // Control Essential dof only
@@ -75,6 +76,7 @@ inline int CreateRefMap(T& funcSp, int * refArray,
 
     return 0;  
 }
+*/
 
 inline int PrepareReducedSys(ReducedSys * redsys, 
                              int reducedDOF, int bndrySize, int totalElem,
@@ -324,7 +326,11 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
                                       ReducedSys * redsysDarcy,
                                       Mat * K,
                                       BRMixed& br_,
-                                      Hdivmixed& hdiv_){
+                                      Hdivmixed& hdiv_,
+                                      int * refArrayStokes, 
+                                      int * refArrayDarcy,
+                                      const int& bndryDOFStokes,
+                                      const int& bndryDOFDarcy){
 
     PetscMPIInt   size, rank; 
     MPI_Comm_size(PETSC_COMM_WORLD, &size);
@@ -341,14 +347,14 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
     // Calculate dofs 
     int totalElem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
 
-    int bndryDOFStokes = 0.0;
-    int bndryDOFDarcy = 0.0;
+//    int bndryDOFStokes = 0.0;
+//    int bndryDOFDarcy = 0.0;
 
-    int * refArrayStokes = new int[br_.getDOF()];
-    int * refArrayDarcy  = new int[hdiv_.getDOF()];
+//    int * refArrayStokes = new int[br_.getDOF()];
+//    int * refArrayDarcy  = new int[hdiv_.getDOF()];
 
-    CreateRefMap(br_, refArrayStokes, mi, &bndryDOFStokes);
-    CreateRefMap(hdiv_, refArrayDarcy, mi, &bndryDOFDarcy);
+//    CreateRefMap(br_, refArrayStokes, mi, &bndryDOFStokes);
+//    CreateRefMap(hdiv_, refArrayDarcy, mi, &bndryDOFDarcy);
 
     int reducedDOFStokes = br_.getDOF() - bndryDOFStokes;
 
@@ -440,9 +446,6 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
 
     PetscCall(MatAssemblyBegin(*K,MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyEnd(*K,MAT_FINAL_ASSEMBLY));
-
-    free(refArrayStokes);
-    free(refArrayDarcy);
 
     return PETSC_SUCCESS;
 }

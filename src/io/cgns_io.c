@@ -433,3 +433,185 @@ PetscErrorCode  DMDACgnsOut2D(DM dmMesh, Vec *fullmesh, DM dmCell, Vec *Sol, cha
 
     PetscFunctionReturn(0);
 }
+
+PetscErrorCode CgnsArrayOutput(DM dmMesh, Vec * fullmesh, 
+                               double * ux, 
+                               double * uy,
+                               int cxs, int cxm, int cys, int cym,
+                               char * filename){
+
+    // The velocity is designed to be located on the centroid of cells
+    PetscErrorCode   ierr;
+    PetscInt         xs, ys, xm, ym, M, N;
+    int              size, rank;
+    Vec              fmesh,lmesh;
+    PetscFunctionBeginUser;
+
+    MPI_Comm_size(PETSC_COMM_WORLD, &size);
+    MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+    cgp_mpi_comm(PETSC_COMM_WORLD);
+
+    fmesh = *fullmesh;
+
+    ierr = DMDAGetCorners(dmMesh, &xs, &ys, NULL, &xm, &ym, NULL);                                       CHKERRQ(ierr);
+    ierr = DMDAGetInfo(dmMesh, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);CHKERRQ(ierr);
+
+    const cgsize_t zoneSize[3][2] = {{M+1, N+1}, {M,N}, {0,0}};
+
+    int index_file, index_base;
+    int index_zone, index_grid, index_coordx, index_coordy;
+    char basename[33], zonename[33];
+
+    // Open cgns file for write
+    if (cgp_open(filename, CG_MODE_WRITE, &index_file)){
+        cg_error_exit();
+    }
+
+    // Create base
+    strcpy(basename, "Base");
+    int icelldim = 2;
+    int iphysdim = 2;
+
+    cg_base_write(index_file, basename, icelldim, iphysdim, &index_base);
+
+    // Define zone name
+    strcpy(zonename, "Grid");
+
+    // create zone
+    if (cg_zone_write(index_file, index_base, zonename, (cgsize_t*)zoneSize,CGNS_ENUMV(Structured), &index_zone)){
+        cg_error_exit();
+    }
+
+    if (cg_grid_write(index_file, index_base, index_zone, "GridCoordinates", &index_grid)){
+        cg_error_exit();
+    }
+
+    // Construct the grid coordinates nodes
+    if (cgp_coord_write(index_file, index_base, index_zone,
+                        CGNS_ENUMV(RealDouble), "CoordinateX",
+                        &index_coordx)){
+        cgp_error_exit();
+    }
+
+    if (cgp_coord_write(index_file, index_base, index_zone,
+                        CGNS_ENUMV(RealDouble), "CoordinateY",
+                        &index_coordy)){
+        cgp_error_exit();
+    }
+
+    // Collective writing of coordinate data
+    int numLocalx, numLocaly;
+    if (xs+xm == M){
+        numLocalx = xm+1;
+    }else {
+        numLocalx = xm;
+    }
+
+    if (ys+ym == N){
+        numLocaly = ym+1;
+    }else {
+        numLocaly = ym;
+    }
+
+    cgsize_t   s_rmin[2], s_rmax[2], m_dimvals[2], m_rmin[2], m_rmax[2];
+
+    double *x = NULL;
+    double *y = NULL;
+
+    // Create gridpoints
+    const int num_vertex = numLocalx*numLocaly;
+    x = (double*)malloc(num_vertex*sizeof(double));
+    y = (double*)malloc(num_vertex*sizeof(double));
+
+    // Get Coordinates
+    Vector2D **coords;
+
+    ierr = DMGetLocalVector(dmMesh, &lmesh);
+    ierr = DMGlobalToLocalBegin(dmMesh, fmesh, INSERT_VALUES, lmesh);
+    ierr = DMGlobalToLocalEnd(dmMesh, fmesh, INSERT_VALUES, lmesh);
+
+    ierr = DMDAVecGetArray(dmMesh, lmesh, &coords);CHKERRQ(ierr);
+    for (int j=0; j<numLocaly; j++){
+    for (int i=0; i<numLocalx; i++){
+        int id = j*numLocalx + i;
+        x[id] = coords[j+ys][i+xs].x;
+        y[id] = coords[j+ys][i+xs].y;
+    }}
+
+    ierr = DMDAVecRestoreArray(dmMesh, lmesh, &coords);CHKERRQ(ierr);
+    ierr = DMRestoreLocalVector(dmMesh, &lmesh);
+
+    // Shape in file space
+    s_rmin[0] = xs+1;
+    s_rmax[0] = xs+numLocalx;
+    s_rmin[1] = ys+1;
+    s_rmax[1] = ys+numLocaly; 
+
+    // Shape in memory
+    m_dimvals[0] = numLocalx;
+    m_rmin[0]    = 1;
+    m_rmax[0]    = numLocalx;
+
+    m_dimvals[1] = numLocaly;
+    m_rmin[1]    = 1;
+    m_rmax[1]    = numLocaly;
+
+    // Collectively write coordinates to file
+    if (cgp_coord_general_write_data(index_file, index_base, index_zone, 1, s_rmin, s_rmax, CGNS_ENUMV(RealDouble),2,m_dimvals, m_rmin, m_rmax, x)){
+      cgp_error_exit();
+    }
+
+    if (cgp_coord_general_write_data(index_file, index_base, index_zone, 2, s_rmin, s_rmax, CGNS_ENUMV(RealDouble),2,m_dimvals, m_rmin, m_rmax, y)){
+      cgp_error_exit();
+    }
+
+    free(x);
+    free(y);
+
+    // ==== Output of velocity of solution
+
+    int               index_flow, index_field;
+    char              solname[33];
+
+    strcpy(solname, "Velocity");
+
+    // Create flow solution node 
+    cg_sol_write(index_file, index_base, index_zone, solname,
+                 CGNS_ENUMV(CellCenter), &index_flow);
+
+    // Go to position within tree at FlowSolution_t node 
+    cg_goto(index_file, index_base, "Zone_t", index_zone, 
+            "FlowSolution_t", index_flow, "end");
+
+    if (cgp_field_write(index_file, index_base, index_zone,
+                        index_flow, CGNS_ENUMV(RealDouble),
+                        "ux", &index_field)) cgp_error_exit();
+
+     if (cgp_field_write(index_file, index_base, index_zone,
+                        index_flow, CGNS_ENUMV(RealDouble),
+                        "uy", &index_field)) cgp_error_exit();
+
+    cgsize_t c_s_rmin[2], c_s_rmax[2], c_m_dimvals[2], c_m_rmin[2], c_m_rmax[2];
+
+    c_s_rmin[0] = cxs+1;
+    c_s_rmax[0] = cxs+cxm;
+
+    c_m_dimvals[0] = cxm;
+    c_m_rmin[0]    = 1;
+    c_m_rmax[0]    = cxm;
+    
+    c_s_rmin[1] = cys+1;
+    c_s_rmax[1] = cys+cym;
+
+    c_m_dimvals[1] = cym;
+    c_m_rmin[1]    = 1;
+    c_m_rmax[1]    = cym;
+
+    if (cgp_field_general_write_data(index_file, index_base, index_zone,index_flow,1,c_s_rmin, c_s_rmax, CGNS_ENUMV(RealDouble),2, c_m_dimvals, c_m_rmin, c_m_rmax, ux)) cgp_error_exit();
+
+    if (cgp_field_general_write_data(index_file, index_base, index_zone,index_flow,2,c_s_rmin, c_s_rmax, CGNS_ENUMV(RealDouble),2, c_m_dimvals, c_m_rmin, c_m_rmax, uy)) cgp_error_exit();
+
+    cgp_close(index_file);
+
+    return PETSC_SUCCESS;
+}

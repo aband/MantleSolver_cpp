@@ -18,6 +18,7 @@
 extern "C"{
 #include "mesh.h"
 #include "output.h"
+#include "cgns_io.h"
 }
 
 using namespace std;
@@ -181,7 +182,16 @@ int main(int argc, char ** argv){
 
     Mat K;
 
-    ParallelMatrixAssemble(mi, *basis_, physproperty, bndryStokesEssen, reducedStokes, bndryDarcyEssen, reducedDarcy, &K, *br, *hdiv );
+    int bndryDOFStokes = 0.0;
+    int bndryDOFDarcy  = 0.0;
+
+    int * refArrayStokes = new int[br->getDOF()];
+    int * refArrayDarcy  = new int[hdiv->getDOF()];
+
+    CreateRefMap(*br, refArrayStokes, mi, &bndryDOFStokes);
+    CreateRefMap(*hdiv, refArrayDarcy, mi, &bndryDOFDarcy);
+
+    ParallelMatrixAssemble(mi, *basis_, physproperty, bndryStokesEssen, reducedStokes, bndryDarcyEssen, reducedDarcy, &K, *br, *hdiv , refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
 
     int nelem = M*N;
     CreateLinearSys(reducedStokes, nelem);
@@ -232,9 +242,9 @@ int main(int argc, char ** argv){
 
     // Create the coupled saddle point system
     // Attention, stokes system should be used as the first input
-    ReducedSys * reducedResult = (ReducedSys *)malloc(sizeof(ReducedSys));
+    ReducedSys * Result = (ReducedSys *)malloc(sizeof(ReducedSys));
 
-    CreateCoupledSystem(reducedStokes, reducedDarcy, reducedResult, &K);
+    CreateCoupledSystem(reducedStokes, reducedDarcy, Result, &K);
 
     // Solve with Uzawa solver
     int maxIter = 1;
@@ -242,14 +252,35 @@ int main(int argc, char ** argv){
     double tolUzawa = 10e-7;
     PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
 
-    auto start = std::chrono::system_clock::now();
-    CoupledUzawa(reducedResult, tolUzawa, maxIter);    
-    auto end = std::chrono::system_clock::now();
+    //auto start = std::chrono::system_clock::now();
+    CoupledUzawa(Result, tolUzawa, maxIter);    
+    //auto end = std::chrono::system_clock::now();
  
-    std::chrono::duration<double> elapsed_seconds = end-start;
-    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+    //std::chrono::duration<double> elapsed_seconds = end-start;
+    //std::time_t end_time = std::chrono::system_clock::to_time_t(end);
 
-    PetscCall(PetscPrintf(PETSC_COMM_SELF, "Current rank is %d : Computation time is : %f s \n", rank, elapsed_seconds.count()));
+    //PetscCall(PetscPrintf(PETSC_COMM_SELF, "Current rank is %d : Computation time is : %f s \n", rank, elapsed_seconds.count()));
+
+    // Create flow velocity at cell centroid
+    double * ux = (double *)malloc(sizeof(double)*mi.MPIlocalCellSize[0]*
+                                        mi.MPIlocalCellSize[1]);
+    double * uy = (double *)malloc(sizeof(double)*mi.MPIlocalCellSize[0]*
+                                        mi.MPIlocalCellSize[1]);
+
+    Vec stokesv;
+    Vec darcyv;
+
+    PetscCall(VecNestGetSubVec(Result->x, 0, &stokesv));
+    PetscCall(VecNestGetSubVec(Result->x, 1, &darcyv));
+
+    CGNSPrepare(&stokesv, &reducedStokes->g, refArrayStokes, 
+                mi, ux, uy, *basis_, *br);
+
+    // CGNS output of hdf5 file
+    char filename[] = "velocity.cgns";    	
+    CgnsArrayOutput(dm,&fullmesh,ux,uy,mi.MPIlocalCellStart[0],
+                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+                    mi.MPIlocalCellSize[1],filename);
 
     // Finalize Petsc code
 
@@ -261,6 +292,9 @@ int main(int argc, char ** argv){
 
     DMDestroy(&dm);
     DMDestroy(&dmu);
+
+    free(refArrayStokes);
+    free(refArrayDarcy);
 
     PetscCall(PetscPrintf(PETSC_COMM_WORLD, "Run in parallel successfully! ^_^\n"));
 
