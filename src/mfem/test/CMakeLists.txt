@@ -73,6 +73,7 @@ add_library(mfem_lib
 		  ${SRC}/mfem/parallel/passemble.cpp
 		  ${SRC}/mfem/parallel/locmat.cpp
 		  ${SRC}/mfem/parallel/psolve.cpp
+		  ${SRC}/mfem/parallel/preconst.cpp
 )
 
 target_include_directories(mfem_lib
@@ -126,6 +127,13 @@ add_executable(testParallel
 		  myfunc.cpp
 )
 
+add_executable(testDMstag
+        testDMstag.cpp 
+)
+
+add_executable(scatter
+        scatterTest.cpp 
+)
 # Link static libraries generated previously
 target_link_libraries(testCoupled 
     mfem_lib
@@ -153,4 +161,13 @@ target_link_libraries(testParallel
     io_lib
     PkgConfig::LAPACKE 
     PkgConfig::CGNS
+)
+
+target_link_libraries(testDMstag
+		  PkgConfig::PETSC
+		  general_lib
+)
+
+target_link_libraries(scatter
+       PkgConfig::PETSC 
 )

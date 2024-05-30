@@ -104,33 +104,47 @@ inline std::vector<double> ExtractWeightsParallel(Vec * sol, Vec * g,
                                                   const int * refmap,
                                                   const indice& global){
 
+    int rank;
+    MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
+    int checkrank = 0;
+
     std::vector<int> locdof = funcSp.LocalGlobalMap(mi, global); 
 
     std::vector<double> work;
     work.resize(locdof.size());
-
-    Vec destination;
-
-    VecCreateSeq(PETSC_COMM_SELF, 1 ,&destination);
 
     VecScatter scatter;
   
     IS from , to;
     PetscInt id_to = 0;
 
-    PetscScalar *values;
+    if (rank == checkrank){
+        cout << global[0] << "   " << global[1] << endl;
+    }
 
     for (int i=0; i<locdof.size(); i++){
         const int id_from = refmap[locdof.at(i)];
 
+        Vec destination;
+
+        VecCreateSeq(PETSC_COMM_SELF, 1 ,&destination);
+
+        PetscScalar *values;
+
         ISCreateGeneral(PETSC_COMM_SELF, 1, &id_from, PETSC_COPY_VALUES, &from);
         ISCreateGeneral(PETSC_COMM_SELF, 1, &id_to, PETSC_COPY_VALUES, &to);
+
+        ISView(from , PETSC_VIEWER_STDOUT_WORLD);
+
+//        ISView(to , PETSC_VIEWER_STDOUT_WORLD);
 
         if (funcSp.onBndry(mi, locdof.at(i))){
 
             VecScatterCreate(*g, from, destination, to, &scatter);
             VecScatterBegin(scatter,*g, destination, INSERT_VALUES, SCATTER_FORWARD);
             VecScatterEnd(scatter,*g, destination, INSERT_VALUES, SCATTER_FORWARD);
+
 
         } else {
 
@@ -140,9 +154,23 @@ inline std::vector<double> ExtractWeightsParallel(Vec * sol, Vec * g,
 
         }
 
+        MPI_Barrier(PETSC_COMM_WORLD);
+
         VecGetArray(destination, &values);
 
         work.at(i) = values[0];
+
+ if (rank == checkrank){
+			cout << values[0] << endl;
+}
+
+        VecRestoreArray(destination, &values);
+
+        VecDestroy(&destination);
+
+        //VecScatterBegin(scatter,destination,*sol,INSERT_VALUES,SCATTER_REVERSE);
+        //VecScatterEnd(scatter,destination,*sol,INSERT_VALUES,SCATTER_REVERSE);
+
     }
 
     ISDestroy(&from);
@@ -161,6 +189,11 @@ inline int CGNSPrepare(Vec * sol, Vec * g,
                        double * ux, double * uy,
                        basis& basis_,
                        T& funcSp){
+
+    int rank;
+    MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
+    int checkrank = 0;
 
     int istart = mi.MPIlocalCellStart[0];
     int jstart = mi.MPIlocalCellStart[1];
@@ -183,15 +216,21 @@ inline int CGNSPrepare(Vec * sol, Vec * g,
 
         std::vector<vertex> work = funcSp.EvaluateAll(basis_, center);
 
-        for (int loc=0; loc<work.size(); loc++){
-            val += weights.at(loc)*work.at(loc); 
-        }
-  
         indice local = global - mi.MPIlocalCellStart;
         int localflat = FlatIndic(mi.MPIlocalCellSize[0], local);
 
+       //  if (rank == 0 && localflat == 24){
+       // std::vector<double> weights = 
+       // ExtractWeightsParallel(sol, g, funcSp, mi, refmap, global);
+       // }
+
+        for (int loc=0; loc<work.size(); loc++){
+            val += weights.at(loc)*work.at(loc);
+        }
+  
         ux[localflat] = val[0];
         uy[localflat] = val[1];
+
     }}
 
     return 0;

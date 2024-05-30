@@ -21,9 +21,7 @@ PetscErrorCode ParallelAssembleTest(){
 
     PetscCall(MatAssemblyBegin(test, MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyEnd(test, MAT_FINAL_ASSEMBLY));
-
-    PetscCall(MatView(test, PETSC_VIEWER_STDOUT_WORLD));
-
+	
     return PETSC_SUCCESS;
 }
 
@@ -115,9 +113,11 @@ inline int PrepareReducedSys(ReducedSys * redsys,
     int m, n; 
     PetscCall(MatGetOwnershipRange(redsys->Bg, &m, &n));
     PetscCall(VecCreateMPI(PETSC_COMM_WORLD, n-m, PETSC_DETERMINE, &redsys->g));
+    PetscCall(VecSetUp(redsys->g));
 
     PetscCall(MatGetOwnershipRange(redsys->B, &m, &n));
     PetscCall(VecCreateMPI(PETSC_COMM_WORLD, n-m, PETSC_DETERMINE, &redsys->source));
+    PetscCall(VecSetUp(redsys->source));
 
     return 0;
 }
@@ -374,7 +374,7 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
     // =============================================================================
 
     PrepareReducedSys(redsysStokes, reducedDOFStokes, bndryDOFStokes, 
-                      totalElem, 30, 22, 4, 4);
+                      totalElem, 30, 30, 4, 4);
     PrepareReducedSys(redsysDarcy, reducedDOFDarcy, bndryDOFDarcy, 
                       totalElem, 14, 14, 2, 2);
 

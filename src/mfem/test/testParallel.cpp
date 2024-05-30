@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <petsc.h>
 #include "integral.h"
 #include "input.h"
@@ -11,6 +12,7 @@
 #include "solve.h"
 #include "error.h"
 #include "passemble.h"
+#include "preconst.h"
 #include "psolve.h"
 #include <ctime>
 #include <chrono>
@@ -54,9 +56,50 @@ int main(int argc, char ** argv){
 
     const int stencilWidth = 2;
 
-    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidth, NULL, NULL, &dm);CHKERRQ(ierr);
-    ierr = DMSetFromOptions(dm);               CHKERRQ(ierr);
-    ierr = DMSetUp(dm);                        CHKERRQ(ierr);
+    int partition = 0;
+    PetscOptionsGetInt(NULL, NULL, "-part", &partition, NULL);
+
+    int m = 1,n = 1;
+    PetscOptionsGetInt(NULL, NULL, "-mym", &m, NULL);
+    PetscOptionsGetInt(NULL, NULL, "-myn", &n, NULL);
+
+    PetscInt *lx;
+    PetscInt *ly;
+
+    PetscMalloc1(m, &lx);
+    PetscMalloc1(n, &ly);
+
+    if (partition == 1){
+    if (m*n == 0 || m*n != size){
+        PetscPrintf(PETSC_COMM_WORLD,"Please provide valid partitions\n");
+        return 0;
+    }}
+
+    // Careate partition array
+    int mpr = M/m;
+    int npr = N/n;
+
+    for (int i=0; i<m-1; i++){
+        lx[i] = mpr;
+    }
+
+    for (int i=0; i<n-1; i++){
+        ly[i] = npr;
+    }
+
+    lx[m-1] = M - mpr*(m-1);
+    ly[n-1] = N - npr*(n-1);
+
+    if (partition == 0){
+        ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidth, NULL, NULL, &dm);CHKERRQ(ierr);
+        ierr = DMSetFromOptions(dm);               CHKERRQ(ierr);
+        ierr = DMSetUp(dm);                        CHKERRQ(ierr);
+    } else {
+        ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, m, n, 2, stencilWidth, lx, ly, &dm);CHKERRQ(ierr);
+        ierr = DMSetFromOptions(dm);               CHKERRQ(ierr);
+        ierr = DMSetUp(dm);                        CHKERRQ(ierr);
+    }
+
     ierr = DMCreateGlobalVector(dm, &fullmesh);CHKERRQ(ierr); 
 
     PhysProperty * physproperty = (PhysProperty *)malloc(sizeof(PhysProperty));
@@ -129,9 +172,35 @@ int main(int argc, char ** argv){
 
     int cell_ghost = 1;
 
-    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_PERIODIC, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, cell_ghost, NULL, NULL, &dmu);CHKERRQ(ierr);
-    ierr = DMSetFromOptions(dmu);               CHKERRQ(ierr);
-    ierr = DMSetUp(dmu);                        CHKERRQ(ierr);
+  
+    if (partition == 0){ 
+        PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
+                               DM_BOUNDARY_PERIODIC, 
+                               DM_BOUNDARY_PERIODIC, 
+                               DMDA_STENCIL_BOX, 
+                               M,N, 
+                               PETSC_DECIDE, 
+                               PETSC_DECIDE, 
+                               1, cell_ghost, NULL, NULL, &dmu));
+        PetscCall(DMSetFromOptions(dmu)); 
+        PetscCall(DMSetUp(dmu)); 
+
+    } else {
+
+        PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
+                               DM_BOUNDARY_PERIODIC, 
+                               DM_BOUNDARY_PERIODIC, 
+                               DMDA_STENCIL_BOX, 
+                               M,N, 
+                               m,n, 
+                               1, cell_ghost, lx, ly, &dmu));
+        PetscCall(DMSetFromOptions(dmu)); 
+        PetscCall(DMSetUp(dmu)); 
+
+        PetscCall(DMView(dmu, PETSC_VIEWER_STDOUT_WORLD));
+    }
+
+    // === Evenly divided physical domain
 
     Vec globalu;
     ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
@@ -252,20 +321,22 @@ int main(int argc, char ** argv){
     double tolUzawa = 10e-7;
     PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
 
-    //auto start = std::chrono::system_clock::now();
+    auto start = std::chrono::system_clock::now();
     CoupledUzawa(Result, tolUzawa, maxIter);    
-    //auto end = std::chrono::system_clock::now();
+    auto end = std::chrono::system_clock::now();
  
-    //std::chrono::duration<double> elapsed_seconds = end-start;
-    //std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
 
-    //PetscCall(PetscPrintf(PETSC_COMM_SELF, "Current rank is %d : Computation time is : %f s \n", rank, elapsed_seconds.count()));
+    PetscCall(PetscPrintf(PETSC_COMM_SELF, "Current rank is %d : Computation time is : %f s \n", rank, elapsed_seconds.count()));
 
     // Create flow velocity at cell centroid
-    double * ux = (double *)malloc(sizeof(double)*mi.MPIlocalCellSize[0]*
-                                        mi.MPIlocalCellSize[1]);
-    double * uy = (double *)malloc(sizeof(double)*mi.MPIlocalCellSize[0]*
-                                        mi.MPIlocalCellSize[1]);
+    int nelemloc = mi.MPIlocalCellSize[0]*mi.MPIlocalCellSize[1];
+    double * ux = (double *)malloc(sizeof(double)*nelemloc);
+    double * uy = (double *)malloc(sizeof(double)*nelemloc);
+
+    double * vx = (double *)malloc(sizeof(double)*nelemloc);
+    double * vy = (double *)malloc(sizeof(double)*nelemloc);
 
     Vec stokesv;
     Vec darcyv;
@@ -273,16 +344,38 @@ int main(int argc, char ** argv){
     PetscCall(VecNestGetSubVec(Result->x, 0, &stokesv));
     PetscCall(VecNestGetSubVec(Result->x, 1, &darcyv));
 
-    CGNSPrepare(&stokesv, &reducedStokes->g, refArrayStokes, 
-                mi, ux, uy, *basis_, *br);
+    Vec destStokes_sol, destStokes_g;
+    Vec destDarcy_sol, destDarcy_g;
+
+    SolScatAll(&stokesv, &reducedStokes->g, 
+               &destStokes_sol, &destStokes_g);  
+
+    SolScatAll(&darcyv, &reducedDarcy->g, 
+               &destDarcy_sol, &destDarcy_g);  
+
+    CGNSPrepareParallel(&destStokes_sol, &destStokes_g, refArrayStokes, mi,
+                        ux, uy, *br, *basis_);
+
+    CGNSPrepareParallel(&destDarcy_sol, &destDarcy_g, refArrayDarcy, mi,
+                        vx, vy, *hdiv, *basis_);
 
     // CGNS output of hdf5 file
-    char filename[] = "velocity.cgns";    	
+    char stokesfile[] = "stokes.cgns";   
     CgnsArrayOutput(dm,&fullmesh,ux,uy,mi.MPIlocalCellStart[0],
                     mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
-                    mi.MPIlocalCellSize[1],filename);
+                    mi.MPIlocalCellSize[1],stokesfile);
+
+    char darcyfile[] = "darcy.cgns";    	
+    CgnsArrayOutput(dm,&fullmesh,vx,vy,mi.MPIlocalCellStart[0],
+                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+                    mi.MPIlocalCellSize[1],darcyfile);
 
     // Finalize Petsc code
+
+    VecDestroy(&destStokes_sol);
+    VecDestroy(&destStokes_g);
+    VecDestroy(&destDarcy_sol);
+    VecDestroy(&destDarcy_g);
 
     DMDAVecRestoreArray(dmu,localu,&lu);
     DMRestoreLocalVector(dmu, &localu); 
