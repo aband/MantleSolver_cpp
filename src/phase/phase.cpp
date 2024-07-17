@@ -106,6 +106,11 @@ void evalPhase::SetPhase(){
 
             TD_ = HD_;
 
+            // Derivatives
+            phase::phi::dicedxi = 0.0;
+            phase::phi::dsaldxi = 0.0;
+            phase::phi::dbridxi = 0.0;
+
             break;
 
         case 2: // Two phase sub-solidus solid1 + solid2
@@ -117,6 +122,11 @@ void evalPhase::SetPhase(){
             TD_ = HD_/(phase::phi::ice + phase::phi::sal) * 
                   phase::hd::rho::si * phase::hd::cp::si;
 
+            // Derivatives
+            phase::phi::dsaldxi =  1.0/phase::hd::rho::si;
+            phase::phi::dicedxi = -1.0/phase::hd::rho::si;
+            phase::phi::dbridxi =  0.0;
+
             break;
 
         case 3:
@@ -126,6 +136,11 @@ void evalPhase::SetPhase(){
 
             TD_ = phase::TDe;
 
+            // Derivatives
+            phase::phi::dicedxi =  0.0;
+            phase::phi::dsaldxi =  1.0;
+            phase::phi::dbridxi =  0.0;
+
             break;
 
         case 4:
@@ -133,14 +148,24 @@ void evalPhase::SetPhase(){
                 TD_ = 1; // single phase limit of fieldion 4
                 phase::phi::bri = (HD_-1)/(phase::hd::rho::bi/phase::Ste + 
                                            phase::hd::rho::bi*phase::hd::cp::bi-1);
+
+                phase::phi::dbridxi = 0.0;
             } else {
                TD_  = phase::invHC::field4T2(CD_,phase::Ste,HD_);
                phase::phi::bri = CD_/(phase::hd::rho::bi*phase::Xe*(1-TD_));
+
+               phase::phi::dbridxi = (phase::hd::rho::bi*phase::Xe*(1-TD_) + 
+                                     CD_ * phase::hd::rho::bi*phase::Xe*
+                                     phase::invHC::dfield4T2(CD_,phase::Ste,HD_)
+                                     /pow(phase::hd::rho::bi*phase::Xe*(1-TD_),2));
             }
 
             // Volume fractions no salt
             phase::phi::ice = 1 - phase::phi::bri;
             phase::phi::sal = 0;
+
+            phase::phi::dicedxi =  0.0;
+            phase::phi::dsaldxi =  0.0;
 
             break;
 
@@ -151,6 +176,10 @@ void evalPhase::SetPhase(){
             phase::phi::ice = 0;
             phase::phi::sal = 0;
             phase::phi::bri = 1;
+
+            phase::phi::dicedxi = 0.0;
+            phase::phi::dsaldxi = 0.0;
+            phase::phi::dbridxi = 0.0;
 
             break;
 

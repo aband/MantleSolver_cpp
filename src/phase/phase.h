@@ -10,8 +10,8 @@ namespace EUTECTIC{
     // 1) Pure           solid1
     // 2) sub-solidus    solid1 + solid2
     // 3) eutectic       solid1 + solid2 + brine
-    // 4) super eutectic solid1 +           brine
-    // 5) super liquidus                    brine
+    // 4) super eutectic solid1 +          brine
+    // 5) super liquidus                   brine
 
     // Initial volume friction
     class phi{
@@ -24,6 +24,9 @@ namespace EUTECTIC{
             double bri = 0.4;
             //double hybrid2 = 0.2;
 
+            double dicedxi = 0.0;
+            double dsaldxi = 0.0;
+            double dbridxi = 0.0;
     };
 
     // Density
@@ -208,6 +211,9 @@ namespace EUTECTIC{
             double field4T2(const double& CD, const double& Ste, const double& HD)
             {return (-1*beta_(CD,HD) - pow(discHC_(CD,Ste,HD),0.5))/(2*alpha_());};
 
+            double dfield4T2(const double& CD, const double& Ste, const double& HD)
+            {return (-1*dbeta_(CD,HD) - 0.5*pow(discHC_(CD,Ste,HD),-0.5)*ddiscHC_(CD,Ste,HD))/(2*alpha_());};
+
             double disc(const double& CD, const double& Ste, const double& HD)
             {return discHC_(CD,Ste,HD);};
 
@@ -225,11 +231,18 @@ namespace EUTECTIC{
                 double alpha_() {return rho::bi*Xe_;};
                 double beta_(const double& CD, const double& HD)
                 {return (1-rho::bi*cp::bi)*CD - (1+HD)*rho::bi*Xe_;};
+                double dbeta_(const double& CD, const double& HD)
+                {return (1-rho::bi*cp::bi);};
+
                 double gamma_(const double& CD, const double& Ste, const double& HD)
                 {return rho::bi*Xe_*HD - rho::bi/Ste*CD;};
+                double dgamma_(const double& CD, const double& Ste, const double& HD)
+                {return  -1*rho::bi/Ste;};
+
                 double discHC_(const double& CD, const double& Ste, const double& HD)
                 {return pow(beta_(CD,HD),2) - 4*alpha_() * gamma_(CD,Ste,HD);};
-
+                double ddiscHC_(const double& CD, const double& Ste, const double& HD)
+                {return 2*beta_(CD,HD)*dbeta_(CD,HD) - 4*alpha_()*dgamma_(CD, Ste, HD);};
     };
 
     // Translating from matlab code to C++ code
@@ -306,6 +319,20 @@ namespace EUTECTIC{
         void EvalPhase(const double& HD, const double& CD);
         // Evaluate volume fraction according to different regimes
         void SetPhase();
+
+        double getD1s(){return hd::rho::ice;};
+        double getD2s(){return hd::rho::sal;};
+        double getD1f(){return hd::rho::ice;};
+        double getD2f(){return hd::rho::sal;};
+
+        // Get three volume fraction
+        double getPhi1(){return phase::phi::ice;};
+        double getPhi2(){return phase::phi::sal;};
+        double getPhif(){return phase::phi::bri;};
+
+        double getDPhi1(){return phase::phi::dicedxi;};
+        double getDPhi2(){return phase::phi::dsaldxi;};
+        double getDPhif(){return phase::phi::dbridxi;};
 
         void ViewPhysics();
 

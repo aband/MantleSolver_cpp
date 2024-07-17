@@ -3,6 +3,8 @@
 
 #include "util.h"
 
+// Boundary and initial physical attribute for mechanics
+
 enum bndryType {dirichlet, neumann, robin, missed};
 
 typedef struct {
@@ -26,6 +28,11 @@ typedef struct {
     double L0    ;
 
     double l;
+
+    // densities of two species
+    double rho_1;
+    double rho_2;
+
 } PhysProperty;
 
 double AssignPorosity(const vertex& point, PhysProperty * pp);

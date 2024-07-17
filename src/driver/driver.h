@@ -1,5 +1,5 @@
 #ifndef MESHUSE_H_
-#define MESHUSE_
+#define MESHUSE_H_
 
 #include "util.h" 
 #include "input.h"
