@@ -1,0 +1,105 @@
+#include "simplePhase.h"
+
+phaseState::phaseState(){
+    // A construtor initialize constant physical attributes
+
+    L_  = 4e5;  // Latent heat in melting 
+    Xe_ = 0.7;  // Eutectic composition of solid 2
+    T1_ = 1350; // Melting temperature for solid 1
+                // In Eutectic phase behavior, melting temperature 1
+                // belongs to solid 1 that has lower melting temperature
+    Te_ = 1227; // Eutectic temperature
+
+    // density
+    rho_.solid1 = 3e3;
+    rho_.solid2 = 3e3;
+    rho_.fluid  = 3e3;
+
+    // specific enthalpy
+    cp_.solid1  = 1200;
+    cp_.solid2  = 1200;
+    cp_.fluid   = 1200;
+
+    // thermal conductivity
+    kappa_.solid1 = 5.2;
+    kappa_.solid2 = 4.7;
+    kappa_.fluid  = 4.7;
+
+    // Reference physical attributes for nondimensionalization
+    DT_ = T1_ - Te_;
+    hc_ = cp_.solid1 * DT_;
+    Hc_ = hc_ * rho_.solid1;
+    Cc_ = rho_.solid1;
+
+    ste_ = cp_.solid1 * DT_ / L;
+
+    CD1_ = 0;
+    HD1_ = 0;
+    CD2s_ = 0;
+    HD2s_ = 1;
+    CD2l_ = 0;
+    HD2l_ = rho_.fluid/rho_.solid1* (1.0/ste_ + cp_.fluid/cp_.solid1);
+    CD3s_ = rho_.solid2/rho_.sold1 * Xe_ / 
+           (rho_.solid2/rho.solid1 + Xe_ * (1-rho_.solid2/rho.solid1)); 
+    HD3s_ = 0;
+    CD3l_ = rho_.fluid/rho_.solid1 * Xe_;
+    HD3l_ = rho_.fluid/rho_.solid1 / ste_;
+}
+
+int phaseState::EvalPhase(double CD, double HD){
+
+    // Evaluate current phase state with given information 
+    int state = 0; 
+
+    if (CD < DBL_EPSILON && ){
+
+
+    }
+
+
+    return state;
+}
+
+
+inline double getSysD(Phase * phase, Phi * phi){
+
+    double sysD = phi->ice * phase->kappa_ii+ 
+                  phi->sal * phase->kappa_si+ 
+                  phi->bri * phase->kappa_bi;
+
+    return sysD;
+}
+
+
+
+int SetEutecticPhase(Phase * phase){
+
+    phase->DT = phase->T1-phase->Te;
+
+    phase->rho_ice = 3e3;
+    phase->rho_sal = 3e3;
+    phase->rho_bri = 3e3;
+
+    phase->rho_bi  = phase->rho_bri/ phase->rho_ice;
+    phase->rho_si  = phase->rho_sal/ phase->rho_ice;
+
+    phase->cp_ice = 1200;
+    phase->cp_sal = 1200;
+    phase->cp_bri = 1200;
+
+    phase->cp_bi  = phase->cp_bri/ phase->cp_ice;
+    phase->cp_si  = phase->cp_sal/ phase->cp_ice;
+
+    phase->Ste = phase->cp_ice*phase->DT/phase->L; 
+
+    // Constant thermal conductivity right now
+    phase->kappa_ice = 5.2;
+    phase->kappa_sal = 4.7;
+    phase->kappa_bri = 4.7;
+
+    phase->kappa_ii = phase->kappa_ice/phase->kappa_ice;
+    phase->kappa_si = phase->kappa_sal/phase->kappa_ice;
+    phase->kappa_bi = phase->kappa_bri/phase->kappa_ice;
+
+    return 0;
+}
