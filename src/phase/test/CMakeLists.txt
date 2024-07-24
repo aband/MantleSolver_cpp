@@ -47,6 +47,7 @@ endif (FORTRAN_COMPILER)
 
 project(testphase)
 add_executable(testphase testphase.cpp ../phase.cpp)
+add_executable(plotphase plotphase.cpp ../eutectic.cpp)
 
 include_directories(../../../include ../../../src/phase)
 
@@ -54,4 +55,5 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
 target_link_libraries(testphase PkgConfig::PETSC PkgConfig::LAPACKE)
+target_link_libraries(plotphase PkgConfig::PETSC PkgConfig::LAPACKE)
 
