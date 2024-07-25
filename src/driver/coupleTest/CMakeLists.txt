@@ -39,7 +39,7 @@ find_package(MPI REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
 pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
-pkg_search_module(CGNS REQUIRED IMPORTED_TARGET cgns)
+#pkg_search_module(CGNS REQUIRED IMPORTED_TARGET cgns)
 
 # Build library
 # Create a library from the files in general folder
@@ -62,7 +62,7 @@ target_link_libraries(general_lib
 add_library(io_lib
         ${SRC}/io/input.cpp
         ${SRC}/io/output.c
-		  ${SRC}/io/cgns_io.c
+		  #${SRC}/io/cgns_io.c
 )
 
 target_include_directories(io_lib
@@ -75,7 +75,7 @@ target_link_libraries(io_lib
     PkgConfig::PETSC
     PkgConfig::HDF5
 	 #    ${CGNS}/libcgns.a
-	 PkgConfig::CGNS
+#	 PkgConfig::CGNS
 )
 
 #Create a library from files in mfem file
@@ -97,8 +97,8 @@ add_library(mfem_lib
 target_include_directories(mfem_lib
 		  PUBLIC ${SRC}/mfem
 		  PUBLIC ${SRC}/mfem/parallel
-		  PUBLIC /workspace/CGNS/src
-		  PUBLIC /workspace/CGNS/build/src
+#		  PUBLIC /workspace/CGNS/src
+#		  PUBLIC /workspace/CGNS/build/src
 )
 
 target_link_libraries(mfem_lib
@@ -107,7 +107,7 @@ target_link_libraries(mfem_lib
 
 #Create a library from phase folder
 add_library(phase_lib
-		  ${SRC}/phase/phase.cpp
+		  ${SRC}/phase/eutectic.cpp
 )
 
 target_include_directories(phase_lib
@@ -116,14 +116,21 @@ target_include_directories(phase_lib
 		  )
 
 #Create a library from driver folder
-add_library(driver_lib
-        ${SRC}/driver/phaseCal.cpp
-)
+#add_library(driver_lib
+#        #${SRC}/driver/phaseCal.cpp
+#		  ${SRC}/driver/driver.cpp
+#)
 
-target_include_directories(driver_lib
-		  PUBLIC ${SRC}/driver
-		  PUBLIC ${SRC}/phase
-        )
+#target_include_directories(driver_lib
+#		  PUBLIC ${SRC}/driver
+#		  PUBLIC ${SRC}/phase
+#        )
+#
+#target_link_libraries(driver_lib
+#general_lib
+#io_lib
+#)
+#
 
 # Generate an excutable file
 add_executable(test
@@ -135,7 +142,7 @@ target_link_libraries(test
 		  io_lib
 		  phase_lib
 		  mfem_lib
-		  driver_lib
+#		  driver_lib
 		  PkgConfig::LAPACKE
-        PkgConfig::CGNS
+#        PkgConfig::CGNS
 )

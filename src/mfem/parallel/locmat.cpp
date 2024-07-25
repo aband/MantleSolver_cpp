@@ -101,14 +101,14 @@ int AssignLocMat(const MeshInfo& mi,
 }
 
 int AssignLocMat(const MeshInfo& mi,
-                    Hdivmixed& hdiv_,
-                    basis& basis_,
-                    LocMat * loc,
-                    PhysProperty * pp,
-                    const valarray<double>& gwe,
-                    const valarray<double>& gpe,
-                    const valarray<double>& gwf,
-                    const vector<vertex>& gpf){
+                 Hdivmixed& hdiv_,
+                 basis& basis_,
+                 LocMat * loc,
+                 PhysProperty * pp,
+                 const valarray<double>& gwe,
+                 const valarray<double>& gpe,
+                 const valarray<double>& gwf,
+                 const vector<vertex>& gpf){
 
     // Cell average fluid porosity
     double phi_f_hat = pp->phi_f_hat;

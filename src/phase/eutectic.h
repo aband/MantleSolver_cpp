@@ -45,6 +45,9 @@ class phaseState{
                       const double& CD,
                       const double& HD);
 
+        int EvalPhase(const double& CD, const double& HD) 
+        {return EvalPhase(EvalPhaseRegion(CD, HD), CD, HD);};
+
     private:
 
         // Constants

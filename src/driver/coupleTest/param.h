@@ -2,13 +2,15 @@
 #define PARAM_H_
 
 #include "util.h"
+#include "eutectic.h"
+#include "myFunc.h"
+
+using namespace EUTECTIC;
 
 // Initial distribution of c_bar and h_bar
-double NDcompbar(const vertex& point, 
-                 const double& phi_f,
-                 const double& c_bar,
-                 PhysProperty * pp);
+double ComputePorosity(const vertex& point, PhysProperty * pp, phaseState * pPtr);
 
-double NDhbar(const vertex& point);
+int PorosityOut(double xstart, double ystart, double L, double H, int seed, 
+                PhysProperty * pp);
 
 #endif

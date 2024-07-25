@@ -54,48 +54,55 @@ double AssignPorosity(double phi_f){
 
 // ================================================================================
 
-double InitComposition(const double& x,
-                       const double& y){
-    // Assign initial disribution of mass composition
+inline double InitCD(const vertex& point, PhysProperty * pp){
 
-    double comp = 0.0;
+    if (abs(point[1]) < 120*1000/pp->l0 && abs(point[0]) < abs(point[1]) + pp->l){
 
-    PetscRandom   rn;
-    time_t        second;
-    time(&second);
-
-    PetscCall(PetscRandomCreate(PETSC_COMM_WORLD, &rn));
-
-    return comp;
-}
-
-double NDcompbar(const vertex& point, 
-                 const double& phi_f, 
-                 const double& c_bar,
-                 PhysProperty * pp){
-    // Return a non dimensionless mass composition
-    // Calculate mass composition with c_bar
-
-    double cbar1 = pp->rho_1;
-    double cbar2 = pp->rho_2;
-
-    double ndcbar = 0.0;
-    // Distinguish between melting and no melting situation
-    if (phi_f < 10e-12){
-        // no melting situation
-        ndcbar = 0;
+        return 0.4;
     } else {
-        // partial melting situation
-        ndcbar = 0.0;
+        return 0.2;
     }
 
-    return ndcbar;
 }
 
-double NDhbar(const vertex& point){
+inline double InitHD(const vertex& point, PhysProperty * pp){
 
-    double ndhbar = 0.0; 
+    if (abs(point[1]) < 120*1000/pp->l0 && abs(point[0]) < abs(point[1]) + pp->l){
 
-    return ndhbar;
-};
+        // Above Eutectic
+        return 1.0;
+    } else {
+        // Below eutectic
+        return -0.05;
+    }
 
+}
+
+double ComputePorosity(const vertex& point, PhysProperty * pp, phaseState * pPtr){
+
+    pPtr->EvalPhaseRegion(InitCD(point,pp), InitHD(point,pp));
+
+    return pPtr->phi.fluid;
+}
+
+int PorosityOut(double xstart, double ystart, double L, double H, int seed,
+                PhysProperty * pp){
+
+    FILE * fp = fopen("InitPoro.dat","w");
+
+    double hx = L/(double)seed;
+    double hy = H/(double)seed;
+
+    phaseState * pPtr = new phaseState();
+
+    for (int j=0; j<seed; j++){
+    for (int i=0; i<seed; i++){
+        vertex point {xstart + hx*i , ystart + hy*j}; 
+        fprintf(fp, "%f ", ComputePorosity(point,pp,pPtr));
+    }fprintf(fp, "\n");}
+
+    fclose(fp);
+
+    return 1;
+
+}

@@ -260,7 +260,9 @@ int main(int argc, char ** argv){
     CreateRefMap(*br, refArrayStokes, mi, &bndryDOFStokes);
     CreateRefMap(*hdiv, refArrayDarcy, mi, &bndryDOFDarcy);
 
-    ParallelMatrixAssemble(mi, *basis_, physproperty, bndryStokesEssen, reducedStokes, bndryDarcyEssen, reducedDarcy, &K, *br, *hdiv , refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
+    ParallelMatrixAssemble(mi, *basis_, physproperty, bndryStokesEssen, reducedStokes, 
+                                                      bndryDarcyEssen,  reducedDarcy, 
+                           &K, *br, *hdiv , refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
 
     int nelem = M*N;
     CreateLinearSys(reducedStokes, nelem);

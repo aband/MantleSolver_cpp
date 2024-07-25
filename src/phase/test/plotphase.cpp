@@ -11,6 +11,8 @@ int main(int argc, char **argv){
 
     int state = pPtr->EvalPhaseRegion(0.5,2);
 
+    // Write phase diagram out to file 
+    
 
     return 0;
 }

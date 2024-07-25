@@ -178,6 +178,6 @@ int phaseState::EvalPhase(const int& state,
             std::cout << "This is not a valid phase region T_T ." << std::endl;
 
     }
-
+    return 1;
 } 
 

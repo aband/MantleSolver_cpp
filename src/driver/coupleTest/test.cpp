@@ -2,10 +2,10 @@
 #include <iostream>
 #include "integral.h"
 #include "phase.h"
-#include "phaseCal.h"
+#include "param.h"
 
 // MFEM parameter header file
-#include "myFunc.h"
+//#include "myFunc.h"
 
 extern "C"{
 #include "mesh.h"
@@ -28,9 +28,15 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
+    PhysProperty * pp = (PhysProperty *)malloc(sizeof(PhysProperty));
+
+    AssignPhyProperties(pp);
+
     // Physical domain
-    double L = 2.0, H = 2.0;
-    double xstart = -1.0, ystart = -1.0;
+    double physscale = pp->L0/pp->l0;
+    double L = 2*physscale, H = 1*physscale;
+    double xstart = -1*physscale, ystart = -1.0001*physscale;
+
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
@@ -105,43 +111,15 @@ int main(int argc, char **argv){
     PetscCall(PetscPrintf(PETSC_COMM_WORLD, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n"));
     // ==========================================================================
 
-    double samplehd = 0.1;
-    double initCD   = 0.2;
+    // Create initial (C,H) distribution pair
+    // Calculate volume fraction of fluid (porosity)
+    PorosityOut(xstart, ystart, L, H, 20, pp);      
 
-    EUTECTIC::evalPhase* pPtr = new EUTECTIC::evalPhase(samplehd,initCD);  
 
-    pPtr->ViewPhase();
+    // Solve for velocity
 
-    PhysProperty * physproperty = (PhysProperty *)malloc(sizeof(PhysProperty));
+    // Transport
 
-    AssignPhyProperties(physproperty);    
-
-    double newCD = ComputePhase(initCD,samplehd,1000,pPtr);
-
-    pPtr->EvalPhase(newCD,samplehd);
-
-    pPtr->ViewPhase();
-
-    // ==========================================================================
-
-    cout << "==============================================" << endl;
-
-    samplehd = 1000;
-    initCD   = 0.2;
-
-    EUTECTIC::evalPhase* pPtr1 = new EUTECTIC::evalPhase(samplehd,initCD);  
-
-    pPtr1->ViewPhase();
-
-    newCD = ComputePhase(initCD,samplehd,1000,pPtr);
-
-    pPtr1->ViewPhysics();
-
-    cout << newCD << endl;
-
-    pPtr1->EvalPhase(newCD,samplehd);
-
-    pPtr1->ViewPhase();
 
     // Finialize the program ====================================================
     PetscCall(VecDestroy(&globalmesh));
