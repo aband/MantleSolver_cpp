@@ -23,12 +23,28 @@ int CellAvePorosity(const MeshInfo& mi,
                     const valarray<double>& gwf,
                     const vector<vertex>& gpf);
 
+int CellAvePorosity(const MeshInfo& mi, 
+                    Phase * phase,
+                    basis& basis_,
+                    const valarray<double>& gwf,
+                    const vector<vertex>& gpf);
+
 // Stokes
 int AssignLocMat(const MeshInfo& mi,
                  BRMixed& br_,
                  basis& basis_,
                  LocMat * loc,
                  PhysProperty * pp,
+                 const valarray<double>& gwe, 
+                 const valarray<double>& gpe,
+                 const valarray<double>& gwf,
+                 const vector<vertex>& gpf);
+
+int AssignLocMat(const MeshInfo& mi,
+                 BRMixed& br_,
+                 basis& basis_,
+                 LocMat * loc,
+                 Phase * phase,
                  const valarray<double>& gwe, 
                  const valarray<double>& gpe,
                  const valarray<double>& gwf,
@@ -45,12 +61,31 @@ int AssignLocMat(const MeshInfo& mi,
                  const valarray<double>& gwf,
                  const vector<vertex>& gpf);
 
+int AssignLocMat(const MeshInfo& mi,
+                 Hdivmixed& hdiv_,
+                 basis& basis_,
+                 LocMat * loc,
+                 Phase * phase,
+                 const valarray<double>& gwe, 
+                 const valarray<double>& gpe,
+                 const valarray<double>& gwf,
+                 const vector<vertex>& gpf);
+
 // Coupling term
 int AssignLocMat(const MeshInfo& mi,
                  BRMixed& br_,
                  Hdivmixed& hdiv_,
                  basis& basis_,
                  PhysProperty * pp,
+                 double * k,
+                 const valarray<double>& gwf,
+                 const vector<vertex>& gpf);
+
+int AssignLocMat(const MeshInfo& mi,
+                 BRMixed& br_,
+                 Hdivmixed& hdiv_,
+                 basis& basis_,
+                 Phase * phase,
                  double * k,
                  const valarray<double>& gwf,
                  const vector<vertex>& gpf);

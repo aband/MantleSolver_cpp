@@ -5,7 +5,7 @@
 #include "param.h"
 
 // MFEM parameter header file
-//#include "myFunc.h"
+#include "myFunc.h"
 
 extern "C"{
 #include "mesh.h"
@@ -28,12 +28,18 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
-    PhysProperty * pp = (PhysProperty *)malloc(sizeof(PhysProperty));
+    // Create phase class containing constant physic attributes and 
+    // phase behavior package.
+    Phase * phase = new Phase();
 
-    AssignPhyProperties(pp);
+    phase->pp = (PhysProperty *)malloc(sizeof(PhysProperty));
+
+    AssignPhyProperties(phase->pp);
+
+    phase->pPtr = new phaseState();
 
     // Physical domain
-    double physscale = pp->L0/pp->l0;
+    double physscale = phase->pp->L0/phase->pp->l0;
     double L = 2*physscale, H = 1*physscale;
     double xstart = -1*physscale, ystart = -1.0001*physscale;
 
@@ -113,10 +119,10 @@ int main(int argc, char **argv){
 
     // Create initial (C,H) distribution pair
     // Calculate volume fraction of fluid (porosity)
-    PorosityOut(xstart, ystart, L, H, 20, pp);      
-
+    PorosityOut(xstart, ystart, L, H, 20, phase);      
 
     // Solve for velocity
+    
 
     // Transport
 

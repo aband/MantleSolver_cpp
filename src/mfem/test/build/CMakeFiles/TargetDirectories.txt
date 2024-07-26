@@ -1,0 +1,12 @@
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/rebuild_cache.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/edit_cache.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/testDMstag.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/testBasis.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/testCoupled.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/scatter.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/testParallel.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/io_lib.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/testSeparate.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/phase_lib.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/mfem_lib.dir
+/workspace/MantleSolver_cpp/src/mfem/test/build/CMakeFiles/general_lib.dir

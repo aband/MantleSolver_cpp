@@ -57,7 +57,7 @@ int AssignLocMat(const MeshInfo& mi,
 
         // Calculate point wise porosity ===================================
         phi_f = AssignPorosity(mapped, pp);  // Fluid porosity
-        phi_s = AssignPorosity(phi_f);                 // Solid porosity
+        phi_s = AssignPorosity(phi_f);       // Solid porosity
 
         std::array<std::array<double,4>, 12> brwork = 
                            br_.ComputeGradBRmixed(basis_, mapped);

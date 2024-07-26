@@ -2,6 +2,7 @@
 #define MYFUNC_H_
 
 #include "util.h"
+#include "eutectic.h"
 
 // Boundary and initial physical attribute for mechanics
 
@@ -35,9 +36,25 @@ typedef struct {
 
 } PhysProperty;
 
+// Extension class using phase package ==========================
+
+class Phase {
+    public:
+        Phase() {};
+        ~Phase();
+
+        PhysProperty * pp;
+        EUTECTIC::phaseState * pPtr;
+
+};
+
+// ==============================================================
+
 double AssignPorosity(const vertex& point, PhysProperty * pp);
 
 double AssignPorosity(double phi_f);
+
+double AssignPorosity(const vertex& point, Phase * phase);
 
 void AssignPhyProperties(PhysProperty * pp);
 // ===================================================
@@ -53,16 +70,26 @@ const vertex Dirichlet_val(const vertex& point);
 // Return source term for darcy system as sum of velocity and pressure gradient  
 const vertex darcyForce(const vertex& point, PhysProperty * pp);
 
+const vertex darcyForce(const vertex& point, Phase * phase);
+
 // Return source term for stokes system as sum of true solutions 
 const vertex stokesForce(const vertex& point, PhysProperty * pp);
+
+const vertex stokesForce(const vertex& point, Phase * phase);
 
 // Return traction defined on the boundary
 const vertex traction(const vertex& point, PhysProperty * pp);
 
+const vertex traction(const vertex& point, Phase * phase);
+
 // Boundary Condition
 vertex bndryVs(const vertex& point, PhysProperty * pp);
 
+vertex bndryVs(const vertex& point, Phase * phase);
+
 vertex bndryu(const vertex& point, PhysProperty * pp);
+
+vertex bndryu(const vertex& point, Phase * phase);
 
 const bndryType bndryTypeMarker(const MeshInfo& mi, 
                                 const indice& global,
@@ -70,4 +97,5 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 
 const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global);
+
 #endif

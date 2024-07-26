@@ -102,6 +102,7 @@ target_include_directories(mfem_lib
 )
 
 target_link_libraries(mfem_lib
+    phase_lib
     general_lib
 )
 

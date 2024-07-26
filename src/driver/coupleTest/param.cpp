@@ -78,27 +78,31 @@ inline double InitHD(const vertex& point, PhysProperty * pp){
 
 }
 
-double ComputePorosity(const vertex& point, PhysProperty * pp, phaseState * pPtr){
+double ComputePorosity(const vertex& point, Phase * phase){
 
-    pPtr->EvalPhaseRegion(InitCD(point,pp), InitHD(point,pp));
+    double CD = InitCD(point, phase->pp);
+    double HD = InitHD(point, phase->pp);
 
-    return pPtr->phi.fluid;
+    int state = phase->pPtr->EvalPhaseRegion(CD,HD);
+    phase->pPtr->EvalPhase(state, CD, HD);
+
+    return phase->pPtr->phi.fluid;
 }
 
 int PorosityOut(double xstart, double ystart, double L, double H, int seed,
-                PhysProperty * pp){
+                Phase * phase){
 
     FILE * fp = fopen("InitPoro.dat","w");
 
     double hx = L/(double)seed;
     double hy = H/(double)seed;
 
-    phaseState * pPtr = new phaseState();
+    //phaseState * pPtr = new phaseState();
 
     for (int j=0; j<seed; j++){
     for (int i=0; i<seed; i++){
         vertex point {xstart + hx*i , ystart + hy*j}; 
-        fprintf(fp, "%f ", ComputePorosity(point,pp,pPtr));
+        fprintf(fp, "%f ", ComputePorosity(point,phase));
     }fprintf(fp, "\n");}
 
     fclose(fp);

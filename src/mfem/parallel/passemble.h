@@ -61,4 +61,19 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
                                       const int& bndryDOFStokes,
                                       const int& bndryDOFDarcy);
 
+PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
+                                      basis& basis_,
+                                      Phase * phase,
+                                      const bndryVal& bndryEssenStokes,
+                                      ReducedSys * redsysStokes,
+                                      const bndryVal& bndryEssenDarcy,
+                                      ReducedSys * redsysDarcy,
+                                      Mat * K,
+                                      BRMixed& br_,
+                                      Hdivmixed& hdiv_,
+                                      int * refArrayStokes,
+                                      int * refArrayDarcy,
+                                      const int& bndryDOFStokes,
+                                      const int& bndryDOFDarcy);
+
 #endif

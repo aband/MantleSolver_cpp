@@ -20,7 +20,7 @@
 extern "C"{
 #include "mesh.h"
 #include "output.h"
-#include "cgns_io.h"
+//#include "cgns_io.h"
 }
 
 using namespace std;
@@ -363,14 +363,14 @@ int main(int argc, char ** argv){
 
     // CGNS output of hdf5 file
     char stokesfile[] = "stokes.cgns";   
-    CgnsArrayOutput(dm,&fullmesh,ux,uy,mi.MPIlocalCellStart[0],
-                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
-                    mi.MPIlocalCellSize[1],stokesfile);
+    //CgnsArrayOutput(dm,&fullmesh,ux,uy,mi.MPIlocalCellStart[0],
+    //                mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+    //                mi.MPIlocalCellSize[1],stokesfile);
 
     char darcyfile[] = "darcy.cgns";    	
-    CgnsArrayOutput(dm,&fullmesh,vx,vy,mi.MPIlocalCellStart[0],
-                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
-                    mi.MPIlocalCellSize[1],darcyfile);
+    //CgnsArrayOutput(dm,&fullmesh,vx,vy,mi.MPIlocalCellStart[0],
+    //                mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+    //                mi.MPIlocalCellSize[1],darcyfile);
 
     // Finalize Petsc code
 
