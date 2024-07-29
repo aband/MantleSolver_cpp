@@ -121,8 +121,8 @@ int main(int argc, char **argv){
     // Calculate volume fraction of fluid (porosity)
     PorosityOut(xstart, ystart, L, H, 20, phase);      
 
-    // Solve for velocity
-    
+    // Solve for velocity with finite element solver
+    vector<valarray<double>>
 
     // Transport
 
