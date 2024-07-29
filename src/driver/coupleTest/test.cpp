@@ -122,7 +122,10 @@ int main(int argc, char **argv){
     PorosityOut(xstart, ystart, L, H, 20, phase);      
 
     // Solve for velocity with finite element solver
-    vector<valarray<double>>
+    vector<valarray<double>> mesh;
+    ReadMeshPortion(dm, &fullmesh, mesh);
+
+
 
     // Transport
 
