@@ -89,7 +89,9 @@ add_library(mfem_lib
         ${SRC}/mfem/error.cpp
 		  ${SRC}/mfem/shape.tpp
 		  ${SRC}/mfem/parallel/passemble.cpp
+        ${SRC}/mfem/parallel/passembleVarPoro.cpp
 		  ${SRC}/mfem/parallel/locmat.cpp
+		  ${SRC}/mfem/parallel/locmatVarPoro.cpp
 		  ${SRC}/mfem/parallel/psolve.cpp
 		  ${SRC}/mfem/parallel/preconst.cpp
 )

@@ -3,6 +3,11 @@
 #include "integral.h"
 #include "phase.h"
 #include "param.h"
+#include "input.h"
+#include "passemble.h"
+#include "Hdivmixed.h"
+#include "brmixed.h"
+
 
 // MFEM parameter header file
 #include "myFunc.h"
@@ -123,7 +128,62 @@ int main(int argc, char **argv){
 
     // Solve for velocity with finite element solver
     vector<valarray<double>> mesh;
-    ReadMeshPortion(dm, &fullmesh, mesh);
+    ReadMeshPortion(dmMesh, &globalmesh, mesh);
+
+    Vec globalu;
+    ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
+
+    Vec localu; 
+    DMGetLocalVector(dmu, &localu);
+
+    DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, localu);
+    DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, localu);
+
+    // It can be changed later to not be double
+    double ** lu;
+    DMDAVecGetArray(dmu, localu, &lu);
+
+    MeshInfo mi;
+    mi.lmesh     = mesh;
+    mi.localVals = lu;
+
+    AssignValuesMeshInfo(mi, dmMesh, dmu);
+
+    // Get shape functions;
+    basis * basis_   = new basis();
+    Hdivmixed * hdiv = new Hdivmixed();
+    BRMixed * br     = new BRMixed();
+
+    br->ComputeTotalDOF(mi);
+    hdiv->ComputeTotalDOF(mi);
+
+    // Mark boundary values
+    bndryVal bndryStokesEssen;
+    bndryVal bndryStokesNatur;
+    bndryVal bndryDarcyEssen;
+    bndryVal bndryDarcyNatur;
+
+    MarkBndryDOFStokes(bndryStokesEssen, bndryStokesNatur, mi, *basis_, *br, phase->pp);
+    MarkBndryDOFDarcy(bndryDarcyEssen, bndryDarcyNatur, mi, *basis_, *hdiv, phase->pp);
+
+    // Create linear system
+    ReducedSys * reducedDarcy = (ReducedSys *)malloc(sizeof(ReducedSys));
+    ReducedSys * reducedStokes = (ReducedSys *)malloc(sizeof(ReducedSys));
+
+    Mat K;
+
+    int bndryDOFStokes = 0.0;
+    int bndryDOFDarcy  = 0.0;
+
+    int * refArrayStokes = new int[br->getDOF()];
+    int * refArrayDarcy  = new int[hdiv->getDOF()];
+
+    CreateRefMap(*br, refArrayStokes, mi, &bndryDOFStokes);
+    CreateRefMap(*hdiv, refArrayDarcy, mi, &bndryDOFDarcy);
+
+    ParallelMatrixAssemble(mi, *basis_, phase, bndryStokesEssen, reducedStokes, 
+                                               bndryDarcyEssen,  reducedDarcy, 
+                           &K, *br, *hdiv , refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
 
 
 
@@ -131,7 +191,12 @@ int main(int argc, char **argv){
 
 
     // Finialize the program ====================================================
+
+    DMDAVecRestoreArray(dmu,localu,&lu);
+    DMRestoreLocalVector(dmu, &localu); 
+
     PetscCall(VecDestroy(&globalmesh));
+    PetscCall(VecDestroy(&globalu));
     PetscCall(DMDestroy(&dmMesh));
     PetscCall(DMDestroy(&dmu));
 
