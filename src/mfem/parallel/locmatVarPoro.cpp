@@ -199,7 +199,7 @@ int AssignLocMat(const MeshInfo& mi,
 
     *k = 0.0;
 
-    double phi_f_hat = pp->phi_f_hat;
+    double phi_f_hat = phase->pp->phi_f_hat;
     double phi_f = 0.0;
     double phi_s = 0.0;
 

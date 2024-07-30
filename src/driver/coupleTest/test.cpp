@@ -4,13 +4,16 @@
 #include "phase.h"
 #include "param.h"
 #include "input.h"
-#include "passemble.h"
-#include "Hdivmixed.h"
-#include "brmixed.h"
-
+#include "util.h"
 
 // MFEM parameter header file
 #include "myFunc.h"
+#include "passemble.h"
+#include "Hdivmixed.h"
+#include "brmixed.h"
+#include "bndry.h"
+#include "preconst.h"
+#include "psolve.h"
 
 extern "C"{
 #include "mesh.h"
