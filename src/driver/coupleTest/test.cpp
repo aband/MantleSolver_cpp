@@ -207,9 +207,22 @@ int main(int argc, char **argv){
     auto start = std::chrono::system_clock::now();
     CoupledUzawa(Result, tolUzawa, maxIter);    
     auto end = std::chrono::system_clock::now();
- 
 
-    // Transport
+    // Sequential visual output
+
+    Vec stokesv;
+    Vec darcyv;
+
+    PetscCall(VecNestGetSubVec(Result->x, 0, &stokesv));
+    PetscCall(VecNestGetSubVec(Result->x, 1, &darcyv));
+
+    std::vector<double> fullsolStokes = GetFullSol(&stokesv, bndryStokesEssen, br->getDOF());
+    std::vector<double> fullsolDarcy  = GetFullSol(&darcyv, bndryDarcyEssen, hdiv->getDOF());
+
+    // Stokes quiver output
+    quiverOutput(mi, fullsolStokes, fullsolDarcy, M, N, *basis_, *br, *hdiv, phase->pp);
+
+    // Transport ================================================================
 
 
     // Finialize the program ====================================================
