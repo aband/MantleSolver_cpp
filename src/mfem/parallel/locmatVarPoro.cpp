@@ -1,4 +1,5 @@
 #include "locmat.h"
+#include "../../driver/coupleTest/param.h"
 
 int CellAvePorosity(const MeshInfo& mi, 
                     Phase * phase,
@@ -13,7 +14,7 @@ int CellAvePorosity(const MeshInfo& mi,
         vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
-        phi_f_hat += gw * jac * AssignPorosity(mapped,phase);
+        phi_f_hat += gw * jac * ComputePorosity(mapped,phase);
         area += gw * jac; 
     }
 
@@ -56,7 +57,7 @@ int AssignLocMat(const MeshInfo& mi,
         double gw = gwf[g];
 
         // Calculate point wise porosity ===================================
-        phi_f = AssignPorosity(mapped, phase);  // Fluid porosity
+        phi_f = ComputePorosity(mapped, phase);  // Fluid porosity
         phi_s = AssignPorosity(phi_f);       // Solid porosity
 
         std::array<std::array<double,4>, 12> brwork = 
@@ -64,7 +65,7 @@ int AssignLocMat(const MeshInfo& mi,
 
         std::array<vertex, 12> brval = br_.ComputeBRmixed(basis_, mapped);
 
-        vertex stokesforce = stokesForce(mapped,phase); 
+        vertex stokesforce = stokesForce(mapped,phase->pp); 
 
         for (unsigned int j=0; j<12; j++){
                 double div1 = brwork[j][0] + brwork[j][3];
@@ -132,12 +133,12 @@ int AssignLocMat(const MeshInfo& mi,
         double gw = gwf[g];
 
         // Calculate point wise porosity ===================================
-        phi_f = AssignPorosity(mapped, phase);  // Fluid porosity
+        phi_f = ComputePorosity(mapped, phase);  // Fluid porosity
         phi_s = AssignPorosity(phi_f);
 
         std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
 
-        vertex darcyforce = darcyForce(mapped,phase);
+        vertex darcyforce = darcyForce(mapped,phase->pp);
 
         for (unsigned int j=0; j<8; j++){
             for (unsigned int i=0; i<8; i++){
@@ -174,7 +175,7 @@ int AssignLocMat(const MeshInfo& mi,
             std::array<vertex, 8>  hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
             // Zeroth order constant pressure basis is always 1
             vertex nu = basis_.unitnormal(e);
-            double phi_f_e = AssignPorosity(mapped, phase);
+            double phi_f_e = ComputePorosity(mapped, phase);
             for (int j=0; j<8; j++){
                 // With dimension version
                 loc->B[j] += len/2.0*gwe[g]*
@@ -210,7 +211,7 @@ int AssignLocMat(const MeshInfo& mi,
         double gw = gwf[g];
 
         // Calculate point wise porosity ===================================
-        phi_f = AssignPorosity(mapped, phase);  // Fluid porosity
+        phi_f = ComputePorosity(mapped, phase);  // Fluid porosity
         phi_s = AssignPorosity(phi_f);
 
         *k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * br_.Pressure() * 

@@ -1,5 +1,7 @@
 #include <petsc.h>
 #include <iostream>
+#include <ctime>
+#include <chrono>
 #include "integral.h"
 #include "phase.h"
 #include "param.h"
@@ -188,7 +190,24 @@ int main(int argc, char **argv){
                                                bndryDarcyEssen,  reducedDarcy, 
                            &K, *br, *hdiv , refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
 
+    int nelem = M*N;
+    CreateLinearSys(reducedStokes, nelem);
+    CreateLinearSys(reducedDarcy , nelem); 
 
+    ReducedSys * Result = (ReducedSys *)malloc(sizeof(ReducedSys));
+
+    CreateCoupledSystem(reducedStokes, reducedDarcy, Result, &K);
+
+    // Solve with Uzawa solver
+    int maxIter = 1;
+    PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL);
+    double tolUzawa = 10e-7;
+    PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
+
+    auto start = std::chrono::system_clock::now();
+    CoupledUzawa(Result, tolUzawa, maxIter);    
+    auto end = std::chrono::system_clock::now();
+ 
 
     // Transport
 

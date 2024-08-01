@@ -139,6 +139,7 @@ target_include_directories(phase_lib
 add_executable(test
 		  param.cpp
         test.cpp
+		  flow.cpp
 )
 
 target_link_libraries(test
