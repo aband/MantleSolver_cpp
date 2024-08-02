@@ -1,13 +1,16 @@
 #include "myFunc.h"
 #include "param.h"
+#include <random>
 #include <petsc.h>
 
 // ================================================================================
 inline double InitCD(const vertex& point, PhysProperty * pp){
 
+
     if (abs(point[1]) < 120*1000/pp->l0 && abs(point[0]) < abs(point[1]) + pp->l){
 
-        return 0.4;
+        return point[1]*point[1] *0.08 + 0.4;
+
     } else {
         return 0.2;
     }

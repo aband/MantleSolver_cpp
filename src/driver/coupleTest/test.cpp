@@ -20,6 +20,7 @@
 extern "C"{
 #include "mesh.h"
 #include "output.h"
+#include "cgns_io.h"
 }
 
 int main(int argc, char **argv){
@@ -209,23 +210,58 @@ int main(int argc, char **argv){
     auto end = std::chrono::system_clock::now();
 
     // Sequential visual output
+    int nelemloc = mi.MPIlocalCellSize[0]*mi.MPIlocalCellSize[1];
+    double * ux = (double *)malloc(sizeof(double)*nelemloc);
+    double * uy = (double *)malloc(sizeof(double)*nelemloc);
 
+    double * vx = (double *)malloc(sizeof(double)*nelemloc);
+    double * vy = (double *)malloc(sizeof(double)*nelemloc);
+ 
     Vec stokesv;
     Vec darcyv;
 
     PetscCall(VecNestGetSubVec(Result->x, 0, &stokesv));
     PetscCall(VecNestGetSubVec(Result->x, 1, &darcyv));
 
-    std::vector<double> fullsolStokes = GetFullSol(&stokesv, bndryStokesEssen, br->getDOF());
-    std::vector<double> fullsolDarcy  = GetFullSol(&darcyv, bndryDarcyEssen, hdiv->getDOF());
+    Vec destStokes_sol, destStokes_g;
+    Vec destDarcy_sol, destDarcy_g;
 
-    // Stokes quiver output
-    quiverOutput(mi, fullsolStokes, fullsolDarcy, M, N, *basis_, *br, *hdiv, phase->pp);
+    SolScatAll(&stokesv, &reducedStokes->g, 
+               &destStokes_sol, &destStokes_g);  
+
+    SolScatAll(&darcyv, &reducedDarcy->g, 
+               &destDarcy_sol, &destDarcy_g);  
+
+    CGNSPrepareParallel(&destStokes_sol, &destStokes_g, refArrayStokes, mi,
+                        ux, uy, *br, *basis_);
+
+    CGNSPrepareParallel(&destDarcy_sol, &destDarcy_g, refArrayDarcy, mi,
+                        vx, vy, *hdiv, *basis_);
+
+    // CGNS output of hdf5 file
+    char stokesfile[] = "stokes.cgns";   
+    CgnsArrayOutput(dmMesh,&globalmesh,ux,uy,mi.MPIlocalCellStart[0],
+                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+                    mi.MPIlocalCellSize[1],stokesfile);
+
+    char darcyfile[] = "darcy.cgns";    	
+    CgnsArrayOutput(dmMesh,&globalmesh,vx,vy,mi.MPIlocalCellStart[0],
+                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+                    mi.MPIlocalCellSize[1],darcyfile);
 
     // Transport ================================================================
 
 
     // Finialize the program ====================================================
+
+    // Clear flow vectors
+    VecDestroy(&destStokes_sol);
+    VecDestroy(&destStokes_g);
+    VecDestroy(&destDarcy_sol);
+    VecDestroy(&destDarcy_g);
+
+    free(refArrayStokes);
+    free(refArrayDarcy);
 
     DMDAVecRestoreArray(dmu,localu,&lu);
     DMRestoreLocalVector(dmu, &localu); 
