@@ -376,7 +376,12 @@ void UpdateNonLinearWgtsCell_(const MeshInfo& mi,
     double sum = 0.0;
 
     for (auto const& level : Levels_){
+        const int sizeX = level.second->GetSizeX();
+        const int sizeY = level.second->GetSizeY();
 
+        for (){
+
+        }
 
     }
 
