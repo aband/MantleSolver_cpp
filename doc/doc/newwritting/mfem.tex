@@ -1,0 +1,354 @@
+\input hdr.tex
+\section{A coupled partial melting Stokes-Darcy system}
+Strong form
+\begin{equation}
+\begin{aligned}
+		  \tilde{\bold{v}}_r + \frac{k_0 \phi_f^{1+\Theta}}{\mu_f} \nabla (\phi_f^{-1/2}\tilde{q}_f) &= 0 \\
+		  \mu_s\phi_f^{-1/2}\nabla\cdot(\phi_f^{1+\Theta}\tilde{\bold{v}}_r) + \frac{1}{1-\phi_f}(\tilde{q}_f - \phi_f^{1/2}q) &=0\\
+		  \nabla q - \nabla \cdot \hat{\sigma}(\bold{v}_s) &= -(1-\phi_f)\rho_r \bold{g} \\
+		  \mu_s \nabla \cdot \bold{v}_s - \frac{\phi_f^{1/2}}{1-\phi_f}(\tilde{q}_f - \phi_f^{1/2}q) &=0
+\end{aligned}
+\end{equation}
+
+List SI units
+
+\begin{itemize}
+		  \item [q] = pascal.
+		  \item [$\bold{v}$] = m/s
+\end{itemize}
+
+Non dimensionalization choice
+\begin{itemize}
+		  \item $\check{\bold{v}} = \frac{\tilde{\bold{v}_r}}{k_0 \rho_r g_y/\mu_f}$
+					 \item $\check{q} = \frac{q}{\rho_r g_y l_0 }$
+					 \item $\check{x} = \frac{x}{l_0}$
+					 \item $l_0 = (\frac{k_0 \mu_s}{\mu_f})^{1/2}$
+\end{itemize}
+
+The resulting non dimensionalized form is therefore
+\begin{equation}
+		  \begin{aligned}
+					 \check{\bold{v}}_r + \phi_f^{1+\Theta}\nabla (\phi_f^{-1/2}\check{q}_f) &= 0\\
+					 \phi_f^{-1/2}\nabla \cdot (\phi_f^{1+\Theta} \check{\bold{v}}_r) + \frac{1}{1-\phi_f}(\check{q}_f - \phi_f^{1/2}\check{q}) &=0 \\
+					 \nabla \check{q} - \nabla \cdot \hat{\sigma}(\check{\bold{v}}_s) &= -(1-\phi_f)\rho_r \hat{\bold{g}} \\
+					 \nabla \cdot \check{\bold{v}}_s - \frac{\phi_f^{1/2}}{1-\phi_f}(\check{q}_f - \phi_f^{1/2}\check{q}) &= 0
+		  \end{aligned}
+\end{equation}
+
+scaled nondimensionalized weak form
+let $\check{\sigma} = \mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bold{\text{I}}$
+
+\begin{equation}
+		  \begin{aligned}
+					 (2\phi_s\check{\sigma}(\bold{v}_{s,h}),\nabla \Psi_s) - (\check{q}_h, \nabla \cdot \Psi_s) &= -(\phi_s\check{\bold{f}}, \Psi_s) \\
+					 (\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  + \Big(\frac{\hat{\phi}_f}{\phi_s} \check{q}_h, \omega\Big) - 
+					\Big(\frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_{f,h},\omega \Big) &= 0\\
+					 (\bold{\check{v}}_{r,h},\Psi_r)  - (\check{q}_{f,h},\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r)) &= 0\\
+					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0
+		  \end{aligned}
+\end{equation}
+
+\newpage
+
+\subsection{Variational form and discretization}
+
+\subsubsection{Stokes and variational formulation}
+\begin{equation}
+\begin{aligned}
+-\Delta \bold{u} + \nabla p &= \bold{f} \\
+\nabla \cdot \bold{u} &= 0
+\end{aligned}
+\end{equation}
+
+weak form
+
+%\begin{equation}
+%\begin{aligned}
+%(\nabla \bold{u} , \nabla \bold{v})_{\Omega} - <(\nabla \bold{u}) \nu, \bold{v}>_{\Gamma_i} - (p,\nabla \cdot \bold{v})_{\Omega} + <\bold{v}\cdot \nu, p_0>_{\Gamma_i} &= (\bold{f},\bold{v})_{\Omega}\\
+%(\nabla \cdot \bold{u}, \omega) &= 0
+%\end{aligned}
+%\end{equation}
+
+\begin{equation}
+\begin{aligned}
+(\nabla \bold{u} , \nabla \bold{v})_{\Omega} - (p,\nabla \cdot \bold{v})_{\Omega} &= (\bold{f},\bold{v})_{\Omega} + 
+<\tau^T \nabla \bold{u} \nu, \bold{v}\cdot \tau>_{\Gamma_i}\\
+&+ <\nu^T \nabla \bold{u} \nu - p_0, \bold{v}\cdot \nu>_{\Gamma_i} - <\nabla \bold{u}_0, \nabla \bold{v}>_{\Gamma_u}\\
+(\nabla \cdot \bold{u}, \omega) &= 0
+\end{aligned}
+\end{equation}
+
+let stress $\bold{s}\cdot \tau = \tau^T \nabla \bold{u} \nu $ and  $\bold{s} \cdot \nu =  \nu^T \nabla \bold{u} \nu - p_0$, 
+we have traction boundary condition term defined on $\Gamma_i$ which is $<\bold{s},\bold{v}>_{\Gamma_i}$.
+Traditionally a test space $\{ \bold{v} \in H^1(\Omega) : \bold{v} = 0$ on $\Gamma_u \}$ is employed here.
+
+\begin{equation}
+\begin{aligned}
+(\nabla \bold{u}_h , \nabla \bold{v}_h)_{\Omega_h} - (p_h,\nabla \cdot \bold{v}_h)_{\Omega_h} &= (\bold{f},\bold{v}_h)_{\Omega_h} + 
+		  <\bold{s}, \bold{v}_h>_{\Gamma_{i,h}} - <\nabla \bold{u}_{0,h}, \nabla \bold{v}_h>_{\Gamma_{u,h}}\\
+(\nabla \cdot \bold{u}, \omega) &= 0
+\end{aligned}
+\end{equation}
+
+We can separate normal and tangent part of stress on the boundary easily when physical boundary align with x-y axis.
+In the situation when a rectangular computational domain is used, we can mix stress and dirichlet boundary condition
+even further. 
+
+
+\subsection{Darcy}
+\begin{equation}
+\begin{aligned}
+\bold{u} + \nabla p & = \bold{g}\\
+\nabla \cdot \bold{u} & = 0
+\end{aligned}
+\end{equation}
+
+weak form
+
+\begin{equation}
+\begin{aligned}
+(\bold{u}, \bold{v})_{\Omega} - (p, \nabla \cdot \bold{v})_{\Omega} &= (\bold{g},\bold{v})_{\Omega} 
+- <p_0, v_n>_{\Gamma_i} - <\bold{u}_0, \bold{v}>_{\Gamma_u}\\
+(\nabla \cdot \bold{u}, \omega) &= 0
+\end{aligned}
+\end{equation}
+
+Test space $\{\bold{v} \in H(\text{div},\Omega): v_n =0$ on $\Gamma_u\}$.
+
+\subsubsection{A degenerate Darcy test problem}
+\begin{equation}
+		  \begin{aligned}
+					 \bold{v} + \phi\nabla(\hat{\phi}^{-1/2}p) &= f\\
+					 \hat{\phi}^{-1/2}\nabla \cdot (\phi\bold{v})&= g
+		  \end{aligned}
+\end{equation}
+We manufacture a solution with degenerate porosity in the target physical domain $x,y\in[-1,1]$.
+\begin{equation}
+		  \phi = \left \{
+					 \begin{aligned}
+								\cos^m(n(x^2+y^2)) \quad & x^2+y^2 < \pi/2n\\
+							0  \quad   & \qquad \text{otherwise}
+					 \end{aligned}
+					 \right.
+\end{equation}
+where m is an even number, and $\pi/2n < 1$
+another choice of test case is shown as follows:
+\begin{equation}
+		  \phi = \left \{
+					 \begin{aligned}
+								0 & \quad x \leq 0 \\
+								\phi_{+} x^4 & \quad x>0 
+					 \end{aligned}
+					 \right .
+\end{equation}
+Define an arbitrary velocity and pressure 
+\begin{equation}
+		  \begin{aligned}
+					 \bold{v} &= [\frac{x}{5}, -y]^T \\
+					 p & = \hat{\phi}^{1/2}
+		  \end{aligned}
+\end{equation}
+The source term is calculated as follows:
+\begin{equation}
+		  \begin{aligned}
+					 f &= \bold{v} \\
+		  \end{aligned}
+\end{equation}
+and the divergence term is:
+\begin{equation}
+		  \begin{aligned}
+					 g &= \phi^{-1/2}\phi_+\nabla \cdot [\frac{x^5}{5}, -x^4y]^T \\
+					   &= \phi^{-1/2}\phi_+(x^4 - x^4) = 0
+		  \end{aligned}
+\end{equation}
+a divergence free test case
+
+\newpage
+
+\subsubsection{Modified BR element}
+
+The Bernardi-Raugel element has been researched extensively in previous 
+literature \cite{AnalysisFiniteElemStokes_Bernardi_Raugel}. 
+We state that our new function space satisfies the following hypotheses:
+
+\begin{itemize}
+		  \item For any $q$ in $H^m(\Omega)$
+\end{itemize}
+
+
+
+\newpage
+
+\section{Linear system and Uzawa type algorithm}
+
+Boundary conditions are already included in the linear system formulation.
+Original linear system:
+\begin{equation}
+\begin{bmatrix}
+\bold{A}_s   & -\bold{B}_s & \bold{0}     &  \bold{0}   \\
+\bold{B}_s^T &  \bold{C}_s & \bold{0}     &  \bold{K}   \\
+\bold{0}     &  \bold{0}   & \bold{A}_d   & -\bold{B}_d \\
+\bold{0}     &  \bold{K}   & \bold{B}_d^T &  \bold{C}_d
+\end{bmatrix} \begin{bmatrix}
+\bold{x}_s\\
+\bold{y}_s\\
+\bold{x}_d\\
+\bold{y}_d
+\end{bmatrix}= 
+\begin{bmatrix}
+\bold{f}_s\\
+\bold{g}_s\\
+\bold{f}_d\\
+\bold{g}_d
+\end{bmatrix}
+\end{equation}
+
+This is a double saddle point system. 
+Symmetrically permutate original linear system and form a enlarged saddle point system.
+\begin{equation}
+\begin{bmatrix}
+\bold{A}_s   & \bold{0}     & -\bold{B}_s &  \bold{0}   \\
+\bold{0}     & \bold{A}_d   &  \bold{0}   & -\bold{B}_d \\
+\bold{B}_s^T & \bold{0}     &  \bold{C}_s &  \bold{K}   \\
+\bold{0}     & \bold{B}_d^T &  \bold{K}   &  \bold{C}_d
+\end{bmatrix} \begin{bmatrix}
+\bold{x}_s\\
+\bold{x}_d\\
+\bold{y}_s\\
+\bold{y}_d
+\end{bmatrix}= 
+\begin{bmatrix}
+\bold{f}_s\\
+\bold{g}_s\\
+\bold{f}_d\\
+\bold{g}_d
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\bold{A} = \begin{bmatrix}
+\bold{A}_s   & \bold{0}    \\
+\bold{0}     & \bold{A}_d  
+\end{bmatrix}
+\quad
+\bold{B} = \begin{bmatrix}
+-\bold{B}_s & \bold{0}   \\
+\bold{0}   & -\bold{B}_d
+\end{bmatrix}
+\quad
+\bold{C} = \begin{bmatrix}
+- \bold{C}_s &  -\bold{K}   \\
+- \bold{K}   &  -\bold{C}_d
+\end{bmatrix}
+\quad \bold{F} = \begin{bmatrix}
+\bold{f}_s \\
+\bold{g}_s
+\end{bmatrix}
+\quad
+\quad \bold{G} = \begin{bmatrix}
+-\bold{f}_d \\
+-\bold{g}_d
+\end{bmatrix}
+\end{equation}
+In this newly formed system, the $\bold{A}$ matrix maintains as a positive definite matrix.
+we solve this typical saddle point system with uzawa iteration. Uzawa algorithm has been discussed
+extensively at \cite{InexactUzawa_Elam_Golub}, \cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}.
+
+Consider the linear system of equation:
+\begin{equation}
+\begin{bmatrix}
+		  \bold{A}   & \bold{B} \\
+		  \bold{B}^T & \bold{C}
+\end{bmatrix} \begin{bmatrix}
+\bold{x} \\ \bold{y}
+\end{bmatrix} = \begin{bmatrix}
+		  \bold{F} \\
+		  \bold{G}
+\end{bmatrix}
+\end{equation}
+
+\begin{algorithm}
+\caption{Preconditioned Inexact Uzawa Iteration}
+		  \begin{algorithmic}[1]
+					 \State Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
+					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
+					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \bold{Q}^{-1} ( \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G})$
+\end{algorithmic}
+\end{algorithm}
+
+In the previous literature \cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}, 
+$\bold{Q}$ is approximated with $\tau \bold{I}$, which works well with the 
+stokes part. However, it converges very slow with the same approximation when 
+applied to the Darcy part. We need a better preconditioner approximating 
+inverse of the corresponding schur complement.
+We use MINRES algorithm \cite{SolSparseIndef_Paige_Saunders} due to schur 
+complement being symmtetric and indefinite.
+
+\begin{algorithm}
+\caption{Preconditioned Inexact Uzawa Iteration}
+		  \begin{algorithmic}[1]
+					 \State Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
+					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
+					 \State Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$
+					 \State Obtain $\tilde{\bold{y}} =\text{argmin}_{\bold{x}\in V} ||(\bold{B}^T\bold{A}^{-1}\bold{B} - \bold{C})^{-1}\tilde{\bold{y}}-\bold{r} ||$
+					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
+\end{algorithmic}
+\end{algorithm}
+
+Based on the above algorithm, we proposed a new block preconditioner for our
+coupled linear system.
+\begin{equation}
+		  \bold{Q}^{-1} = \begin{bmatrix}
+					 \bold{S}_s^{-1} & \bold{0} \\
+					 \bold{0} & \bold{S}_d^{-1}
+		  \end{bmatrix}
+\end{equation}
+where the schur complement matrices are approximated with MINRES method.
+
+\subsection{Convergence and stability analysis}
+Uzawa iteration is in fact a fixed point iteration procedure.
+Usually, uzawa iteration convergences slowly.
+
+\subsubsection{Anderson acceleration}
+Accelerating uzawa iteration has been discussed in the previously literatures.
+Anderson acceleration (Anderson mixing) \cite{AcceleratingUzawa_ho_Olson_Walker}
+
+\newpage
+
+\section{Test cases}
+We test the linear system a little bit different from the linear system above. 
+\subsection{Constant porosity and balanced pressure (divergence free velocity field)}
+
+
+\subsection{Const porosity and unbalanced pressure}
+\begin{equation}
+\check{q} = 0 \quad \quad \check{q}_f = 2(x+y) \quad \quad 
+\check{\bold{v}}_r = -\frac{\phi_f^{-1/2}}{1-\phi_f}\begin{pmatrix}x^2 \\ y^2 \end{pmatrix} 
+\quad \quad \check{\bold{v}}_s = \frac{\phi_f^{1/2}}{1-\phi_f} \begin{pmatrix}x^2 \\ y^2 \end{pmatrix}
+\end{equation}
+\begin{equation}
+\nabla \cdot \check{\bold{v}}_r = \frac{-2\phi_f^{-1/2}}{1-\phi_f}(x+y) 
+\end{equation}
+\begin{equation}
+\mathcal{D}\check{\bold{v}}_s = \frac{2\phi_f^{1/2}}{1-\phi_f}\begin{bmatrix} x & 0 \\ 0 & y \end{bmatrix}
+\quad \quad 
+(\nabla \cdot \check{\bold{v}}_s) \bold{\text{I}} = \frac{2\phi_f^{1/2}}{1-\phi_f} \begin{bmatrix} x+y & 0 \\ 0 & x+y \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\tilde{\bold{v}}_r + \phi_f^{1/2}\nabla\check{q}_f &= 
+-\frac{\phi_f^{-1/2}}{1-\phi_f}\begin{pmatrix}x^2 \\ y^2 \end{pmatrix} + \phi_f^{1/2}\begin{pmatrix} 2 \\ 2 \end{pmatrix}\\
+\phi_f^{1/2}\nabla \cdot (\check{\bold{v}}_r) + \frac{1}{1-\phi_f}\check{q}_f  &= \frac{-2}{1-\phi_f}(x+y) + \frac{1}{1-\phi_f}2(x+y)=0\\
+\nabla \cdot \check{\bold{v}}_s - \frac{\phi_f^{1/2}}{1-\phi_f}\check{q}_f &= \frac{2\phi_f^{1/2}}{1-\phi_f}(x+y) - \frac{2\phi_f^{1/2}}{1-\phi_f}(x+y) = 0\\
+-2(1-\phi_f)\nabla \cdot \sigma(\check{\bold{v}}_s) &= -2(1-\phi_f)\nabla \cdot (\mathcal{D}\check{\bold{v}}_s - \frac{1}{3}(\nabla \cdot \check{\bold{v}}_s) \bold{\text{I}}) = 
+-\frac{8\phi_f^{1/2}}{3} \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+\end{aligned}
+\end{equation}
+
+% ====================
+\newpage
+\bibliographystyle{siam}
+\bibliography{ref}
+
+\end{document}

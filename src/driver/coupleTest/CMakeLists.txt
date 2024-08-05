@@ -118,22 +118,44 @@ target_include_directories(phase_lib
 		  PUBLIC ${SRC}/include
 		  )
 
-#Create a library from driver folder
-#add_library(driver_lib
-#        #${SRC}/driver/phaseCal.cpp
-#		  ${SRC}/driver/driver.cpp
-#)
+# Create a library from the files in the mlweno directory
+add_library(mlweno_lib 
+		  ${SRC}/mlweno/reconstMLWENO.cpp
+		  ${SRC}/mlweno/polynomial.cpp 
+)
 
-#target_include_directories(driver_lib
-#		  PUBLIC ${SRC}/driver
-#		  PUBLIC ${SRC}/phase
-#        )
-#
-#target_link_libraries(driver_lib
-#general_lib
-#io_lib
-#)
-#
+# Specify any additional include directories if needed
+target_include_directories(mlweno_lib 
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/general
+    PUBLIC ${PETSC_DIR}/include 
+)
+
+# Link the PETSc libraries to the mlweno_lib library
+target_link_libraries(mlweno_lib 
+        PkgConfig::PETSC
+)
+
+#Create a library from driver folder
+add_library(driver_lib
+		  ${SRC}/driver/driver.cpp
+		  ${SRC}/driver/mlwenouse.cpp
+)
+
+target_include_directories(driver_lib
+		  PUBLIC ${SRC}/driver
+		  PUBLIC ${SRC}/general
+		  PUBLIC ${SRC}/io
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/transport
+        )
+
+target_link_libraries(driver_lib
+		  general_lib
+		  io_lib
+		  mlweno_lib
+		  PkgConfig::PETSC
+)
 
 # Generate an excutable file
 add_executable(test
@@ -146,7 +168,7 @@ target_link_libraries(test
 		  io_lib
 		  phase_lib
 		  mfem_lib
-#		  driver_lib
+		  driver_lib
 		  PkgConfig::LAPACKE
 #        PkgConfig::CGNS
 )

@@ -1,0 +1,79 @@
+\section{Eutectic phase behavior}
+The binary eutectic phase behavior describes the chemical behavior of 
+two immiscible crystals from a completely miscible solution.
+
+On a typical eutectic phase behavior diagram, we can locate any phase situation
+using temperature and composition information.
+
+The binary eutectic phase behavior has the following properties:
+\begin{itemize}
+		  \item Assume a constant liquidus density. 
+\end{itemize}
+
+\subsection{Physical attributes}
+We first define concentration $c_{i,j}$ as:
+\begin{equation*}
+		  c_{i,j} = \frac{M_{i,j}}{V_{i,j}}
+\end{equation*}
+where $M_{i,j}$ and $V_{i,j}$ represent mass and volume of specie $i$ in phase $j$.
+
+Secondly, we define porosity $\phi$ as:
+\begin{equation*}
+		  \phi = \frac{V_{\text{porosity}}}{V_{\text{total}}}
+\end{equation*}
+
+
+Giving an initial distribution of $c_{i,j}$
+\begin{equation*}
+		  \bar{c} = \phi_f c_f + \phi_s c_s
+\end{equation*}
+
+Definition of internal energy and enthalpy:
+\begin{equation*}
+H = U + pV
+\end{equation*}
+
+In the phase package 
+
+\subsection{Thermaldynamics procedures}
+Assuming isochoric process during phase change.
+
+
+\subsection{Some questions}
+
+
+\begin{itemize}
+		  \item crystals A + B ?
+		  \item How to use the $(\bar{c}, \bar{E})$ pair to find porosity $\phi$?
+\end{itemize}
+
+\newpage
+
+\section{Conservation revisit}
+Revisit Conservation equations. We have the following assumptions and definitions:
+\begin{itemize}
+		  \item Two miscible fluids. Liqudius mixture will not change volume. Only one $V_f$.
+		  \item We assume intrinsic relation between fluid densities and pressure (Temperature). $\rho_{i,f} = \rho_{i,f}(rho^0_{i,f}, P_f, E_f)$.
+		  \item Fluid densities can also be determined with $\rho_{i,f} = \frac{M_{i,f}}{V_{i,f}}$ with the only one fluid volume.
+		  \item Constant solid densities. $\rho_{i,i} = \frac{M_{i,i}}{V_{i,i}}$. $\rho_{i,i}$ is acquired in advance.
+		  \item Porosity defined as volume fraction $\phi_f = \frac{V_f}{V}$.
+		  \item Concentration average $\bar{c}_i = \phi_f c_{i,f} + (1-\phi_f) c_{i,i} = \frac{M_{i,i} + M_{i,f}}{V}$.
+\end{itemize}
+If assumed mix without volume change, we get $V_{i,f} = V_{f}$ here.
+Then we also get concentration $c_{i,f} = \frac{M_{i,f}}{V_f} = \rho_{i,f}$.
+However, it does not hold if volume changes upon mixing.
+
+\subsection{Purpose}
+We are going to try to reterive $M_1/M$ using $\bar{c}_1$ and $\rho$.
+First we assume all melting situation.
+$$\bar{c}_1 = \frac{M_{i}}{V} \quad\quad \rho_{1,f} = \rho_{1,f}(rho^0_{1,f}, P_f, E_f) = \frac{M_{1,f}}{V_f} \quad\quad (1-\frac{\bar{c}_1}{\rho_{1,f}}) = \frac{V}{}$$
+
+
+\subsection{Question 1}
+Is mix without volume change possible? 
+Example: water and ethanol are two perfectly miscible fluids.
+500ml ethanol into 500ml water will result in 970ml liquid.
+When two liquids are mixed, the molecules of the liquids can go into the other liquid's available spaces,
+which resulted in the reduction of total volume.
+If mix without volume change, all molecules of one liquid fit into another liquid's available spaces.
+

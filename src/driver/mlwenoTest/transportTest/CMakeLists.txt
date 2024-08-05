@@ -105,7 +105,7 @@ target_include_directories(driver_lib
 		  PUBLIC ${SRC}/io
 		  PUBLIC ${SRC}/mlweno
 		  PUBLIC ${SRC}/transport
-        PUBLIC ${PETSC_DIR}/include}
+        PUBLIC ${PETSC_DIR}/include
 )
 
 target_link_libraries(driver_lib

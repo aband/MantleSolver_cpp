@@ -1,0 +1,51 @@
+\section{Phase consistency}
+
+We made following assumptions:
+\begin{itemize}
+		  \item Constant solid and liquid densities.
+		  \item Volume does not change upon mixing. $V_f = V_{1,f}+V_{2,f}$.
+		  \item We transport volume averaged concentration of one component. 
+					 $\bar{c}_1$ and total average internal energy.
+\end{itemize}
+We express transport variable $\bar{c}_1$ with densities instead:
+$$\bar{c}_1 =\frac{M_1}{V} =\rho_{1,s} \phi_{1,s} + \rho_{1,f} \frac{V_{1,f}}{V_f} $$
+Then we can express $V_{1,f}$ as:
+$$\frac{V_{1,f}}{V_f} = \frac{\bar{c}_1 - \rho_{1,s}\phi_{1,s}}{\rho_{1,f}}$$
+We then express $\bar{c}_2$ using the same relationship expressing
+$\bar{c}_2$ with constant densities, transport variable $\bar{c}_1$ and 
+volume fractions that can be determined through phase package.
+$$\bar{c}_2 = \rho_{2,s} \phi_{2,s} + \rho_{2,f}[\phi_f \rho_{1,f} + \phi_{1,s}\rho_{1,s} - \bar{c}_1]$$
+In order to use phase package, we need to define mass composition as:
+$$\xi =  \frac{M_2}{M_1+M_2} = \frac{\bar{c}_2}{\bar{c}_2 + \bar{c}_1} $$
+We define a nonlinear function denoting reference to phase package for volume fraction.
+$$\Phi(\xi, E) = (\phi_1, \phi_2, \phi_f)$$
+where $E$ internal energy is another transport variable that can be obtained from 
+transport equation.
+%We can now represent $\bar{c}_2$ with phase package and known variables:
+%\begin{equation*}
+%\bar{c}_2 = \rho_{2,s} \phi_{2,s} \frac{\rho_{2,f}}{\rho_{1,f}}[\phi_f\rho_{1,f} + \phi_{1,s}\rho_{1,s} - \bar{c}_1]
+%\end{equation*}
+We now construct a nonlinear equation. 
+We are going to find the $x$ (mass composition) such that $f=0$:
+\begin{equation*}
+		  f = x - (1-\frac{\bar{c}_1}{\bar{c}_1+\bar{c}_2(\Phi(x,E))})
+\end{equation*}
+Next we will solve the equation with newton's method:
+
+%\subsection{Description of each phase region}
+%We divide eutectic mixture of two species into five phase regions
+%\begin{itemize}
+%\item Single-phase sub-solidus
+%\item Two-phase sub-solidus: solid1 + solid2
+%\item Eutectic: solid1 + solid2 + melt
+%\item Super-eutectic: solid1 + melt
+%\item Super-liquidus: melt
+%\end{itemize}
+%%
+\subsection{Newton's method}
+From phase package, we can calculate derivative of volume fractions aginst mass composition exactly in each phase regime.
+$$
+x_{n+1} = x_{n} - \frac{f(x_{n})}{f^{'}(x_{n})}
+$$
+
+%\subsection{Secant method}

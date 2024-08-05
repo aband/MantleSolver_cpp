@@ -1,0 +1,178 @@
+\iffalse
+
+and so
+
+\begin{equation}
+		  \overline{K} \nabla T = \left \{
+					\begin{aligned}
+							  \overline{K} \nabla T_{melt}, \hspace{0.5cm} & \phi_f > 0 \\
+							  (\phi_1 K_1 + \phi_2 K_2) \nabla T, \hspace{0.5cm} & \phi_f = 0
+					\end{aligned}
+					\right.
+\end{equation}
+
+Now the internal energy $\tilde{e}$ satisfies:
+
+\begin{equation}
+		  \tilde{h} = \tilde{e} + PV = \text{enthalpy}
+\end{equation}
+
+divided by mass on both sides, 
+and we can get specific enthalpy:
+
+\begin{equation}
+		  h = e + \rho^{-1} P
+\end{equation}
+
+Moreover, differentiate on both sides of the 
+equation:
+
+\begin{equation}
+		  \begin{aligned}
+					 dh &= c_p dT + \rho^{-1}(1-\alpha T)dP\\
+					 &=de + \rho^{-1} dP - \rho^{-2}Pd\rho
+		  \end{aligned}
+\end{equation}
+
+\begin{equation}
+		  de = c_p dT - \alpha \rho^{-1} T dP + \rho^{-2} P d\rho
+\end{equation}
+
+If $|\alpha T|\ll 1$ and $|d\rho| \sim O$, then
+
+\begin{equation}
+de = c_p dT \Leftrightarrow e = c_p T
+\end{equation}
+
+then
+
+\begin{equation}
+		  \left \{
+					 \begin{aligned}
+								e_f = c_p^{(f)}T_{melt}, e_1=e_2=e_3=c_p^{(s)}T_{melt}, \hspace{0.5cm} & \phi_f >0\\
+								e_s = c_p^{(s)}T, \hspace{0.5cm} &\phi_f = 0
+					 \end{aligned}
+					 \right.
+\end{equation}
+
+\begin{equation}
+		  T = \frac{e_s}{c_p^{(s)}} = (1-\lambda) \frac{E}{\overline{\rho}c_p^{(s)}}
+\end{equation}
+
+note that when $\phi_f >0$,
+tmeperature will not vary when 
+melting starts.
+
+Now, generalize to a full system of $\overline{C}$ and $H$
+
+\begin{equation}
+		  \left\{
+        \begin{aligned}
+					 \phi_f c_f &= K_1 \overline{C} + K_2 H\\
+					 \phi_f \rho_f h_f &= \lambda_1 \overline{C} + \lambda_2 H
+		  \end{aligned}
+					 \right.
+\end{equation}
+
+\begin{equation}
+		  \left\{
+					 \begin{aligned}
+\phi_1 c_s &= \overline{C} - \phi_f c_f \\
+								\Rightarrow &= (1-K_1)\overline{C} - K_2 H\\
+								\phi_1 \rho_1 h_1 + \phi_2 \rho_2 h_2 &=H - \phi_f \rho_f h_f\\
+								\Rightarrow &= (1-\lambda_2)H - \lambda_1 \overline{C}
+					 \end{aligned}
+					 \right.
+\end{equation}
+
+Now the enthalpy and internal energy are:
+
+\begin{equation}
+		  \tilde{h} = \tilde{e} + PV
+\end{equation}
+
+$\Rightarrow$ the specific enthalpy and specific internal energy are
+
+\begin{equation}
+		  h = e + \rho^{-1}P
+\end{equation}
+
+$\Rightarrow$
+
+\begin{equation}
+		  \begin{aligned}
+					 H &= \overline{\rho h} = \phi_f \rho_f h_f + \phi_1 \rho_1 h_1 + \phi_2 \rho_2 h_2\\
+					 &= \overline{\rho e} + \overline{P} = E + \overline{P}
+		  \end{aligned}
+\end{equation}
+
+where average pressure $\overline{P}$ is calculated as:
+
+\begin{equation}
+		  \begin{aligned}
+					 \overline{P} &= \phi_f p_f + (\phi_1 + \phi_2)p_s\\
+					 &\approx \overline{\rho} g z
+		  \end{aligned}
+\end{equation}
+
+which is approximated by lithospheric equilibrium.
+
+The energy conservation law expressed in enthalpy is:
+
+\begin{equation}
+		  (H-\overline{P})_t + \nabla \cdot [\overline{(\rho h - P)v} - \overline{K} \nabla T] = 0
+\end{equation}
+
+$\Rightarrow$
+
+\begin{equation}
+		  H_t + \nabla \cdot (\overline{\rho h v} - \overline{K} \nabla T) = \overline{P}_t + \nabla \cdot \overline{PV}
+\end{equation}
+
+The right hand side is:
+
+\begin{equation}
+		  \begin{aligned}
+					 \overline{P}_t + \nabla \cdot \overline{PV} &\approx \overline{\rho}_tgz + \nabla \cdot (\phi_f p_f v_f + \phi_s p_s v_s)
+		  \end{aligned}
+\end{equation}
+
+According to lithospheric equilibrium, 
+the pressure can be expressed as function of
+height $p_f = \rho_f g z$, $p_s = \rho_s g z$:
+
+\begin{equation}
+		  (\overline{\rho}_t + \nabla \cdot \overline{\rho v})gz + \overline{\rho v} \cdot g = \overline{\rho v} \cdot g
+\end{equation}
+
+Thus the resulting equations become:
+
+\begin{equation}
+		  \overline{C}_t + \nabla \cdot (v_c \overline{C} + K_2v_rH - \phi_f D \nabla c_f) = 0
+\end{equation}
+
+\begin{equation}
+		  H_t = \nabla \cdot (v_H H + \lambda_1 v_r \overline{C} - \overline{K} \nabla T) = \overline{\rho v} \cdot g
+\end{equation}
+
+\begin{equation}
+		  v_c = K_1v_f + (1-K_1)v_s
+\end{equation}
+
+\begin{equation}
+		  v_H = \lambda_2 v_f + (1-\lambda_2)v_s
+\end{equation}
+
+where
+
+\begin{equation}
+v_r = v_f - v_s
+\end{equation}
+
+moreover
+
+\begin{equation}
+		  T = \frac{e_s}{c_p^{(s)}} \approx \frac{h - gz}{c_p^{(s)}} = \frac{(1-\lambda_2)H - \lambda_1 \overline{C} - \overline{\rho}g z}{c_p^{(s)}\overline{\rho}}
+\end{equation}
+
+\

@@ -1,0 +1,34 @@
+\section{Retrieve mass composition}
+
+In computation of phase transition, mass composition is needed every time step.
+We make following assumptions
+\begin{itemize}
+\item Constant liquid and solid density.
+\item Little volume loss when mixing two molten rock. $V_f = V_{1,f} + V_{2,f}$
+\end{itemize}
+In a partial melting situation, we have the following relationship:
+\begin{equation}
+\begin{aligned}
+\bar{c}_1 &= \phi_f c_{1,f} + (1-\phi_f) c_{1,1} \\
+\bar{c}_2 &= \phi_f c_{2,f} + (1-\phi_f) c_{2,2} \\
+\end{aligned}
+\end{equation}
+where $c_{1,1} = \frac{M_{1,1}}{V_{1,1}} = \rho_{1,1} = const $, therefore we 
+can represent $c_{1,f}$ with primal variable $\bar{c}_1$ and constant physical attribute
+solid density $c_{1,1}$,
+$$c_{1,f} = \frac{\bar{c}_1 - (1-\phi_f)c_{1,1}}{\phi_f}$$
+divided by constant liquid density $\rho_{1,f} = \frac{M_{1,f}}{V_{1,f}} = const$
+$$(1-\frac{c_{1,f}}{\rho_{1,f}}) = (1-\frac{V_{1,f}}{V_f}) = \frac{V_{2,f}}{V_f} = \frac{c_{2,f}}{\rho_{2,f}} $$
+Hence we can get an expression of $\bar{c}_2$ with primitive variable $\bar{c}_1$ and densities.
+\begin{equation}
+\begin{aligned}
+		  \bar{c}_2 &= \phi_f c_{2,f} + (1-\phi_f) c_{2,2} \\
+		  \bar{c}_2 &= \phi_f \rho_{2,f}(1-\frac{c_{1,f}}{\rho_{1,f}}) + (1-\phi_f)c_{2,2}\\
+		  \bar{c}_2 &= \rho_{2,f}\phi_f - \frac{\rho_{2,f}}{\rho_{1,f}}(\bar{c}_1 - (1-\phi_f)c_{1,1}) + (1-\phi_f)c_{2,2}
+\end{aligned}
+\end{equation}
+Two special situations:
+\begin{itemize}
+\item No melting situation. $\phi_f = 0$. Then $\bar{c}_1 = c_{1,1}$ and $\bar{c}_2 = c_{2,2}$
+\item All melting situation. $\phi_f = 1$. Then $\bar{c}_2 = \rho_{2,f} - \frac{\rho_{2,f}}{\rho_{1,f}}\bar{c}_1 $.
+\end{itemize}

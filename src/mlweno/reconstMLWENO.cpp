@@ -299,6 +299,20 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
 
 }
 
+// New standard computation of non linear weights
+// described in multi-level paper.
+// No need of parameter of one-stage or two-stage
+void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, 
+                                                   bool (*assignML)(const indice& globalCell, 
+                                                                    const MeshInfo& mi)){
+    // Update non linear weights for all cells in the target domain
+        
+
+
+}
+
+
+
 inline int powerShift(const int& r){
 
     switch (r) {
@@ -318,7 +332,6 @@ void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
                                                         const std::string& weightType){
     // Incorportated both one stage and two stage weighting scheme.
     // Power shift set default to be 0,0,0 for one stage.
-   
     unordered_map<std::string, unordered_map<int,double>> nlw;
 
     double sum = 0.0;
@@ -352,6 +365,21 @@ void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
 
     nonLinearWgts_.erase(globalCell);
     nonLinearWgts_.insert(std::make_pair(globalCell, nlw));
+}
+
+// New nonlinear weights defined in mlweno paper
+void UpdateNonLinearWgtsCell_(const MeshInfo& mi,
+                              const int& globalCell){
+
+    unordered_map<std::string, unordered_map<int, double>> nlw;
+  
+    double sum = 0.0;
+
+    for (auto const& level : Levels_){
+
+
+    }
+
 }
 
 double multiLevelReconstruction::EvaluateMLWENO (const MeshInfo& mi,

@@ -17,6 +17,10 @@
 #include "preconst.h"
 #include "psolve.h"
 
+// MLWENO parameter header file
+#include "driver.h"
+#include "mlwenouse.h"
+
 extern "C"{
 #include "mesh.h"
 #include "output.h"
@@ -250,6 +254,50 @@ int main(int argc, char **argv){
                     mi.MPIlocalCellSize[1],darcyfile);
 
     // Transport ================================================================
+    // Create levels for ml-weno 
+    Driver * drivPtr = new Driver();
+    DMDAVecGetArray(dmu, localu, &drivPtr->mi.localVals);
+    ReadMeshPortion(dmMesh, &globalmesh, drivPtr->mi.lmesh);
+
+    // Assign mesh information after mesh added to meshInfo
+    AssignValuesMeshInfo(drivPtr->mi, dmMesh, dmu);
+
+    // We have five different levels in ml-weno 
+    drivPtr->UseWeno();
+	 drivPtr->AddLevel(1,1);
+	 drivPtr->AddLevel(2,2);
+    drivPtr->AddLevel(3,3);
+    drivPtr->AddLevel(4,4);
+    drivPtr->AddLevel(5,5);
+
+    MLWENO::MLWENOPrepare * mlpPtr = new MLWENO::MLWENOPrepare();
+
+    mlpPtr->AddLevel(drivPtr->mi,1,1);
+    mlpPtr->AddLevel(drivPtr->mi,2,2);
+    mlpPtr->AddLevel(drivPtr->mi,3,3);
+    mlpPtr->AddLevel(drivPtr->mi,4,4);
+    mlpPtr->AddLevel(drivPtr->mi,5,5);
+
+    mlpPtr->UpdateSmoothnessIndic(drivPtr->mi);
+
+    // Two instance of mlweno usage, advection and diffusion
+
+    MLWENO::MLWENOUse * mluseAdv = new MLWENO::MLWENOUse(); 
+    MLWENO::MLWENOUse * mluseDif = new MLWENO::MLWENOUse();
+
+    mluseAdv->AddMLWENOLevel("interior",{"(3,3)","(2,2)"}, mlpPtr);
+
+    mluseAdv->AssignWENOStencils(0,"(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
+    mluseAdv->AssignWENOStencils(0,"(3,3)",{{-1,-1}});
+
+    mluseAdv->UpdateNonLinearWgts(drivPtr->mi, "interior", "two_stage", interior);
+
+    mluseDif->AddMLWENOLevel("interior",{"(5,5)","(3,3)"}, mlpPtr);
+
+    mluseDif->AssignWENOStencils(0,"(3,3)",{{-2,0},{-2,-2},{0,0},{0,-2}});
+    mluseDif->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
+
+    mluseDif->UpdateNonLinearWgts(drivPtr->mi, "interior", "two_stage", interior);
 
 
     // Finialize the program ====================================================
