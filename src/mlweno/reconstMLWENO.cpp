@@ -302,6 +302,7 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
 // New standard computation of non linear weights
 // described in multi-level paper.
 // No need of parameter of one-stage or two-stage
+/*
 void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, 
                                                    bool (*assignML)(const indice& globalCell, 
                                                                     const MeshInfo& mi)){
@@ -310,8 +311,7 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
 
 
 }
-
-
+*/
 
 inline int powerShift(const int& r){
 
@@ -368,8 +368,11 @@ void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
 }
 
 // New nonlinear weights defined in mlweno paper
-void UpdateNonLinearWgtsCell_(const MeshInfo& mi,
-                              const int& globalCell){
+// No distinguish of one-stage and two-stage nonlinear weighting
+// The new weighting method strategicly equivalent to two-stage weighting.
+/*
+void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
+                                                        const int& globalCell){
 
     unordered_map<std::string, unordered_map<int, double>> nlw;
   
@@ -379,13 +382,36 @@ void UpdateNonLinearWgtsCell_(const MeshInfo& mi,
         const int sizeX = level.second->GetSizeX();
         const int sizeY = level.second->GetSizeY();
 
-        for (){
+        for (auto const& rm: Methods_.at(level.first)){
+            indice owner = Bend(mi, globalCell) + rm;
+            if (level.second->CheckExist(mi, owner)){
+                // Scale factor associated with each cells
+                double scale = level.second->GetScale(FlatIndic(mi, owner));
+                // Smoothness indicator associated with each cell
+                double dm    = level.second->GetSmoothnessIndic(mi, owner);
 
+                int order = max(sizeX, sizeY);
+
+                double omega_hat = 
+
+                nlw[level.first].insert(std::make_pair(FlatIndic(sizeX, rm),value));
+                sum += omega_hat;
+            }
         }
-
     }
 
+    for (auto const& level: Levels_) {
+        if (nlw[level.first].empty() == 0){
+            for (auto & in : nlw.at(level.first)){
+                in.second = in.second/sum;
+            }
+        }
+    }
+
+    nonLinearWgts_.erase(globalCell);
+    nonLinearWgts_.insert(std::make_pair(globalCell, nlw));
 }
+*/
 
 double multiLevelReconstruction::EvaluateMLWENO (const MeshInfo& mi,
                                                  const vertex& point,

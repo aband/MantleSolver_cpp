@@ -54,6 +54,18 @@ namespace MLWENO{
                                      const vector<indice>& newReconstMethod); 
 
              /**!
+              * Assing linear weights to corresponding reconstruction levels. 
+              * No need to be able to sum up to 1.
+              */
+             void AssignLinearWgts(const std::string& location,
+                                   const std::string& level,
+                                   const vector<double>& linWgts);
+
+             void AssignLinearWgts(const int& location,
+                                   const std::string& level,
+                                   const vector<double>& linWgts);
+
+             /**!
               * Update non linear weights.
               */
              void UpdateNonLinearWgts(const MeshInfo& mi, 

@@ -202,12 +202,22 @@ namespace MLWENO{
 
             unordered_map<std::string, vector<indice>> Methods_;
 
+            unordered_map<std::string, double> linearWgts_;
+
             /**!
              * Update non linear weight for one target cell.
              */
             void UpdateNonLinearWgtsCell_(const MeshInfo& mi,
                                           const int& globalCell,
                                           const std::string& weightType);
+
+            /**!
+             * Update nonlinear weights for one target cell.
+             * Follow MLWENO paper.
+             * Most recent definition of nonlinear weights.
+             */
+            void UpdateNonLinearWgtsCell_(const MeshInfo& mi, 
+                                          const int& globalCell);
    };
 
 }
