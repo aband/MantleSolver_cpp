@@ -4,33 +4,81 @@ two immiscible crystals from a completely miscible solution.
 
 On a typical eutectic phase behavior diagram, we can locate any phase situation
 using temperature and composition information. We follows phase behaviors
-details described in \cite{DownwardOxidantTransport}. We made reasonable adjustments
+details described in \cite{DownwardOxidantTransport}. We made some reasonable adjustments
 for our mantle system.
 
 There are few key elements that allow precise calculation of phase region and 
 corresponding volumetric fractions.
 
-Several important points
 \begin{itemize}
-\item Mass composition of solid phase 2 in liquid phase only relates to 
-temperature.
+\item Eutectic melting mass fraction is only related to temperature and pressure.
+		  Fluid formed by eutectic melting has a constant composition.
+		  $\chi_e(T,P)$
 \item Melting temperature related to pressure. Pressure release is one of the 
 		  main reason why melting happens in mantle.
-\item Eutectic composition is a function of temperature and pressure. 
-		  $\chi_e(\mathbf{T},\mathbf{P})$
+		  $T_1(P)$ and $T_2(P)$.
+\item All melting are eutectic melting.Temperature not exceeds $T_1$ or $T_2$.
+		  Therefore density of melting is a function of $\chi_e$.
 \end{itemize}
 
-\subsection{Detailed description of phase behavior}
-In mantle, we mostly have olivine and oothopyroxene (opx) mixture in the rock.
+We define following dimensionless bulk variables following \cite{DownwardOxidantTransport}.
+\begin{equation}
+C
+\end{equation}
+The characteristic variables used for nondimensionalization are:
+\begin{equation}
+C_c
+\end{equation}
+
+The eutectic phase diagram can be simplified as:
+\begin{center}
+\includegraphics[width=5cm,height=4cm]{eutectic.png}
+\end{center}
+
+\subsection{Phase split calculation}
+In mantle, we mostly have olivine and orthopyroxene (opx) mixture in the rock.
 Like eutectic melting system e.g. salt and ice,
 the presence of one phase would largely
 lower the melting temperature of another phase
-to the eutectic melting point.
+to the eutectic melting point. We now decompose different phase regions in details
+We are tracking bulk concentration of orthopyroxene (opx) in our calculation.
+We identify following $6$ regions with different phase assemblages:
+\begin{enumerate}[I]
+\item Single-phase sub-solidus : olivine
+\item Two-phase sub-solidus: olivine + opx
+\item Three-phase eutectic: olivine + opx + melt
+\item Two-phase super-eutectic : olivine + melt
+\item Two-phase super-eutectic : opx + melt
+\item Single-phase super-liquidus : melt
+\end{enumerate}
+
+\newpage
 
 \subsubsection{Region I}
+Pure olivine.
 The conditions to be in region I are 
 
 \begin{equation}
 		  \mathbf{C} = 0 \quad \mathbf{H} \leq \mathbf{H}_{} = 1
 \end{equation}
 
+\subsubsection{Region II}
+Two-phase sub-solidus: olivine + opx.
+The most common 
+
+\subsubsection{Region III}
+In this three-phase eutectic region, all three phases are present.
+The temperature is fixed at the eutectic point.
+
+\subsubsection{Region IV}
+In this region, melting starts at the point left to the eutectic melting point.
+
+\subsubsection{Region V}
+In this region, melting starts at the point right to the eutectic melting point.
+
+\subsubsection{Region VI}
+In this region, only melting is present.
+Hence the volume fraction is given:
+\begin{equation}
+\phi_{oli} = \phi_{opx} = 0, \quad \phi_{melt} = 1
+\end{equation}
