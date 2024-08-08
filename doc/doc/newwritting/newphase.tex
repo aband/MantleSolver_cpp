@@ -30,14 +30,16 @@ We are tracking opx in the mixture for simulation.
 Stefan number is defined as the ratio of the sensible heat to latent heat, $\text{Ste} = \frac{c_p \Delta T}{L}$.
 We define dimensionless temperature with eutectic temperature as $\mathcal{T} = \frac{T - T_e}{T_{\text{MAX} - T_e}}$,
 and dimensionless pressure as $\mathcal{P} = \frac{P-P_0}{P_0}$, where $P_0$ represents standard atmospheric 
-pressure.
+pressure. We use melting temperature of olivine at standard atmospheric pressure as 2053 K, and 
+1753 K for orthopyroxene (opx).
 
 \begin{equation}
 		  \begin{aligned}
 					 C &= \phi_{2} \rho_{2}   + \phi_{f} \rho_{f} \chi_e(\mathcal{T}, \mathcal{P})\\
 					 H &= \phi_{1} \rho_{1} c_{p,1} \mathcal{T} + 
 							\phi_{2} \rho_{2} c_{p,2} \mathcal{T} +
-							\phi_{f} \rho_{f} \big( \frac{c_{p,1}}{\text{Ste}_1} + \frac{c_{p,2}}{\text{Ste}_2} + c_{p,f}\mathcal{T} \big)
+							\phi_{f} \rho_{f} \big( \frac{c_{p,1}}{\text{Ste}_1} (1-\chi_e)) + 
+                                             \frac{c_{p,2}}{\text{Ste}_2}\chi_e + c_{p,f}\mathcal{T} \big)
 		  \end{aligned}
 \end{equation}
 We can nondimensionalize bulk composition and dimensionless bulk enthalpy as:
@@ -50,7 +52,7 @@ We can nondimensionalize bulk composition and dimensionless bulk enthalpy as:
 
 The eutectic phase diagram can be simplified as:
 \begin{center}
-\includegraphics[width=5cm,height=4cm]{eutectic.png}
+\includegraphics[width=5.5cm,height=4cm]{eutectic.png}
 \end{center}
 
 \subsection{Phase split calculation}
@@ -73,9 +75,12 @@ We identify following $6$ regions with different phase assemblages:
 \subsubsection{Region I}
 Pure olivine.
 The conditions to be in region I are 
-
 \begin{equation}
-		  \mathbf{C} = 0 \quad \mathbf{H} \leq \mathbf{H}_{} = 1
+		  \mathbf{C} = 0 \quad \mathbf{H} 1
+\end{equation}
+Hence, the volumetric fraction and temperature can be calculated simply as:
+\begin{equation}
+\phi_{1} = 1, \quad \phi_{2} = \phi_f = 0 \quad \text{and} \quad \mathcal{T} = \mathcal{H}
 \end{equation}
 
 \subsubsection{Region II}
@@ -102,5 +107,10 @@ Hence the volume fraction is given:
 \subsection{Eutectic melting}
 In practical, we are focusing on eutectic melting happening when mass fraction
 of opx is left to eutectic point. We notice that upper mantle consists of more
-than $80\%$ of olivine according to\cite{TheCompositionEarth}.
+than $80\%$ of olivine according to\cite{TheCompositionEarth}. Hence, we firstly 
+restrict our calculation to the left side of eutectic point.
+The simplified left eutectic phase diagram is now:
+\begin{center}
+\includegraphics[width=5.5cm,height=4cm]{TX}
+\end{center}
 
