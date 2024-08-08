@@ -14,7 +14,7 @@ int PorosityOut(double xstart, double ystart, double L, double H, int seed,
                 Phase * phase);
 
 // Transport boundary condition related
-
+// Position function
 bool left_boundary(const indice& globalCell,
                    const MeshInfo& mi);
 

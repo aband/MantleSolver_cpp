@@ -281,9 +281,8 @@ int main(int argc, char **argv){
     mlpPtr->UpdateSmoothnessIndic(drivPtr->mi);
 
     // Two instance of mlweno usage, advection and diffusion
-
+    // Advection mlweno use (3,3) and (2,2) reconstruction
     MLWENO::MLWENOUse * mluseAdv = new MLWENO::MLWENOUse(); 
-    MLWENO::MLWENOUse * mluseDif = new MLWENO::MLWENOUse();
 
     mluseAdv->AddMLWENOLevel("interior",{"(3,3)","(2,2)"}, mlpPtr);
 
@@ -292,13 +291,15 @@ int main(int argc, char **argv){
 
     mluseAdv->UpdateNonLinearWgts(drivPtr->mi, "interior", "two_stage", interior);
 
+    // Diffusion mlweno use (5,5) and (3,3) reconstruction
+    MLWENO::MLWENOUse * mluseDif = new MLWENO::MLWENOUse();
+
     mluseDif->AddMLWENOLevel("interior",{"(5,5)","(3,3)"}, mlpPtr);
 
     mluseDif->AssignWENOStencils(0,"(3,3)",{{-2,0},{-2,-2},{0,0},{0,-2}});
     mluseDif->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
 
     mluseDif->UpdateNonLinearWgts(drivPtr->mi, "interior", "two_stage", interior);
-
 
     // Finialize the program ====================================================
 

@@ -36,6 +36,22 @@ void MLWENOUse::AssignWENOStencils(const std::string& location,
     mlrIns_.at(AssignMap_.at(location))->ModifyReconstMethod(level, newReconstMethod);   
 }
 
+// Assign WENO linear weights
+// linear weights no need to sum up to 1 due to renormalization step latter.
+void MLWENOUse::AssignLinearWgts(const int& location,
+                                 const std::string& level, 
+                                 const vector<double>& linWgts){
+
+    mlrIns_.at(location)->SetUpLinearWgts(level, linWgts);
+}
+
+void MLWENOUse::AssignLinearWgts(const std::string& location,
+                                 const std::string& level,
+                                 const vector<double>& linWgts){
+
+    mlrIns_.at(AssignMap_.at(location))->SetUpLinearWgts(level, linWgts);
+}
+
 // Update Nonlinear weights
 void MLWENOUse::UpdateNonLinearWgts(const MeshInfo& mi, 
                                     const int& location,

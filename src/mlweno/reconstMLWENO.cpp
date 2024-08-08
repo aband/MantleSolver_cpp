@@ -271,6 +271,16 @@ void multiLevelReconstruction::ModifyReconstMethod(const std::string& key,
 
 }
 
+void multiLevelReconstruction::SetUpLinearWgts(const std::string& key, 
+                                               const vector<double>& linwgts){
+
+    if (LinWgts_.count(key) !=0){
+        LinWgts_.erase(key);
+    }
+
+    LinWgts_.insert(std::make_pair(key,linwgts));
+}
+
 void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, 
                                                    const std::string& weightType,
                                                    bool (*assignML)(const indice& globalCell,
@@ -370,7 +380,6 @@ void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
 // New nonlinear weights defined in mlweno paper
 // No distinguish of one-stage and two-stage nonlinear weighting
 // The new weighting method strategicly equivalent to two-stage weighting.
-/*
 void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
                                                         const int& globalCell){
 
@@ -382,19 +391,39 @@ void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
         const int sizeX = level.second->GetSizeX();
         const int sizeY = level.second->GetSizeY();
 
-        for (auto const& rm: Methods_.at(level.first)){
+        // In tensor product polynomial, 
+        // sizeX == sizeY always stands
+        // ==========================================================================
+        int rl = max(sizeX, sizeY);
+        int nl = 1;
+
+        double s = 1;
+
+        if (rl == 1){
+            nl = 1;
+        } else if (rl == 2){
+            nl = 3;
+        } else {
+            nl = 4;
+        }
+
+        //for (auto const& rm: Methods_.at(level.first)){
+        for (int k=0; k<Methods_.at(level.first).size(); k++){
+            indice rm  = Methods_.at(level.first).at(k);
             indice owner = Bend(mi, globalCell) + rm;
+            // Extract linear weight
+            double omega_l = LinWgts_.at(level.first).at(k);
+
             if (level.second->CheckExist(mi, owner)){
                 // Scale factor associated with each cells
-                double scale = level.second->GetScale(FlatIndic(mi, owner));
+                double h0 = level.second->GetScale(FlatIndic(mi, owner));
                 // Smoothness indicator associated with each cell
-                double dm    = level.second->GetSmoothnessIndic(mi, owner);
+                double dm = level.second->GetSmoothnessIndic(mi, owner);
 
-                int order = max(sizeX, sizeY);
+                double omega_hat = omega_l/pow(dm+eps0_*h0*h0,s*rl+nl); 
 
-                double omega_hat = 
-
-                nlw[level.first].insert(std::make_pair(FlatIndic(sizeX, rm),value));
+                nlw[level.first].insert(
+                    std::make_pair(FlatIndic(sizeX, rm),omega_hat));
                 sum += omega_hat;
             }
         }
@@ -411,7 +440,6 @@ void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
     nonLinearWgts_.erase(globalCell);
     nonLinearWgts_.insert(std::make_pair(globalCell, nlw));
 }
-*/
 
 double multiLevelReconstruction::EvaluateMLWENO (const MeshInfo& mi,
                                                  const vertex& point,

@@ -1,4 +1,5 @@
 \section{Eutectic phase behavior}
+Mid-ocean ridge forms at the place where temperature is generally lower.
 The binary eutectic phase behavior describes the chemical behavior of 
 two immiscible crystals from a completely miscible solution.
 
@@ -19,15 +20,32 @@ corresponding volumetric fractions.
 		  $T_1(P)$ and $T_2(P)$.
 \item All melting are eutectic melting.Temperature not exceeds $T_1$ or $T_2$.
 		  Therefore density of melting is a function of $\chi_e$.
+\item We focus on partial melting situation. No full melting happens at our 
+		  simulation. Hence we have a constant fluid density related to eutectic mass compositon.
 \end{itemize}
 
 We define following dimensionless bulk variables following \cite{DownwardOxidantTransport}.
+We denote volumetric fraction of three phases as olivine $\phi_1$, opx $\phi_2$ and melt $\phi_f$.
+We are tracking opx in the mixture for simulation.
+Stefan number is defined as the ratio of the sensible heat to latent heat, $\text{Ste} = \frac{c_p \Delta T}{L}$.
+We define dimensionless temperature with eutectic temperature as $\mathcal{T} = \frac{T - T_e}{T_{\text{MAX} - T_e}}$,
+and dimensionless pressure as $\mathcal{P} = \frac{P-P_0}{P_0}$, where $P_0$ represents standard atmospheric 
+pressure.
+
 \begin{equation}
-C
+		  \begin{aligned}
+					 C &= \phi_{2} \rho_{2}   + \phi_{f} \rho_{f} \chi_e(\mathcal{T}, \mathcal{P})\\
+					 H &= \phi_{1} \rho_{1} c_{p,1} \mathcal{T} + 
+							\phi_{2} \rho_{2} c_{p,2} \mathcal{T} +
+							\phi_{f} \rho_{f} \big( \frac{c_{p,1}}{\text{Ste}_1} + \frac{c_{p,2}}{\text{Ste}_2} + c_{p,f}\mathcal{T} \big)
+		  \end{aligned}
 \end{equation}
-The characteristic variables used for nondimensionalization are:
+We can nondimensionalize bulk composition and dimensionless bulk enthalpy as:
 \begin{equation}
-C_c
+		  \begin{aligned}
+					 \mathcal{C} &= C/\rho_1\\
+					 \mathcal{H} &= H/(c_{p,1}\rho_1)
+		  \end{aligned}
 \end{equation}
 
 The eutectic phase diagram can be simplified as:
@@ -51,8 +69,6 @@ We identify following $6$ regions with different phase assemblages:
 \item Two-phase super-eutectic : opx + melt
 \item Single-phase super-liquidus : melt
 \end{enumerate}
-
-\newpage
 
 \subsubsection{Region I}
 Pure olivine.
@@ -82,3 +98,9 @@ Hence the volume fraction is given:
 \begin{equation}
 \phi_{oli} = \phi_{opx} = 0, \quad \phi_{melt} = 1
 \end{equation}
+
+\subsection{Eutectic melting}
+In practical, we are focusing on eutectic melting happening when mass fraction
+of opx is left to eutectic point. We notice that upper mantle consists of more
+than $80\%$ of olivine according to\cite{TheCompositionEarth}.
+

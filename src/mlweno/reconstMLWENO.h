@@ -166,6 +166,14 @@ namespace MLWENO{
                                      const vector<indice>& newReconstMethod);
 
             /**!
+             * Assign linear weights to different levels.
+             * This linear weights only used in new multilevel algorithm.
+             */
+            void SetUpLinearWgts(const std::string& key,
+                                 const vector<double>& linwgts);
+
+
+            /**!
              * Update Non linear weights.
              */
             void UpdateNonLinearWgts(const MeshInfo& mi,
@@ -187,7 +195,7 @@ namespace MLWENO{
 
        private:
 
-            double eps0_ = 0.01;
+            double eps0_ = 1e-4;
 
             /**!
              * Storing all non linear weights mapping to each cells.
@@ -202,7 +210,7 @@ namespace MLWENO{
 
             unordered_map<std::string, vector<indice>> Methods_;
 
-            unordered_map<std::string, double> linearWgts_;
+            unordered_map<std::string, vector<double>> LinWgts_;
 
             /**!
              * Update non linear weight for one target cell.
