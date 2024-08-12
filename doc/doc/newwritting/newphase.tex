@@ -32,16 +32,21 @@ We define dimensionless temperature with eutectic temperature as $\mathcal{T} = 
 and dimensionless pressure as $\mathcal{P} = \frac{P-P_0}{P_0}$, where $P_0$ represents standard atmospheric 
 pressure. We use melting temperature of olivine at standard atmospheric pressure as 2053 K, and 
 1753 K for orthopyroxene (opx).
-
 \begin{equation}
 		  \begin{aligned}
 					 C &= \phi_{2} \rho_{2}   + \phi_{f} \rho_{f} \chi_e(\mathcal{T}, \mathcal{P})\\
 					 H &= \phi_{1} \rho_{1} c_{p,1} \mathcal{T} + 
 							\phi_{2} \rho_{2} c_{p,2} \mathcal{T} +
-							\phi_{f} \rho_{f} \big( \frac{c_{p,1}}{\text{Ste}_1} (1-\chi_e)) + 
-                                             \frac{c_{p,2}}{\text{Ste}_2}\chi_e + c_{p,f}\mathcal{T} \big)
+							\phi_{f} \rho_{f} \big( L_{f} + c_{p,f}\mathcal{T} \big)
+%					 H &= \phi_{1} \rho_{1} c_{p,1} \mathcal{T} + 
+%							\phi_{2} \rho_{2} c_{p,2} \mathcal{T} +
+%							\phi_{f} \rho_{f} \big( \frac{c_{p,1}}{\text{Ste}_1} (1-\chi_e)) + 
+%                                             \frac{c_{p,2}}{\text{Ste}_2}\chi_e + c_{p,f}\mathcal{T} \big)
 		  \end{aligned}
 \end{equation}
+Where the melting latent heat can be affected by multiple things.
+We can approximate the latent heat of the mixture as $$L_{f} = L_1(1-\chi(\mathcal{T},\mathcal{P})) + L_2\chi(\mathcal{T},\mathcal{P})$$.
+Furthermore, we can approximate the latent heat as constant $$\mathcal{L}_{f} = L_1(1-\chi_e) + L_2\chi_e$$,
 We can nondimensionalize bulk composition and dimensionless bulk enthalpy as:
 \begin{equation}
 		  \begin{aligned}
@@ -85,11 +90,17 @@ Hence, the volumetric fraction and temperature can be calculated simply as:
 
 \subsubsection{Region II}
 Two-phase sub-solidus: olivine + opx.
-The most common 
+
 
 \subsubsection{Region III}
 In this three-phase eutectic region, all three phases are present.
 The temperature is fixed at the eutectic point.
+This is the exact eutectic point where solid phase opx hasn't been 
+exausted.
+The conditions to be in the region III are:
+\begin{equation}
+
+\end{equation}
 
 \subsubsection{Region IV}
 In this region, melting starts at the point left to the eutectic melting point.
