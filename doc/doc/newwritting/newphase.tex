@@ -8,7 +8,7 @@ using temperature and composition information. We follows phase behaviors
 details described in \cite{DownwardOxidantTransport}. We made some reasonable adjustments
 for our mantle system.
 
-There are few key elements that allow precise calculation of phase region and 
+There are few key elements that allow practical calculation of phase region and 
 corresponding volumetric fractions.
 
 \begin{itemize}
@@ -22,6 +22,8 @@ corresponding volumetric fractions.
 		  Therefore density of melting is a function of $\chi_e$.
 \item We focus on partial melting situation. No full melting happens at our 
 		  simulation. Hence we have a constant fluid density related to eutectic mass compositon.
+\item We assume same density value of olivine and orthopyroxene. We assume melting would not 
+		  affect density.  
 \end{itemize}
 
 We define following dimensionless bulk variables following \cite{DownwardOxidantTransport}.
@@ -31,7 +33,7 @@ Stefan number is defined as the ratio of the sensible heat to latent heat, $\tex
 We define dimensionless temperature with eutectic temperature as $\mathcal{T} = \frac{T - T_e}{T_{\text{MAX} - T_e}}$,
 and dimensionless pressure as $\mathcal{P} = \frac{P-P_0}{P_0}$, where $P_0$ represents standard atmospheric 
 pressure. We use melting temperature of olivine at standard atmospheric pressure as 2053 K, and 
-1753 K for orthopyroxene (opx).
+1753 K for orthopyroxene (opx). According to 
 \begin{equation}
 		  \begin{aligned}
 					 C &= \phi_{2} \rho_{2}   + \phi_{f} \rho_{f} \chi_e(\mathcal{T}, \mathcal{P})\\
@@ -54,6 +56,7 @@ We can nondimensionalize bulk composition and dimensionless bulk enthalpy as:
 					 \mathcal{H} &= H/(c_{p,1}\rho_1)
 		  \end{aligned}
 \end{equation}
+We denote nondimensionalized density and specific heat as $\rho_{i,j}$ and $c_{p,i,j}$.
 
 The eutectic phase diagram can be simplified as:
 \begin{center}
@@ -81,7 +84,7 @@ We identify following $6$ regions with different phase assemblages:
 Pure olivine.
 The conditions to be in region I are 
 \begin{equation}
-		  \mathbf{C} = 0 \quad \mathbf{H} \leq 1
+		  \mathcal{C} = 0 \quad \mathcal{H} \leq 1
 \end{equation}
 Hence, the volumetric fraction and temperature can be calculated simply as:
 \begin{equation}
@@ -90,7 +93,14 @@ Hence, the volumetric fraction and temperature can be calculated simply as:
 
 \subsubsection{Region II}
 Two-phase sub-solidus: olivine + opx.
-
+The conditions to be in region II are:
+\begin{equation}
+\mathcal{C} \quad \mathcal{H} 
+\end{equation}
+In this phase region, temperature hasn't reached eutectic melting temperature.
+\begin{equation}
+\phi_{2} = \frac{\mathcal{C}}{\rho_{2,1}} \quad \phi_1 = 1-\phi_2 \quad \phi_f = 0 \quad \text{and} \quad \mathcal{T} = \frac{\mathcal{T}}{\phi_1 + \phi_2\rho_{2,1} c_{p,2,1}} < 0
+\end{equation}
 
 \subsubsection{Region III}
 In this three-phase eutectic region, all three phases are present.
@@ -99,20 +109,36 @@ This is the exact eutectic point where solid phase opx hasn't been
 exausted.
 The conditions to be in the region III are:
 \begin{equation}
-
+\mathcal{C} 
 \end{equation}
+In this phase region, temperature is exactly at the eutectic temperature,
+\begin{equation}
+\phi_f = \frac{\mathcal{H}}{L\rho_{f,1}} \quad \phi_2 = \frac{\mathcal{C} - \phi_f\rho_{f,1}\chi_e}{\rho_{2,1}} \quad \phi_1 = 1-\phi_f - \phi_2 \quad \text{and} \quad \mathcal{T} = 0
+\end{equation}
+In this region, density of melt is fixed as eutectic density $\rho_f = \rho_e$.
 
 \subsubsection{Region IV}
 In this region, melting starts at the point left to the eutectic melting point.
+This is the melting happening in upper mantle.
+The conditions to be in this region are:
+\begin{equation}
+\mathcal{C} \quad \mathcal{H}
+\end{equation}
+In this phase region, opx has exausted in solid matrix and temperature keeps rising.
+As more olivine melting, the density of melting changes.
+\begin{equation}
+\phi_2 = 0
+\end{quation}
 
 \subsubsection{Region V}
 In this region, melting starts at the point right to the eutectic melting point.
+We are not investigate too much in this type of melting.
 
 \subsubsection{Region VI}
 In this region, only melting is present.
 Hence the volume fraction is given:
 \begin{equation}
-\phi_{oli} = \phi_{opx} = 0, \quad \phi_{melt} = 1
+\phi_{1} = \phi_{2} = 0, \quad \phi_{f} = 1
 \end{equation}
 
 \subsection{Eutectic melting}
