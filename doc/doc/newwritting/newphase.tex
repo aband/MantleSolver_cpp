@@ -33,7 +33,8 @@ Stefan number is defined as the ratio of the sensible heat to latent heat, $\tex
 We define dimensionless temperature with eutectic temperature as $\mathcal{T} = \frac{T - T_e}{T_{\text{MAX} - T_e}}$,
 and dimensionless pressure as $\mathcal{P} = \frac{P-P_0}{P_0}$, where $P_0$ represents standard atmospheric 
 pressure. We use melting temperature of olivine at standard atmospheric pressure as 2053 K, and 
-1753 K for orthopyroxene (opx). According to 
+1753 K for orthopyroxene (opx). 
+Olivine has density range of 3.2 to 4.3 $g/cm^3$ and orthopyroxene has similiar density ranging from 3.2 to 4 $g/cm^3$.
 \begin{equation}
 		  \begin{aligned}
 					 C &= \phi_{2} \rho_{2}   + \phi_{f} \rho_{f} \chi_e(\mathcal{T}, \mathcal{P})\\
@@ -99,7 +100,7 @@ The conditions to be in region II are:
 \end{equation}
 In this phase region, temperature hasn't reached eutectic melting temperature.
 \begin{equation}
-\phi_{2} = \frac{\mathcal{C}}{\rho_{2,1}} \quad \phi_1 = 1-\phi_2 \quad \phi_f = 0 \quad \text{and} \quad \mathcal{T} = \frac{\mathcal{T}}{\phi_1 + \phi_2\rho_{2,1} c_{p,2,1}} < 0
+\phi_{2} = \frac{\mathcal{C}}{\rho_{2,1}} \quad \phi_1 = 1-\phi_2 \quad \phi_f = 0 \quad \text{and} \quad \mathcal{T} = \frac{\mathcal{H}}{\phi_1 + \phi_2\rho_{2,1} c_{p,2,1}} < 0
 \end{equation}
 
 \subsubsection{Region III}
@@ -128,7 +129,7 @@ In this phase region, opx has exausted in solid matrix and temperature keeps ris
 As more olivine melting, the density of melting changes.
 \begin{equation}
 \phi_2 = 0
-\end{quation}
+\end{equation}
 
 \subsubsection{Region V}
 In this region, melting starts at the point right to the eutectic melting point.
@@ -141,6 +142,16 @@ Hence the volume fraction is given:
 \phi_{1} = \phi_{2} = 0, \quad \phi_{f} = 1
 \end{equation}
 
+\subsubsection{Physical attributes}
+\begin{center}
+\begin{tabular}{c|c|c|c|}
+\quad &\text{olivine} & \text{orthopyroxene} & \text{clinopyroxene}\\
+\hline
+$c_p$ & & & \\
+$\rho \quad (\text{g/cm}^3)$ & & &
+\end{tabular}
+\end{center}
+
 \subsection{Eutectic melting}
 In practical, we are focusing on eutectic melting happening when mass fraction
 of opx is left to eutectic point. We notice that upper mantle consists of more
@@ -151,3 +162,56 @@ The simplified left eutectic phase diagram is now:
 \includegraphics[width=5.5cm,height=4cm]{TX}
 \end{center}
 
+\subsubsection{Further approximation and simplified phase split}
+To further simplify my calculation of phase diagram, I propose following approximations:
+\begin{itemize}
+\item  Olivine has density range of 3.2 to 4.3 $g/cm^3$ and orthopyroxene has similiar density ranging from 3.2 to 4 $g/cm^3$.
+		 Hence, we assume olivine and orthopyroxene share one same density.
+\item  Heat capacity has a complex dependency on temperature, pressure and mixture.
+\item  Ignore thermal expansion, and density change upon melting.
+\item  Assume latent heat $L_1 = L_2 = L$.
+\end{itemize}
+Under such assumption, we can get a much simplified concentration and enthalpy:
+\begin{equation}
+\begin{aligned}
+\mathcal{C} &= \phi_2 + \phi_f \chi(\mathcal{T}, \mathcal{P}) \\
+\mathcal{H} &= (\phi_1 + \phi_2 + \phi_f)\mathcal{T} + \phi_f L_f \\
+            &= \mathcal{T}  + \phi_f L
+\end{aligned}
+\end{equation}
+The following phase regions are being affected by my simplification.
+
+\subsubsection{Region II}
+Two-phase sub-solidus: olivine + opx.
+The conditions to be in region II are:
+\begin{equation}
+\mathcal{C} \quad \mathcal{H} 
+\end{equation}
+In this phase region, temperature hasn't reached eutectic melting temperature.
+\begin{equation}
+\phi_{2} = \mathcal{C} \quad \phi_1 = 1-\phi_2 \quad \phi_f = 0 \quad \text{and} \quad \mathcal{T} = \frac{\mathcal{H}}{\phi_1 + \phi_2} = \mathcal{H} < 0
+\end{equation}
+
+\subsubsection{Region III}
+In this three-phase eutectic region, all three phases are present.
+\begin{equation}
+\mathcal{C} 
+\end{equation}
+In this phase region, temperature is exactly at the eutectic temperature,
+\begin{equation}
+\phi_f = \frac{\mathcal{H}}{L} \quad \phi_2 = \mathcal{C} - \phi_f\chi(\mathcal{T}, \mathcal{P}) \quad \phi_1 = 1-\phi_f - \phi_2 \quad \text{and} \quad \mathcal{T} = 0
+\end{equation}
+Where $\chi(\mathcal{T}, \mathcal{P}) = \chi_e(\mathcal{T}, \mathcal{P})$, all melting is 
+eutectic melting. Mass fraction is fixed as eutectic mass fraction.
+
+\subsubsection{Region IV}
+In this super-eutectic two-phase region, opx has been exhausted in eutectic melting.
+The volumetric fractions can be determined as:
+\begin{equation}
+\phi_2 = 0 \quad \phi_f = \frac{\mathcal{C}}{\chi(\mathcal{T}, \mathcal{P})}
+\end{equation}
+The corresponding temperature should be determined by solving the following equation.
+\begin{equation}
+F(\mathcal{T}) = \mathcal{H} - \mathcal{T} - \frac{\mathcal{C}}{\chi(\mathcal{T}, \mathcal{P})} L = 0 
+\end{equation}
+Simple Newton method can be applied to solve this equation if we apply nonlinear relationship.
