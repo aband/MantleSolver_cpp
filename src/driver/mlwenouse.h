@@ -79,6 +79,21 @@ namespace MLWENO{
                                       const std::string& weightType,
                                       bool (*func)(const indice& globalCell,
                                                    const MeshInfo& mi));
+
+             /**!
+              * Updated version.
+              * No need of weighting type
+              */
+             void UpdateNonLinearWgts(const MeshInfo& mi, 
+                                      const std::string& location,
+                                      bool (*func)(const indice& globalCell,
+                                                   const MeshInfo& mi));
+
+             void UpdateNonLinearWgts(const MeshInfo& mi, 
+                                      const int& location,
+                                      bool (*func)(const indice& globalCell,
+                                                   const MeshInfo& mi));
+
              /**!
               * Evaluate a reconstruction value using defined MLWENO instances.
               */

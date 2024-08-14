@@ -312,16 +312,31 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
 // New standard computation of non linear weights
 // described in multi-level paper.
 // No need of parameter of one-stage or two-stage
-/*
+// Equivalent of two-stage
 void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, 
                                                    bool (*assignML)(const indice& globalCell, 
                                                                     const MeshInfo& mi)){
     // Update non linear weights for all cells in the target domain
-        
+    if (nonLinearWgts_.empty()) {
+        // Initialize non linear weights with assigned domain.
+        // GlobalCells will be selected by assignML function.
+        for (int j=mi.MPIlocalCellStart[1] - mi.cellGhostLayerSize; 
+                 j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + mi.cellGhostLayerSize; j++){
+        for (int i=mi.MPIlocalCellStart[0] - mi.cellGhostLayerSize; 
+                 i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + mi.cellGhostLayerSize; i++){
+            indice globalCell {i,j};
+            if (assignML(globalCell,mi)){
+                UpdateNonLinearWgtsCell_(mi, FlatIndic(mi, globalCell));
+            }
+        }}
 
-
+    } else {
+        // Update non linear weights.
+        for (auto const& nlw: nonLinearWgts_){
+            UpdateNonLinearWgtsCell_(mi, nlw.first);
+        }
+    }
 }
-*/
 
 inline int powerShift(const int& r){
 
@@ -390,7 +405,6 @@ void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
     for (auto const& level : Levels_){
         const int sizeX = level.second->GetSizeX();
         const int sizeY = level.second->GetSizeY();
-
         // In tensor product polynomial, 
         // sizeX == sizeY always stands
         // ==========================================================================

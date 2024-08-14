@@ -172,13 +172,20 @@ namespace MLWENO{
             void SetUpLinearWgts(const std::string& key,
                                  const vector<double>& linwgts);
 
-
             /**!
              * Update Non linear weights.
              */
             void UpdateNonLinearWgts(const MeshInfo& mi,
                                      const std::string& weightType,
                                      bool (*assignML)(const indice& globalCell,
+                                                      const MeshInfo& mi));
+
+            /**!
+             * Update Non linear weights.
+             * No differentiating two-stage and one-stage
+             */
+            void UpdateNonLinearWgts(const MeshInfo& mi,
+                                     bool (*assginML)(const indice& globalCell,
                                                       const MeshInfo& mi));
 
             /**!

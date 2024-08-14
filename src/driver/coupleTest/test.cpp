@@ -24,7 +24,7 @@
 extern "C"{
 #include "mesh.h"
 #include "output.h"
-#include "cgns_io.h"
+//#include "cgns_io.h"
 }
 
 int main(int argc, char **argv){
@@ -243,15 +243,15 @@ int main(int argc, char **argv){
                         vx, vy, *hdiv, *basis_);
 
     // CGNS output of hdf5 file
-    char stokesfile[] = "stokes.cgns";   
-    CgnsArrayOutput(dmMesh,&globalmesh,ux,uy,mi.MPIlocalCellStart[0],
-                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
-                    mi.MPIlocalCellSize[1],stokesfile);
+//    char stokesfile[] = "stokes.cgns";   
+//    CgnsArrayOutput(dmMesh,&globalmesh,ux,uy,mi.MPIlocalCellStart[0],
+//                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+//                    mi.MPIlocalCellSize[1],stokesfile);
 
-    char darcyfile[] = "darcy.cgns";    	
-    CgnsArrayOutput(dmMesh,&globalmesh,vx,vy,mi.MPIlocalCellStart[0],
-                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
-                    mi.MPIlocalCellSize[1],darcyfile);
+//    char darcyfile[] = "darcy.cgns";    	
+//    CgnsArrayOutput(dmMesh,&globalmesh,vx,vy,mi.MPIlocalCellStart[0],
+//                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+//                    mi.MPIlocalCellSize[1],darcyfile);
 
     // Transport ================================================================
     // Create levels for ml-weno 

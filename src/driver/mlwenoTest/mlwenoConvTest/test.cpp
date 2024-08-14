@@ -235,7 +235,14 @@ int main(int argc, char **argv){
     mluse->AssignWENOStencils("interior","(3,3)",{{-2,0},{-2,-2},{0,0},{0,-2}});
     mluse->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
 
-    mluse->UpdateNonLinearWgts(drivPtr->mi, "interior", "two_stage", interior);
+    mluse->AssignLinearWgts("interior","(3,3)",{1,1,1,1});
+    mluse->AssignLinearWgts("interior","(5,5)",{10});
+
+    // Old version
+    //mluse->UpdateNonLinearWgts(drivPtr->mi, "interior", "two_stage", interior);
+
+    // new version
+    mluse->UpdateNonLinearWgts(drivPtr->mi, "interior", interior); 
 
     // Add reconstruction levels to boundary cells
     mluse->AddMLWENOLevel("left_boundary",{"(3,3)","(1,1)"}, mlpPtr);
@@ -245,7 +252,7 @@ int main(int argc, char **argv){
 
     mluse->UpdateNonLinearWgts(drivPtr->mi, "left_boundary", "one_stage", left_boundary);
 
-    mluse->PrintNonLinearWgts("interior",drivPtr->mi);
+    //mluse->PrintNonLinearWgts("interior",drivPtr->mi);
 
     /**!
      * L_1 error
