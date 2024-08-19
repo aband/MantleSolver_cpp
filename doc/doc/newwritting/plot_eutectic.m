@@ -73,6 +73,3 @@ axis square
 xlabel 'Bulk composition'
 ylabel 'Dimensionless enthalpy'
 
-% Needed HC plot
-figure
-plot()

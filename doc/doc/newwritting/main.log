@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  13 AUG 2024 20:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  18 AUG 2024 22:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -963,12 +963,18 @@ Package pdftex.def Info: TX.png  used on input line 161.
 
  [12]
 (./main.aux)
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 237F34033019564554A8FED6A9549C59;5200.
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 237F34033019564554A8FED6A9549C59;5200
+(rerunfilecheck)             After:  FE6AB7E90963BA536EC8AA8C669D475D;5399.
  ) 
 Here is how much of TeX's memory you used:
- 25730 strings out of 478287
- 462205 string characters out of 5849289
+ 25731 strings out of 478287
+ 462218 string characters out of 5849289
  722192 words of memory out of 5000000
  41812 multiletter control sequences out of 15000+600000
  472184 words of font info for 40 fonts, out of 8000000 for 9000
@@ -986,10 +992,10 @@ sfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
 .pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on main.pdf (12 pages, 223010 bytes).
+Output written on main.pdf (12 pages, 223302 bytes).
 PDF statistics:
- 348 PDF objects out of 1000 (max. 8388607)
- 302 compressed objects within 4 object streams
- 108 named destinations out of 1000 (max. 500000)
+ 351 PDF objects out of 1000 (max. 8388607)
+ 305 compressed objects within 4 object streams
+ 109 named destinations out of 1000 (max. 500000)
  263 words of extra memory for PDF output out of 10000 (max. 10000000)
 

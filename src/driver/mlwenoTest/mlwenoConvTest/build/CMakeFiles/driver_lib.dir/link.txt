@@ -1,0 +1,2 @@
+/usr/bin/ar qc libdriver_lib.a CMakeFiles/driver_lib.dir/home/renpo/Research/MantleSolver/src/driver/driver.cpp.o CMakeFiles/driver_lib.dir/home/renpo/Research/MantleSolver/src/driver/mlwenouse.cpp.o
+/usr/bin/ranlib libdriver_lib.a
