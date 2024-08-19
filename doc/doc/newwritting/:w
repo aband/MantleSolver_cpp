@@ -12,14 +12,18 @@ There are few key elements that allow practical calculation of phase region and
 corresponding volumetric fractions.
 
 \begin{itemize}
-\item Eutectic melting mass fraction is only related to pressure.
-		  Fluid formed by eutectic melting has a constant composition of opx 
-		  denoted as $X_e(P)$.
+\item Eutectic melting mass fraction is only related to temperature and pressure.
+		  Fluid formed by eutectic melting has a constant composition.
+		  $X_e(T,P)$
 \item Melting temperature related to pressure. Pressure release is one of the 
 		  main reason why melting happens in mantle.
 		  $T_1(P)$ and $T_2(P)$.
-\item Eutectic melting is the primal way of melting. The temperature where melting
-		  happens has lower temperature then actual melting temperature.
+\item All melting are eutectic melting.Temperature not exceeds $T_1$ or $T_2$.
+		  Therefore density of melting is a function of $X_e$.
+\item We focus on partial melting situation. No full melting happens at our 
+		  simulation. Hence we have a constant fluid density related to eutectic mass compositon.
+\item We assume same density value of olivine and orthopyroxene. We assume melting would not 
+		  affect density.  
 \end{itemize}
 
 We define following dimensionless bulk variables following \cite{DownwardOxidantTransport}.
@@ -31,11 +35,9 @@ and dimensionless pressure as $\mathcal{P} = \frac{P-P_0}{P_0}$, where $P_0$ rep
 pressure. We use melting temperature of olivine at standard atmospheric pressure as 2053 K, and 
 1753 K for orthopyroxene (opx). 
 Olivine has density range of 3.2 to 4.3 $g/cm^3$ and orthopyroxene has similiar density ranging from 3.2 to 4 $g/cm^3$.
-We define a dimensionless composition $\chi_{i} = \frac{X}{X_e}$ where $i \in \{1,2,f\}$ and bulk composition defined
-as $\chi = \sum \phi_i \chi_i$.
 \begin{equation}
 		  \begin{aligned}
-					 C &= \phi_{2} \rho_{2}   + \phi_{f} \rho_{f} \chi_f(\mathcal{T}, \mathcal{P})\\
+					 C &= \phi_{2} \rho_{2}   + \phi_{f} \rho_{f} \chi_e(\mathcal{T}, \mathcal{P})\\
 					 H &= \phi_{1} \rho_{1} c_{p,1} \mathcal{T} + 
 							\phi_{2} \rho_{2} c_{p,2} \mathcal{T} +
 							\phi_{f} \rho_{f} \big( L_{f} + c_{p,f}\mathcal{T} \big)
@@ -46,7 +48,7 @@ as $\chi = \sum \phi_i \chi_i$.
 		  \end{aligned}
 \end{equation}
 Where the melting latent heat can be affected by multiple things.
-We can approximate the latent heat of the mixture as $$L_{f} = L_1(1-\chi_f(\mathcal{T},\mathcal{P})) + L_2\chi_f(\mathcal{T},\mathcal{P})$$.
+We can approximate the latent heat of the mixture as $$L_{f} = L_1(1-\chi(\mathcal{T},\mathcal{P})) + L_2\chi(\mathcal{T},\mathcal{P})$$.
 We can nondimensionalize bulk composition and dimensionless bulk enthalpy as:
 \begin{equation}
 		  \begin{aligned}
@@ -174,7 +176,7 @@ To further simplify my calculation of phase diagram, I propose following approxi
 \item  Ignore both thermal expansion and density change upon melting.
 \item  Assume latent heat $L_1 = L_2 = L$.
 \end{itemize}
-Under such assumption, we can get a much simplified concentration and bulk enthalpy:
+Under such assumption, we can get a much simplified concentration and enthalpy:
 \begin{equation}
 \begin{aligned}
 \mathcal{C} &= \phi_2 + \phi_f \chi_f(\mathcal{T}, \mathcal{P}) \\
@@ -187,7 +189,7 @@ Under such assumption, we can get a much simplified concentration and bulk entha
 Two-phase sub-solidus: olivine + opx.
 The conditions to be in region II are:
 \begin{equation}
-\quad \mathcal{H} < a
+\mathcal{C} \quad \mathcal{H} 
 \end{equation}
 In this phase region, temperature hasn't reached eutectic melting temperature.
 \begin{equation}
