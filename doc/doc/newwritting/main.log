@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  19 AUG 2024 14:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  19 AUG 2024 16:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -944,43 +944,48 @@ put line 271.
 <eutectic.png, id=215, 430.54468pt x 322.90851pt>
 File: eutectic.png Graphic file (type png)
 <use eutectic.png>
-Package pdftex.def Info: eutectic.png  used on input line 65.
+Package pdftex.def Info: eutectic.png  used on input line 61.
 (pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
+ [8 <./eutectic.png (PNG copy)>]
+[9]
+<TX.png, id=241, 438.23297pt x 317.5267pt>
+File: TX.png Graphic file (type png)
+<use TX.png>
+Package pdftex.def Info: TX.png  used on input line 167.
+(pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
+<HX.png, id=242, 429.10312pt x 310.91156pt>
+File: HX.png Graphic file (type png)
+<use HX.png>
+Package pdftex.def Info: HX.png  used on input line 168.
+(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
+<HC.png, id=243, 421.575pt x 316.18124pt>
+File: HC.png Graphic file (type png)
+<use HC.png>
+Package pdftex.def Info: HC.png  used on input line 185.
+(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [8]
-[9 <./eutectic.png (PNG copy)>]
-<TX.png, id=240, 438.23297pt x 317.5267pt>
-File: TX.png Graphic file (type png)
-<use TX.png>
-Package pdftex.def Info: TX.png  used on input line 152.
-(pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
-<HX.png, id=241, 429.10312pt x 310.91156pt>
-File: HX.png Graphic file (type png)
-<use HX.png>
-Package pdftex.def Info: HX.png  used on input line 153.
-(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-<HC.png, id=242, 429.10312pt x 310.91156pt>
-File: HC.png Graphic file (type png)
-<use HC.png>
-Package pdftex.def Info: HC.png  used on input line 168.
-(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
- [10 <./TX.png (PNG copy)> <./HX.png (PNG copy)> <./HC.png (PNG copy)>]) [11] (
-./main.bbl)
-(/usr/share/texlive/texmf-dist/tex/latex/tools/.tex File ignored)
+ [10 <./TX.png (PNG copy)> <./HX.png (PNG copy)>]) [11 <./HC.png (PNG copy)>] (
+./main.bbl) (/usr/share/texlive/texmf-dist/tex/latex/tools/.tex File ignored)
 \tf@thm=\write5
 \openout5 = `main.thm'.
 
  [12]
 (./main.aux)
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: CED3C6B443FC89B336F11AFF2AA1AAF4;5227.
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 2A9F12CEC32C9A949D0E4F580BB28E30;5227
+(rerunfilecheck)             After:  E489B9276BDA519AB75821FB3322B64E;5207.
  ) 
 Here is how much of TeX's memory you used:
  25753 strings out of 478287
  462440 string characters out of 5849289
- 722193 words of memory out of 5000000
+ 722192 words of memory out of 5000000
  41835 multiletter control sequences out of 15000+600000
  472184 words of font info for 40 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
@@ -997,7 +1002,7 @@ sfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
 .pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on main.pdf (12 pages, 256668 bytes).
+Output written on main.pdf (12 pages, 256126 bytes).
 PDF statistics:
  347 PDF objects out of 1000 (max. 8388607)
  300 compressed objects within 3 object streams

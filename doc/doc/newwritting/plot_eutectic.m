@@ -84,14 +84,17 @@ figure
 plot([0,Xe]/Xe,[T1+L,Te+L],'k-'), hold on
 plot([0,Xe]/Xe, [-0.2, -0.2], 'k-')
 plot([0,Xe]/Xe,[Te,Te],'k-')
-plot(xx,myfunc(xx),'k-');
+%plot(xx,myfunc(xx),'k-');
+
 text(0.5,-0.1,'II','fontsize',12,'color','b');
 text(0.3,0.6,'IV','fontsize',12,'color','b');
 text(0.8,0.3,'III','fontsize',12,'color','b');
 text(0.6,1.3,'VI','fontsize',12,'color','b');
-text(0.5,0.55,'b','fontsize',12,'color','#A2142F');
+%text(0.5,0.55,'b','fontsize',12,'color','#A2142F');
+plot([0,Xe]/Xe,[Te,Te+L],'k-')
 text(0.5,0.0,'a','fontsize',12,'color','#A2142F');
 text(0.5,1.1,'c','fontsize',12,'color','#A2142F');
+text(0.5,0.3,'b','fontsize',12,'color','#A2142F');
 hold off
 
 axis square

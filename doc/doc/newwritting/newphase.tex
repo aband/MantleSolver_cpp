@@ -32,7 +32,7 @@ pressure. We use melting temperature of olivine at standard atmospheric pressure
 1753 K for orthopyroxene (opx). 
 Olivine has density range of 3.2 to 4.3 $g/cm^3$ and orthopyroxene has similiar density ranging from 3.2 to 4 $g/cm^3$.
 We define a dimensionless composition $\chi_{i} = \frac{X}{X_e}$ where $i \in \{1,2,f\}$ and bulk composition defined
-as $\chi = \sum \phi_i \chi_i$.
+as $\chi = \sum \phi_i \chi_i$. The eutectic melting composition is now normalized as $\chi_e = X_e/X_e = 1$.
 \begin{equation}
 		  \begin{aligned}
 					 C &= \phi_{2} \rho_{2}   + \phi_{f} \rho_{f} \chi_f(\mathcal{T}, \mathcal{P})\\
@@ -61,7 +61,7 @@ The eutectic phase diagram can be simplified as:
 \includegraphics[width=5.5cm,height=4cm]{eutectic.png}
 \end{center}
 
-\subsection{Phase split calculation}
+\subsection{Primary phase split}
 In mantle, we mostly have olivine and orthopyroxene (opx) mixture in the rock.
 Like eutectic melting system e.g. salt and ice,
 the presence of one phase would largely
@@ -137,34 +137,7 @@ Hence the volume fraction is given:
 %\end{tabular}
 %\end{center}
 
-\subsection{Phase diagrams}
-In practical, we are focusing on eutectic melting happening when mass fraction
-of opx is left to eutectic point. We notice that upper mantle consists of more
-than $80\%$ of olivine according to\cite{TheCompositionEarth}. Hence, we firstly 
-restrict our calculation to the left side of eutectic point.
-
-We can also plot a $\mathcal{H}-\chi$ diagram based on the $\mathcal{T}-\chi$ plot above.
-\begin{center}
-\includegraphics[width=5.5cm,height=4cm]{TX}
-\includegraphics[width=5.5cm,height=4cm]{HX}
-\end{center}
-More importantly, we need $\mathcal{H}-\mathcal{C}$ phase diagram.
-Now we calculate the line $b$ separate region III (eutectic melting) and region IV (super-eutectic melting).
-Along line $b$, all opx has been exhausted and eutectic melting has stopped, hence $\phi_2 = 0$. 
-The resulting $\mathcal{C} = \phi_f\chi_f$. According to our assumption of homogenous density,
-$\chi = \frac{\phi_2}{\phi_2 + \phi_1} = \frac{M_2}{M_1 + M_2}$. Therefore, when all opx exhausted $\phi_2 = 0$,
-$\phi_f = \phi_2/\chi_e = \chi/\chi_e$. If we implement a linear relationship, we can get the following along line $b$:
-\begin{equation}
-\mathcal{C} = \frac{\chi(1-\chi)}{\chi_e}
-\end{equation}
-Now let's turn to another line $c$ separating region IV (super-eutectic melting) and region VI (super-liquidius region).
-On this line $c$, all solid has molten $\phi_f = 1$. The resulting $\mathcal{C} = \chi_f$.
-Hence the final $\mathcal{H}-\mathcal{C}$ diagram is:
-\begin{center}
-\includegraphics[width=5.5cm,height=4cm]{HC}
-\end{center}
-
-\subsubsection{Further approximation and simplified phase split}
+\subsection{Further approximation and simplified phase split}
 To further simplify my calculation of phase diagram, I propose following approximations:
 \begin{itemize}
 \item  Olivine has density range of 3.2 to 4.3 $g/cm^3$ and orthopyroxene has similiar density ranging from 3.2 to 4 $g/cm^3$.
@@ -182,6 +155,35 @@ Under such assumption, we can get a much simplified concentration and bulk entha
             &= \mathcal{T}  + \phi_f L
 \end{aligned}
 \end{equation}
+
+\subsubsection{Phase diagrams}
+In practical, we are focusing on eutectic melting happening when mass fraction
+of opx is left to eutectic point. We notice that upper mantle consists of more
+than $80\%$ of olivine according to\cite{TheCompositionEarth}. Hence, we only need to
+restrict our calculation to the left side of eutectic point.
+
+We can also plot a $\mathcal{H}-\chi$ diagram based on the $\mathcal{T}-\chi$ plot above.
+\begin{center}
+\includegraphics[width=5.5cm,height=4cm]{TX}
+\includegraphics[width=5.5cm,height=4cm]{HX}
+\end{center}
+More importantly, we need $\mathcal{H}-\mathcal{C}$ phase diagram.
+Now we calculate the line $b$ separate region III (eutectic melting) and region IV (super-eutectic melting).
+Along line $b$, all opx has been exhausted and eutectic melting has stopped, hence $\phi_2 = 0$. 
+The resulting $\mathcal{C} = \phi_f\chi_f$. According to our assumption of homogenous density, at
+the solidus region, we have the following relationship:
+$\chi = \frac{\phi_2}{\phi_2 + \phi_1} = \frac{M_2}{M_1 + M_2}$. Therefore, when all opx exhausted $\phi_2 = 0$,
+$\phi_f = X/X_e = \chi$. Along this line $b$, $\chi_f = \chi_e = 1$ is a constant for the fact that all the melting
+are eutectic melting. Hence along line $b$, we have
+\begin{equation}
+\mathcal{C} = \chi
+\end{equation}
+Now let's turn to another line $c$ separating region IV (super-eutectic melting) and region VI (super-liquidius region).
+On this line $c$, all solid has molten $\phi_f = 1$. The resulting $\mathcal{C} = \chi_f = \chi$.
+Hence the final $\mathcal{H}-\mathcal{C}$ diagram is:
+\begin{center}
+\includegraphics[width=5.5cm,height=4cm]{HC}
+\end{center}
 
 \subsubsection{Region II}
 Two-phase sub-solidus: olivine + opx.
