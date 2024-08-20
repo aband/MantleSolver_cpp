@@ -289,7 +289,9 @@ int main(int argc, char **argv){
     mluseAdv->AssignWENOStencils(0,"(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
     mluseAdv->AssignWENOStencils(0,"(3,3)",{{-1,-1}});
 
-    mluseAdv->UpdateNonLinearWgts(drivPtr->mi, "interior", "two_stage", interior);
+    mluseAdv->UpdateNonLinearWgts(drivPtr->mi, "interior", interior);
+
+    mluseAdv
 
     // Diffusion mlweno use (5,5) and (3,3) reconstruction
     MLWENO::MLWENOUse * mluseDif = new MLWENO::MLWENOUse();
@@ -299,7 +301,7 @@ int main(int argc, char **argv){
     mluseDif->AssignWENOStencils(0,"(3,3)",{{-2,0},{-2,-2},{0,0},{0,-2}});
     mluseDif->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
 
-    mluseDif->UpdateNonLinearWgts(drivPtr->mi, "interior", "two_stage", interior);
+    mluseDif->UpdateNonLinearWgts(drivPtr->mi, "interior", interior);
 
     // Finialize the program ====================================================
 

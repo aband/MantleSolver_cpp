@@ -189,7 +189,7 @@ Hence the final $\mathcal{H}-\mathcal{C}$ diagram is:
 Two-phase sub-solidus: olivine + opx.
 The conditions to be in region II are:
 \begin{equation}
-\quad \mathcal{H} < a
+\quad \mathcal{H} < 0
 \end{equation}
 In this phase region, temperature hasn't reached eutectic melting temperature.
 \begin{equation}
@@ -198,28 +198,25 @@ In this phase region, temperature hasn't reached eutectic melting temperature.
 
 \subsubsection{Region III}
 In this three-phase eutectic region, all three phases are present.
-\begin{equation}
-\mathcal{C} 
-\end{equation}
 In this phase region, temperature is exactly at the eutectic temperature,
 \begin{equation}
-\phi_f = \frac{\mathcal{H}}{L} \quad \phi_2 = \mathcal{C} - \phi_f\chi(\mathcal{T}, \mathcal{P}) \quad \phi_1 = 1-\phi_f - \phi_2 \quad \text{and} \quad \mathcal{T} = 0
+\phi_f = \frac{\mathcal{H}}{L} \quad \phi_2 = \mathcal{C} - \phi_f\chi_f(\mathcal{T}, \mathcal{P}) \quad \phi_1 = 1-\phi_f - \phi_2 \quad \text{and} \quad \mathcal{T} = 0
 \end{equation}
-Where $\chi(\mathcal{T}, \mathcal{P}) = \chi_e(\mathcal{T}, \mathcal{P})$, all melting is 
+Where $\chi_f(\mathcal{T}, \mathcal{P}) = \chi_e(\mathcal{P})$, all melting is 
 eutectic melting. Mass fraction is fixed as eutectic mass fraction.
 
 \subsubsection{Region IV}
 In this super-eutectic two-phase region, opx has been exhausted in eutectic melting.
 The volumetric fractions can be determined as:
 \begin{equation}
-\phi_2 = 0 \quad \phi_f = \frac{\mathcal{C}}{\chi(\mathcal{T}, \mathcal{P})}
+\phi_2 = 0 \quad \phi_f = \frac{\mathcal{C}}{\chi_f(\mathcal{T}, \mathcal{P})}
 \end{equation}
 The corresponding temperature should be determined by solving the following equation.
 \begin{equation}
-F(\mathcal{T}) = \mathcal{H} - \mathcal{T} - \frac{\mathcal{C}}{\chi(\mathcal{T}, \mathcal{P})} L = 0 
+F(\mathcal{T}) = \mathcal{H} - \mathcal{T} - \frac{\mathcal{C}}{\chi_f(\mathcal{T}, \mathcal{P})} L = 0 
 \end{equation}
-Simple Newton method can be applied to solve this equation if we apply nonlinear relationship.
-If we use simple linear relationship between mass fraction and temperature $\chi = \chi_e(1-\mathcal{T})$,
+Simple Newton method can be applied to solve this equation if we apply nonlinear $\chi_f-\mathcal{T}$ relationship.
+If we use simple linear relationship between mass fraction and temperature as $\chi_f = \chi_e(1-\mathcal{T})$,
 we can obtain a simple quadratic equation:
 \begin{equation}
 		  \begin{aligned}

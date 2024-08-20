@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  19 AUG 2024 16:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  20 AUG 2024 13:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -931,34 +931,71 @@ d on input line 6.
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] [4]
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
+
+LaTeX Warning: Citation `AnalysisFiniteElemStokes_Bernardi_Raugel' on page 4 un
+defined on input line 171.
+
+[4]
 Overfull \hbox (13.68362pt too wide) detected at line 252
 []\OT1/cmr/bx/n/10 A \OT1/cmr/m/n/10 = []  \OT1/cmr/bx/n/10 B \OT1/cmr/m/n/10 =
  []  \OT1/cmr/bx/n/10 C \OT1/cmr/m/n/10 = []  \OT1/cmr/bx/n/10 F \OT1/cmr/m/n/1
 0 = []   \OT1/cmr/bx/n/10 G \OT1/cmr/m/n/10 = []
  []
 
+
+LaTeX Warning: Citation `InexactUzawa_Elam_Golub' on page 5 undefined on input 
+line 255.
+
+
+LaTeX Warning: Citation `AnalysisInexactUzawa_Bramble_Pasciak_Vassilev' on page
+ 5 undefined on input line 255.
+
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 271.
-[5] [6]) (./transport.tex) [7] (./newphase.tex
-<eutectic.png, id=215, 430.54468pt x 322.90851pt>
+
+LaTeX Warning: Citation `AnalysisInexactUzawa_Bramble_Pasciak_Vassilev' on page
+ 5 undefined on input line 279.
+
+
+LaTeX Warning: Citation `SolSparseIndef_Paige_Saunders' on page 5 undefined on 
+input line 284.
+
+[5]
+
+LaTeX Warning: Citation `AcceleratingUzawa_ho_Olson_Walker' on page 6 undefined
+ on input line 314.
+
+[6]) (./transport.tex) [7] (./newphase.tex
+
+LaTeX Warning: Citation `DownwardOxidantTransport' on page 8 undefined on input
+ line 8.
+
+
+LaTeX Warning: Citation `DownwardOxidantTransport' on page 8 undefined on input
+ line 25.
+
+<eutectic.png, id=179, 430.54468pt x 322.90851pt>
 File: eutectic.png Graphic file (type png)
 <use eutectic.png>
 Package pdftex.def Info: eutectic.png  used on input line 61.
 (pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
- [8 <./eutectic.png (PNG copy)>]
-[9]
-<TX.png, id=241, 438.23297pt x 317.5267pt>
+[8 <./eutectic.png (PNG copy)>] [9]
+
+LaTeX Warning: Citation `TheCompositionEarth' on page 10 undefined on input lin
+e 162.
+
+<TX.png, id=203, 438.23297pt x 317.5267pt>
 File: TX.png Graphic file (type png)
 <use TX.png>
 Package pdftex.def Info: TX.png  used on input line 167.
 (pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
-<HX.png, id=242, 429.10312pt x 310.91156pt>
+<HX.png, id=204, 429.10312pt x 310.91156pt>
 File: HX.png Graphic file (type png)
 <use HX.png>
 Package pdftex.def Info: HX.png  used on input line 168.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-<HC.png, id=243, 421.575pt x 316.18124pt>
+<HC.png, id=205, 421.575pt x 316.18124pt>
 File: HC.png Graphic file (type png)
 <use HC.png>
 Package pdftex.def Info: HC.png  used on input line 185.
@@ -974,19 +1011,25 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [12]
 (./main.aux)
 
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
 Package rerunfilecheck Warning: File `main.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
 Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: 2A9F12CEC32C9A949D0E4F580BB28E30;5227
-(rerunfilecheck)             After:  E489B9276BDA519AB75821FB3322B64E;5207.
+(rerunfilecheck)             Before: EBCBB8305B77BE6A0D6396E0FF23F505;4459
+(rerunfilecheck)             After:  E2DAA97F440D920B1E8A7E86E5FB5233;5207.
  ) 
 Here is how much of TeX's memory you used:
- 25753 strings out of 478287
- 462440 string characters out of 5849289
- 722192 words of memory out of 5000000
- 41835 multiletter control sequences out of 15000+600000
+ 25747 strings out of 478287
+ 462342 string characters out of 5849289
+ 721826 words of memory out of 5000000
+ 41830 multiletter control sequences out of 15000+600000
  472184 words of font info for 40 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
  85i,13n,80p,506b,591s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1002,10 +1045,10 @@ sfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
 .pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on main.pdf (12 pages, 256126 bytes).
+Output written on main.pdf (12 pages, 255251 bytes).
 PDF statistics:
- 347 PDF objects out of 1000 (max. 8388607)
- 300 compressed objects within 3 object streams
- 106 named destinations out of 1000 (max. 500000)
- 273 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 319 PDF objects out of 1000 (max. 8388607)
+ 272 compressed objects within 3 object streams
+ 105 named destinations out of 1000 (max. 500000)
+ 225 words of extra memory for PDF output out of 10000 (max. 10000000)
 
