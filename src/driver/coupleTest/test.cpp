@@ -284,14 +284,19 @@ int main(int argc, char **argv){
     // Advection mlweno use (3,3) and (2,2) reconstruction
     MLWENO::MLWENOUse * mluseAdv = new MLWENO::MLWENOUse(); 
 
+    // Interior WENO levels
     mluseAdv->AddMLWENOLevel("interior",{"(3,3)","(2,2)"}, mlpPtr);
-
     mluseAdv->AssignWENOStencils(0,"(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
     mluseAdv->AssignWENOStencils(0,"(3,3)",{{-1,-1}});
 
     mluseAdv->UpdateNonLinearWgts(drivPtr->mi, "interior", interior);
 
-    mluseAdv
+    // Edge WENO levels
+    mluseAdv->AddMLWENOLevel("edge",{"(2,2),(1,1)"}, mlpPtr);
+    mluseAdv->AssignWENOStencils("edge","(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
+    mluseAdv->AssignWENOStencils("edge","(1,1",{{0,0}});
+
+    mluseAdv->UpdateNonLinearWgts(dirvPtr->mi, "edge", edge);
 
     // Diffusion mlweno use (5,5) and (3,3) reconstruction
     MLWENO::MLWENOUse * mluseDif = new MLWENO::MLWENOUse();
@@ -302,6 +307,9 @@ int main(int argc, char **argv){
     mluseDif->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
 
     mluseDif->UpdateNonLinearWgts(drivPtr->mi, "interior", interior);
+
+    mluseDif->AssMLWENOLevel("edge", { });
+
 
     // Finialize the program ====================================================
 
