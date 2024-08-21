@@ -12,14 +12,14 @@ There are few key elements that allow practical calculation of phase region and
 corresponding volumetric fractions.
 
 \begin{itemize}
-\item Eutectic melting mass fraction is only related to pressure.
-		  Fluid formed by eutectic melting has a constant composition of opx 
-		  denoted as $X_e(P)$.
-\item Melting temperature related to pressure. Pressure release is one of the 
-		  main reason why melting happens in mantle.
-		  $T_1(P)$ and $T_2(P)$.
-\item Eutectic melting is the primal way of melting. The temperature where melting
-		  happens has lower temperature then actual melting temperature.
+\item Fluid formed by eutectic melting has a constant composition of opx 
+		  denoted as $X_e$. The eutectic composition can be related to pressure
+		  and denoted as $X_e(P)$.
+\item Melting temperature relates to pressure. 
+        Decompression melting is accounted for in our model by relating eutectic 
+		  melting temperature with pressure change.
+\item Eutectic melting is of the most insterest. The temperature where eutectic melting
+		  happens has much lower temperature then actual melting temperature.
 \end{itemize}
 
 We define following dimensionless bulk variables following \cite{DownwardOxidantTransport}.
@@ -140,12 +140,11 @@ Hence the volume fraction is given:
 \subsection{Further approximation and simplified phase split}
 To further simplify my calculation of phase diagram, I propose following approximations:
 \begin{itemize}
-\item  Olivine has density range of 3.2 to 4.3 $g/cm^3$ and orthopyroxene has similiar density ranging from 3.2 to 4 $g/cm^3$.
-		 Hence, we assume olivine and orthopyroxene share one same density.
+\item  We approximate both olivine and orthopyroxene with one uniform constant density.
 \item  Heat capacity has a complex dependency on temperature, pressure and mixture. We assume the same 
 		  specific heat capacity under circumstance of mantle melting.
-\item  Ignore both thermal expansion and density change upon melting.
-\item  Assume latent heat $L_1 = L_2 = L$.
+\item  Ignore both thermal expansion and density change upon phase transition.
+\item  Assume olivine and orthopyroxene share one same constant latent heat $L_1 = L_2 = L$.
 \end{itemize}
 Under such assumption, we can get a much simplified concentration and bulk enthalpy:
 \begin{equation}
