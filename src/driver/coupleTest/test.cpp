@@ -275,7 +275,8 @@ int main(int argc, char **argv){
     mlpPtr->AddLevel(drivPtr->mi,1,1);
     mlpPtr->AddLevel(drivPtr->mi,2,2);
     mlpPtr->AddLevel(drivPtr->mi,3,3);
-    mlpPtr->AddLevel(drivPtr->mi,4,4);
+    mlpPtr->AddLevel(drivPtr->mi,4,3);
+    mlpPtr->AddLevel(drivPtr->mi,3,4);
     mlpPtr->AddLevel(drivPtr->mi,5,5);
 
     mlpPtr->UpdateSmoothnessIndic(drivPtr->mi);
@@ -288,28 +289,34 @@ int main(int argc, char **argv){
     mluseAdv->AddMLWENOLevel("interior",{"(3,3)","(2,2)"}, mlpPtr);
     mluseAdv->AssignWENOStencils(0,"(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
     mluseAdv->AssignWENOStencils(0,"(3,3)",{{-1,-1}});
-
+    
+    mluseAdv->AssignLinearWgts("interior","(2,2)",{1,1,1,1});
+    mluseAdv->AssignLinearWgts("interior","(3,3)",{5});
     mluseAdv->UpdateNonLinearWgts(drivPtr->mi, "interior", interior);
 
     // Edge WENO levels
-    mluseAdv->AddMLWENOLevel("edge",{"(2,2),(1,1)"}, mlpPtr);
+    mluseAdv->AddMLWENOLevel("edge",{"(2,2)","(1,1)"}, mlpPtr);
     mluseAdv->AssignWENOStencils("edge","(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
-    mluseAdv->AssignWENOStencils("edge","(1,1",{{0,0}});
+    mluseAdv->AssignWENOStencils("edge","(1,1)",{{0,0}});
 
-    mluseAdv->UpdateNonLinearWgts(dirvPtr->mi, "edge", edge);
+    mluseAdv->AssignLinearWgts("edge","(2,2)",{1,1,1,1});
+    mluseAdv->AssignLinearWgts("edge","(1,1)",{0.1});
+    mluseAdv->UpdateNonLinearWgts(drivPtr->mi, "edge", edge);
 
-    // Diffusion mlweno use (5,5) and (3,3) reconstruction
+	 /* 
+ 	 // Diffusion mlweno use (5,5) and (3,3) reconstruction
     MLWENO::MLWENOUse * mluseDif = new MLWENO::MLWENOUse();
 
-    mluseDif->AddMLWENOLevel("interior",{"(5,5)","(3,3)"}, mlpPtr);
-
-    mluseDif->AssignWENOStencils(0,"(3,3)",{{-2,0},{-2,-2},{0,0},{0,-2}});
+    mluseDif->AddMLWENOLevel("interior",{"(5,5)","(4,3)","(3,4)"}, mlpPtr);
+    mluseDif->AssignWENOStencils(0,"(4,3)",{{-1,-1},{0,-1}});
+    mluseDif->AssignWENOStencils(0,"(3,4)",{{-1,-1},{-1,0}});
     mluseDif->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
-
     mluseDif->UpdateNonLinearWgts(drivPtr->mi, "interior", interior);
 
-    mluseDif->AssMLWENOLevel("edge", { });
-
+    mluseDif->AddMLWENOLevel("edge", {"(3,3)"}, mlpPtr);
+    mluseDif->AssignWENOStencils("edge", "(3,3)", {{0,-1},{-2,-1},{-1,-2},{-1,0}});
+    mluseDif->UpdateNonLinearWgts(drivPtr->mi,"edge", edge);
+*/
 
     // Finialize the program ====================================================
 

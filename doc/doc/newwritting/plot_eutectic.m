@@ -100,3 +100,27 @@ hold off
 axis square
 xlabel 'Concentration'
 ylabel 'Dimensionless enthalpy'
+
+% 3D plot including pressure
+figure
+[X,p] = meshgrid(0:0.1:1,0:0.2:2);
+
+lp = @(p) 0.6*p
+
+surf1 = @(X,p) lp(p) 
+Z1 = surf1(X,p)
+
+surf2 = @(X,p) (T1+(Te-T1)*X + L)+lp(p)
+Z2 = surf2(X,p)
+
+surf3 = @(X,p) (Te + L*X) + lp(p)
+Z3 = surf3(X,p)
+
+mesh(X,p,Z1), hold on
+mesh(X,p,Z2)
+mesh(X,p,Z3)
+
+axis square
+xlabel 'Concentration'
+ylabel 'Pressure'
+zlabel 'Enthalpy'
