@@ -1,31 +1,110 @@
-phaseEval::phase(double nP){
+#include "eutectic.h"
+
+EUTECTIC::phase::phase(){
 
     // Set up Clapeyron constant
-    gamma_ = ;
+    gamma_ = 10e-7;
 
     // Set up melting points under standard atmospheric pressure
 	 // with dimension
-	 te0_ = 1560; //(K) 
-	 t10_ = 2053; //(K) 
+	 Te0_ = 1560; //(K) 
+	 T10_ = 2053; //(K) 
 
 	 // dimensionless
 	 // regardless of value of pressure
-    Te_ = 0;
-	 T1_ = 1;
+    TDe_ = 0;
+	 TD1_ = 1;
 	
 	 // dimensionless latent heat 
     L_ = 0.5;
 
 }
 
-void evalPhase(){
+void EUTECTIC::phase::evalPhase(const double& HD,
+                                const double& CD){
 
+    switch(phaseSplit(HD,CD)){
+        // Single phase solidus
+        case 1:
+            phi.olv = 1;
+            phi.opx = 0;
+            phi.mlt = 0;
+            TD      = HD;
+        break;
+ 
+        // Two phase solidus
+        case 2:
+            phi.opx = CD;
+            phi.olv = 1-CD;
+            phi.mlt = 0;
+            TD      = 0;
+        break;
+
+        // Three phase eutectic
+        case 3:
+            phi.mlt = HD/L_;
+            phi.opx = CD - phi.mlt;
+            phi.olv = 1-phi.mlt-phi.opx;
+            TD      = 0;
+        break;
+
+        // Super eutectic two phase region
+        case 4:
+            TD      = ((HD+1) - sqrt(pow(HD+1,2)- 4*(HD-CD*L_)))/2;
+            phi.opx = 0;
+            phi.mlt = CD/(1-TD);
+            phi.olv = 1-phi.opx-phi.mlt;
+        break;
+
+        // Single phase super eutectic all melting region
+        case 5:
+            phi.opx = 0;
+            phi.olv = 0;
+            phi.mlt = 1;
+            TD      = HD - L_;
+        break;
+
+        default:
+
+            std::cout << "Invalid (H,C) pair." << std::endl;
+
+        break;
+
+    }
 
 }
 
-int phaseEval::phaseSplit(const double& H, 
-                          const double& C){
+int EUTECTIC::phase::phaseSplit(const double& HD, 
+                                const double& CD){
 
+    int region = 0;
 
-    return 0;
+    // Check valid pair of (C,H)
+    assert(CD<1+std::numeric_limits<double>::epsilon());// "Opx composition beyond eutectic.\n");
+    assert(CD>0-std::numeric_limits<double>::epsilon());// "Opx composition below zero.\n");
+
+    // Two lines separating phase regions
+    double lineb = L_* CD;
+    double linec = 1+L_-CD;
+
+    if (CD < std::numeric_limits<double>::epsilon() && HD < 1){
+        // Single phase sub-solidus region
+        region = 1;
+
+    } else if (HD < 0){
+        // Two phase sub-soidus region
+        region = 2;
+
+    } else if (HD < lineb && HD > 0){
+        // Three phase eutectic region
+        region = 3;
+    } else if (HD > lineb && HD < linec){
+        // Two phase eutectic region
+        region = 4;
+    } else if (HD > linec){
+        // All melting
+        region = 5;
+    }
+
+    return region;
 }

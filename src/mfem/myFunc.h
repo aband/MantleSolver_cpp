@@ -44,7 +44,7 @@ class Phase {
         ~Phase();
 
         PhysProperty * pp;
-        EUTECTIC::phaseState * pPtr;
+        EUTECTIC::phase * pPtr;
 
 };
 

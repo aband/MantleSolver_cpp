@@ -3,7 +3,7 @@
 #include <ctime>
 #include <chrono>
 #include "integral.h"
-#include "phase.h"
+//#include "phase.h"
 #include "param.h"
 #include "input.h"
 #include "util.h"
@@ -45,16 +45,16 @@ int main(int argc, char **argv){
 
     // Create phase class containing constant physic attributes and 
     // phase behavior package.
-    Phase * phase = new Phase();
+    Phase * myPhase = new Phase();
 
-    phase->pp = (PhysProperty *)malloc(sizeof(PhysProperty));
+    myPhase->pp = (PhysProperty *)malloc(sizeof(PhysProperty));
 
-    AssignPhyProperties(phase->pp);
+    AssignPhyProperties(myPhase->pp);
 
-    phase->pPtr = new phaseState();
+    myPhase->pPtr = new phase();
 
     // Physical domain
-    double physscale = phase->pp->L0/phase->pp->l0;
+    double physscale = myPhase->pp->L0/myPhase->pp->l0;
     double L = 2*physscale, H = 1*physscale;
     double xstart = -1*physscale, ystart = -1.0001*physscale;
 
@@ -134,7 +134,7 @@ int main(int argc, char **argv){
 
     // Create initial (C,H) distribution pair
     // Calculate volume fraction of fluid (porosity)
-    PorosityOut(xstart, ystart, L, H, 20, phase);      
+    PorosityOut(xstart, ystart, L, H, 20, myPhase);      
 
     // Solve for velocity with finite element solver
     vector<valarray<double>> mesh;
@@ -173,8 +173,8 @@ int main(int argc, char **argv){
     bndryVal bndryDarcyEssen;
     bndryVal bndryDarcyNatur;
 
-    MarkBndryDOFStokes(bndryStokesEssen, bndryStokesNatur, mi, *basis_, *br, phase->pp);
-    MarkBndryDOFDarcy(bndryDarcyEssen, bndryDarcyNatur, mi, *basis_, *hdiv, phase->pp);
+    MarkBndryDOFStokes(bndryStokesEssen, bndryStokesNatur, mi, *basis_, *br, myPhase->pp);
+    MarkBndryDOFDarcy(bndryDarcyEssen, bndryDarcyNatur, mi, *basis_, *hdiv, myPhase->pp);
 
     // Create linear system
     ReducedSys * reducedDarcy = (ReducedSys *)malloc(sizeof(ReducedSys));
@@ -191,7 +191,7 @@ int main(int argc, char **argv){
     CreateRefMap(*br, refArrayStokes, mi, &bndryDOFStokes);
     CreateRefMap(*hdiv, refArrayDarcy, mi, &bndryDOFDarcy);
 
-    ParallelMatrixAssemble(mi, *basis_, phase, bndryStokesEssen, reducedStokes, 
+    ParallelMatrixAssemble(mi, *basis_, myPhase, bndryStokesEssen, reducedStokes, 
                                                bndryDarcyEssen,  reducedDarcy, 
                            &K, *br, *hdiv , refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
 

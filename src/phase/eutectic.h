@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cmath>
 #include <limits>
+#include <cassert>
 
 namespace EUTECTIC{
 
@@ -16,9 +17,9 @@ struct PhaseComp{
   // in the eutectic phase package
   // For example, volumetric values for three components
 
-  T solid1;
-  T solid2; 
-  T fluid; 
+  T olv;
+  T opx; 
+  T mlt; 
 };
 
 class phase{
@@ -28,42 +29,41 @@ class phase{
             ~phase() {};
 
             // Evaluate phase at certain pressure
-				// Assign values to volumetric fractions
-				// Evaluate non dimensionless values
-            void evalPhase();
+            // Assign values to volumetric fractions
+            // Evaluate non dimensionless values
+            void evalPhase(const double& HD,
+                           const double& CD);
 
             // Convert nondimensionlized variables to original variables
             void NonDimToDim(double pressure);
 
             // Volume fraction
-				PhaseComp<double> phi;
+            PhaseComp<double> phi;
+
+            // Dimensionless temperature
+            double TD;
 
         private:
 
-            int phaseSplit(double H, double C);
+            int phaseSplit(const double& H, 
+                           const double& C);
 
             // Clapeyron constant
-				// Relating perssure and melting point
+            // Relating perssure and melting point
             double gamma_;
 
             // Melting temperatures under standard atmospheric pressure
-				// with dimension
-			   double te0_;
-			   double t10_;	
-
-            // Melting temperatures under standard atmospheric pressure
-				// dimensionless
+            // with dimension
             double Te0_;
-				double T10_;
+            double T10_;	
 
             // Melting temperatures (dimensionless)
-            double Te_;
-            double T1_;
+            double TDe_;
+            double TD1_;
 
             // Latent heat
-				// dimensionless
+            // dimensionless
             double L_;
-
 };
 
 }

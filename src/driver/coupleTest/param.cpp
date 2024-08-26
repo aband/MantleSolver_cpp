@@ -35,10 +35,9 @@ double ComputePorosity(const vertex& point, Phase * phase){
     double CD = InitCD(point, phase->pp);
     double HD = InitHD(point, phase->pp);
 
-    int state = phase->pPtr->EvalPhaseRegion(CD,HD);
-    phase->pPtr->EvalPhase(state, CD, HD);
+    phase->pPtr->evalPhase(HD, CD);
 
-    return phase->pPtr->phi.fluid;
+    return phase->pPtr->phi.mlt;
 }
 
 int PorosityOut(double xstart, double ystart, double L, double H, int seed,
