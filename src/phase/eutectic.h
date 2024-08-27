@@ -28,6 +28,22 @@ class phase{
             phase();
             ~phase() {};
 
+            // Get corresponding dimensionless temperature with respect to each pressure
+            double GetTD(const double& T, 
+                         const double& P);
+
+            // Split phase regions according to values of dimensionless enthalpy and 
+            // dimensionless composition.
+            int phaseSplit(const double& HD,
+                           const double& CD) {return phaseSplit_(HD, CD);};
+
+            // Split phase regions according to value of dimensionless temperature and
+            // dimensionless composition
+            // Need phi2 for exact determination
+            int phaseSplitTemp(const double& TD,
+                               const double& CD,
+                               const double& phi2) {return phaseSplitTemp_(TD,CD,phi2);};
+
             // Evaluate phase at certain pressure
             // Assign values to volumetric fractions
             // Evaluate non dimensionless values
@@ -45,12 +61,16 @@ class phase{
 
         private:
 
-            int phaseSplit(const double& H, 
-                           const double& C);
+            int phaseSplit_(const double& HD, 
+                            const double& CD);
+
+            int phaseSplitTemp_(const double& TD,
+                                const double& CD,
+                                const double& phi2);
 
             // Clapeyron constant
             // Relating perssure and melting point
-            double gamma_;
+            double gamma_; // K*pa^-1
 
             // Melting temperatures under standard atmospheric pressure
             // with dimension

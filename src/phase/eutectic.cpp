@@ -20,6 +20,17 @@ EUTECTIC::phase::phase(){
 
 }
 
+double EUTECTIC::phase::GetTD(const double& T, 
+                              const double& P){
+
+    // Get melting point with respect to current pressure P
+
+    double Te = Te0_+gamma_*P;
+    double T1 = T10_+gamma_*P;
+
+    return (T-Te)/(T1-Te);
+}
+
 void EUTECTIC::phase::evalPhase(const double& HD,
                                 const double& CD){
 
@@ -74,8 +85,8 @@ void EUTECTIC::phase::evalPhase(const double& HD,
 
 }
 
-int EUTECTIC::phase::phaseSplit(const double& HD, 
-                                const double& CD){
+int EUTECTIC::phase::phaseSplit_(const double& HD, 
+                                 const double& CD){
 
     int region = 0;
 
@@ -95,16 +106,26 @@ int EUTECTIC::phase::phaseSplit(const double& HD,
         // Two phase sub-soidus region
         region = 2;
 
-    } else if (HD < lineb && HD > 0){
+    } else if (HD < lineb + std::numeric_limits<double>::epsilon() && HD > 0){
         // Three phase eutectic region
         region = 3;
-    } else if (HD > lineb && HD < linec){
+    } else if (HD > lineb && HD < linec + std::numeric_limits<double>::epsilon()){
         // Two phase eutectic region
         region = 4;
     } else if (HD > linec){
         // All melting
         region = 5;
     }
+
+    return region;
+}
+
+int EUTECTIC::phase::phaseSplitTemp_(const double& TD,
+                                     const double& CD,
+                                     const double& phi2){
+
+    int region = 0;
+
 
     return region;
 }
