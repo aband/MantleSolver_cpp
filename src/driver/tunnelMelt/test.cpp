@@ -27,6 +27,10 @@ extern "C"{
 //#include "cgns_io.h"
 }
 
+/*
+ * First example, simulation of partial melting in a rectangular domain.
+ */
+
 int main(int argc, char **argv){
 
     // Initializing petsc function
@@ -53,12 +57,14 @@ int main(int argc, char **argv){
 
     myPhase->pPtr = new phase();
 
+/*
     double HD = 0.25; 
     double CD = 0.5;
     myPhase->pPtr->evalPhase(HD,CD);
 
     cout << "Phase Region: " << myPhase->pPtr->phaseSplit(HD, CD)
          << " Melting volume fraction: " << myPhase->pPtr->phi.mlt << endl;
+*/
 
     // Physical domain
     double physscale = myPhase->pp->L0/myPhase->pp->l0;
