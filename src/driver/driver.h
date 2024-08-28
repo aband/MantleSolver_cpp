@@ -60,7 +60,10 @@ class Driver {
          */
         MLWENO::MLWENOPrepare * mlpPtr_ = NULL;
 
-        
+        // Data management for mesh
+        DM dmMesh_;       
+        // Data management for solution
+        DM dmu; 
 
 };
 

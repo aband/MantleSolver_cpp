@@ -13,6 +13,10 @@
   algorithms for saddle point problems}, SIAM. J. Numer. Anal., 31 (1994),
   pp.~1645--1661.
 
+\bibitem{MOdellingMeltingRates}
+{\sc I.~J. Hewitt}, {\em Modelling melting rates in upwelling mantle}, Earth
+  and Planetary Science Letters, 300 (2010), pp.~264--274.
+
 \bibitem{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}
 {\sc A.~T.~V. James H.~Bramble, Joseph E.~Pasciak}, {\em Analysis of the
   inexact uzawa algorithm for saddle point problems}, SIAM. J. Numer. Anal., 34
