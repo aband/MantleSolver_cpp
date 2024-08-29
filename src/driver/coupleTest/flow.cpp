@@ -1,3 +1,5 @@
+// upwelling magma simulation
+
 #include "myFunc.h"
 
 void AssignPhyProperties(PhysProperty * pp){
