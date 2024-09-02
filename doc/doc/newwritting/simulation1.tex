@@ -59,5 +59,14 @@ we need essential boundary condtions defined around the computational domain.
 \end{itemize}
 
 \subsubsection{Initial conditions}
-At the same time, we need an initial condition for our transport equations.
-In\cite{ModellingMeltingRates}, inital temperature and intial mass fraction. 
+At the same time, we need an initial conditions for our transport equations.
+In\cite{ModellingMeltingRates}, temperature and composition
+are distributed linearly along against the depth. Unlike \cite{ModellingMeltingRates},
+we implement eutectic melting model into our simulation. In our situation,
+temperature and total composition won't be deterministic.
+Here I make some modification on the setup.
+Initially, the entire domain was burried under the partial melting region, where temperature was under the 
+sub-solidus region.
+Melting starts when the entire chunck ascending adiabatically. As pressure continuously lowering, 
+the eutectic point is lowering at the same time. Hence, melting flux supplies from top. 
+
