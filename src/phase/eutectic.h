@@ -59,6 +59,12 @@ class phase{
             // Dimensionless temperature
             double TD;
 
+            // Derivative of dimensionless temperature against
+            // concentration C and enthalpy.
+            double dTD_dCD;
+
+            double dTD_dHD;
+
         private:
 
             int phaseSplit_(const double& HD, 

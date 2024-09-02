@@ -1,11 +1,63 @@
 \section{Magma production}
 For our very first simulation, we would like to simulate the 
 production of magma in a simplified controlled scenerio.
-I was inspired by the setup described previously in\cite{MOdellingMeltingRates}.
+I was inspired by the setup described previously in\cite{ModellingMeltingRates}.
 The simulation will be setup in a chunk of rock ascending
 with constant upwelling velocity.
 A linear adiabatic temperature profile is applied here.
 A linear intial rock composition is also applied here.
 
+\subsection{Mathematical model}
+We are going to show our coupled darcy-stokes semi-degenerate model
+can solve this problem well.
+In\cite{ModellingMeltingRates}, matrix creeping (Stokes equation) did not directly
+involved in the simulation due to the fact that boundary condition restricts a 
+constant background upwelling ascending velocity.
+The solid matrix pressure is therefore strictly lithostatic pressure relating 
+only to depth.
+In\cite{MOdellingMeltingRates}, only energy transports while concentration does not
+participate in transport phenomenon. 
 
+\begin{equation}
+		  \begin{aligned}
+					 \check{\bold{v}}_r + \phi_f^{1+\Theta}\nabla (\phi_f^{-1/2}\check{q}_f) &= 0\\
+					 \phi_f^{-1/2}\nabla \cdot (\phi_f^{1+\Theta} \check{\bold{v}}_r) + \frac{1}{1-\phi_f}(\check{q}_f - \phi_f^{1/2}\check{q}) &=0 \\
+					 \nabla \check{q} - \nabla \cdot \hat{\sigma}(\check{\bold{v}}_s) &= -(1-\phi_f)\hat{\bold{g}} \\
+					 \nabla \cdot \check{\bold{v}}_s - \frac{\phi_f^{1/2}}{1-\phi_f}(\check{q}_f - \phi_f^{1/2}\check{q}) &= 0
+		  \end{aligned}
+\end{equation}
 
+For simplification, we won't include diffusion into our transport model.
+We drop the diffusion term here for the fact that diffusion coefficient is
+relatively small compared to convective phenomenon. On the other hand, 
+eutectic melting has a constant concentration such that gradient of 
+concentration is of zero value. Hence the transport of component 2 (opx) 
+can be expressed in terms of mixture theory as:
+\begin{equation}
+		  \begin{aligned}
+					 \bar{C}_t + \nabla \cdot (\overline{C\bold{v}}) &= 0\\
+					 \bar{C}_t + \nabla \cdot (\bold{v}_e^* \bar{C}) &= 0
+		  \end{aligned}
+\end{equation}
+where $\bold{v}_e^*$ denotes effective veclocity 
+$\bold{v}_e^* = \kappa \bold{v}_f + (1-\kappa)\bold{v}_s$
+and $\kappa = \frac{\phi_f C_f}{\bar{C}}$ where $C_f$ and $\bar{C}$ using 
+values from previous time step.
+Enthalpy is transported in a similar manner.
+\begin{equation}
+		  \bar{\mathcal{H}}_t + \nabla \cdot (\overline{\mathcal{H}\bold{v}} - 
+		  \bar{K}\nabla \mathcal{T})  = 0
+\end{equation}
+
+\subsubsection{Boundary conditions}
+In order to solve the proposed darcy-stokes coupled equation, 
+we need essential boundary condtions defined around the computational domain.
+\begin{itemize}
+		  \item Prescribe essential boundary condition of constant upwelling ascending
+					 velocity all around the computational domain. $\bold{v}_s = \bold{W}$
+	 \item Prescribe essential boundary condition of zero velocity of melts. 
+\end{itemize}
+
+\subsubsection{Initial conditions}
+At the same time, we need an initial condition for our transport equations.
+In\cite{ModellingMeltingRates}, inital temperature and intial mass fraction. 

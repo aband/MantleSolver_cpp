@@ -41,6 +41,10 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.opx = 0;
             phi.mlt = 0;
             TD      = HD;
+
+            dTD_dCD = 0;
+            dTD_dHD = 1;
+
         break;
  
         // Two phase solidus
@@ -49,6 +53,10 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.olv = 1-CD;
             phi.mlt = 0;
             TD      = 0;
+
+            dTD_dCD = 0;
+            dTD_dHD = 0;
+
         break;
 
         // Three phase eutectic
@@ -57,6 +65,10 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.opx = CD - phi.mlt;
             phi.olv = 1-phi.mlt-phi.opx;
             TD      = 0;
+
+            dTD_dCD = 0;
+            dTD_dHD = 0;
+
         break;
 
         // Super eutectic two phase region
@@ -65,6 +77,10 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.opx = 0;
             phi.mlt = CD/(1-TD);
             phi.olv = 1-phi.opx-phi.mlt;
+
+            dTD_dCD = -1./sqrt(pow(HD+1,2)- 4*(HD-CD*L_));
+            dTD_dHD = 0.5 * (1 -1./sqrt(pow(HD+1,2)- 4*(HD-CD*L_)) * ((HD+1)-2));
+
         break;
 
         // Single phase super eutectic all melting region
@@ -73,6 +89,10 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.olv = 0;
             phi.mlt = 1;
             TD      = HD - L_;
+
+            dTD_dCD = 0;
+            dTD_dHD = 1;
+
         break;
 
         default:
@@ -80,9 +100,7 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             std::cout << "Invalid (H,C) pair." << std::endl;
 
         break;
-
     }
-
 }
 
 int EUTECTIC::phase::phaseSplit_(const double& HD, 
