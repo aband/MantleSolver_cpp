@@ -8,6 +8,8 @@
 #include "input.h"
 #include "util.h"
 
+#include "global.h"
+
 // MFEM parameter header file
 #include "myFunc.h"
 #include "passemble.h"
@@ -24,12 +26,15 @@
 extern "C"{
 #include "mesh.h"
 #include "output.h"
-#include "cgns_io.h"
+//#include "cgns_io.h"
 }
 
 /*
  * First example, simulation of partial melting in a rectangular domain.
  */
+
+Vec transport::CD;
+Vec transport::HD;
 
 int main(int argc, char **argv){
 
@@ -256,15 +261,15 @@ int main(int argc, char **argv){
                         vx, vy, *hdiv, *basis_);
 
     // CGNS output of hdf5 file
-    char stokesfile[] = "stokes.cgns";   
-    CgnsArrayOutput(dmMesh,&globalmesh,ux,uy,mi.MPIlocalCellStart[0],
-                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
-                    mi.MPIlocalCellSize[1],stokesfile);
+//    char stokesfile[] = "stokes.cgns";   
+//    CgnsArrayOutput(dmMesh,&globalmesh,ux,uy,mi.MPIlocalCellStart[0],
+//                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+//                    mi.MPIlocalCellSize[1],stokesfile);
 
-    char darcyfile[] = "darcy.cgns";    	
-    CgnsArrayOutput(dmMesh,&globalmesh,vx,vy,mi.MPIlocalCellStart[0],
-                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
-                    mi.MPIlocalCellSize[1],darcyfile);
+//    char darcyfile[] = "darcy.cgns";    	
+//    CgnsArrayOutput(dmMesh,&globalmesh,vx,vy,mi.MPIlocalCellStart[0],
+//                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+//                    mi.MPIlocalCellSize[1],darcyfile);
 
     // Transport ================================================================
     // Create levels for ml-weno 
@@ -274,6 +279,9 @@ int main(int argc, char **argv){
 
     // Assign mesh information after mesh added to meshInfo
     AssignValuesMeshInfo(drivPtr->mi, dmMesh, dmu);
+
+    DMCreateGlobalVector(dmu, &transport::CD);
+    DMCreateGlobalVector(dmu, &transport::HD);
 
     // We have five different levels in ml-weno 
     drivPtr->UseWeno();
@@ -338,6 +346,9 @@ int main(int argc, char **argv){
     VecDestroy(&destStokes_g);
     VecDestroy(&destDarcy_sol);
     VecDestroy(&destDarcy_g);
+
+    VecDestroy(&transport::HD);
+    VecDestroy(&transport::CD);
 
     free(refArrayStokes);
     free(refArrayDarcy);

@@ -8,6 +8,8 @@
 using namespace EUTECTIC;
 
 // Initial distribution of c_bar and h_bar
+double ComputePorosityInit(const vertex& point, Phase * phase);
+
 double ComputePorosity(const vertex& point, Phase * phase);
 
 int PorosityOut(double xstart, double ystart, double L, double H, int seed, 

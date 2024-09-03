@@ -30,7 +30,10 @@ inline double InitHD(const vertex& point, PhysProperty * pp){
 
 }
 
-double ComputePorosity(const vertex& point, Phase * phase){
+double ComputePorosityInit(const vertex& point, Phase * phase){
+
+    // Compute initial values directly with CD and HD
+    // Should not be using!
 
     double CD = InitCD(point, phase->pp);
     double HD = InitHD(point, phase->pp);
@@ -38,6 +41,11 @@ double ComputePorosity(const vertex& point, Phase * phase){
     phase->pPtr->evalPhase(HD, CD);
 
     return phase->pPtr->phi.mlt;
+}
+
+double ComputePorosity(const vertex& point, Phase * phase){
+
+    return 0.0;
 }
 
 int PorosityOut(double xstart, double ystart, double L, double H, int seed,
@@ -53,7 +61,7 @@ int PorosityOut(double xstart, double ystart, double L, double H, int seed,
     for (int j=0; j<seed; j++){
     for (int i=0; i<seed; i++){
         vertex point {xstart + hx*i , ystart + hy*j}; 
-        fprintf(fp, "%f ", ComputePorosity(point,phase));
+        fprintf(fp, "%f ", ComputePorosityInit(point,phase));
     }fprintf(fp, "\n");}
 
     fclose(fp);

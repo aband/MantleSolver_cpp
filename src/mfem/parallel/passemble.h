@@ -46,6 +46,52 @@ inline int CreateRefMap(T& funcSp, int * refArray,
     return 0;  
 };
 
+// ! A completed version of assigning boundary essential conditions
+template <typename T>
+inline int CreateRefMap(T& funcSp, 
+                        const MeshInfo& mi, 
+                        bool (*EssenBndry)(const MeshInfo&, T&, const int&),
+                        int * refArray,
+                        unordered_map<int, int>& refMapNatur,
+                        int * EssenDOFCount,
+                        int * NaturDOFCount){
+
+    int essenCount = 0; 
+    int naturCount = 0;
+    int interCount = 0;
+
+    // ! loop through all dofs 
+    // Natural boundary dofs are different from Essential boundary dofs
+    // For the fact that natrual boundary dofs participate in the left hand side matrix
+    // and also right hand side vector
+    // Hence it requires two different index system.
+    for (int dof=0; dof<funcSp.getDOF(); dof++){
+        if (funcSp.onBndry(mi, dof)){
+
+            if (EssenBndry(mi, funcSp, dof)){
+                refArray[dof] = essenCount;
+                essenCount ++;
+            } else {
+                refArray[dof] = interCount;
+                interCount ++;
+
+                refMapNatur.insert(std::make_pair<int, int>(dof, naturCount));
+                naturCount ++;
+            }
+
+        } else {
+                refArray[dof] = interCount;
+                interCount ++;
+        }
+
+    }
+
+    *EssenDOFCount = essenCount;
+    *NaturDOFCount = naturCount;
+
+    return 0;
+};
+
 PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
                                       basis& basis_,
                                       PhysProperty * pp,
@@ -228,6 +274,50 @@ inline int AssignLocRedSys(ReducedSys * redsys,
     }
 
     return 0;
+}
+
+// Used for elements on the boundary (Separating essential and natural boundary conditions)
+template <typename T>
+inline int AssignLocRedSys(ReducedSys * redsys, 
+                           LocMat * loc,
+                           int * ref,
+                           const unordered_map<int, int>& refMapNatur,
+                           const MeshInfo* mi,
+                           const bndryVal& bndryEssen,
+                           const indice& global,
+                           bool (*EssenBndry)(const MeshInfo& mi, T&, const int&)
+                           T& funcSp){
+
+    // ! Get global index of local dofs 
+    const std::vector<int> elemDofs = funcSp.LocalToGlobal(mi, global);
+
+    const int idxn = FlatIndic(mi, global);
+
+    for (int row=0; row<elemDofs.size(); row++){
+        // View it as the row index
+        // There are three meanings of values in ref array
+         
+        const int idxm = ref[elemDofs.at(row)];
+        const double valB = loc->B.at(row);
+    
+        if (funcSp.onBndry(mi, elemDofs.at(row))){
+            // The dof is on the boundary
+            // Need further indenfication whether it is essential or natural
+            if (EssenBndry(mi, T, elemDofs.at(row))){
+                // If it if essential boundary dof it goes to right hand side vector g
+                PetscCall(MatSetValues(redsys->Bg, 1, &idxm, 1, &idxn, &valB, 
+                                       ADD_VALUES));
+
+
+            }
+
+
+        } else {
+
+        }
+
+    }
+
 }
 
 // Used for interior elements (no need to identify boundary dofs)
