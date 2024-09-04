@@ -2,19 +2,21 @@
 #define ADVECTIVEFLUX_H_
 
 #include "mlwenouse.h"
-#include "../driver/mlwenoTest/transportTest/myfunc.h"
+#include "trans_param.h"
 
-double getAdvFluxInterior(const MLWENO::MLWENOUse& mlu,
-                          const MeshInfo& mi,
-                          const std::array<vertex,2>& edge,
-                          const vertex& unitNormal,
-                          const double& len,
-                          const indice& globalCellL,
-                          const indice& globalCellR,
-                          const int& locationL,
-                          const int& locationR,
-                          const valarray<double>& gwe,
-                          const valarray<double>& gpe,
-                          const double& alpha); 
+enum bndryType {dirichlet, neumann};
+
+double getAdvFlux(const MLWENO::MLWENOUse& mlu,
+                  const MeshInfo& mi,
+                  const std::array<vertex,2>& edge,
+                  const vertex& unitNormal,
+                  const double& len,
+                  const indice& globalCellL,
+                  const indice& globalCellR,
+                  const int& locationL,
+                  const int& locationR,
+                  const valarray<double>& gwe,
+                  const valarray<double>& gpe,
+                  const double& alpha); 
 
 #endif

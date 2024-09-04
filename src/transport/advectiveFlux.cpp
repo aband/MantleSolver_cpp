@@ -53,18 +53,18 @@ inline std::array<double,2> getAdvFluxEdge(const MLWENO::MLWENOUse& mlu,
 /**!
  * Compute advective interior of the domain.
  */
-double getAdvFluxInterior(const MLWENO::MLWENOUse& mlu,
-                          const MeshInfo& mi,
-                          const std::array<vertex,2>& edge,
-                          const vertex& unitNormal,
-                          const double& len,
-                          const indice& globalCellL,
-                          const indice& globalCellR,
-                          const int& locationL,
-                          const int& locationR,
-                          const valarray<double>& gwe,
-                          const valarray<double>& gpe,
-                          const double& alpha){
+double getAdvFlux(const MLWENO::MLWENOUse& mlu,
+                  const MeshInfo& mi,
+                  const std::array<vertex,2>& edge,
+                  const vertex& unitNormal,
+                  const double& len,
+                  const indice& globalCellL,
+                  const indice& globalCellR,
+                  const int& locationL,
+                  const int& locationR,
+                  const valarray<double>& gwe,
+                  const valarray<double>& gpe,
+                  const double& alpha){
 
     std::array<double,2> LFlux;
     std::array<double,2> RFlux;
@@ -75,4 +75,25 @@ double getAdvFluxInterior(const MLWENO::MLWENOUse& mlu,
     return numericalFlux(LFlux[0], RFlux[0], LFlux[1], RFlux[1], alpha);
 }
 
+/**!
+ * Compute advective flux on the boundary.
+ * Different boundary types require different way of implementation.
+ */
+
+double getAdvFlux(const MLWENO::MLWENOUse& mlu,
+                  const MeshInfo& mi,
+                  const std::array<vertex,2>& edge,
+                  const vertex& unitNormal,
+                  const double& len,
+                  const indice& globalCellL,
+                  const indice& globalCellR,
+                  const int& locationL,
+                  const int& locationR,
+                  const valarray<double>& gwe,
+                  const valarray<double>& gpe,
+                  const double& alpha,
+                  bndryType bt){
+
+    return 0;
+}
 // =========== Implicit =================================

@@ -121,7 +121,8 @@ target_include_directories(phase_lib
 # Create a library from the files in the mlweno directory
 add_library(mlweno_lib 
 		  ${SRC}/mlweno/reconstMLWENO.cpp
-		  ${SRC}/mlweno/polynomial.cpp 
+		  ${SRC}/mlweno/polynomial.cpp
+		  ${SRC}/mlweno/mlwenouse.cpp
 )
 
 # Specify any additional include directories if needed
@@ -139,7 +140,6 @@ target_link_libraries(mlweno_lib
 #Create a library from driver folder
 add_library(driver_lib
 		  ${SRC}/driver/driver.cpp
-		  ${SRC}/driver/mlwenouse.cpp
 )
 
 target_include_directories(driver_lib

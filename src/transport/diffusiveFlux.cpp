@@ -76,3 +76,8 @@ double getDifFluxInterior(const MLWENO::MLWENOUse& mlu,
 
     return work;
 }
+
+double getDifFluxEdge(){
+
+    return work;
+}

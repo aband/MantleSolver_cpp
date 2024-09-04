@@ -51,6 +51,7 @@ template <typename T>
 inline int CreateRefMap(T& funcSp, 
                         const MeshInfo& mi, 
                         bool (*EssenBndry)(const MeshInfo&, T&, const int&),
+                        bool (*NaturBndry)(const MeshInfo&, T&, const int&),
                         int * refArray,
                         unordered_map<int, int>& refMapNatur,
                         int * EssenDOFCount,
@@ -66,22 +67,20 @@ inline int CreateRefMap(T& funcSp,
     // and also right hand side vector
     // Hence it requires two different index system.
     for (int dof=0; dof<funcSp.getDOF(); dof++){
-        if (funcSp.onBndry(mi, dof)){
 
-            if (EssenBndry(mi, funcSp, dof)){
-                refArray[dof] = essenCount;
-                essenCount ++;
-            } else {
-                refArray[dof] = interCount;
-                interCount ++;
-
-                refMapNatur.insert(std::make_pair<int, int>(dof, naturCount));
-                naturCount ++;
-            }
-
+        if (EssenBndry(mi, funcSp, dof)){
+            refArray[dof] = essenCount;
+            essenCount ++;
+        } else if (NaturBndry(mi, funcSp, dof)){
+            refArray[dof] = interCount;
+            interCount ++;
+            refMapNatur.insert(std::make_pair(dof, naturCount));
+            naturCount ++;
         } else {
-                refArray[dof] = interCount;
-                interCount ++;
+            // Currently only mixing essential and natural bondary conditions
+            // Hence, essential and natural boundary should consists of all the boundarys
+            refArray[dof] = interCount;
+            interCount ++;
         }
 
     }
@@ -282,11 +281,12 @@ inline int AssignLocRedSys(ReducedSys * redsys,
                            LocMat * loc,
                            int * ref,
                            const unordered_map<int, int>& refMapNatur,
-                           const MeshInfo* mi,
+                           const MeshInfo& mi,
                            const bndryVal& bndryEssen,
                            const bndryVal& bndryNatur,
                            const indice& global,
-                           bool (*EssenBndry)(const MeshInfo& mi, T&, const int&)
+                           bool (*EssenBndry)(const MeshInfo& mi, T&, const int&),
+                           bool (*NaturBndry)(const MeshInfo& mi, T&, const int&),
                            T& funcSp){
 
     // ! Get global index of local dofs 
@@ -301,33 +301,62 @@ inline int AssignLocRedSys(ReducedSys * redsys,
         const int idxm = ref[elemDofs.at(row)];
         const double valB = loc->B.at(row);
     
-        if (funcSp.onBndry(mi, elemDofs.at(row))){
-            // The dof is on the boundary
-            // Need further indenfication whether it is essential or natural
-            if (EssenBndry(mi, T, elemDofs.at(row))){
-                // If it if essential boundary dof it goes to Bg
-                PetscCall(MatSetValues(redsys->Bg, 1, &idxm, 1, &idxn, &valB, 
-                                       ADD_VALUES));
+        if (EssenBndry(mi, funcSp, elemDofs.at(row))){
+            // If it if essential boundary dof it goes to Bg
+            PetscCall(MatSetValues(redsys->Bg, 1, &idxm, 1, &idxn, &valB, 
+                                   ADD_VALUES));
 
-                // At the same time insert essential boundary value to rhs vector
-                auto itFind = bndryEssen.find(elemDofs.at(row));
-                if (itFind != bndryEssen.end()){
-                    const bndryInfo& tmp = bndryEssen.at(elemDofs.at(row));
-                    PetscCall(VecSetValues(redsys->g, 1, &idxm, &tmp.val, INSERT_VALUES));
-                }
- 
-            } else {
-                // If not, natural boundary dof still goes to A
-                // Also need to go to rhs
-
+            // At the same time insert essential boundary value to rhs vector
+            auto itFind = bndryEssen.find(elemDofs.at(row));
+            if (itFind != bndryEssen.end()){
+                const bndryInfo& tmp = bndryEssen.at(elemDofs.at(row));
+                PetscCall(VecSetValues(redsys->g, 1, &idxm, &tmp.val, INSERT_VALUES));
             }
-
+ 
         } else {
+            // dof goes to B regardless of being natural boundary condition
+            PetscCall(MatSetValues(redsys->B, 1, &idxm, 1, &idxn, &valB, ADD_VALUES)); 
 
+            if (NaturBndry(mi, funcSp, elemDofs.at(row))){
+
+                // This dof is on the boundary will not contribute to source term
+                // This dof will contribute to neum vector
+                auto itFind = bndryNatur.find(elemDofs.at(row));
+                const int idneum = refMapNatur.at(idxm);
+                if (itFind != bndryNatur.end()){
+                    const bndryInfo& tmp = bndryNatur.at(elemDofs.at(row));
+                    PetscCall(VecSetValues(redsys->neum, 1, &idneum, &tmp.val, INSERT_VALUES));
+                }
+            } else {
+
+                // This dof is not on the boundary
+                // This dof will contribute to source term
+                double vals = loc->f.at(row);
+                PetscCall(VecSetValues(redsys->source, 1, &idxm, &vals, ADD_VALUES));
+
+             }
+
+            // This dof also contribute to M
+            // Regardless of being natural boundary
+            for (int col=0; col<elemDofs.size(); col++){
+                const int cidxn  = ref[elemDofs.at(col)];
+                const double val = loc->A.at(row+col*elemDofs.size()); 
+
+                if (funcSp.onBndry(mi,elemDofs.at(col))){
+                    // It is a non bndry dof - bndry dof interaction
+                    // Val assigned to M
+                    PetscCall(MatSetValues(redsys->Kg, 1, &idxm, 1, &cidxn, 
+                                           &val, ADD_VALUES));
+                } else {
+                    // It is a non bndry dof - non bndry dof interaction
+                    // Val assigned to M
+                    PetscCall(MatSetValues(redsys->M, 1, &idxm, 1, &cidxn, 
+                                           &val, ADD_VALUES));
+                }
+            }
         }
-
     }
-
+    return 0;
 }
 
 // Used for interior elements (no need to identify boundary dofs)
