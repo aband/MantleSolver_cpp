@@ -284,6 +284,7 @@ inline int AssignLocRedSys(ReducedSys * redsys,
                            const unordered_map<int, int>& refMapNatur,
                            const MeshInfo* mi,
                            const bndryVal& bndryEssen,
+                           const bndryVal& bndryNatur,
                            const indice& global,
                            bool (*EssenBndry)(const MeshInfo& mi, T&, const int&)
                            T& funcSp){
@@ -304,13 +305,22 @@ inline int AssignLocRedSys(ReducedSys * redsys,
             // The dof is on the boundary
             // Need further indenfication whether it is essential or natural
             if (EssenBndry(mi, T, elemDofs.at(row))){
-                // If it if essential boundary dof it goes to right hand side vector g
+                // If it if essential boundary dof it goes to Bg
                 PetscCall(MatSetValues(redsys->Bg, 1, &idxm, 1, &idxn, &valB, 
                                        ADD_VALUES));
 
+                // At the same time insert essential boundary value to rhs vector
+                auto itFind = bndryEssen.find(elemDofs.at(row));
+                if (itFind != bndryEssen.end()){
+                    const bndryInfo& tmp = bndryEssen.at(elemDofs.at(row));
+                    PetscCall(VecSetValues(redsys->g, 1, &idxm, &tmp.val, INSERT_VALUES));
+                }
+ 
+            } else {
+                // If not, natural boundary dof still goes to A
+                // Also need to go to rhs
 
             }
-
 
         } else {
 
