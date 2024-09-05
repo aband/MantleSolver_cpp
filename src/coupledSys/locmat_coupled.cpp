@@ -1,5 +1,4 @@
-#include "locmat.h"
-#include "../../driver/coupleTest/param.h"
+#include "coupled.h"
 
 int CellAvePorosity(const MeshInfo& mi, 
                     Phase * phase,
