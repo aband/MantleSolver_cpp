@@ -94,6 +94,29 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const double& alpha,
                   bndryType bt){
 
+    switch(bt){
+        case "wall": 
+
+        break;
+
+        case "free":
+
+        break;
+
+        case "dirichlet":
+
+
+        break;
+
+        case "flux":
+
+        break;
+
+        default : 
+
+        break;
+    }
+
     return 0;
 }
 // =========== Implicit =================================
