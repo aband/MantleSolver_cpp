@@ -1,10 +1,13 @@
+// Replace function computing porosity with
+// evaluatio of phase package with reconstructed values of CD and HD
 #include "coupled.h"
 
 int CellAvePorosity(const MeshInfo& mi, 
                     Phase * phase,
                     basis& basis_,
                     const valarray<double>& gwf,
-                    const vector<vertex>& gpf){
+                    const vector<vertex>& gpf,
+                    ){
 
     double phi_f_hat = 0.0;
     double area = 0.0;

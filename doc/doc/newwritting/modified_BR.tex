@@ -1,0 +1,27 @@
+\subsubsection{Modified BR element}
+
+The Bernardi-Raugel element has been researched extensively in previous 
+literature \cite{AnalysisFiniteElemStokes_Bernardi_Raugel}. 
+The error estimate is well known established by\cite{FinElemMethNavierStokes}.
+\begin{equation}
+\norm{\bold{u} - \bold{u}}_{1,\Omega} + 
+\norm{p-p_h}_{0,\Omega} \leq Ch^{m}(\norm{\bold{u}}_{m+1,\Omega} + \norm{p}_{m,\Omega})
+\end{equation}
+We state that our new function space satisfies the following hypotheses such that the
+error estimate holds:
+\begin{itemize}
+		  \item For any $q$ in $H^m(\Omega) \cap L_0^2(\Omega)$, one has
+		  $$\inf_{q_h \in \bold{M}_h} \norm{q-q_h}_{0,\Omega} \leq Ch^m \norm{q}_{m,\Omega}$$
+		  \item there exists a linear operator $\Pi_h$ from 
+		  $H^{m+1}(\Omega)^d \cap H_0^1(\Omega)^d$ into $X_h$ such that
+		  $$\forall \bold{v}\in H^{m+1}(\Omega)^d \cap H^1_0(\Omega)^d, \left \{ \begin{aligned}
+\forall q_h \in M_h, (q_h, \text{div}(\bold{v} - \Pi_h\bold{v})) = 0,\\
+\norm{\bold{v} - \Pi_h{\bold{v}}} \leq Ch^m\norm{\bold{v}}_{m+1,\Omega}
+		  \end{aligned}\right .$$
+		  \item for each $q_h$ in $M_h$, there exists a function $\bold{v}_h$ in $X_h$ such that
+		  $$(\text{div} \bold{v}_h, q_h) \geq \beta \norm{q_h}_{0,\Omega}\norm{\bold{v}}_{1,\Omega}$$,
+		  where $\beta > 0$ is a constant independent of $h$.
+\end{itemize}
+We introduce a family of quadrilateral mesh of domain $\Omega$, bounded by $h$.
+
+

@@ -13,7 +13,12 @@
   algorithms for saddle point problems}, SIAM. J. Numer. Anal., 31 (1994),
   pp.~1645--1661.
 
-\bibitem{MOdellingMeltingRates}
+\bibitem{FinElemMethNavierStokes}
+{\sc V.~Girault and P.-A. Raviart}, {\em Finite Element Methods for
+  Navier-Stokes Equations: Theory and Algorithms}, Springer Publishing Company,
+  Incorporated, 1st~ed., 2011.
+
+\bibitem{ModellingMeltingRates}
 {\sc I.~J. Hewitt}, {\em Modelling melting rates in upwelling mantle}, Earth
   and Planetary Science Letters, 300 (2010), pp.~264--274.
 
