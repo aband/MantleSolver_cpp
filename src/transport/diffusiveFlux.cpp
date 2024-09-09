@@ -27,18 +27,18 @@ inline void assignDiffVals(const MLWENO::MLWENOUse& mlu,
 
 }
 
-double getDifFluxInterior(const MLWENO::MLWENOUse& mlu,
-                                const MeshInfo& mi,
-                                const std::array<vertex,2>& edge,
-                                const vertex& unitNormal,
-                                const double& len,
-                                const indice& globalCellIn,
-                                const indice& globalCellOut,
-                                const int& locationIn,
-                                const int& locationOut,
-                                const valarray<double>& gwe,
-                                const valarray<double>& gpe,
-                                const double& scale){
+double getDifFlux(const MLWENO::MLWENOUse& mlu,
+                  const MeshInfo& mi,
+                  const std::array<vertex,2>& edge,
+                  const vertex& unitNormal,
+                  const double& len,
+                  const indice& globalCellIn,
+                  const indice& globalCellOut,
+                  const int& locationIn,
+                  const int& locationOut,
+                  const valarray<double>& gwe,
+                  const valarray<double>& gpe,
+                  const double& scale){
 
     double work = 0.0;
 
@@ -77,7 +77,21 @@ double getDifFluxInterior(const MLWENO::MLWENOUse& mlu,
     return work;
 }
 
-double getDifFluxEdge(){
+double getDifFlux(const MLWENO::MLWENOUse& mlu,
+                  const MeshInfo& mi,
+                  const std::array<vertex,2>& edge,
+                  const vertex& unitNormal,
+                  const double& len,
+                  const indice& globalCellIn,
+                  const indice& globalCellOut,
+                  const int& locationIn,
+                  const int& locationOut,
+                  const valarray<double>& gwe,
+                  const valarray<double>& gpe,
+                  const double& scale,
+                  bndryType bt){
+
+
 
     return work;
 }
