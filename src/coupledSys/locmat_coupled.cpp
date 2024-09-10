@@ -7,7 +7,8 @@ int CellAvePorosity(const MeshInfo& mi,
                     basis& basis_,
                     const valarray<double>& gwf,
                     const vector<vertex>& gpf,
-                    ){
+                    const MLWENO::MLWENOUse& mluAdv,
+                    const MLWENO::MLWENOUse& mluDif){
 
     double phi_f_hat = 0.0;
     double area = 0.0;

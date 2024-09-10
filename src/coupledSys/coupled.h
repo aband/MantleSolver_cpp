@@ -21,7 +21,42 @@ namespace WEAK_COUPLED {
     enum bndryTypeTrans {"wall", "reflective", "absorb", "flux", "Dirichlet"}; 
 
     enum bndryTypeFlow {"essential", "natural"};
-     
+
+    /**!
+     * Class holding a single transport.
+     */
+    class transport{
+        public: 
+            transport();
+            ~transport();
+
+            bool advFlag = false;
+            bool difFlag = false;
+
+            MLWENO::MLWENOUse * mluseAdv = NULL;
+            MLWENO::MLWENOUse * mluseDif = NULL;
+
+        private:
+
+
+    }
+
+    /** !
+     * Class holding all mlwenouse objects that used in the simulation of 
+     * coupled transport.
+     */
+    class coupledTrans{
+        public:
+            coupledTrans();
+            ~coupledTrans();
+
+            // Preparation for potential mlweno reconstruction
+            MLWENO::MLWENOPrepare * mlpPtr = NULL;
+
+
+
+    };
+
 }
 
 #endif
