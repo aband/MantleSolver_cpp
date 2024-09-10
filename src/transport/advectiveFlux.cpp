@@ -88,26 +88,27 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const vertex& unitNormal,
                   const double& len,
                   const indice& globalCellIn,
-                  const indice& globalCellOut,
                   const int& locationIn,
-                  const int& locationOut,
                   const valarray<double>& gwe,
                   const valarray<double>& gpe,
                   const double& alpha,
                   bndryType bt){
 
     // Influx is calculated 
-
+    // Only current targeted element is needed.
     std::array<double,2> InFlux =  getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellIn , 
-                                   location , gwe, gpe);
+                                   locationIn , gwe, gpe);
 
     std::array<double,2> OutFlux;
+
+    double edgeFlux = 0.0;
 
     switch(bt){
         case "wall": 
             OutFlux[0] = -1*InFlux[0];
             OutFlux[1] = -1*InFlux[1];
 
+            edgeFlux = LFFlux(InFlux[0], OutFlux[0], Influx[1], OutFlux[1], alpha);
         break;
 
         case "free":
@@ -115,23 +116,27 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
             OutFlux[0] = InFlux[0];
             OutFlux[1] = InFlux[1];
 
+            edgeFlux = LFFlux(InFlux[0], OutFlux[0], Influx[1], OutFlux[1], alpha);
         break;
 
         case "dirichlet":
 
-            OutFlux = bndryVal();
+            OutFlux = bndryValAdv();
 
+            edgeFlux = LFFlux(InFlux[0], OutFlux[0], Influx[1], OutFlux[1], alpha);
         break;
 
         case "flux":
 
+            edgeFlux = bndryFluxAdv(mi,glabalCellIn);
+
         break;
 
         default : 
-
+            PetscPrintf("Boundary type not prescribed at cell (%d,%d). \n",
+                        globalCellIn[0], globalCellInf[1]);
         break;
     }
-
-    return LFFlux(InFlux[0], OutFlux[0], Influx[1], OutFlux[1], alpha);
+        return edgeFlux;
 }
 // =========== Implicit =================================

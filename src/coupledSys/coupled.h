@@ -18,8 +18,9 @@
  */
 namespace WEAK_COUPLED {
 
-    
+    enum bndryTypeTrans {"wall", "reflective", "absorb", "flux", "Dirichlet"}; 
 
+    enum bndryTypeFlow {"essential", "natural"};
      
 }
 

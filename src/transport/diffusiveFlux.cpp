@@ -83,13 +83,31 @@ double getDifFlux(const MLWENO::MLWENOUse& mlu,
                   const vertex& unitNormal,
                   const double& len,
                   const indice& globalCellIn,
-                  const indice& globalCellOut,
                   const int& locationIn,
-                  const int& locationOut,
                   const valarray<double>& gwe,
                   const valarray<double>& gpe,
                   const double& scale,
-                  bndryType bt){
+                  bndryTypeTrans bt){
+
+    double work = 0.0;
+
+    int degree = gwe.size() + 1;
+    const int numPts = std::ceil((degree+1)/2.0) * 2;
+
+    // No outside cell for cells on the boundary
+    const double h = mi.cellArea.at(FlatIndic(mi, globalCellIn));
+
+    const double dx = h /(double)(numPts - 1);
+
+    LagrangeBasisDeriv lagDer(numPts - 1);
+
+    const int halfPts = numPts/2;
+
+    // Diffusion function are evaluated at the points in the order of 
+    // from outside to inside.
+    vector<double> diffVals(numPts, 0);
+
+    vertexSet tmpEdge = {edge[0], edge[1]};
 
 
 
