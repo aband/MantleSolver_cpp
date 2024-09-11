@@ -12,6 +12,9 @@
 #include "locmat.h"
 #include "flow_setting.h"
 
+// Phase
+#include "eutectic.h"
+
 /** !
  * Start with weakly coupled situation, where 
  * I approximate the Jacobian of the normal flux with diagonal matrix.
@@ -27,17 +30,16 @@ namespace WEAK_COUPLED {
      */
     class transport{
         public: 
-            transport();
-            ~transport();
+            transport() {MLWENO::MLWENOUse * mluseAdv = new MLWENO::MLWENOUse();
+				             MLWENO::MLWENOUse * mluseDif = new MLWENO::MLWENOUse();};
+            ~transport(){delete mluseAdv;
+                         delete mluseDif};
 
             bool advFlag = false;
             bool difFlag = false;
 
             MLWENO::MLWENOUse * mluseAdv = NULL;
             MLWENO::MLWENOUse * mluseDif = NULL;
-
-        private:
-
 
     }
 
@@ -47,15 +49,17 @@ namespace WEAK_COUPLED {
      */
     class coupledTrans{
         public:
-            coupledTrans();
-            ~coupledTrans();
+            coupledTrans() {transport * transCompon = new transport();
+                            transport * transEnthal = new transport();};
+            ~coupledTrans() {delete transCompon;
+                             delete transEnthal;};
 
-            // Preparation for potential mlweno reconstruction
-            MLWENO::MLWENOPrepare * mlpPtr = NULL;
-
-
+            transport * transCompon = NULL;
+            transport * transEnthal = NULL;
 
     };
+
+
 
 }
 

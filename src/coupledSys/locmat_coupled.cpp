@@ -3,21 +3,26 @@
 #include "coupled.h"
 
 int CellAvePorosity(const MeshInfo& mi, 
-                    Phase * phase,
+                    EUTECTIC::Phase * phase,
                     basis& basis_,
                     const valarray<double>& gwf,
                     const vector<vertex>& gpf,
-                    const MLWENO::MLWENOUse& mluAdv,
-                    const MLWENO::MLWENOUse& mluDif){
+                    WEAK_COUPLED::coupledTrans * ct){
 
     double phi_f_hat = 0.0;
     double area = 0.0;
 
     for (unsigned int g=0; g<gwf.size(); g++){
         vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
+
+        // Get HD and CD from reconstruction at this gauss point
+
+
+        EUTECTIC::phase->evalPhase(HD,CD);
+        double phiv = EUTECTIC::phase->phi.mlt;
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
-        phi_f_hat += gw * jac * ComputePorosity(mapped,phase);
+        phi_f_hat += gw * jac * phiv;
         area += gw * jac; 
     }
 
