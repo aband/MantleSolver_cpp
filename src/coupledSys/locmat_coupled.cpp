@@ -3,11 +3,12 @@
 #include "coupled.h"
 
 int CellAvePorosity(const MeshInfo& mi, 
-                    EUTECTIC::Phase * phase,
                     basis& basis_,
+                    Phase * phase,
+                    const indice& globalCell,
                     const valarray<double>& gwf,
                     const vector<vertex>& gpf,
-                    WEAK_COUPLED::coupledTrans * ct){
+                    const WEAK_COUPLED::coupledTrans& ct){
 
     double phi_f_hat = 0.0;
     double area = 0.0;
@@ -16,13 +17,15 @@ int CellAvePorosity(const MeshInfo& mi,
         vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
 
         // Get HD and CD from reconstruction at this gauss point
+        ct.reconstVal(mi, globalCell, mapped);
 
+        // Calculate volumetric fraction of 
+        phase->pPtr->evalPhase(ct.HD,ct.CD);
+        double phif = phase->pPtr->phi.mlt;
 
-        EUTECTIC::phase->evalPhase(HD,CD);
-        double phiv = EUTECTIC::phase->phi.mlt;
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
-        phi_f_hat += gw * jac * phiv;
+        phi_f_hat += gw * jac * phif;
         area += gw * jac; 
     }
 
@@ -38,6 +41,8 @@ int AssignLocMat(const MeshInfo& mi,
                  basis& basis_,
                  LocMat * loc,
                  Phase * phase,
+                 const indice& globalCell,
+                 const WEAK_COUPLED::coupledTrans& ct,
                  const valarray<double>& gwe,
                  const valarray<double>& gpe,
                  const valarray<double>& gwf,
@@ -64,8 +69,13 @@ int AssignLocMat(const MeshInfo& mi,
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
 
-        // Calculate point wise porosity ===================================
-        phi_f = ComputePorosity(mapped, phase);  // Fluid porosity
+        // Reconstruction of point wise value of HD and CD
+        ct.reconstVal(mi, globalCell, mapped);
+
+        phase->pPtr->evalPhase(ct.HD, ct.CD);
+
+        // Calculate point wise porosity =========================================
+        phi_f = phase->pPtr->phi.mlt;            // Fluid porosity
         phi_s = AssignPorosity(phi_f);       // Solid porosity
 
         std::array<std::array<double,4>, 12> brwork = 
@@ -114,6 +124,8 @@ int AssignLocMat(const MeshInfo& mi,
                  basis& basis_,
                  LocMat * loc,
                  Phase * phase,
+                 const indice& globalCell,
+                 const WEAK_COUPLED::coupledTrans& ct,
                  const valarray<double>& gwe,
                  const valarray<double>& gpe,
                  const valarray<double>& gwf,
@@ -140,8 +152,13 @@ int AssignLocMat(const MeshInfo& mi,
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
 
-        // Calculate point wise porosity ===================================
-        phi_f = ComputePorosity(mapped, phase);  // Fluid porosity
+        // Reconstruction of point wise value of HD and CD
+        ct.reconstVal(mi, globalCell, mapped);
+
+        phase->pPtr->evalPhase(ct.HD, ct.CD);
+
+        // Calculate point wise porosity =========================================
+        phi_f = phase->pPtr->phi.mlt;  // Fluid porosity
         phi_s = AssignPorosity(phi_f);
 
         std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
@@ -183,7 +200,15 @@ int AssignLocMat(const MeshInfo& mi,
             std::array<vertex, 8>  hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
             // Zeroth order constant pressure basis is always 1
             vertex nu = basis_.unitnormal(e);
-            double phi_f_e = ComputePorosity(mapped, phase);
+
+            // Reconstruction of point wise value of HD and CD
+            ct.reconstVal(mi, globalCell, mapped);
+
+            phase->pPtr->evalPhase(ct.HD, ct.CD);
+
+            // Calculate point wise porosity =========================================
+            double phi_f_e = phase->pPtr->phi.mlt;  // Fluid porosity on edge gauss point
+
             for (int j=0; j<8; j++){
                 // With dimension version
                 loc->B[j] += len/2.0*gwe[g]*
@@ -201,8 +226,10 @@ int AssignLocMat(const MeshInfo& mi,
                  BRMixed& br_,
                  Hdivmixed& hdiv_,
                  basis& basis_,
-                 Phase * phase,
                  double * k,
+                 Phase * phase,
+                 const indice& globalCell,
+                 const WEAK_COUPLED::coupledTrans& ct,
                  const valarray<double>& gwf,
                  const vector<vertex>& gpf){
 
@@ -218,8 +245,13 @@ int AssignLocMat(const MeshInfo& mi,
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
 
+        // Reconstruction of point wise value of HD and CD
+        ct.reconstVal(mi, globalCell, mapped);
+
+        phase->pPtr->evalPhase(ct.HD, ct.CD);
+
         // Calculate point wise porosity ===================================
-        phi_f = ComputePorosity(mapped, phase);  // Fluid porosity
+        phi_f = phase->pPtr->phi.mlt;  // Fluid porosity
         phi_s = AssignPorosity(phi_f);
 
         *k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * br_.Pressure() * 

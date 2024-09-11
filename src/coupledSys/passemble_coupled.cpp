@@ -15,6 +15,7 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
                                       Mat * K,
                                       BRMixed& br_,
                                       Hdivmixed& hdiv_,
+                                      const WEAK_COUPLED::coupledTrans& ct,
                                       int * refArrayStokes, 
                                       int * refArrayDarcy,
                                       const int& bndryDOFStokes,
@@ -99,12 +100,12 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
         basis_.GetCorners(mi, global);
 
         // ! Compute cell averaged porosity
-        CellAvePorosity(mi, phase, basis_, gwf, gpf);
+        CellAvePorosity(mi, basis_, global, gwf, gpf, ct, myphase);
 
         // ! Compute local values associated to each dofs
-        AssignLocMat(mi, br_  , basis_, locmatS, phase, gwe, gpe, gwf, gpf);
-        AssignLocMat(mi, hdiv_, basis_, locmatD, phase, gwe, gpe, gwf, gpf);
-        AssignLocMat(mi, br_, hdiv_, basis_, phase, &k, gwf, gpf);
+        AssignLocMat(mi, br_  , basis_, locmatS, global, ct, myphase, gwe, gpe, gwf, gpf);
+        AssignLocMat(mi, hdiv_, basis_, locmatD, global, ct, myphase, gwe, gpe, gwf, gpf);
+        AssignLocMat(mi, br_, hdiv_, basis_, global, ct, myphase, &k, gwf, gpf);
 
         // ! Load corresponding shape functions
         shape stokesFuncSp(&basis_, &br_);
