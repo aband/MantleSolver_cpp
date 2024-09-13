@@ -1,0 +1,1 @@
+/home/renpo/system/mpich-install-4.1.1/bin/mpicxx -g -rdynamic CMakeFiles/scatter.dir/scatterTest.cpp.o -o scatter  -Wl,-rpath,/home/renpo/system/petscUpdate/petsc-main/arch-linux-c-opt/lib /home/renpo/system/petscUpdate/petsc-main/arch-linux-c-opt/lib/libpetsc.so 

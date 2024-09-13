@@ -41,7 +41,7 @@ find_package(MPI REQUIRED)
 pkg_search_module(PETSC REQUIRED IMPORTED_TARGET PETSc)
 pkg_search_module(LAPACKE REQUIRED IMPORTED_TARGET lapacke)
 pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
-#pkg_search_module(CGNS REQUIRED IMPORTED_TARGET cgns)
+pkg_search_module(CGNS REQUIRED IMPORTED_TARGET cgns)
 
 # Build library
 # Create a library from the files in src file
@@ -91,7 +91,7 @@ target_link_libraries(mfem_lib
 add_library(io_lib
         ${SRC}/io/input.cpp
         ${SRC}/io/output.c
-#		  ${SRC}/io/cgns_io.c
+		  ${SRC}/io/cgns_io.c
 )
 
 target_include_directories(io_lib
@@ -103,8 +103,8 @@ target_link_libraries(io_lib
     general_lib
     PkgConfig::PETSC
     PkgConfig::HDF5
-	 #    ${CGNS}/libcgns.a
-#    PkgConfig::CGNS
+	 #     ${CGNS}/libcgns.a
+    PkgConfig::CGNS
 )
 
 add_library(phase_lib
@@ -149,28 +149,28 @@ target_link_libraries(testCoupled
     mfem_lib
     io_lib
     PkgConfig::LAPACKE 
-#	 PkgConfig::CGNS
+	 PkgConfig::CGNS
 )
 
 target_link_libraries(testSeparate
     mfem_lib
     io_lib
     PkgConfig::LAPACKE 
-#    PkgConfig::CGNS
+    PkgConfig::CGNS
 )
 
 target_link_libraries(testBasis
     mfem_lib
     io_lib
     PkgConfig::LAPACKE 
-#    PkgConfig::CGNS
+    PkgConfig::CGNS
 )
 
 target_link_libraries(testParallel
     mfem_lib
     io_lib
     PkgConfig::LAPACKE 
-#    PkgConfig::CGNS
+    PkgConfig::CGNS
 )
 
 target_link_libraries(testDMstag

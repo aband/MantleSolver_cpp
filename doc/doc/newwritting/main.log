@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  6 SEP 2024 11:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  12 SEP 2024 10:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -933,7 +933,7 @@ d on input line 6.
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
 (./modified_BR.tex) [4]
-Overfull \hbox (13.68362pt too wide) detected at line 242
+Overfull \hbox (11.83607pt too wide) detected at line 242
 []\OT1/cmr/bx/n/10 A \OT1/cmr/m/n/10 = []  \OT1/cmr/bx/n/10 B \OT1/cmr/m/n/10 =
  []  \OT1/cmr/bx/n/10 C \OT1/cmr/m/n/10 = []  \OT1/cmr/bx/n/10 F \OT1/cmr/m/n/1
 0 = []   \OT1/cmr/bx/n/10 G \OT1/cmr/m/n/10 = []
@@ -986,7 +986,7 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 Here is how much of TeX's memory you used:
  25790 strings out of 478287
  462948 string characters out of 5849289
- 722298 words of memory out of 5000000
+ 722297 words of memory out of 5000000
  41854 multiletter control sequences out of 15000+600000
  472184 words of font info for 40 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
@@ -1003,7 +1003,7 @@ sfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
 .pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on main.pdf (14 pages, 317417 bytes).
+Output written on main.pdf (14 pages, 317423 bytes).
 PDF statistics:
  388 PDF objects out of 1000 (max. 8388607)
  337 compressed objects within 4 object streams

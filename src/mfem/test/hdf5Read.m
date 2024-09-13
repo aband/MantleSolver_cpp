@@ -28,5 +28,5 @@ quiver(X,Y,vx,vy);
 title("Darcy Velocity");
 
 figure
-streamslice(X',Y',vx',vy',0.5);
+streamslice(X',Y',(abs(vx')>10e-6).*vx',(abs(vy')>10e-6).*vy',0.5);
 title("Darcy Streamline");
