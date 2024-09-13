@@ -1,1 +1,0 @@
-/home/renpo/system/mpich-install-4.1.1/bin/mpicxx -g -rdynamic CMakeFiles/testDMstag.dir/testDMstag.cpp.o -o testDMstag  -Wl,-rpath,/home/renpo/system/petscUpdate/petsc-main/arch-linux-c-opt/lib libgeneral_lib.a /home/renpo/system/petscUpdate/petsc-main/arch-linux-c-opt/lib/libpetsc.so 
