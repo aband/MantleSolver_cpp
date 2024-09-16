@@ -3,7 +3,7 @@
 #include <ctime>
 #include <chrono>
 #include "integral.h"
-//#include "phase.h"
+#include "eutectic.h"
 #include "input.h"
 #include "util.h"
 
@@ -17,7 +17,6 @@
 #include "psolve.h"
 
 // MLWENO parameter header file
-#include "driver.h"
 #include "mlwenouse.h"
 
 extern "C"{
@@ -26,7 +25,7 @@ extern "C"{
 //#include "cgns_io.h"
 }
 
-#include "coupled.h"
+//#include "coupled.h"
 
 /*
  * First example, simulation of partial melting in a rectangular domain.
@@ -56,7 +55,7 @@ int main(int argc, char **argv){
 
     AssignPhyProperties(myPhase->pp);
 
-    myPhase->pPtr = new phase();
+    myPhase->pPtr = new EUTECTIC::phase();
 
 /*
     double HD = 0.25; 
@@ -205,6 +204,7 @@ int main(int argc, char **argv){
     CreateRefMap(*br, refArrayStokes, mi, &bndryDOFStokes);
     CreateRefMap(*hdiv, refArrayDarcy, mi, &bndryDOFDarcy);
 
+	 /*
     ParallelMatrixAssemble(mi, *basis_, myPhase, bndryStokesEssen, reducedStokes, 
                                                  bndryDarcyEssen,  reducedDarcy, 
                            &K, *br, *hdiv , refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
@@ -255,6 +255,7 @@ int main(int argc, char **argv){
 
     CGNSPrepareParallel(&destDarcy_sol, &destDarcy_g, refArrayDarcy, mi,
                         vx, vy, *hdiv, *basis_);
+*/
 
     // CGNS output of hdf5 file
 //    char stokesfile[] = "stokes.cgns";   
@@ -269,82 +270,16 @@ int main(int argc, char **argv){
 
     // Transport ================================================================
     // Create levels for ml-weno 
-    Driver * drivPtr = new Driver();
-    DMDAVecGetArray(dmu, localu, &drivPtr->mi.localVals);
-    ReadMeshPortion(dmMesh, &globalmesh, drivPtr->mi.lmesh);
-
-    // Assign mesh information after mesh added to meshInfo
-    AssignValuesMeshInfo(drivPtr->mi, dmMesh, dmu);
-
-    DMCreateGlobalVector(dmu, &transport::CD);
-    DMCreateGlobalVector(dmu, &transport::HD);
-
-    // We have five different levels in ml-weno 
-    drivPtr->UseWeno();
-	 drivPtr->AddLevel(1,1);
-	 drivPtr->AddLevel(2,2);
-    drivPtr->AddLevel(3,3);
-    drivPtr->AddLevel(4,4);
-    drivPtr->AddLevel(5,5);
-
-    MLWENO::MLWENOPrepare * mlpPtr = new MLWENO::MLWENOPrepare();
-
-    mlpPtr->AddLevel(drivPtr->mi,1,1);
-    mlpPtr->AddLevel(drivPtr->mi,2,2);
-    mlpPtr->AddLevel(drivPtr->mi,3,3);
-    mlpPtr->AddLevel(drivPtr->mi,4,3);
-    mlpPtr->AddLevel(drivPtr->mi,3,4);
-    mlpPtr->AddLevel(drivPtr->mi,5,5);
-
-    mlpPtr->UpdateSmoothnessIndic(drivPtr->mi);
-
-    // Two instance of mlweno usage, advection and diffusion
-    // Advection mlweno use (3,3) and (2,2) reconstruction
-    MLWENO::MLWENOUse * mluseAdv = new MLWENO::MLWENOUse(); 
-
-    // Interior WENO levels
-    mluseAdv->AddMLWENOLevel("interior",{"(3,3)","(2,2)"}, mlpPtr);
-    mluseAdv->AssignWENOStencils(0,"(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
-    mluseAdv->AssignWENOStencils(0,"(3,3)",{{-1,-1}});
-    
-    mluseAdv->AssignLinearWgts("interior","(2,2)",{1,1,1,1});
-    mluseAdv->AssignLinearWgts("interior","(3,3)",{5});
-    mluseAdv->UpdateNonLinearWgts(drivPtr->mi, "interior", interior);
-
-    // Edge WENO levels
-    mluseAdv->AddMLWENOLevel("edge",{"(2,2)","(1,1)"}, mlpPtr);
-    mluseAdv->AssignWENOStencils("edge","(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
-    mluseAdv->AssignWENOStencils("edge","(1,1)",{{0,0}});
-
-    mluseAdv->AssignLinearWgts("edge","(2,2)",{1,1,1,1});
-    mluseAdv->AssignLinearWgts("edge","(1,1)",{0.1});
-    mluseAdv->UpdateNonLinearWgts(drivPtr->mi, "edge", edge);
-
-	 /* 
- 	 // Diffusion mlweno use (5,5) and (3,3) reconstruction
-    MLWENO::MLWENOUse * mluseDif = new MLWENO::MLWENOUse();
-
-    mluseDif->AddMLWENOLevel("interior",{"(5,5)","(4,3)","(3,4)"}, mlpPtr);
-    mluseDif->AssignWENOStencils(0,"(4,3)",{{-1,-1},{0,-1}});
-    mluseDif->AssignWENOStencils(0,"(3,4)",{{-1,-1},{-1,0}});
-    mluseDif->AssignWENOStencils(0,"(5,5)",{{-2,-2}});
-    mluseDif->UpdateNonLinearWgts(drivPtr->mi, "interior", interior);
-
-    mluseDif->AddMLWENOLevel("edge", {"(3,3)"}, mlpPtr);
-    mluseDif->AssignWENOStencils("edge", "(3,3)", {{0,-1},{-2,-1},{-1,-2},{-1,0}});
-    mluseDif->UpdateNonLinearWgts(drivPtr->mi,"edge", edge);
-*/
-
     // Finialize the program ====================================================
 
     // Clear flow vectors
-    VecDestroy(&destStokes_sol);
-    VecDestroy(&destStokes_g);
-    VecDestroy(&destDarcy_sol);
-    VecDestroy(&destDarcy_g);
+//    VecDestroy(&destStokes_sol);
+//    VecDestroy(&destStokes_g);
+//    VecDestroy(&destDarcy_sol);
+//    VecDestroy(&destDarcy_g);
 
-    VecDestroy(&transport::HD);
-    VecDestroy(&transport::CD);
+    //VecDestroy(&transport::HD);
+    //VecDestroy(&transport::CD);
 
     free(refArrayStokes);
     free(refArrayDarcy);

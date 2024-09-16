@@ -139,7 +139,7 @@ target_link_libraries(mlweno_lib
 #Create a library from driver folder
 add_library(driver_lib
 		  ${SRC}/driver/driver.cpp
-		  ${SRC}/driver/mlwenouse.cpp
+		  #		  ${SRC}/driver/mlwenouse.cpp
 )
 
 target_include_directories(driver_lib

@@ -1,4 +1,7 @@
-#include "coupled.h"
+//#include "coupled.h"
+
+#include "passemble.h"
+#include "mlwenouse.h"
 
 // Assemble sparse matrix parallelly
 // Parallel assemble need boundary condition pre allocated

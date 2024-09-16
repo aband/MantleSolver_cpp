@@ -89,21 +89,25 @@ add_library(mfem_lib
         ${SRC}/mfem/error.cpp
 		  ${SRC}/mfem/shape.tpp
 		  ${SRC}/mfem/parallel/passemble.cpp
-        ${SRC}/mfem/parallel/passembleVarPoro.cpp
+		  #${SRC}/mfem/parallel/passembleVarPoro.cpp
 		  ${SRC}/mfem/parallel/locmat.cpp
-		  ${SRC}/mfem/parallel/locmatVarPoro.cpp
+		  #${SRC}/mfem/parallel/locmatVarPoro.cpp
 		  ${SRC}/mfem/parallel/psolve.cpp
 		  ${SRC}/mfem/parallel/preconst.cpp
+		  ${SRC}/coupledSys/locmat_coupled.cpp
 )
 
 target_include_directories(mfem_lib
 		  PUBLIC ${SRC}/mfem
 		  PUBLIC ${SRC}/mfem/parallel
+		  PUBLIC ${SRC}/coupled
+		  PUBLIC ${SRC}/transport
 #		  PUBLIC /workspace/CGNS/src
 #		  PUBLIC /workspace/CGNS/build/src
 )
 
 target_link_libraries(mfem_lib
+	 mlweno_lib
     phase_lib
     general_lib
 )
@@ -137,43 +141,71 @@ target_link_libraries(mlweno_lib
         PkgConfig::PETSC
 )
 
-#Create a library from coupled sys folder
-add_library(coupled_lib
-		  ${SRC}/coupledSys/locmat_coupled.cpp
-		  ${SRC}/coupledSys/passemble_coupled.cpp
-		  ${SRC}/coupledSys/trans_setting.cpp
-		  ${SRC}/coupledSys/flow_setting.cpp
+# Create a library from the files in the transport directory
+add_library(transport_lib
+		  ${SRC}/transport/advectiveFlux.cpp
 )
 
-target_include_directories(coupled_lib
-		  PUBLIC ${SRC}/general
-		  PUBLIC ${SRC}/io
-		  PUBLIC ${SRC}/mlweno
+# Specify any additional include directories if needed
+target_include_directories(transport_lib 
 		  PUBLIC ${SRC}/transport
-		  PUBLIC ${SRC}/phase
-		  PUBLIC ${SRC}/mfem
-		  PUBLIC ${SRC}/mfem/parallel
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/general
+    PUBLIC ${PETSC_DIR}/include 
 )
 
-target_link_libraries(coupled_lib
-		  general_lib
-		  phase_lib
-		  io_lib
-		  mlweno_lib
-		  mfem_lib
-		  PkgConfig::PETSC
+target_link_libraries(transport_lib
+        io_lib
+        general_lib
+        mlweno_lib
+        PkgConfig::PETSC
 )
+
+#Create a library from coupled sys folder
+#add_library(coupled_lib
+#		  ${SRC}/coupledSys/locmat_coupled.cpp
+		  #${SRC}/coupledSys/passemble_coupled.cpp
+		  #${SRC}/coupledSys/trans_setting.cpp
+		  #${SRC}/coupledSys/flow_setting.cpp
+		  #)
+
+		  #target_include_directories(coupled_lib
+		  #PUBLIC ${SRC}/general
+		  ##PUBLIC ${SRC}/io
+		  ##PUBLIC ${SRC}/mlweno
+		  #PUBLIC ${SRC}/transport
+		  #PUBLIC ${SRC}/phase
+		  #PUBLIC ${SRC}/mfem
+		  #PUBLIC ${SRC}/mfem/parallel
+		  #)
+
+		  #target_link_libraries(coupled_lib
+		  #general_lib
+		  #phase_lib
+		  #io_lib
+		  #mlweno_lib
+		  #mfem_lib
+		  #PkgConfig::PETSC
+		  #)
 
 # Generate an excutable file
 add_executable(test
+        flow_setting.cpp
+		  trans_setting.cpp
         test.cpp
 )
+
+target_include_directories(test
+		  PUBLIC ${SRC}/coupledSys
+		  )
 
 target_link_libraries(test
 		  io_lib
 		  phase_lib
 		  mfem_lib
-		  coupled_lib
+		  mlweno_lib
+		  transport_lib
+		  #		  coupled_lib
 		  PkgConfig::LAPACKE
 #        PkgConfig::CGNS
 )

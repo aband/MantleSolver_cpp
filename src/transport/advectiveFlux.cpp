@@ -15,9 +15,9 @@ inline double LFFlux(const double& uIn, const double& uOut,
  * return a one-sided flux. 
  */
 inline double getAdvFluxPoint(const MLWENO::MLWENOUse& mlu, const MeshInfo& mi,
-                              const double& uR, const vertex& unitNormal){
+                              const double& u, const vertex& unitNormal){
 
-   std::array<double,2> work = advFunc(uR);
+   std::array<double,2> work = advFunc(u);
 
    return work[0]*unitNormal[0]+work[1]*unitNormal[1];
 }
@@ -74,7 +74,7 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
     OutFlux = getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellOut, 
                              locationOut, gwe, gpe);
 
-    return numericalFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], alpha);
+    return LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], alpha);
 }
 
 /**!
@@ -92,7 +92,7 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const valarray<double>& gwe,
                   const valarray<double>& gpe,
                   const double& alpha,
-                  bndryType bt){
+                  bndryTypeAdv bt){
 
     // Influx is calculated 
     // Only current targeted element is needed.
@@ -104,37 +104,37 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
     double edgeFlux = 0.0;
 
     switch(bt){
-        case "wall": 
+        case wall: 
             OutFlux[0] = -1*InFlux[0];
             OutFlux[1] = -1*InFlux[1];
 
-            edgeFlux = LFFlux(InFlux[0], OutFlux[0], Influx[1], OutFlux[1], alpha);
+            edgeFlux = LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], alpha);
         break;
 
-        case "free":
+        case freeFlow:
 
             OutFlux[0] = InFlux[0];
             OutFlux[1] = InFlux[1];
 
-            edgeFlux = LFFlux(InFlux[0], OutFlux[0], Influx[1], OutFlux[1], alpha);
+            edgeFlux = LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], alpha);
         break;
 
-        case "dirichlet":
+        case dirichletAdv:
 
             OutFlux = bndryValAdv();
 
-            edgeFlux = LFFlux(InFlux[0], OutFlux[0], Influx[1], OutFlux[1], alpha);
+            edgeFlux = LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], alpha);
         break;
 
-        case "flux":
+        case flux:
 
-            edgeFlux = bndryFluxAdv(mi,glabalCellIn);
+            edgeFlux = bndryFluxAdv();
 
         break;
 
         default : 
-            PetscPrintf("Boundary type not prescribed at cell (%d,%d). \n",
-                        globalCellIn[0], globalCellInf[1]);
+            PetscPrintf(PETSC_COMM_WORLD,"Boundary type not prescribed at cell (%d,%d). \n",
+                        globalCellIn[0], globalCellIn[1]);
         break;
     }
         return edgeFlux;

@@ -6,18 +6,16 @@
 #include "advectiveFlux.h"
 #include "diffusiveFlux.h"
 
-// Flow
-#include "passemble.h"
-#include "locmat.h"
-#include "myFunc.h"
-
 // Phase
 #include "eutectic.h"
+
+using namespace EUTECTIC; 
 
 /**!
  * Transport location functions
  * A set of functions define location of a given cell.
  */
+
 bool interior(const indice& globalCell, 
               const MeshInfo& mi);
 
@@ -33,10 +31,6 @@ bool corner(const indice& globalCell,
  */
 namespace WEAK_COUPLED {
 
-    enum bndryTypeTrans {"wall", "reflective", "absorb", "flux", "Dirichlet"}; 
-
-    enum bndryTypeFlow {"essential", "natural"};
-
     /**!
      * Class holding a single transport.
      */
@@ -45,7 +39,7 @@ namespace WEAK_COUPLED {
             transport() {MLWENO::MLWENOUse * mluseAdv = new MLWENO::MLWENOUse();
                          MLWENO::MLWENOUse * mluseDif = new MLWENO::MLWENOUse();};
             ~transport(){delete mluseAdv;
-                         delete mluseDif};
+                         delete mluseDif;};
 
             bool advFlag = false;
             bool difFlag = false;
@@ -58,9 +52,9 @@ namespace WEAK_COUPLED {
             double reconstVal(const vertex& mapped, 
                               const indice& globalCell,
                               const MeshInfo& mi) 
-            {return mluseAdv->Evaluate(mapped, globalCell, mi, location(mi, globalCell))};
+            {return mluseAdv->Evaluate(mapped, globalCell, mi, location(mi, globalCell));};
 
-    }
+    };
 
     /** !
      * Class holding all mlwenouse objects that used in the simulation of 

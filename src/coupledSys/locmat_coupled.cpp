@@ -1,5 +1,6 @@
 // Replace function computing porosity with
 // evaluatio of phase package with reconstructed values of CD and HD
+#include "locmat.h"
 #include "coupled.h"
 
 int CellAvePorosity(const MeshInfo& mi, 

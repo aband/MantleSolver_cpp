@@ -5,7 +5,7 @@
 #include "trans_param.h"
 
 // Denoting different boundary types for a given physical domain
-enum bndryType {wall, freeFlow, dirichlet, neumann, absorb, reflect, periodic, flux};
+enum bndryTypeAdv {wall, freeFlow, dirichletAdv, neumannAdv, absorb, reflect, periodic, flux};
 
 double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const MeshInfo& mi,
@@ -32,6 +32,6 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const valarray<double>& gwe,
                   const valarray<double>& gpe,
                   const double& alpha,
-                  bndryType bt);
+                  bndryTypeAdv bt);
 
 #endif
