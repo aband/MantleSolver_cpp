@@ -9,6 +9,7 @@
 
 // MFEM parameter header file
 #include "myFunc.h"
+#define COUPLED
 #include "passemble.h"
 #include "Hdivmixed.h"
 #include "brmixed.h"
@@ -19,17 +20,29 @@
 // MLWENO parameter header file
 #include "mlwenouse.h"
 
+#include "coupled.h"
+
 extern "C"{
 #include "mesh.h"
 #include "output.h"
 //#include "cgns_io.h"
 }
 
-//#include "coupled.h"
-
 /*
  * First example, simulation of partial melting in a rectangular domain.
  */
+
+double testHD(double z){
+
+    return HD;
+}
+
+double testCD(double z){
+
+
+
+    return CD;
+}
 
 int main(int argc, char **argv){
 
@@ -147,7 +160,8 @@ int main(int argc, char **argv){
 
     // Create initial (C,H) distribution pair
     // Calculate volume fraction of fluid (porosity)
-    //PorosityOut(xstart, ystart, L, H, 20, myPhase);      
+
+    // ==========================================================================
 
     // Solve for velocity with finite element solver
     vector<valarray<double>> mesh;
@@ -204,10 +218,14 @@ int main(int argc, char **argv){
     CreateRefMap(*br, refArrayStokes, mi, &bndryDOFStokes);
     CreateRefMap(*hdiv, refArrayDarcy, mi, &bndryDOFDarcy);
 
-	 /*
+    WEAK_COUPLED::coupledTrans ct = WEAK_COUPLED::coupledTrans();
+
+/*
     ParallelMatrixAssemble(mi, *basis_, myPhase, bndryStokesEssen, reducedStokes, 
                                                  bndryDarcyEssen,  reducedDarcy, 
-                           &K, *br, *hdiv , refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
+                           &K, *br, *hdiv , ct,
+
+                           refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
 
     int nelem = M*N;
     CreateLinearSys(reducedStokes, nelem);

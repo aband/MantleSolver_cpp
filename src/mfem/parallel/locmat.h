@@ -90,4 +90,55 @@ int AssignLocMat(const MeshInfo& mi,
                  const valarray<double>& gwf,
                  const vector<vertex>& gpf);
 
+// ===============================================================================
+
+#ifdef COUPLED
+#include "coupled.h"
+int CellAvePorosity(const MeshInfo& mi, 
+                    basis& basis_,
+                    Phase * phase,
+                    const indice& globalCell,
+                    const valarray<double>& gwf,
+                    const vector<vertex>& gpf,
+                    WEAK_COUPLED::coupledTrans& ct);
+
+int AssignLocMat(const MeshInfo& mi,
+                 BRMixed& br_,
+                 basis& basis_,
+                 LocMat * loc,
+                 Phase * phase,
+                 const indice& globalCell,
+                 WEAK_COUPLED::coupledTrans& ct,
+                 const valarray<double>& gwe,
+                 const valarray<double>& gpe,
+                 const valarray<double>& gwf,
+                 const vector<vertex>& gpf);
+
+int AssignLocMat(const MeshInfo& mi,
+                 Hdivmixed& hdiv_,
+                 basis& basis_,
+                 LocMat * loc,
+                 Phase * phase,
+                 const indice& globalCell,
+                 WEAK_COUPLED::coupledTrans& ct,
+                 const valarray<double>& gwe,
+                 const valarray<double>& gpe,
+                 const valarray<double>& gwf,
+                 const vector<vertex>& gpf);
+
+int AssignLocMat(const MeshInfo& mi,
+                 BRMixed& br_,
+                 Hdivmixed& hdiv_,
+                 basis& basis_,
+                 double * k,
+                 Phase * phase,
+                 const indice& globalCell,
+                 WEAK_COUPLED::coupledTrans& ct,
+                 const valarray<double>& gwf,
+                 const vector<vertex>& gpf);
+
+#endif
+
+
+
 #endif

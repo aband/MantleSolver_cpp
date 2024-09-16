@@ -1,7 +1,7 @@
-//#include "coupled.h"
+#define COUPLED
 
+#include "coupled.h"
 #include "passemble.h"
-#include "mlwenouse.h"
 
 // Assemble sparse matrix parallelly
 // Parallel assemble need boundary condition pre allocated
@@ -18,7 +18,7 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
                                       Mat * K,
                                       BRMixed& br_,
                                       Hdivmixed& hdiv_,
-                                      const WEAK_COUPLED::coupledTrans& ct,
+                                      WEAK_COUPLED::coupledTrans& ct,
                                       int * refArrayStokes, 
                                       int * refArrayDarcy,
                                       const int& bndryDOFStokes,
@@ -103,12 +103,12 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
         basis_.GetCorners(mi, global);
 
         // ! Compute cell averaged porosity
-        CellAvePorosity(mi, basis_, global, gwf, gpf, ct, myphase);
+        CellAvePorosity(mi, basis_, phase, global, gwf, gpf, ct);
 
         // ! Compute local values associated to each dofs
-        AssignLocMat(mi, br_  , basis_, locmatS, global, ct, myphase, gwe, gpe, gwf, gpf);
-        AssignLocMat(mi, hdiv_, basis_, locmatD, global, ct, myphase, gwe, gpe, gwf, gpf);
-        AssignLocMat(mi, br_, hdiv_, basis_, global, ct, myphase, &k, gwf, gpf);
+        AssignLocMat(mi, br_  , basis_, locmatS, phase, global, ct, gwe, gpe, gwf, gpf);
+        AssignLocMat(mi, hdiv_, basis_, locmatD, phase, global, ct, gwe, gpe, gwf, gpf);
+        AssignLocMat(mi, br_, hdiv_, basis_, &k, phase, global, ct, gwf, gpf);
 
         // ! Load corresponding shape functions
         shape stokesFuncSp(&basis_, &br_);

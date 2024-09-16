@@ -89,18 +89,17 @@ add_library(mfem_lib
         ${SRC}/mfem/error.cpp
 		  ${SRC}/mfem/shape.tpp
 		  ${SRC}/mfem/parallel/passemble.cpp
-		  #${SRC}/mfem/parallel/passembleVarPoro.cpp
 		  ${SRC}/mfem/parallel/locmat.cpp
-		  #${SRC}/mfem/parallel/locmatVarPoro.cpp
 		  ${SRC}/mfem/parallel/psolve.cpp
 		  ${SRC}/mfem/parallel/preconst.cpp
 		  ${SRC}/coupledSys/locmat_coupled.cpp
+		  ${SRC}/coupledSys/passemble_coupled.cpp
 )
 
 target_include_directories(mfem_lib
 		  PUBLIC ${SRC}/mfem
 		  PUBLIC ${SRC}/mfem/parallel
-		  PUBLIC ${SRC}/coupled
+		  PUBLIC ${SRC}/coupledSys
 		  PUBLIC ${SRC}/transport
 #		  PUBLIC /workspace/CGNS/src
 #		  PUBLIC /workspace/CGNS/build/src

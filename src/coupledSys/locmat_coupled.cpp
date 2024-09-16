@@ -9,7 +9,7 @@ int CellAvePorosity(const MeshInfo& mi,
                     const indice& globalCell,
                     const valarray<double>& gwf,
                     const vector<vertex>& gpf,
-                    const WEAK_COUPLED::coupledTrans& ct){
+                    WEAK_COUPLED::coupledTrans& ct){
 
     double phi_f_hat = 0.0;
     double area = 0.0;
@@ -43,7 +43,7 @@ int AssignLocMat(const MeshInfo& mi,
                  LocMat * loc,
                  Phase * phase,
                  const indice& globalCell,
-                 const WEAK_COUPLED::coupledTrans& ct,
+                 WEAK_COUPLED::coupledTrans& ct,
                  const valarray<double>& gwe,
                  const valarray<double>& gpe,
                  const valarray<double>& gwf,
@@ -126,7 +126,7 @@ int AssignLocMat(const MeshInfo& mi,
                  LocMat * loc,
                  Phase * phase,
                  const indice& globalCell,
-                 const WEAK_COUPLED::coupledTrans& ct,
+                 WEAK_COUPLED::coupledTrans& ct,
                  const valarray<double>& gwe,
                  const valarray<double>& gpe,
                  const valarray<double>& gwf,
@@ -230,7 +230,7 @@ int AssignLocMat(const MeshInfo& mi,
                  double * k,
                  Phase * phase,
                  const indice& globalCell,
-                 const WEAK_COUPLED::coupledTrans& ct,
+                 WEAK_COUPLED::coupledTrans& ct,
                  const valarray<double>& gwf,
                  const vector<vertex>& gpf){
 
