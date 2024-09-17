@@ -34,12 +34,14 @@ extern "C"{
 
 double testHD(double z){
 
+    double HD = 0.0;
+
     return HD;
 }
 
 double testCD(double z){
 
-
+    double CD = 0.0;
 
     return CD;
 }
