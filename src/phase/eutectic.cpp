@@ -16,7 +16,7 @@ EUTECTIC::phase::phase(){
 	 TD1_ = 1;
 	
 	 // dimensionless latent heat 
-    L_ = 0.5;
+    L_ = 0.3;
 
 }
 
@@ -52,10 +52,10 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.opx = CD;
             phi.olv = 1-CD;
             phi.mlt = 0;
-            TD      = 0;
+            TD      = HD;
 
             dTD_dCD = 0;
-            dTD_dHD = 0;
+            dTD_dHD = 1;
 
         break;
 
@@ -97,7 +97,7 @@ void EUTECTIC::phase::evalPhase(const double& HD,
 
         default:
 
-            std::cout << "Invalid (H,C) pair." << std::endl;
+            std::cout << "Invalid (H,C) pair." << " (" << HD << ", " << CD << ") " << std::endl;
 
         break;
     }
@@ -120,7 +120,7 @@ int EUTECTIC::phase::phaseSplit_(const double& HD,
         // Single phase sub-solidus region
         region = 1;
 
-    } else if (HD < 0){
+    } else if (HD < std::numeric_limits<double>::epsilon()){
         // Two phase sub-soidus region
         region = 2;
 

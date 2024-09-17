@@ -16,6 +16,7 @@ struct PhaseComp{
   // A template struct holding information regarding three components 
   // in the eutectic phase package
   // For example, volumetric values for three components
+  // (Attention, T does not represent temperature).
 
   T olv;
   T opx; 
