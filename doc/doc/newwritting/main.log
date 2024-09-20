@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  19 SEP 2024 01:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  20 SEP 2024 15:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -974,26 +974,48 @@ sub-sti-tut-ing $\OML/cmm/m/it/10 T$ \OT1/cmr/m/n/10 with $\OMS/cmsy/m/n/10 T\O
 T1/cmr/m/n/10 ([]) +
  []
 
-<HCP.png, id=285, 429.10312pt x 310.91156pt>
+<HCT.png, id=285, 421.575pt x 316.18124pt>
+File: HCT.png Graphic file (type png)
+<use HCT.png>
+Package pdftex.def Info: HCT.png  used on input line 250.
+(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
+<HCV.png, id=286, 421.575pt x 316.18124pt>
+File: HCV.png Graphic file (type png)
+<use HCV.png>
+Package pdftex.def Info: HCV.png  used on input line 251.
+(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
+<HCP.png, id=287, 429.10312pt x 310.91156pt>
 File: HCP.png Graphic file (type png)
 <use HCP.png>
-Package pdftex.def Info: HCP.png  used on input line 249.
+Package pdftex.def Info: HCP.png  used on input line 255.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-) [12 <./HCP.png (PNG copy)>] (./simulation1.tex [13]) [14] (./main.bbl)
-(/usr/share/texlive/texmf-dist/tex/latex/tools/.tex File ignored)
+) [12 <./HCT.png (PNG copy)> <./HCV.png (PNG copy)> <./HCP.png (PNG copy)>]
+(./simulation1.tex [13]
+<Tz_linear.png, id=308, 429.10312pt x 310.91156pt>
+File: Tz_linear.png Graphic file (type png)
+<use Tz_linear.png>
+Package pdftex.def Info: Tz_linear.png  used on input line 80.
+(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
+<Vz_linear.png, id=309, 429.10312pt x 310.91156pt>
+File: Vz_linear.png Graphic file (type png)
+<use Vz_linear.png>
+Package pdftex.def Info: Vz_linear.png  used on input line 81.
+(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
+) [14 <./Tz_linear.png (PNG copy)> <./Vz_linear.png (PNG copy)>] (./main.bbl) (
+/usr/share/texlive/texmf-dist/tex/latex/tools/.tex
+File ignored)
 \tf@thm=\write5
 \openout5 = `main.thm'.
 
- [15]
-(./main.aux)
+ [15] (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 42EB6664634842BE07DD70C002A0B5B9;5940.
  ) 
 Here is how much of TeX's memory you used:
- 25794 strings out of 478287
- 463000 string characters out of 5849289
- 722296 words of memory out of 5000000
- 41855 multiletter control sequences out of 15000+600000
+ 25846 strings out of 478287
+ 463760 string characters out of 5849289
+ 722298 words of memory out of 5000000
+ 41903 multiletter control sequences out of 15000+600000
  472184 words of font info for 40 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
  85i,13n,80p,506b,591s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1009,10 +1031,10 @@ sfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
 .pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on main.pdf (15 pages, 319792 bytes).
+Output written on main.pdf (15 pages, 422428 bytes).
 PDF statistics:
- 397 PDF objects out of 1000 (max. 8388607)
+ 401 PDF objects out of 1000 (max. 8388607)
  345 compressed objects within 4 object streams
  120 named destinations out of 1000 (max. 500000)
- 318 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 338 words of extra memory for PDF output out of 10000 (max. 10000000)
 

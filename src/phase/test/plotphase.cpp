@@ -11,7 +11,7 @@ double HDz(double z){
 
    double HD = z/10000;// rescale depth
 
-   HD = 0.2 + 0.0000003*z;
+   HD = 0.18 + 0.000001*z;
 
    return HD;
 }
@@ -27,7 +27,11 @@ int main(int argc, char **argv){
 
     int seed = 50;
 
-    double HD_i = -0.2, HD_f=1.3, CD_i=0, CD_f=1.0; 
+    double lithoP  = 5.2356e-06/10e-7;
+
+    double deep = 60000.0;
+
+    double HD_i = -0.2 + 10e-7*lithoP*deep, HD_f=1.3 + 10e-7*lithoP*deep, CD_i=0, CD_f=1.0; 
 
     for (int i=0; i<seed+1; i++){
         double CD = CD_i + i*(CD_f-CD_i) /(double)(seed) ;
@@ -37,7 +41,7 @@ int main(int argc, char **argv){
             fprintf(gridCD, "%f ", CD);
             fprintf(gridHD, "%f ", HD);
 
-            pPtr->evalPhase(HD, CD, 0);
+            pPtr->evalPhase(HD, CD, lithoP*60000);
 
             fprintf(TD, "%f ", pPtr->TD);
             fprintf(Vf, "%f ", pPtr->phi.mlt);
@@ -51,17 +55,59 @@ int main(int argc, char **argv){
     }
    
     FILE *TDz    = fopen("TDz.dat", "w");
- 
-    // Output of depth related data
-    double lithoP  = 5.2356e-06/10e-7;
+    FILE *Vfz    = fopen("Vfz.dat", "w");
 
-    double h = 60000.0/100.0;
+    FILE *TDz3    = fopen("TDz3.dat", "w");
+    FILE *Vfz3    = fopen("Vfz3.dat", "w");
+
+    FILE *TDz4    = fopen("TDz4.dat", "w");
+    FILE *Vfz4    = fopen("Vfz4.dat", "w");
+
+    // Output of depth related data
+    double h = deep/100.0;
 
     for (int k=0; k<100; k++){
         double HD = HDz(k*h); 
-        pPtr->evalPhase(HD, 0.5, lithoP*k*h);
-        std::cout << pPtr->phaseSplit(HD, 0.5, lithoP*h*k) << "  " << HD << std::endl;
+		  double P = lithoP*k*h;
+        pPtr->evalPhase(HD, 0.2, P);
+        //std::cout << pPtr->phaseSplit(HD, 0.5, lithoP*h*k) << "  " << HD << std::endl;
         fprintf(TDz, "%f ", pPtr->TD);
+        fprintf(Vfz, "%f ", pPtr->phi.mlt);
+
+        pPtr->evalPhase(HD, 0.4, P);
+        fprintf(TDz3, "%f ", pPtr->TD);
+        fprintf(Vfz3, "%f ", pPtr->phi.mlt);
+
+        pPtr->evalPhase(HD, 0.6, P);
+        fprintf(TDz4, "%f ", pPtr->TD);
+        fprintf(Vfz4, "%f ", pPtr->phi.mlt);
+
+    }
+
+    FILE *HDzgrid = fopen("HDzgrid.dat", "w");
+    FILE *Pzgrid = fopen("Pzgrid.dat", "w");
+    FILE *TDz2    = fopen("TDz2.dat", "w");
+    FILE *Vfz2    = fopen("Vfz2.dat", "w");
+
+    // H-P slice on C=0.5
+    for (int m=0; m<100; m++){
+        double HD = HDz(m*h);
+        for (int n=0; n<100; n++){
+            double P  = lithoP*n*h;
+            pPtr->evalPhase(HD, 0.5, P);
+
+            fprintf(HDzgrid, "%f ", HD);
+            fprintf(Pzgrid, "%f ", P);
+
+            fprintf(TDz2,"%f ", pPtr->TD);
+            fprintf(Vfz2, "%f ", pPtr->phi.mlt);
+        }
+
+        fprintf(HDzgrid, "\n");
+        fprintf(Pzgrid, "\n");
+        fprintf(TDz2,"\n");
+        fprintf(Vfz2, "\n");
+ 
     }
 
     fclose(gridCD);
@@ -69,6 +115,16 @@ int main(int argc, char **argv){
     fclose(TD);
     fclose(Vf);
     fclose(TDz);
- 
+    fclose(Vfz);
+    fclose(HDzgrid);
+    fclose(Pzgrid);
+    fclose(TDz2);
+    fclose(Vfz2);
+
+    fclose(TDz3);
+    fclose(Vfz3);
+    fclose(TDz4);
+    fclose(Vfz4);
+
     return 0;
 }

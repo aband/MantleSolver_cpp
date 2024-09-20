@@ -29,9 +29,8 @@ class phase{
             phase();
             ~phase() {};
 
-            // Get corresponding dimensionless temperature with respect to each pressure
-            double GetTD(const double& T, 
-                         const double& P);
+            // Get dimentionalized temperature 
+            double GetT(const double& P);
 
             // Split phase regions according to values of dimensionless enthalpy and 
             // dimensionless composition.

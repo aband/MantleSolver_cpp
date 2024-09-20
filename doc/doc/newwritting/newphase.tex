@@ -219,8 +219,8 @@ If we use simple linear relationship between mass fraction and temperature as $\
 we can obtain a simple quadratic equation:
 \begin{equation}
 		  \begin{aligned}
-					 (1-\mathcal{T})\mathcal{H} - (1-\mathcal{T})\mathcal{T} - \mathcal{C} L/\chi_e(\mathcal{P}) &= 0 \\
-					 \mathcal{T}^2 - (\mathcal{H} + 1)\mathcal{T} + \mathcal{H} - \mathcal{C} L/\chi_e(\mathcal{P}) &= 0
+					 (\mathcal{T}_m-\mathcal{T})\mathcal{H} - (\mathcal{T}_m-\mathcal{T})\mathcal{T} - \mathcal{C} L/\chi_e(\mathcal{P}) &= 0 \\
+					 \mathcal{T}^2 - (\mathcal{H} + \mathcal{T}_m)\mathcal{T} + \mathcal{T}_m\mathcal{H} - \mathcal{C} L/\chi_e(\mathcal{P}) &= 0
 		  \end{aligned}
 \end{equation}
 
@@ -244,10 +244,13 @@ $T$ with $\mathcal{T}({T_1 - T_e}) + T_e$.
 \begin{equation}
 		  \mathcal{T}_e(z) = \frac{\gamma \rho g}{T_1 - T_e} z
 \end{equation}
+We can plot volumetric fraction and temperature distribution against dimensionless
+enthalpy and composition as following:
+\begin{center}
+\includegraphics[width=5.5cm,height=4cm]{HCT}
+\includegraphics[width=5.5cm,height=4cm]{HCV}
+\end{center}
 And the phase diagram taking pressure effect into account is displayed as following:
 \begin{center}
 		  \includegraphics[width=5.5cm,height=4cm]{HCP}
 \end{center}
-And we I can plot change of eutectic melting temperature against depth as:
-
-

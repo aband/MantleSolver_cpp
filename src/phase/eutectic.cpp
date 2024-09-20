@@ -7,7 +7,7 @@ EUTECTIC::phase::phase(){
 
     // Set up melting points under standard atmospheric pressure
 	 // with dimension
-	 Te0_ = 1560; //(K) 
+	 Te0_ = 1480; //(K) 
 	 T10_ = 2053; //(K) 
 
 	 // dimensionless
@@ -20,20 +20,19 @@ EUTECTIC::phase::phase(){
 
 }
 
-double EUTECTIC::phase::GetTD(const double& T, 
-                              const double& P){
+double EUTECTIC::phase::GetT(const double& P){
 
     // Get melting point with respect to current pressure P
 
-    double Te = Te0_+gamma_*P;
-    double T1 = T10_+gamma_*P;
-
-    return (T-Te)/(T1-Te);
+    return TD*(T10_-Te0_) + Te0_ + gamma_*P;
 }
 
 void EUTECTIC::phase::evalPhase(const double& HD,
                                 const double& CD,
 										  const double& P){
+
+    // Pressure corrected melting temperature
+    double Tm = 1+ gamma_*P;
 
     switch(phaseSplit(HD,CD,P)){
         // Single phase solidus
@@ -62,7 +61,7 @@ void EUTECTIC::phase::evalPhase(const double& HD,
 
         // Three phase eutectic
         case 3:
-            phi.mlt = HD/L_;
+            phi.mlt = (HD-gamma_*P)/L_;
             phi.opx = CD - phi.mlt;
             phi.olv = 1-phi.mlt-phi.opx;
             TD      = gamma_*P;
@@ -74,13 +73,14 @@ void EUTECTIC::phase::evalPhase(const double& HD,
 
         // Super eutectic two phase region
         case 4:
-            TD      = ((HD+1) - sqrt(pow(HD+1,2)- 4*(HD-CD*L_)))/2;
+            TD      = ((HD+Tm) - sqrt(pow(HD+Tm,2)- 4*(Tm*HD-CD*L_)))/2;
             phi.opx = 0;
-            phi.mlt = CD/(1-TD);
+            phi.mlt = CD/(Tm-TD);
             phi.olv = 1-phi.opx-phi.mlt;
 
-            dTD_dCD = -1./sqrt(pow(HD+1,2)- 4*(HD-CD*L_));
-            dTD_dHD = 0.5 * (1 -1./sqrt(pow(HD+1,2)- 4*(HD-CD*L_)) * ((HD+1)-2));
+            dTD_dCD = -1./sqrt(pow(HD+Tm,2)- 4*(Tm*HD-CD*L_));
+// It is WRONG!!!! 
+//            dTD_dHD = 0.5 * (1 -1./sqrt(pow(HD+1,2)- 4*(HD-CD*L_)) * ((HD+1)-2));
 
         break;
 
