@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  12 SEP 2024 10:21
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  19 SEP 2024 01:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -942,7 +942,7 @@ Overfull \hbox (11.83607pt too wide) detected at line 242
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 261.
 [5] [6]) (./transport.tex) [7] (./newphase.tex
-<eutectic.png, id=234, 430.54468pt x 322.90851pt>
+<eutectic.png, id=238, 430.54468pt x 322.90851pt>
 File: eutectic.png Graphic file (type png)
 <use eutectic.png>
 Package pdftex.def Info: eutectic.png  used on input line 61.
@@ -952,42 +952,48 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [8]
 [9 <./eutectic.png (PNG copy)>]
-<TX.png, id=259, 438.23297pt x 317.5267pt>
+<TX.png, id=263, 438.23297pt x 317.5267pt>
 File: TX.png Graphic file (type png)
 <use TX.png>
 Package pdftex.def Info: TX.png  used on input line 166.
 (pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
-<HX.png, id=260, 429.10312pt x 310.91156pt>
+<HX.png, id=264, 429.10312pt x 310.91156pt>
 File: HX.png Graphic file (type png)
 <use HX.png>
 Package pdftex.def Info: HX.png  used on input line 167.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-<HC.png, id=261, 421.575pt x 316.18124pt>
+<HC.png, id=265, 421.575pt x 316.18124pt>
 File: HC.png Graphic file (type png)
 <use HC.png>
 Package pdftex.def Info: HC.png  used on input line 184.
 (pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
- [10 <./TX.png (PNG copy)> <./HX.png (PNG copy)>]
-<HCP.png, id=270, 429.10312pt x 310.91156pt>
+ [10 <./TX.png (PNG copy)> <./HX.png (PNG copy)>] [11 <./HC.png (PNG copy)>]
+Overfull \hbox (13.66641pt too wide) in paragraph at lines 241--244
+\OT1/cmr/m/n/10 An nondi-men-sion-l-ized ver-sion can be de-rived di-rectly by 
+sub-sti-tut-ing $\OML/cmm/m/it/10 T$ \OT1/cmr/m/n/10 with $\OMS/cmsy/m/n/10 T\O
+T1/cmr/m/n/10 ([]) +
+ []
+
+<HCP.png, id=285, 429.10312pt x 310.91156pt>
 File: HCP.png Graphic file (type png)
 <use HCP.png>
-Package pdftex.def Info: HCP.png  used on input line 238.
+Package pdftex.def Info: HCP.png  used on input line 249.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
- [11 <./HC.png (PNG copy)>]) [12 <./HCP.png (PNG copy)>] (./simulation1.tex)
-[13] (./main.bbl) (/usr/share/texlive/texmf-dist/tex/latex/tools/.tex
-File ignored)
+) [12 <./HCP.png (PNG copy)>] (./simulation1.tex [13]) [14] (./main.bbl)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/.tex File ignored)
 \tf@thm=\write5
 \openout5 = `main.thm'.
 
- [14] (./main.aux)
+ [15]
+(./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: EA7F0B81D1C545E290BB58022762CF95;5808.
+(rerunfilecheck)             Checksum: 42EB6664634842BE07DD70C002A0B5B9;5940.
  ) 
 Here is how much of TeX's memory you used:
- 25790 strings out of 478287
- 462948 string characters out of 5849289
- 722297 words of memory out of 5000000
- 41854 multiletter control sequences out of 15000+600000
+ 25794 strings out of 478287
+ 463000 string characters out of 5849289
+ 722296 words of memory out of 5000000
+ 41855 multiletter control sequences out of 15000+600000
  472184 words of font info for 40 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
  85i,13n,80p,506b,591s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1003,10 +1009,10 @@ sfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
 .pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on main.pdf (14 pages, 317423 bytes).
+Output written on main.pdf (15 pages, 319792 bytes).
 PDF statistics:
- 388 PDF objects out of 1000 (max. 8388607)
- 337 compressed objects within 4 object streams
- 117 named destinations out of 1000 (max. 500000)
- 310 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 397 PDF objects out of 1000 (max. 8388607)
+ 345 compressed objects within 4 object streams
+ 120 named destinations out of 1000 (max. 500000)
+ 318 words of extra memory for PDF output out of 10000 (max. 10000000)
 

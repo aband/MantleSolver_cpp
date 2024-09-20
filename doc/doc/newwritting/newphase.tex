@@ -233,8 +233,21 @@ In this single phase  super-liquidus region, we can get volume fractions and tem
 \subsection{Pressure and melting point}
 Now I take pressure change into account.
 In general, the higher the pressure, the higher the eutectic melting point.
-We assume a linear relationship involving nondimensionlized pressure.
+With Clapeyron constant of the value $\gamma = 10^{-7}\text{KPa}^{-1}$
+We assume a simple linear relationship between pressure and eutectic melting point.
+$$T_e(p) = T_e + \gamma p = T_e + \gamma p$$
+If pressure is replaced with lithostatic pressure, we can relate eutectic melting
+point with depth.
+$$T_e(p) = T_e + \gamma p = T_e + \gamma \rho g z$$
+An nondimensionlized version can be derived directly by substituting
+$T$ with $\mathcal{T}({T_1 - T_e}) + T_e$.
+\begin{equation}
+		  \mathcal{T}_e(z) = \frac{\gamma \rho g}{T_1 - T_e} z
+\end{equation}
+And the phase diagram taking pressure effect into account is displayed as following:
 \begin{center}
 		  \includegraphics[width=5.5cm,height=4cm]{HCP}
 \end{center}
+And we I can plot change of eutectic melting temperature against depth as:
+
 

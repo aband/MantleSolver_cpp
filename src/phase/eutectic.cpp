@@ -32,9 +32,10 @@ double EUTECTIC::phase::GetTD(const double& T,
 }
 
 void EUTECTIC::phase::evalPhase(const double& HD,
-                                const double& CD){
+                                const double& CD,
+										  const double& P){
 
-    switch(phaseSplit(HD,CD)){
+    switch(phaseSplit(HD,CD,P)){
         // Single phase solidus
         case 1:
             phi.olv = 1;
@@ -64,7 +65,7 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.mlt = HD/L_;
             phi.opx = CD - phi.mlt;
             phi.olv = 1-phi.mlt-phi.opx;
-            TD      = 0;
+            TD      = gamma_*P;
 
             dTD_dCD = 0;
             dTD_dHD = 0;
@@ -104,7 +105,8 @@ void EUTECTIC::phase::evalPhase(const double& HD,
 }
 
 int EUTECTIC::phase::phaseSplit_(const double& HD, 
-                                 const double& CD){
+                                 const double& CD,
+                                 const double& P){
 
     int region = 0;
 
@@ -113,21 +115,24 @@ int EUTECTIC::phase::phaseSplit_(const double& HD,
     assert(CD>0-std::numeric_limits<double>::epsilon());// "Opx composition below zero.\n");
 
     // Two lines separating phase regions
-    double lineb = L_* CD;
-    double linec = 1+L_-CD;
+    double lineb = L_* CD + gamma_ * P;
+    double linec = 1+L_-CD + gamma_ * P;
 
-    if (CD < std::numeric_limits<double>::epsilon() && HD < 1){
+    if (CD < std::numeric_limits<double>::epsilon() && 
+        HD < 1+std::numeric_limits<double>::epsilon() + gamma_*P){
         // Single phase sub-solidus region
         region = 1;
 
-    } else if (HD < std::numeric_limits<double>::epsilon()){
+    } else if (HD < std::numeric_limits<double>::epsilon() + gamma_*P){
         // Two phase sub-soidus region
         region = 2;
 
-    } else if (HD < lineb + std::numeric_limits<double>::epsilon() && HD > 0){
+    } else if (HD < lineb + std::numeric_limits<double>::epsilon() && 
+               HD > 0 + gamma_*P){
         // Three phase eutectic region
         region = 3;
-    } else if (HD > lineb && HD < linec + std::numeric_limits<double>::epsilon()){
+    } else if (HD > lineb && 
+               HD < linec + std::numeric_limits<double>::epsilon()){
         // Two phase eutectic region
         region = 4;
     } else if (HD > linec){

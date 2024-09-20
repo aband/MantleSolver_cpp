@@ -36,7 +36,8 @@ class phase{
             // Split phase regions according to values of dimensionless enthalpy and 
             // dimensionless composition.
             int phaseSplit(const double& HD,
-                           const double& CD) {return phaseSplit_(HD, CD);};
+                           const double& CD,
+                           const double& P) {return phaseSplit_(HD, CD, P);};
 
             // Split phase regions according to value of dimensionless temperature and
             // dimensionless composition
@@ -49,7 +50,8 @@ class phase{
             // Assign values to volumetric fractions
             // Evaluate non dimensionless values
             void evalPhase(const double& HD,
-                           const double& CD);
+                           const double& CD,
+                           const double& P);
 
             // Convert nondimensionlized variables to original variables
             void NonDimToDim(double pressure);
@@ -69,7 +71,8 @@ class phase{
         private:
 
             int phaseSplit_(const double& HD, 
-                            const double& CD);
+                            const double& CD,
+                            const double& P);
 
             int phaseSplitTemp_(const double& TD,
                                 const double& CD,
