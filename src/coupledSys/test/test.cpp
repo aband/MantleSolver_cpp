@@ -222,12 +222,13 @@ int main(int argc, char **argv){
 
     WEAK_COUPLED::coupledTrans ct = WEAK_COUPLED::coupledTrans();
 
-/*
-    ParallelMatrixAssemble(mi, *basis_, myPhase, bndryStokesEssen, reducedStokes, 
-                                                 bndryDarcyEssen,  reducedDarcy, 
-                           &K, *br, *hdiv , ct,
+//    ParallelMatrixAssemble(mi, *basis_, myPhase, bndryStokesEssen, reducedStokes, 
+//                                                 bndryDarcyEssen,  reducedDarcy, 
+//                           &K, *br, *hdiv , ct,
+//
+//                           refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
 
-                           refArrayStokes, refArrayDarcy, bndryDOFStokes, bndryDOFDarcy);
+/*
 
     int nelem = M*N;
     CreateLinearSys(reducedStokes, nelem);

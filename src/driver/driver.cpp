@@ -1,42 +1,53 @@
 #include "driver.h"
 
-int Driver::UseWeno(){
+int Driver::CreatePhase(){
 
-    // Allocate memory space for mlweno prepare class
+    myPhase = new Phase();
 
-    mlpPtr_ = new MLWENO::MLWENOPrepare();
+    myPhase->pp = (PhysProperty *)malloc(sizeof(PhysProperty));
+
+    AssignPhyProperties(myPhase->pp);
+
+    myPhase->pPtr = new EUTECTIC::phase();
 
     return 0;
 }
 
-int Driver::AddLevel(const int& m, const int& n){
-    if (mlpPtr_ == NULL){
-        return -1;
-    } else {
-        mlpPtr_->AddLevel(mi, m, n);
-        return 0;
-    }
-}
+int Driver::CreateDMs(const int& M, const int& N,
+                      double L, double H, 
+							 double xstart, double ystart,
+                      const int& stencilWidthMesh, 
+							 const int& stencilWidthU,
+					       const bool& physicsScale){
 
-int Driver::PrepareTransport(transportType type){
+    if (physicalScale){
+        double physscale = myPhase->pp->L0/myPhase->pp->l0;
+        L = L*physscale;
+        H = H*physscale;
+        xstart = xstart*physscale, 
+        ystart = ystart*physscale;
+	 }
 
-    switch(type) {
-        case adv:
-            // Advection only
-            break;
-        case diff:
-            // Diffusion only
-            break;
-        case adv_diff:
-            // Advection-diffusion 
-            break;
-        case adv_diff_react:
-            // Advection-diffusion-reaction
-            break;
-        default:
-            cout << "Not a valid transport ..." << endl;
-            break;
-    }
+    // Create dmMesh
+    PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
+    DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, 
+    M, N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidthMesh, NULL, NULL, &dmMesh));
+    PetscCall(DMSetFromOptions(dmMesh));              
+    PetscCall(DMSetUp(dmMesh));
+
+    // Create dmU
+    PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
+    DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, 
+    M, N, PETSC_DECIDE, PETSC_DECIDE, 1, 
+    stencilWidthU, NULL, NULL, &dmu));
+    PetscCall(DMSetFromOptions(dmu));              
+    PetscCall(DMSetUp(dmu));     
+
+    // Create MeshParam object (historical object one time use only)
+    mp_.xstart = xstart;
+    mp_.ystart = ystart;
+    mp_.L = L;
+    mp_.H = H;
 
     return 0;
 }

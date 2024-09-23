@@ -38,6 +38,9 @@ class phase{
                            const double& CD,
                            const double& P) {return phaseSplit_(HD, CD, P);};
 
+            int phaseSplit(const double& HD,
+                           const double& CD) {return phaseSplit_(HD, CD, 0);};
+
             // Split phase regions according to value of dimensionless temperature and
             // dimensionless composition
             // Need phi2 for exact determination
@@ -51,6 +54,9 @@ class phase{
             void evalPhase(const double& HD,
                            const double& CD,
                            const double& P);
+
+            void evalPhase(const double& HD,
+                           const double& CD) {evalPhase(HD,CD,0);};
 
             // Convert nondimensionlized variables to original variables
             void NonDimToDim(double pressure);
