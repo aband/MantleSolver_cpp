@@ -23,4 +23,13 @@ double bndryFluxAdv();
 
 double bndryFluxDiff();
 
+#ifdef COUPLED
+// Initial values
+double InitHD(const vertex& point,
+              const vector<double>& param);
+
+double InitCD(const vertex& point,
+              const vector<double>& param);
+#endif
+
 #endif

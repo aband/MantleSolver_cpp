@@ -161,6 +161,11 @@ typedef struct {
     // Areas of cells distributed to mpi processors
     unordered_map<int,double> cellArea;
 
+    // Coupled system only
+    double** localCD;
+    double** localHD;
+
+
 } MeshInfo;
 
 void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu);

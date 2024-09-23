@@ -289,10 +289,63 @@ void stencilPolynomial::SetCollapsePolyn(const MeshInfo& mi, const stencil <indi
     }
 }
 
+void stencilPolynomial::SetCollapsePolyn(double** lu, const stencil<indice>& stencilIndice){
+
+    stencil<indice> siNow = stencilIndice;
+
+    if (collapsePolyn_ == nullptr){
+        int maxDegree[2] = {stencilPolyn_.getI(),stencilPolyn_.getJ()};
+        collapsePolyn_ = new basePolynomial(maxDegree);
+    }
+
+    indice currentCell;
+    double sum = 0.0;
+
+    for (int i=0; i<stencilPolyn_.getSize(); i++){
+        sum = 0.0;
+        for (int j=0; j<stencilPolyn_.getSize(); j++){
+            currentCell = start_ + siNow(j);
+
+            sum += stencilPolyn_(j)->getCoef(i)*
+                   lu[currentCell[1]][currentCell[0]];
+        }
+        collapsePolyn_->setCoef(i,sum);
+    }
+   
+}
+
 //! Polyn smoothness indicator
 void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice){
 
     SetCollapsePolyn(mi, stencilIndice);
+
+    //! Initialize smoothness Indicator each time it computes
+    smoothnessIndic_ = 0.0;
+
+    if (stencilPolyn_.getI()*stencilPolyn_.getJ() != 1){
+
+        for (int all = 1; all<stencilPolyn_.getJ()*stencilPolyn_.getI(); all++){
+            int l = all/stencilPolyn_.getI();
+            int m = all%stencilPolyn_.getI();
+
+            for (int r=l; r<stencilPolyn_.getJ(); r++){
+            for (int s=m; s<stencilPolyn_.getI(); s++){
+                smoothnessIndic_ += pow(factorial(r,r-l),2)/(2*(r-l)+1)/pow(4,r-l) * 
+                                    pow(factorial(s,s-m),2)/(2*(s-m)+1)/pow(4,s-m) *
+                                    pow(collapsePolyn_->getCoef(FlatIndic(stencilPolyn_.getI(),s,r)),2); 
+            }}
+        }
+    }
+
+    /**
+     * constant level reconstruction will always return 0.0
+     * when its smoothness indicator is calculated.
+     */
+}
+
+void stencilPolynomial::EvalSmoothIndic_(double** lu, const stencil <indice>& stencilIndice){
+
+    SetCollapsePolyn(lu, stencilIndice);
 
     //! Initialize smoothness Indicator each time it computes
     smoothnessIndic_ = 0.0;

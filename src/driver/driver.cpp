@@ -13,20 +13,21 @@ int Driver::CreatePhase(){
     return 0;
 }
 
-int Driver::CreateDMs(const int& M, const int& N,
-                      double L, double H, 
-							 double xstart, double ystart,
-                      const int& stencilWidthMesh, 
-							 const int& stencilWidthU,
-					       const bool& physicsScale){
+int Driver::CreateMesh(const int& M, const int& N,
+                       double L, double H, 
+                       double xstart, double ystart,
+                       const int& stencilWidthMesh, 
+                       const int& stencilWidthU,
+                       const bool& physicsScale,
+                       const int& meshType){
 
-    if (physicalScale){
+    if (physicsScale){
         double physscale = myPhase->pp->L0/myPhase->pp->l0;
         L = L*physscale;
         H = H*physscale;
         xstart = xstart*physscale, 
         ystart = ystart*physscale;
-	 }
+    }
 
     // Create dmMesh
     PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
@@ -48,6 +49,75 @@ int Driver::CreateDMs(const int& M, const int& N,
     mp_.ystart = ystart;
     mp_.L = L;
     mp_.H = H;
+
+    // Create global vector containing mesh
+    PetscCall(DMCreateGlobalVector(dmMesh, &globalmesh));
+
+    switch(meshType){
+        case 0: CreateFullMesh(dmMesh, &globalmesh, &mp_); break;
+        case 1: LogicRectMesh(dmMesh, &globalmesh, &mp_);  break;
+        case 2: RefineMesh(dmMesh, &globalmesh, &mp_);
+        //case 2: TestControlMeshSecond(dmCell,L,H); break;
+        //case 3: TestControlMeshThird(dmCell,L,H);  break;
+    }
+
+    ReadMeshPortion(dmMesh, &globalmesh, mi.lmesh);
+
+    return 0;
+}
+
+int Driver::PrintMesh(){
+
+    VecView(globalmesh, PETSC_VIEWER_STDOUT_WORLD);
+    PrintFullMesh(dmMesh, &globalmesh);
+
+    return 0;
+}
+
+int Driver::InitCellAveVal(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
+                           double (*funcCD)(const valarray<double>& point, const vector<double>& param)){
+
+    // Create global vectors
+    PetscCall(DMCreateGlobalVector(dmu,&globalHD));
+    PetscCall(DMCreateGlobalVector(dmu,&globalCD));
+
+    // Distribute global to local vectors
+    DMGetLocalVector(dmu, &localHD);
+
+    DMGlobalToLocalBegin(dmu, globalHD, INSERT_VALUES, localHD);
+    DMGlobalToLocalEnd(dmu, globalHD, INSERT_VALUES, localHD);
+
+    DMGetLocalVector(dmu, &localCD);
+
+    DMGlobalToLocalBegin(dmu, globalCD, INSERT_VALUES, localCD);
+    DMGlobalToLocalEnd(dmu, globalCD, INSERT_VALUES, localCD);
+
+    DMDAVecGetArray(dmu, localCD, &mi.localCD);
+    DMDAVecGetArray(dmu, localHD, &mi.localHD);
+
+    AssignValuesMeshInfo(mi, dmMesh, dmu);
+
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalCD, {0.0,0.0}, funcCD); 
+
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {0.0,0.0}, funcHD); 
+
+    return 0;
+}
+
+int Driver::clean(){
+
+    // Restore local vectors
+    DMDAVecRestoreArray(dmu,localCD,&mi.localCD);
+    DMRestoreLocalVector(dmu, &localCD); 
+    DMDAVecRestoreArray(dmu,localHD,&mi.localHD);
+    DMRestoreLocalVector(dmu, &localHD); 
+
+    PetscCall(VecDestroy(&globalHD));
+    PetscCall(VecDestroy(&globalCD));
+ 
+    PetscCall(VecDestroy(&globalmesh));
+    PetscCall(DMDestroy(&dmMesh));
+    PetscCall(DMDestroy(&dmu));
 
     return 0;
 }

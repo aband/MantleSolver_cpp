@@ -186,7 +186,7 @@ target_link_libraries(driver_lib
 # Generate an excutable file
 add_executable(test
 		  flow_setting.cpp
-		  #		  trans_setting.cpp
+		  trans_setting.cpp
         test.cpp
 )
 

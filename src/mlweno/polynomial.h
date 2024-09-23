@@ -120,6 +120,8 @@ namespace tensorProductPoly{
             // Set collapse polynomial
             void SetCollapsePolyn(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
+            void SetCollapsePolyn(double** lu, const stencil <indice>& stencilIndice);
+
             double GetSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
             unordered_map<int, double> GetDerivSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice);
@@ -156,6 +158,7 @@ namespace tensorProductPoly{
              * the corresponding derivatives.
              */
             void EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
+            void EvalSmoothIndic_(double** lu, const stencil <indice>& stencilIndice);
             void EvalDerivSmoothnessIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
             double smoothnessIndic_ = -1;

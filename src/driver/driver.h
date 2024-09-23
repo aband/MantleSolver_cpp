@@ -49,6 +49,14 @@ class Driver {
          */
         ~Driver() {delete myPhase;};
 
+        //! A post work clean function
+        /**!
+         * Clean used dm and vec objects.
+         * Should be called at the end of main function.
+         */
+
+        int clean();
+
         /**!
          * MeshInfo struct
          * Can be accessed from outside the class directly.
@@ -63,30 +71,38 @@ class Driver {
         DM dmu; 
 
        /**!
-		  * Initialize phase package
-		  */
+        * Initialize phase package
+        */
        Phase * myPhase;
 
        int CreatePhase();
 
        /**!
-		  * Create Data management objects.
-		  */
-        int CreateDMs(const int& M, const int& N,
-                      double L, double H, 
-							 double xstart, double ystart,
-                      const int& stencilWidthMesh, 
-							 const int& stencilWidthU,
-							 const bool& physicsScale); 
+        * Create Data management objects.
+        * And Mesh vector.
+        */
+        int CreateMesh(const int& M, const int& N,
+                       double L, double H, 
+                       double xstart, double ystart,
+                       const int& stencilWidthMesh, 
+                       const int& stencilWidthU,
+                       const bool& physicsScale,
+                       const int& meshType); 
+
+        Vec globalmesh;  
 
         int PrintMesh();
 
        /**!
-		  * Create Mesh vector
-		  */
+        * Assign Initial cell averaged condition.
+        * Specificed for coupled system.
+        * global vectors for dimensionless enthalpy and dimensionless Composition.
+        */
+        Vec globalCD, globalHD;
+        Vec localCD, localHD;
 
-        Vec 
-        int CreateMesh(); 
+        int InitCellAveVal(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
+                           double (*funcCD)(const valarray<double>& point, const vector<double>& param));
 
     private:
         /**!

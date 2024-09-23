@@ -27,15 +27,25 @@ int main(int argc, char **argv){
     int physicsScale = 0;
     PetscCall(PetscOptionsGetInt(NULL,NULL, "-scale", &physicsScale, NULL));
 
+    int meshType = 0; 
+    PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
+
+    // ==============================================================================
+
     Driver * driver = new Driver();
 
     driver->CreatePhase();
 
-    driver->CreateDMs(M, N, L, H, xstart, ystart, 
-                      stencilWidthMesh, stencilWidthU,
-                      physicsScale);
+    driver->CreateMesh(M, N, L, H, xstart, ystart, 
+                       stencilWidthMesh, stencilWidthU,
+                       physicsScale, meshType);
 
 
+    driver->InitCellAveVal(InitHD, InitCD);
+
+    driver->clean();
+
+    PetscFinalize();
 
     return 0;
 }
