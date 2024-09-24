@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  23 SEP 2024 12:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  23 SEP 2024 22:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -787,101 +787,162 @@ File: tikzlibrarytopaths.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 Package: enumerate 2015/07/23 v3.00 enumerate extensions (DPC)
 \@enLab=\toks56
 )
-\c@currremarkctr=\count328
-\c@endremarkctr=\count329
-\c@remark=\count330
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/mathptmx.sty
+Package: mathptmx 2020/03/25 PSNFSS-v9.3 Times w/ Math, improved (SPQR, WaS) 
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 28.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/ztmcm/m/n on input line 28.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/ztmcm/m/n on input line 28.
+LaTeX Font Info:    Redeclaring symbol font `letters' on input line 29.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/ztmcm/m/it on input line 29.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/ztmcm/m/it on input line 29.
+LaTeX Font Info:    Redeclaring symbol font `symbols' on input line 30.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/ztmcm/m/n on input line 30.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/ztmcm/m/n on input line 30.
+LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 31.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/ztmcm/m/n on input line 31.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/ztmcm/m/n on input line 31.
+\symbold=\mathgroup6
+\symitalic=\mathgroup7
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 34.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/ptm/m/it on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/ptm/m/it on input line 35.
+LaTeX Info: Redefining \hbar on input line 50.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
+Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
+\symrsfs=\mathgroup8
+)
+(/usr/share/texlive/texmf-dist/tex/latex/rsfso/rsfso.sty
+Package: rsfso 2013/11/02 v1.01 U/rsfso (Michael Sharpe)
 
+(/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+Package: xkeyval 2020/11/20 v2.8 package option processing (HA)
+
+(/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkeyval.tex
+(/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+\XKV@toks=\toks57
+\XKV@tempa@toks=\toks58
+)
+\XKV@depth=\count328
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+))
+LaTeX Font Info:    Redeclaring math alphabet \mathcal on input line 12.
+)
+\c@currremarkctr=\count329
+\c@endremarkctr=\count330
+\c@remark=\count331
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 1
+02.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2022-01-12 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count331
+\l__color_backend_stack_int=\count332
 \l__pdf_internal_box=\box66
 )
 (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C00/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C05/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C09/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C10/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C20/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C19/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C40/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C42/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C43/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C50/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C52/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C49/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C60/mj/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C61/mj/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C63/mj/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C64/mj/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C65/mj/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C70/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C31/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C32/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C33/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C34/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C35/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C36/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C37/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C80/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C81/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C01/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C11/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C21/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C41/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for C62/song/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-Package hyperref Info: Link coloring ON on input line 88.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C00/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C05/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C09/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C10/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C20/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C19/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C40/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C42/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C43/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C50/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C52/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C49/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C60/mj/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C61/mj/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C63/mj/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C64/mj/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C65/mj/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C70/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C31/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C32/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C33/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C34/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C35/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C36/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C37/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C80/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C81/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C01/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C11/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C21/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C41/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+LaTeX Font Info:    Checking defaults for C62/song/m/n on input line 102.
+LaTeX Font Info:    ... okay on input line 102.
+Package hyperref Info: Link coloring ON on input line 102.
  (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
 
@@ -891,11 +952,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 (/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count332
+\c@section@level=\count333
 )
-LaTeX Info: Redefining \ref on input line 88.
-LaTeX Info: Redefining \pageref on input line 88.
-LaTeX Info: Redefining \nameref on input line 88.
+LaTeX Info: Redefining \ref on input line 102.
+LaTeX Info: Redefining \pageref on input line 102.
+LaTeX Info: Redefining \nameref on input line 102.
 
 (./main.out) (./main.out)
 \@outlinefile=\write4
@@ -904,135 +965,186 @@ LaTeX Info: Redefining \nameref on input line 88.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count333
+\scratchcounter=\count334
 \scratchdimen=\dimen270
 \scratchbox=\box67
-\nofMPsegments=\count334
-\nofMParguments=\count335
-\everyMPshowfont=\toks57
-\MPscratchCnt=\count336
+\nofMPsegments=\count335
+\nofMParguments=\count336
+\everyMPshowfont=\toks59
+\MPscratchCnt=\count337
 \MPscratchDim=\dimen271
-\MPnumerator=\count337
-\makeMPintoPDFobject=\count338
-\everyMPtoPDFconversion=\toks58
+\MPnumerator=\count338
+\makeMPintoPDFobject=\count339
+\everyMPtoPDFconversion=\toks60
 ))
-LaTeX Font Info:    Trying to load font information for U+msa on input line 6.
- (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line
+ 6.
+ (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
+File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 6.
+LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line
+ 6.
 
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) (./mfem.tex
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd
+File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line
+ 6.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd
+File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line
+ 6.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd
+File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 6.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 6.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 6.
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 6.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
+File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
+)
+(./sections/mfem.tex
 
 Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
 d on input line 6.
 
-[1
+LaTeX Font Info:    Trying to load font information for U+rsfso on input line 3
+9.
+(/usr/share/texlive/texmf-dist/tex/latex/rsfso/ursfso.fd
+File: ursfso.fd 2011/02/13 Fontinst v1.933 font definitions for U/rsfso.
+)
+LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
+(Font)              scaled to size 10.0pt on input line 39.
+LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
+(Font)              scaled to size 7.4pt on input line 39.
+LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
+(Font)              scaled to size 6.0pt on input line 39.
+ [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
-(./modified_BR.tex) [4]
-Overfull \hbox (11.83607pt too wide) detected at line 242
-[]\OT1/cmr/bx/n/10 A \OT1/cmr/m/n/10 = []  \OT1/cmr/bx/n/10 B \OT1/cmr/m/n/10 =
- []  \OT1/cmr/bx/n/10 C \OT1/cmr/m/n/10 = []  \OT1/cmr/bx/n/10 F \OT1/cmr/m/n/1
-0 = []   \OT1/cmr/bx/n/10 G \OT1/cmr/m/n/10 = []
- []
-
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] (./sections/modifi
+ed_BR.tex) [4]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 261.
-[5] [6]) (./transport.tex) [7] (./newphase.tex
-<eutectic.png, id=238, 430.54468pt x 322.90851pt>
-File: eutectic.png Graphic file (type png)
-<use eutectic.png>
-Package pdftex.def Info: eutectic.png  used on input line 61.
-(pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [8]
-[9 <./eutectic.png (PNG copy)>]
-<TX.png, id=263, 438.23297pt x 317.5267pt>
-File: TX.png Graphic file (type png)
-<use TX.png>
-Package pdftex.def Info: TX.png  used on input line 166.
-(pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
-<HX.png, id=264, 429.10312pt x 310.91156pt>
-File: HX.png Graphic file (type png)
-<use HX.png>
-Package pdftex.def Info: HX.png  used on input line 167.
-(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-<HC.png, id=265, 421.575pt x 316.18124pt>
-File: HC.png Graphic file (type png)
-<use HC.png>
-Package pdftex.def Info: HC.png  used on input line 184.
-(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
- [10 <./TX.png (PNG copy)> <./HX.png (PNG copy)>] [11 <./HC.png (PNG copy)>]
-Overfull \hbox (13.66641pt too wide) in paragraph at lines 241--244
-\OT1/cmr/m/n/10 An nondi-men-sion-l-ized ver-sion can be de-rived di-rectly by 
-sub-sti-tut-ing $\OML/cmm/m/it/10 T$ \OT1/cmr/m/n/10 with $\OMS/cmsy/m/n/10 T\O
-T1/cmr/m/n/10 ([]) +
+[5] [6]) [7] (./sections/transport.tex) (./sections/parallel_weno/analysis.tex
+[8]
+Overfull \hbox (3.60893pt too wide) in paragraph at lines 53--57
+ \OT1/ptm/m/n/10 8.1. ML-WENO re-con-struc-tion and de-riv-a-tives.[][] I use M
+L-WENO re-con-struc-tion scheme
  []
 
-File: HX.png Graphic file (type png)
-<use HX.png>
-Package pdftex.def Info: HX.png  used on input line 250.
+[9] [10] (./sections/parallel_weno/mesh.tex)
+(./sections/parallel_weno/stencil.tex)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 222.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 222.
+LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
+(Font)              scaled to size 8.0pt on input line 222.
+LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
+(Font)              scaled to size 5.0pt on input line 222.
+ (./sections/parallel_weno/quadmesh.tex)
+[11]) [12] (./sections/newphase.tex
+<sections/pics/eutectic.png, id=370, 430.54468pt x 322.90851pt>
+File: sections/pics/eutectic.png Graphic file (type png)
+<use sections/pics/eutectic.png>
+Package pdftex.def Info: sections/pics/eutectic.png  used on input line 61.
+(pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
+ [13 <./sections/pics/eutectic.png (PNG copy)>] [14]
+<sections/pics/TX.png, id=396, 438.23297pt x 317.5267pt>
+File: sections/pics/TX.png Graphic file (type png)
+<use sections/pics/TX.png>
+Package pdftex.def Info: sections/pics/TX.png  used on input line 166.
+(pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
+<sections/pics/HX.png, id=397, 429.10312pt x 310.91156pt>
+File: sections/pics/HX.png Graphic file (type png)
+<use sections/pics/HX.png>
+Package pdftex.def Info: sections/pics/HX.png  used on input line 167.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-File: HC.png Graphic file (type png)
-<use HC.png>
-Package pdftex.def Info: HC.png  used on input line 251.
+<sections/pics/HC.png, id=398, 421.575pt x 316.18124pt>
+File: sections/pics/HC.png Graphic file (type png)
+<use sections/pics/HC.png>
+Package pdftex.def Info: sections/pics/HC.png  used on input line 184.
 (pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
-<HCP.png, id=285, 429.10312pt x 310.91156pt>
-File: HCP.png Graphic file (type png)
-<use HCP.png>
-Package pdftex.def Info: HCP.png  used on input line 255.
+ [15 <./sections/pics/TX.png (PNG copy)> <./sections/pics/HX.png (PNG copy)> <.
+/sections/pics/HC.png (PNG copy)>]
+File: sections/pics/HX.png Graphic file (type png)
+<use sections/pics/HX.png>
+Package pdftex.def Info: sections/pics/HX.png  used on input line 250.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-) [12 <./HCP.png (PNG copy)>] (./simulation1.tex [13]
-<TDz_corrected.png, id=306, 225.84375pt x 451.6875pt>
-File: TDz_corrected.png Graphic file (type png)
-<use TDz_corrected.png>
-Package pdftex.def Info: TDz_corrected.png  used on input line 80.
+File: sections/pics/HC.png Graphic file (type png)
+<use sections/pics/HC.png>
+Package pdftex.def Info: sections/pics/HC.png  used on input line 251.
+(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
+ [16]
+<sections/pics/HCP.png, id=419, 429.10312pt x 310.91156pt>
+File: sections/pics/HCP.png Graphic file (type png)
+<use sections/pics/HCP.png>
+Package pdftex.def Info: sections/pics/HCP.png  used on input line 255.
+(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
+) [17 <./sections/pics/HCP.png (PNG copy)>] (./sections/simulation1.tex
+Overfull \hbox (14.64066pt too wide) in paragraph at lines 11--20
+ \OT1/ptm/m/n/10 12.1. Math-e-mat-i-cal model.[][] We are go-ing to show our co
+u-pled darcy-stokes semi-degenerate
+ []
+
+[18]
+<sections/pics/TDz_corrected.png, id=437, 225.84375pt x 451.6875pt>
+File: sections/pics/TDz_corrected.png Graphic file (type png)
+<use sections/pics/TDz_corrected.png>
+Package pdftex.def Info: sections/pics/TDz_corrected.png  used on input line 80
+.
 (pdftex.def)             Requested size: 156.49744pt x 284.54395pt.
-<Vfz_corrected.png, id=307, 233.37187pt x 446.41782pt>
-File: Vfz_corrected.png Graphic file (type png)
-<use Vfz_corrected.png>
-Package pdftex.def Info: Vfz_corrected.png  used on input line 81.
+<sections/pics/Vfz_corrected.png, id=438, 233.37187pt x 446.41782pt>
+File: sections/pics/Vfz_corrected.png Graphic file (type png)
+<use sections/pics/Vfz_corrected.png>
+Package pdftex.def Info: sections/pics/Vfz_corrected.png  used on input line 81
+.
 (pdftex.def)             Requested size: 156.49721pt x 284.52798pt.
-) [14 <./TDz_corrected.png (PNG copy)> <./Vfz_corrected.png (PNG copy)>] (./mai
-n.bbl)
+) [19 <./sections/pics/TDz_corrected.png (PNG copy)> <./sections/pics/Vfz_corre
+cted.png (PNG copy)>] (./main.bbl)
 (/usr/share/texlive/texmf-dist/tex/latex/tools/.tex File ignored)
 \tf@thm=\write5
 \openout5 = `main.thm'.
 
- [15]
+ [20]
 (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 42EB6664634842BE07DD70C002A0B5B9;5940.
+(rerunfilecheck)             Checksum: CE10FDA168FD3F700CB1319F65FE204E;9385.
  ) 
 Here is how much of TeX's memory you used:
- 25820 strings out of 478287
- 463562 string characters out of 5849289
- 722298 words of memory out of 5000000
- 41879 multiletter control sequences out of 15000+600000
- 472184 words of font info for 40 fonts, out of 8000000 for 9000
+ 26490 strings out of 478287
+ 475918 string characters out of 5849289
+ 737673 words of memory out of 5000000
+ 42406 multiletter control sequences out of 15000+600000
+ 506806 words of font info for 113 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
- 85i,13n,80p,506b,591s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></
-usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on main.pdf (15 pages, 340138 bytes).
+ 85i,13n,80p,506b,809s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
+ublic/rsfs/rsfs10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/rsfs/rs
+fs10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
+utmri8a.pfb>
+Output written on main.pdf (20 pages, 296522 bytes).
 PDF statistics:
- 399 PDF objects out of 1000 (max. 8388607)
- 345 compressed objects within 4 object streams
- 120 named destinations out of 1000 (max. 500000)
- 328 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 538 PDF objects out of 1000 (max. 8388607)
+ 480 compressed objects within 5 object streams
+ 174 named destinations out of 1000 (max. 500000)
+ 480 words of extra memory for PDF output out of 10000 (max. 10000000)
 

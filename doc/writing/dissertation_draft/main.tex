@@ -1,19 +1,22 @@
 \input hdr.tex
 
-\section{Simulation process}
+\section{Magam simulation framework}
 
 Initialize with a random distribution of a pair of average concentration and
 internal energy $(\bar{c}, \bar{E})$.
 
-\input mfem.tex
-
-\input transport.tex
+\input sections/mfem.tex
 
 \newpage
-\input newphase.tex
+\input sections/transport.tex
+
+\input sections/parallel_weno/analysis.tex
 
 \newpage
-\input simulation1.tex
+\input sections/newphase.tex
+
+\newpage
+\input sections/simulation1.tex
 % ====================
 \newpage
 \bibliographystyle{siam}
