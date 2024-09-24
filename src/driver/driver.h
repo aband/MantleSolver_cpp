@@ -104,11 +104,25 @@ class Driver {
         int InitCellAveVal(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
                            double (*funcCD)(const valarray<double>& point, const vector<double>& param));
 
+       // ================================================================================================
+        
+
+
     private:
         /**!
          * Old file used in limited functions.
          */
         MeshParam mp_;
+
+        /**!
+         * WENO useage objects
+         */
+        MLWENO::MLWENOUse * mluse_;
+
+        /**!
+         * WENO preparation object.
+         */
+        MLWENO::MLWENOPrepare * mlpPtr_;
 
 };
 

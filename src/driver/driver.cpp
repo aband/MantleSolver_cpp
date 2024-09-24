@@ -81,6 +81,10 @@ int Driver::InitCellAveVal(double (*funcHD)(const valarray<double>& point, const
     PetscCall(DMCreateGlobalVector(dmu,&globalHD));
     PetscCall(DMCreateGlobalVector(dmu,&globalCD));
 
+    // Assign Initial values in the form of cell-averaged value
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalCD, {0.0,0.0}, funcCD); 
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {0.0,0.0}, funcHD); 
+
     // Distribute global to local vectors
     DMGetLocalVector(dmu, &localHD);
 
@@ -96,10 +100,6 @@ int Driver::InitCellAveVal(double (*funcHD)(const valarray<double>& point, const
     DMDAVecGetArray(dmu, localHD, &mi.localHD);
 
     AssignValuesMeshInfo(mi, dmMesh, dmu);
-
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalCD, {0.0,0.0}, funcCD); 
-
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {0.0,0.0}, funcHD); 
 
     return 0;
 }

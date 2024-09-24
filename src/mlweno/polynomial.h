@@ -123,6 +123,7 @@ namespace tensorProductPoly{
             void SetCollapsePolyn(double** lu, const stencil <indice>& stencilIndice);
 
             double GetSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice);
+            double GetSmoothIndic(double** lu, const stencil <indice>& stencilIndice);
 
             unordered_map<int, double> GetDerivSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice);
 

@@ -84,11 +84,11 @@ std::string WEAK_COUPLED::transport::location(const MeshInfo& mi,
 double InitCD(const valarray<double>& point,
               const vector<double>& param){
 
-    return 0;
+    return 0.4;
 }
 
 double InitHD(const valarray<double>& point,
               const vector<double>& param){
 
-    return 0;
+    return 0.5;
 }

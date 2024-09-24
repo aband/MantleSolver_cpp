@@ -33,6 +33,10 @@ double singleLevelReconstruction::CalculateSmoothnessIndic(const MeshInfo& mi, i
     return singleLevel_[FlatIndic(mi, owner)]->GetSmoothIndic(mi,stencilIndice_);
 }
 
+double singleLevelReconstruction::CalculateSmoothnessIndic(const MeshInfo& mi, indice owner, double** lu) {
+    return singleLevel_[FlatIndic(mi, owner)]->GetSmoothIndic(lu,stencilIndice_);
+}
+
 void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
 
     // Function used to find interior stencils.
@@ -107,6 +111,30 @@ void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi){
     for (auto& ind:interior_){
         smoothnessIndic_[ind] = singleLevel_[ind]->GetSmoothIndic(mi,stencilIndice_);
     }
+}
+
+//! Update smoothness indicators when multiple species presenting in the transport system
+void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi, double** lu, std::string name){
+
+    if (smoothnessIndicVec_.find(name) != smoothnessIndicVec_.end()){
+
+        // This specie has already been declared and calculated before.
+        for (auto& ind:interior_){
+            smoothnessIndicVec_.at(name)[ind] = singleLevel_[ind]->GetSmoothIndic(lu,stencilIndice_);
+        }
+
+    } else {
+
+        // No previous declaration and calculation
+        map<int, double> si;
+        for (auto& ind:interior_){
+            si[ind] = singleLevel_[ind]->GetSmoothIndic(lu,stencilIndice_);
+        }
+
+        smoothnessIndicVec_.insert(std::make_pair(name, si));
+
+    }
+
 }
 
 void singleLevelReconstruction::UpdateDerivSmoothnessIndic(const MeshInfo& mi){

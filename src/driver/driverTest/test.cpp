@@ -43,6 +43,9 @@ int main(int argc, char **argv){
 
     driver->InitCellAveVal(InitHD, InitCD);
 
+
+
+
     driver->clean();
 
     PetscFinalize();

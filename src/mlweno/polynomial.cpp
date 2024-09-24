@@ -267,6 +267,8 @@ void stencilPolynomial::SetStencilPolynomials(const MeshInfo& mi,
  */
 
 void stencilPolynomial::SetCollapsePolyn(const MeshInfo& mi, const stencil <indice>& stencilIndice) {
+
+/*
     stencil<indice> siNow = stencilIndice;
 
     if (collapsePolyn_ == nullptr){
@@ -287,6 +289,11 @@ void stencilPolynomial::SetCollapsePolyn(const MeshInfo& mi, const stencil <indi
         }
         collapsePolyn_->setCoef(i,sum);
     }
+*/
+
+    // Default situation (not used for coupled situation)
+    SetCollapsePolyn(mi.localVals, stencilIndice);
+
 }
 
 void stencilPolynomial::SetCollapsePolyn(double** lu, const stencil<indice>& stencilIndice){
@@ -410,6 +417,12 @@ void stencilPolynomial::EvalDerivSmoothnessIndic_(const MeshInfo& mi, const sten
 
 double stencilPolynomial::GetSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice){
     EvalSmoothIndic_(mi, stencilIndice);
+
+    return smoothnessIndic_;
+}
+
+double stencilPolynomial::GetSmoothIndic(double** lu, const stencil<indice>& stencilIndice){
+    EvalSmoothIndic_(lu, stencilIndice);
 
     return smoothnessIndic_;
 }

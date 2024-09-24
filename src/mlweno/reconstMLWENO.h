@@ -50,6 +50,8 @@ namespace MLWENO{
             //! Should not be called directly for computational efficiency
             double CalculateSmoothnessIndic(const MeshInfo& mi, indice owner);
 
+            double CalculateSmoothnessIndic(const MeshInfo& mi, indice owner, double** lu);
+
             /**
              * Directly extract pre-calculateed smoothness indicator.
              * Should always be the one to call when smoothness indicator is needed.
@@ -60,6 +62,9 @@ namespace MLWENO{
 
             //! Update smoothness indicator for entire reconstruction level
             void UpdateSmoothnessIndic(const MeshInfo& mi);
+
+            //! Update smoothness indicator when transporting system of scalars
+            void UpdateSmoothnessIndic(const MeshInfo& mi, double** lu, std::string name);
 
             void UpdateDerivSmoothnessIndic(const MeshInfo& mi);
             /**
@@ -83,8 +88,12 @@ namespace MLWENO{
             stencil <indice> stencilIndice_;           //!< Indices with given x and y sizes
             unordered_set<int> interior_;              //!< Numbering the created stencils
             map<int, double> smoothnessIndic_;         //!< Smoothness indicators
-            unordered_map<int, derivative> smoothnessIndicDeriv_;//!< Derivative of smoothness indicators
-            map<int, tensorProductPoly::stencilPolynomial*> singleLevel_;       //!< Single level polynomials
+            map<std::string,map<int, double>> smoothnessIndicVec_;          //!< Smoothenss indicators for system transport
+
+            unordered_map<int, derivative> smoothnessIndicDeriv_;           //!< Derivative of smoothness indicators
+            map<std::string, unordered_map<int, derivative>> smoothnessIndicDerivVec_;
+                                                                            //!< Derivatives of smooth indic for system transport
+            map<int, tensorProductPoly::stencilPolynomial*> singleLevel_;   //!< Single level polynomials
 
             void IdentifyInteriorCell_(const MeshInfo& mi);
 
@@ -119,6 +128,7 @@ namespace MLWENO{
              * Should be called everytime non linear weights are being calculated.
              */
             void UpdateSmoothnessIndic(const MeshInfo& mi);
+
 
             /**
              * Update derivatives of smoothness indicator for all single level 
