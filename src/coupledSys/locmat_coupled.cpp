@@ -9,7 +9,7 @@ int CellAvePorosity(const MeshInfo& mi,
                     const indice& globalCell,
                     const valarray<double>& gwf,
                     const vector<vertex>& gpf,
-                    WEAK_COUPLED::coupledTrans& ct){
+                    MLWENO::MLWENOUse * mluse){
 
     double phi_f_hat = 0.0;
     double area = 0.0;
@@ -18,10 +18,11 @@ int CellAvePorosity(const MeshInfo& mi,
         vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
 
         // Get HD and CD from reconstruction at this gauss point
-        ct.reconstVal(mi, globalCell, mapped);
+        double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
+        double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
 
         // Calculate volumetric fraction of 
-        phase->pPtr->evalPhase(ct.HD,ct.CD);
+        phase->pPtr->evalPhase(HD,CD);
         double phif = phase->pPtr->phi.mlt;
 
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
@@ -43,7 +44,7 @@ int AssignLocMat(const MeshInfo& mi,
                  LocMat * loc,
                  Phase * phase,
                  const indice& globalCell,
-                 WEAK_COUPLED::coupledTrans& ct,
+                 MLWENO::MLWENOUse * mluse,
                  const valarray<double>& gwe,
                  const valarray<double>& gpe,
                  const valarray<double>& gwf,
@@ -71,9 +72,10 @@ int AssignLocMat(const MeshInfo& mi,
         double gw = gwf[g];
 
         // Reconstruction of point wise value of HD and CD
-        ct.reconstVal(mi, globalCell, mapped);
+        double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
+        double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
 
-        phase->pPtr->evalPhase(ct.HD, ct.CD);
+        phase->pPtr->evalPhase(HD, CD);
 
         // Calculate point wise porosity =========================================
         phi_f = phase->pPtr->phi.mlt;            // Fluid porosity
@@ -126,7 +128,7 @@ int AssignLocMat(const MeshInfo& mi,
                  LocMat * loc,
                  Phase * phase,
                  const indice& globalCell,
-                 WEAK_COUPLED::coupledTrans& ct,
+                 MLWENO::MLWENOUse * mluse,
                  const valarray<double>& gwe,
                  const valarray<double>& gpe,
                  const valarray<double>& gwf,
@@ -154,9 +156,10 @@ int AssignLocMat(const MeshInfo& mi,
         double gw = gwf[g];
 
         // Reconstruction of point wise value of HD and CD
-        ct.reconstVal(mi, globalCell, mapped);
+        double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
+        double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
 
-        phase->pPtr->evalPhase(ct.HD, ct.CD);
+        phase->pPtr->evalPhase(HD, CD);
 
         // Calculate point wise porosity =========================================
         phi_f = phase->pPtr->phi.mlt;  // Fluid porosity
@@ -203,7 +206,8 @@ int AssignLocMat(const MeshInfo& mi,
             vertex nu = basis_.unitnormal(e);
 
             // Reconstruction of point wise value of HD and CD
-            ct.reconstVal(mi, globalCell, mapped);
+            double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
+            double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
 
             phase->pPtr->evalPhase(ct.HD, ct.CD);
 
@@ -230,7 +234,7 @@ int AssignLocMat(const MeshInfo& mi,
                  double * k,
                  Phase * phase,
                  const indice& globalCell,
-                 WEAK_COUPLED::coupledTrans& ct,
+                 MLWENO::MLWENOUse * mluse,
                  const valarray<double>& gwf,
                  const vector<vertex>& gpf){
 
@@ -247,9 +251,10 @@ int AssignLocMat(const MeshInfo& mi,
         double gw = gwf[g];
 
         // Reconstruction of point wise value of HD and CD
-        ct.reconstVal(mi, globalCell, mapped);
-
-        phase->pPtr->evalPhase(ct.HD, ct.CD);
+        double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
+        double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
+.
+        phase->pPtr->evalPhase(HD, CD);
 
         // Calculate point wise porosity ===================================
         phi_f = phase->pPtr->phi.mlt;  // Fluid porosity

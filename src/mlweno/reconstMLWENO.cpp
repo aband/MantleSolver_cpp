@@ -135,8 +135,6 @@ void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi, double
 
     }
 
-    cout << smoothnessIndicVec_.at(name).empty() << endl;;
-
 }
 
 void singleLevelReconstruction::UpdateDerivSmoothnessIndic(const MeshInfo& mi){
@@ -167,6 +165,20 @@ double singleLevelReconstruction::Evaluate(const MeshInfo& mi, const indice& own
     }
 }
 
+/**!
+ * Evaluate function for system transport
+ */
+double singleLevelReconstruction::Evaluate(const MeshInfo& mi, const indice& owner, 
+                                           const vertex& point, const std::string& name){
+
+    if (CheckExist(mi,owner)){
+        return singleLevel_[FlatIndic(mi,owner)]->eval(point, name);
+    } else {
+        return 0;
+    }
+
+}
+
 /**
  * Evaluate at the given single reconstruction level 
  * but evaluate individual stencil polynomials separately not the collapsed one.
@@ -180,6 +192,8 @@ double singleLevelReconstruction::Evaluate(const MeshInfo& mi, const indice& own
     }
     //return CheckExist(mi, owner) * singleLevel_[FlatIndic(mi,owner)]->eval(point, local);
 }
+
+
 
 //! Extract smoothness indicator from pre-calculated values
 double singleLevelReconstruction::GetSmoothnessIndic(const MeshInfo& mi, indice owner){
@@ -621,6 +635,28 @@ double multiLevelReconstruction::EvaluateMLWENO (const MeshInfo& mi,
 
     return work; 
 }
+
+
+double multiLevelReconstruction::EvaluateMLWENO(const MeshInfo& mi,       const vertex& point, 
+                                                const indice& globalCell, const std::string& name) const{
+
+    double work = 0.0;
+
+    unordered_map<std::string, unordered_map<int, double>> nlw = nonLinearWgtsVec_.at(name).at(FlatIndic(mi,globalCell));
+
+    for (auto const& level : nlw){
+        if (nlw[level.first].empty() == 0){
+            for (auto const& wgts : level.second){
+                indice owner = globalCell + Bend(Levels_.at(level.first)->GetSizeX(), wgts.first);
+
+                work += wgts.second * Levels_.at(level.first)->Evaluate(mi, owner, point, name);
+            }
+        }
+    }
+
+    return work;
+}
+
 
 void multiLevelReconstruction::PrintNonLinearWgts(const MeshInfo& mi){
 

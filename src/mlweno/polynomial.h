@@ -3,6 +3,7 @@
 
 #include "util.h"
 #include "stencil.h"
+#include <map>
 
 namespace tensorProductPoly{
     //! Tensor product 2D polynomial for stencil basis
@@ -106,6 +107,8 @@ namespace tensorProductPoly{
             double operator() (const double x, const double y) const {return eval(x,y);};
             double operator() (const vertex& P) const {return eval(P);};
 
+            double eval(const vertex& P, const std::string& name) const;
+
             // Evaluation of point value for a given polynomial.
             // Separately without using collapsed polynomial.
             double eval(double x, double y, int poly) const;
@@ -122,8 +125,11 @@ namespace tensorProductPoly{
 
             void SetCollapsePolyn(double** lu, const stencil <indice>& stencilIndice);
 
+            void SetCollapsePolyn(double** lu, const stencil <indice>& stencilIndice, const std::string& name);
+
             double GetSmoothIndic(const MeshInfo& mi, const stencil <indice>& stencilIndice);
             double GetSmoothIndic(double** lu, const stencil <indice>& stencilIndice);
+            double GetSmoothIndic(double** lu, const stencil <indice>& stencilIndice, const std::string& name);
 
             unordered_map<int, double> GetDerivSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice);
 
@@ -150,6 +156,8 @@ namespace tensorProductPoly{
 
             basePolynomial* collapsePolyn_ = nullptr;
 
+            std::map<std::string, basePolynomial*> collapsePolynVec_;
+
             // Create polynomial smoothness indicator
             int maxR_;
             int minR_;
@@ -160,9 +168,13 @@ namespace tensorProductPoly{
              */
             void EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
             void EvalSmoothIndic_(double** lu, const stencil <indice>& stencilIndice);
+            void EvalSmoothIndic_(double** lu, const stencil <indice>& stencilIndice, const std::string& name);
+
             void EvalDerivSmoothnessIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice);
 
             double smoothnessIndic_ = -1;
+            map<std::string, double> smoothnessIndicVec_;
+            
             derivative derivSmoothnessIndic_;
     };
 

@@ -119,6 +119,15 @@ double MLWENOUse::Evaluate(const vertex& point,
     return mlrIns_.at(AssignMap_.at(location))->EvaluateMLWENO(mi,point,globalCell); 
 }
 
+double MLWENOUse::Evaluate(const vertex& point,
+                           const indice& globalCell,
+                           const MeshInfo& mi,
+                           const std::string& location,
+                           const std::string& name)const{
+
+    return mlrIns_.at(AssignMap_.at(location))->EvaluateMLWENO(mi,point,globalCell,name); 
+}
+
 void MLWENOUse::PrintNonLinearWgts(const int& location, 
                                    const MeshInfo& mi){
     mlrIns_.at(location)->PrintNonLinearWgts(mi); 

@@ -40,13 +40,13 @@ int Driver::PrepareDefaultMLWENO(){
     // Prepare levels 
     AddLevels(1);
     AddLevels(2);
-	 AddLevels(3);
+    AddLevels(3);
 
     AddLevels(4,3);
     AddLevels(3,4);
 
     // Create Smoothness Indicator for the first time
-    // mlpPtr_->UpdateSmoothnessIndic(mi, mi.localCD, "CD");
+    mlpPtr_->UpdateSmoothnessIndic(mi, mi.localCD, "CD");
     mlpPtr_->UpdateSmoothnessIndic(mi, mi.localHD, "HD");
 
     mluseAdv_->AddMLWENOLevel("interior", {"(3,3)","(2,2)"}, mlpPtr_);
@@ -55,7 +55,7 @@ int Driver::PrepareDefaultMLWENO(){
     mluseAdv_->AssignWENOStencils(0,"(3,3)",{{-1,-1}});
 
     mluseAdv_->AssignLinearWgts("interior","(2,2)",{1,1,1,1});
-    mluseAdv_->AssignLinearWgts("interior","(3,3)",{10});
+    mluseAdv_->AssignLinearWgts("interior","(3,3)",{5});
 
     mluseAdv_->UpdateNonLinearWgts(mi, "interior", interior, "HD"); 
     mluseAdv_->UpdateNonLinearWgts(mi, "interior", interior, "CD"); 

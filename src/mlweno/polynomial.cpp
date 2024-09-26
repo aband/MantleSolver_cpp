@@ -321,6 +321,33 @@ void stencilPolynomial::SetCollapsePolyn(double** lu, const stencil<indice>& ste
    
 }
 
+void stencilPolynomial::SetCollapsePolyn(double** lu, const stencil<indice>& stencilIndice, const std::string& name){
+
+    stencil<indice> siNow = stencilIndice;
+
+//    if (collapsePolyn_ == nullptr){
+    if (collapsePolynVec_.find(name) == collapsePolynVec_.end()){
+        int maxDegree[2] = {stencilPolyn_.getI(),stencilPolyn_.getJ()};
+        basePolynomial* cp_ = new basePolynomial(maxDegree);
+        collapsePolynVec_.insert(std::make_pair(name, cp_));
+    }
+
+    indice currentCell;
+    double sum = 0.0;
+
+    for (int i=0; i<stencilPolyn_.getSize(); i++){
+        sum = 0.0;
+        for (int j=0; j<stencilPolyn_.getSize(); j++){
+            currentCell = start_ + siNow(j);
+
+            sum += stencilPolyn_(j)->getCoef(i)*
+                   lu[currentCell[1]][currentCell[0]];
+        }
+        collapsePolynVec_.at(name)->setCoef(i,sum);
+    }
+   
+}
+
 //! Polyn smoothness indicator
 void stencilPolynomial::EvalSmoothIndic_(const MeshInfo& mi, const stencil <indice>& stencilIndice){
 
@@ -378,6 +405,41 @@ void stencilPolynomial::EvalSmoothIndic_(double** lu, const stencil <indice>& st
      */
 }
 
+void stencilPolynomial::EvalSmoothIndic_(double** lu, const stencil <indice>& stencilIndice, const std::string& name){
+
+    SetCollapsePolyn(lu, stencilIndice, name);
+
+    //! Initialize smoothness Indicator each time it computes
+    smoothnessIndic_ = 0.0;
+
+    if (stencilPolyn_.getI()*stencilPolyn_.getJ() != 1){
+
+        for (int all = 1; all<stencilPolyn_.getJ()*stencilPolyn_.getI(); all++){
+            int l = all/stencilPolyn_.getI();
+            int m = all%stencilPolyn_.getI();
+
+            for (int r=l; r<stencilPolyn_.getJ(); r++){
+            for (int s=m; s<stencilPolyn_.getI(); s++){
+                smoothnessIndic_ += pow(factorial(r,r-l),2)/(2*(r-l)+1)/pow(4,r-l) * 
+                                    pow(factorial(s,s-m),2)/(2*(s-m)+1)/pow(4,s-m) *
+                                    pow(collapsePolynVec_.at(name)->getCoef(FlatIndic(stencilPolyn_.getI(),s,r)),2); 
+            }}
+        }
+    }
+
+    /**
+     * constant level reconstruction will always return 0.0
+     * when its smoothness indicator is calculated.
+     */
+
+    if (smoothnessIndicVec_.find(name) == smoothnessIndicVec_.end()){
+        smoothnessIndicVec_.insert(std::make_pair(name, smoothnessIndic_));
+    } else {
+        smoothnessIndicVec_.at(name) = smoothnessIndic_;
+    }
+
+}
+
 void stencilPolynomial::EvalDerivSmoothnessIndic_(const MeshInfo& mi, const stencil<indice>& stencilIndice){
 
     // Make sure smoothness indicator has been calculated
@@ -427,6 +489,13 @@ double stencilPolynomial::GetSmoothIndic(double** lu, const stencil<indice>& ste
     return smoothnessIndic_;
 }
 
+double stencilPolynomial::GetSmoothIndic(double** lu, const stencil<indice>& stencilIndice, const std::string& name){
+
+    EvalSmoothIndic_(lu, stencilIndice, name);
+
+    return smoothnessIndicVec_.at(name);
+}
+
 derivative stencilPolynomial::GetDerivSmoothIndic(const MeshInfo& mi, const stencil<indice>& stencilIndice){
     EvalDerivSmoothnessIndic_(mi, stencilIndice);
 
@@ -451,6 +520,13 @@ double stencilPolynomial::eval(double x, double y, int poly) const{
     shift = (shift-center_)/scale_;
 
     return stencilPolyn_(poly)->eval(x,y);
+}
+
+double stencilPolynomial::eval(const vertex& P, const std::string& name) const{
+
+    vertex shift = (P-center_)/scale_;
+
+    return collapsePolynVec_.at(name)->eval(shift[0], shift[1]);
 }
 
 void stencilPolynomial::printCoef() {
