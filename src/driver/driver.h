@@ -101,23 +101,45 @@ class Driver {
         Vec globalCD, globalHD;
         Vec localCD, localHD;
 
-        int InitCellAveVal(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
-                           double (*funcCD)(const valarray<double>& point, const vector<double>& param));
+        int InitTransport(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
+                          double (*funcCD)(const valarray<double>& point, const vector<double>& param));
 
        // ================================================================================================
-        
+       
+       /**!
+		  * Add reconstruction levels to transport problem.
+		  */
+       int AddLevels(const int& stencilSize);
+       int AddLevels(const int& stencilSizeX,
+                     const int& stencilSizeY);
 
+       int AddLevels(const vector<int>& stencilSizes);
+
+       int AddLevels(const vector<pair<int, int>>& stencilSizes);
+
+       /**!
+		  * Add default reconstruction levels to transport problem.
+		  * For advection:
+		  * (3,2) interior, (3,2,1) on the edge, level 3 on the edge being biased
+		  * For diffusion:
+		  * (4,3) interior, (3,2) on the edge, level 3 on the edge being biased
+		  */
+       int PrepareDefaultMLWENO();
 
     private:
         /**!
-         * Old file used in limited functions.
+         * Old struct object used in limited functions.
+			* Be used for only once.
          */
         MeshParam mp_;
 
         /**!
          * WENO useage objects
+			* Two objects, one for advection and another for diffusion
          */
-        MLWENO::MLWENOUse * mluse_;
+        MLWENO::MLWENOUse * mluseAdv_;
+
+        MLWENO::MLWENOUse * mluseDif_;
 
         /**!
          * WENO preparation object.

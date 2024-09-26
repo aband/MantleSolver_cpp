@@ -80,7 +80,8 @@ target_link_libraries(io_lib
 add_library(mlweno_lib 
 		  #${SRC}/mlweno/reconstruction.cpp
 		  ${SRC}/mlweno/reconstMLWENO.cpp
-		  ${SRC}/mlweno/polynomial.cpp 
+		  ${SRC}/mlweno/polynomial.cpp
+		  ${SRC}/mlweno/mlwenouse.cpp
 )
 
 # Specify any additional include directories if needed
@@ -120,24 +121,28 @@ target_link_libraries(transport_lib
 
 add_library(driver_lib
 		  ${SRC}/driver/driver.cpp
-		  ${SRC}/driver/mlwenouse.cpp
-)
+		  ${SRC}/driver/transDriver.cpp
+		  )
 
 target_include_directories(driver_lib
-		  PUBLIC ${SRC}/driver
-		  PUBLIC ${SRC}/general
-		  PUBLIC ${SRC}/io
-		  PUBLIC ${SRC}/mlweno
 		  PUBLIC ${SRC}/transport
-        PUBLIC ${PETSC_DIR}/include}
-)
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/general
+        PUBLIC ${PETSC_DIR}/include 
+		  PUBLIC ${SRC}/phase
+		  PUBLIC ${SRC}/mfem
+		  PUBLIC ${SRC}/mfem/parallel
+		  PUBLIC ${SRC}/coupledSys
+		  PUBLIC ${SRC}/driver
+		  )
 
 target_link_libraries(driver_lib
-        io_lib
+		  io_lib
         general_lib
         mlweno_lib
         PkgConfig::PETSC
-)
+		  )
+
 
 # Add to excutable
 add_executable(test 

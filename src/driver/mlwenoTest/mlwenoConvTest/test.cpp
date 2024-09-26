@@ -209,13 +209,6 @@ int main(int argc, char **argv){
     // Assign meshinfo after mesh added to meshinfo
     AssignValuesMeshInfo(drivPtr->mi,dmMesh,dmu); 
 
-    drivPtr->UseWeno();
-    drivPtr->AddLevel(1,1);
-    drivPtr->AddLevel(2,2);
-    drivPtr->AddLevel(3,3);
-    drivPtr->AddLevel(4,4);
-    drivPtr->AddLevel(5,5);
-
     // =========================================================================
     MLWENO::MLWENOPrepare * mlpPtr = new MLWENO::MLWENOPrepare();
 

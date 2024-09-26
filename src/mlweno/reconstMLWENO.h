@@ -58,13 +58,16 @@ namespace MLWENO{
              */
             double GetSmoothnessIndic(const MeshInfo& mi, indice owner); 
 
+            // Extract pre-calculated smoothness indicator for system case
+            double GetSmoothnessIndic(const MeshInfo& mi, indice owner, const std::string& name);
+
             unordered_map<int, double> GetSmoothnessIndicDeriv(const MeshInfo& mi, const indice& owner);
 
             //! Update smoothness indicator for entire reconstruction level
             void UpdateSmoothnessIndic(const MeshInfo& mi);
 
             //! Update smoothness indicator when transporting system of scalars
-            void UpdateSmoothnessIndic(const MeshInfo& mi, double** lu, std::string name);
+            void UpdateSmoothnessIndic(const MeshInfo& mi, double** lu, const std::string& name);
 
             void UpdateDerivSmoothnessIndic(const MeshInfo& mi);
             /**
@@ -129,6 +132,8 @@ namespace MLWENO{
              */
             void UpdateSmoothnessIndic(const MeshInfo& mi);
 
+            void UpdateSmoothnessIndic(const MeshInfo& mi, double** lu, 
+                                       const std::string& name);
 
             /**
              * Update derivatives of smoothness indicator for all single level 
@@ -199,6 +204,16 @@ namespace MLWENO{
                                                       const MeshInfo& mi));
 
             /**!
+             * Update Non linear weights.
+             * Used for system transport.
+             */
+
+            void UpdateNonLinearWgts(const MeshInfo& mi,
+                                     bool (*assginML)(const indice& globalCell,
+                                                      const MeshInfo& mi),
+                                     const std::string& name);
+
+            /**!
              * Reconstruct point value with pre defined multi level WENO 
              * reconstruction scheme.
              */
@@ -219,6 +234,8 @@ namespace MLWENO{
              * An efficient way to reuse calculated non linear weights.
              */
             unordered_map<int, unordered_map<std::string, unordered_map<int, double>>> nonLinearWgts_;
+
+            unordered_map<std::string, unordered_map<int, unordered_map<std::string, unordered_map<int, double>>>> nonLinearWgtsVec_;
 
             /**!
              * Weno Levels and corresponding methods
@@ -242,6 +259,13 @@ namespace MLWENO{
              * Most recent definition of nonlinear weights.
              */
             void UpdateNonLinearWgtsCell_(const MeshInfo& mi, 
+                                          const int& globalCell);
+
+            /**!
+             * Update nonlinear weights for the system transport
+             */
+            void UpdateNonLinearWgtsCell_(const MeshInfo& mi, 
+                                          const std::string& name,
                                           const int& globalCell);
    };
 

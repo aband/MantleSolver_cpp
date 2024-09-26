@@ -114,7 +114,7 @@ void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi){
 }
 
 //! Update smoothness indicators when multiple species presenting in the transport system
-void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi, double** lu, std::string name){
+void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi, double** lu,const std::string& name){
 
     if (smoothnessIndicVec_.find(name) != smoothnessIndicVec_.end()){
 
@@ -134,6 +134,8 @@ void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi, double
         smoothnessIndicVec_.insert(std::make_pair(name, si));
 
     }
+
+    cout << smoothnessIndicVec_.at(name).empty() << endl;;
 
 }
 
@@ -182,6 +184,11 @@ double singleLevelReconstruction::Evaluate(const MeshInfo& mi, const indice& own
 //! Extract smoothness indicator from pre-calculated values
 double singleLevelReconstruction::GetSmoothnessIndic(const MeshInfo& mi, indice owner){
     return smoothnessIndic_[FlatIndic(mi,owner)];
+}
+
+double singleLevelReconstruction::GetSmoothnessIndic(const MeshInfo& mi, indice owner, const std::string& name){
+
+    return smoothnessIndicVec_.at(name)[FlatIndic(mi,owner)];
 }
 
 unordered_map<int,double> singleLevelReconstruction::GetSmoothnessIndicDeriv(const MeshInfo& mi, const indice& owner){
@@ -235,6 +242,15 @@ void MLWENOPrepare::UpdateSmoothnessIndic(const MeshInfo& mi){
         singleLevel.second->UpdateSmoothnessIndic(mi);
         //singleLevel.second->PrintSmoothnessIndicator(mi);
     }
+}
+
+void MLWENOPrepare::UpdateSmoothnessIndic(const MeshInfo& mi, double** lu,
+                                         const std::string& name){
+
+    for (auto const& singleLevel : allLevels_){
+        singleLevel.second->UpdateSmoothnessIndic(mi, lu, name);
+    }
+
 }
 
 void MLWENOPrepare::UpdateDerivSmoothnessIndic(const MeshInfo& mi){
@@ -366,6 +382,47 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
     }
 }
 
+// System related
+void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, 
+                                                   bool (*assignML)(const indice& globalCell, 
+                                                                    const MeshInfo& mi),
+                                                   const std::string& name){
+
+    if (nonLinearWgtsVec_.find(name) == nonLinearWgtsVec_.end()){
+        // Not assigned yet 
+
+      unordered_map<int, unordered_map<std::string, unordered_map<int, double>>> nlw;
+
+        nonLinearWgtsVec_.insert(std::make_pair(name, nlw));
+    } 
+
+    // Update non linear weights for all cells in the target domain
+    if (nonLinearWgtsVec_[name].empty()) {
+        // Initialize non linear weights with assigned domain.
+        // GlobalCells will be selected by assignML function.
+ 
+ 
+        for (int j=mi.MPIlocalCellStart[1] - mi.cellGhostLayerSize; 
+                 j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + mi.cellGhostLayerSize; j++){
+        for (int i=mi.MPIlocalCellStart[0] - mi.cellGhostLayerSize; 
+                 i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + mi.cellGhostLayerSize; i++){
+            indice globalCell {i,j};
+            if (assignML(globalCell,mi)){
+
+                UpdateNonLinearWgtsCell_(mi, name, FlatIndic(mi, globalCell));
+
+            }
+        }}
+
+    } else {
+        // Update non linear weights.
+        for (auto const& nlw: nonLinearWgtsVec_[name]){
+            UpdateNonLinearWgtsCell_(mi, name, nlw.first);
+        }
+    }
+
+}
+
 inline int powerShift(const int& r){
 
     switch (r) {
@@ -481,6 +538,68 @@ void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
 
     nonLinearWgts_.erase(globalCell);
     nonLinearWgts_.insert(std::make_pair(globalCell, nlw));
+}
+
+// Nonlinear weights for the system transport
+// Differentiate different species with string name
+void multiLevelReconstruction::UpdateNonLinearWgtsCell_(const MeshInfo& mi,
+                                                        const std::string& name,
+                                                        const int& globalCell){
+
+    unordered_map<std::string, unordered_map<int, double>> nlw;
+  
+    double sum = 0.0;
+
+    for (auto const& level : Levels_){
+        const int sizeX = level.second->GetSizeX();
+        const int sizeY = level.second->GetSizeY();
+        // In tensor product polynomial, 
+        // sizeX == sizeY always stands
+        // ==========================================================================
+        int rl = max(sizeX, sizeY);
+        int nl = 1;
+
+        double s = 1;
+
+        if (rl == 1){
+            nl = 1;
+        } else if (rl == 2){
+            nl = 3;
+        } else {
+            nl = 4;
+        }
+
+        //for (auto const& rm: Methods_.at(level.first)){
+        for (int k=0; k<Methods_.at(level.first).size(); k++){
+            indice rm  = Methods_.at(level.first).at(k);
+            indice owner = Bend(mi, globalCell) + rm;
+            // Extract linear weight
+            double omega_l = LinWgts_.at(level.first).at(k);
+
+            if (level.second->CheckExist(mi, owner)){
+                // Scale factor associated with each cells
+                double h0 = level.second->GetScale(FlatIndic(mi, owner));
+                // Smoothness indicator associated with each cell
+                double dm = level.second->GetSmoothnessIndic(mi, owner, name);
+
+                double omega_hat = omega_l/pow(dm+eps0_*h0*h0,s*rl+nl); 
+
+                nlw[level.first].insert(
+                    std::make_pair(FlatIndic(sizeX, rm),omega_hat));
+                sum += omega_hat;
+            }
+        }
+    }
+
+    for (auto const& level: Levels_) {
+        if (nlw[level.first].empty() == 0){
+            for (auto & in : nlw.at(level.first)){
+                in.second = in.second/sum;
+            }
+        }
+    }
+    nonLinearWgtsVec_[name].erase(globalCell);
+    nonLinearWgtsVec_[name].insert(std::make_pair(globalCell, nlw));
 }
 
 double multiLevelReconstruction::EvaluateMLWENO (const MeshInfo& mi,

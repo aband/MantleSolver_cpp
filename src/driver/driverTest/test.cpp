@@ -40,10 +40,9 @@ int main(int argc, char **argv){
                        stencilWidthMesh, stencilWidthU,
                        physicsScale, meshType);
 
+    driver->InitTransport(InitHD, InitCD);
 
-    driver->InitCellAveVal(InitHD, InitCD);
-
-
+    driver->PrepareDefaultMLWENO();
 
 
     driver->clean();

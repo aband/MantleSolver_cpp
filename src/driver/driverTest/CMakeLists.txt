@@ -162,6 +162,7 @@ target_link_libraries(transport_lib
 
 add_library(driver_lib
 		  ${SRC}/driver/driver.cpp
+		  ${SRC}/driver/transDriver.cpp
 		  )
 
 target_include_directories(driver_lib

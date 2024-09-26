@@ -74,8 +74,8 @@ int Driver::PrintMesh(){
     return 0;
 }
 
-int Driver::InitCellAveVal(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
-                           double (*funcCD)(const valarray<double>& point, const vector<double>& param)){
+int Driver::InitTransport(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
+                          double (*funcCD)(const valarray<double>& point, const vector<double>& param)){
 
     // Create global vectors
     PetscCall(DMCreateGlobalVector(dmu,&globalHD));
@@ -100,6 +100,14 @@ int Driver::InitCellAveVal(double (*funcHD)(const valarray<double>& point, const
     DMDAVecGetArray(dmu, localHD, &mi.localHD);
 
     AssignValuesMeshInfo(mi, dmMesh, dmu);
+
+    // Preparation for MLWENO
+    mlpPtr_ = new MLWENO::MLWENOPrepare();
+
+    // Initialize MLWENO objects
+    mluseAdv_ = new MLWENO::MLWENOUse();
+
+    mluseDif_ = new MLWENO::MLWENOUse();
 
     return 0;
 }

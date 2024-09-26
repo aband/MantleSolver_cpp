@@ -94,6 +94,18 @@ namespace MLWENO{
                                       bool (*func)(const indice& globalCell,
                                                    const MeshInfo& mi));
 
+             void UpdateNonLinearWgts(const MeshInfo& mi, 
+                                      const std::string& location,
+                                      bool (*func)(const indice& globalCell,
+                                                   const MeshInfo& mi),
+                                      const std::string& name);
+
+             void UpdateNonLinearWgts(const MeshInfo& mi, 
+                                      const int& location,
+                                      bool (*func)(const indice& globalCell,
+                                                   const MeshInfo& mi),
+                                      const std::string& name);
+
              /**!
               * Evaluate a reconstruction value using defined MLWENO instances.
               */
