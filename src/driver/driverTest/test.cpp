@@ -10,7 +10,7 @@ int main(int argc, char **argv){
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
     // Input mesh parameter =========================================================
-    int M=3, N=3;
+    int M=5, N=5;
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 

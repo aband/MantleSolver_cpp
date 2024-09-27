@@ -209,7 +209,7 @@ int AssignLocMat(const MeshInfo& mi,
             double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
             double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
 
-            phase->pPtr->evalPhase(ct.HD, ct.CD);
+            phase->pPtr->evalPhase(HD, CD);
 
             // Calculate point wise porosity =========================================
             double phi_f_e = phase->pPtr->phi.mlt;  // Fluid porosity on edge gauss point
@@ -253,7 +253,7 @@ int AssignLocMat(const MeshInfo& mi,
         // Reconstruction of point wise value of HD and CD
         double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
         double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
-.
+
         phase->pPtr->evalPhase(HD, CD);
 
         // Calculate point wise porosity ===================================

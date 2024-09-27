@@ -51,6 +51,7 @@ namespace MLWENO{
             double CalculateSmoothnessIndic(const MeshInfo& mi, indice owner);
 
             double CalculateSmoothnessIndic(const MeshInfo& mi, indice owner, double** lu);
+            double CalculateSmoothnessIndic(const MeshInfo& mi, indice owner, double** lu, const std::string& name);
 
             /**
              * Directly extract pre-calculateed smoothness indicator.

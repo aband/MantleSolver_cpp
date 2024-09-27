@@ -2,6 +2,8 @@
 #define TRANS_PARAM_H_
 
 #include <array>
+#include <string>
+#include "util.h"
 
 /**!
  * Transport boundary functions
@@ -22,6 +24,9 @@ std::array<double,2> bndryValAdv();
 double bndryFluxAdv();
 
 double bndryFluxDiff();
+
+std::string location(const MeshInfo& mi,
+                     const indice& globalCell);
 
 #ifdef COUPLED
 // Initial values

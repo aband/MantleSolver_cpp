@@ -118,13 +118,19 @@ class Driver {
        int AddLevels(const vector<pair<int, int>>& stencilSizes);
 
        /**!
-		  * Add default reconstruction levels to transport problem.
-		  * For advection:
-		  * (3,2) interior, (3,2,1) on the edge, level 3 on the edge being biased
-		  * For diffusion:
-		  * (4,3) interior, (3,2) on the edge, level 3 on the edge being biased
-		  */
+        * Add default reconstruction levels to transport problem.
+        * For advection:
+        * (3,2) interior, (3,2,1) on the edge, level 3 on the edge being biased
+        * For diffusion:
+        * (4,3) interior, (3,2) on the edge, level 3 on the edge being biased
+        */
        int PrepareDefaultMLWENO();
+
+       /**!
+        * 
+        *
+        */
+       int PrepareDefaultMFEM();
 
     private:
         /**!

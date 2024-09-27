@@ -59,8 +59,8 @@ bool corner(const indice& globalCell,
 
 // Boundary categary
 
-std::string WEAK_COUPLED::transport::location(const MeshInfo& mi,
-                                              const indice& globalCell){
+std::string location(const MeshInfo& mi,
+                     const indice& globalCell){
 
     std::string loc = "wrong";
 

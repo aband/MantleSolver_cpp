@@ -62,5 +62,7 @@ int Driver::PrepareDefaultMLWENO(){
 
     // --- save diffusion mluse for later ^_^
 
+    cout <<mluseAdv_->Evaluate({0,-0.5}, {2,2}, mi, "interior", "HD") <<endl;
+
     return 1;
 }

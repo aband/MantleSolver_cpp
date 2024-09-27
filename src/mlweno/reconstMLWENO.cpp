@@ -37,6 +37,10 @@ double singleLevelReconstruction::CalculateSmoothnessIndic(const MeshInfo& mi, i
     return singleLevel_[FlatIndic(mi, owner)]->GetSmoothIndic(lu,stencilIndice_);
 }
 
+double singleLevelReconstruction::CalculateSmoothnessIndic(const MeshInfo& mi, indice owner, double** lu, const std::string& name){
+    return singleLevel_[FlatIndic(mi, owner)]->GetSmoothIndic(lu, stencilIndice_, name);
+}
+
 void singleLevelReconstruction::IdentifyInteriorCell_(const MeshInfo& mi){
 
     // Function used to find interior stencils.
@@ -120,7 +124,7 @@ void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi, double
 
         // This specie has already been declared and calculated before.
         for (auto& ind:interior_){
-            smoothnessIndicVec_.at(name)[ind] = singleLevel_[ind]->GetSmoothIndic(lu,stencilIndice_);
+            smoothnessIndicVec_.at(name)[ind] = singleLevel_[ind]->GetSmoothIndic(lu,stencilIndice_, name);
         }
 
     } else {
@@ -128,7 +132,7 @@ void singleLevelReconstruction::UpdateSmoothnessIndic(const MeshInfo& mi, double
         // No previous declaration and calculation
         map<int, double> si;
         for (auto& ind:interior_){
-            si[ind] = singleLevel_[ind]->GetSmoothIndic(lu,stencilIndice_);
+            si[ind] = singleLevel_[ind]->GetSmoothIndic(lu,stencilIndice_,name);
         }
 
         smoothnessIndicVec_.insert(std::make_pair(name, si));
@@ -176,7 +180,6 @@ double singleLevelReconstruction::Evaluate(const MeshInfo& mi, const indice& own
     } else {
         return 0;
     }
-
 }
 
 /**
@@ -647,13 +650,14 @@ double multiLevelReconstruction::EvaluateMLWENO(const MeshInfo& mi,       const 
     for (auto const& level : nlw){
         if (nlw[level.first].empty() == 0){
             for (auto const& wgts : level.second){
+
                 indice owner = globalCell + Bend(Levels_.at(level.first)->GetSizeX(), wgts.first);
 
                 work += wgts.second * Levels_.at(level.first)->Evaluate(mi, owner, point, name);
             }
         }
     }
-
+ 
     return work;
 }
 
