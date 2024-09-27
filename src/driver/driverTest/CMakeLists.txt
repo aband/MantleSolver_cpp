@@ -163,6 +163,7 @@ target_link_libraries(transport_lib
 add_library(driver_lib
 		  ${SRC}/driver/driver.cpp
 		  ${SRC}/driver/transDriver.cpp
+		  ${SRC}/driver/flowDriver.cpp
 		  )
 
 target_include_directories(driver_lib
@@ -181,6 +182,7 @@ target_link_libraries(driver_lib
 		  io_lib
         general_lib
         mlweno_lib
+		  mfem_lib
         PkgConfig::PETSC
 		  )
 

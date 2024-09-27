@@ -107,8 +107,8 @@ class Driver {
        // ================================================================================================
        
        /**!
-		  * Add reconstruction levels to transport problem.
-		  */
+        * Add reconstruction levels to transport problem.
+        */
        int AddLevels(const int& stencilSize);
        int AddLevels(const int& stencilSizeX,
                      const int& stencilSizeY);
@@ -124,18 +124,22 @@ class Driver {
         * For diffusion:
         * (4,3) interior, (3,2) on the edge, level 3 on the edge being biased
         */
-       int PrepareDefaultMLWENO();
+       int PrepareDefaultTransport();
 
        /**!
-        * 
-        *
+        * Create boundary condition vectors
         */
-       int PrepareDefaultMFEM();
+       int PrepareFlow();
+
+       /**!
+        * Solve flow at the given time step.
+        */
+       int SolveFlow();
 
     private:
         /**!
          * Old struct object used in limited functions.
-			* Be used for only once.
+         * Be used for only once.
          */
         MeshParam mp_;
 
@@ -152,6 +156,47 @@ class Driver {
          */
         MLWENO::MLWENOPrepare * mlpPtr_;
 
+        // ===========================================================
+
+        /**!
+         * Finite Element spaces.
+         */
+
+        basis * basis_;
+        Hdivmixed * hdiv_;
+        BRMixed * br_;
+
+        /**!
+         * Boundary conditions
+         */
+
+        // Mark boundary values
+        bndryVal bndryStokesEssen_;
+        bndryVal bndryStokesNatur_;
+        bndryVal bndryDarcyEssen_;
+        bndryVal bndryDarcyNatur_;
+
+        /**!
+         * Reduced linear system excluding essential boundary conditions
+         */
+
+        ReducedSys * reducedDarcy_;
+        ReducedSys * reducedStokes_;
+
+        /**!
+         * Coupling matrix.
+         */
+        Mat K_;
+
+       /**!
+        * Create boundary dof reference mapping
+        */
+
+       int bndryDOFStokes_ = 0.0;
+       int bndryDOFDarcy_  = 0.0;
+
+       int * refArrayStokes_;
+       int * refArrayDarcy_;
 };
 
 #endif

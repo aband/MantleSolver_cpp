@@ -14,8 +14,8 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
-    double L = 2, H = 1;
-    double xstart = -1, ystart = -1.0001;
+    double L = 2, H = 10;
+    double xstart = -1, ystart = -10.0001;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
@@ -42,8 +42,11 @@ int main(int argc, char **argv){
 
     driver->InitTransport(InitHD, InitCD);
 
-    driver->PrepareDefaultMLWENO();
+    driver->PrepareDefaultTransport();
 
+    driver->PrepareFlow();
+
+    driver->SolveFlow();
 
     driver->clean();
 
