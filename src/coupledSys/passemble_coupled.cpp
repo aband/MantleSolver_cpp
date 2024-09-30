@@ -1,6 +1,4 @@
 #define COUPLED
-
-#include "coupled.h"
 #include "passemble.h"
 
 // Assemble sparse matrix parallelly
@@ -109,8 +107,6 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
         AssignLocMat(mi, br_  , basis_, locmatS, phase, global, mluse, gwe, gpe, gwf, gpf);
         AssignLocMat(mi, hdiv_, basis_, locmatD, phase, global, mluse, gwe, gpe, gwf, gpf);
         AssignLocMat(mi, br_, hdiv_, basis_, &k, phase, global, mluse, gwf, gpf);
-
-        cout << j << "  " << i << endl;
 
         // ! Load corresponding shape functions
         shape stokesFuncSp(&basis_, &br_);

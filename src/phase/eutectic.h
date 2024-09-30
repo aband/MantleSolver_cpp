@@ -30,7 +30,11 @@ class phase{
             ~phase() {};
 
             // Get dimentionalized temperature 
-            double GetT(const double& P);
+            double GetTe(const double& P);
+
+            // Get lithostatic pressure 
+				// Take depth as input and return lithostatic pressure
+            double GetScaledLithoP(const double& z);
 
             // Split phase regions according to values of dimensionless enthalpy and 
             // dimensionless composition.
@@ -99,6 +103,12 @@ class phase{
             // Latent heat
             // dimensionless
             double L_;
+
+            // Density
+            double rho_;
+
+            // Gravitional acceleration
+            double g_;
 };
 
 }

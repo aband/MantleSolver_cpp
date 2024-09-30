@@ -1,7 +1,8 @@
 // Replace function computing porosity with
 // evaluatio of phase package with reconstructed values of CD and HD
 #include "locmat.h"
-#include "coupled.h"
+#include "mlwenouse.h"
+#include "trans_param.h"
 
 int CellAvePorosity(const MeshInfo& mi, 
                     basis& basis_,
@@ -14,15 +15,21 @@ int CellAvePorosity(const MeshInfo& mi,
     double phi_f_hat = 0.0;
     double area = 0.0;
 
+    std::string cellLoc = location(mi, globalCell);
+
     for (unsigned int g=0; g<gwf.size(); g++){
         vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
 
         // Get HD and CD from reconstruction at this gauss point
-        double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
-        double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
+        double HD = mluse->Evaluate(mapped, globalCell, mi, cellLoc, "HD");
+        double CD = mluse->Evaluate(mapped, globalCell, mi, cellLoc, "CD");
 
-        // Calculate volumetric fraction of 
-        phase->pPtr->evalPhase(HD,CD);
+        // Calculate volumetric fraction at given quadrature points
+		  // Get pressure first
+        double depth = mapped[1]*(-1)*phase->pp->l0*0.6;
+
+        double lithoP = phase->pPtr->GetScaledLithoP(depth);
+        phase->pPtr->evalPhase(HD,CD,lithoP);
         double phif = phase->pPtr->phi.mlt;
 
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
@@ -74,8 +81,10 @@ int AssignLocMat(const MeshInfo& mi,
         // Reconstruction of point wise value of HD and CD
         double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
         double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
+        double depth = mapped[1]*(-1)*phase->pp->l0*0.6;
 
-        phase->pPtr->evalPhase(HD, CD);
+        double lithoP = phase->pPtr->GetScaledLithoP(depth);
+        phase->pPtr->evalPhase(HD,CD,lithoP);
 
         // Calculate point wise porosity =========================================
         phi_f = phase->pPtr->phi.mlt;            // Fluid porosity
@@ -158,8 +167,10 @@ int AssignLocMat(const MeshInfo& mi,
         // Reconstruction of point wise value of HD and CD
         double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
         double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
+        double depth = mapped[1]*(-1)*phase->pp->l0*0.6;
 
-        phase->pPtr->evalPhase(HD, CD);
+        double lithoP = phase->pPtr->GetScaledLithoP(depth);
+        phase->pPtr->evalPhase(HD,CD,lithoP);
 
         // Calculate point wise porosity =========================================
         phi_f = phase->pPtr->phi.mlt;  // Fluid porosity
@@ -208,8 +219,10 @@ int AssignLocMat(const MeshInfo& mi,
             // Reconstruction of point wise value of HD and CD
             double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
             double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
+            double depth = mapped[1]*(-1)*phase->pp->l0*0.6;
 
-            phase->pPtr->evalPhase(HD, CD);
+            double lithoP = phase->pPtr->GetScaledLithoP(depth);
+            phase->pPtr->evalPhase(HD,CD,lithoP);
 
             // Calculate point wise porosity =========================================
             double phi_f_e = phase->pPtr->phi.mlt;  // Fluid porosity on edge gauss point
@@ -254,7 +267,10 @@ int AssignLocMat(const MeshInfo& mi,
         double HD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "HD");
         double CD = mluse->Evaluate(mapped, globalCell, mi, location(mi, globalCell), "CD");
 
-        phase->pPtr->evalPhase(HD, CD);
+        double depth = mapped[1]*(-1)*phase->pp->l0*0.6;
+
+        double lithoP = phase->pPtr->GetScaledLithoP(depth);
+        phase->pPtr->evalPhase(HD,CD,lithoP);
 
         // Calculate point wise porosity ===================================
         phi_f = phase->pPtr->phi.mlt;  // Fluid porosity

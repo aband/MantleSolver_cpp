@@ -10,12 +10,12 @@ int main(int argc, char **argv){
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
     // Input mesh parameter =========================================================
-    int M=5, N=5;
+    int M=4, N=20;
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
-    double L = 2, H = 10;
-    double xstart = -1, ystart = -10.0001;
+    double L = 0.2, H = 1;
+    double xstart = -0.1, ystart = -1.0001;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
@@ -24,11 +24,16 @@ int main(int argc, char **argv){
     int stencilWidthMesh = 5;
     int stencilWidthU = 3;
 
-    int physicsScale = 0;
+    int physicsScale = 1;
     PetscCall(PetscOptionsGetInt(NULL,NULL, "-scale", &physicsScale, NULL));
 
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
+
+    int maxIter = 1; 
+    PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL));        
+    double tolUzawa = 10e-7; 
+    PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
 
     // ==============================================================================
 
@@ -46,7 +51,11 @@ int main(int argc, char **argv){
 
     driver->PrepareFlow();
 
-    driver->SolveFlow();
+    driver->SolveFlow(maxIter, tolUzawa);
+
+    driver->PrintFlow();
+
+    driver->PrintPorosity();
 
     driver->clean();
 

@@ -74,6 +74,8 @@ int main(int argc, char **argv){
         fprintf(TDz, "%f ", pPtr->TD);
         fprintf(Vfz, "%f ", pPtr->phi.mlt);
 
+        std::cout <<P << "  " << pPtr->phi.mlt << std::endl;
+
         pPtr->evalPhase(HD, 0.4, P);
         fprintf(TDz3, "%f ", pPtr->TD);
         fprintf(Vfz3, "%f ", pPtr->phi.mlt);
@@ -101,6 +103,7 @@ int main(int argc, char **argv){
 
             fprintf(TDz2,"%f ", pPtr->TD);
             fprintf(Vfz2, "%f ", pPtr->phi.mlt);
+
         }
 
         fprintf(HDzgrid, "\n");

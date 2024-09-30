@@ -63,6 +63,9 @@ int Driver::CreateMesh(const int& M, const int& N,
 
     ReadMeshPortion(dmMesh, &globalmesh, mi.lmesh);
 
+    M_ = M;
+    N_ = N;
+  
     return 0;
 }
 
@@ -83,7 +86,7 @@ int Driver::InitTransport(double (*funcHD)(const valarray<double>& point, const 
 
     // Assign Initial values in the form of cell-averaged value
     SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalCD, {0.0,0.0}, funcCD); 
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {0.0,0.0}, funcHD); 
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {myPhase->pp->l0,0.0}, funcHD); 
 
     // Distribute global to local vectors
     DMGetLocalVector(dmu, &localHD);

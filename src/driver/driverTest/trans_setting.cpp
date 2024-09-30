@@ -1,5 +1,4 @@
 #include "trans_param.h"
-#include "coupled.h"
 
 // Location functions
 bool interior(const indice& globalCell, 
@@ -16,7 +15,6 @@ bool edge(const indice& globalCell,
           const MeshInfo& mi){
 
    // return four edges
-
    if (// left edge
        (globalCell[0] == 0 && 
         globalCell[1] != 0 && 
@@ -48,7 +46,7 @@ bool corner(const indice& globalCell,
 
    if ((globalCell[0] == 0 && globalCell[1] == 0) ||
        (globalCell[0] == 0 && globalCell[1] == mi.MPIglobalCellSize[1]-1) ||
-       (globalCell[0] == 0 && globalCell[1] == 0) ||
+       (globalCell[0] == mi.MPIglobalCellSize[0]-1 && globalCell[1] == 0) ||
        (globalCell[0] == mi.MPIglobalCellSize[0]-1 && globalCell[1] == mi.MPIglobalCellSize[1]-1) 
       ){
        return true;
@@ -81,14 +79,22 @@ std::string location(const MeshInfo& mi,
     return loc;
 }
 
+// Initialize dimensionless composition and enthalpy
 double InitCD(const valarray<double>& point,
               const vector<double>& param){
 
-    return 0.4;
+    // Constant composition value 
+    return 0.2;
 }
 
 double InitHD(const valarray<double>& point,
               const vector<double>& param){
 
-    return 0.5;
+    // Linear simple distribution of enthalpy
+	 // We pass nondimensionalize normalization factor in param.at(0)
+    double HD = 0.18;
+
+    HD -= 0.0000005*point[1]*param.at(0);
+
+    return HD;
 }

@@ -93,7 +93,7 @@ int AssignLocMat(const MeshInfo& mi,
 // ===============================================================================
 
 #ifdef COUPLED
-#include "coupled.h"
+#include "mlwenouse.h"
 int CellAvePorosity(const MeshInfo& mi, 
                     basis& basis_,
                     Phase * phase,

@@ -122,7 +122,7 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
                                       const int& bndryDOFDarcy);
 
 #ifdef COUPLED
-#include "coupled.h"
+#include "mlwenouse.h"
 PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
                                       basis& basis_,
                                       Phase * phase,

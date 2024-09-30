@@ -23,12 +23,12 @@
 
 // MLWENO parameter header file
 #include "mlwenouse.h"
-#include "coupled.h"
+#include "trans_param.h"
 
 extern "C"{
 #include "mesh.h"
 #include "output.h"
-//#include "cgns_io.h"
+#include "cgns_io.h"
 }
 
 enum transportType {adv, diff, adv_diff, adv_diff_react};
@@ -134,9 +134,26 @@ class Driver {
        /**!
         * Solve flow at the given time step.
         */
-       int SolveFlow();
+       int SolveFlow(int maxIter, double tolUzawa);
+
+       /**!
+		  * Output of the calculated result
+		  */
+       int PrintFlow();
+
+       /**!
+        * Print out porosity 
+        */
+       int PrintPorosity();
 
     private:
+
+        /**!
+         * Record global cell sizes
+         */
+        int M_;
+        int N_;
+
         /**!
          * Old struct object used in limited functions.
          * Be used for only once.
@@ -197,6 +214,11 @@ class Driver {
 
        int * refArrayStokes_;
        int * refArrayDarcy_;
+
+       /**!
+        * Global vector containing results 
+        */
+       ReducedSys * Result_;
 };
 
 #endif

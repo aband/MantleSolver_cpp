@@ -25,6 +25,15 @@ double bndryFluxAdv();
 
 double bndryFluxDiff();
 
+bool interior(const indice& globalCell, 
+              const MeshInfo& mi);
+
+bool edge(const indice& globalCell,
+          const MeshInfo& mi);
+
+bool corner(const indice& globalCell, 
+            const MeshInfo& mi);
+
 std::string location(const MeshInfo& mi,
                      const indice& globalCell);
 

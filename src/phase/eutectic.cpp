@@ -18,13 +18,28 @@ EUTECTIC::phase::phase(){
 	 // dimensionless latent heat 
     L_ = 0.3;
 
+    // Uniform density
+	 // No need to differentiate densities of two minerals
+    rho_ = 3000; //kg/m^3
+
+    g_   = 10;
+
 }
 
-double EUTECTIC::phase::GetT(const double& P){
+double EUTECTIC::phase::GetTe(const double& P){
 
     // Get melting point with respect to current pressure P
 
     return TD*(T10_-Te0_) + Te0_ + gamma_*P;
+}
+
+double EUTECTIC::phase::GetScaledLithoP(const double& z){
+
+    // Return lithostatic pressure scaled with (T1-Te)
+    // input z of unit [m]
+    //return rho_*g_*z/(T10_ - Te0_);
+
+    return 5.23 * z;
 }
 
 void EUTECTIC::phase::evalPhase(const double& HD,
