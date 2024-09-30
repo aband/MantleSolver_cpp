@@ -28,8 +28,10 @@
 extern "C"{
 #include "mesh.h"
 #include "output.h"
-#include "cgns_io.h"
+//#include "cgns_io.h"
 }
+
+#include<sys/stat.h>
 
 enum transportType {adv, diff, adv_diff, adv_diff_react};
 
@@ -139,12 +141,22 @@ class Driver {
        /**!
 		  * Output of the calculated result
 		  */
-       int PrintFlow();
+       int PrintFlowParallel();
+
+       /**!
+        * Print out cell centerred grid coordinates
+        */
+       int PrintCellCenterGrids();
 
        /**!
         * Print out porosity 
         */
        int PrintPorosity();
+
+       /**!
+        * Print out Pressure
+        */
+       int PrintPressure();
 
     private:
 

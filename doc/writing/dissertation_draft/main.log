@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  24 SEP 2024 15:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  30 SEP 2024 13:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -977,279 +977,32 @@ LaTeX Info: Redefining \nameref on input line 102.
 \makeMPintoPDFobject=\count339
 \everyMPtoPDFconversion=\toks60
 ))
-LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line
- 6.
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
-File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
-)
-LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line
- 6.
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd
-File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
-)
-LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line
- 6.
+! LaTeX Error: Environment titlepage undefined.
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd
-File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
-)
-LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line
- 6.
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.3 \begin{titlepage}
+                     
+? 
+! Emergency stop.
+ ...                                              
+                                                  
+l.3 \begin{titlepage}
+                     
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd
-File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
-)
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 6.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 6.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 6.
-LaTeX Font Info:    Trying to load font information for U+rsfs on input line 6.
-
-
-(/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
-File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
-)
-(./sections/mfem.tex
-
-Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
-d on input line 6.
-
-LaTeX Font Info:    Trying to load font information for U+rsfso on input line 3
-9.
-(/usr/share/texlive/texmf-dist/tex/latex/rsfso/ursfso.fd
-File: ursfso.fd 2011/02/13 Fontinst v1.933 font definitions for U/rsfso.
-)
-LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
-(Font)              scaled to size 10.0pt on input line 39.
-LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
-(Font)              scaled to size 7.4pt on input line 39.
-LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
-(Font)              scaled to size 6.0pt on input line 39.
- [1
-
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] (./sections/modifi
-ed_BR.tex) [4]
-Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 261.
-
-[5] [6]) [7] (./sections/transport.tex) (./sections/parallel_weno/analysis.tex
-[8]
-Overfull \hbox (3.60893pt too wide) in paragraph at lines 53--57
- \OT1/ptm/m/n/10 7.1. ML-WENO re-con-struc-tion and de-riv-a-tives.[][] I use M
-L-WENO re-con-struc-tion scheme
- []
-
-[9] [10] (./sections/parallel_weno/mesh.tex)
-(./sections/parallel_weno/stencil.tex)
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 222.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 222.
-LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
-(Font)              scaled to size 8.0pt on input line 222.
-LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
-(Font)              scaled to size 5.0pt on input line 222.
- (./sections/parallel_weno/quadmesh.tex)
-[11]) [12] (./sections/newphase.tex
-<sections/pics/eutectic.png, id=383, 430.54468pt x 322.90851pt>
-File: sections/pics/eutectic.png Graphic file (type png)
-<use sections/pics/eutectic.png>
-Package pdftex.def Info: sections/pics/eutectic.png  used on input line 61.
-(pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
- [13 <./sections/pics/eutectic.png (PNG copy)>] [14]
-<sections/pics/TX.png, id=416, 438.23297pt x 317.5267pt>
-File: sections/pics/TX.png Graphic file (type png)
-<use sections/pics/TX.png>
-Package pdftex.def Info: sections/pics/TX.png  used on input line 166.
-(pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
-<sections/pics/HX.png, id=417, 429.10312pt x 310.91156pt>
-File: sections/pics/HX.png Graphic file (type png)
-<use sections/pics/HX.png>
-Package pdftex.def Info: sections/pics/HX.png  used on input line 167.
-(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-<sections/pics/HC.png, id=418, 421.575pt x 316.18124pt>
-File: sections/pics/HC.png Graphic file (type png)
-<use sections/pics/HC.png>
-Package pdftex.def Info: sections/pics/HC.png  used on input line 184.
-(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
- [15 <./sections/pics/TX.png (PNG copy)> <./sections/pics/HX.png (PNG copy)> <.
-/sections/pics/HC.png (PNG copy)>]
-File: sections/pics/HX.png Graphic file (type png)
-<use sections/pics/HX.png>
-Package pdftex.def Info: sections/pics/HX.png  used on input line 250.
-(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-File: sections/pics/HC.png Graphic file (type png)
-<use sections/pics/HC.png>
-Package pdftex.def Info: sections/pics/HC.png  used on input line 251.
-(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
- [16]
-<sections/pics/HCP.png, id=444, 429.10312pt x 310.91156pt>
-File: sections/pics/HCP.png Graphic file (type png)
-<use sections/pics/HCP.png>
-Package pdftex.def Info: sections/pics/HCP.png  used on input line 255.
-(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-) [17 <./sections/pics/HCP.png (PNG copy)>] (./sections/simulation1.tex
-Overfull \hbox (14.64066pt too wide) in paragraph at lines 11--20
- \OT1/ptm/m/n/10 11.1. Math-e-mat-i-cal model.[][] We are go-ing to show our co
-u-pled darcy-stokes semi-degenerate
- []
-
-[18]
-<sections/pics/TDz_corrected.png, id=465, 225.84375pt x 451.6875pt>
-File: sections/pics/TDz_corrected.png Graphic file (type png)
-<use sections/pics/TDz_corrected.png>
-Package pdftex.def Info: sections/pics/TDz_corrected.png  used on input line 80
-.
-(pdftex.def)             Requested size: 156.49744pt x 284.54395pt.
-<sections/pics/Vfz_corrected.png, id=466, 233.37187pt x 446.41782pt>
-File: sections/pics/Vfz_corrected.png Graphic file (type png)
-<use sections/pics/Vfz_corrected.png>
-Package pdftex.def Info: sections/pics/Vfz_corrected.png  used on input line 81
-.
-(pdftex.def)             Requested size: 156.49721pt x 284.52798pt.
-) [19 <./sections/pics/TDz_corrected.png (PNG copy)> <./sections/pics/Vfz_corre
-cted.png (PNG copy)>] (./main.bbl)
-(/usr/share/texlive/texmf-dist/tex/latex/tools/.tex File ignored)
-\tf@thm=\write5
-\openout5 = `main.thm'.
-
- [20]
-(./main.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `main.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: CE10FDA168FD3F700CB1319F65FE204E;9385
-(rerunfilecheck)             After:  7D1FC80D0C824A170BB2CFD1631F8F3F;8810.
- ) 
+ 
 Here is how much of TeX's memory you used:
- 26519 strings out of 478287
- 476330 string characters out of 5849289
- 737717 words of memory out of 5000000
- 42406 multiletter control sequences out of 15000+600000
- 506806 words of font info for 113 fonts, out of 8000000 for 9000
+ 25972 strings out of 478287
+ 466878 string characters out of 5849289
+ 704634 words of memory out of 5000000
+ 42126 multiletter control sequences out of 15000+600000
+ 469766 words of font info for 29 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
- 85i,13n,80p,506b,809s stack positions out of 5000i,500n,10000p,200000b,80000s
-pdfTeX warning (dest): name{figure.93} has been referenced but does not exist
-, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.144} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.143} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.142} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.138} has been referenced but does not ex
-ist, replaced by a fixed one
-
-pdfTeX warning (dest): name{section.137} has been referenced but does not exist
-, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.133} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.129} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.127} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.122} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.120} has been referenced but does not ex
-ist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.118} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.117} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.113} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.111} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.101} has been referenced but does not ex
-ist, replaced by a fixed one
-
-pdfTeX warning (dest): name{section.98} has been referenced but does not exist,
- replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.97} has been referenced but does not exi
-st, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.96} has been referenced but does not exi
-st, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.95} has been referenced but does not exi
-st, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.87} has been referenced but does not exi
-st, replaced by a fixed one
-
-pdfTeX warning (dest): name{section.86} has been referenced but does not exist,
- replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.85} has been referenced but does not exi
-st, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.82} has been referenced but does not 
-exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsubsection.80} has been referenced but does not 
-exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.79} has been referenced but does not exi
-st, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.63} has been referenced but does not exi
-st, replaced by a fixed one
-
-pdfTeX warning (dest): name{section.60} has been referenced but does not exist,
- replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.55} has been referenced but does not exi
-st, replaced by a fixed one
-
-pdfTeX warning (dest): name{section.52} has been referenced but does not exist,
- replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.51} has been referenced but does not exi
-st, replaced by a fixed one
-
-pdfTeX warning (dest): name{subsection.50} has been referenced but does not exi
-st, replaced by a fixed one
-
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/rsfs/rsfs10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/rsfs/rsfs
-10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/share/texlive/texmf
--dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
-mri8a.pfb>
-Output written on main.pdf (20 pages, 297440 bytes).
-PDF statistics:
- 574 PDF objects out of 1000 (max. 8388607)
- 515 compressed objects within 6 object streams
- 203 named destinations out of 1000 (max. 500000)
- 480 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 85i,1n,80p,506b,176s stack positions out of 5000i,500n,10000p,200000b,80000s
+!  ==> Fatal error occurred, no output PDF file produced!

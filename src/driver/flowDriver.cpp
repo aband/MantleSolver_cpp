@@ -44,7 +44,7 @@ int Driver::SolveFlow(int maxIter, double tolUzawa){
     return 1;
 }
 
-int Driver::PrintFlow(){
+int Driver::PrintFlowParallel(){
 
     int nelemloc = mi.MPIlocalCellSize[0]*mi.MPIlocalCellSize[1];
     double * ux = (double *)malloc(sizeof(double)*nelemloc);
@@ -74,6 +74,7 @@ int Driver::PrintFlow(){
     CGNSPrepareParallel(&destDarcy_sol, &destDarcy_g, refArrayDarcy_, mi,
                         vx, vy, *hdiv_, *basis_);
 
+/*
     char stokesfile[] = "stokes.cgns";   
     CgnsArrayOutput(dmMesh,&globalmesh,ux,uy,mi.MPIlocalCellStart[0],
                     mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
@@ -83,6 +84,12 @@ int Driver::PrintFlow(){
     CgnsArrayOutput(dmMesh,&globalmesh,vx,vy,mi.MPIlocalCellStart[0],
                     mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
                     mi.MPIlocalCellSize[1],darcyfile);
+*/
+
+    return 1;
+}
+
+int Driver::PrintCellCenterGrids(){
 
     return 1;
 }
@@ -90,8 +97,8 @@ int Driver::PrintFlow(){
 int Driver::PrintPorosity(){
 
     // Cell centered grid
-    FILE *gridPorox = fopen("gridPoroX.dat", "w");
-    FILE *gridPoroy = fopen("gridPoroY.dat", "w");
+    FILE *gridPorox = fopen("gridCellX.dat", "w");
+    FILE *gridPoroy = fopen("gridCellY.dat", "w");
 
     FILE *fp = fopen("porosity.dat","w");
 
@@ -123,5 +130,22 @@ int Driver::PrintPorosity(){
     fprintf(gridPorox, "\n");
     fprintf(gridPoroy, "\n");
 	 fprintf(fp, "\n");}
+    return 1;
+}
+
+inline bool exists_file (const std::string& name){
+    struct stat buffer;
+
+    return (stat (name.c_str(), &buffer) == 0);
+}
+
+int Driver::PrintPressure(){
+
+    if (exists_file("gridCellX.dat") == 0){
+        cout << "Yes " << endl;
+
+
+    } 
+
     return 1;
 }

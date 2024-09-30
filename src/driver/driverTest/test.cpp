@@ -53,9 +53,13 @@ int main(int argc, char **argv){
 
     driver->SolveFlow(maxIter, tolUzawa);
 
-    driver->PrintFlow();
+    // =============== Print functions ==============================================
+
+    driver->PrintFlowParallel();
 
     driver->PrintPorosity();
+
+    driver->PrintPressure();
 
     driver->clean();
 
