@@ -106,11 +106,10 @@ const vertex traction(const vertex& point, PhysProperty * pp){
 const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global, 
                                 const int& local){
-
-    // Current problem setup:
-    // inflow dirichlet on the bottom
-    // outflow dirichlet on the left and right sides
-    // tangential dirichlet on the top side
+   
+    /**!
+	  * Mark boundary condition on each Stokes DOFs
+	  */
 
     bndryType type = missed;
 
@@ -166,7 +165,7 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
     }
 
     // the dof is missed during the marking process
-    return dirichlet;
+    return type;
 } 
 
 bool exit(double range, int M, int i){
@@ -184,11 +183,12 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 
     bndryType type = missed;
 
-    if (global[1] == mi.MPIglobalCellSize[1]-1 && exit(1.05, mi.MPIglobalCellSize[0], global[0]) ){
+    //if (global[1] == mi.MPIglobalCellSize[1]-1 && exit(1.05, mi.MPIglobalCellSize[0], global[0]) ){
+    if (global[1] == mi.MPIglobalCellSize[1]-1){
         type = neumann; 
     } else {
         type = dirichlet;
     }
 
-    return dirichlet;
+    return type;
 }
