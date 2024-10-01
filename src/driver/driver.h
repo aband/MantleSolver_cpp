@@ -141,12 +141,7 @@ class Driver {
        /**!
 		  * Output of the calculated result
 		  */
-       int PrintFlowParallel();
-
-       /**!
-        * Print out cell centerred grid coordinates
-        */
-       int PrintCellCenterGrids();
+       int PrintFlow();
 
        /**!
         * Print out porosity 

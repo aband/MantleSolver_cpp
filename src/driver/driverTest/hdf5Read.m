@@ -30,23 +30,3 @@ title("Darcy Velocity");
 figure
 streamslice(X',Y',(abs(vx')>10e-6).*vx',(abs(vy')>10e-6).*vy',0.5);
 title("Darcy Streamline");
-
-
-fileID = fopen('build/gridPoroX.dat','r');
-pX = fscanf(fileID, '%f', [1,Inf]);
-
-fileID = fopen('build/gridPoroY.dat','r');
-pY = fscanf(fileID, '%f', [1,Inf]);
-
-fileID = fopen('build/porosity.dat','r');
-poro = fscanf(fileID, '%f', [1,Inf]);
-
-fclose(fileID);
-
-pX = reshape(pX, 4, 20);
-pY = reshape(pY, 4, 20);
-poro = reshape(poro, 4, 20);
-
-figure
-contour(pX, pY, poro,20);
-title("Porosity Contour")

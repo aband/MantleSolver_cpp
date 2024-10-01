@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  30 SEP 2024 13:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  1 OCT 2024 14:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -977,32 +977,282 @@ LaTeX Info: Redefining \nameref on input line 102.
 \makeMPintoPDFobject=\count339
 \everyMPtoPDFconversion=\toks60
 ))
+LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line
+ 6.
+ (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
+File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line
+ 6.
 
-! LaTeX Error: Environment titlepage undefined.
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd
+File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line
+ 6.
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.3 \begin{titlepage}
-                     
-? 
-! Emergency stop.
- ...                                              
-                                                  
-l.3 \begin{titlepage}
-                     
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd
+File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line
+ 6.
 
- 
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd
+File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 6.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 6.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 6.
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 6.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
+File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
+)
+(./sections/mfem.tex
+
+Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
+d on input line 6.
+
+LaTeX Font Info:    Trying to load font information for U+rsfso on input line 3
+9.
+(/usr/share/texlive/texmf-dist/tex/latex/rsfso/ursfso.fd
+File: ursfso.fd 2011/02/13 Fontinst v1.933 font definitions for U/rsfso.
+)
+LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
+(Font)              scaled to size 10.0pt on input line 39.
+LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
+(Font)              scaled to size 7.4pt on input line 39.
+LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
+(Font)              scaled to size 6.0pt on input line 39.
+ [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] (./sections/modifi
+ed_BR.tex
+
+LaTeX Warning: Citation `AnalysisFiniteElemStokes_Bernardi_Raugel' on page 4 un
+defined on input line 4.
+
+
+LaTeX Warning: Citation `FinElemMethNavierStokes' on page 4 undefined on input 
+line 5.
+
+) [4]
+
+LaTeX Warning: Citation `InexactUzawa_Elam_Golub' on page 5 undefined on input 
+line 245.
+
+
+LaTeX Warning: Citation `AnalysisInexactUzawa_Bramble_Pasciak_Vassilev' on page
+ 5 undefined on input line 245.
+
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 261.
+
+LaTeX Warning: Citation `AnalysisInexactUzawa_Bramble_Pasciak_Vassilev' on page
+ 5 undefined on input line 269.
+
+
+LaTeX Warning: Citation `SolSparseIndef_Paige_Saunders' on page 5 undefined on 
+input line 274.
+
+[5]
+
+LaTeX Warning: Citation `AcceleratingUzawa_ho_Olson_Walker' on page 6 undefined
+ on input line 304.
+
+[6]) [7] (./sections/transport.tex) (./sections/parallel_weno/analysis.tex
+[8]
+Overfull \hbox (3.60893pt too wide) in paragraph at lines 53--57
+ \OT1/ptm/m/n/10 7.1. ML-WENO re-con-struc-tion and de-riv-a-tives.[][] I use M
+L-WENO re-con-struc-tion scheme
+ []
+
+
+LaTeX Warning: Reference `eq:spolyn' on page 9 undefined on input line 101.
+
+[9]
+
+LaTeX Warning: Reference `eq:derivR' on page 10 undefined on input line 116.
+
+[10]
+
+LaTeX Warning: Reference `eq:LaxFriedrichs' on page 11 undefined on input line 
+167.
+
+
+LaTeX Warning: Reference `fig:fullmesh' on page 11 undefined on input line 204.
+
+
+(./sections/parallel_weno/mesh.tex) (./sections/parallel_weno/stencil.tex)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 222.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 222.
+LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
+(Font)              scaled to size 8.0pt on input line 222.
+LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
+(Font)              scaled to size 5.0pt on input line 222.
+
+(./sections/parallel_weno/quadmesh.tex)
+
+LaTeX Warning: Reference `fig:partitionmesh' on page 11 undefined on input line
+ 250.
+
+[11]) [12] (./sections/newphase.tex
+
+LaTeX Warning: Citation `DownwardOxidantTransport' on page 13 undefined on inpu
+t line 8.
+
+
+LaTeX Warning: Citation `DownwardOxidantTransport' on page 13 undefined on inpu
+t line 25.
+
+<sections/pics/eutectic.png, id=164, 430.54468pt x 322.90851pt>
+File: sections/pics/eutectic.png Graphic file (type png)
+<use sections/pics/eutectic.png>
+Package pdftex.def Info: sections/pics/eutectic.png  used on input line 61.
+(pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
+[13 <./sections/pics/eutectic.png (PNG copy)>] [14]
+
+LaTeX Warning: Citation `TheCompositionEarth' on page 15 undefined on input lin
+e 161.
+
+<sections/pics/TX.png, id=197, 438.23297pt x 317.5267pt>
+File: sections/pics/TX.png Graphic file (type png)
+<use sections/pics/TX.png>
+Package pdftex.def Info: sections/pics/TX.png  used on input line 166.
+(pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
+<sections/pics/HX.png, id=198, 429.10312pt x 310.91156pt>
+File: sections/pics/HX.png Graphic file (type png)
+<use sections/pics/HX.png>
+Package pdftex.def Info: sections/pics/HX.png  used on input line 167.
+(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
+<sections/pics/HC.png, id=199, 421.575pt x 316.18124pt>
+File: sections/pics/HC.png Graphic file (type png)
+<use sections/pics/HC.png>
+Package pdftex.def Info: sections/pics/HC.png  used on input line 184.
+(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
+[15 <./sections/pics/TX.png (PNG copy)> <./sections/pics/HX.png (PNG copy)> <./
+sections/pics/HC.png (PNG copy)>]
+File: sections/pics/HX.png Graphic file (type png)
+<use sections/pics/HX.png>
+Package pdftex.def Info: sections/pics/HX.png  used on input line 250.
+(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
+File: sections/pics/HC.png Graphic file (type png)
+<use sections/pics/HC.png>
+Package pdftex.def Info: sections/pics/HC.png  used on input line 251.
+(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
+ [16]
+<sections/pics/HCP.png, id=224, 429.10312pt x 310.91156pt>
+File: sections/pics/HCP.png Graphic file (type png)
+<use sections/pics/HCP.png>
+Package pdftex.def Info: sections/pics/HCP.png  used on input line 255.
+(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
+) [17 <./sections/pics/HCP.png (PNG copy)>] (./sections/simulation1.tex
+
+LaTeX Warning: Citation `ModellingMeltingRates' on page 18 undefined on input l
+ine 4.
+
+
+LaTeX Warning: Citation `ModellingMeltingRates' on page 18 undefined on input l
+ine 13.
+
+
+LaTeX Warning: Citation `ModellingMeltingRates' on page 18 undefined on input l
+ine 18.
+
+
+Overfull \hbox (14.64066pt too wide) in paragraph at lines 11--20
+ \OT1/ptm/m/n/10 11.1. Math-e-mat-i-cal model.[][] We are go-ing to show our co
+u-pled darcy-stokes semi-degenerate
+ []
+
+
+LaTeX Warning: Citation `ModellingMeltingRates' on page 18 undefined on input l
+ine 63.
+
+
+LaTeX Warning: Citation `ModellingMeltingRates' on page 18 undefined on input l
+ine 64.
+
+[18]
+<sections/pics/TDz_corrected.png, id=240, 225.84375pt x 451.6875pt>
+File: sections/pics/TDz_corrected.png Graphic file (type png)
+<use sections/pics/TDz_corrected.png>
+Package pdftex.def Info: sections/pics/TDz_corrected.png  used on input line 79
+.
+(pdftex.def)             Requested size: 156.49744pt x 284.54395pt.
+<sections/pics/Vfz_corrected.png, id=241, 233.37187pt x 446.41782pt>
+File: sections/pics/Vfz_corrected.png Graphic file (type png)
+<use sections/pics/Vfz_corrected.png>
+Package pdftex.def Info: sections/pics/Vfz_corrected.png  used on input line 80
+.
+(pdftex.def)             Requested size: 156.49721pt x 284.52798pt.
+<sections/pics/stokes.png, id=242, 421.575pt x 316.18124pt>
+File: sections/pics/stokes.png Graphic file (type png)
+<use sections/pics/stokes.png>
+Package pdftex.def Info: sections/pics/stokes.png  used on input line 86.
+(pdftex.def)             Requested size: 156.48848pt x 284.546pt.
+<sections/pics/darcy.png, id=243, 429.10312pt x 310.91156pt>
+File: sections/pics/darcy.png Graphic file (type png)
+<use sections/pics/darcy.png>
+Package pdftex.def Info: sections/pics/darcy.png  used on input line 87.
+(pdftex.def)             Requested size: 156.4871pt x 284.52872pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [19 <./sections/pics/TDz_corrected.png (PNG copy)> <./sections/pics/Vfz_correc
+ted.png (PNG copy)>]) [20 <./sections/pics/Stokes.png (PNG copy)> <./sections/p
+ics/darcy.png (PNG copy)>] (./main.bbl)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/.tex File ignored)
+\tf@thm=\write5
+\openout5 = `main.thm'.
+
+ [21]
+(./main.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: D41D8CD98F00B204E9800998ECF8427E;0
+(rerunfilecheck)             After:  2FF547B316540C44F8140DAC3B531E93;9036.
+ ) 
 Here is how much of TeX's memory you used:
- 25972 strings out of 478287
- 466878 string characters out of 5849289
- 704634 words of memory out of 5000000
- 42126 multiletter control sequences out of 15000+600000
- 469766 words of font info for 29 fonts, out of 8000000 for 9000
+ 26461 strings out of 478287
+ 475765 string characters out of 5849289
+ 734361 words of memory out of 5000000
+ 42376 multiletter control sequences out of 15000+600000
+ 506806 words of font info for 113 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
- 85i,1n,80p,506b,176s stack positions out of 5000i,500n,10000p,200000b,80000s
-!  ==> Fatal error occurred, no output PDF file produced!
+ 85i,13n,80p,422b,809s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
+ublic/rsfs/rsfs10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/rsfs/rs
+fs10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
+utmri8a.pfb>
+Output written on main.pdf (21 pages, 332297 bytes).
+PDF statistics:
+ 357 PDF objects out of 1000 (max. 8388607)
+ 298 compressed objects within 3 object streams
+ 173 named destinations out of 1000 (max. 500000)
+ 58 words of extra memory for PDF output out of 10000 (max. 10000000)
+

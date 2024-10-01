@@ -44,7 +44,38 @@ int Driver::SolveFlow(int maxIter, double tolUzawa){
     return 1;
 }
 
-int Driver::PrintFlowParallel(){
+inline int quiverOutputSerial(double * ux, double * uy, double *vx, double *vy, int M, int N){
+
+    // Output of velocity on vertex without using cgns format
+    // Working in serial case only
+
+    FILE * stokesVx = fopen("stokesVx.dat", "w");
+    FILE * stokesVy = fopen("stokesVy.dat", "w");
+    FILE * darcyVx  = fopen("darcyVx.dat", "w");
+    FILE * darcyVy  = fopen("darcyVy.dat", "w"); 
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+
+        fprintf(stokesVx, "%f ", ux[j*M+i]);
+        fprintf(stokesVy, "%f ", uy[j*M+i]);
+        fprintf(darcyVx, "%f ", vx[j*M+i]);
+        fprintf(darcyVy, "%f ", vy[j*M+i]);
+    }
+    fprintf(stokesVx,"\n");
+    fprintf(stokesVy,"\n");
+    fprintf(darcyVx,"\n");
+    fprintf(darcyVy,"\n");}
+
+    fclose(stokesVx);
+    fclose(stokesVy);
+    fclose(darcyVx);
+    fclose(darcyVy);
+
+    return 1;
+}
+
+int Driver::PrintFlow(){
 
     int nelemloc = mi.MPIlocalCellSize[0]*mi.MPIlocalCellSize[1];
     double * ux = (double *)malloc(sizeof(double)*nelemloc);
@@ -86,10 +117,8 @@ int Driver::PrintFlowParallel(){
                     mi.MPIlocalCellSize[1],darcyfile);
 */
 
-    return 1;
-}
+    quiverOutputSerial(ux,uy,vx,vy,M_,N_);
 
-int Driver::PrintCellCenterGrids(){
 
     return 1;
 }
@@ -121,15 +150,16 @@ int Driver::PrintPorosity(){
 
         myPhase->pPtr->evalPhase(HD, CD, lithoP);
 
-//        cout << HD << "  " << CD << "  " << global[1]  
-//				 << global[1]*myPhase->pp->l0 << "   " 
-//				 << lithoP << "  " << myPhase->pPtr->phi.mlt << endl;
-
         fprintf(fp, "%f ", myPhase->pPtr->phi.mlt);
     }
     fprintf(gridPorox, "\n");
     fprintf(gridPoroy, "\n");
-	 fprintf(fp, "\n");}
+    fprintf(fp, "\n");}
+
+    fclose(gridPorox);
+    fclose(gridPoroy);
+    fclose(fp);
+
     return 1;
 }
 
@@ -142,10 +172,10 @@ inline bool exists_file (const std::string& name){
 int Driver::PrintPressure(){
 
     if (exists_file("gridCellX.dat") == 0){
-        cout << "Yes " << endl;
-
-
+        cout << "No Grid File " << endl;
     } 
+
+    
 
     return 1;
 }

@@ -55,7 +55,7 @@ int main(int argc, char **argv){
 
     // =============== Print functions ==============================================
 
-    driver->PrintFlowParallel();
+    driver->PrintFlow();
 
     driver->PrintPorosity();
 
