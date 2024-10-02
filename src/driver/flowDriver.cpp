@@ -18,8 +18,10 @@ int Driver::PrepareFlow(){
     refArrayStokes_ = new int[br_->getDOF()];
     refArrayDarcy_  = new int[hdiv_->getDOF()];
 
-    CreateRefMap(*br_, refArrayStokes_, mi, &bndryDOFStokes_);
-    CreateRefMap(*hdiv_, refArrayDarcy_, mi, &bndryDOFDarcy_);
+    CreateRefMap(*br_, refArrayStokesEssen_, mi, &bndryDOFStokes_);
+    CreateRefMap(*hdiv_, refArrayDarcyEssen_, mi, &bndryDOFDarcy_);
+
+//    CreateRefMap(*br_, mi, refArrayStokesEssen_, );
 
     Result_ = (ReducedSys *)malloc(sizeof(ReducedSys));
 
@@ -118,7 +120,6 @@ int Driver::PrintFlow(){
 */
 
     quiverOutputSerial(ux,uy,vx,vy,M_,N_);
-
 
     return 1;
 }

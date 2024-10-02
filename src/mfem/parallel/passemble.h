@@ -46,12 +46,39 @@ inline int CreateRefMap(T& funcSp, int * refArray,
     return 0;  
 };
 
+// ! Transfer bndryTypeMarker to current version
+bndryType bndryMarker(const MeshInfo& mi, BRMixed& br, const int& gDof){
+
+    // Need global cell index and local 
+
+    bndryType type = missed;
+
+     
+
+
+
+    return type;
+}
+
+bndryType bndryMarker(const MeshInfo& mi, Hdivmixed& hdiv, const int& gDof){
+
+    bndryType type = missed;
+
+
+
+
+    return type;
+}
+
 // ! A completed version of assigning boundary essential conditions
+// ! Attention!!
+// ! A mistake was made here.
+// ! Essential bndry dof was mistakenly refered to as dirichlet
+// ! Natrual bndry dof was mistakenly refered to as neumann
 template <typename T>
 inline int CreateRefMap(T& funcSp, 
                         const MeshInfo& mi, 
-                        bool (*EssenBndry)(const MeshInfo&, T&, const int&),
-                        bool (*NaturBndry)(const MeshInfo&, T&, const int&),
+                        bndryType (*bndryMarker)(const MeshInfo&, T&, const int&),
                         int * refArray,
                         unordered_map<int, int>& refMapNatur,
                         int * EssenDOFCount,
@@ -68,10 +95,12 @@ inline int CreateRefMap(T& funcSp,
     // Hence it requires two different index system.
     for (int dof=0; dof<funcSp.getDOF(); dof++){
 
-        if (EssenBndry(mi, funcSp, dof)){
+        bndryType bt = bndryMarker(mi, funcSp, dof);
+
+        if (bt == dirichlet){
             refArray[dof] = essenCount;
             essenCount ++;
-        } else if (NaturBndry(mi, funcSp, dof)){
+        } else if (bt == neumann){
             refArray[dof] = interCount;
             interCount ++;
             refMapNatur.insert(std::make_pair(dof, naturCount));

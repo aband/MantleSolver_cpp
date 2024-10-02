@@ -229,6 +229,104 @@ std::vector<int> BRMixed::LocalGlobalMap(const MeshInfo& mi,
     return work;
 }
 
+std::vector<int> BRMixed::GlobalToLocalMapBndry(const MeshInfo& mi,
+                                                const int& gdof) const{
+
+    //! Get Cell index and corresponding local dof index
+    //! Will only return cell index and local dof for those dofs right on boundary
+    //! Attention !!!!
+    //! Interior dofs will return {-1} not cell index and local dof
+
+    std::vector<int> work;
+
+    int totalNodal = mi.MPIglobalVertexSize[0] * mi.MPIglobalVertexSize[1];
+
+    int moddof;
+
+    indice bend;
+
+    if (globaldof > totalNodal*2-1){
+        // It is a bubble function dof
+        moddof = globaldof - totalNodal*2;
+
+        if (moddof > mi.MPIglobalHoriEdgeSize-1){
+
+            moddof -= mi.MPIglobalHoriEdgeSize;
+            bend = Bend(mi.MPIglobalVertexSize[0],moddof); 
+
+            if (bend[0] == 0){
+                // On boundary dof.
+                // left 
+                work.push_back(moddof);
+                work.push_back(8);
+
+            } else if (bend[0] == mi.MPIglobalVertexSize[0]-1){
+                // On boundary dof
+                // right
+                work.push_back(moddof);
+                work.push_back(10);
+
+            } else {
+                // Interior dof
+                work.push_back(-1);
+            }
+
+        } else {
+            bend = Bend(mi.MPIglobalCellSize[0], moddof);
+            if (bend[1] == 0 ){
+                // On boundary dof.
+                // bottom 
+                work.push_back(moddof);
+                work.push_back(9);
+
+            } else if (bend[1] == mi.MPIglobalVertexSize[1]-1){
+                // On boundary dof.
+                // top
+                work.push_back(moddof);
+                work.push_back(11);
+               
+            } else {
+                work.push_back(-1);
+            }
+        }
+
+    } else {
+
+        if (globaldof > totalNodal-1){
+            // It is a y direction dof
+            moddof = globaldof - totalNodal;
+        } else {
+            // It is a x direction dof
+            moddof = gloabldof;
+        }
+        // x and y dofs are treated similarly
+
+        bend = Bend(mi.MPIglobalVertexSize[0], moddof);
+
+        if (bend[0] == 0 || bend[1] == 0 || 
+            bend[0] == mi.MPIglobalVertexSize[0]-1 ||
+            bend[1] == mi.MPIglobalVertexSize[1]-1){
+
+            work.push_back(moddof);
+
+        } else if(bend[1] == 0){
+
+
+        } else if(bend[0] == mi.MPIglobalVertexSize[0]-1){
+
+
+        } else if(bend[0] == mi.MPIglobalVertexSize[1]-1){
+
+
+        } else {
+            work.push_back(-1);
+        }
+
+    }
+
+    return work;
+}
+
 bool BRMixed::onBndry(const MeshInfo& mi,
                       const int& globaldof) const{
 

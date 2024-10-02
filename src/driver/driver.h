@@ -219,8 +219,14 @@ class Driver {
        int bndryDOFStokes_ = 0.0;
        int bndryDOFDarcy_  = 0.0;
 
-       int * refArrayStokes_;
-       int * refArrayDarcy_;
+       /**!
+        * Reference map tell what kind of boundary condition dof belongs to
+        */
+       int * refArrayStokesEssen_;
+       int * refArrayDarcyEssen_;
+
+       int * refArrayStokesNatur_;
+       int * refArrayDarcyNatur_;
 
        /**!
         * Global vector containing results 
