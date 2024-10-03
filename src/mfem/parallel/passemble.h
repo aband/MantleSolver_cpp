@@ -11,6 +11,7 @@
 #include "bndry.h"
 #include "solve.h"
 #include "shape.h"
+#include <stdlib.h>
 
 PetscErrorCode ParallelAssembleTest();
 
@@ -47,16 +48,28 @@ inline int CreateRefMap(T& funcSp, int * refArray,
 };
 
 // ! Transfer bndryTypeMarker to current version
-template <typename T>
-bndryType bndryMarker(const MeshInfo& mi, T& funcSp, const int& gDof){
+inline bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
+                         const std::string& name){
 
     // Need global cell index and local 
 
     bndryType type = missed;
 
-     
+    if (name == "BDM"){
 
+        if (work[0] != -1){
+            // Bndry dof
+            indice globalCell = Bend(mi,work[0]); 
+            type = bndryTypeMarker(mi, globalCell);
+        }
 
+    } else if (name == "BR"){
+
+        if (work[0]!=-1){
+            indice globalCell = Bend(mi,work[0]);
+            type = bndryTypeMarker(mi, globalCell, work[1]);
+        }
+    }
 
     return type;
 }
@@ -69,7 +82,6 @@ bndryType bndryMarker(const MeshInfo& mi, T& funcSp, const int& gDof){
 template <typename T>
 inline int CreateRefMap(T& funcSp, 
                         const MeshInfo& mi, 
-                        bndryType (*bndryMarker)(const MeshInfo&, T&, const int&),
                         int * refArray,
                         unordered_map<int, int>& refMapNatur,
                         int * EssenDOFCount,
@@ -86,7 +98,9 @@ inline int CreateRefMap(T& funcSp,
     // Hence it requires two different index system.
     for (int dof=0; dof<funcSp.getDOF(); dof++){
 
-        bndryType bt = bndryMarker(mi, funcSp, dof);
+        std::vector<int> work = funcSp.GlobalToLocalMapBndry(mi, dof);
+
+        bndryType bt = bMarker(mi, work, funcSp.name);
 
         if (bt == dirichlet){
             refArray[dof] = essenCount;
@@ -97,6 +111,7 @@ inline int CreateRefMap(T& funcSp,
             refMapNatur.insert(std::make_pair(dof, naturCount));
             naturCount ++;
         } else {
+            // bt == missed
             // Currently only mixing essential and natural bondary conditions
             // Hence, essential and natural boundary should consists of all the boundarys
             refArray[dof] = interCount;
@@ -269,8 +284,12 @@ inline int AssignLocRedSys(ReducedSys * redsys,
         const int idxm = ref[elemDofs.at(row)];
         const double valB = loc->B.at(row);
 
-        if (funcSp.onBndry(mi, elemDofs.at(row))){
-            // This dof is on the boundary
+        //std::cout << row <<  "   " << funcSp.onBndry(mi, elemDofs.at(row)) << "  " << bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(row)),funcSp.name()) << endl;
+
+//        if (funcSp.onBndry(mi, elemDofs.at(row))){
+        if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(row)),funcSp.name()) == dirichlet){
+
+            // This dof is a dirichlet dof on the boundary
             // Should be assign to Bg
             PetscCall(MatSetValues(redsys->Bg, 1, &idxm, 1, &idxn, &valB, 
                                    ADD_VALUES));
@@ -296,7 +315,9 @@ inline int AssignLocRedSys(ReducedSys * redsys,
                 const int cidxn  = ref[elemDofs.at(col)];
                 const double val = loc->A.at(row+col*elemDofs.size()); 
 
-                if (funcSp.onBndry(mi,elemDofs.at(col))){
+//                if (funcSp.onBndry(mi,elemDofs.at(col))){
+                  if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(col)),funcSp.name()) == dirichlet){
+
                     // It is a non bndry dof - bndry dof interaction
                     // Val assigned to M
                     PetscCall(MatSetValues(redsys->Kg, 1, &idxm, 1, &cidxn, 

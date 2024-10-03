@@ -214,6 +214,68 @@ std::vector<int> Hdivmixed::LocalGlobalMap(const MeshInfo& mi,
     return work;
 }
 
+std::vector<int> Hdivmixed::GlobalToLocalMapBndry(const MeshInfo& mi,
+                                                  const int& globaldof)const{
+
+    std::vector<int> work;
+
+    int allEdge = mi.MPIglobalHoriEdgeSize + mi.MPIglobalVertEdgeSize;
+
+    int moddof = 0;
+
+    int shift  = 0;
+
+    if (globaldof > allEdge-1) {
+        // This is the second dof on edge
+        moddof = globaldof - allEdge;
+        shift  = 4;
+    } else {
+        moddof = globaldof;
+        shift  = 0;
+    }
+
+    // Horizontal edges are counted first
+    if (moddof > mi.MPIglobalHoriEdgeSize - 1){
+        // It is a dof on vetical edge
+        moddof -= mi.MPIglobalHoriEdgeSize;
+        indice bend = Bend(mi.MPIglobalVertexSize[0], moddof);
+
+        if (bend[0] == 0){
+
+            work.push_back(FlatIndic(mi, bend[0], bend[1]));
+            work.push_back(0+shift);
+
+        } else if (bend[0] == mi.MPIglobalVertexSize[0] -1){
+            work.push_back(FlatIndic(mi, bend[0]-1, bend[1]));
+            work.push_back(2+shift);
+
+        } else {
+            // Interior
+            work.push_back(-1);
+        }
+
+    } else {
+        // It is a dof on horizontal edge
+        indice bend = Bend(mi.MPIglobalCellSize[0], moddof);
+        if (bend[1] == 0){
+
+            work.push_back(FlatIndic(mi, bend[0],bend[1]));
+            work.push_back(1+shift);
+
+        } else if (bend[1] == mi.MPIglobalVertexSize[1]-1){
+
+            work.push_back(FlatIndic(mi, bend[0], bend[1]-1));
+            work.push_back(3+shift);
+
+        } else {
+            // Interior
+            work.push_back(-1);
+        }
+    }
+
+    return work;
+}
+
 bool Hdivmixed::onBndry(const MeshInfo& mi,
                         const int& globaldof) const{
 

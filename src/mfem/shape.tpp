@@ -25,3 +25,10 @@ std::vector<int> shape<T>::LocalToGlobal(const MeshInfo& mi,
 
     return ptr_->LocalGlobalMap(mi, global);
 }
+
+template <typename T>
+std::vector<int> shape<T>::GlobalToLocalMapBndry(const MeshInfo& mi,
+                                                 const int& gdof) const{
+
+    return ptr_->GlobalToLocalMapBndry(mi, gdof);
+}

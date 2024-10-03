@@ -15,13 +15,14 @@ int Driver::PrepareFlow(){
     reducedDarcy_ = (ReducedSys *)malloc(sizeof(ReducedSys));
     reducedStokes_ = (ReducedSys *)malloc(sizeof(ReducedSys));
 
-    refArrayStokes_ = new int[br_->getDOF()];
-    refArrayDarcy_  = new int[hdiv_->getDOF()];
+    refArrayStokesEssen_ = new int[br_->getDOF()];
+    refArrayDarcyEssen_  = new int[hdiv_->getDOF()];
 
-    CreateRefMap(*br_, refArrayStokesEssen_, mi, &bndryDOFStokes_);
-    CreateRefMap(*hdiv_, refArrayDarcyEssen_, mi, &bndryDOFDarcy_);
+//    CreateRefMap(*br_, refArrayStokesEssen_, mi, &bndryDOFStokes_);
+//    CreateRefMap(*hdiv_, refArrayDarcyEssen_, mi, &bndryDOFDarcy_);
 
-//    CreateRefMap(*br_, mi, refArrayStokesEssen_, );
+    CreateRefMap(*br_  , mi, refArrayStokesEssen_, refArrayStokesNatur_, &bndryDOFStokes_, &bndryDOFStokesNatur_);
+    CreateRefMap(*hdiv_, mi, refArrayDarcyEssen_ , refArrayDarcyNatur_ , &bndryDOFDarcy_ , &bndryDOFDarcyNatur_ );
 
     Result_ = (ReducedSys *)malloc(sizeof(ReducedSys));
 
@@ -34,7 +35,7 @@ int Driver::SolveFlow(int maxIter, double tolUzawa){
                                                  bndryDarcyEssen_,  reducedDarcy_, 
                            &K_, *br_, *hdiv_ , mluseAdv_,
 
-                           refArrayStokes_, refArrayDarcy_, bndryDOFStokes_, bndryDOFDarcy_);
+                           refArrayStokesEssen_, refArrayDarcyEssen_, bndryDOFStokes_, bndryDOFDarcy_);
 
     CreateLinearSys(reducedStokes_, M_*N_);
     CreateLinearSys(reducedDarcy_, M_*N_);
@@ -101,13 +102,13 @@ int Driver::PrintFlow(){
     SolScatAll(&darcyv, &reducedDarcy_->g, 
                &destDarcy_sol, &destDarcy_g);  
 
-    CGNSPrepareParallel(&destStokes_sol, &destStokes_g, refArrayStokes_, mi,
+    CGNSPrepareParallel(&destStokes_sol, &destStokes_g, refArrayStokesEssen_, mi,
                         ux, uy, *br_, *basis_);
 
-    CGNSPrepareParallel(&destDarcy_sol, &destDarcy_g, refArrayDarcy_, mi,
+    CGNSPrepareParallel(&destDarcy_sol, &destDarcy_g, refArrayDarcyEssen_, mi,
                         vx, vy, *hdiv_, *basis_);
 
-/*
+#ifdef CGNS_OUT
     char stokesfile[] = "stokes.cgns";   
     CgnsArrayOutput(dmMesh,&globalmesh,ux,uy,mi.MPIlocalCellStart[0],
                     mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
@@ -117,9 +118,11 @@ int Driver::PrintFlow(){
     CgnsArrayOutput(dmMesh,&globalmesh,vx,vy,mi.MPIlocalCellStart[0],
                     mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
                     mi.MPIlocalCellSize[1],darcyfile);
-*/
+#endif
 
+#ifndef CGNS_OUT
     quiverOutputSerial(ux,uy,vx,vy,M_,N_);
+#endif
 
     return 1;
 }
@@ -175,8 +178,6 @@ int Driver::PrintPressure(){
     if (exists_file("gridCellX.dat") == 0){
         cout << "No Grid File " << endl;
     } 
-
-    
 
     return 1;
 }

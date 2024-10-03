@@ -9,7 +9,7 @@
 // mentioned in Direct Serendipity space.
 class Hdivmixed{
     public: 
-        Hdivmixed() {};
+        Hdivmixed() {name = "BDM";};
         ~Hdivmixed() {};
 
         std::array<int, 8>  LocalToGlobal(const MeshInfo& mi,
@@ -60,10 +60,15 @@ class Hdivmixed{
         std::vector<int> LocalGlobalMap(const MeshInfo& mi,
                                         const indice& global) const;
 
+        std::vector<int> GlobalToLocalMapBndry(const MeshInfo& mi,
+                                               const int& globaldof) const;
+
         bool onBndry(const MeshInfo& mi,
                      const int& globaldof) const;
 
         double Pressure() const{return 1.0;};
+
+        std::string name;
 
     private:
        

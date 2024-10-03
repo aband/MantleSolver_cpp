@@ -39,7 +39,7 @@ int main(int argc, char ** argv){
 
     // Start testing mesh function
     // Initializing problem size with 3X3
-    int M = 1, N = 1;
+    int M = 2, N = 2;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
@@ -181,6 +181,30 @@ int main(int argc, char ** argv){
     fclose(fy);
     fclose(vx);
     fclose(vy);
+
+    // ========================================================================
+
+    std::cout << "boundary dof for BDM element  " << std::endl;
+    for (int hdivdof =0; hdivdof<hdiv->getDOF(); hdivdof++){
+        std::vector<int> dof = hdiv->GlobalToLocalMapBndry(mi, hdivdof);
+        std::cout <<"Current global dof: " << hdivdof << "  ";
+
+        for (const auto& it : dof){
+            std::cout << it << "  ";
+        }
+        std::cout << std::endl;
+    }
+
+    std::cout << std::endl << "boundary dof for BR element   " << std::endl;
+    for (int brdof =0; brdof<br->getDOF(); brdof++){
+        std::vector<int> dof = br->GlobalToLocalMapBndry(mi, brdof);
+        std::cout <<"Current global dof: " << brdof << "  ";
+
+        for (const auto& it : dof){
+            std::cout << it << "  ";
+        }
+        std::cout << std::endl;
+    }
 
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);

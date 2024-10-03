@@ -25,12 +25,17 @@ class shape{
 
        int getDOF() const {return ptr_->getDOF();}; 
 
+       std::vector<int> GlobalToLocalMapBndry(const MeshInfo& mi,
+                                              const int& gdof)const;
+
        bool onBndry(const MeshInfo& mi, 
             const int& globaldof) const {return ptr_->onBndry(mi, globaldof);};
 
        double Pressure() const {return ptr_.Pressure();};
 
        vertexSet corners() const {return basisPtr_->corners();};
+
+       std::string name() const{return ptr_->name;}
 
     private:
        // Pointer to the shape function in use    

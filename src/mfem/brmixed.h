@@ -9,7 +9,7 @@ class BRMixed {
 
     public:
 
-        BRMixed() {};
+        BRMixed() {name = "BR";};
         ~BRMixed() {};
 
         //! Mapping from local degree of freedom to
@@ -74,6 +74,8 @@ class BRMixed {
                      const int& globaldof)const;
 
         double Pressure() const {return 1.0;};
+
+        std::string name;
 
     private:
 
