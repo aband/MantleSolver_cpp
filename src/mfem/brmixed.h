@@ -67,7 +67,7 @@ class BRMixed {
                                         const indice& global) const;
 
         // ! Return global cell index, corresponding local index in this order
-        std::vector<int> GloablToLocalMapBndry(const MeshInfo& mi,
+        std::vector<int> GlobalToLocalMapBndry(const MeshInfo& mi,
                                                const int& gdof) const;
 
         bool onBndry(const MeshInfo& mi,

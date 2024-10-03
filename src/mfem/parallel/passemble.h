@@ -47,23 +47,14 @@ inline int CreateRefMap(T& funcSp, int * refArray,
 };
 
 // ! Transfer bndryTypeMarker to current version
-bndryType bndryMarker(const MeshInfo& mi, BRMixed& br, const int& gDof){
+template <typename T>
+bndryType bndryMarker(const MeshInfo& mi, T& funcSp, const int& gDof){
 
     // Need global cell index and local 
 
     bndryType type = missed;
 
      
-
-
-
-    return type;
-}
-
-bndryType bndryMarker(const MeshInfo& mi, Hdivmixed& hdiv, const int& gDof){
-
-    bndryType type = missed;
-
 
 
 

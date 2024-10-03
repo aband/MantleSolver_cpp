@@ -230,7 +230,7 @@ std::vector<int> BRMixed::LocalGlobalMap(const MeshInfo& mi,
 }
 
 std::vector<int> BRMixed::GlobalToLocalMapBndry(const MeshInfo& mi,
-                                                const int& gdof) const{
+                                                const int& globaldof) const{
 
     //! Get Cell index and corresponding local dof index
     //! Will only return cell index and local dof for those dofs right on boundary
@@ -257,13 +257,13 @@ std::vector<int> BRMixed::GlobalToLocalMapBndry(const MeshInfo& mi,
             if (bend[0] == 0){
                 // On boundary dof.
                 // left 
-                work.push_back(moddof);
+                work.push_back(FlatIndic(mi,bend));
                 work.push_back(8);
 
             } else if (bend[0] == mi.MPIglobalVertexSize[0]-1){
                 // On boundary dof
                 // right
-                work.push_back(moddof);
+                work.push_back(FlatIndic(mi,bend[0]-1,bend[1]));
                 work.push_back(10);
 
             } else {
@@ -276,13 +276,13 @@ std::vector<int> BRMixed::GlobalToLocalMapBndry(const MeshInfo& mi,
             if (bend[1] == 0 ){
                 // On boundary dof.
                 // bottom 
-                work.push_back(moddof);
+                work.push_back(FlatIndic(mi,bend));
                 work.push_back(9);
 
             } else if (bend[1] == mi.MPIglobalVertexSize[1]-1){
                 // On boundary dof.
                 // top
-                work.push_back(moddof);
+                work.push_back(FlatIndic(mi,bend[0],bend[1]-1));
                 work.push_back(11);
                
             } else {
@@ -292,31 +292,43 @@ std::vector<int> BRMixed::GlobalToLocalMapBndry(const MeshInfo& mi,
 
     } else {
 
+        int shift = 0;
         if (globaldof > totalNodal-1){
             // It is a y direction dof
             moddof = globaldof - totalNodal;
+				shift  = 4;
         } else {
             // It is a x direction dof
-            moddof = gloabldof;
+            moddof = globaldof;
+            shift  = 0;
         }
         // x and y dofs are treated similarly
 
         bend = Bend(mi.MPIglobalVertexSize[0], moddof);
 
-        if (bend[0] == 0 || bend[1] == 0 || 
-            bend[0] == mi.MPIglobalVertexSize[0]-1 ||
-            bend[1] == mi.MPIglobalVertexSize[1]-1){
+        if (bend[0] == 0 && 
+            bend[1] != 0){
+            // top left
+            work.push_back(FlatIndic(mi,bend[0],bend[1]-1));
+            work.push_back(3+shift); 
 
-            work.push_back(moddof);
+        } else if(bend[1] == 0 &&
+                  bend[0] != mi.MPIglobalVertexSize[1]-1){
+            // bottom left
+            work.push_back(FlatIndic(mi,bend[0],bend[1]));
+            work.push_back(0+shift); 
 
-        } else if(bend[1] == 0){
+        } else if(bend[0] == mi.MPIglobalVertexSize[0]-1 && 
+                  bend[1] != mi.MPIglobalVertexSize[1]-1){
+            // bottom right
+            work.push_back(FlatIndic(mi,bend[0]-1,bend[1]));
+            work.push_back(1+shift); 
 
-
-        } else if(bend[0] == mi.MPIglobalVertexSize[0]-1){
-
-
-        } else if(bend[0] == mi.MPIglobalVertexSize[1]-1){
-
+        } else if(bend[1] == mi.MPIglobalVertexSize[1]-1 &&
+                  bend[0] != 0){
+            // top right
+            work.push_back(FlatIndic(mi,bend[0]-1,bend[1]-1));
+            work.push_back(2+shift);
 
         } else {
             work.push_back(-1);
