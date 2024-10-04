@@ -51,11 +51,17 @@ Enthalpy is transported in a similar manner.
 
 \subsubsection{Boundary conditions}
 In order to solve the proposed darcy-stokes coupled equation, 
-we need essential boundary condtions defined around the computational domain.
+we need appropriate boundary condtions defined around the computational domain.
+A detailed description is presented as following:
 \begin{itemize}
 		  \item Prescribe essential boundary condition of constant upwelling ascending
 					 velocity all around the computational domain. $\bold{v}_s = \bold{W}$
-	 \item Prescribe essential boundary condition of zero velocity of melts. 
+					 at no melting region.
+					 \item Prescribe natural boundary conditon at the place where melting 
+					 happens. 
+	 \item Prescribe essential (dirichlet) boundary condition of zero normal velocity on
+	 bottom , left and right sides.
+   \item Prescribe natural boundary condition on top. A free outlet 
 \end{itemize}
 
 \subsubsection{Initial conditions}
@@ -85,6 +91,11 @@ we can generate corresponding initial velocity distribution:
 \begin{center}
 \includegraphics[width=5.5cm,height=10cm]{sections/pics/stokes}
 \includegraphics[width=5.5cm,height=10cm]{sections/pics/darcy}
+\end{center}
+!!!Corrected version
+\begin{center}
+\includegraphics[width=5.5cm,height=10cm]{sections/pics/stokesv}
+\includegraphics[width=5.5cm,height=10cm]{sections/pics/darcyv}
 \end{center}
 
 \subsubsection{Melting depth}

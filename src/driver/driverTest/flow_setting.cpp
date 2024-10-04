@@ -172,12 +172,21 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 
     bndryType type = missed;
 
-    if (global[1] == mi.MPIglobalCellSize[1] - 1){
+    if (global[1] == mi.MPIglobalCellSize[1] - 1 && global[0] != 0){
         if (local == 11 || local == 7){
             type = neumann;
         } else {
             type = dirichlet;
         }
+
+    }else if (global[1] == mi.MPIglobalCellSize[1] - 1 && global[0] == 0){
+
+        if (local == 11){
+            type = neumann;
+        } else {
+            type = dirichlet;
+        }
+
     } else {
         type = dirichlet;
     }
