@@ -60,7 +60,8 @@ inline bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
         if (work[0] != -1){
             // Bndry dof
             indice globalCell = Bend(mi,work[0]); 
-            type = bndryTypeMarker(mi, globalCell);
+            int edge = work[1]%4;
+            type = bndryTypeMarkerDarcy(mi, globalCell,edge);
         }
 
     } else if (name == "BR"){

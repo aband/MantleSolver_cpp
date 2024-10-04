@@ -172,7 +172,8 @@ int MarkBndryDOFDarcy(bndryVal& bndryDiri,
             std::array<double, 2> dVals = AssignBndryValsDarcy(global, edge, 
                  basis_,hdiv_, pp, edgeCorners, len, gwe, gpe);
  
-            switch (bndryTypeMarker(mi, global)){
+//            switch (bndryTypeMarker(mi, global)){
+            switch (bndryTypeMarkerDarcy(mi,global,edge)){
                 case dirichlet:
                     // Dirichlet boundary condition
                     bndryDiri.insert(std::make_pair<int, bndryInfo>

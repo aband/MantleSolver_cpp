@@ -175,16 +175,14 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
     if (global[1] == mi.MPIglobalCellSize[1] - 1){
         if (local == 11 || local == 7){
             type = neumann;
-            //type = dirichlet; 
         } else {
-            ////type = dirichlet;
-            type = neumann;
+            type = dirichlet;
         }
     } else {
         type = dirichlet;
     }
 
-    return dirichlet;
+    return type;
 }
 
 bool exit(double range, int M, int i){
@@ -209,5 +207,27 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         type = dirichlet;
     }
 
-    return dirichlet;
+    return type;
 }
+
+const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
+                                     const indice& global,
+                                     const int& edge){
+
+    bndryType type = missed;
+
+    //if (global[1] == mi.MPIglobalCellSize[1]-1 && exit(1.05, mi.MPIglobalCellSize[0], global[0]) ){
+    if (global[1] == mi.MPIglobalCellSize[1]-1){
+        if (edge == 3){
+            type = neumann; 
+        }else {
+            type = dirichlet;
+        }
+    } else {
+        type = dirichlet;
+    }
+
+    return type;
+}
+
+

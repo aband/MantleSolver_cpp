@@ -97,4 +97,12 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global);
 
+const bndryType bndryTypeMarkerStokes(const MeshInfo& mi,
+                                      const indice& global,
+                                      const int& local);
+
+const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
+                                      const indice& global,
+                                      const int& edge);
+
 #endif
