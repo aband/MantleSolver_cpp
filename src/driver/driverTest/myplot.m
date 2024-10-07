@@ -27,6 +27,14 @@ stokesp = fscanf(fileID, '%f', [1,Inf]);
 fileID = fopen('build/darcyp.dat','r');
 darcyp = fscanf(fileID, '%f', [1,Inf]);
 
+%Read pressure files(original variable)
+fileID = fopen('build/stokespori.dat','r');
+stokespori = fscanf(fileID, '%f', [1,Inf]);
+fileID = fopen('build/darcypori.dat','r');
+darcypori = fscanf(fileID, '%f', [1,Inf]);
+fileID = fopen('build/referencep.dat','r');
+referencep = fscanf(fileID, '%f', [1,Inf]);
+
 fclose(fileID);
 
 pX = reshape(pX, M, N);
@@ -40,6 +48,11 @@ darcyvy = reshape(darcyvy, M, N);
 
 darcyp = reshape(darcyp, M, N);
 stokesp = reshape(stokesp, M, N);
+
+darcypori = reshape(darcypori, M, N);
+stokespori = reshape(stokespori, M, N);
+
+referencep = reshape(referencep, M, N);
 
 figure
 contour(pX, pY, poro,20);
@@ -60,3 +73,15 @@ title('Unscaled darcy pressure');
 figure
 surf(pX, pY, stokesp);
 title('Stokes pressure');
+
+figure 
+surf(pX, pY, darcypori);
+title('Unscaled darcy pressure original');
+
+figure
+surf(pX, pY, stokespori);
+title('Stokes pressure original');
+
+figure
+surf(pX, pY, referencep);
+title('Lithostatic pressure');

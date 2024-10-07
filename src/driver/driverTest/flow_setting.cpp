@@ -5,8 +5,8 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->theta = 0.0;
     pp->mu_s  = 1e19;
     pp->mu_f  = 1.0;
-    pp->rho_f = 2800;
-    pp->rho_s = 3300;
+    pp->rho_f = 3000;
+    pp->rho_s = 3000;
     pp->gx    = 0.0;
     pp->gy    = -10.0;
     pp->invk0 = 1.0/(1e-8);
@@ -67,7 +67,11 @@ const vertex stress(const vertex& point, PhysProperty * pp){
 vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     // Stokes
-    return {0.0,1.0};
+    double V0 = 3.2/100/(365*24*60*60); //3.2 (cm/y)
+
+    V0 = V0  /(1e-8 * pp->rho_s * pp->gy) * pp->mu_f * -1;
+
+    return {0.0,V0};
 }
 
 vertex bndryu(const vertex& point, PhysProperty * pp){
@@ -191,7 +195,7 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         type = dirichlet;
     }
 
-    return dirichlet;
+    return type;
 }
 
 bool exit(double range, int M, int i){
@@ -236,7 +240,5 @@ const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
         type = dirichlet;
     }
 
-    return dirichlet;
+    return type;
 }
-
-

@@ -182,7 +182,7 @@ int Driver::PrintPressureConstant(){
         // These two grid files are output along with printflow 
         cout << "No Grid File " << endl;
     } 
-	 
+
     FILE * darcyp  = fopen("darcyp.dat","w");
     FILE * stokesp = fopen("stokesp.dat","w");
 
@@ -213,6 +213,69 @@ int Driver::PrintPressureConstant(){
 
     fclose(stokesp);
     fclose(darcyp);
+
+    return 1;
+}
+
+int Driver::PrintPressureConstantOriginal(){
+
+    // Print original pressure from dimensionless variables
+    // p = rho_r g l_0 q + rho_f g z
+   
+    // Print piece wise constant pressure
+    if (exists_file("gridCellX.dat") == 0 || exists_file("gridCellY.dat") == 0){
+        // Checking for cell centered grid file
+        // These two grid files are output along with printflow 
+        cout << "No Grid File " << endl;
+    } 
+
+    FILE * darcypori  = fopen("darcypori.dat","w");
+    FILE * stokespori = fopen("stokespori.dat","w");
+
+    FILE * referencep = fopen("referencep.dat","w");
+
+    Vec stokesP;
+    Vec darcyP;
+
+    PetscCall(VecNestGetSubVec(Result_->y, 0, &stokesP));
+    PetscCall(VecNestGetSubVec(Result_->y, 1, &darcyP));
+
+    int istart = mi.MPIlocalCellStart[0];
+    int jstart = mi.MPIlocalCellStart[1];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
+        indice global {i,j};
+        int nelem = FlatIndic(mi, global);
+        // Extract pressure from Vec
+        double dp, sp;
+
+        PetscCall(VecGetValues(stokesP,1, &nelem, &sp));
+        PetscCall(VecGetValues(darcyP,1, &nelem, &dp));
+
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi,{i,j});
+
+        vertex globalver = GaussMapPointsFace(local, basis_->corners());
+
+        // Retrieve original variables
+        dp = myPhase->pp->rho_s * myPhase->pp->gy * myPhase->pp->l0*(-1*dp+globalver[1]);
+        sp = myPhase->pp->rho_s * myPhase->pp->gy * myPhase->pp->l0*(-1*sp+globalver[1]);
+
+        double rp = myPhase->pp->rho_s * myPhase->pp->gy * myPhase->pp->l0*(globalver[1]);
+
+        fprintf(darcypori, "%f ", dp);
+        fprintf(stokespori, "%f ", sp);
+        fprintf(referencep, "%f ", rp);
+
+    }fprintf(darcypori, "\n");
+     fprintf(stokespori, "\n");
+     fprintf(referencep, "\n");}
+
+    fclose(stokespori);
+    fclose(darcypori);
+    fclose(referencep);
 
     return 1;
 }

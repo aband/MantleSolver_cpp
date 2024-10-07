@@ -61,6 +61,8 @@ int main(int argc, char **argv){
 
     driver->PrintPressureConstant();
 
+    driver->PrintPressureConstantOriginal();
+
     driver->clean();
 
     PetscFinalize();
