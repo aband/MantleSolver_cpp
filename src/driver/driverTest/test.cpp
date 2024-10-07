@@ -59,7 +59,7 @@ int main(int argc, char **argv){
 
     driver->PrintPorosity();
 
-    driver->PrintPressure();
+    driver->PrintPressureConstant();
 
     driver->clean();
 

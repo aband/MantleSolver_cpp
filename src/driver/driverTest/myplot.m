@@ -1,5 +1,6 @@
 function [] = myplot(M, N)
 
+% Read grid files
 fileID = fopen('build/gridCellX.dat','r');
 pX = fscanf(fileID, '%f', [1,Inf]);
 
@@ -9,6 +10,7 @@ pY = fscanf(fileID, '%f', [1,Inf]);
 fileID = fopen('build/porosity.dat','r');
 poro = fscanf(fileID, '%f', [1,Inf]);
 
+% Read velocity files(unscaled yet)
 fileID = fopen('build/stokesVx.dat','r');
 stokesvx = fscanf(fileID, '%f', [1,Inf]);
 fileID = fopen('build/stokesVy.dat','r');
@@ -18,6 +20,12 @@ fileID = fopen('build/darcyVx.dat','r');
 darcyvx = fscanf(fileID, '%f', [1,Inf]);
 fileID = fopen('build/darcyVy.dat','r');
 darcyvy = fscanf(fileID, '%f', [1,Inf]);
+
+%Read pressure files(unscaled yet)
+fileID = fopen('build/stokesp.dat','r');
+stokesp = fscanf(fileID, '%f', [1,Inf]);
+fileID = fopen('build/darcyp.dat','r');
+darcyp = fscanf(fileID, '%f', [1,Inf]);
 
 fclose(fileID);
 
@@ -30,6 +38,9 @@ stokesvy = reshape(stokesvy, M, N);
 darcyvx = reshape(darcyvx, M, N);
 darcyvy = reshape(darcyvy, M, N);
 
+darcyp = reshape(darcyp, M, N);
+stokesp = reshape(stokesp, M, N);
+
 figure
 contour(pX, pY, poro,20);
 title("Porosity Contour")
@@ -41,3 +52,11 @@ title('Stokes Velocity');
 figure
 quiver(pX, pY, darcyvx, darcyvy);
 title('Darcy Velocity');
+
+figure 
+surf(pX, pY, darcyp);
+title('Unscaled darcy pressure');
+
+figure
+surf(pX, pY, stokesp);
+title('Stokes pressure');

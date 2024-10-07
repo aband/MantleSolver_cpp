@@ -191,7 +191,7 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         type = dirichlet;
     }
 
-    return type;
+    return dirichlet;
 }
 
 bool exit(double range, int M, int i){
@@ -236,7 +236,7 @@ const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
         type = dirichlet;
     }
 
-    return type;
+    return dirichlet;
 }
 
 

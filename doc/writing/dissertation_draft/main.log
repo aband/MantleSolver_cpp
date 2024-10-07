@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  4 OCT 2024 16:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  6 OCT 2024 16:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1038,7 +1038,7 @@ put line 261.
 [5] [6]) [7] (./sections/transport.tex) (./sections/parallel_weno/analysis.tex
 [8]
 Overfull \hbox (3.60893pt too wide) in paragraph at lines 53--57
- \OT1/ptm/m/n/10 7.1. ML-WENO re-con-struc-tion and de-riv-a-tives.[][] I use M
+ \OT1/ptm/m/n/10 8.1. ML-WENO re-con-struc-tion and de-riv-a-tives.[][] I use M
 L-WENO re-con-struc-tion scheme
  []
 
@@ -1054,23 +1054,23 @@ LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
 (Font)              scaled to size 5.0pt on input line 222.
  (./sections/parallel_weno/quadmesh.tex)
 [11]) [12] (./sections/newphase.tex
-<sections/pics/eutectic.png, id=362, 430.54468pt x 322.90851pt>
+<sections/pics/eutectic.png, id=377, 430.54468pt x 322.90851pt>
 File: sections/pics/eutectic.png Graphic file (type png)
 <use sections/pics/eutectic.png>
 Package pdftex.def Info: sections/pics/eutectic.png  used on input line 61.
 (pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
  [13 <./sections/pics/eutectic.png (PNG copy)>] [14]
-<sections/pics/TX.png, id=388, 438.23297pt x 317.5267pt>
+<sections/pics/TX.png, id=411, 438.23297pt x 317.5267pt>
 File: sections/pics/TX.png Graphic file (type png)
 <use sections/pics/TX.png>
 Package pdftex.def Info: sections/pics/TX.png  used on input line 166.
 (pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
-<sections/pics/HX.png, id=389, 429.10312pt x 310.91156pt>
+<sections/pics/HX.png, id=412, 429.10312pt x 310.91156pt>
 File: sections/pics/HX.png Graphic file (type png)
 <use sections/pics/HX.png>
 Package pdftex.def Info: sections/pics/HX.png  used on input line 167.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-<sections/pics/HC.png, id=390, 421.575pt x 316.18124pt>
+<sections/pics/HC.png, id=413, 421.575pt x 316.18124pt>
 File: sections/pics/HC.png Graphic file (type png)
 <use sections/pics/HC.png>
 Package pdftex.def Info: sections/pics/HC.png  used on input line 184.
@@ -1086,36 +1086,36 @@ File: sections/pics/HC.png Graphic file (type png)
 Package pdftex.def Info: sections/pics/HC.png  used on input line 251.
 (pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
  [16]
-<sections/pics/HCP.png, id=411, 429.10312pt x 310.91156pt>
+<sections/pics/HCP.png, id=440, 429.10312pt x 310.91156pt>
 File: sections/pics/HCP.png Graphic file (type png)
 <use sections/pics/HCP.png>
 Package pdftex.def Info: sections/pics/HCP.png  used on input line 255.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
 ) [17 <./sections/pics/HCP.png (PNG copy)>] (./sections/simulation1.tex
 Overfull \hbox (14.64066pt too wide) in paragraph at lines 11--20
- \OT1/ptm/m/n/10 11.1. Math-e-mat-i-cal model.[][] We are go-ing to show our co
+ \OT1/ptm/m/n/10 12.1. Math-e-mat-i-cal model.[][] We are go-ing to show our co
 u-pled darcy-stokes semi-degenerate
  []
 
 [18]
-<sections/pics/TDz_corrected.png, id=429, 225.84375pt x 451.6875pt>
+<sections/pics/TDz_corrected.png, id=460, 225.84375pt x 451.6875pt>
 File: sections/pics/TDz_corrected.png Graphic file (type png)
 <use sections/pics/TDz_corrected.png>
 Package pdftex.def Info: sections/pics/TDz_corrected.png  used on input line 85
 .
 (pdftex.def)             Requested size: 156.49744pt x 284.54395pt.
-<sections/pics/Vfz_corrected.png, id=430, 233.37187pt x 446.41782pt>
+<sections/pics/Vfz_corrected.png, id=461, 233.37187pt x 446.41782pt>
 File: sections/pics/Vfz_corrected.png Graphic file (type png)
 <use sections/pics/Vfz_corrected.png>
 Package pdftex.def Info: sections/pics/Vfz_corrected.png  used on input line 86
 .
 (pdftex.def)             Requested size: 156.49721pt x 284.52798pt.
-<sections/pics/stokes.png, id=431, 421.575pt x 316.18124pt>
+<sections/pics/stokes.png, id=462, 421.575pt x 316.18124pt>
 File: sections/pics/stokes.png Graphic file (type png)
 <use sections/pics/stokes.png>
 Package pdftex.def Info: sections/pics/stokes.png  used on input line 92.
 (pdftex.def)             Requested size: 156.48848pt x 284.546pt.
-<sections/pics/darcy.png, id=432, 429.10312pt x 310.91156pt>
+<sections/pics/darcy.png, id=463, 429.10312pt x 310.91156pt>
 File: sections/pics/darcy.png Graphic file (type png)
 <use sections/pics/darcy.png>
 Package pdftex.def Info: sections/pics/darcy.png  used on input line 93.
@@ -1125,12 +1125,12 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [19 <./sections/pics/TDz_corrected.png (PNG copy)> <./sections/pics/Vfz_correc
 ted.png (PNG copy)>]
-<sections/pics/stokesv.png, id=438, 685.05937pt x 816.04875pt>
+<sections/pics/stokesv.png, id=469, 685.05937pt x 816.04875pt>
 File: sections/pics/stokesv.png Graphic file (type png)
 <use sections/pics/stokesv.png>
 Package pdftex.def Info: sections/pics/stokesv.png  used on input line 97.
 (pdftex.def)             Requested size: 156.48366pt x 284.52557pt.
-<sections/pics/darcyv.png, id=439, 764.10469pt x 846.16125pt>
+<sections/pics/darcyv.png, id=470, 764.10469pt x 846.16125pt>
 File: sections/pics/darcyv.png Graphic file (type png)
 <use sections/pics/darcyv.png>
 Package pdftex.def Info: sections/pics/darcyv.png  used on input line 98.
@@ -1147,33 +1147,138 @@ File ignored)
 \openout5 = `main.thm'.
 
  [22] (./main.aux)
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 2FF547B316540C44F8140DAC3B531E93;9036.
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 2FF547B316540C44F8140DAC3B531E93;9036
+(rerunfilecheck)             After:  34ACBF84358826C37C5B6AFF70394FBF;9240.
  ) 
 Here is how much of TeX's memory you used:
- 26540 strings out of 478287
- 477308 string characters out of 5849289
- 737702 words of memory out of 5000000
+ 26573 strings out of 478287
+ 477767 string characters out of 5849289
+ 737658 words of memory out of 5000000
  42452 multiletter control sequences out of 15000+600000
  506806 words of font info for 113 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
  85i,13n,80p,506b,809s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/rsfs/rsfs10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/rsfs/rs
-fs10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
-utmri8a.pfb>
-Output written on main.pdf (22 pages, 448410 bytes).
+pdfTeX warning (dest): name{figure.90} has been referenced but does not exist
+, replaced by a fixed one
+
+pdfTeX warning (dest): name{figure.85} has been referenced but does not exist, 
+replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.142} has been referenced but does not ex
+ist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.139} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.135} has been referenced but does not ex
+ist, replaced by a fixed one
+
+pdfTeX warning (dest): name{section.134} has been referenced but does not exist
+, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.132} has been referenced but does not ex
+ist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.130} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.126} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.124} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.121} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.119} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.117} has been referenced but does not ex
+ist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.114} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.112} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.110} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.108} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.105} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.98} has been referenced but does not exi
+st, replaced by a fixed one
+
+pdfTeX warning (dest): name{section.95} has been referenced but does not exist,
+ replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.92} has been referenced but does not exi
+st, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.89} has been referenced but does not exi
+st, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.84} has been referenced but does not exi
+st, replaced by a fixed one
+
+pdfTeX warning (dest): name{section.83} has been referenced but does not exist,
+ replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.81} has been referenced but does not exi
+st, replaced by a fixed one
+
+pdfTeX warning (dest): name{section.80} has been referenced but does not exist,
+ replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.79} has been referenced but does not 
+exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.77} has been referenced but does not 
+exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.76} has been referenced but does not exi
+st, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.60} has been referenced but does not exi
+st, replaced by a fixed one
+
+pdfTeX warning (dest): name{section.57} has been referenced but does not exist,
+ replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.52} has been referenced but does not exi
+st, replaced by a fixed one
+
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/rsfs/rsfs10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/rsfs/rsfs
+10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
+mri8a.pfb>
+Output written on main.pdf (22 pages, 450009 bytes).
 PDF statistics:
- 542 PDF objects out of 1000 (max. 8388607)
- 478 compressed objects within 5 object streams
- 174 named destinations out of 1000 (max. 500000)
+ 583 PDF objects out of 1000 (max. 8388607)
+ 518 compressed objects within 6 object streams
+ 207 named destinations out of 1000 (max. 500000)
  484 words of extra memory for PDF output out of 10000 (max. 10000000)
 

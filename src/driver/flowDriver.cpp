@@ -80,6 +80,7 @@ inline int quiverOutputSerial(double * ux, double * uy, double *vx, double *vy, 
 
 int Driver::PrintFlow(){
 
+    // Reconstruct values at the centroid of cells
     int nelemloc = mi.MPIlocalCellSize[0]*mi.MPIlocalCellSize[1];
     double * ux = (double *)malloc(sizeof(double)*nelemloc);
     double * uy = (double *)malloc(sizeof(double)*nelemloc);
@@ -173,11 +174,45 @@ inline bool exists_file (const std::string& name){
     return (stat (name.c_str(), &buffer) == 0);
 }
 
-int Driver::PrintPressure(){
+int Driver::PrintPressureConstant(){
 
-    if (exists_file("gridCellX.dat") == 0){
+    // Print piece wise constant pressure
+    if (exists_file("gridCellX.dat") == 0 || exists_file("gridCellY.dat") == 0){
+        // Checking for cell centered grid file
+        // These two grid files are output along with printflow 
         cout << "No Grid File " << endl;
     } 
+	 
+    FILE * darcyp  = fopen("darcyp.dat","w");
+    FILE * stokesp = fopen("stokesp.dat","w");
+
+    Vec stokesP;
+    Vec darcyP;
+
+    PetscCall(VecNestGetSubVec(Result_->y, 0, &stokesP));
+    PetscCall(VecNestGetSubVec(Result_->y, 1, &darcyP));
+
+    int istart = mi.MPIlocalCellStart[0];
+    int jstart = mi.MPIlocalCellStart[1];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
+        indice global {i,j};
+        int nelem = FlatIndic(mi, global);
+        // Extract pressure from Vec
+        double dp, sp;
+
+        PetscCall(VecGetValues(stokesP,1, &nelem, &sp));
+        PetscCall(VecGetValues(darcyP,1, &nelem, &dp));
+
+        fprintf(darcyp, "%f ", dp);
+        fprintf(stokesp, "%f ", sp);
+
+    }fprintf(darcyp, "\n");
+     fprintf(stokesp, "\n");}
+
+    fclose(stokesp);
+    fclose(darcyp);
 
     return 1;
 }
