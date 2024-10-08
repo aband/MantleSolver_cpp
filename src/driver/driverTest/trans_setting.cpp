@@ -84,7 +84,7 @@ double InitCD(const valarray<double>& point,
               const vector<double>& param){
 
     // Constant composition value 
-    return 0.2;
+    return 0.1;
 }
 
 double InitHD(const valarray<double>& point,
@@ -92,7 +92,7 @@ double InitHD(const valarray<double>& point,
 
     // Linear simple distribution of enthalpy
 	 // We pass nondimensionalize normalization factor in param.at(0)
-    double HD = 0.18;
+    double HD = 0.15;
 
     HD -= 0.0000005*point[1]*param.at(0);
 
