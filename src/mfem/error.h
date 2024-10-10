@@ -96,6 +96,8 @@ int quiverOutput(const MeshInfo& mi,
                  int M, int N,
                  basis& basis_, BRMixed& br, PhysProperty * pp);
 
+int quiverOutputSimple(double * ux, double * uy, double * vx, double * vy, int M, int N, basis * basis_, const MeshInfo& mi);
+
 // Parallel 
 // Mixed interior and boundary dof cell
 template <typename T>

@@ -16,8 +16,12 @@ void AssignPhyProperties(PhysProperty * pp){
 
     // Non dimensionalization parameters
 
-    double rho_r = pp->rho_f*pp->phi0 + 
-                   pp->rho_s*(1-pp->phi0); 
+    //double rho_r = pp->rho_f*pp->phi0 + 
+    //               pp->rho_s*(1-pp->phi0); 
+
+    //double rho_r = pp->rho_s - pp->rho_f;
+
+    double rho_r = pp->rho_s;
 
     pp->l0    = pow(pp->mu_s/pp->invk0/pp->mu_f,0.5);
     pp->p0    = pp->gy*pp->l0*rho_r;
@@ -259,8 +263,8 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Constant porosity.
     // Returns nondimensionalized gravity.
     //return {0.0,-1*(1-AssignPorosity(point, pp))/pp->l0};
-    return {0.0, -1*(1-AssignPorosity(point, pp))};
-    //return {0.0,0.0};
+    //return {0.0, -1*(1-AssignPorosity(point, pp))};
+    return {0.0,0.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
@@ -362,6 +366,14 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
     } else {
         type = dirichlet;
     }
+
+    return dirichlet;
+}
+
+// dummy function
+const bndryType bndryTypeMarkerDarcy(const MeshInfo& m,
+                                     const indice& global,
+                                     const int& edge){
 
     return dirichlet;
 }

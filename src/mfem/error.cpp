@@ -510,3 +510,45 @@ int quiverOutput(const MeshInfo& mi,
 
     return 0; 
 }
+
+int quiverOutputSimple(double * ux, double * uy, double * vx, double * vy, int M, int N, basis * basis_, const MeshInfo& mi){
+
+    FILE * stokesVx = fopen("stokesVx.dat", "w");
+    FILE * stokesVy = fopen("stokesVy.dat", "w");
+    FILE * darcyVx  = fopen("darcyVx.dat", "w");
+    FILE * darcyVy  = fopen("darcyVy.dat", "w"); 
+
+    FILE *gridPorox = fopen("gridCellX.dat", "w");
+    FILE *gridPoroy = fopen("gridCellY.dat", "w");
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi,{i,j});
+
+        vertex global = GaussMapPointsFace(local, basis_->corners());
+
+        fprintf(gridPorox,"%f ",global[0]);
+        fprintf(gridPoroy,"%f ",global[1]);
+
+        fprintf(stokesVx, "%f ", ux[j*M+i]);
+        fprintf(stokesVy, "%f ", uy[j*M+i]);
+        fprintf(darcyVx, "%f ", vx[j*M+i]);
+        fprintf(darcyVy, "%f ", vy[j*M+i]);
+    }
+    fprintf(stokesVx,"\n");
+    fprintf(stokesVy,"\n");
+    fprintf(darcyVx,"\n");
+    fprintf(darcyVy,"\n");
+    fprintf(gridPorox, "\n");
+    fprintf(gridPoroy, "\n");}
+
+    fclose(stokesVx);
+    fclose(stokesVy);
+    fclose(darcyVx);
+    fclose(darcyVy);
+
+    return 1;
+}

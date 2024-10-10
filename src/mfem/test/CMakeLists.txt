@@ -132,10 +132,10 @@ add_executable(testBasis
         testBasis.cpp
 )
 
-#add_executable(testParallel
-#        testParallel.cpp
-#		  myfunc.cpp
-#)
+add_executable(testParallel
+        testParallel.cpp
+		  myfunc.cpp
+)
 
 #add_executable(testDMstag
 #        testDMstag.cpp 
@@ -166,12 +166,12 @@ target_link_libraries(testBasis
 #    PkgConfig::CGNS
 )
 
-#target_link_libraries(testParallel
-#    mfem_lib
-#    io_lib
-#    PkgConfig::LAPACKE 
+target_link_libraries(testParallel
+    mfem_lib
+    io_lib
+    PkgConfig::LAPACKE 
 #    PkgConfig::CGNS
-#)
+)
 
 #target_link_libraries(testDMstag
 #		  PkgConfig::PETSC
