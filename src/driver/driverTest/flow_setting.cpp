@@ -69,9 +69,9 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     // Stokes
     double V0 = 3.2/100/(365*24*60*60); //3.2 (cm/y)
 
-    V0 = V0  /(1e-8 * pp->rho_s * pp->gy) * pp->mu_f * -1;
+    V0 = V0 / pp->u0 * -1;
 
-    return {0.0,V0};
+    return {0.0,0.01};
 }
 
 vertex bndryu(const vertex& point, PhysProperty * pp){
@@ -91,7 +91,9 @@ const vertex darcyForce(const vertex& point, PhysProperty * pp){
 const vertex stokesForce(const vertex& point, PhysProperty * pp){
 
     // Returns nondimensionalized gravity.
-    return {0.0, -1*(1-AssignPorosity(point, pp))};
+    // Attention!!! It should not be scaled by porosity
+	 // porosity scale will be added in another function
+    return {0.0, -0.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
@@ -107,69 +109,6 @@ const vertex traction(const vertex& point, PhysProperty * pp){
 }
 
 // =========================================================================
-/*
-const bndryType bndryTypeMarker(const MeshInfo& mi,
-                                const indice& global, 
-                                const int& local){
-   
-    // Mark boundary condition on each Stokes DOFs
-    bndryType type = missed;
-
-    if (global[0] == 0){
-        // left side
-        if (local == 0 || local == 8){
-            type = dirichlet;
-        } else if (local == 4){
-            type = neumann;
-        } 
-    } 
-
-    if (global[0] == mi.MPIglobalCellSize[0]-1){
-        // right side
-        if (local == 2 || local == 10){
-            type = dirichlet;
-        } else if (local == 6){
-            type = neumann;
-        } 
-    } 
-
-    if (global[1] == 0){
-        // bottom side
-        if (local == 5 || local == 9){
-            type = dirichlet;
-        } else if (local == 1){
-            type = neumann;
-        }
-        type = dirichlet;
-    }
-   
-    if (global[1] == mi.MPIglobalCellSize[1]-1){
-        // top side
-        if (local == 3){
-            type = dirichlet;
-        } else if (local == 11 || local == 7){
-            type = neumann;
-        }
-    }
-
-    // Bottom two dofs are dealt with separately
-    if (global[0] == 0 && global[1] == 0){
-        // bottom left
-        if (local == 0 || local == 4){
-            type = dirichlet;
-        }
-    }
-
-    if (global[0] == mi.MPIglobalCellSize[1]-1 && global[1] == 0){
-        if (local == 1 || local == 5){
-            type = dirichlet;
-        }
-    }
-
-    // the dof is missed during the marking process
-    return dirichlet;
-} */
-
 const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global,
                                 const int& local){
@@ -206,21 +145,6 @@ bool exit(double range, int M, int i){
         return false;
     }
 
-}
-
-const bndryType bndryTypeMarker(const MeshInfo& mi,
-                                const indice& global){
-
-    bndryType type = missed;
-
-    //if (global[1] == mi.MPIglobalCellSize[1]-1 && exit(1.05, mi.MPIglobalCellSize[0], global[0]) ){
-    if (global[1] == mi.MPIglobalCellSize[1]-1){
-        type = neumann; 
-    } else {
-        type = dirichlet;
-    }
-
-    return type;
 }
 
 const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,

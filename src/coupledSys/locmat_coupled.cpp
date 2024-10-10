@@ -118,8 +118,9 @@ int AssignLocMat(const MeshInfo& mi,
             loc->B[j] += gw*jac*div1 * br_.Pressure();
 
             // Non dimensionalized version
-            loc->f[j] += gw*jac* (stokesforce[0]*brval[j][0] + 
-                                  stokesforce[1]*brval[j][1]);
+            loc->f[j] += gw*jac* phi_f*(stokesforce[0]*brval[j][0] + 
+                                        stokesforce[1]*brval[j][1]);
+
         }
 
         // Non dimensionalized version

@@ -92,7 +92,7 @@ double InitHD(const valarray<double>& point,
 
     // Linear simple distribution of enthalpy
 	 // We pass nondimensionalize normalization factor in param.at(0)
-    double HD = 0.15;
+    double HD = 0.10;
 
     HD -= 0.0000005*point[1]*param.at(0);
 
