@@ -1,0 +1,62 @@
+\subsection{Modified phase behavior}
+Boussinesq approximation approximates phase density with constant densities but
+buoyancy terms are left alone.
+The density difference is essential in compaction.
+This time we keep the difference in liquid and solid density, stating 
+$\rho_s \neq \rho_f$.
+We still nondimensionalize in the similar way:
+\begin{equation}
+\begin{aligned}
+\mathcal{C} &= \phi_2 + \frac{\rho_f}{\rho_s}\phi_f \chi_f \\
+\mathcal{H} &= (\phi_1 + \phi_2)\mathcal{T} + \phi_f\mathcal{T} + \phi_f L_f \\
+            &= (1-\phi_f)\mathcal{T} + 
+               \frac{\rho_f}{\rho_s}\phi_f(\frac{L}{c_p} + \mathcal{T})\\
+            &= [1-(1-\frac{\rho_f}{\rho_s})\phi_f]\mathcal{T} + 
+               \frac{\rho_f}{\rho_s}\phi_f\mathcal{L}
+\end{aligned}
+\end{equation}
+We then separate phase regions similarly.
+
+\subsubsection{Region I}
+Single phase solidus region: olivine.
+This condition was not affected since no liquid presents.
+
+\subsubsection{Region II}
+Two-phase sub-solidus: olivine + opx.
+This region was not affected by differentiate liquid and solid densities
+since no liquid presents in this region.
+
+\subsubsection{Region III}
+This is three phase eutectic region, all three phases are present.
+In this phase region, temperature is fixed at the eutectic temperature,
+where the dimensionless temperature is 0.
+\begin{equation}
+\phi_f = \frac{\rho_s}{\rho_f}\frac{\mathcal{H}}{L} \quad \phi_2 = \mathcal{C} - \frac{\rho_f}{\rho_s}\phi_f\chi_f(\mathcal{T}, \mathcal{P}) = \mathcal{C} - \frac{\mathcal{H}}{L}  \quad \phi_1 = 1-\phi_f - \phi_2 \quad \text{and} \quad \mathcal{T} = 0
+\end{equation}
+Where $\chi_f(\mathcal{T}, \mathcal{P}) = \chi_e(\mathcal{P})$, all melting is 
+eutectic melting. Mass fraction is fixed as eutectic mass fraction.
+
+\subsubsection{Region IV}
+In this super-eutectic two-phase region, opx has been exhausted in eutectic melting.
+The volumetric fractions can be determined as:
+\begin{equation}
+\phi_2 = 0 \quad \phi_f = \frac{\rho_s}{\rho_f}\frac{\mathcal{C}}{\chi_f(\mathcal{T}, \mathcal{P})}
+\end{equation}
+The original quadratic equation has now been altered as:
+\begin{equation}
+F(\mathcal{T}) = \mathcal{H} - [1-(1-\frac{\rho_f}{\rho_s})\frac{\rho_s}{\rho_f}\frac{\mathcal{C}}{\chi_f}]\mathcal{T} - \frac{\mathcal{C}}{\chi_f(\mathcal{T}, \mathcal{P})} L = 0 
+\end{equation}
+We use simple linear relationship between mass fraction and temperature as 
+$\chi_f = \chi_e(\mathcal{T}_m-\mathcal{T})$.
+\begin{equation}
+\mathcal{T}^2 - (\mathcal{H} + \mathcal{T}_m - 
+(1-\frac{\rho_f}{\rho_s})\frac{\rho_s}{\rho_f}\frac{\mathcal{C}}{\chi_e})\mathcal{T}
++\mathcal{T}_m \mathcal{H} - \frac{\mathcal{C} L}{\chi_e} = 0
+\end{equation}
+
+
+\subsubsection{Region VI}
+In this single phase  super-liquidus region, we can get volume fractions and temperature as usual:
+\begin{equation}
+		  \phi_1 = \phi_2 = 0 \quad \phi_f = 1 \quad \text{and} \quad \mathcal{T} = \frac{\rho_s}{\rho_f}\mathcal{H} - L
+\end{equation}

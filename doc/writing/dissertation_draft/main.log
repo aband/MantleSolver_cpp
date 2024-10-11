@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  7 OCT 2024 19:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  10 OCT 2024 22:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1053,69 +1053,73 @@ LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
 LaTeX Font Info:    Font shape `U/rsfso/m/n' will be
 (Font)              scaled to size 5.0pt on input line 222.
  (./sections/parallel_weno/quadmesh.tex)
-[11]) [12] (./sections/newphase.tex
-<sections/pics/eutectic.png, id=366, 430.54468pt x 322.90851pt>
+[11]) [12] (./sections/phase.tex
+<sections/pics/eutectic.png, id=390, 430.54468pt x 322.90851pt>
 File: sections/pics/eutectic.png Graphic file (type png)
 <use sections/pics/eutectic.png>
 Package pdftex.def Info: sections/pics/eutectic.png  used on input line 61.
 (pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
  [13 <./sections/pics/eutectic.png (PNG copy)>] [14]
-<sections/pics/TX.png, id=392, 438.23297pt x 317.5267pt>
+<sections/pics/TX.png, id=416, 438.23297pt x 317.5267pt>
 File: sections/pics/TX.png Graphic file (type png)
 <use sections/pics/TX.png>
-Package pdftex.def Info: sections/pics/TX.png  used on input line 166.
+Package pdftex.def Info: sections/pics/TX.png  used on input line 167.
 (pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
-<sections/pics/HX.png, id=393, 429.10312pt x 310.91156pt>
+<sections/pics/HX.png, id=417, 429.10312pt x 310.91156pt>
 File: sections/pics/HX.png Graphic file (type png)
 <use sections/pics/HX.png>
-Package pdftex.def Info: sections/pics/HX.png  used on input line 167.
+Package pdftex.def Info: sections/pics/HX.png  used on input line 168.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-<sections/pics/HC.png, id=394, 421.575pt x 316.18124pt>
+<sections/pics/HC.png, id=418, 421.575pt x 316.18124pt>
 File: sections/pics/HC.png Graphic file (type png)
 <use sections/pics/HC.png>
-Package pdftex.def Info: sections/pics/HC.png  used on input line 184.
+Package pdftex.def Info: sections/pics/HC.png  used on input line 185.
 (pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
+
+Underfull \vbox (badness 1048) has occurred while \output is active []
+
  [15 <./sections/pics/TX.png (PNG copy)> <./sections/pics/HX.png (PNG copy)> <.
 /sections/pics/HC.png (PNG copy)>]
 File: sections/pics/HX.png Graphic file (type png)
 <use sections/pics/HX.png>
-Package pdftex.def Info: sections/pics/HX.png  used on input line 250.
+Package pdftex.def Info: sections/pics/HX.png  used on input line 251.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
 File: sections/pics/HC.png Graphic file (type png)
 <use sections/pics/HC.png>
-Package pdftex.def Info: sections/pics/HC.png  used on input line 251.
+Package pdftex.def Info: sections/pics/HC.png  used on input line 252.
 (pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
  [16]
-<sections/pics/HCP.png, id=415, 429.10312pt x 310.91156pt>
+<sections/pics/HCP.png, id=439, 429.10312pt x 310.91156pt>
 File: sections/pics/HCP.png Graphic file (type png)
 <use sections/pics/HCP.png>
-Package pdftex.def Info: sections/pics/HCP.png  used on input line 255.
+Package pdftex.def Info: sections/pics/HCP.png  used on input line 256.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
-) [17 <./sections/pics/HCP.png (PNG copy)>] (./sections/simulation1.tex
+) [17 <./sections/pics/HCP.png (PNG copy)>]
+(./sections/diff_rho_phase.tex) [18] (./sections/simulation1.tex
 Overfull \hbox (14.64066pt too wide) in paragraph at lines 11--20
  \OT1/ptm/m/n/10 12.1. Math-e-mat-i-cal model.[][] We are go-ing to show our co
 u-pled darcy-stokes semi-degenerate
  []
 
-[18]
-<sections/pics/TDz_corrected.png, id=433, 225.84375pt x 451.6875pt>
+[19]
+<sections/pics/TDz_corrected.png, id=468, 225.84375pt x 451.6875pt>
 File: sections/pics/TDz_corrected.png Graphic file (type png)
 <use sections/pics/TDz_corrected.png>
 Package pdftex.def Info: sections/pics/TDz_corrected.png  used on input line 85
 .
 (pdftex.def)             Requested size: 156.49744pt x 284.54395pt.
-<sections/pics/Vfz_corrected.png, id=434, 233.37187pt x 446.41782pt>
+<sections/pics/Vfz_corrected.png, id=469, 233.37187pt x 446.41782pt>
 File: sections/pics/Vfz_corrected.png Graphic file (type png)
 <use sections/pics/Vfz_corrected.png>
 Package pdftex.def Info: sections/pics/Vfz_corrected.png  used on input line 86
 .
 (pdftex.def)             Requested size: 156.49721pt x 284.52798pt.
-<sections/pics/stokes.png, id=435, 421.575pt x 316.18124pt>
+<sections/pics/stokes.png, id=470, 421.575pt x 316.18124pt>
 File: sections/pics/stokes.png Graphic file (type png)
 <use sections/pics/stokes.png>
 Package pdftex.def Info: sections/pics/stokes.png  used on input line 92.
 (pdftex.def)             Requested size: 156.48848pt x 284.546pt.
-<sections/pics/darcy.png, id=436, 429.10312pt x 310.91156pt>
+<sections/pics/darcy.png, id=471, 429.10312pt x 310.91156pt>
 File: sections/pics/darcy.png Graphic file (type png)
 <use sections/pics/darcy.png>
 Package pdftex.def Info: sections/pics/darcy.png  used on input line 93.
@@ -1123,55 +1127,55 @@ Package pdftex.def Info: sections/pics/darcy.png  used on input line 93.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [19 <./sections/pics/TDz_corrected.png (PNG copy)> <./sections/pics/Vfz_correc
+ [20 <./sections/pics/TDz_corrected.png (PNG copy)> <./sections/pics/Vfz_correc
 ted.png (PNG copy)>]
-<sections/pics/stokesv.png, id=442, 685.05937pt x 816.04875pt>
+<sections/pics/stokesv.png, id=476, 685.05937pt x 816.04875pt>
 File: sections/pics/stokesv.png Graphic file (type png)
 <use sections/pics/stokesv.png>
 Package pdftex.def Info: sections/pics/stokesv.png  used on input line 97.
 (pdftex.def)             Requested size: 156.48366pt x 284.52557pt.
-<sections/pics/darcyv.png, id=443, 764.10469pt x 846.16125pt>
+<sections/pics/darcyv.png, id=477, 764.10469pt x 846.16125pt>
 File: sections/pics/darcyv.png Graphic file (type png)
 <use sections/pics/darcyv.png>
 Package pdftex.def Info: sections/pics/darcyv.png  used on input line 98.
 (pdftex.def)             Requested size: 156.4909pt x 284.52774pt.
-<sections/pics/test1/darcyv.png, id=444, 414.04688pt x 321.45094pt>
+<sections/pics/test1/darcyv.png, id=478, 414.04688pt x 321.45094pt>
 File: sections/pics/test1/darcyv.png Graphic file (type png)
 <use sections/pics/test1/darcyv.png>
 Package pdftex.def Info: sections/pics/test1/darcyv.png  used on input line 102
 .
 (pdftex.def)             Requested size: 156.49284pt x 284.53557pt.
-<sections/pics/test1/stokesv.png, id=445, 414.04688pt x 321.45094pt>
+<sections/pics/test1/stokesv.png, id=479, 414.04688pt x 321.45094pt>
 File: sections/pics/test1/stokesv.png Graphic file (type png)
 <use sections/pics/test1/stokesv.png>
 Package pdftex.def Info: sections/pics/test1/stokesv.png  used on input line 10
 3.
 (pdftex.def)             Requested size: 156.49284pt x 284.53557pt.
-<sections/pics/test1/darcyp.png, id=446, 429.10312pt x 310.91156pt>
+<sections/pics/test1/darcyp.png, id=480, 429.10312pt x 310.91156pt>
 File: sections/pics/test1/darcyp.png Graphic file (type png)
 <use sections/pics/test1/darcyp.png>
 Package pdftex.def Info: sections/pics/test1/darcyp.png  used on input line 104
 .
 (pdftex.def)             Requested size: 156.4871pt x 284.52872pt.
-<sections/pics/test1/stokesp.png, id=447, 429.10312pt x 310.91156pt>
+<sections/pics/test1/stokesp.png, id=481, 429.10312pt x 310.91156pt>
 File: sections/pics/test1/stokesp.png Graphic file (type png)
 <use sections/pics/test1/stokesp.png>
 Package pdftex.def Info: sections/pics/test1/stokesp.png  used on input line 10
 5.
 (pdftex.def)             Requested size: 156.4871pt x 284.52872pt.
-<sections/pics/test1/uscaleddarcyp.png, id=448, 421.575pt x 316.18124pt>
+<sections/pics/test1/uscaleddarcyp.png, id=482, 421.575pt x 316.18124pt>
 File: sections/pics/test1/uscaleddarcyp.png Graphic file (type png)
 <use sections/pics/test1/uscaleddarcyp.png>
 Package pdftex.def Info: sections/pics/test1/uscaleddarcyp.png  used on input l
 ine 106.
 (pdftex.def)             Requested size: 156.48848pt x 284.546pt.
-<sections/pics/test1/stokespori.png, id=449, 429.10312pt x 310.91156pt>
+<sections/pics/test1/stokespori.png, id=483, 429.10312pt x 310.91156pt>
 File: sections/pics/test1/stokespori.png Graphic file (type png)
 <use sections/pics/test1/stokespori.png>
 Package pdftex.def Info: sections/pics/test1/stokespori.png  used on input line
  107.
 (pdftex.def)             Requested size: 156.4871pt x 284.52872pt.
-<sections/pics/test1/litho.png, id=450, 429.10312pt x 310.91156pt>
+<sections/pics/test1/litho.png, id=484, 429.10312pt x 310.91156pt>
 File: sections/pics/test1/litho.png Graphic file (type png)
 <use sections/pics/test1/litho.png>
 Package pdftex.def Info: sections/pics/test1/litho.png  used on input line 108.
@@ -1180,33 +1184,33 @@ Package pdftex.def Info: sections/pics/test1/litho.png  used on input line 108.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [20 <./sections/pics/Stokes.png (PNG copy)> <./sections/pics/darcy.png (PNG co
+ [21 <./sections/pics/Stokes.png (PNG copy)> <./sections/pics/darcy.png (PNG co
 py)> <./sections/pics/stokesv.png (PNG copy)> <./sections/pics/darcyv.png (PNG 
 copy)>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [21 <./sections/pics/test1/darcyv.png (PNG copy)> <./sections/pics/test1/stoke
+ [22 <./sections/pics/test1/darcyv.png (PNG copy)> <./sections/pics/test1/stoke
 sv.png (PNG copy)> <./sections/pics/test1/darcyp.png (PNG copy)> <./sections/pi
 cs/test1/stokesp.png (PNG copy)>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [22 <./sections/pics/test1/uscaleddarcyp.png (PNG copy)> <./sections/pics/test
-1/stokespori.png (PNG copy)> <./sections/pics/test1/litho.png (PNG copy)>]) [23
+ [23 <./sections/pics/test1/uscaleddarcyp.png (PNG copy)> <./sections/pics/test
+1/stokespori.png (PNG copy)> <./sections/pics/test1/litho.png (PNG copy)>]) [24
 ]
 (./main.bbl) (/usr/share/texlive/texmf-dist/tex/latex/tools/.tex File ignored)
 \tf@thm=\write5
 \openout5 = `main.thm'.
 
 
-[24] (./main.aux)
+[25] (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 34ACBF84358826C37C5B6AFF70394FBF;9240.
+(rerunfilecheck)             Checksum: C910202B59ADF8F49135D21E21AE8221;9990.
  ) 
 Here is how much of TeX's memory you used:
- 26637 strings out of 478287
- 480587 string characters out of 5849289
- 737670 words of memory out of 5000000
- 42537 multiletter control sequences out of 15000+600000
+ 26659 strings out of 478287
+ 480937 string characters out of 5849289
+ 737673 words of memory out of 5000000
+ 42543 multiletter control sequences out of 15000+600000
  506806 words of font info for 113 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
  85i,13n,80p,506b,809s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1222,10 +1226,10 @@ hare/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
 utmri8a.pfb>
-Output written on main.pdf (24 pages, 660213 bytes).
+Output written on main.pdf (25 pages, 664707 bytes).
 PDF statistics:
- 562 PDF objects out of 1000 (max. 8388607)
- 489 compressed objects within 5 object streams
- 177 named destinations out of 1000 (max. 500000)
- 527 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 601 PDF objects out of 1000 (max. 8388607)
+ 526 compressed objects within 6 object streams
+ 190 named destinations out of 1000 (max. 500000)
+ 575 words of extra memory for PDF output out of 10000 (max. 10000000)
 
