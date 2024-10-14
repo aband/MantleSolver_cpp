@@ -45,13 +45,6 @@ class phase{
             int phaseSplit(const double& HD,
                            const double& CD) {return phaseSplit_(HD, CD, 0);};
 
-            // Split phase regions according to value of dimensionless temperature and
-            // dimensionless composition
-            // Need phi2 for exact determination
-            int phaseSplitTemp(const double& TD,
-                               const double& CD,
-                               const double& phi2) {return phaseSplitTemp_(TD,CD,phi2);};
-
             // Evaluate phase at certain pressure
             // Assign values to volumetric fractions
             // Evaluate non dimensionless values
@@ -61,6 +54,12 @@ class phase{
 
             void evalPhase(const double& HD,
                            const double& CD) {evalPhase(HD,CD,0);};
+
+            void evalPhase(const double& HD, 
+                           const double& CD,
+                           const double& P,
+                           const double& rho_f,
+                           const double& rho_s);
 
             // Convert nondimensionlized variables to original variables
             void NonDimToDim(double pressure);
@@ -82,10 +81,13 @@ class phase{
             int phaseSplit_(const double& HD, 
                             const double& CD,
                             const double& P);
-
-            int phaseSplitTemp_(const double& TD,
-                                const double& CD,
-                                const double& phi2);
+ 
+            // Correction separating liquid and solid densities
+            int phaseSplit_(const double& HD,
+                            const double& CD,
+                            const double& P,
+                            const double& rho_f,
+                            const double& rho_s);
 
             // Clapeyron constant
             // Relating perssure and melting point

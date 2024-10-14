@@ -115,7 +115,12 @@ starts. From the plots above, we can conclude that in our model
 \item Change of dimensionless composition can only affect the separaration of eutection and super-eutection region.
 \item Change of dimensionless composition will not affect where magam leave eutection melting region.
 \end{itemize}
-A fixed melting depth can therefore be calculated despite initial dimensionless composition changes.
+A fixed melting depth can therefore be calculated despite dimensionless composition distribution.
+The melting happens when current temperature reaches the eutectic melting temperature.
+In the situtation of linear dimensionless enthalpy distribution $f(HD) = HD_0 + \eta z$.
+Assuming lithostatic pressure distribution, the eutectic point at given depth $z$ is: $\mathcal{T}_e = 0 + \gamma *\rho_s g z$.
+The melting depth is therefore calculated as: $z = \frac{HD_0}{\rho_s g - \eta}$.
+In this case, the smaller initial dimensionless enthalpy $HD_0$ the shorter melting depth.
 
 \subsection{Interpolation of stokes pressure}
 We are using piece-wise constant L2 approximation space for stokes and darcy pressure.

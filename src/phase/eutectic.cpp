@@ -119,6 +119,93 @@ void EUTECTIC::phase::evalPhase(const double& HD,
     }
 }
 
+void EUTECTIC::phase::evalPhase(const double& HD, 
+                                const double& CD,
+                                const double& P,
+                                const double& rho_f,
+                                const double& rho_s){
+
+    double Tm = 1+ gamma_*P;
+
+    double a = 0;
+    double b = 0;
+    double c = 0;
+
+    switch(phaseSplit_(HD,CD,P,rho_f,rho_s)){
+        // Single phase solidus
+        case 1:
+            phi.olv = 1;
+            phi.opx = 0;
+            phi.mlt = 0;
+            TD      = HD;
+
+            dTD_dCD = 0;
+            dTD_dHD = 1;
+
+        break;
+ 
+        // Two phase solidus
+        case 2:
+            phi.opx = CD;
+            phi.olv = 1-CD;
+            phi.mlt = 0;
+            TD      = HD;
+
+            dTD_dCD = 0;
+            dTD_dHD = 1;
+
+        break;
+
+        // Three phase eutectic
+        case 3:
+            phi.mlt = rho_s/rho_f*(HD-gamma_*P)/L_;
+            phi.opx = CD - rho_f/rho_s*phi.mlt;
+            phi.olv = 1-phi.mlt-phi.opx;
+            TD      = gamma_*P;
+
+            dTD_dCD = 0;
+            dTD_dHD = 0;
+
+        break;
+
+        // Super eutectic two phase region
+        case 4:
+            a = 1;
+            b = HD + Tm - (1-rho_f/rho_s)*rho_s/rho_f*CD;
+            c = Tm*HD - CD*L_;
+
+				TD      = (b - sqrt(b*b - 4*a*c))/2;
+            phi.opx = 0;
+            phi.mlt = rho_s/rho_f*CD/(Tm-TD);
+            phi.olv = 1-phi.opx-phi.mlt;
+
+            dTD_dCD = -1./sqrt(pow(HD+Tm,2)- 4*(Tm*HD-CD*L_));
+// It is WRONG!!!! 
+//            dTD_dHD = 0.5 * (1 -1./sqrt(pow(HD+1,2)- 4*(HD-CD*L_)) * ((HD+1)-2));
+
+        break;
+
+        // Single phase super eutectic all melting region
+        case 5:
+            phi.opx = 0;
+            phi.olv = 0;
+            phi.mlt = 1;
+            TD      = rho_s/rho_f*HD - L_;
+
+            dTD_dCD = 0;
+            dTD_dHD = 1;
+
+        break;
+
+        default:
+
+            std::cout << "Invalid (H,C) pair." << " (" << HD << ", " << CD << ") " << std::endl;
+
+        break;
+    }
+   
+}
+
 int EUTECTIC::phase::phaseSplit_(const double& HD, 
                                  const double& CD,
                                  const double& P){
@@ -158,12 +245,19 @@ int EUTECTIC::phase::phaseSplit_(const double& HD,
     return region;
 }
 
-int EUTECTIC::phase::phaseSplitTemp_(const double& TD,
-                                     const double& CD,
-                                     const double& phi2){
+int EUTECTIC::phase::phaseSplit_(const double& HD, 
+                                 const double& CD,
+                                 const double& P,
+                                 const double& rho_f,
+                                 const double& rho_s){
 
     int region = 0;
 
+    double coef = rho_f/rho_s;
+
+    // Rescale CD with coef inverse
+
+    region = phaseSplit_(HD, CD/coef, P);
 
     return region;
 }

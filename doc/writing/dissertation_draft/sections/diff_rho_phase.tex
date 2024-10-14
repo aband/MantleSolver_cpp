@@ -31,7 +31,7 @@ This is three phase eutectic region, all three phases are present.
 In this phase region, temperature is fixed at the eutectic temperature,
 where the dimensionless temperature is 0.
 \begin{equation}
-\phi_f = \frac{\rho_s}{\rho_f}\frac{\mathcal{H}}{L} \quad \phi_2 = \mathcal{C} - \frac{\rho_f}{\rho_s}\phi_f\chi_f(\mathcal{T}, \mathcal{P}) = \mathcal{C} - \frac{\mathcal{H}}{L}  \quad \phi_1 = 1-\phi_f - \phi_2 \quad \text{and} \quad \mathcal{T} = 0
+		  \phi_f = \frac{\rho_s}{\rho_f}\frac{\mathcal{H}}{L} \quad \phi_2 = \mathcal{C} - \frac{\rho_f}{\rho_s}\phi_f\chi_f(\mathcal{T}, \mathcal{P}) = \mathcal{C} - \frac{\mathcal{H}}{L}  \quad \phi_1 = 1-\phi_f - \phi_2 \quad \text{and} \quad \mathcal{T} = \mathcal{T}_e = \gamma P
 \end{equation}
 Where $\chi_f(\mathcal{T}, \mathcal{P}) = \chi_e(\mathcal{P})$, all melting is 
 eutectic melting. Mass fraction is fixed as eutectic mass fraction.
@@ -54,9 +54,16 @@ $\chi_f = \chi_e(\mathcal{T}_m-\mathcal{T})$.
 +\mathcal{T}_m \mathcal{H} - \frac{\mathcal{C} L}{\chi_e} = 0
 \end{equation}
 
-
 \subsubsection{Region VI}
 In this single phase  super-liquidus region, we can get volume fractions and temperature as usual:
 \begin{equation}
 		  \phi_1 = \phi_2 = 0 \quad \phi_f = 1 \quad \text{and} \quad \mathcal{T} = \frac{\rho_s}{\rho_f}\mathcal{H} - L
 \end{equation}
+
+\subsubsection{Two lines}
+Similarly, we can calculate two lines separating regions III, IV and VI using relationship between composition and bulk 
+mass fraction.
+\begin{equation}
+		  \mathcal{C} = \frac{\rho_f}{\rho_s} \chi
+\end{equation}
+Hence we can substitute $\chi$ with $\mathcal{C}$ simply.
