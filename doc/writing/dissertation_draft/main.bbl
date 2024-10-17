@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{SolSparseIndef_Paige_Saunders}
 {\sc M.~A.~S. C.~C.~Paige}, {\em Solution of sparse indefinite systems of
@@ -27,6 +27,11 @@
   inexact uzawa algorithm for saddle point problems}, SIAM. J. Numer. Anal., 34
   (1997), pp.~1072--1092.
 
+\bibitem{MagmaDynamicsEnthalpyMethod}
+{\sc R.~F. Katz}, {\em Magma dynamics with the enthalpy method: Benchmark
+  solutions and magmatic focusing at mid-ocean ridges}, Journal of Petrology,
+  49 (2008), pp.~2099--2121.
+
 \bibitem{DownwardOxidantTransport}
 {\sc S.~D.~V. Marc A.~Hesse, Jacob S.~Jordan and A.~V. Oza}, {\em Supporting
   information for "downward oxidant transport through europa's ice shell by
@@ -35,6 +40,11 @@
 \bibitem{AcceleratingUzawa_ho_Olson_Walker}
 {\sc H.~F.~W. Nguyenho~Ho, Sarah D.~Olson}, {\em Accelerating the uzawa
   algorithm}, SIAM. J. Sci. Comput., 39 (2017), pp.~S461--S476.
+
+\bibitem{MultiLevelWeno}
+{\sc C.-S.~H. Todd~Arbogast and C.~Tian}, {\em A finite volume multilevel weno
+  scheme for multidimensional scalar conservation laws}, Comput. Methods Appl.
+  Mech. Engrg., 421 (2024).
 
 \bibitem{TheCompositionEarth}
 {\sc S.-s.~S. W.F.~McDonough}, {\em The composition of the earth}, Chemical
