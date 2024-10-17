@@ -71,7 +71,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     V0 = V0 / pp->u0 * -1;
 
-    return {0.0,0.01};
+    return {0.0,V0};
 }
 
 vertex bndryu(const vertex& point, PhysProperty * pp){
@@ -115,48 +115,115 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 
     bndryType type = missed;
 
-    set<int> top_normal {11,7,6};
-    set<int> left_normal {0,3,8};
-    set<int> right_normal {1,2,10};
-    set<int> bottom_normal {4,5,9};
+    // normal dof 
+    std::set<int> top_normal {11,7,6};
+    std::set<int> left_normal {0,3,8};
+    std::set<int> right_normal {1,2,10};
+    std::set<int> bottom_normal {4,5,9};
 
-/*
-    if (global[1] == mi.MPIglobalCellSize[1] - 1 && global[0] != 0){
-        if (local == 11 || local == 7){
+    // tangent dof
+    std::set<int> top_tang {3,2};
+    std::set<int> left_tang {7,4};
+    std::set<int> right_tang {5,6};
+    std::set<int> bottom_tang {0,1};
+
+    std::set<int>::iterator it;
+
+    // left edge without two corners
+    if (global[0] == 0 && 
+        global[1] != 0 && global[1] != mi.MPIglobalCellSize[1]-1){
+
+        it = left_normal.find(local);
+        if (it != left_normal.end()){
+            type = dirichlet;
+        }
+
+        it = left_tang.find(local);
+        if (it != left_tang.end()){
+            type = neumann;
+        }
+    }
+
+    // bottom edge 
+    if (global[1] == 0 && 
+        global[0] != 0 && global[0] != mi.MPIglobalCellSize[0]-1){
+
+        type = dirichlet;
+
+    }
+
+    // right edge
+    if (global[0] == mi.MPIglobalCellSize[0]-1 &&
+        global[1] != 0 && global[1] != mi.MPIglobalCellSize[1]-1){
+
+        it = right_normal.find(local);
+        if (it != right_normal.end()){
+            type = dirichlet;
+        }
+
+        it = right_tang.find(local);
+        if (it != right_tang.end()){
+            type = neumann;
+        }
+    }
+
+    // top edge
+    if (global[1] == mi.MPIglobalCellSize[1]-1 &&
+        global[0] != 0 && global[0] != mi.MPIglobalCellSize[0]-1){
+
+        it = top_normal.find(local);
+        if (it != top_normal.end()){
+            type = neumann;
+        }
+
+        it = top_tang.find(local);
+        if (it != top_tang.end()){
+            type = dirichlet;
+        }
+    }
+
+    // Four corners are treated differently
+    if (global[0] == 0 && global[1] == 0){
+        // bottom left
+        if (local == 7){
+            type = neumann; 
+        } else {
+            type = dirichlet;
+        }
+    }
+
+    if (global[0] == 0 && global[1] == mi.MPIglobalCellSize[1]-1){
+
+        // top left
+        if (local == 11 || local == 4 || local == 7 || local == 6){
             type = neumann;
         } else {
             type = dirichlet;
         }
 
-    }else if (global[1] == mi.MPIglobalCellSize[1] - 1 && global[0] == 0){
+    }
 
-        if (local == 11){
+    if (global[0] == mi.MPIglobalCellSize[0]-1 && global[1] == 0){
+
+        // bottom right
+        if (local == 6){
+            type = neumann;
+        } else {
+            type = dirichlet;
+        }
+    }
+
+    if (global[0] == mi.MPIglobalCellSize[0]-1 && global[1] == mi.MPIglobalCellSize[1]-1){
+
+        // top right
+        if (local == 11 || local == 6 || local == 7 || local == 5){
             type = neumann;
         } else {
             type = dirichlet;
         }
 
-    } else {
-        type = dirichlet;
     }
-*/
 
-    if (global[1] == 0 ){
-
-        type = dirichlet;
-
-    } else if (global[0] == 0){
-
-        if (local == ){
-
-        }
-
-    } else if (global[0] == mi.MPIglobalCellSize[0] - 1){
-
-    } else {
-
-        type = neumann;
-    }
 
     return type;
 }
