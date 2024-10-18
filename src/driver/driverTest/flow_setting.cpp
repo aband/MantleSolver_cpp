@@ -71,7 +71,8 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     V0 = V0 / pp->u0 * -1;
 
-    return {0.0,V0};
+    //return {0.0,V0};
+    return {0.0, 1.0};
 }
 
 vertex bndryu(const vertex& point, PhysProperty * pp){
@@ -93,7 +94,7 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Returns nondimensionalized gravity.
     // Attention!!! It should not be scaled by porosity
 	 // porosity scale will be added in another function
-    return {0.0, -0.0};
+    return {0.0, -1.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
@@ -224,6 +225,7 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 
     }
 
+    //return dirichlet;
 
     return type;
 }
@@ -255,5 +257,5 @@ const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
         type = dirichlet;
     }
 
-    return type;
+    return dirichlet;
 }
