@@ -155,6 +155,12 @@ class Driver {
 
        int PrintPressureConstantOriginal();
 
+       /**!
+        * Show asigned boundary condition.
+        * Print assigned boundary conditions type to each dof on the boundary
+        */
+       int PrintBoundaryDOFs();
+
     private:
 
         /**!
