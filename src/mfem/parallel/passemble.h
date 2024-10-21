@@ -55,21 +55,22 @@ inline bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
 
     bndryType type = missed;
 
-    if (name == "BDM"){
 
-        if (work[0] != -1){
+    if (work[0] != -1){
+
+        if (name == "BDM"){
+
             // Bndry dof
             indice globalCell = Bend(mi,work[0]); 
             int edge = work[1]%4;
             type = bndryTypeMarkerDarcy(mi, globalCell,edge);
-        }
 
-    } else if (name == "BR"){
+        } else if (name == "BR"){
 
-        if (work[0]!=-1){
             indice globalCell = Bend(mi,work[0]);
             type = bndryTypeMarker(mi, globalCell, work[1]);
         }
+
     }
 
     return type;
@@ -97,6 +98,7 @@ inline int CreateRefMap(T& funcSp,
     // For the fact that natrual boundary dofs participate in the left hand side matrix
     // and also right hand side vector
     // Hence it requires two different index system.
+
     for (int dof=0; dof<funcSp.getDOF(); dof++){
 
         std::vector<int> work = funcSp.GlobalToLocalMapBndry(mi, dof);

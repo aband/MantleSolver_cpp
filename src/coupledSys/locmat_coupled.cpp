@@ -118,6 +118,7 @@ int AssignLocMat(const MeshInfo& mi,
             loc->B[j] += gw*jac*div1 * br_.Pressure();
 
             // Non dimensionalized version
+            // Attention, porosity has been multiplied to right hand side force term
             loc->f[j] += gw*jac* phi_f*(stokesforce[0]*brval[j][0] + 
                                         stokesforce[1]*brval[j][1]);
 

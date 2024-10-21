@@ -1,6 +1,9 @@
-#include "coupled.h"
+#include "advectiveFlux.h"
+#include "diffusiveFlux.h"
+#include "lagrange_tmp.h"
 
-double getFlux(){
+// Get system  
+vector<double> getAdvFluxSys(const MLWENO::MLWENOUse& mlu){
 
 
 }

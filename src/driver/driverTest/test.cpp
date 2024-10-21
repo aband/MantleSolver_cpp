@@ -53,6 +53,8 @@ int main(int argc, char **argv){
 
     driver->SolveFlow(maxIter, tolUzawa);
 
+    //driver->PrintBoundaryDOFs();
+
     // =============== Print functions ==============================================
 
     driver->PrintFlow();

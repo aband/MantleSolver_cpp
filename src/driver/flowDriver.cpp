@@ -279,3 +279,38 @@ int Driver::PrintPressureConstantOriginal(){
 
     return 1;
 }
+
+int Driver::PrintBoundaryDOFs(){
+
+    // Prevent mesh to be too large
+    assert(M_ < 3);
+    assert(N_ < 3);
+
+    std::cout << "Total number of essential dof for Stokes : " << bndryDOFStokes_ << std::endl;
+
+    std::cout << "Print out ref map." << std::endl;
+
+    for (int i=0; i<br_->getDOF(); i++){
+        // Print out all dirichlet dofs
+        std::cout << "Global dof : " << i << " Actual dof pos: "  << 
+                      refArrayStokesEssen_[i] << std::endl;
+    }
+
+    std::cout << "Print Natural boundary condition in details."  << std::endl;
+
+
+    for (const auto & [key, value] : refArrayStokesNatur_){
+        std::cout << key << " : " << value << std::endl;
+    }
+
+    std::cout << std::endl;
+
+/*
+    for (int i=0; i<hdiv_->getDOF(); i++){
+        std::cout << "Dirichlet dofs for Darcy: " << std::endl;
+        std::cout << refArrayDarcyEssen_[i] << std::endl;
+    }
+*/
+
+    return 1;
+}
