@@ -45,6 +45,18 @@ int Driver::PrepareDefaultTransport(){
     AddLevels(4,3);
     AddLevels(3,4);
 
+    // Create set containing position information and field information
+    posSet_.insert("interior");
+    posSet_.insert("corner");
+    posSet_.insert("edge");
+
+    locFuncSet_["edge"] = edge; 
+    locFuncSet_["corner"] = corner; 
+    locFuncSet_["interior"] = interior; 
+
+    fieldSet_.insert("HD");
+    fieldSet_.insert("CD");
+
     // Create Smoothness Indicator for the first time
     mlpPtr_->UpdateSmoothnessIndic(mi, mi.localCD, "CD");
     mlpPtr_->UpdateSmoothnessIndic(mi, mi.localHD, "HD");

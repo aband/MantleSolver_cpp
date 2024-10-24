@@ -169,6 +169,10 @@ typedef struct {
 
 } MeshInfo;
 
+// Define function type of location functions
+typedef bool (*LocFunc) (const indice& globalCell, 
+                         const MeshInfo& mi);
+
 void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu);
 
 void printMeshInfo(MeshInfo& mi);

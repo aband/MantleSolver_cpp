@@ -46,4 +46,23 @@ double InitCD(const vertex& point,
               const vector<double>& param);
 #endif
 
+//typedef struct{
+//
+//
+//} LocPack;
+
+// ! Struct used for 
+//typedef struct {
+
+//    LocPack * locpack;
+
+//    MLWENO::MLWENOPrepare * mlpPtr;
+//    MLWENO::MLWENOUse * mluseAdv;
+//    MLWENO::MLWENOUse * mluseDif;
+
+//    DM dmu;
+//    MeshInfo * mi;
+
+//} User;
+
 #endif

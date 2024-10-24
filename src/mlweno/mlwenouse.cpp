@@ -103,6 +103,19 @@ void MLWENOUse::UpdateNonLinearWgts(const MeshInfo& mi,
     mlrIns_.at(location)->UpdateNonLinearWgts(mi, func, name);
 }
 
+void MLWENOUse::UpdateNonLinearWgts(const MeshInfo& mi,
+                                    const std::set<std::string>& locSet,
+                                    const std::unordered_map<std::string, LocFunc> funcSet,
+                                    const std::set<std::string>& fieldNames){
+
+    for (const auto& loc : locSet){
+        for (const auto& field : fieldNames){
+            mlrIns_.at(AssignMap_.at(loc))->UpdateNonLinearWgts(mi, funcSet.at(loc), field);
+        }
+    }
+
+}
+ 
 double MLWENOUse::Evaluate(const vertex& point,
                            const indice& globalCell,
                            const MeshInfo& mi,

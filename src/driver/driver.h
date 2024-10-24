@@ -128,6 +128,8 @@ class Driver {
         */
        int PrepareDefaultTransport();
 
+       // ========================================================================
+
        /**!
         * Create boundary condition vectors
         */
@@ -187,6 +189,14 @@ class Driver {
          * WENO preparation object.
          */
         MLWENO::MLWENOPrepare * mlpPtr_;
+
+        /**!
+			* Position set including all possible positions
+			*/
+        std::set<std::string> posSet_;
+        std::set<std::string> fieldSet_;
+
+        std::unordered_map<std::string, LocFunc> locFuncSet_;
 
         // ===========================================================
 

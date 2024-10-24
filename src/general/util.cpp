@@ -172,9 +172,14 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
     mi.MPIlocalVertexSizeFull.push_back(xm+2*ghostWidth);
     mi.MPIlocalVertexSizeFull.push_back(ym+2*ghostWidth);
 
-    // Assign values to edge number
+    // Assign values to global edge number
     mi.MPIglobalHoriEdgeSize = mi.MPIglobalCellSize[0]*mi.MPIglobalVertexSize[1];
     mi.MPIglobalVertEdgeSize = mi.MPIglobalCellSize[1]*mi.MPIglobalVertexSize[0];
+
+    // Assign values to local edge number
+    // local processors share edge with another local processor
+    mi.MPIlocalHoriEdgeSize = mi.MPIlocalCellSize[0]*mi.MPIlocalVertexSize[1];
+    mi.MPIlocalVertEdgeSize = mi.MPIlocalCellSize[1]*mi.MPIlocalVertexSize[0];
 
     // Pre calculate cell area for future computation.
     // Repeat calculation of cell areas cost a lot of computation resources.

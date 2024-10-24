@@ -1,45 +1,26 @@
-#ifndef EDGEFLUX_H_
-#define EDGEFLUX_H_
+typedef double (*fluxFunc) (const MLWENO::MLWENOUse& mlu,
+                            const MLWENO::MLWENOUse& mlu,
+                            const MeshInfo& mi,
+                            const std::array<vertex,2>& edge,
+                            const vertex& unitNormal,
+                            const double& len,
+                            const indice& globalCellIn,
+                            const indice& globalCellOut,
+                            const int& locationIn,
+                            const int& locationOut,
+                            const valarray<double>& gwe,
+                            const valarray<double>& gpe,
+                            const double& alpha);
 
-/**!
- * Combining advective and diffusive flux.
- * Presenting a total flux on the edge.
- */
+typedef double (*fluxFuncBndry) (const MLWENO::MLWENOUse& mlu,
+                                 const MeshInfo& mi,
+                                 const std::array<vertex,2>& edge,
+                                 const vertex& unitNormal,
+                                 const double& len,
+                                 const indice& globalCellIn,
+                                 const int& locationIn,
+                                 const valarray<double>& gwe,
+                                 const valarray<double>& gpe,
+                                 const double& alpha,
+                                 bndryTypeAdv bt);
 
-#include "advectiveFlux.h"
-#include "diffusiveFlux.h"
-//#include "fcns.h"
-
-enum flowType {advection, diffusion, adv_diff};
-
-class EdgeFlux{
-
-    public:
-        /**!
-         * Initialize data structure holding all flux on the edge.
-         * flowTypes are "advection" "diffusion" and "adv-diff".
-         */
-        EdgeFlux(const MeshInfo& mi,
-                 const flowType& fT);
-        ~EdgeFlux(){};
-
-        /**!
-         * Compute total flux on all the edges.
-         */
-        void getEdgeFlux(const MeshInfo& mi,
-                         const MLWENO::MLWENOUse& mluAdv,
-                         const MLWENO::MLWENOUse& mluDif); 
-
-    private:
-        vector<double> edgeFlux_;
-        bool isAdv = false;
-        bool isDif = false;
-
-        // advection stability coefficient
-        double alpha_ = 1.0;
-
-        // diffusion reconstruction scale
-        double scale_ = 1.0;
-};
-
-#endif

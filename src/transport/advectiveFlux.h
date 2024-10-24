@@ -34,4 +34,6 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const double& alpha,
                   bndryTypeAdv bt);
 
+double * getAdvFluxAllEdges(const MeshInfo& mi);
+
 #endif
