@@ -5,9 +5,9 @@
  */
 inline double LFFlux(const double& uIn, const double& uOut,
                      const double& fIn, const double& fOut,
-                     const double& alpha){
+                     const vector<double>& coeff){
 
-    return 0.5*(fOut + fIn - alpha*(uOut - uIn));
+    return 0.5*(fOut + fIn - coeff[0]*(uOut - uIn));
 }
 
 /**!
@@ -64,7 +64,7 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const int& locationOut,
                   const valarray<double>& gwe,
                   const valarray<double>& gpe,
-                  const double& alpha){
+                  const vector<double>& coeff){
 
     std::array<double,2> InFlux;
     std::array<double,2> OutFlux;
@@ -74,7 +74,7 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
     OutFlux = getAdvFluxEdge(mlu, mi, edge, unitNormal, len, globalCellOut, 
                              locationOut, gwe, gpe);
 
-    return LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], alpha);
+    return LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], coeff);
 }
 
 /**!
@@ -91,7 +91,7 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const int& locationIn,
                   const valarray<double>& gwe,
                   const valarray<double>& gpe,
-                  const double& alpha,
+                  const vector<double>& coeff,
                   bndryTypeAdv bt){
 
     // Influx is calculated 
@@ -108,7 +108,7 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
             OutFlux[0] = -1*InFlux[0];
             OutFlux[1] = -1*InFlux[1];
 
-            edgeFlux = LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], alpha);
+            edgeFlux = LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], coeff);
         break;
 
         case freeFlow:
@@ -116,14 +116,14 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
             OutFlux[0] = InFlux[0];
             OutFlux[1] = InFlux[1];
 
-            edgeFlux = LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], alpha);
+            edgeFlux = LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], coeff);
         break;
 
         case dirichletAdv:
 
             OutFlux = bndryValAdv();
 
-            edgeFlux = LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], alpha);
+            edgeFlux = LFFlux(InFlux[0], OutFlux[0], InFlux[1], OutFlux[1], coeff);
         break;
 
         case flux:

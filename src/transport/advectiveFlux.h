@@ -18,7 +18,7 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const int& locationR,
                   const valarray<double>& gwe,
                   const valarray<double>& gpe,
-                  const double& alpha); 
+                  const vector<double>& alpha); 
 
 double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const MeshInfo& mi,
@@ -31,7 +31,7 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const int& locationR,
                   const valarray<double>& gwe,
                   const valarray<double>& gpe,
-                  const double& alpha,
+                  const vector<double>& alpha,
                   bndryTypeAdv bt);
 
 double * getAdvFluxAllEdges(const MeshInfo& mi);
