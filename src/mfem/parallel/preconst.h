@@ -115,7 +115,26 @@ int CGNSPrepareParallel(Vec * sol, Vec * g,
     VecRestoreArray(*sol, &valuesSol);
     VecRestoreArray(*g, &valuesg);
 
-    return 0;
+    return 1;
+}
+
+// Compute velocity for a given cell with given local positions
+template <typename T>
+vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
+                              const int *refmap,
+                              const MeshInfo& mi,
+                              vector<vertex> localp,
+                              const indice& gCell,
+                              T& funcSp,
+                              basis& basis_){
+
+    vector<vertex> work;
+    work.resize(localp.size());
+
+
+
+
+    return work;
 }
 
 #endif

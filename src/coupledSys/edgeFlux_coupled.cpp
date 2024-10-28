@@ -55,7 +55,11 @@ double edgeFlux(const MeshInfo& mi,
 }
 
 double * edgeFluxAll(const MeshInfo* mi,
-
+                     Vec * sol_darcy, Vec * g_darcy,
+                     Vec * sol_stokes, Vec * g_stokes,
+                     basis& mybasis,
+                     BRMixed& br,
+                     Hdivmixed& hdiv,
                      fluxFunc      fluxfunc,
                      fluxFuncBndry fluxfuncbndry){
 
@@ -73,7 +77,18 @@ double * edgeFluxAll(const MeshInfo* mi,
 
     vertex start, end;
 
-    indice ghostShift {};
+    indice ghostShift {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
+
+    // Get gauss points and weights
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    vector<vertex> gauss_p; 
+    gauss_p.resize(gpe.size());
+
+    vector<vertex> velocity_darcy;
+    vector<vertex> velocity_stokes;
+    vector<vertex> velocity_effect;
 
     // Loop through the entire local mesh chunk
     // Local horizontal edges are looped first
@@ -89,19 +104,52 @@ double * edgeFluxAll(const MeshInfo* mi,
             indice gCellIn  = gCellOut - {0,1};
 
             // Extract edge vertex from mesh
-				// Edge vertex from left to right
-            start = mi.lmesh[FlatIndic()]; 
- 
+            // Edge vertex from left to right
+            start = local + ghostShift;
+            end   = start + {1,0};
+
+            start = mi.lmesh[FlatIndic(mi.MPIlocalVertexFull[0], start)]; 
+            end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexFull[0], end)];
+
+            vector<vertex> edge {start, end};
+
+            double len = length(edge);
+            vertex unitNormal = UnitNormal(edge, len);
+
+            for (int g=0; g<gpe.size(); g++){gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge)};
+
+            // Compute velocity of from computation results of stokes and darcy problems
+            velocity_darcy = ExtractVelocity(sol_darcy, g_darcy);
+            velocity_stokes = ExtractVelocity(sol_stokes, g_stokes);
+
+            // Compute effective velocity 
 
             edgeflux[flatlocal] = edgeFlux(mi, mluIn, mluOut, gCellIn, gCellOut,
-            location(gCellIn), location(gCellOut), );
+            location(gCellIn), location(gCellOut), edge, gauss_p, velocity, gwe, {0.0},gluxfunc, fluxfuncbndry);
 
         }
     }
 
+    // Loop vertical edges second
     for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
         for (int i=0; i<mi.MPIlocalVertexSize[0]; i++) {
+        
+            indice local {i,j};
+            int flatlocal = FlatIndic(mi.MPIlocalVertexSize[0], local);
 
+            indice gCellOut = local + mi.MPIlocalCellStart;
+            indice gCellIn  = gCellOut - {1,0};
+
+            // Extract edge vertex from mesh
+            // Edge vertex from top to bottom
+            end = local + ghostShift; // bottom
+            start = end + {0,1}; // top
+
+            vector<vertex> edge {start, end};
+            double len = length(edge);
+            vertex unitNormal = UnitNormal(edge, len);
+
+            for (int g=0; g<gpe.size(); g++){gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge);}
 
 
         }
