@@ -5,6 +5,9 @@
 #include <string>
 #include "util.h"
 
+// Denoting different boundary types for a given physical domain
+enum bndryTypeTrans {wall, freeFlow, dirichletAdv, neumannAdv, absorb, reflect, periodic, flux};
+
 /**!
  * Transport boundary functions
  * No boundary condition function for flow conterparts for
@@ -45,6 +48,8 @@ double InitHD(const vertex& point,
 double InitCD(const vertex& point,
               const vector<double>& param);
 #endif
+
+bndryTypeTrans AssignBoundary(const indice& global);
 
 //typedef struct{
 //

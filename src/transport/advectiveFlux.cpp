@@ -92,7 +92,7 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
                   const valarray<double>& gwe,
                   const valarray<double>& gpe,
                   const vector<double>& coeff,
-                  bndryTypeAdv bt){
+                  bndryTypeTrans bt){
 
     // Influx is calculated 
     // Only current targeted element is needed.
