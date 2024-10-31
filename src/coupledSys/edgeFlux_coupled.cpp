@@ -1,4 +1,36 @@
 #include "edgeFlux.h"
+#include "preconst.h"
+
+inline bool OutBndryCell(const MeshInfo& mi, 
+                         const indice& gcell){
+
+    // Check if the Cell is out of domain or not.
+    bool work = false;
+
+    if (gcell[0] < 0 || gcell[0] > mi.MPIglobalCellSize[0]-1 || 
+        gcell[1] < 0 || gcell[1] > mi.MPIglobalCellSize[1]-1){ 
+
+        work = true;
+    }
+
+    return work;
+}
+
+// pick the cell index that inside the compuitational domain
+inline indice PickCellInside(const MeshInfo& mi,
+                             const indice& gCellIn,
+                             const indice& gCellOut){
+
+    if (OutBndry(mi, gCellIn)){
+        return gCellOut;
+    } else if (OutBndry(mi, gCellOut)){
+        return gCellIn;
+    } else {
+        // Both gCellIn and gCellOut are inside boundary
+        return gCellIn;
+    }
+
+}
 
 double edgeFlux(const MeshInfo& mi,
                 const MLWENO::MLWENOUse& mluIn,
@@ -32,13 +64,13 @@ double edgeFlux(const MeshInfo& mi,
     }
 
     // Distinguish different boundary conditions
-    if(OutBndry(globalCellIn)){
-        fluxpoint = fluxfuncbndry(mi, mlu, edge, unitNormal, len, globalCellIn,
-                                  locationIn, param, AssignBoundary(globalCellIn));
-
-    }else if (OutBndry(globalCellOut)){
+    if(OutBndryCell(mi, globalCellIn)){
         fluxpoint = fluxfuncbndry(mi, mlu, edge, unitNormal, len, globalCellOut,
                                   locationOut, param, AssignBoundary(globalCellOut));
+
+    }else if (OutBndryCell(mi, globalCellIn)){
+        fluxpoint = fluxfuncbndry(mi, mlu, edge, unitNormal, len, globalCellIn,
+                                  locationIn, param, AssignBoundary(globalCellIn));
     } else {
         // Interior edge
         fluxpoint = fluxfunc(mi, mluIn, mluOut, edge, unitNormal, 
@@ -57,9 +89,12 @@ double edgeFlux(const MeshInfo& mi,
 double * edgeFluxAll(const MeshInfo* mi,
                      Vec * sol_darcy, Vec * g_darcy,
                      Vec * sol_stokes, Vec * g_stokes,
+                     const int* refmap_darcy,
+                     const int* refmap_stokes,
                      basis& mybasis,
                      BRMixed& br,
                      Hdivmixed& hdiv,
+                     Phase * phase,
                      fluxFunc      fluxfunc,
                      fluxFuncBndry fluxfuncbndry){
 
@@ -90,6 +125,11 @@ double * edgeFluxAll(const MeshInfo* mi,
     vector<vertex> velocity_stokes;
     vector<vertex> velocity_effect;
 
+    // Interpolation of velocity
+    velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap); 
+
+    // Transform scaled variable to unscaled variable
+
     // Loop through the entire local mesh chunk
     // Local horizontal edges are looped first
     for (int j=0; j<mi.MPIlocalVertexSize[1]; j++){
@@ -118,9 +158,15 @@ double * edgeFluxAll(const MeshInfo* mi,
 
             for (int g=0; g<gpe.size(); g++){gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge)};
 
+            // Pick cell inside computational domain
+            indice gcell_inside = PickCellInside(mi, gCellIn, gCellOut);
+
             // Compute velocity of from computation results of stokes and darcy problems
-            velocity_darcy = ExtractVelocity(sol_darcy, g_darcy);
-            velocity_stokes = ExtractVelocity(sol_stokes, g_stokes);
+            velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, 
+            mi, gauss_p, gcell_inside, hdiv, mybasis);
+
+            velocity_stokes = ExtractVelocity(sol_stokes, g_stokes, refmap_stokes, 
+            mi, gauss_p, gcell_inside, br, mybasis);
 
             // Compute effective velocity 
 

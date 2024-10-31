@@ -5,6 +5,7 @@
 #include <Hdivmixed.h>
 #include <brmixed.h>
 #include <util.h>
+#include "passemble.h"
 
 int SolScatAll(Vec *sol, Vec * g, 
                Vec * destSol, Vec * destg);
@@ -101,7 +102,8 @@ int CGNSPrepareParallel(Vec * sol, Vec * g,
         int localflat = FlatIndic(mi.MPIlocalCellSize[0], local);
 
         for (int k=0; k<locdof.size(); k++){
-            if(funcSp.onBndry(mi, locdof.at(k))){
+//            if(funcSp.onBndry(mi, locdof.at(k))){
+            if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,locdof.at(k)),funcSp.name)==dirichlet){
                 val += valuesg[refmap[locdof.at(k)]] * basisVal.at(k);
             } else {
                 val += valuesSol[refmap[locdof.at(k)]] * basisVal.at(k);
@@ -123,16 +125,45 @@ template <typename T>
 vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
                               const int *refmap,
                               const MeshInfo& mi,
-                              vector<vertex> localp,
+                              vector<vertex> points,
                               const indice& gCell,
                               T& funcSp,
-                              basis& basis_){
+                              basis& mybasis){
 
-    vector<vertex> work;
-    work.resize(localp.size());
+    std::vector<vertex> work;
+    work.resize(points.size());
 
+    PetscScalar *valuesSol;
+    PetscScalar *valuesg;
 
+    VecGetArray(*sol, &valuesSol);
+    VecGetArray(*g, &valuesg);
 
+    mybasis.GetCorners(mi, gCell);
+
+    // !Get global indiex of the local dofs in specific and correct order
+    const std::vector<int> elemDofs = funcSp.LocalToGlobal(mi, gCell);
+
+    for (int g=0; g<points.size(); g++){
+
+        // Initialize interpolated value
+        work.at(g) = {0.0,0.0};
+
+        std::vector<vertex> basisVal = funcSp.EvaluateAll(mybasis, points.at(g));
+
+        // Reconstruction of value with element basis
+        for (int k=0; k<elemDofs.size(); k++){
+
+            if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(k)),funcSp.name) == dirichlet){
+                work.at(g) += valuesg[refmap[elemDofs.at(k)]] * basisVal.at(k);
+            } else {
+                work.at(g) += valuesSol[refmap[elemDofs.at(k)]] * basisVal.at(k);
+            }
+        }
+    }
+
+    VecRestoreArray(*sol, &valuesSol);
+    VecRestoreArray(*g, &valuesg);
 
     return work;
 }

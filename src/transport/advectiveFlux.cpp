@@ -140,4 +140,59 @@ double getAdvFlux(const MLWENO::MLWENOUse& mlu,
         return edgeFlux;
 }
 
+// Calculate flux on gauss points on the edge
+// Compatible with edge flux function
+vector<double> advFlux (const MeshInfo& mi,
+                        const MLWENO::MLWENOUse& mluIn,
+                        const MLWENO::MLWENOUse& mluOut,
+                        const std::array<vertex,2>& edge,
+                        const vertex& unitNormal,
+                        const double& len,
+                        const indice& globalCellIn,
+                        const indice& globalCellOut,
+                        const std::string& locationIn,
+                        const std::string& locationOut,
+                        const vector<double>& LFparam,
+                        const vector<double>& direction, 
+                        const valarray<double>& gpe){
+
+    // Align length of vectors
+    assert(LFparam.size() == gpe.size());
+
+    vector<double> work;
+    work.resize(gpe.size()); 
+
+    for (int g=0; g<gpe.size(); g++){
+
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+        double uIn  = mluIn.Evaluate(mapped, globalCellIn, mi, locationIn);
+        double uOut = mluOut.Evaluate(mapped, globalCellOut, mi, locationOut);
+
+        // Compute Lax_Friedrich flux
+        // Here transport equation is hard coded within
+        work.at(g) = 0.5 * (direction.at(g)*(uIn+uOut) - 
+                            LFparam.at(g)*(uOut-uIn));
+
+    }
+
+    return work;
+}
+
+vector<double> advFluxBndry(const MeshInfo& mi,
+                            const MLWENO::MLWENOUse& mlu,
+                            const std::array<vertex,2>& edge,
+                            const vertex& unitNormal,
+                            const double& len,
+                            const indice& globalCellIn,
+                            const int& locationIn,
+                            const vector<double>& param,
+                            bndryTypeTrans bt){
+
+    vector<double> work;
+
+
+
+    return work;
+}
+
 // =========== Implicit =================================

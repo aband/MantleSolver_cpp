@@ -9,7 +9,7 @@
 // mentioned in Direct Serendipity space.
 class Hdivmixed{
     public: 
-        Hdivmixed() {name = "BDM";};
+        Hdivmixed() {name = "BDM";elemDOF = 8;};
         ~Hdivmixed() {};
 
         std::array<int, 8>  LocalToGlobal(const MeshInfo& mi,
@@ -70,6 +70,7 @@ class Hdivmixed{
 
         std::string name;
 
+        int elemDOF;
     private:
        
         vertex curlLambda_(const basis& basis_,

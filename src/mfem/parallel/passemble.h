@@ -47,34 +47,8 @@ inline int CreateRefMap(T& funcSp, int * refArray,
     return 0;  
 };
 
-// ! Transfer bndryTypeMarker to current version
-inline bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
-                         const std::string& name){
-
-    // Need global cell index and local 
-
-    bndryType type = missed;
-
-
-    if (work[0] != -1){
-
-        if (name == "BDM"){
-
-            // Bndry dof
-            indice globalCell = Bend(mi,work[0]); 
-            int edge = work[1]%4;
-            type = bndryTypeMarkerDarcy(mi, globalCell,edge);
-
-        } else if (name == "BR"){
-
-            indice globalCell = Bend(mi,work[0]);
-            type = bndryTypeMarker(mi, globalCell, work[1]);
-        }
-
-    }
-
-    return type;
-}
+bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
+                  const std::string& name);
 
 // ! A completed version of assigning boundary essential conditions
 // ! Attention!!

@@ -25,6 +25,34 @@ PetscErrorCode ParallelAssembleTest(){
     return PETSC_SUCCESS;
 }
 
+// ! Transfer bndryTypeMarker to current version
+bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
+                  const std::string& name){
+
+    // Need global cell index and local 
+
+    bndryType type = missed;
+
+    if (work[0] != -1){
+
+        if (name == "BDM"){
+
+            // Bndry dof
+            indice globalCell = Bend(mi,work[0]); 
+            int edge = work[1]%4;
+            type = bndryTypeMarkerDarcy(mi, globalCell,edge);
+
+        } else if (name == "BR"){
+
+            indice globalCell = Bend(mi,work[0]);
+            type = bndryTypeMarker(mi, globalCell, work[1]);
+        }
+
+    }
+
+    return type;
+}
+
 /*
 template <typename T>
 int CreateRefMap(T& funcSp, int * refArray, 
