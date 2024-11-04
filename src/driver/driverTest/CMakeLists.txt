@@ -142,6 +142,7 @@ target_link_libraries(mlweno_lib
 # Create a library from the files in the transport directory
 add_library(transport_lib
 		  ${SRC}/transport/advectiveFlux.cpp
+		  ${SRC}/transport/lagrange_tmp.cpp
 )
 
 # Specify any additional include directories if needed

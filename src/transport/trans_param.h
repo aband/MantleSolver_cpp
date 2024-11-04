@@ -6,7 +6,7 @@
 #include "util.h"
 
 // Denoting different boundary types for a given physical domain
-enum bndryTypeTrans {wall, freeFlow, dirichletAdv, neumannAdv, absorb, reflect, periodic, flux};
+enum bndryTypeTrans {wall, freeFlow, dirichletTrans, neumannTrans, absorb, reflect, periodic, flux};
 
 /**!
  * Transport boundary functions
