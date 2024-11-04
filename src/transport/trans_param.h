@@ -23,10 +23,23 @@ std::array<double,2> bndryValDiff();
 
 std::array<double,2> bndryValAdv();
 
+double bndryValAdv(const indice& gCell,
+                   const int& locedge);
+
+double bndryValDiff(const indice& gCell,
+                    const int& locedge);
+
 // Flux value prescribed on the boundary.
 double bndryFluxAdv();
 
+// Need edge index for corners
+double bndryFluxAdv(const indice& gCell,
+                    const int& locedge);
+
 double bndryFluxDiff();
+
+double bndryFluxDiff(const indice& gCell,
+                     const int& locedge);
 
 bool interior(const indice& globalCell, 
               const MeshInfo& mi);
@@ -49,7 +62,8 @@ double InitCD(const vertex& point,
               const vector<double>& param);
 #endif
 
-bndryTypeTrans AssignBoundary(const indice& global);
+bndryTypeTrans AssignBoundary(const indice& global, 
+                              const int& locedge);
 
 //typedef struct{
 //

@@ -20,12 +20,16 @@ vector<double> advFlux(const MeshInfo& mi,
 
 vector<double> advFluxBndry(const MeshInfo& mi,
                             const MLWENO::MLWENOUse& mlu,
-                            const std::array<vertex,2>& edge,
+                            const vector<vertex>& edge,
                             const vertex& unitNormal,
                             const double& len,
-                            const indice& globalCellIn,
-                            const int& locationIn,
-                            const vector<double>& param,
-                            bndryTypeTrans bt);
+                            const indice& gCell,
+                            const std::string& loc,
+                            const vector<double>& direction,
+                            const vector<double>& LFparam,
+                            const valarray<double>& gpe,
+                            const bndryTypeTrans& bt,
+                            const int& flag,
+                            const int& locedge);
 
 #endif

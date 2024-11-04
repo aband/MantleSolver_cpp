@@ -21,9 +21,9 @@ inline indice PickCellInside(const MeshInfo& mi,
                              const indice& gCellIn,
                              const indice& gCellOut){
 
-    if (OutBndry(mi, gCellIn)){
+    if (OutBndryCell(mi, gCellIn)){
         return gCellOut;
-    } else if (OutBndry(mi, gCellOut)){
+    } else if (OutBndryCell(mi, gCellOut)){
         return gCellIn;
     } else {
         // Both gCellIn and gCellOut are inside boundary
@@ -43,7 +43,8 @@ inline double edgeFlux(const MeshInfo& mi,
                        const std::vector<vertex>& gauss_p,
                        const std::vector<vertex>& velocity,
                        const std::valarray<double>& gwe,
-                       const vetor<double>& param,
+                       const std::valarray<double>& gpe,
+                       const int& locedge,
                        fluxFunc       fluxfuncAdv,
                        fluxFuncBndry  fluxfuncbndryAdv,
                        fluxFunc       fluxfuncDif,
@@ -60,6 +61,8 @@ inline double edgeFlux(const MeshInfo& mi,
     vector<double> fluxpoint;
     vector<double> direction;
 
+    int flag = 0;
+
     for (const auto& it : velocity){
         direction.push_back(it[0]*unitNormal[0] + 
                             it[1]*unitNormal[1]); 
@@ -67,36 +70,38 @@ inline double edgeFlux(const MeshInfo& mi,
 
     // Distinguish different boundary conditions
     if(OutBndryCell(mi, globalCellIn)){
-        fluxpoint = fluxfuncbndryAdv(mi, mlu, edge, unitNormal, len, globalCellOut,
-                                     locationOut, param, AssignBoundary(globalCellOut)) +
-                    fluxfuncbndryDif(mi, mlu, edge, unitNormal, len, globalCellOut,
-                                     locationOut, param, AssignBoundary(globalCellOut)) ;
+        flag = 1;
+        fluxpoint = fluxfuncbndryAdv(mi, mluOut, edge, unitNormal, len, globalCellOut,
+                                     locationOut, direction, direction, gpe, AssignBoundary(globalCellOut, locedge), flag, locedge) ;
 
-    }else if (OutBndryCell(mi, globalCellIn)){
-        fluxpoint = fluxfuncbndryAdv(mi, mlu, edge, unitNormal, len, globalCellIn,
-                                     locationIn, param, AssignBoundary(globalCellIn)) + 
-                    fluxfuncbndryDif(mi, mlu, edge, unitNormal, len, globalCellIn,
-                                     locationIn, param, AssignBoundary(globalCellIn)) ;
+    }else if (OutBndryCell(mi, globalCellOut)){
+        flag = 0;
+        fluxpoint = fluxfuncbndryAdv(mi, mluIn, edge, unitNormal, len, globalCellIn,
+                                     locationIn, direction, direction, gpe, AssignBoundary(globalCellIn, locedge), flag, locedge) ;
 
     } else {
         // Interior edge
         fluxpoint = fluxfuncAdv(mi, mluIn, mluOut, edge, unitNormal, 
                                 len, globalCellIn, globalCellOut,
-                                locationIn, locationOut, gauss_p, gpe, param) + 
-                    fluxfuncDif(mi, mluIn, mluOut, edge, unitNormal, 
-                                len, globalCellIn, globalCellOut,
-                                locationIn, locationOut, gauss_p, gpe, param) ;
+                                locationIn, locationOut, direction, direction, gpe) ;
     }
 
     // Integrate with gauess quadratrue scheme
     for (int g=0; g<gwe.size(); g++){
-        flux += gwe[g] * fluxpoint.at(g) * direction.at(g); 
+        flux += gwe[g] * fluxpoint.at(g); 
     }
 
     return flux;
 }
 
-double * edgeFluxAll(const MeshInfo* mi,
+inline int extractEdgeInfo(const MeshInfo& mi, 
+                           const indice& local,
+                           edgeEnds<vertex> edgeEndsVertex,
+                           edgeEnds<indice> edgeEndsIndice){
+
+}
+
+double * edgeFluxAll(const MeshInfo& mi,
                      Vec * sol_darcy, Vec * g_darcy,
                      Vec * sol_stokes, Vec * g_stokes,
                      const int* refmap_darcy,
@@ -135,23 +140,18 @@ double * edgeFluxAll(const MeshInfo* mi,
     vector<vertex> velocity_stokes;
     vector<vertex> velocity_effect;
 
-    // Interpolation of velocity
-    velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap); 
-
-    // Transform scaled variable to unscaled variable
-
     // Loop through the entire local mesh chunk
     // Local horizontal edges are looped first
     for (int j=0; j<mi.MPIlocalVertexSize[1]; j++){
         for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
 
-            // Flaten to integer
+             // Flaten to integer
             indice local {i,j};
             int flatlocal = FlatIndic(mi.MPIlocalCellSize[0], local);
 
             // Identify location with global indices 
             indice gCellOut = local + mi.MPIlocalCellStart;
-            indice gCellIn  = gCellOut - {0,1};
+            indice gCellIn  = {gCellOut[0], gCellOut[1] - 1};
 
             // Extract edge vertex from mesh
             // Edge vertex from left to right
@@ -168,6 +168,12 @@ double * edgeFluxAll(const MeshInfo* mi,
 
             // Get gauss quadrature points
             for (int g=0; g<gpe.size(); g++){gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge)};
+
+            // Interpolation of velocity on each edges
+            velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, mi, gauss_p, hdiv, mybasis); 
+            //velocity_stokes = ExtractVelocity(sol_stokes, g_stokes, refmap_stokes);
+
+            // Transform scaled variable to unscaled variable
 
             // Pick cell inside computational domain
             indice gcell_inside = PickCellInside(mi, gCellIn, gCellOut);

@@ -4,7 +4,7 @@ inline double LFFlux(const vector<double>& u,
                      const vector<double>& fu,
                      const double& LF){
     // fu[0] corresponding to fuIn , fu[1] corresponding to fuOut
-	 // u[0] corresponding to uIn , u[1] corresponding to uOut
+    // u[0] corresponding to uIn , u[1] corresponding to uOut
 
     return 0.5*(fu[0]+fu[1] - LF*(u[1] - u[0]));
 }
@@ -55,14 +55,63 @@ vector<double> advFluxBndry(const MeshInfo& mi,
                             const vector<double>& direction,
                             const vector<double>& LFparam,
                             const valarray<double>& gpe,
-                            const int& flag){
+                            const bndryTypeTrans& bt, 
+                            const int& flag,
+                            const int& locedge){
 
     assert(LFparam.size() == gpe.size());
 
     vector<double> work;
     work.resize(gpe.size()); 
 
+    vector<double> fu;
+    vector<double> u;
+
+    fu.resize(2);
+    u.resize(2);
+   
     for (int g=0; g<gpe.size(); g++){
+
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+
+        switch (bt){
+
+            case flux:
+
+                work.at(g) = bndryFluxAdv(gCell, locedge);
+
+            break;
+
+            case dirichletTrans:
+
+                u.at(flag)   = mlu.Evaluate(mapped, gCell, mi, loc);
+                u.at(1-flag) = bndryValAdv(gCell, locedge);
+
+                fu.at(flag)   = direction.at(g)*u.at(flag);
+                fu.at(1-flag) = direction.at(g)*u.at(1-flag);
+
+                work.at(g) = LFFlux(u, fu, LFparam.at(g));
+
+            break;
+
+            case freeFlow:
+
+                u.at(flag) = mlu.Evaluate(mapped, gCell, mi, loc);
+                u.at(1-flag) = u.at(flag);
+
+                fu.at(flag)   = direction.at(g)*u.at(flag);
+                fu.at(1-flag) = direction.at(g)*u.at(1-flag);
+
+                work.at(g) = LFFlux(u, fu, LFparam.at(g));
+
+            break;
+
+            default:
+
+                std::cout << "Boundary condition not defined properly ." << std::endl;
+
+            break;
+        }
 
     }
 

@@ -143,6 +143,7 @@ target_link_libraries(mlweno_lib
 add_library(transport_lib
 		  ${SRC}/transport/advectiveFlux.cpp
 		  ${SRC}/transport/lagrange_tmp.cpp
+		  ${SRC}/coupledSys/edgeFlux_coupled.cpp
 )
 
 # Specify any additional include directories if needed
@@ -150,13 +151,15 @@ target_include_directories(transport_lib
 		  PUBLIC ${SRC}/transport
 		  PUBLIC ${SRC}/mlweno
 		  PUBLIC ${SRC}/general
-    PUBLIC ${PETSC_DIR}/include 
+		  PUBLIC ${SRC}/mfem/parallel
+		  PUBLIC ${PETSC_DIR}/include 
 )
 
 target_link_libraries(transport_lib
         io_lib
         general_lib
         mlweno_lib
+		  mfem_lib
         PkgConfig::PETSC
 )
 
