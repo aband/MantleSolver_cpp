@@ -66,7 +66,9 @@ double GaussJacobian(valarray<double> ref,
 
 valarray<double> UnitNormal(const vector< valarray<double> >& corner,double len){
     /*
-     *The function calculates the unit outer normal vector on a given edge/face(later)
+     * The function calculates the unit outer normal vector on a given edge/face(later)
+     * Rotation 90 degrees clockwise
+     * Resulting in four outward unit normal vectors
      */
     valarray<double> work;
    

@@ -34,10 +34,8 @@ typedef vector<double> (*fluxFuncBndry) (const MeshInfo& mi,
 
 template <typename T>
 struct edgeEnds{
-
     T start;
     T end;
-
 };
 
 double * edgeFluxAll(const MeshInfo* mi,

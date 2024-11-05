@@ -94,11 +94,54 @@ inline double edgeFlux(const MeshInfo& mi,
     return flux;
 }
 
-inline int extractEdgeInfo(const MeshInfo& mi, 
-                           const indice& local,
-                           edgeEnds<vertex> edgeEndsVertex,
-                           edgeEnds<indice> edgeEndsIndice){
+inline int extractVertEdgeInfo(const MeshInfo& mi, 
+                               const indice& local,
+                               const indice& ghostShift,
+                               indice& gCellOut,
+                               indice& gCellIn,
+                               edgeEnds<vertex> edgeEndsVertex,
+                               edgeEnds<indice> edgeEndsIndice){
 
+    // Extract information for vertical edges
+    // index counted from top to bottom
+    // Cell on right of the edge is regarded as "In" Cell
+    // Cell on left of the edge is regarded as "Out" Cell
+    gCellIn  = local + mi.MPIlocalCellStart; 
+    gCellOut = {gCell[0] - 1, gCell[0]};
+
+    edgeEndsIndice.end   = local + ghostShift;
+    edgeEndsIndice.start = {edgeEndsIndice.end[0], edgeEndsIndice.end[1]-1};
+
+    edgeEndsVertex.start = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.start)];
+    edgeEndsVertex.end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.end)];
+
+    return 1;
+}
+
+inline int extractHoriEdgeInfo(const MeshInfo& mi,
+                               const indice& local,
+                               const indice& ghostShift,
+                               indice& gCellOut,
+                               indice& gCellIn,
+                               edgeEnds<vertex>& edgeEndsVertex,
+                               edgeEnds<indice>& edgeEndsIndice){
+
+    // Extract information for horizontal edges
+    // index counted from left to right
+    // Cell on top of the edge is regarded as "In" cell 
+    // Cell on bottom of the edge is regarded as "Out" cell
+    // Unit normal vector pointing from top to bottom
+
+    gCellIn = local + mi.MPIlocalCellStart;
+    gCellOut= {gCellIn[0],gCellIn[1] - 1};
+
+    edgeEndsIndice.start = local + ghostShift; 
+    edgeEndsIndice.end   = {edgeEndsIndice.start[0] + 1, edgeEndsIndice.start[0]};
+
+    edgeEndsVertex.start = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.start)];
+    edgeEndsVertex.end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.end)];
+
+    return 1;
 }
 
 double * edgeFluxAll(const MeshInfo& mi,
@@ -140,6 +183,11 @@ double * edgeFluxAll(const MeshInfo& mi,
     vector<vertex> velocity_stokes;
     vector<vertex> velocity_effect;
 
+    indice gCellOut;
+    indice gCellIn;
+    edgeEnds<vertex> edgeEndsVertex;
+    edgeEnds<indice> edgeEndsIndice;
+
     // Loop through the entire local mesh chunk
     // Local horizontal edges are looped first
     for (int j=0; j<mi.MPIlocalVertexSize[1]; j++){
@@ -149,28 +197,18 @@ double * edgeFluxAll(const MeshInfo& mi,
             indice local {i,j};
             int flatlocal = FlatIndic(mi.MPIlocalCellSize[0], local);
 
-            // Identify location with global indices 
-            indice gCellOut = local + mi.MPIlocalCellStart;
-            indice gCellIn  = {gCellOut[0], gCellOut[1] - 1};
+            extractHoriEdgeInfo(mi, local, ghostShift, gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
 
-            // Extract edge vertex from mesh
-            // Edge vertex from left to right
-            start = local + ghostShift;
-            end   = start + {1,0};
-
-            start = mi.lmesh[FlatIndic(mi.MPIlocalVertexFull[0], start)]; 
-            end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexFull[0], end)];
-
-            vector<vertex> edge {start, end};
+            vector<vertex> edge {edgeEndsVertex.start, edgeEndsVertex.end};
 
             double len = length(edge);
             vertex unitNormal = UnitNormal(edge, len);
 
             // Get gauss quadrature points
-            for (int g=0; g<gpe.size(); g++){gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge)};
+            for (int g=0; g<gpe.size(); g++){gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge);}
 
             // Interpolation of velocity on each edges
-            velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, mi, gauss_p, hdiv, mybasis); 
+            //velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, mi, gauss_p, hdiv, mybasis); 
             //velocity_stokes = ExtractVelocity(sol_stokes, g_stokes, refmap_stokes);
 
             // Transform scaled variable to unscaled variable
@@ -179,16 +217,16 @@ double * edgeFluxAll(const MeshInfo& mi,
             indice gcell_inside = PickCellInside(mi, gCellIn, gCellOut);
 
             // Compute velocity from computating results of stokes and darcy problems
-            velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, 
-            mi, gauss_p, gcell_inside, hdiv, mybasis);
+            //velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, 
+            //mi, gauss_p, gcell_inside, hdiv, mybasis);
 
-            velocity_stokes = ExtractVelocity(sol_stokes, g_stokes, refmap_stokes, 
-            mi, gauss_p, gcell_inside, br, mybasis);
+            //velocity_stokes = ExtractVelocity(sol_stokes, g_stokes, refmap_stokes, 
+            //mi, gauss_p, gcell_inside, br, mybasis);
 
             // Compute effective velocity 
 
-            edgeflux[flatlocal] = edgeFlux(mi, mluIn, mluOut, gCellIn, gCellOut,
-            location(gCellIn), location(gCellOut), edge, gauss_p, velocity, gwe, {0.0},fluxfunc, fluxfuncbndry);
+            //edgeflux[flatlocal] = edgeFlux(mi, mluIn, mluOut, gCellIn, gCellOut,
+            //location(gCellIn), location(gCellOut), edge, gauss_p, velocity, gwe, {0.0},fluxfunc, fluxfuncbndry);
 
         }
     }
@@ -196,22 +234,14 @@ double * edgeFluxAll(const MeshInfo& mi,
     // Loop vertical edges second
     for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
         for (int i=0; i<mi.MPIlocalVertexSize[0]; i++) {
-        
-            indice local {i,j};
-            int flatlocal = FlatIndic(mi.MPIlocalVertexSize[0], local);
 
-            indice gCellOut = local + mi.MPIlocalCellStart;
-            indice gCellIn  = gCellOut - {1,0};
-
-            // Extract edge vertex from mesh
-            // Edge vertex from top to bottom
-            end = local + ghostShift; // bottom
-            start = end + {0,1}; // top
+            extractVerteEdgeInfo(mi, local, ghostShift, gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
 
             vector<vertex> edge {start, end};
             double len = length(edge);
             vertex unitNormal = UnitNormal(edge, len);
 
+/*
             // Get gauss quadrature points
             for (int g=0; g<gpe.size(); g++){gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge);}
 
@@ -227,6 +257,7 @@ double * edgeFluxAll(const MeshInfo& mi,
 
             edgeflux[mi.MPIlocalHoriEdgeSize + flatlocal] = edgeFlux(mi, mluIn, mluOut, gCellIn, gCellOut,
             location(gCellIn), location(gCellOut), edge, gauss_p, velocity, gwe, {0.0},fluxfunc, fluxfuncbndry);
+*/
 
         }
     }
@@ -234,7 +265,9 @@ double * edgeFluxAll(const MeshInfo& mi,
     return edgeflux;
 }
 
-double cellFlux(const indice& lCell, double * edgeFlux){
+double cellFlux(const MeshInfo& mi,
+                const indice& lCell, 
+                double * edgeFlux){
 
     // Return summation of flux on the edges of a given cell
 
@@ -242,14 +275,14 @@ double cellFlux(const indice& lCell, double * edgeFlux){
 
     // Four edge index and corresponding local index
     indice left   = lCell;
-    indice right  = lCell + {1,0};
+    indice right  = {lCell[0]+1, lCell[1]};
     indice bottom = lCell;
-    indice top    = lCell + {0,1};
+    indice top    = {lCell[0], lCell[1]+1};
 
     int left_flat  = FlatIndic(mi.MPIlocalVertexSize[0],left);
     int right_flat = FlatIndic(mi.MPIlocalVertexSize[0],left);
-    int bottom_flat= FlatIndic(mi.MPIlocalCellSize[0], bottom) + mi.localHoriEdgeSize;
-    int top_flat   = FlatIndic(mi.MPIlocalCellSize[0], top) + mi.localHoriEdgeSize;       
+    int bottom_flat= FlatIndic(mi.MPIlocalCellSize[0], bottom) + mi.MPIlocalHoriEdgeSize;
+    int top_flat   = FlatIndic(mi.MPIlocalCellSize[0], top) + mi.MPIlocalHoriEdgeSize;       
 
     flux = edgeFlux[left_flat] + edgeFlux[right_flat] + edgeFlux[bottom_flat] + edgeFlux[top_flat]; 
 
