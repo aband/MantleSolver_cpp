@@ -32,21 +32,21 @@ inline indice PickCellInside(const MeshInfo& mi,
 
 }
 
-inline double edgeFlux(const MeshInfo& mi,
-                       const MLWENO::MLWENOUse& mlu,
-                       const indice& globalCellIn,
-                       const indice& globalCellOut,
-                       const std::string& locationIn,
-                       const std::string& locationOut,
-                       const std::vector<vertex>& edge,
-                       const std::vector<vertex>& gauss_p,
-                       const std::vector<vertex>& velocityIn,
-                       const std::vector<vertex>& velocityOut,
-                       const std::valarray<double>& gwe,
-                       const std::valarray<double>& gpe,
-                       const int& locedge,
-                       fluxFunc       fluxfunc,
-                       fluxFuncBndry  fluxfuncbndry){
+inline double computeFlux(const MeshInfo& mi,
+                          const MLWENO::MLWENOUse& mlu,
+                          const indice& globalCellIn,
+                          const indice& globalCellOut,
+                          const std::string& locationIn,
+                          const std::string& locationOut,
+                          const std::vector<vertex>& edge,
+                          const std::vector<vertex>& gauss_p,
+                          const std::vector<vertex>& vel_darcy,
+                          const std::vector<vertex>& vel_stokes,
+                          const std::valarray<double>& gwe,
+                          const std::valarray<double>& gpe,
+                          const int& edgemark,
+                          fluxFunc       fluxfunc,
+                          fluxFuncBndry  fluxfuncbndry){
     // Compute integral of flux on edge
     // mluIn used for value where unit normal points to
     // mluOut used for value where unit normal tails at
@@ -57,33 +57,48 @@ inline double edgeFlux(const MeshInfo& mi,
 
     double flux = 0.0;
     vector<double> fluxpoint;
-    vector<double> direction;
+    vector<double> directionIn;
+    vector<double> directionOut;
+    vector<double> LFParam;
 
     int flag = 0;
 
-    for (const auto& it : velocity){
-        direction.push_back(it[0]*unitNormal[0] + 
-                            it[1]*unitNormal[1]); 
+    for (const auto& it : velocityIn){
+        directionIn.push_back(it[0]*unitNormal[0] + 
+                              it[1]*unitNormal[1]); 
+    }
+
+    for (const auto& it : velocityOut){
+        directionOut.push_back(it[0]*unitNormal[0] + 
+                               it[1]*unitNormal[1]);
+    }
+
+    // Implement local LF scheme here
+    // max |df/du| will be used as LF stabilizer
+    LFParam.resize(fluxpoint.size());
+
+    for (int i=0; i<fluxpoint.size(); i++){
+        LFParam.at(i) = find_max<double>(directionIn.at(i), directionOut.at(i));
     }
 
     // Distinguish different boundary conditions
     if(OutBndryCell(mi, globalCellIn)){
         flag = 1;
         fluxpoint = fluxfuncbndry(mi, mlu, edge, unitNormal, len, globalCellOut,
-                                 locationOut, direction, direction, gpe, 
-                             AssignBoundary(globalCellOut, locedge), flag, locedge) ;
+                                 locationOut, directionOut, directionOut, gpe, 
+                                 AssignBoundary(globalCellOut, locedge), flag, locedge) ;
 
     }else if (OutBndryCell(mi, globalCellOut)){
         flag = 0;
         fluxpoint = fluxfuncbndry(mi, mlu, edge, unitNormal, len, globalCellIn,
-                                  locationIn, direction, direction, gpe, 
-                             AssignBoundary(globalCellIn, locedge), flag, locedge) ;
+                                  locationIn, directionIn, directionIn, gpe, 
+                                  AssignBoundary(globalCellIn, locedge), flag, locedge) ;
 
     } else {
         // Interior edge
         fluxpoint = fluxfunc(mi, mlu, edge, unitNormal, 
                              len, globalCellIn, globalCellOut,
-                             locationIn, locationOut, direction, direction, gpe) ;
+                             locationIn, locationOut, LFParam, directionIn, directionOut, gpe) ;
     }
 
     // Integrate with gauess quadratrue scheme
@@ -115,6 +130,7 @@ inline int extractVertEdgeInfo(const MeshInfo& mi,
     edgeEndsVertex.start = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.start)];
     edgeEndsVertex.end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.end)];
 
+    // 1 represents vertical edge
     return 1;
 }
 
@@ -141,7 +157,8 @@ inline int extractHoriEdgeInfo(const MeshInfo& mi,
     edgeEndsVertex.start = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.start)];
     edgeEndsVertex.end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.end)];
 
-    return 1;
+    // 2 represents horizontal edge
+    return 2;
 }
 
 typedef int (*extractEdgeInfoFunc) (const MeshInfo& mi,
@@ -152,28 +169,30 @@ typedef int (*extractEdgeInfoFunc) (const MeshInfo& mi,
                                     edgeEnds<vertex>& edgeEndsVertex,
                                     edgeEnds<indice>& edgeEndsIndice);
 
-inline int computeEdgeFlux(const MeshInfo& mi,
-                           const int& i,
-                           const int& j,
-                           double * edgeFlux,
-                           const int& shift,
-                           const MLWENO::MLWENOUse& mlu,
-                           indice& gCellOut,
-                           indice& gCellIn,
-                           const valarray<double>& gwe,
-                           const valarray<double>& gpe,
-                           edgeEnds<vertex>& edgeEndsVertex,
-                           edgeEnds<indice>& edgeEndsIndice,
-                           vector<vertex>& gauss_p,
-                           extractEdgeInfoFunc extractEdgeInfo,
-                           Phase * phase,
-                           Vec * sol_darcy, Vec * g_darcy,
-                           Vec * sol_stokes, Vec * g_stokes,
-                           const int* refmap_darcy,
-                           const int* refmap_stokes,
-                           basis& mybasis,
-                           BRMixed& br,
-                           Hdivmixed& hdiv){
+inline int getEdgeFlux(const MeshInfo& mi,
+                       const int& i,
+                       const int& j,
+                       double * edgeFlux,
+                       const int& shift,
+                       const MLWENO::MLWENOUse& mlu,
+                       indice& gCellOut,
+                       indice& gCellIn,
+                       const valarray<double>& gwe,
+                       const valarray<double>& gpe,
+                       edgeEnds<vertex>& edgeEndsVertex,
+                       edgeEnds<indice>& edgeEndsIndice,
+                       vector<vertex>& gauss_p,
+                       fluxFunc      fluxfunc,
+                       fluxFuncBndry fluxfuncbndry,
+                       extractEdgeInfoFunc extractEdgeInfo,
+                       Phase * phase,
+                       Vec * sol_darcy, Vec * g_darcy,
+                       Vec * sol_stokes, Vec * g_stokes,
+                       const int* refmap_darcy,
+                       const int* refmap_stokes,
+                       basis& mybasis,
+                       BRMixed& br,
+                       Hdivmixed& hdiv){
 
     indice ghostShift {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
 
@@ -181,7 +200,8 @@ inline int computeEdgeFlux(const MeshInfo& mi,
     indice local {i,j};
     int flatlocal = FlatIndic(mi.MPIlocalCellSize[0], local);
 
-    extractEdgeInfo(mi, local, ghostShift, gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
+    // Marks whether it is a horizontal or vertical edge
+    int edgemark = extractEdgeInfo(mi, local, ghostShift, gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
 
     vector<vertex> edge {edgeEndsVertex.start, edgeEndsVertex.end};
 
@@ -195,17 +215,18 @@ inline int computeEdgeFlux(const MeshInfo& mi,
     indice gcell_inside = PickCellInside(mi, gCellIn, gCellOut);
 
     // Extract velocity
+    // unscaled darcy
     vector<vertex> vel_darcy  = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, 
                                       mi, gauss_p, gcell_inside, hdiv, mybasis);
 
     vector<vertex> vel_stokes = ExtractVelocity(sol_stokes, g_stokes, refmap_stokes, 
                                       mi, gauss_p, gcell_inside, br, mybasis);
 
-    // Extract volume fraction
-    
+    // Compute edge flux
 
-    // Computation of kappa
-
+    edgeFlux[flatlocal + shift] = computeFlux(mi, mlu, globalCellIn, gobalCellOut, 
+                                              locationIn, locationOut, edge, gauss_p, 
+                                              vel_darcy, vel_stokes, gwe, gpe, edgemark, fluxfunc, fluxfuncbndry);
 
     return 1;
 }

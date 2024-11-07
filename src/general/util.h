@@ -50,6 +50,13 @@ void nodePrint(T node){
 // ===== Define derivative class =====
 using derivative = unordered_map<int, double>;
 
+template <typename T>
+T find_max(T val1, T val2){
+
+    if (val1 > val2) {return val1;} else {return val2;}
+
+}
+
 /**
  * Passing arithmetic function to the template 
  * std::minus

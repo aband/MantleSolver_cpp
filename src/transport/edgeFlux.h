@@ -14,7 +14,8 @@ typedef vector<double> (*fluxFunc) (const MeshInfo& mi,
                                     const std::string& locIn,
                                     const std::string& locOut,
                                     const vector<double>& LFparam,
-                                    const vector<double>& direction,
+                                    const vector<double>& directionIn,
+                                    const vector<double>& directionOut,
                                     const valarray<double>& gpe);
 
 typedef vector<double> (*fluxFuncBndry) (const MeshInfo& mi,
