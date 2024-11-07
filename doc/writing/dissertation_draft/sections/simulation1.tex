@@ -127,3 +127,11 @@ We are using piece-wise constant L2 approximation space for stokes and darcy pre
 In order to evaluate point-wise pressure. We are going to present an interpolation using
 generated piece-wise constant pressure.
 
+\subsection{Approximation of physical values on the cell edges}
+In the process of simulation, plenty of physical values are defined on the gauss points of cell edges.
+Take $\kappa$ for example, where $\kappa = \frac{\phi_f c_f}{\bar{c}}$, two phase parameters $\phi_f$ 
+and $c_f$ are computed with phase package using reconstructed values on both side of the cell edges.
+The value of $\bar{c}$ are directly obtained by WENO reconstruction. Therefore, two different values
+$\kappa_{In}$ and $\kappa_{Out}$ will be obtained during this computation process, which will be 
+used in the calculation of the numerical flux.
+

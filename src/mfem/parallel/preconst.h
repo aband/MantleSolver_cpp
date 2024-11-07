@@ -123,12 +123,12 @@ int CGNSPrepareParallel(Vec * sol, Vec * g,
 // Compute velocity for a given cell with given local positions
 template <typename T>
 vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
-                              const int *refmap,
-                              const MeshInfo& mi,
-                              vector<vertex> points,
-                              const indice& gCell,
-                              T& funcSp,
-                              basis& mybasis){
+                               const int *refmap,
+                               const MeshInfo& mi,
+                               vector<vertex> points,
+                               const indice& gCell,
+                               T& funcSp,
+                               basis& mybasis){
 
     std::vector<vertex> work;
     work.resize(points.size());
@@ -142,7 +142,7 @@ vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
     mybasis.GetCorners(mi, gCell);
 
     // !Get global indiex of the local dofs in specific and correct order
-    const std::vector<int> elemDofs = funcSp.LocalToGlobal(mi, gCell);
+    const std::vector<int> elemDofs = funcSp.LocalGlobalMap(mi, gCell);
 
     for (int g=0; g<points.size(); g++){
 

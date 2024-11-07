@@ -5,8 +5,7 @@
 #include "trans_param.h"
 
 vector<double> advFlux(const MeshInfo& mi,
-                       const MLWENO::MLWENOUse& mluIn,
-                       const MLWENO::MLWENOUse& mluOut,
+                       const MLWENO::MLWENOUse& mlu,
                        const vector<vertex>& edge,
                        const vertex& unitNormal,
                        const double& len,

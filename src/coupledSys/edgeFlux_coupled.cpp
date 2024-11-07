@@ -33,22 +33,20 @@ inline indice PickCellInside(const MeshInfo& mi,
 }
 
 inline double edgeFlux(const MeshInfo& mi,
-                       const MLWENO::MLWENOUse& mluIn,
-                       const MLWENO::MLWENOUse& mluOut,
+                       const MLWENO::MLWENOUse& mlu,
                        const indice& globalCellIn,
                        const indice& globalCellOut,
                        const std::string& locationIn,
                        const std::string& locationOut,
                        const std::vector<vertex>& edge,
                        const std::vector<vertex>& gauss_p,
-                       const std::vector<vertex>& velocity,
+                       const std::vector<vertex>& velocityIn,
+                       const std::vector<vertex>& velocityOut,
                        const std::valarray<double>& gwe,
                        const std::valarray<double>& gpe,
                        const int& locedge,
-                       fluxFunc       fluxfuncAdv,
-                       fluxFuncBndry  fluxfuncbndryAdv,
-                       fluxFunc       fluxfuncDif,
-                       fluxFuncBndry  fluxfuncbndryDif){
+                       fluxFunc       fluxfunc,
+                       fluxFuncBndry  fluxfuncbndry){
     // Compute integral of flux on edge
     // mluIn used for value where unit normal points to
     // mluOut used for value where unit normal tails at
@@ -71,19 +69,21 @@ inline double edgeFlux(const MeshInfo& mi,
     // Distinguish different boundary conditions
     if(OutBndryCell(mi, globalCellIn)){
         flag = 1;
-        fluxpoint = fluxfuncbndryAdv(mi, mluOut, edge, unitNormal, len, globalCellOut,
-                                     locationOut, direction, direction, gpe, AssignBoundary(globalCellOut, locedge), flag, locedge) ;
+        fluxpoint = fluxfuncbndry(mi, mlu, edge, unitNormal, len, globalCellOut,
+                                 locationOut, direction, direction, gpe, 
+                             AssignBoundary(globalCellOut, locedge), flag, locedge) ;
 
     }else if (OutBndryCell(mi, globalCellOut)){
         flag = 0;
-        fluxpoint = fluxfuncbndryAdv(mi, mluIn, edge, unitNormal, len, globalCellIn,
-                                     locationIn, direction, direction, gpe, AssignBoundary(globalCellIn, locedge), flag, locedge) ;
+        fluxpoint = fluxfuncbndry(mi, mlu, edge, unitNormal, len, globalCellIn,
+                                  locationIn, direction, direction, gpe, 
+                             AssignBoundary(globalCellIn, locedge), flag, locedge) ;
 
     } else {
         // Interior edge
-        fluxpoint = fluxfuncAdv(mi, mluIn, mluOut, edge, unitNormal, 
-                                len, globalCellIn, globalCellOut,
-                                locationIn, locationOut, direction, direction, gpe) ;
+        fluxpoint = fluxfunc(mi, mlu, edge, unitNormal, 
+                             len, globalCellIn, globalCellOut,
+                             locationIn, locationOut, direction, direction, gpe) ;
     }
 
     // Integrate with gauess quadratrue scheme
@@ -107,7 +107,7 @@ inline int extractVertEdgeInfo(const MeshInfo& mi,
     // Cell on right of the edge is regarded as "In" Cell
     // Cell on left of the edge is regarded as "Out" Cell
     gCellIn  = local + mi.MPIlocalCellStart; 
-    gCellOut = {gCell[0] - 1, gCell[0]};
+    gCellOut = {gCellIn[0] - 1, gCellIn[0]};
 
     edgeEndsIndice.end   = local + ghostShift;
     edgeEndsIndice.start = {edgeEndsIndice.end[0], edgeEndsIndice.end[1]-1};
@@ -144,11 +144,78 @@ inline int extractHoriEdgeInfo(const MeshInfo& mi,
     return 1;
 }
 
+typedef int (*extractEdgeInfoFunc) (const MeshInfo& mi,
+                                    const indice& local,
+                                    const indice& ghostShift,
+                                    indice& gCellOut,
+                                    indice& gCellIn,
+                                    edgeEnds<vertex>& edgeEndsVertex,
+                                    edgeEnds<indice>& edgeEndsIndice);
+
+inline int computeEdgeFlux(const MeshInfo& mi,
+                           const int& i,
+                           const int& j,
+                           double * edgeFlux,
+                           const int& shift,
+                           const MLWENO::MLWENOUse& mlu,
+                           indice& gCellOut,
+                           indice& gCellIn,
+                           const valarray<double>& gwe,
+                           const valarray<double>& gpe,
+                           edgeEnds<vertex>& edgeEndsVertex,
+                           edgeEnds<indice>& edgeEndsIndice,
+                           vector<vertex>& gauss_p,
+                           extractEdgeInfoFunc extractEdgeInfo,
+                           Phase * phase,
+                           Vec * sol_darcy, Vec * g_darcy,
+                           Vec * sol_stokes, Vec * g_stokes,
+                           const int* refmap_darcy,
+                           const int* refmap_stokes,
+                           basis& mybasis,
+                           BRMixed& br,
+                           Hdivmixed& hdiv){
+
+    indice ghostShift {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
+
+    // Compute flux on the edge
+    indice local {i,j};
+    int flatlocal = FlatIndic(mi.MPIlocalCellSize[0], local);
+
+    extractEdgeInfo(mi, local, ghostShift, gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
+
+    vector<vertex> edge {edgeEndsVertex.start, edgeEndsVertex.end};
+
+    double len = length(edge);
+    vertex unitNormal = UnitNormal(edge, len);
+
+    // Get gauss quadrature points
+    for (int g=0; g<gpe.size(); g++){gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge);}
+
+    // Pick inside cell and flag
+    indice gcell_inside = PickCellInside(mi, gCellIn, gCellOut);
+
+    // Extract velocity
+    vector<vertex> vel_darcy  = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, 
+                                      mi, gauss_p, gcell_inside, hdiv, mybasis);
+
+    vector<vertex> vel_stokes = ExtractVelocity(sol_stokes, g_stokes, refmap_stokes, 
+                                      mi, gauss_p, gcell_inside, br, mybasis);
+
+    // Extract volume fraction
+    
+
+    // Computation of kappa
+
+
+    return 1;
+}
+
 double * edgeFluxAll(const MeshInfo& mi,
                      Vec * sol_darcy, Vec * g_darcy,
                      Vec * sol_stokes, Vec * g_stokes,
                      const int* refmap_darcy,
                      const int* refmap_stokes,
+                     const MLWENO::MLWENOUse& mlu,
                      basis& mybasis,
                      BRMixed& br,
                      Hdivmixed& hdiv,
@@ -179,10 +246,6 @@ double * edgeFluxAll(const MeshInfo& mi,
     vector<vertex> gauss_p; 
     gauss_p.resize(gpe.size());
 
-    vector<vertex> velocity_darcy;
-    vector<vertex> velocity_stokes;
-    vector<vertex> velocity_effect;
-
     indice gCellOut;
     indice gCellIn;
     edgeEnds<vertex> edgeEndsVertex;
@@ -193,40 +256,9 @@ double * edgeFluxAll(const MeshInfo& mi,
     for (int j=0; j<mi.MPIlocalVertexSize[1]; j++){
         for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
 
-             // Flaten to integer
-            indice local {i,j};
-            int flatlocal = FlatIndic(mi.MPIlocalCellSize[0], local);
-
-            extractHoriEdgeInfo(mi, local, ghostShift, gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
-
-            vector<vertex> edge {edgeEndsVertex.start, edgeEndsVertex.end};
-
-            double len = length(edge);
-            vertex unitNormal = UnitNormal(edge, len);
-
-            // Get gauss quadrature points
-            for (int g=0; g<gpe.size(); g++){gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge);}
-
-            // Interpolation of velocity on each edges
-            //velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, mi, gauss_p, hdiv, mybasis); 
-            //velocity_stokes = ExtractVelocity(sol_stokes, g_stokes, refmap_stokes);
-
-            // Transform scaled variable to unscaled variable
-
-            // Pick cell inside computational domain
-            indice gcell_inside = PickCellInside(mi, gCellIn, gCellOut);
-
-            // Compute velocity from computating results of stokes and darcy problems
-            //velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, 
-            //mi, gauss_p, gcell_inside, hdiv, mybasis);
-
-            //velocity_stokes = ExtractVelocity(sol_stokes, g_stokes, refmap_stokes, 
-            //mi, gauss_p, gcell_inside, br, mybasis);
-
-            // Compute effective velocity 
-
-            //edgeflux[flatlocal] = edgeFlux(mi, mluIn, mluOut, gCellIn, gCellOut,
-            //location(gCellIn), location(gCellOut), edge, gauss_p, velocity, gwe, {0.0},fluxfunc, fluxfuncbndry);
+//            computeEdgeFlux(mi, i, j, edgeflux, 0, mlu, gCellOut, gCellIn, 
+//                            gwe, gpe, edgeEndsVertex, edgeEndsIndice,
+//                            gauss_p, extractHoriEdgeInfo);
 
         }
     }
@@ -235,29 +267,10 @@ double * edgeFluxAll(const MeshInfo& mi,
     for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
         for (int i=0; i<mi.MPIlocalVertexSize[0]; i++) {
 
-            extractVerteEdgeInfo(mi, local, ghostShift, gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
-
-            vector<vertex> edge {start, end};
-            double len = length(edge);
-            vertex unitNormal = UnitNormal(edge, len);
-
-/*
-            // Get gauss quadrature points
-            for (int g=0; g<gpe.size(); g++){gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge);}
-
-            // Pick cell inside computational domain
-            indice gcell_inside = PickCellInside(mi, gCellIn, gCellOut);
-
-            // Compute velocity from computating results of stokes and darcy problems 
-            velocity_darcy = ExtractVelocity(sol_darcy, g_darcy, refmap_darcy, 
-            mi, gauss_p, gcell_inside, hdiv, mybasis);
-
-            velocity_stokes = ExtractVelocity(sol_stokes, g_stokes, refmap_stokes, 
-            mi, gauss_p, gcell_inside, br, mybasis);
-
-            edgeflux[mi.MPIlocalHoriEdgeSize + flatlocal] = edgeFlux(mi, mluIn, mluOut, gCellIn, gCellOut,
-            location(gCellIn), location(gCellOut), edge, gauss_p, velocity, gwe, {0.0},fluxfunc, fluxfuncbndry);
-*/
+//            computeEdgeFlux(mi, i, j, edgeflux, mi.MPIlocalHoriEdgeSize, 
+//                            mlu, gCellOut, gCellIn, 
+//                            gwe, gpe, edgeEndsVertex, edgeEndsIndice,
+//                            gauss_p, extractHoriEdgeInfo);
 
         }
     }
@@ -267,7 +280,8 @@ double * edgeFluxAll(const MeshInfo& mi,
 
 double cellFlux(const MeshInfo& mi,
                 const indice& lCell, 
-                double * edgeFlux){
+                double * edgeFluxAdv,
+                double * edgeFluxDif){
 
     // Return summation of flux on the edges of a given cell
 
@@ -284,7 +298,7 @@ double cellFlux(const MeshInfo& mi,
     int bottom_flat= FlatIndic(mi.MPIlocalCellSize[0], bottom) + mi.MPIlocalHoriEdgeSize;
     int top_flat   = FlatIndic(mi.MPIlocalCellSize[0], top) + mi.MPIlocalHoriEdgeSize;       
 
-    flux = edgeFlux[left_flat] + edgeFlux[right_flat] + edgeFlux[bottom_flat] + edgeFlux[top_flat]; 
+    flux = edgeFluxAdv[left_flat] - edgeFluxAdv[right_flat] + edgeFluxAdv[bottom_flat] - edgeFluxAdv[top_flat]; 
 
     return flux;
 }

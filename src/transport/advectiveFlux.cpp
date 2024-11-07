@@ -10,8 +10,7 @@ inline double LFFlux(const vector<double>& u,
 }
 
 vector<double> advFlux(const MeshInfo& mi,
-                       const MLWENO::MLWENOUse& mluIn,
-                       const MLWENO::MLWENOUse& mluOut,
+                       const MLWENO::MLWENOUse& mlu,
                        const vector<vertex>& edge,
                        const vertex& unitNormal,
                        const double& len,
@@ -31,8 +30,8 @@ vector<double> advFlux(const MeshInfo& mi,
     for (int g=0; g<gpe.size(); g++){
 
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
-        double uIn  = mluIn.Evaluate(mapped, gCellIn, mi, locIn);
-        double uOut = mluOut.Evaluate(mapped, gCellOut, mi, locOut);
+        double uIn  = mlu.Evaluate(mapped, gCellIn, mi, locIn);
+        double uOut = mlu.Evaluate(mapped, gCellOut, mi, locOut);
 
         // Compute Lax_Friedrich flux
         // Here transport equation is hard coded within
