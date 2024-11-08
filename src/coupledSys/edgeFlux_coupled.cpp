@@ -1,47 +1,9 @@
 #include "edgeFlux.h"
 #include "preconst.h"
 
-inline bool OutBndryCell(const MeshInfo& mi, 
-                         const indice& gcell){
-
-    // Check if the Cell is out of domain or not.
-    bool work = false;
-
-    if (gcell[0] < 0 || gcell[0] > mi.MPIglobalCellSize[0]-1 || 
-        gcell[1] < 0 || gcell[1] > mi.MPIglobalCellSize[1]-1){ 
-
-        work = true;
-    }
-
-    return work;
-}
-
-// pick the cell index that inside the compuitational domain
-inline indice PickCellInside(const MeshInfo& mi,
-                             const indice& gCellIn,
-                             const indice& gCellOut){
-
-    if (OutBndryCell(mi, gCellIn)){
-        return gCellOut;
-    } else if (OutBndryCell(mi, gCellOut)){
-        return gCellIn;
-    } else {
-        // Both gCellIn and gCellOut are inside boundary
-        return gCellIn;
-    }
-
-}
-
 int extractEdgeGaussPoints(unordered_map<int, vector<double>>& edgeGaussPointsAll,
                            const MeshInfo& mi,
                            const std::valarray<double>& gpe){
-
-}
-
-int extractVelocityAll(unordered_map<int, vector<vertex>>& velocityAll,
-                       const unordered_map<int, vector<double>>& edgeGaussPointsAll,
-                       Vec * vel, Vec * g){
-
 
 }
 
@@ -120,58 +82,6 @@ inline double computeFlux(const MeshInfo& mi,
     }
 
     return flux;
-}
-
-inline int extractVertEdgeInfo(const MeshInfo& mi, 
-                               const indice& local,
-                               const indice& ghostShift,
-                               indice& gCellOut,
-                               indice& gCellIn,
-                               edgeEnds<vertex> edgeEndsVertex,
-                               edgeEnds<indice> edgeEndsIndice){
-
-    // Extract information for vertical edges
-    // index counted from top to bottom
-    // Cell on right of the edge is regarded as "In" Cell
-    // Cell on left of the edge is regarded as "Out" Cell
-    gCellIn  = local + mi.MPIlocalCellStart; 
-    gCellOut = {gCellIn[0] - 1, gCellIn[0]};
-
-    edgeEndsIndice.end   = local + ghostShift;
-    edgeEndsIndice.start = {edgeEndsIndice.end[0], edgeEndsIndice.end[1]-1};
-
-    edgeEndsVertex.start = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.start)];
-    edgeEndsVertex.end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.end)];
-
-    // 1 represents vertical edge
-    return 1;
-}
-
-inline int extractHoriEdgeInfo(const MeshInfo& mi,
-                               const indice& local,
-                               const indice& ghostShift,
-                               indice& gCellOut,
-                               indice& gCellIn,
-                               edgeEnds<vertex>& edgeEndsVertex,
-                               edgeEnds<indice>& edgeEndsIndice){
-
-    // Extract information for horizontal edges
-    // index counted from left to right
-    // Cell on top of the edge is regarded as "In" cell 
-    // Cell on bottom of the edge is regarded as "Out" cell
-    // Unit normal vector pointing from top to bottom
-
-    gCellIn = local + mi.MPIlocalCellStart;
-    gCellOut= {gCellIn[0],gCellIn[1] - 1};
-
-    edgeEndsIndice.start = local + ghostShift; 
-    edgeEndsIndice.end   = {edgeEndsIndice.start[0] + 1, edgeEndsIndice.start[0]};
-
-    edgeEndsVertex.start = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.start)];
-    edgeEndsVertex.end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.end)];
-
-    // 2 represents horizontal edge
-    return 2;
 }
 
 typedef int (*extractEdgeInfoFunc) (const MeshInfo& mi,

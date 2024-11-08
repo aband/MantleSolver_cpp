@@ -151,6 +151,9 @@ typedef struct {
     int MPIglobalVertEdgeSize;
     int MPIlocalVertEdgeSize;
 
+    // Assign shift of ghost layer
+    indice ghostShiftVertex;
+
     // Containing all the local mesh vertex points here  
     vertexSet lmesh; 
 
@@ -255,5 +258,36 @@ const vertex getUnitNormal(const std::array<vertex,2> edge,
                            const double& len);
 
 const double getEdgeLength(const std::array<vertex, 2> edge);
+
+// Some functions about cell and edge relationships
+
+bool OutBndryCell(const MeshInfo& mi, 
+                  const indice& gcell);
+
+indice PickCellInside(const MeshInfo& mi,
+                      const indice& gCellIn,
+                      const indice& gCellOut);
+
+template <typename T>
+struct edgeEnds{
+    T start;
+    T end;
+};
+
+int extractVertEdgeInfo(const MeshInfo& mi, 
+                        const indice& local,
+                        const indice& ghostShift,
+                        indice& gCellOut,
+                        indice& gCellIn,
+                        edgeEnds<vertex> edgeEndsVertex,
+                        edgeEnds<indice> edgeEndsIndice);
+
+int extractHoriEdgeInfo(const MeshInfo& mi,
+                        const indice& local,
+                        const indice& ghostShift,
+                        indice& gCellOut,
+                        indice& gCellIn,
+                        edgeEnds<vertex>& edgeEndsVertex,
+                        edgeEnds<indice>& edgeEndsIndice);
 
 #endif

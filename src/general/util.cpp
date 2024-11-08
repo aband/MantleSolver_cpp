@@ -181,6 +181,8 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
     mi.MPIlocalHoriEdgeSize = mi.MPIlocalCellSize[0]*mi.MPIlocalVertexSize[1];
     mi.MPIlocalVertEdgeSize = mi.MPIlocalCellSize[1]*mi.MPIlocalVertexSize[0];
 
+    ghostShiftVertex = {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
+
     // Pre calculate cell area for future computation.
     // Repeat calculation of cell areas cost a lot of computation resources.
     //! Extract default gauess points and gauess weights.
@@ -189,7 +191,6 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
 
     for (int j=ys; j<ys+ym+1; j++){
     for (int i=xs; i<xs+xm+1; i++){
-
 
         if (j<N && i<M){
             vertexSet corner;
@@ -386,3 +387,90 @@ const double getEdgeLength(const std::array<vertex, 2> edge){
     vec *= vec;
     return sqrt(vec.sum());
 }
+
+// =============================================================================
+
+bool OutBndryCell(const MeshInfo& mi, 
+                  const indice& gcell){
+
+    // Check if the Cell is out of domain or not.
+    bool work = false;
+
+    if (gcell[0] < 0 || gcell[0] > mi.MPIglobalCellSize[0]-1 || 
+        gcell[1] < 0 || gcell[1] > mi.MPIglobalCellSize[1]-1){ 
+
+        work = true;
+    }
+
+    return work;
+}
+
+// pick the cell index that inside the compuitational domain
+indice PickCellInside(const MeshInfo& mi,
+                      const indice& gCellIn,
+                      const indice& gCellOut){
+
+    if (OutBndryCell(mi, gCellIn)){
+        return gCellOut;
+    } else if (OutBndryCell(mi, gCellOut)){
+        return gCellIn;
+    } else {
+        // Both gCellIn and gCellOut are inside boundary
+        return gCellIn;
+    }
+
+}
+
+int extractVertEdgeInfo(const MeshInfo& mi, 
+                        const indice& local,
+                        const indice& ghostShift,
+                        indice& gCellOut,
+                        indice& gCellIn,
+                        edgeEnds<vertex> edgeEndsVertex,
+                        edgeEnds<indice> edgeEndsIndice){
+
+    // Extract information for vertical edges
+    // index counted from top to bottom
+    // Cell on right of the edge is regarded as "In" Cell
+    // Cell on left of the edge is regarded as "Out" Cell
+    gCellIn  = local + mi.MPIlocalCellStart; 
+    gCellOut = {gCellIn[0] - 1, gCellIn[0]};
+
+    edgeEndsIndice.end   = local + ghostShift;
+    edgeEndsIndice.start = {edgeEndsIndice.end[0], edgeEndsIndice.end[1]-1};
+
+    edgeEndsVertex.start = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.start)];
+    edgeEndsVertex.end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.end)];
+
+    // 1 represents vertical edge
+    return 1;
+}
+
+int extractHoriEdgeInfo(const MeshInfo& mi,
+                        const indice& local,
+                        const indice& ghostShift,
+                        indice& gCellOut,
+                        indice& gCellIn,
+                        edgeEnds<vertex>& edgeEndsVertex,
+                        edgeEnds<indice>& edgeEndsIndice){
+
+    // Extract information for horizontal edges
+    // index counted from left to right
+    // Cell on top of the edge is regarded as "In" cell 
+    // Cell on bottom of the edge is regarded as "Out" cell
+    // Unit normal vector pointing from top to bottom
+
+    gCellIn = local + mi.MPIlocalCellStart;
+    gCellOut= {gCellIn[0],gCellIn[1] - 1};
+
+    edgeEndsIndice.start = local + ghostShift; 
+    edgeEndsIndice.end   = {edgeEndsIndice.start[0] + 1, edgeEndsIndice.start[0]};
+
+    edgeEndsVertex.start = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.start)];
+    edgeEndsVertex.end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.end)];
+
+    // 2 represents horizontal edge
+    return 2;
+}
+
+

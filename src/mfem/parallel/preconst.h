@@ -168,4 +168,35 @@ vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
     return work;
 }
 
+// Extract velocity on a given gauss points set
+template <typename T>
+int extractVelocityAll(unordered_map<int, vector<vertex>>& velocityAll,
+                       const unordered_map<int, vector<double>>& edgeGaussPointsAll,
+                       const MeshInfo& mi,
+                       const int* refmap, Vec * sol, Vec * g, T& funcSp, basis& mybasis){
+
+    indice local, gCellOut, gCellIn, gCell_inside;
+
+    edgeEnds<vertex> edgeEndsVertex;
+    edgeEnds<indice> edgeEndsIndice;
+
+    for (const auto& [key, value] : edgeGaussPointsAll){
+
+        if (key < mi.MPIlocalHoriEdgeSize){
+            // Horizontal edge
+            local = Bend(mi.MPIlocalCellSize[0], key);
+            extractVertEdgeInfo(mi, local, mi.ghostShiftVertex, gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
+        } else {
+            // Vertical edge
+            local = Bend(mi.MPIlocalVertexSize[0], key); 
+            extractVertEdgeInfo(mi, local, mi.ghostShiftVertex, gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
+        }
+
+        gCell_inside = PickCellInside(mi, gCellIn, gCellOut); 
+
+    }
+
+    return 1;
+}
+
 #endif
