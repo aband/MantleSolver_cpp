@@ -32,6 +32,19 @@ inline indice PickCellInside(const MeshInfo& mi,
 
 }
 
+int extractEdgeGaussPoints(unordered_map<int, vector<double>>& edgeGaussPointsAll,
+                           const MeshInfo& mi,
+                           const std::valarray<double>& gpe){
+
+}
+
+int extractVelocityAll(unordered_map<int, vector<vertex>>& velocityAll,
+                       const unordered_map<int, vector<double>>& edgeGaussPointsAll,
+                       Vec * vel, Vec * g){
+
+
+}
+
 inline double computeFlux(const MeshInfo& mi,
                           const MLWENO::MLWENOUse& mlu,
                           const indice& globalCellIn,
