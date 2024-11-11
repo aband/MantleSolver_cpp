@@ -181,7 +181,7 @@ void AssignValuesMeshInfo(MeshInfo& mi, DM dmv, DM dmu){
     mi.MPIlocalHoriEdgeSize = mi.MPIlocalCellSize[0]*mi.MPIlocalVertexSize[1];
     mi.MPIlocalVertEdgeSize = mi.MPIlocalCellSize[1]*mi.MPIlocalVertexSize[0];
 
-    ghostShiftVertex = {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
+    mi.ghostShiftVertex = {mi.vertexGhostLayerSize, mi.vertexGhostLayerSize};
 
     // Pre calculate cell area for future computation.
     // Repeat calculation of cell areas cost a lot of computation resources.

@@ -42,6 +42,11 @@ double EUTECTIC::phase::GetScaledLithoP(const double& z){
     return 5.23 * z;
 }
 
+double EUTECTIC::phase::GetDepth(const double& y, const double& l0){
+
+    return y*(-1)*l0*0.6;
+}
+
 void EUTECTIC::phase::evalPhase(const double& HD,
                                 const double& CD,
 										  const double& P){

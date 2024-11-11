@@ -12,6 +12,12 @@ int SolScatAll(Vec *sol, Vec * g,
 
 std::vector<double> GetFullSol(Vec * destSol, Vec * destg);
 
+typedef struct{
+
+    Vec vel_stokes, vel_darcy, g_stokes, g_darcy;
+
+} ScatterResult;
+
 // Create scatter map for all processor
 // Repeated dof is fine here
 template <typename T>
@@ -123,7 +129,7 @@ int CGNSPrepareParallel(Vec * sol, Vec * g,
 // Compute velocity for a given cell with given local positions
 template <typename T>
 vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
-                               const int *refmap,
+                               int *refmap,
                                const MeshInfo& mi,
                                vector<vertex> points,
                                const indice& gCell,
@@ -170,8 +176,8 @@ vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
 
 // Extract velocity on a given gauss points set
 template <typename T>
-int extractVelocityAll(unordered_map<int, vector<vertex>>& velocityAll,
-                       const unordered_map<int, vector<double>>& edgeGaussPointsAll,
+int ExtractVelocityAll(unordered_map<int, vector<vertex>>& velocityAll,
+                       const unordered_map<int, vector<vertex>>& edgeGaussPointsAll,
                        const MeshInfo& mi,
                        const int* refmap, Vec * sol, Vec * g, T& funcSp, basis& mybasis){
 
@@ -179,6 +185,8 @@ int extractVelocityAll(unordered_map<int, vector<vertex>>& velocityAll,
 
     edgeEnds<vertex> edgeEndsVertex;
     edgeEnds<indice> edgeEndsIndice;
+
+    vector<vertex> velocity_gaussp;
 
     for (const auto& [key, value] : edgeGaussPointsAll){
 
@@ -193,7 +201,11 @@ int extractVelocityAll(unordered_map<int, vector<vertex>>& velocityAll,
         }
 
         gCell_inside = PickCellInside(mi, gCellIn, gCellOut); 
+        velocity_gaussp = ExtractVelocity(sol, g, refmap, mi, value, gCell_inside,funcSp, mybasis);
 
+        edgeGaussPointsAll.insert(
+        make_pair<int, vector<vertex>>(key, velocity_gaussp));
+ 
     }
 
     return 1;

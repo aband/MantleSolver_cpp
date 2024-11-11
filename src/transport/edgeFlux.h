@@ -31,9 +31,4 @@ typedef vector<double> (*fluxFuncBndry) (const MeshInfo& mi,
                                          const bndryTypeTrans& bt,
                                          const int& flag,
                                          const int& locedge);
-
-double * edgeFluxAll(const MeshInfo* mi,
-                     fluxFunc      fluxfunc,
-                     fluxFuncBndry fluxfuncbndry);
-
 #endif

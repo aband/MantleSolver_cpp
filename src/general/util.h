@@ -290,4 +290,12 @@ int extractHoriEdgeInfo(const MeshInfo& mi,
                         edgeEnds<vertex>& edgeEndsVertex,
                         edgeEnds<indice>& edgeEndsIndice);
 
+typedef int (*extractEdgeInfoFunc) (const MeshInfo& mi,
+                                    const indice& local,
+                                    const indice& ghostShift,
+                                    indice& gCellOut,
+                                    indice& gCellIn,
+                                    edgeEnds<vertex>& edgeEndsVertex,
+                                    edgeEnds<indice>& edgeEndsIndice);
+
 #endif

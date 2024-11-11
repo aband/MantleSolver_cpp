@@ -55,6 +55,9 @@ int main(int argc, char **argv){
 
     //driver->PrintBoundaryDOFs();
 
+    // Extract velocity
+
+
     // =============== Print functions ==============================================
 
     driver->PrintFlow();

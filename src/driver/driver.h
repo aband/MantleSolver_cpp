@@ -24,6 +24,8 @@
 // MLWENO parameter header file
 #include "mlwenouse.h"
 #include "trans_param.h"
+#include "advectiveFlux.h"
+#include "edgeFlux.h"
 
 extern "C"{
 #include "mesh.h"
@@ -198,6 +200,13 @@ class Driver {
 
         std::unordered_map<std::string, LocFunc> locFuncSet_;
 
+        int SingleEdgeFlux_(const indice& localedge,
+                            extractEdgeInfoFunc edgeinfo, 
+                            fluxFunc      fluxfuncAdv, 
+                            fluxFuncBndry fluxfuncbndryAdv,
+                            fluxFunc      fluxfuncDif,
+                            fluxFuncBndry fluxfuncbndryDif);
+
         // ===========================================================
 
         /**!
@@ -253,6 +262,8 @@ class Driver {
         * Global vector containing results 
         */
        ReducedSys * Result_;
+
+       ScatterResult * sresult_;
 };
 
 #endif

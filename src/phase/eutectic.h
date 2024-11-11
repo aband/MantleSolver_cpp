@@ -36,6 +36,9 @@ class phase{
 				// Take depth as input and return lithostatic pressure
             double GetScaledLithoP(const double& z);
 
+            double GetDepth(const double& y, 
+                            const double& l0);
+
             // Split phase regions according to values of dimensionless enthalpy and 
             // dimensionless composition.
             int phaseSplit(const double& HD,

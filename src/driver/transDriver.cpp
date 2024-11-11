@@ -93,3 +93,119 @@ int Driver::PrepareDefaultTransport(){
 
     return 1;
 }
+
+int Driver::SingleEdgeFlux_(const indice& localedge,
+                            extractEdgeInfoFunc edgeinfo,
+                            fluxFunc      fluxfuncAdv, 
+                            fluxFuncBndry fluxfuncbndryAdv,
+                            fluxFunc      fluxfuncDif,
+                            fluxFuncBndry fluxfuncbndryDif){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    // Compute flux on one given edge
+    indice      gCellIn, gCellOut, gCellInside;
+    std::string locationIn, locationOut, locationInside;
+    edgeEnds<vertex> edgeEndsVertex;
+    edgeEnds<indice> edgeEndsIndice;
+
+    // returns values indicating horizontal or vertical edges
+    // 1 for horizontal edge, and 2 for vertical edge
+    int edgeFlag = edgeinfo(mi, localedge, mi.ghostShiftVertex, 
+                            gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
+
+    gCellInside = PickCellInside(mi, gCellIn, gCellOut);
+
+    std::vector<vertex> edge {edgeEndsVertex.start, edgeEndsVertex.end};
+
+    double len = length(edge);
+    vertex unitNormal = UnitNormal(edge,len);
+
+    // Extract gauss points
+    std::vector<vertex> gauss_p;
+    gauss_p.resize(gpe.size());
+
+    for (int g=0; g<gpe.size(); g++){
+    gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge);}
+
+    // Extract velocity on the given gauss points 
+    vector<vertex> vel_darcy = 
+    ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
+                    refArrayDarcyEssen_,mi,
+                    gauss_p, gCellInside,*hdiv_,*basis_);
+
+    vector<vertex> vel_stokes = 
+    ExtractVelocity(&sresult_->vel_stokes, &sresult_->g_stokes,
+                    refArrayStokesEssen_,mi,
+                    gauss_p, gCellInside,*br_,*basis_);
+
+    // Computable in and out cell index
+    indice comp_gCellIn, comp_gCellOut;
+    comp_gCellIn = gCellIn; comp_gCellOut = gCellOut;
+
+    vector<double> HDout, CDout, HDin, CDin;
+
+    HDout.resize(gpe.size());
+    CDout.resize(gpe.size());
+    HDin.resize(gpe.size());
+    CDin.resize(gep.size());
+
+    // Extract phase behavior on the given gauss points
+    vector<double> phifOut, phifIn, cfOut, cfIn, kappaIn, kappaOut;
+
+    phifOut.resize(gpe.size());
+    phifIn.resize(gpe.size());
+    cfIn.resize(gpe.size());
+    cfOut.resize(gpe.size());
+
+    // Compute effective velocity with kappa values
+    vector<vertex> velEffectOut, velErrectIn;
+
+     
+    // Equivelent of setting free flow boundary condition
+    if (OutBndryCell(mi, globalCellIn)){
+        // gCellIn out of the boundary
+        comp_gCellIn = gCellOut;
+    } else if (OutBndryCell(mi, globalCellOut)){
+        // gCellOut out of the boundary
+        comp_gCellOut = gCellIn;
+    }
+
+    for (int g=0; g<gpe.size(); g++){
+        HDout.at(g) = mluseAdv_.Evaluate(
+        gauss_p.at(g), comp_gCellOut, mi, location(mi,comp_gCellOut),"HD");
+        CDout.at(g) = mluseAdv_.Evaluate(
+        gauss_p.at(g), comp_gCellOut, mi, location(mi,comp_gCellOut),"CD");
+
+        HDin.at(g) = mluseAdv_.Evaluate(
+        gauss_p.at(g), comp_gCellIn, mi, location(mi,comp_gCellIn),"HD");
+        CDin.at(g) = mluseAdv_.Evaluate(
+        gauss_p.at(g), comp_gCellIn, mi, location(mi,comp_gCellIn),"CD");
+
+        double depth  = phase->pPtr->GetDepth(gauss_p.at(g)[1]);  
+        double lithoP = phase->pPtr->GetScaledLithoP(depth);
+
+        // Evaluate phase behavior at outside of the edge
+        phase->pPtr->evalPhase(HDout.at(g), CDout.at(g), lithoP);
+
+        phifOut.at(g) = phase->pPtr->phi.mlt;
+        cfOut.at(g)   = CDOut.at(g) - phase->pPtr->phi.opx;
+
+        // Compute kappa outside
+        kappaOut.at(g) = phiOut.at(g) * cfOut.at(g) / CDOut.at(g);
+
+        // Evaluate phase behaviro at inside of the edge
+        phase->pPtr->evalPhase(HDin.at(g), CDin.at(g), lithoP);
+
+        phifIn.at(g) = phase->pPtr->phi.mlt;
+        cfIn.at(g)   = CDin.at(g) - phase->pPtr->phi.opx;
+
+        // Compute kappa outside
+        kappaIn.at(g) = phiIn.at(g) * cfIn.at(g) / CDIn.at(g);
+    }
+
+   
+
+    return 1;
+}

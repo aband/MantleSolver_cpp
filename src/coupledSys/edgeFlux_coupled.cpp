@@ -1,12 +1,6 @@
 #include "edgeFlux.h"
 #include "preconst.h"
 
-int extractEdgeGaussPoints(unordered_map<int, vector<double>>& edgeGaussPointsAll,
-                           const MeshInfo& mi,
-                           const std::valarray<double>& gpe){
-
-}
-
 inline double computeFlux(const MeshInfo& mi,
                           const MLWENO::MLWENOUse& mlu,
                           const indice& globalCellIn,
@@ -83,14 +77,6 @@ inline double computeFlux(const MeshInfo& mi,
 
     return flux;
 }
-
-typedef int (*extractEdgeInfoFunc) (const MeshInfo& mi,
-                                    const indice& local,
-                                    const indice& ghostShift,
-                                    indice& gCellOut,
-                                    indice& gCellIn,
-                                    edgeEnds<vertex>& edgeEndsVertex,
-                                    edgeEnds<indice>& edgeEndsIndice);
 
 inline int getEdgeFlux(const MeshInfo& mi,
                        const int& i,

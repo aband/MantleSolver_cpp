@@ -26,6 +26,8 @@ int Driver::PrepareFlow(){
 
     Result_ = (ReducedSys *)malloc(sizeof(ReducedSys));
 
+    sresult_ = (ScatterResult *)malloc(sizeof(ScatterResult));
+
     return 1;
 }
 
@@ -43,6 +45,22 @@ int Driver::SolveFlow(int maxIter, double tolUzawa){
     CreateCoupledSystem(reducedStokes_, reducedDarcy_, Result_, &K_);
 
     CoupledUzawa(Result_, tolUzawa, maxIter);
+
+    return 1;
+}
+
+int Driver::CreateScatterVec(){
+
+    // Scatter distributed vector to all processors
+    Vec stokesv, darcyv;
+    PetscCall(VecNestGetSubVec(Result_->x, 0, &stokesv));
+    PetscCall(VecNestGetSubVec(Result_->x, 1, &darcyv));
+
+    SolScatAll(&stokesv, &reducedStokes_->g, 
+               &sresult_->vel_stokes, &sresult_->g_stokes);  
+
+    SolScatAll(&darcyv, &reducedDarcy_->g, 
+               &sresult_->vel_darcy, &sresult_->g_darcy);  
 
     return 1;
 }
