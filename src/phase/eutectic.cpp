@@ -47,6 +47,16 @@ double EUTECTIC::phase::GetDepth(const double& y, const double& l0){
     return y*(-1)*l0*0.6;
 }
 
+double EUTECTIC::phase::Getef(){
+
+    return phi.mlt*(TD + L_);
+}
+
+double EUTECTIC::phase::Getcf(const double& CD){
+    return CD - phi.opx;
+
+}
+
 void EUTECTIC::phase::evalPhase(const double& HD,
                                 const double& CD,
 										  const double& P){

@@ -143,6 +143,12 @@ class Driver {
        int SolveFlow(int maxIter, double tolUzawa);
 
        /**!
+        * Scatter distributed vector to all processor.
+        * Prepare for velocity reconstruction on gauss points
+        */
+       int CreateScatterVec();
+
+       /**!
 		  * Output of the calculated result
 		  */
        int PrintFlow();
@@ -200,12 +206,12 @@ class Driver {
 
         std::unordered_map<std::string, LocFunc> locFuncSet_;
 
-        int SingleEdgeFlux_(const indice& localedge,
-                            extractEdgeInfoFunc edgeinfo, 
-                            fluxFunc      fluxfuncAdv, 
-                            fluxFuncBndry fluxfuncbndryAdv,
-                            fluxFunc      fluxfuncDif,
-                            fluxFuncBndry fluxfuncbndryDif);
+        double SingleEdgeFlux_(const indice& localedge,
+                               extractEdgeInfoFunc edgeinfo, 
+                               fluxFunc      fluxfuncAdv, 
+                               fluxFuncBndry fluxfuncbndryAdv,
+                               fluxFunc      fluxfuncDif,
+                               fluxFuncBndry fluxfuncbndryDif);
 
         // ===========================================================
 

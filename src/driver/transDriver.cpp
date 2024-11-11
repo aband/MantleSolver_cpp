@@ -94,12 +94,17 @@ int Driver::PrepareDefaultTransport(){
     return 1;
 }
 
-int Driver::SingleEdgeFlux_(const indice& localedge,
-                            extractEdgeInfoFunc edgeinfo,
-                            fluxFunc      fluxfuncAdv, 
-                            fluxFuncBndry fluxfuncbndryAdv,
-                            fluxFunc      fluxfuncDif,
-                            fluxFuncBndry fluxfuncbndryDif){
+inline vertex effectVel(const vertex& vf, const vertex& vs, const double& c, const double& phif){
+
+    return vf*phif*c + (1-c)*vs;
+}
+
+double Driver::SingleEdgeFlux_(const indice& localedge,
+                               extractEdgeInfoFunc edgeinfo,
+                               fluxFunc      fluxfuncAdv, 
+                               fluxFuncBndry fluxfuncbndryAdv,
+                               fluxFunc      fluxfuncDif,
+                               fluxFuncBndry fluxfuncbndryDif){
 
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
@@ -149,10 +154,10 @@ int Driver::SingleEdgeFlux_(const indice& localedge,
     HDout.resize(gpe.size());
     CDout.resize(gpe.size());
     HDin.resize(gpe.size());
-    CDin.resize(gep.size());
+    CDin.resize(gpe.size());
 
     // Extract phase behavior on the given gauss points
-    vector<double> phifOut, phifIn, cfOut, cfIn, kappaIn, kappaOut;
+    vector<double> phifOut, phifIn, cfOut, cfIn;
 
     phifOut.resize(gpe.size());
     phifIn.resize(gpe.size());
@@ -160,52 +165,66 @@ int Driver::SingleEdgeFlux_(const indice& localedge,
     cfOut.resize(gpe.size());
 
     // Compute effective velocity with kappa values
-    vector<vertex> velEffectOut, velErrectIn;
+    vector<vertex> velEffectOutHD, velEffectInHD, velEffectOutCD, velEffectInCD;
 
-     
+    velEffectOutHD.resize(gpe.size());
+    velEffectInHD.resize(gpe.size());
+    velEffectOutCD.resize(gpe.size());
+    velEffectInCD.resize(gpe.size());
+
     // Equivelent of setting free flow boundary condition
-    if (OutBndryCell(mi, globalCellIn)){
+    if (OutBndryCell(mi, gCellIn)){
         // gCellIn out of the boundary
         comp_gCellIn = gCellOut;
-    } else if (OutBndryCell(mi, globalCellOut)){
+    } else if (OutBndryCell(mi, gCellOut)){
         // gCellOut out of the boundary
         comp_gCellOut = gCellIn;
     }
 
     for (int g=0; g<gpe.size(); g++){
-        HDout.at(g) = mluseAdv_.Evaluate(
+        HDout.at(g) = mluseAdv_->Evaluate(
         gauss_p.at(g), comp_gCellOut, mi, location(mi,comp_gCellOut),"HD");
-        CDout.at(g) = mluseAdv_.Evaluate(
+        CDout.at(g) = mluseAdv_->Evaluate(
         gauss_p.at(g), comp_gCellOut, mi, location(mi,comp_gCellOut),"CD");
 
-        HDin.at(g) = mluseAdv_.Evaluate(
+        HDin.at(g) = mluseAdv_->Evaluate(
         gauss_p.at(g), comp_gCellIn, mi, location(mi,comp_gCellIn),"HD");
-        CDin.at(g) = mluseAdv_.Evaluate(
+        CDin.at(g) = mluseAdv_->Evaluate(
         gauss_p.at(g), comp_gCellIn, mi, location(mi,comp_gCellIn),"CD");
 
-        double depth  = phase->pPtr->GetDepth(gauss_p.at(g)[1]);  
-        double lithoP = phase->pPtr->GetScaledLithoP(depth);
+        // temperatury pressure value
+        double depth  = myPhase->pPtr->GetDepth(gauss_p.at(g)[1], myPhase->pp->l0);  
+        double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
 
         // Evaluate phase behavior at outside of the edge
-        phase->pPtr->evalPhase(HDout.at(g), CDout.at(g), lithoP);
+        myPhase->pPtr->evalPhase(HDout.at(g), CDout.at(g), lithoP);
 
-        phifOut.at(g) = phase->pPtr->phi.mlt;
-        cfOut.at(g)   = CDOut.at(g) - phase->pPtr->phi.opx;
+        phifOut.at(g) = myPhase->pPtr->phi.mlt;
 
         // Compute kappa outside
-        kappaOut.at(g) = phiOut.at(g) * cfOut.at(g) / CDOut.at(g);
+        double kappaOut = phifOut.at(g) * myPhase->pPtr->Getcf(CDout.at(g)) / CDout.at(g);
+
+        double lambdaOut = phifOut.at(g) * myPhase->pPtr->Getef() / HDout.at(g); 
 
         // Evaluate phase behaviro at inside of the edge
-        phase->pPtr->evalPhase(HDin.at(g), CDin.at(g), lithoP);
+        myPhase->pPtr->evalPhase(HDin.at(g), CDin.at(g), lithoP);
 
-        phifIn.at(g) = phase->pPtr->phi.mlt;
-        cfIn.at(g)   = CDin.at(g) - phase->pPtr->phi.opx;
+        phifIn.at(g) = myPhase->pPtr->phi.mlt;
 
         // Compute kappa outside
-        kappaIn.at(g) = phiIn.at(g) * cfIn.at(g) / CDIn.at(g);
+        double kappaIn = phifIn.at(g) * myPhase->pPtr->Getcf(CDin.at(g)) / CDin.at(g);
+
+        double lambdaIn = phifOut.at(g) * myPhase->pPtr->Getef() / HDin.at(g);
+
+        // Compute effective velocity
+        velEffectOutHD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), lambdaOut, phifOut.at(g));  
+        velEffectOutCD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), kappaOut, phifOut.at(g));  
+
+        velEffectInHD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), lambdaIn, phifIn.at(g));  
+        velEffectInCD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), kappaIn, phifIn.at(g));  
     }
 
-   
+     
 
     return 1;
 }

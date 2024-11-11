@@ -39,6 +39,9 @@ class phase{
             double GetDepth(const double& y, 
                             const double& l0);
 
+            double Getef();
+            double Getcf(const double& CD);
+
             // Split phase regions according to values of dimensionless enthalpy and 
             // dimensionless composition.
             int phaseSplit(const double& HD,
@@ -69,6 +72,10 @@ class phase{
 
             // Volume fraction
             PhaseComp<double> phi;
+
+            //PhaseComp<double> c;
+
+            //PhaseComp<double> e;
 
             // Dimensionless temperature
             double TD;

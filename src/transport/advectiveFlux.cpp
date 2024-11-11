@@ -9,6 +9,11 @@ inline double LFFlux(const vector<double>& u,
     return 0.5*(fu[0]+fu[1] - LF*(u[1] - u[0]));
 }
 
+inline double LFFlux(const double& uin, const double& uout, const double& fuin, const double& fuout, const double& LF){
+
+    return 0.5*(fuout + fuin - LF*(uout - uin));
+}
+
 vector<double> advFlux(const MeshInfo& mi,
                        const MLWENO::MLWENOUse& mlu,
                        const vector<vertex>& edge,
@@ -39,6 +44,29 @@ vector<double> advFlux(const MeshInfo& mi,
           {direction.at(g)*uIn, direction.at(g)*uOut}, 
           LFparam.at(g));
 
+    }
+
+    return work;
+}
+
+double advFlux(const valarray<double>& gwe,
+               const vector<vertex>& velOut, 
+               const vector<vertex>& velIn,
+               const vector<double>& uIn, 
+               const vector<double>& uOut,
+               const vertex& unitnormal,
+               const double& len){
+
+    // LF flux
+
+    double work = 0.0;
+
+    for (int g=0; g<gwe.size(); g++){
+        double fin = velIn.at(g)[0] * unitnormal[0] + velIn.at(g)[1]*unitnormal[1];
+        double fout = velOut.at(g)[0] * unitnormal[0] + velOut.at(g)[1]*unitnormal[1];
+
+        work += gwe[g] * len/2.0 * LFFlux(uIn.at(g), uOut.at(g), uIn.at(g)*fin, uOut.at(g)*fout, 
+                                          find_max<double>(abs(fin), abs(fout)));
     }
 
     return work;
@@ -112,6 +140,35 @@ vector<double> advFluxBndry(const MeshInfo& mi,
             break;
         }
 
+    }
+
+    return work;
+}
+
+double advFluxBndry(const valarray<double>& gwe,
+                    const vector<vertex>& vel,
+                    const vector<double>& u,
+                    const vertex& unitnormal,
+                    const double& len,
+                    const bndryTypeTrans& bt,
+                    const int& edgetype,
+                    const indice& gCell){
+
+    double work = 0.0;
+
+    switch (bt){
+  
+        case flux :
+            work = bndryFluxAdv(gCell, edgetype);
+        break;
+
+        case freeFlow:
+            work = advFlux(gwe, vel, vel, u, u, unitnormal, len); 
+        break;
+
+        default:
+            std::cout << "Boundary condition not defined properly ." << std::endl;
+        break;
     }
 
     return work;
