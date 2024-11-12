@@ -32,8 +32,7 @@ vector<double> advFluxBndry(const MeshInfo& mi,
                             const int& locedge);
 
 double advFlux(const valarray<double>& gwe,
-               const vector<vertex>& velOut, 
-               const vector<vertex>& velIn,
+               const vector<vertex>& vel, 
                const vector<double>& uIn, 
                const vector<double>& uOut,
                const vertex& unitnormal,

@@ -49,9 +49,9 @@ vector<double> advFlux(const MeshInfo& mi,
     return work;
 }
 
+// Linear transport 
 double advFlux(const valarray<double>& gwe,
-               const vector<vertex>& velOut, 
-               const vector<vertex>& velIn,
+               const vector<vertex>& vel, 
                const vector<double>& uIn, 
                const vector<double>& uOut,
                const vertex& unitnormal,
@@ -62,11 +62,10 @@ double advFlux(const valarray<double>& gwe,
     double work = 0.0;
 
     for (int g=0; g<gwe.size(); g++){
-        double fin = velIn.at(g)[0] * unitnormal[0] + velIn.at(g)[1]*unitnormal[1];
-        double fout = velOut.at(g)[0] * unitnormal[0] + velOut.at(g)[1]*unitnormal[1];
+        double f = vel.at(g)[0] * unitnormal[0] + vel.at(g)[1]*unitnormal[1];
 
-        work += gwe[g] * len/2.0 * LFFlux(uIn.at(g), uOut.at(g), uIn.at(g)*fin, uOut.at(g)*fout, 
-                                          find_max<double>(abs(fin), abs(fout)));
+        work += gwe[g] * len/2.0 * LFFlux(uIn.at(g), uOut.at(g), uIn.at(g)*f, uOut.at(g)*f, 
+                                          f);
     }
 
     return work;

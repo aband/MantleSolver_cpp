@@ -167,10 +167,8 @@ double Driver::SingleEdgeFlux_(const indice& localedge,
     // Compute effective velocity with kappa values
     vector<vertex> velEffectOutHD, velEffectInHD, velEffectOutCD, velEffectInCD;
 
-    velEffectOutHD.resize(gpe.size());
-    velEffectInHD.resize(gpe.size());
-    velEffectOutCD.resize(gpe.size());
-    velEffectInCD.resize(gpe.size());
+    velEffectHD.resize(gpe.size());
+    velEffectCD.resize(gpe.size());
 
     // Equivelent of setting free flow boundary condition
     if (OutBndryCell(mi, gCellIn)){
@@ -216,12 +214,14 @@ double Driver::SingleEdgeFlux_(const indice& localedge,
 
         double lambdaIn = phifOut.at(g) * myPhase->pPtr->Getef() / HDin.at(g);
 
-        // Compute effective velocity
-        velEffectOutHD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), lambdaOut, phifOut.at(g));  
-        velEffectOutCD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), kappaOut, phifOut.at(g));  
+        double kappa_mean  = harmonic_mean(kappaIn, kappaOut);
+        double lambda_mean = harmonic_mean(lambdaIn, lambdaOut);
 
-        velEffectInHD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), lambdaIn, phifIn.at(g));  
-        velEffectInCD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), kappaIn, phifIn.at(g));  
+        double phif_mean = harmonic_mean(phifIn.at(g), phiOut.at(g));
+
+        // Compute effective velocity
+        velEffectHD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), lambda_mean, phif_mean);  
+        velEffectCD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), kappa_mean, phif_mean);  
     }
 
      
