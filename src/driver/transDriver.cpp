@@ -224,7 +224,16 @@ double Driver::SingleEdgeFlux_(const indice& localedge,
         velEffectCD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), kappa_mean, phif_mean);  
     }
 
-     
+    double work = 0.0;
 
-    return 1;
+    if (){
+
+    } else if (){
+
+
+    } else {
+
+    }
+
+    return work;
 }
