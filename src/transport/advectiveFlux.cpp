@@ -149,20 +149,26 @@ double advFluxBndry(const valarray<double>& gwe,
                     const vector<double>& u,
                     const vertex& unitnormal,
                     const double& len,
-                    const bndryTypeTrans& bt,
-                    const int& edgetype,
-                    const indice& gCell){
+                    const indice& gCell,
+                    const int& edgeflag,
+                    const std::string& field){
 
     double work = 0.0;
+
+    bndryTypeTrans bt = AssignBoundary(gCell,edgeflag,field);
 
     switch (bt){
   
         case flux :
-            work = bndryFluxAdv(gCell, edgetype);
+            work = bndryFluxAdv(gCell, edgeflag);
         break;
 
         case freeFlow:
-            work = advFlux(gwe, vel, vel, u, u, unitnormal, len); 
+            work = advFlux(gwe, vel, u, u, unitnormal, len); 
+        break;
+
+        case noFlow:
+            work = 0.0;
         break;
 
         default:

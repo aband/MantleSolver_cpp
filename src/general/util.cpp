@@ -426,8 +426,8 @@ int extractVertEdgeInfo(const MeshInfo& mi,
                         const indice& ghostShift,
                         indice& gCellOut,
                         indice& gCellIn,
-                        edgeEnds<vertex> edgeEndsVertex,
-                        edgeEnds<indice> edgeEndsIndice){
+                        edgeEnds<vertex>& edgeEndsVertex,
+                        edgeEnds<indice>& edgeEndsIndice){
 
     // Extract information for vertical edges
     // index counted from top to bottom

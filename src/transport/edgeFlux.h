@@ -16,7 +16,8 @@ typedef double (*fluxFuncBndry) (const valarray<double>& gwe,
                                  const vector<double>& u,
                                  const vertex& unitnormal,
                                  const double& len,
-                                 const bndryTypeTrans& bt,
-                                 const int& edgetype);
+                                 const indice& gCell,
+                                 const int& edgeflag,
+                                 const std::string& field);
 
 #endif

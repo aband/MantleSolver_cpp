@@ -1,5 +1,7 @@
 #include "advectiveFlux.h"
 #include "diffusiveFlux.h"
+#include "edgeFlux.h"
+#include "driver.h"
 #include "lagrange_tmp.h"
 
 PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
@@ -53,8 +55,6 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     user->mluseAdv->UpdateNonLinearWgts(mi,user->locpack->locSet,
                                            user->locpack->funcSet,
                                            user->locpack->fieldNames);
-
-   
 
     for (int j=user->mi->MPIlocalCellStart[1]; j<user->mi->MPIlocalCellStart[1] + user->mi->MPIlocalCellSize[1]; j++){
     for (int i=user->mi->MPIlocalCellStart[0]; i<user->mi->MPIlocalCellStart[0] + user->mi->MPIlocalCellSize[0]; i++){

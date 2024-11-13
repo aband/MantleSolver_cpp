@@ -286,8 +286,8 @@ int extractVertEdgeInfo(const MeshInfo& mi,
                         const indice& ghostShift,
                         indice& gCellOut,
                         indice& gCellIn,
-                        edgeEnds<vertex> edgeEndsVertex,
-                        edgeEnds<indice> edgeEndsIndice);
+                        edgeEnds<vertex>& edgeEndsVertex,
+                        edgeEnds<indice>& edgeEndsIndice);
 
 int extractHoriEdgeInfo(const MeshInfo& mi,
                         const indice& local,

@@ -99,12 +99,14 @@ inline vertex effectVel(const vertex& vf, const vertex& vs, const double& c, con
     return vf*phif*c + (1-c)*vs;
 }
 
-double Driver::SingleEdgeFlux_(const indice& localedge,
-                               extractEdgeInfoFunc edgeinfo,
-                               fluxFunc      fluxfuncAdv, 
-                               fluxFuncBndry fluxfuncbndryAdv,
-                               fluxFunc      fluxfuncDif,
-                               fluxFuncBndry fluxfuncbndryDif){
+int Driver::SingleEdgeFlux(const indice& localedge,
+                           extractEdgeInfoFunc edgeinfo,
+                           double& workHD,
+                           double& workCD,
+                           fluxFunc      fluxfuncAdv, 
+                           fluxFuncBndry fluxfuncbndryAdv,
+                           fluxFunc      fluxfuncDif,
+                           fluxFuncBndry fluxfuncbndryDif){
 
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
@@ -165,7 +167,7 @@ double Driver::SingleEdgeFlux_(const indice& localedge,
     cfOut.resize(gpe.size());
 
     // Compute effective velocity with kappa values
-    vector<vertex> velEffectOutHD, velEffectInHD, velEffectOutCD, velEffectInCD;
+    vector<vertex> velEffectHD, velEffectCD;
 
     velEffectHD.resize(gpe.size());
     velEffectCD.resize(gpe.size());
@@ -217,23 +219,90 @@ double Driver::SingleEdgeFlux_(const indice& localedge,
         double kappa_mean  = harmonic_mean(kappaIn, kappaOut);
         double lambda_mean = harmonic_mean(lambdaIn, lambdaOut);
 
-        double phif_mean = harmonic_mean(phifIn.at(g), phiOut.at(g));
+        double phif_mean = harmonic_mean(phifIn.at(g), phifOut.at(g));
 
         // Compute effective velocity
         velEffectHD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), lambda_mean, phif_mean);  
         velEffectCD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), kappa_mean, phif_mean);  
     }
 
-    double work = 0.0;
+    // Classify between different flux situation
+    if (OutBndryCell(mi, gCellIn)){
 
-    if (){
+        workHD = fluxfuncbndryAdv(gwe, velEffectHD, HDout, unitNormal, len, comp_gCellIn, 
+        edgeFlag, "HD");
 
-    } else if (){
+        workCD = fluxfuncbndryAdv(gwe, velEffectCD, CDout, unitNormal, len, comp_gCellIn, 
+        edgeFlag, "CD");
 
+    } else if (OutBndryCell(mi, gCellOut)){
+
+        workHD = fluxfuncbndryAdv(gwe, velEffectHD, HDin, unitNormal, len, comp_gCellOut,
+        edgeFlag, "HD");
+
+        workCD = fluxfuncbndryAdv(gwe, velEffectCD, CDin, unitNormal, len, comp_gCellOut,
+        edgeFlag, "CD");
 
     } else {
 
+        workHD = fluxfuncAdv(gwe, velEffectHD, HDin, HDout, unitNormal, len);
+
+        workCD = fluxfuncAdv(gwe, velEffectCD, CDin, CDout, unitNormal, len);
+
     }
 
-    return work;
+    return 1;
+}
+
+int Driver::UpdateEdgeFluxAll(vector<double>& edgefluxHD,
+                              vector<double>& edgefluxCD,
+                              fluxFunc      fluxfuncAdv, 
+                              fluxFuncBndry fluxfuncbndryAdv,
+                              fluxFunc      fluxfuncDif,
+                              fluxFuncBndry fluxfuncbndryDif){
+
+    // Assert edge flux vector sizes are correct
+    assert(edgefluxHD.size() == mi.MPIlocalVertEdgeSize + mi.MPIlocalHoriEdgeSize);
+    assert(edgefluxCD.size() == mi.MPIlocalVertEdgeSize + mi.MPIlocalHoriEdgeSize);
+
+    double fluxHD, fluxCD;
+
+    for (int j=0; j<mi.MPIlocalVertexSize[1]; j++){
+        for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+            // Vertical edge computed first
+            SingleEdgeFlux({i,j}, extractVertEdgeInfo, fluxCD, fluxHD, fluxfuncAdv, fluxfuncbndryAdv, fluxfuncAdv, fluxfuncbndryAdv);
+        }
+    }
+
+    for (int j=0; j< mi.MPIlocalCellSize[1]; j++){
+        for (int i=0; i<mi.MPIlocalVertexSize[0]; i++){
+            // Horizontal edge computed second
+            SingleEdgeFlux({i,j}, extractHoriEdgeInfo, fluxCD, fluxHD, fluxfuncAdv, fluxfuncbndryAdv, fluxfuncAdv, fluxfuncbndryAdv);
+        }
+    }
+
+    return 1;
+}
+
+int Driver::ComputeCellFlux(const indice& lCell,
+                            double& fluxHD,
+                            double& fluxCD,
+                            const vector<double>& edgeFluxHD,
+                            const vector<double>& edgeFluxCD){
+
+    // Can be modified later if multiple fields are added
+    indice left   = lCell;
+    indice right  = {lCell[0]+1, lCell[1]};
+    indice bottom = lCell;
+    indice top    = {lCell[0], lCell[1]+1};
+
+    int left_flat  = FlatIndic(mi.MPIlocalVertexSize[0],left);
+    int right_flat = FlatIndic(mi.MPIlocalVertexSize[0],left);
+    int bottom_flat= FlatIndic(mi.MPIlocalCellSize[0], bottom) + mi.MPIlocalHoriEdgeSize;
+    int top_flat   = FlatIndic(mi.MPIlocalCellSize[0], top) + mi.MPIlocalHoriEdgeSize;       
+
+    fluxHD = edgeFluxHD.at(left_flat) - edgeFluxHD.at(right_flat) + edgeFluxHD.at(bottom_flat) - edgeFluxHD.at(top_flat); 
+    fluxHD = edgeFluxCD.at(left_flat) - edgeFluxCD.at(right_flat) + edgeFluxCD.at(bottom_flat) - edgeFluxCD.at(top_flat); 
+
+    return 1;
 }

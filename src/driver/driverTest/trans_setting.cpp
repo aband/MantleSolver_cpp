@@ -98,3 +98,8 @@ double InitHD(const valarray<double>& point,
 
     return HD;
 }
+
+bndryTypeTrans AssignBoundary(const indice& globalCell, const int& edgetype, const std::string& field){
+
+    return noFlow;;
+}

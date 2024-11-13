@@ -6,7 +6,7 @@
 #include "util.h"
 
 // Denoting different boundary types for a given physical domain
-enum bndryTypeTrans {wall, freeFlow, dirichletTrans, neumannTrans, absorb, reflect, periodic, flux};
+enum bndryTypeTrans {wall, freeFlow, dirichletTrans, neumannTrans, absorb, reflect, periodic, flux, noFlow};
 
 /**!
  * Transport boundary functions
@@ -63,7 +63,8 @@ double InitCD(const vertex& point,
 #endif
 
 bndryTypeTrans AssignBoundary(const indice& global, 
-                              const int& locedge);
+                              const int& locedge,
+                              const std::string& field);
 
 //typedef struct{
 //

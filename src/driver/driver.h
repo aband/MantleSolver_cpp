@@ -171,6 +171,31 @@ class Driver {
         */
        int PrintBoundaryDOFs();
 
+       /**!
+        * Functions used to compute flux happening on the edges 
+        */
+       int SingleEdgeFlux(const indice& localedge,
+                          extractEdgeInfoFunc edgeinfo, 
+                          double& workCD,
+                          double& workHD,
+                          fluxFunc      fluxfuncAdv, 
+                          fluxFuncBndry fluxfuncbndryAdv,
+                          fluxFunc      fluxfuncDif,
+                          fluxFuncBndry fluxfuncbndryDif);
+
+       int UpdateEdgeFluxAll(vector<double>& edgefluxHD,
+                             vector<double>& edgefluxCD,
+                             fluxFunc      fluxfuncAdv, 
+                             fluxFuncBndry fluxfuncbndryAdv,
+                             fluxFunc      fluxfuncDif,
+                             fluxFuncBndry fluxfuncbndryDif);
+
+       int ComputeCellFlux(const indice& lCell,
+                           double& fluxHD,
+                           double& fluxCD,
+                           const vector<double>& edgefluxHD,
+                           const vector<double>& edgefluxCD);
+
     private:
 
         /**!
@@ -205,13 +230,6 @@ class Driver {
         std::set<std::string> fieldSet_;
 
         std::unordered_map<std::string, LocFunc> locFuncSet_;
-
-        double SingleEdgeFlux_(const indice& localedge,
-                               extractEdgeInfoFunc edgeinfo, 
-                               fluxFunc      fluxfuncAdv, 
-                               fluxFuncBndry fluxfuncbndryAdv,
-                               fluxFunc      fluxfuncDif,
-                               fluxFuncBndry fluxfuncbndryDif);
 
         // ===========================================================
 
