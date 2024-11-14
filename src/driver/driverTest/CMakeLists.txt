@@ -143,6 +143,7 @@ target_link_libraries(mlweno_lib
 add_library(transport_lib
 		  ${SRC}/transport/advectiveFlux.cpp
 		  ${SRC}/transport/lagrange_tmp.cpp
+		  ${SRC}/coupledSys/time_stepping_explicit.cpp
 		  #${SRC}/coupledSys/edgeFlux_coupled.cpp
 )
 
@@ -153,6 +154,8 @@ target_include_directories(transport_lib
 		  PUBLIC ${SRC}/general
 		  PUBLIC ${SRC}/mfem/parallel
 		  PUBLIC ${PETSC_DIR}/include 
+		  PUBLIC ${SRC}/driver
+
 )
 
 target_link_libraries(transport_lib
@@ -161,6 +164,7 @@ target_link_libraries(transport_lib
         mlweno_lib
 		  mfem_lib
         PkgConfig::PETSC
+		  driver_lib
 )
 
 add_library(driver_lib

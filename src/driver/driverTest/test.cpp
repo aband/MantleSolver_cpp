@@ -53,10 +53,28 @@ int main(int argc, char **argv){
 
     driver->SolveFlow(maxIter, tolUzawa);
 
-    //driver->PrintBoundaryDOFs();
+    // Time stepping
+    ctx_driver ctx;
+    ctx.driver = driver;
+    ctx.dt = 0.01;
+    ctx.maxIter  = maxIter;
+    ctx.tolUzawa = tolUzawa;
+   
+    TS ts;
+    PetscCall(TSCreate(PETSC_COMM_WORLD, &ts)); 
+    TSSetProblemType(ts, TS_NONLINEAR);
+    TSSetMaxTime(ts, 0.2);
+    TSSetExactFinalTime(ts, TS_EXACTFINALTIME_MATCHSTEP);
+    TSSetDM(ts, driver->dmu);
+    TSSetTimeStep(ts, ctx.dt);
 
-    // Extract velocity
+    Vec U;
+    PetscCall(VecNestGetSubVec(U,0,&driver->globalCD));
+    PetscCall(VecNestGetSubVec(U,1,&driver->globalHD));
 
+    TSSetSolution(ts, U);
+
+    TSSetRHSFunction(ts, NULL, Explicit, &ctx);
 
     // =============== Print functions ==============================================
 

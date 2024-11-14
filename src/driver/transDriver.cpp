@@ -94,6 +94,23 @@ int Driver::PrepareDefaultTransport(){
     return 1;
 }
 
+int Driver::UpdateSmoothnessIndicator(){
+
+    mlpPtr_->UpdateSmoothnessIndic(mi, mi.localCD, "CD");
+    mlpPtr_->UpdateSmoothnessIndic(mi, mi.localCD, "HD");
+
+    // Diffusion later
+
+    return 1;
+}
+
+int Driver::UpdateNonlinearWgts(){
+
+    mluseAdv_->UpdateNonLinearWgts(mi, posSet_, locFuncSet_, fieldSet_);
+
+    return 1;
+}
+
 inline vertex effectVel(const vertex& vf, const vertex& vs, const double& c, const double& phif){
 
     return vf*phif*c + (1-c)*vs;
@@ -260,6 +277,10 @@ int Driver::UpdateEdgeFluxAll(vector<double>& edgefluxHD,
                               fluxFuncBndry fluxfuncbndryAdv,
                               fluxFunc      fluxfuncDif,
                               fluxFuncBndry fluxfuncbndryDif){
+
+    // resize two vectors
+    edgefluxHD.resize(mi.MPIlocalVertEdgeSize + mi.MPIlocalHoriEdgeSize);
+    edgefluxCD.resize(mi.MPIlocalVertEdgeSize + mi.MPIlocalHoriEdgeSize);
 
     // Assert edge flux vector sizes are correct
     assert(edgefluxHD.size() == mi.MPIlocalVertEdgeSize + mi.MPIlocalHoriEdgeSize);

@@ -21,16 +21,8 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     Vec localc;
     Vec localh;
 
-    DMGetLocalVector(dmu, &localc);
-    DMGetLocalVector(dmu, &localh);
-
-    //PetscCall(DMGetLocalVector(dmu, C, INSERT_VALUES, localc));
-    //PetscCall(DMGetLocalVector(dmu, H, INSERT_VALUES, localh));
-
-    PetscCall(DMGlobalToLocalBegin(dmu, C, INSERT_VALUES, localc));
-    PetscCall(DMGlobalToLocalEnd(dmu, C, INSERT_VALUES, localc));
-    PetscCall(DMGlobalToLocalBegin(dmu, H, INSERT_VALUES, localh));
-    PetscCall(DMGlobalToLocalEnd(dmu, H, INSERT_VALUES, localh));
+    PetscCall(DMGetLocalVector(dmu, C, INSERT_VALUES, localc));
+    PetscCall(DMGetLocalVector(dmu, H, INSERT_VALUES, localh));
 
     double ** lc;
     double ** lh;
@@ -38,8 +30,8 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     DMDAVecGetArray(dmu, localc, &lc);
     DMDAVecGetArray(dmu, localh, &lh);
 
-    user->driver->mi.localCD = lc;
-    user->driver->mi.localHD = lh;
+    user->driver->mi->localCD = lc;
+    user->driver->mi->localHD = lh;
 
     //! Get local vectors for flux vector
     Vec CF;
@@ -61,31 +53,27 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     //! Update nonlinear weights using new smoothness indicator
     user->driver->UpdateNonlinearWgts();
 
-    if ((int)(time/user->dt) % 10 == 1){
-        // solve for stokes equation when real time meets some standards
-
-        user->driver->SolveFlow(user->maxIter, user->tolUzawa);
-        user->driver->CreateScatterVec();
-    }
-
-    //! Compute updated edge flux
-    vector<double> edgefluxHD;
-    vector<double> edgefluxCD;
+    vector<double>& edgefluxHD;
+    vector<double>& edgefluxCD;
 
     user->driver->UpdateEdgeFluxAll(edgefluxHD, edgefluxCD, advFlux, advFluxBndry, advFlux, advFluxBndry);
 
-    for (int j=user->driver->mi.MPIlocalCellStart[1]; 
-             j<user->driver->mi.MPIlocalCellStart[1] + user->driver->mi.MPIlocalCellSize[1]; j++){
-    for (int i=user->driver->mi.MPIlocalCellStart[0]; 
-             i<user->driver->mi.MPIlocalCellStart[0] + user->driver->mi.MPIlocalCellSize[0]; i++){
+    if (Realtime){
+        // solve for stokes equation when real time meets some standards
+    }
+
+    for (int j=user->driver->mi->MPIlocalCellStart[1]; 
+             j<user->driver->mi->MPIlocalCellStart[1] + user->driver->mi->MPIlocalCellSize[1]; j++){
+    for (int i=user->driver->mi->MPIlocalCellStart[0]; 
+             i<user->driver->mi->MPIlocalCellStart[0] + user->driver->mi->MPIlocalCellSize[0]; i++){
 
         double fluxHD, fluxCD;
 
-        user->driver->ComputeCellFlux({i,j}, fluxHD, fluxCD, edgefluxHD, edgefluxCD);
+        user->driver->ComputeCellFlux({i,j}, fluxHD, fluxCD. edgefluxHD, edgefluxCD);
 
-        cf[j][i] = -1.0 * fluxCD;
+        cf[j][i] = -1.0 * ;
 
-        hf[j][i] = -1.0 * fluxHD;
+        hf[j][i] = ;
 
     }}
 
@@ -95,9 +83,7 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
 
     // Restore flux 
     PetscCall(DMDAVecRestoreArray(dmu, localc, &lc));
-    PetscCall(DMDAVecRestoreArray(dmu, localh, &lh));
-    PetscCall(DMRestoreLocalVector(dmu, &localc));
-    PetscCall(DMRestoreLocalVector(dmu, &localh));
+    PetscCall(DMRestoareLocalVector(dmu, &localx));
 
     PetscFunctionReturn(0);
 }

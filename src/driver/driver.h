@@ -149,6 +149,13 @@ class Driver {
        int CreateScatterVec();
 
        /**!
+        * Update smoothness indicator and nonlinear weights for all field and mluse
+        */
+       int UpdateSmoothnessIndicator();
+
+       int UpdateNonlinearWgts();
+
+       /**!
 		  * Output of the calculated result
 		  */
        int PrintFlow();
@@ -288,6 +295,7 @@ class Driver {
        ReducedSys * Result_;
 
        ScatterResult * sresult_;
+
 };
 
 // Time stepping struct
@@ -296,6 +304,14 @@ typedef struct {
 
     Driver * driver; 
 
+    double dt;
+
+    int maxIter;
+
+    double tolUzawa;
+
 } ctx_driver;
+
+PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void * ctx);
 
 #endif
