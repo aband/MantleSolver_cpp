@@ -290,4 +290,12 @@ class Driver {
        ScatterResult * sresult_;
 };
 
+// Time stepping struct
+// In compleying with C format
+typedef struct {
+
+    Driver * driver; 
+
+} ctx_driver;
+
 #endif

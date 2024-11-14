@@ -8,8 +8,8 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
 
     PetscFunctionBeginUser;
 
-    User * user = (User*) ctx;
-    DM dmu = (DM)user->dmu;
+    ctx_driver * user = (ctx_driver*) ctx;
+    DM dmu = (DM)user->driver->dmu;
 
     //! Get individual nested vectors 
     Vec C, H;
@@ -55,6 +55,11 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     user->mluseAdv->UpdateNonLinearWgts(mi,user->locpack->locSet,
                                            user->locpack->funcSet,
                                            user->locpack->fieldNames);
+
+    if (){
+        // solve for stokes equation when real time meets some standards
+
+    }
 
     for (int j=user->mi->MPIlocalCellStart[1]; j<user->mi->MPIlocalCellStart[1] + user->mi->MPIlocalCellSize[1]; j++){
     for (int i=user->mi->MPIlocalCellStart[0]; i<user->mi->MPIlocalCellStart[0] + user->mi->MPIlocalCellSize[0]; i++){
