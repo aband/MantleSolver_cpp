@@ -246,18 +246,18 @@ int Driver::SingleEdgeFlux(const indice& localedge,
     // Classify between different flux situation
     if (OutBndryCell(mi, gCellIn)){
 
-        workHD = fluxfuncbndryAdv(gwe, velEffectHD, HDout, unitNormal, len, comp_gCellIn, 
+        workHD = fluxfuncbndryAdv(mi,gwe, velEffectHD, HDout, unitNormal, len, comp_gCellIn, 
         edgeFlag, "HD");
 
-        workCD = fluxfuncbndryAdv(gwe, velEffectCD, CDout, unitNormal, len, comp_gCellIn, 
+        workCD = fluxfuncbndryAdv(mi,gwe, velEffectCD, CDout, unitNormal, len, comp_gCellIn, 
         edgeFlag, "CD");
 
     } else if (OutBndryCell(mi, gCellOut)){
 
-        workHD = fluxfuncbndryAdv(gwe, velEffectHD, HDin, unitNormal, len, comp_gCellOut,
+        workHD = fluxfuncbndryAdv(mi,gwe, velEffectHD, HDin, unitNormal, len, comp_gCellOut,
         edgeFlag, "HD");
 
-        workCD = fluxfuncbndryAdv(gwe, velEffectCD, CDin, unitNormal, len, comp_gCellOut,
+        workCD = fluxfuncbndryAdv(mi,gwe, velEffectCD, CDin, unitNormal, len, comp_gCellOut,
         edgeFlag, "CD");
 
     } else {

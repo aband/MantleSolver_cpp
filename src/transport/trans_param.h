@@ -62,7 +62,8 @@ double InitCD(const vertex& point,
               const vector<double>& param);
 #endif
 
-bndryTypeTrans AssignBoundary(const indice& global, 
+bndryTypeTrans AssignBoundary(const MeshInfo& mi,
+                              const indice& global, 
                               const int& locedge,
                               const std::string& field);
 

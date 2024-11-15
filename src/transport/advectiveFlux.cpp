@@ -144,7 +144,8 @@ vector<double> advFluxBndry(const MeshInfo& mi,
     return work;
 }
 
-double advFluxBndry(const valarray<double>& gwe,
+double advFluxBndry(const MeshInfo& mi,
+                    const valarray<double>& gwe,
                     const vector<vertex>& vel,
                     const vector<double>& u,
                     const vertex& unitnormal,
@@ -155,7 +156,7 @@ double advFluxBndry(const valarray<double>& gwe,
 
     double work = 0.0;
 
-    bndryTypeTrans bt = AssignBoundary(gCell,edgeflag,field);
+    bndryTypeTrans bt = AssignBoundary(mi,gCell,edgeflag,field);
 
     switch (bt){
   

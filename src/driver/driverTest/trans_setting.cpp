@@ -99,9 +99,38 @@ double InitHD(const valarray<double>& point,
     return HD;
 }
 
-bndryTypeTrans AssignBoundary(const indice& globalCell, const int& edgetype, const std::string& field){
+bndryTypeTrans AssignBoundary(const MeshInfo& mi,
+                              const indice& globalCell, 
+                              const int& edgetype, 
+                              const std::string& field){
 
-    return noFlow;;
+    // edge type 2: horizontal, edge type 1: vertical 
+
+    bndryTypeTrans bt;
+
+    if (globalCell[1] == mi.MPIglobalCellSize[1] - 1){
+
+        if (edgetype == 1) {
+            bt = noFlow;
+        } else {
+            bt = freeFlow;
+        }
+
+    } else {
+
+        bt = noFlow;
+    }
+
+    return bt;
 }
 
+double bndryFluxAdv(const indice& gCell, const int& edgeflag){
 
+    return 0.0;
+}
+
+double bndryValAdv(const indice& gCell, const int& edgeflag){
+
+    return 0.0;
+
+}

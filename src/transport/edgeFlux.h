@@ -11,7 +11,8 @@ typedef double (*fluxFunc) (const valarray<double>& gwe,
                             const vertex& unitnormal,
                             const double& len);
 
-typedef double (*fluxFuncBndry) (const valarray<double>& gwe,
+typedef double (*fluxFuncBndry) (const MeshInfo& mi,
+                                 const valarray<double>& gwe,
                                  const vector<vertex>& vel,
                                  const vector<double>& u,
                                  const vertex& unitnormal,
