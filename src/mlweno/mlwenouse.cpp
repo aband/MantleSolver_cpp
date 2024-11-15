@@ -110,6 +110,7 @@ void MLWENOUse::UpdateNonLinearWgts(const MeshInfo& mi,
 
     for (const auto& loc : locSet){
         for (const auto& field : fieldNames){
+
             mlrIns_.at(AssignMap_.at(loc))->UpdateNonLinearWgts(mi, funcSet.at(loc), field);
         }
     }

@@ -106,7 +106,13 @@ int Driver::UpdateSmoothnessIndicator(){
 
 int Driver::UpdateNonlinearWgts(){
 
-    mluseAdv_->UpdateNonLinearWgts(mi, posSet_, locFuncSet_, fieldSet_);
+    //mluseAdv_->UpdateNonLinearWgts(mi, posSet_, locFuncSet_, fieldSet_);
+    mluseAdv_->UpdateNonLinearWgts(mi, "interior", interior, "HD");
+    mluseAdv_->UpdateNonLinearWgts(mi, "interior", interior, "CD");
+    mluseAdv_->UpdateNonLinearWgts(mi, "edge", edge, "HD"); 
+    mluseAdv_->UpdateNonLinearWgts(mi, "edge", edge, "CD"); 
+    mluseAdv_->UpdateNonLinearWgts(mi, "corner", corner, "HD"); 
+    mluseAdv_->UpdateNonLinearWgts(mi, "corner", corner, "CD"); 
 
     return 1;
 }

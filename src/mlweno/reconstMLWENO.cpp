@@ -377,6 +377,7 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
 void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi, 
                                                    bool (*assignML)(const indice& globalCell, 
                                                                     const MeshInfo& mi)){
+
     // Update non linear weights for all cells in the target domain
     if (nonLinearWgts_.empty()) {
         // Initialize non linear weights with assigned domain.
@@ -404,20 +405,25 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
                                                    bool (*assignML)(const indice& globalCell, 
                                                                     const MeshInfo& mi),
                                                    const std::string& name){
-
-    if (nonLinearWgtsVec_.find(name) == nonLinearWgtsVec_.end()){
+//    if (nonLinearWgtsVec_.find(name) == nonLinearWgtsVec_.end()){
         // Not assigned yet 
 
-      unordered_map<int, unordered_map<std::string, unordered_map<int, double>>> nlw;
+    if (nonLinearWgtsVec_.find(name) != nonLinearWgtsVec_.end()){
+ 
+        nonLinearWgtsVec_.clear();
+    }
+
+        unordered_map<int, unordered_map<std::string, unordered_map<int, double>>> nlw;
 
         nonLinearWgtsVec_.insert(std::make_pair(name, nlw));
-    } 
+//    } 
 
     // Update non linear weights for all cells in the target domain
+
+/*
     if (nonLinearWgtsVec_[name].empty()) {
         // Initialize non linear weights with assigned domain.
         // GlobalCells will be selected by assignML function.
- 
  
         for (int j=mi.MPIlocalCellStart[1] - mi.cellGhostLayerSize; 
                  j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + mi.cellGhostLayerSize; j++){
@@ -431,12 +437,36 @@ void multiLevelReconstruction::UpdateNonLinearWgts(const MeshInfo& mi,
             }
         }}
 
+
     } else {
+
+    cout << "stop here 1" << endl;
+
         // Update non linear weights.
         for (auto const& nlw: nonLinearWgtsVec_[name]){
+
+            // Need assign ML function
+            //if (assignML(Bend(),mi))
+
             UpdateNonLinearWgtsCell_(mi, name, nlw.first);
         }
+    cout << "stop here 2" << endl;
+
+
     }
+*/
+
+    for (int j=mi.MPIlocalCellStart[1] - mi.cellGhostLayerSize; 
+             j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + mi.cellGhostLayerSize; j++){
+    for (int i=mi.MPIlocalCellStart[0] - mi.cellGhostLayerSize; 
+             i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + mi.cellGhostLayerSize; i++){
+        indice globalCell {i,j};
+        if (assignML(globalCell,mi)){
+
+            UpdateNonLinearWgtsCell_(mi, name, FlatIndic(mi, globalCell));
+
+        }
+    }}
 
 }
 

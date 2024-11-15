@@ -11,6 +11,8 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     ctx_driver * user = (ctx_driver*) ctx;
     DM dmu = (DM)user->driver->dmu;
 
+    cout << time << endl;
+
     //! Get individual nested vectors 
     Vec C, H;
 
@@ -42,6 +44,8 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     user->driver->mi.localHD = lh;
 
     //! Get local vectors for flux vector
+    PetscCall(VecDuplicate(U, &F));
+
     Vec CF;
     Vec HF;
 
@@ -58,6 +62,8 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     //! Update smoothness indicator
     user->driver->UpdateSmoothnessIndicator();
 
+    cout << time << endl;
+
     //! Update nonlinear weights using new smoothness indicator
     user->driver->UpdateNonlinearWgts();
 
@@ -67,6 +73,8 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
         user->driver->SolveFlow(user->maxIter, user->tolUzawa);
         user->driver->CreateScatterVec();
     }
+
+    cout << time << endl;
 
     //! Compute updated edge flux
     vector<double> edgefluxHD;

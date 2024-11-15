@@ -59,7 +59,7 @@ int main(int argc, char **argv){
     ctx.dt = 0.01;
     ctx.maxIter  = maxIter;
     ctx.tolUzawa = tolUzawa;
-   
+
     TS ts;
     PetscCall(TSCreate(PETSC_COMM_WORLD, &ts)); 
     TSSetProblemType(ts, TS_NONLINEAR);
@@ -69,12 +69,20 @@ int main(int argc, char **argv){
     TSSetTimeStep(ts, ctx.dt);
 
     Vec U;
-    PetscCall(VecNestGetSubVec(U,0,&driver->globalCD));
-    PetscCall(VecNestGetSubVec(U,1,&driver->globalHD));
+    Vec array[2];
+    array[0] = driver->globalCD;
+    array[1] = driver->globalHD;
+    PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,array,&U));
 
     TSSetSolution(ts, U);
 
     TSSetRHSFunction(ts, NULL, Explicit, &ctx);
+
+    TSSetType(ts, TSEULER);
+
+    TSSetUp(ts);
+
+    TSSolve(ts, U);
 
     // =============== Print functions ==============================================
 
