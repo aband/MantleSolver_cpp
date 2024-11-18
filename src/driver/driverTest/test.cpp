@@ -55,6 +55,8 @@ int main(int argc, char **argv){
 
     driver->CreateScatterVec();
 
+    driver->PrintPorosity();
+
     // Time stepping
     ctx_driver ctx;
     ctx.driver = driver;
@@ -90,7 +92,8 @@ int main(int argc, char **argv){
 
     driver->PrintFlow();
 
-    driver->PrintPorosity();
+    char filename[] = "final_porosity.dat";
+    driver->PrintPorosity(filename);
 
     driver->PrintPressureConstant();
 

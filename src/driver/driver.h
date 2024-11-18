@@ -165,6 +165,8 @@ class Driver {
         */
        int PrintPorosity();
 
+       int PrintPorosity(char * filename);
+
        /**!
         * Print out Pressure
         */

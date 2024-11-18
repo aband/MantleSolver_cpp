@@ -149,6 +149,9 @@ int Driver::PrintFlow(){
 int Driver::PrintPorosity(){
 
     // Cell centered grid
+    // Print porosity for the first time
+    // No mesh files required
+    // Compute porosity value with initial distribution of HD and CD
     FILE *gridPorox = fopen("gridCellX.dat", "w");
     FILE *gridPoroy = fopen("gridCellY.dat", "w");
 
@@ -190,6 +193,44 @@ inline bool exists_file (const std::string& name){
     struct stat buffer;
 
     return (stat (name.c_str(), &buffer) == 0);
+}
+
+int Driver::PrintPorosity(char * filename){
+    // Print porosity distribution when mesh file already exists
+    // Use file passed by parameter
+    // Simple print function for serial code, not parallel compatible
+
+    //if (exists_file("girdCellX.dat") != 0 || exists_file("gridCellY.dat") != 0) {cout << "mesh file not exist!" << endl; return 0;}
+
+    FILE *fp = fopen(filename, "w");
+
+    for (int j=0; j<N_; j++){
+    for (int i=0; i<M_; i++){
+
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi,{i,j});
+
+        vertex global = GaussMapPointsFace(local, basis_->corners());
+ 
+        double depth  = myPhase->pPtr->GetDepth(global[1], myPhase->pp->l0);  
+        double lithoP = myPhase->pPtr->GetScaledLithoP(global[1]*(-1)*myPhase->pp->l0*0.6); 
+
+        // Extract HD and CD from global solution vectors
+        double HD, CD; // Get cell averaged values for approximation
+        const int idx = FlatIndic(M_, {i,j});
+        PetscCall(VecGetValues(globalHD, 1, &idx, &HD));
+        PetscCall(VecGetValues(globalCD, 1, &idx, &CD));
+
+        myPhase->pPtr->evalPhase(HD, CD, lithoP);
+
+        fprintf(fp, "%f ", myPhase->pPtr->phi.mlt);
+    }
+    fprintf(fp, "\n");}
+
+    fclose(fp);
+
+    return 1;
 }
 
 int Driver::PrintPressureConstant(){
