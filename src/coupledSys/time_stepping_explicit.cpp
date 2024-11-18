@@ -11,8 +11,6 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     ctx_driver * user = (ctx_driver*) ctx;
     DM dmu = (DM)user->driver->dmu;
 
-    cout << time << endl;
-
     //! Get individual nested vectors 
     Vec C, H;
 
@@ -62,19 +60,15 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     //! Update smoothness indicator
     user->driver->UpdateSmoothnessIndicator();
 
-    cout << time << endl;
-
     //! Update nonlinear weights using new smoothness indicator
     user->driver->UpdateNonlinearWgts();
 
     if ((int)(time/user->dt) % 10 == 1){
         // solve for stokes equation when real time meets some standards
-
+        cout << "Darcy-Stokes coupled system solved at time: " << time << endl;
         user->driver->SolveFlow(user->maxIter, user->tolUzawa);
         user->driver->CreateScatterVec();
     }
-
-    cout << time << endl;
 
     //! Compute updated edge flux
     vector<double> edgefluxHD;

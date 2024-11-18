@@ -434,7 +434,7 @@ int extractVertEdgeInfo(const MeshInfo& mi,
     // Cell on right of the edge is regarded as "In" Cell
     // Cell on left of the edge is regarded as "Out" Cell
     gCellIn  = local + mi.MPIlocalCellStart; 
-    gCellOut = {gCellIn[0] - 1, gCellIn[0]};
+    gCellOut = {gCellIn[0] - 1, gCellIn[1]};
 
     edgeEndsIndice.end   = local + ghostShift;
     edgeEndsIndice.start = {edgeEndsIndice.end[0], edgeEndsIndice.end[1]-1};

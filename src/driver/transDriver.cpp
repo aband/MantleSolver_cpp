@@ -294,20 +294,26 @@ int Driver::UpdateEdgeFluxAll(vector<double>& edgefluxHD,
 
     double fluxHD, fluxCD;
 
-    for (int j=0; j<mi.MPIlocalVertexSize[1]; j++){
-        for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+        for (int i=0; i<mi.MPIlocalVertexSize[0]; i++){
             // Vertical edge computed first
+            //cout << "update edge flux line 300: stop after (i,j) = " << "(" << i << " , " << j << ") " << endl;
             SingleEdgeFlux({i,j}, extractVertEdgeInfo, fluxCD, fluxHD, fluxfuncAdv, fluxfuncbndryAdv, fluxfuncAdv, fluxfuncbndryAdv);
+            edgefluxHD.at(FlatIndic(mi.MPIlocalVertexSize[0],{i,j})) = fluxHD;
+            edgefluxCD.at(FlatIndic(mi.MPIlocalVertexSize[0],{i,j})) = fluxCD;
         }
     }
 
-    for (int j=0; j< mi.MPIlocalCellSize[1]; j++){
-        for (int i=0; i<mi.MPIlocalVertexSize[0]; i++){
+    for (int j=0; j< mi.MPIlocalVertexSize[1]; j++){
+        for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
             // Horizontal edge computed second
             SingleEdgeFlux({i,j}, extractHoriEdgeInfo, fluxCD, fluxHD, fluxfuncAdv, fluxfuncbndryAdv, fluxfuncAdv, fluxfuncbndryAdv);
+            edgefluxHD.at(FlatIndic(mi.MPIlocalCellSize[0],{i,j}) 
+                          + mi.MPIlocalVertEdgeSize) = fluxHD;
+            edgefluxCD.at(FlatIndic(mi.MPIlocalCellSize[0],{i,j}) 
+                          + mi.MPIlocalVertEdgeSize) = fluxCD;
         }
     }
-
     return 1;
 }
 

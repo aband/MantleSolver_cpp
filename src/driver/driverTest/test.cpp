@@ -53,6 +53,8 @@ int main(int argc, char **argv){
 
     driver->SolveFlow(maxIter, tolUzawa);
 
+    driver->CreateScatterVec();
+
     // Time stepping
     ctx_driver ctx;
     ctx.driver = driver;
@@ -94,7 +96,7 @@ int main(int argc, char **argv){
 
     driver->PrintPressureConstantOriginal();
 
-    driver->clean();
+    //driver->clean();
 
     PetscFinalize();
 
