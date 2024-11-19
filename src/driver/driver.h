@@ -205,6 +205,14 @@ class Driver {
                            const vector<double>& edgefluxHD,
                            const vector<double>& edgefluxCD);
 
+       // ===================================================================
+       /**!
+        * counting how many events happen throughout time stepping
+        */
+       int eventCount;
+
+       char * GetFilename(const char * filename);
+
     private:
 
         /**!

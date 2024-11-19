@@ -1,6 +1,20 @@
 %Plot porosity only
 function [] = myplot_porosity(M, N)
 
+fstruct = dir('build/*porosity*.dat');
+fstruct = rmfield(fstruct,'folder');
+fstruct = rmfield(fstruct,'date')
+fstruct = rmfield(fstruct,'bytes')
+fstruct = rmfield(fstruct,'isdir')
+fstruct = rmfield(fstruct,'datenum')
+fcell = struct2cell(fstruct);
+for k=1:numel(fstruct)
+
+fieldID = fopen(strcat('build/',fcell{k}), 'r')
+
+end
+
+
 fileID = fopen('build/gridCellX.dat','r');
 pX = fscanf(fileID, '%f', [1,Inf]);
 
@@ -10,7 +24,7 @@ pY = fscanf(fileID, '%f', [1,Inf]);
 fileID = fopen('build/porosity.dat','r');
 poro = fscanf(fileID, '%f', [1,Inf]);
 
-fileID = fopen('build/final_porosity.dat','r');
+fileID = fopen('build/porosityFinal.dat','r');
 finalporo = fscanf(fileID, '%f', [1, Inf]);
 
 fclose(fileID);

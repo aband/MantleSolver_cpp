@@ -77,8 +77,23 @@ int Driver::PrintMesh(){
     return 0;
 }
 
+char * Driver::GetFilename(const char * fieldname){
+
+    char * filename = (char *)malloc(strlen(fieldname)+10+4);
+
+    char n_char[10];
+    std::sprintf(n_char,"%d",eventCount);
+    strcpy(filename, fieldname);
+    strcat(filename, n_char);
+    strcat(filename, ".dat");
+
+    return filename;
+}
+
 int Driver::InitTransport(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
                           double (*funcCD)(const valarray<double>& point, const vector<double>& param)){
+
+    eventCount = 0;
 
     // Create global vectors
     PetscCall(DMCreateGlobalVector(dmu,&globalHD));

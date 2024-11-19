@@ -63,9 +63,15 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     //! Update nonlinear weights using new smoothness indicator
     user->driver->UpdateNonlinearWgts();
 
-    if ((int)(time/user->dt) % 10 == 1){
+    if ((int)floor(time/user->dt) % 10 == 1){
         // solve for stokes equation when real time meets some standards
         cout << "Darcy-Stokes coupled system solved at time: " << time << endl;
+
+        // Print selected variables
+        // Increase internal event count by 1
+        user->driver->eventCount++;
+        user->driver->PrintPorosity(user->driver->GetFilename("porosity"));
+
         user->driver->SolveFlow(user->maxIter, user->tolUzawa);
         user->driver->CreateScatterVec();
     }

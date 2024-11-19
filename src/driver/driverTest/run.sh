@@ -1,3 +1,3 @@
 cd build
 
-./test -M 4 -N 20 -maxIter 20
+./test -M 4 -N 10 -maxIter 10

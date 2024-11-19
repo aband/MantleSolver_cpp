@@ -92,7 +92,7 @@ int main(int argc, char **argv){
 
     driver->PrintFlow();
 
-    char filename[] = "final_porosity.dat";
+    char filename[] = "porosityFinal.dat";
     driver->PrintPorosity(filename);
 
     driver->PrintPressureConstant();
