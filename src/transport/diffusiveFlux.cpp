@@ -113,3 +113,15 @@ double getDifFlux(const MLWENO::MLWENOUse& mlu,
 
     return work;
 }
+
+// ================= new standard compatible diffusive flux function
+// Being regarded as a fluxfunc type of function
+double difFlux(const valarray<double>& gwe,
+               const vector<vertex>& vel,
+               const vector<double>& uIn,
+               const vector<double>& uOut,
+               const vertex& unitnormal,
+               const double& len){
+
+}
+

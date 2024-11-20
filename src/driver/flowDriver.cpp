@@ -146,6 +146,25 @@ int Driver::PrintFlow(){
     return 1;
 }
 
+int Driver::PrintFlowUnscaled(char * filename){
+
+    // This function plots when distributed vectors have been scattered
+    // This function should be called during the time stepping process
+    // This function plot unscaled velocity of darcy velocity
+    // This function also plots two effective velocity
+
+    int nelemloc = mi.MPIlocalCellSize[0]*mi.MPIlocalCellSize[1];
+
+    Vec stokesv;
+    Vec darcyv;
+
+    CGNSPrepareParallel();   
+    CGNSPrepareParallel();
+
+
+    return 1;
+}
+
 int Driver::PrintPorosity(){
 
     // Cell centered grid

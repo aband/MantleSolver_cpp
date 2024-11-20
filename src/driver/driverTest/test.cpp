@@ -55,6 +55,7 @@ int main(int argc, char **argv){
 
     driver->CreateScatterVec();
 
+    // Print initial condition
     driver->PrintPorosity();
 
     // Time stepping
