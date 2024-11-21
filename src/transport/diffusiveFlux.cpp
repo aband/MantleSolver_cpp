@@ -116,12 +116,21 @@ double getDifFlux(const MLWENO::MLWENOUse& mlu,
 
 // ================= new standard compatible diffusive flux function
 // Being regarded as a fluxfunc type of function
+// This new 
 double difFlux(const valarray<double>& gwe,
-               const vector<vertex>& vel,
+               const vector<vertex>& param,
                const vector<double>& uIn,
                const vector<double>& uOut,
                const vertex& unitnormal,
                const double& len){
 
+    double work = 0.0;
+    int degree = gwe.size() + 1;
+    const int numPts = std::ceil((degree+1)/2.0) * 2;
+
+
+
+
+    return work;
 }
 

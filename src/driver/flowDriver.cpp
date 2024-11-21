@@ -65,6 +65,15 @@ int Driver::CreateScatterVec(){
     return 1;
 }
 
+inline int quiverOutputSerial(double * ux, double * uy, double * vx, double * vy,
+                              int M, int N, 
+                              char * filenameStokes, char * filenameDarcy){
+
+
+
+    return 1;
+}
+
 inline int quiverOutputSerial(double * ux, double * uy, double *vx, double *vy, int M, int N){
 
     // Output of velocity on vertex without using cgns format
@@ -155,12 +164,35 @@ int Driver::PrintFlowUnscaled(char * filename){
 
     int nelemloc = mi.MPIlocalCellSize[0]*mi.MPIlocalCellSize[1];
 
+    double * ux = (double *)malloc(sizeof(double)*nelemloc);
+    double * uy = (double *)malloc(sizeof(double)*nelemloc);
+
+    double * vx = (double *)malloc(sizeof(double)*nelemloc);
+    double * vy = (double *)malloc(sizeof(double)*nelemloc);
+
     Vec stokesv;
     Vec darcyv;
 
-    CGNSPrepareParallel();   
-    CGNSPrepareParallel();
+    CGNSPrepareParallel(&sresult_->vel_stokes, &sresult_->g_stokes, 
+                        refArrayStokesEssen_, mi, ux, uy, *br_, *basis_);   
+    CGNSPrepareParallel(&sresult_->vel_darcy, &sresult_->g_darcy,
+                        refArrayDarcyEssen_, mi, vx, vy, *hdiv_, *basis_);
 
+#ifdef CGNS_OUT
+    char stokesfile[] = "stokes.cgns";   
+    CgnsArrayOutput(dmMesh,&globalmesh,ux,uy,mi.MPIlocalCellStart[0],
+                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+                    mi.MPIlocalCellSize[1],stokesfile);
+
+    char darcyfile[] = "darcy.cgns";    	
+    CgnsArrayOutput(dmMesh,&globalmesh,vx,vy,mi.MPIlocalCellStart[0],
+                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+                    mi.MPIlocalCellSize[1],darcyfile);
+#endif
+
+#ifndef CGNS_OUT
+    quiverOutputSerial(ux,uy,vx,vy,M_,N_);
+#endif
 
     return 1;
 }

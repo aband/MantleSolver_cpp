@@ -161,6 +161,11 @@ class Driver {
        int PrintFlow();
 
        /**!
+		  * Print flow during time stepping process
+		  */
+       int PrintFlowUnscaled(char * filename);
+
+       /**!
         * Print out porosity 
         */
        int PrintPorosity();
