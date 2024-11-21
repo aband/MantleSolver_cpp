@@ -155,15 +155,18 @@ class Driver {
 
        int UpdateNonlinearWgts();
 
+       // =================================================================================
+
        /**!
-		  * Output of the calculated result
-		  */
+        * Output of the calculated result
+        */
        int PrintFlow();
 
        /**!
-		  * Print flow during time stepping process
-		  */
-       int PrintFlowUnscaled(char * filename);
+        * Print flow during time stepping process
+        */
+       int quiverOutputEvent(double * ux, double * uy, double * vx, double * vy);
+       int PrintFlowEvent();
 
        /**!
         * Print out porosity 

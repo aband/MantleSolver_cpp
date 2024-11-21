@@ -226,8 +226,6 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
     }
 
     return type;
-
-    //return dirichlet;
 }
 
 bool exit(double range, int M, int i){

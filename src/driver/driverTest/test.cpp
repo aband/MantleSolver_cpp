@@ -57,6 +57,8 @@ int main(int argc, char **argv){
 
     // Print initial condition
     driver->PrintPorosity();
+    driver->PrintFlow();
+    driver->PrintPressureConstantOriginal();
 
     // Time stepping
     ctx_driver ctx;
@@ -95,6 +97,8 @@ int main(int argc, char **argv){
 
     char filename[] = "porosityFinal.dat";
     driver->PrintPorosity(filename);
+
+    driver->PrintFlowEvent();
 
     driver->PrintPressureConstant();
 

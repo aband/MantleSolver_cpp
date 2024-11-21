@@ -65,11 +65,31 @@ int Driver::CreateScatterVec(){
     return 1;
 }
 
-inline int quiverOutputSerial(double * ux, double * uy, double * vx, double * vy,
-                              int M, int N, 
-                              char * filenameStokes, char * filenameDarcy){
+int Driver::quiverOutputEvent(double * ux, double * uy, double * vx, double * vy){
 
+    // Separate velocity in x or y direction
+    FILE * stokesVx = fopen(GetFilename("stokesVx"),"w");
+    FILE * stokesVy = fopen(GetFilename("stokesVy"),"w");
+    FILE * darcyVx  = fopen(GetFilename("darcyVx"),"w");
+    FILE * darcyVy  = fopen(GetFilename("darcyVy"),"w");
 
+    for (int j=0; j<N_; j++){
+    for (int i=0; i<M_; i++){
+
+        fprintf(stokesVx, "%f ", ux[j*M_+i]);
+        fprintf(stokesVy, "%f ", uy[j*M_+i]);
+        fprintf(darcyVx, "%f ", vx[j*M_+i]);
+        fprintf(darcyVy, "%f ", vy[j*M_+i]);
+    }
+    fprintf(stokesVx,"\n");
+    fprintf(stokesVy,"\n");
+    fprintf(darcyVx,"\n");
+    fprintf(darcyVy,"\n");}
+
+    fclose(stokesVx);
+    fclose(stokesVy);
+    fclose(darcyVx);
+    fclose(darcyVy);
 
     return 1;
 }
@@ -155,7 +175,7 @@ int Driver::PrintFlow(){
     return 1;
 }
 
-int Driver::PrintFlowUnscaled(char * filename){
+int Driver::PrintFlowEvent(){
 
     // This function plots when distributed vectors have been scattered
     // This function should be called during the time stepping process
@@ -178,20 +198,20 @@ int Driver::PrintFlowUnscaled(char * filename){
     CGNSPrepareParallel(&sresult_->vel_darcy, &sresult_->g_darcy,
                         refArrayDarcyEssen_, mi, vx, vy, *hdiv_, *basis_);
 
-#ifdef CGNS_OUT
-    char stokesfile[] = "stokes.cgns";   
-    CgnsArrayOutput(dmMesh,&globalmesh,ux,uy,mi.MPIlocalCellStart[0],
-                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
-                    mi.MPIlocalCellSize[1],stokesfile);
+//#ifdef CGNS_OUT
+//    char stokesfile[] = "stokes.cgns";   
+//    CgnsArrayOutput(dmMesh,&globalmesh,ux,uy,mi.MPIlocalCellStart[0],
+//                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+//                    mi.MPIlocalCellSize[1],stokesfile);
 
-    char darcyfile[] = "darcy.cgns";    	
-    CgnsArrayOutput(dmMesh,&globalmesh,vx,vy,mi.MPIlocalCellStart[0],
-                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
-                    mi.MPIlocalCellSize[1],darcyfile);
-#endif
+//    char darcyfile[] = "darcy.cgns";    	
+//    CgnsArrayOutput(dmMesh,&globalmesh,vx,vy,mi.MPIlocalCellStart[0],
+//                    mi.MPIlocalCellSize[0], mi.MPIlocalCellStart[1],
+//                    mi.MPIlocalCellSize[1],darcyfile);
+//#endif
 
 #ifndef CGNS_OUT
-    quiverOutputSerial(ux,uy,vx,vy,M_,N_);
+    quiverOutputEvent(ux,uy,vx,vy);
 #endif
 
     return 1;

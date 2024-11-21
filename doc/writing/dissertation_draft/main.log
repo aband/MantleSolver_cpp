@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  18 NOV 2024 14:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  21 NOV 2024 13:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -982,42 +982,58 @@ LaTeX Info: Redefining \nameref on input line 104.
 \makeMPintoPDFobject=\count339
 \everyMPtoPDFconversion=\toks60
 )) (./tmpPlot/plot.tex
-<tmpPlot/pics/start.png, id=7, 179.18182pt x 358.36363pt>
-File: tmpPlot/pics/start.png Graphic file (type png)
-<use tmpPlot/pics/start.png>
-Package pdftex.def Info: tmpPlot/pics/start.png  used on input line 2.
-(pdftex.def)             Requested size: 156.49663pt x 284.54228pt.
-<tmpPlot/pics/final.png, id=8, 178.58455pt x 358.36363pt>
+<tmpPlot/pics/porosity1.png, id=7, 179.18182pt x 358.36363pt>
+File: tmpPlot/pics/porosity1.png Graphic file (type png)
+<use tmpPlot/pics/porosity1.png>
+Package pdftex.def Info: tmpPlot/pics/porosity1.png  used on input line 3.
+(pdftex.def)             Requested size: 113.812pt x 270.31409pt.
+<tmpPlot/pics/porosity2.png, id=8, 185.15454pt x 354.18272pt>
+File: tmpPlot/pics/porosity2.png Graphic file (type png)
+<use tmpPlot/pics/porosity2.png>
+Package pdftex.def Info: tmpPlot/pics/porosity2.png  used on input line 4.
+(pdftex.def)             Requested size: 113.81427pt x 270.31657pt.
+<tmpPlot/pics/final.png, id=9, 185.15454pt x 354.18272pt>
 File: tmpPlot/pics/final.png Graphic file (type png)
 <use tmpPlot/pics/final.png>
-Package pdftex.def Info: tmpPlot/pics/final.png  used on input line 3.
-(pdftex.def)             Requested size: 156.49269pt x 284.54228pt.
+Package pdftex.def Info: tmpPlot/pics/final.png  used on input line 5.
+(pdftex.def)             Requested size: 113.81427pt x 270.31657pt.
+<tmpPlot/pics/stokes.png, id=10, 180.37636pt x 523.80818pt>
+File: tmpPlot/pics/stokes.png Graphic file (type png)
+<use tmpPlot/pics/stokes.png>
+Package pdftex.def Info: tmpPlot/pics/stokes.png  used on input line 10.
+(pdftex.def)             Requested size: 142.2618pt x 270.3117pt.
+<tmpPlot/pics/darcy.png, id=11, 180.97363pt x 523.80818pt>
+File: tmpPlot/pics/darcy.png Graphic file (type png)
+<use tmpPlot/pics/darcy.png>
+Package pdftex.def Info: tmpPlot/pics/darcy.png  used on input line 11.
+(pdftex.def)             Requested size: 142.26619pt x 270.3117pt.
 )
 \tf@thm=\write5
 \openout5 = `main.thm'.
 
  [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./tmpPlot/pics/start.png (
-PNG copy)> <./tmpPlot/pics/final.png (PNG copy)>]
-(./main.aux)
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./tmpPlot/pics/porosity1.p
+ng (PNG copy)> <./tmpPlot/pics/porosity2.png (PNG copy)> <./tmpPlot/pics/final.
+png (PNG copy)> <./tmpPlot/pics/stokes.png (PNG copy)> <./tmpPlot/pics/darcy.pn
+g (PNG copy)>] (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 25838 strings out of 478287
- 464560 string characters out of 5849289
- 703446 words of memory out of 5000000
- 42028 multiletter control sequences out of 15000+600000
- 471351 words of font info for 31 fonts, out of 8000000 for 9000
+ 25860 strings out of 478287
+ 465145 string characters out of 5849289
+ 705446 words of memory out of 5000000
+ 42046 multiletter control sequences out of 15000+600000
+ 472429 words of font info for 32 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
  85i,8n,80p,422b,336s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
-Output written on main.pdf (1 page, 42232 bytes).
+Output written on main.pdf (1 page, 105944 bytes).
 PDF statistics:
- 24 PDF objects out of 1000 (max. 8388607)
+ 27 PDF objects out of 1000 (max. 8388607)
  16 compressed objects within 1 object stream
  2 named destinations out of 1000 (max. 500000)
- 23 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 38 words of extra memory for PDF output out of 10000 (max. 10000000)
 
