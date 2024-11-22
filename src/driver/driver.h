@@ -156,6 +156,15 @@ class Driver {
        int UpdateNonlinearWgts();
 
        // =================================================================================
+       /**!
+        * Print cell center grid to a file
+        */
+       int PrintGrid();
+
+       /**!
+		  * Print Lithostatic pressure for reference
+		  */
+       int PrintLithoPressure();
 
        /**!
         * Output of the calculated result
@@ -173,7 +182,11 @@ class Driver {
         */
        int PrintPorosity();
 
-       int PrintPorosity(char * filename);
+       /**!
+        * Print out porosity and temperature and also other physical variables
+        * that need phase package evaluation.
+        */
+       int PrintPhaseEvent();
 
        /**!
         * Print out Pressure
@@ -181,6 +194,8 @@ class Driver {
        int PrintPressureConstant();
 
        int PrintPressureConstantOriginal();
+
+       int PrintPressureEvent();
 
        /**!
         * Show asigned boundary condition.

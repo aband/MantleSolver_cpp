@@ -1,5 +1,4 @@
-% Plot porosity only
-function [] = myplot_porosity(M, N)
+function [] = myplot_temperature(M, N)
 
 % Input grid files
 fileID = fopen('build/gridCellX.dat','r');
@@ -11,7 +10,7 @@ pY = fscanf(fileID, '%f', [1,Inf]);
 pX = reshape(pX, M, N);
 pY = reshape(pY, M, N);
 
-fstruct = dir('build/*porosity*.dat');
+fstruct = dir('build/*temperature*.dat');
 fstruct = rmfield(fstruct,'folder');
 fstruct = rmfield(fstruct,'date');
 fstruct = rmfield(fstruct,'bytes');
@@ -37,9 +36,9 @@ colorbar
 % Add 1D plot
 subplot(1,2,2)
 plot(data(2,:),pY(2,:));
-title("Porosity Distribution");
+title("Temperature Distribution");
 ylabel("Depth");
-xlabel("Porosity");
+xlabel("Temperature");
 
 end
 

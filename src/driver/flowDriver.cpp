@@ -266,14 +266,42 @@ inline bool exists_file (const std::string& name){
     return (stat (name.c_str(), &buffer) == 0);
 }
 
-int Driver::PrintPorosity(char * filename){
+int Driver::PrintGrid(){
+
+    FILE *gridPorox = fopen("gridCellX.dat", "w");
+    FILE *gridPoroy = fopen("gridCellY.dat", "w");
+
+    for (int j=0; j<N_; j++){
+    for (int i=0; i<M_; i++){
+
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi,{i,j});
+
+        vertex global = GaussMapPointsFace(local, basis_->corners());
+
+        fprintf(gridPorox,"%f ",global[0]);
+        fprintf(gridPoroy,"%f ",global[1]);
+
+    }
+    fprintf(gridPorox, "\n");
+    fprintf(gridPoroy, "\n");}
+
+    fclose(gridPorox);
+    fclose(gridPoroy);
+
+    return 1;
+}
+
+int Driver::PrintPhaseEvent(){
     // Print porosity distribution when mesh file already exists
     // Use file passed by parameter
     // Simple print function for serial code, not parallel compatible
 
     //if (exists_file("girdCellX.dat") != 0 || exists_file("gridCellY.dat") != 0) {cout << "mesh file not exist!" << endl; return 0;}
 
-    FILE *fp = fopen(filename, "w");
+    FILE *fp = fopen(GetFilename("porosity"), "w");
+    FILE *ft = fopen(GetFilename("temperature"), "w");
 
     for (int j=0; j<N_; j++){
     for (int i=0; i<M_; i++){
@@ -296,10 +324,13 @@ int Driver::PrintPorosity(char * filename){
         myPhase->pPtr->evalPhase(HD, CD, lithoP);
 
         fprintf(fp, "%f ", myPhase->pPtr->phi.mlt);
+        fprintf(ft, "%f ", myPhase->pPtr->TD);
     }
-    fprintf(fp, "\n");}
+    fprintf(fp, "\n"); 
+    fprintf(ft, "\n");}
 
     fclose(fp);
+    fclose(ft);
 
     return 1;
 }
@@ -406,6 +437,92 @@ int Driver::PrintPressureConstantOriginal(){
     fclose(stokespori);
     fclose(darcypori);
     fclose(referencep);
+
+    return 1;
+}
+
+int Driver::PrintLithoPressure(){
+
+    FILE * referencep = fopen("referencep.dat","w");
+
+    int istart = mi.MPIlocalCellStart[0];
+    int jstart = mi.MPIlocalCellStart[1];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
+
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi,{i,j});
+
+        vertex globalver = GaussMapPointsFace(local, basis_->corners());
+
+        double rp = myPhase->pp->rho_s * myPhase->pp->gy * myPhase->pp->l0*(globalver[1]);
+
+        fprintf(referencep, "%f ", rp);
+
+    }fprintf(referencep, "\n");}
+
+    fclose(referencep);
+
+    return 1;
+}
+
+int Driver::PrintPressureEvent(){
+
+    // Print pressure and pressure potentials according to events
+    FILE * stokesq  = fopen(GetFilename("stokesq"),"w");
+    FILE * darcyq = fopen(GetFilename("darcyq"),"w");
+    FILE * stokesp  = fopen(GetFilename("stokesp"),"w");
+    FILE * darcyp = fopen(GetFilename("darcyp"),"w");
+
+    Vec stokesP;
+    Vec darcyP;
+
+    PetscCall(VecNestGetSubVec(Result_->y, 0, &stokesP));
+    PetscCall(VecNestGetSubVec(Result_->y, 1, &darcyP));
+
+    int istart = mi.MPIlocalCellStart[0];
+    int jstart = mi.MPIlocalCellStart[1];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
+
+        indice global {i,j};
+        int nelem = FlatIndic(mi, global);
+        // Extract pressure from Vec
+        double dp, sp;
+
+        PetscCall(VecGetValues(stokesP,1, &nelem, &sp));
+        PetscCall(VecGetValues(darcyP,1, &nelem, &dp));
+
+        fprintf(stokesq, "%f ", sp);
+        fprintf(darcyq, "%f ", dp);
+
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi,{i,j});
+
+        vertex globalver = GaussMapPointsFace(local, basis_->corners());
+
+        // Retrieve original variables
+        dp = myPhase->pp->rho_s * myPhase->pp->gy * myPhase->pp->l0*(-1*dp+globalver[1]);
+        sp = myPhase->pp->rho_s * myPhase->pp->gy * myPhase->pp->l0*(-1*sp+globalver[1]);
+
+        double rp = myPhase->pp->rho_s * myPhase->pp->gy * myPhase->pp->l0*(globalver[1]);
+
+        fprintf(stokesp, "%f ", sp);
+        fprintf(darcyp, "%f ", dp);
+
+    }fprintf(stokesq, "\n");
+     fprintf(darcyq, "\n");
+     fprintf(stokesp, "\n");
+     fprintf(darcyp, "\n");}
+
+    fclose(stokesq);
+    fclose(darcyq);
+    fclose(stokesp);
+    fclose(darcyp);
 
     return 1;
 }

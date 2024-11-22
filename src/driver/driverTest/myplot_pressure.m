@@ -1,6 +1,5 @@
-function [] = myplot_velocity(M,N)
+function [] = myplot_pressure(M, N)
 
-% Read grid files
 fileID = fopen('build/gridCellX.dat','r');
 pX = fscanf(fileID, '%f', [1,Inf]);
 
@@ -10,10 +9,13 @@ pY = fscanf(fileID, '%f', [1,Inf]);
 pX = reshape(pX, M, N);
 pY = reshape(pY, M, N);
 
-fstruct1 = dir('build/*stokesVx*.dat');
-fstruct2 = dir('build/*stokesVy*.dat');
-fstruct3 = dir('build/*darcyVx*.dat');
-fstruct4 = dir('build/*darcyVy*.dat');
+fileID = fopen('build/referencep.dat','r');
+referencep = fscanf(fileID, '%f', [1,Inf]);
+
+fstruct1 = dir('build/*stokesq*.dat');
+fstruct2 = dir('build/*darcyq*.dat');
+fstruct3 = dir('build/*stokesp*.dat');
+fstruct4 = dir('build/*darcyp*.dat');
 
 fstruct1 = rmfield(fstruct1,'folder');
 fstruct1 = rmfield(fstruct1,'date');
@@ -44,49 +46,63 @@ fcell2 = struct2cell(fstruct2);
 fcell3 = struct2cell(fstruct3);
 fcell4 = struct2cell(fstruct4);
 
-fstruct = dir('build/*porosity*.dat');
-fstruct = rmfield(fstruct,'folder');
-fstruct = rmfield(fstruct,'date');
-fstruct = rmfield(fstruct,'bytes');
-fstruct = rmfield(fstruct,'isdir');
-fstruct = rmfield(fstruct,'datenum');
-fcell = struct2cell(fstruct);
-
 for k=1:numel(fstruct1)
 
 fileID = fopen(strcat('build/',fcell1{k}), 'r');
-stokesx = fscanf(fileID, '%f', [1,Inf]);
+stokesq = fscanf(fileID, '%f', [1,Inf]);
 
 fileID = fopen(strcat('build/',fcell2{k}), 'r');
-stokesy = fscanf(fileID, '%f', [1,Inf]);
+darcyq = fscanf(fileID, '%f', [1,Inf]);
 
 fileID = fopen(strcat('build/',fcell3{k}), 'r');
-darcyx = fscanf(fileID, '%f', [1,Inf]);
+stokesp = fscanf(fileID, '%f', [1,Inf]);
 
 fileID = fopen(strcat('build/',fcell4{k}), 'r');
-darcyy = fscanf(fileID, '%f', [1,Inf]);
+darcyp = fscanf(fileID, '%f', [1,Inf]);
 
-fileID = fopen(strcat('build/',fcell{k}),'r');
-poro   = fscanf(fileID, '%f', [1,Inf]);
-
-stokesx = reshape(stokesx, M, N);
-stokesy = reshape(stokesy, M, N);
-darcyx = reshape(darcyx, M, N);
-darcyy = reshape(darcyy, M, N);
-poro   = reshape(poro,M,N);
+stokesq = reshape(stokesq, M, N);
+darcyq = reshape(darcyq, M, N);
+stokesp = reshape(stokesp, M, N);
+darcyp = reshape(darcyp, M, N);
 
 figure
-subplot(1,3,1)
-quiver(pX, pY, stokesx, stokesy);
-title(["Stokes Velocity",num2str(k)])
+subplot(2,2,1)
+surf(pX, pY, stokesq);
+title(["Stokes Pressure Potential",num2str(k)])
 
-subplot(1,3,2)
-quiver(pX, pY, darcyx, darcyy);
-title(["Scaled Darcy Velocity",num2str(k)])
+subplot(2,2,2)
+surf(pX, pY, darcyq);
+title(["Darcy Pressure Potential",num2str(k)])
 
-subplot(1,3,3)
-quiver(pX, pY, darcyx.*poro, darcyy.*poro);
-title(["Unscaled Darcy Velocity",num2str(k)])
+subplot(2,2,3)
+surf(pX, pY, stokesp);
+title(["Stokes Pressure",num2str(k)])
+
+subplot(2,2,4)
+surf(pX, pY, darcyp);
+title(["Darcy Pressure",num2str(k)])
+
+figure
+subplot(2,2,1)
+plot(stokesq(1,:),pY(2,:));
+title(["Stokes Pressure Potential",num2str(k)])
+ylabel("Depth");
+
+subplot(2,2,2)
+plot(darcyq(1,:),pY(2,:));
+title(["Darcy Pressure Potential",num2str(k)])
+ylabel("Depth")
+
+subplot(2,2,3)
+plot(stokesp(1,:), pY(2,:));
+title(["Stokes Pressure",num2str(k)])
+ylabel("Depth")
+
+subplot(2,2,4)
+plot(darcyp(1,:),pY(2,:));
+title(["Darcy Pressure",num2str(k)])
+ylabel("Depth")
+
 end
 
 fclose(fileID);

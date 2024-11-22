@@ -69,11 +69,15 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
 
         // Print selected variables
         // Increase internal event count by 1
-        user->driver->eventCount++;
-        user->driver->PrintPorosity(user->driver->GetFilename("porosity"));
-
         user->driver->SolveFlow(user->maxIter, user->tolUzawa);
         user->driver->CreateScatterVec();
+
+        // eventCount++ should always be called before calling print event functions
+        user->driver->eventCount++;
+        user->driver->PrintPhaseEvent();
+    
+        user->driver->PrintFlowEvent();
+        user->driver->PrintPressureEvent();
     }
 
     //! Compute updated edge flux
