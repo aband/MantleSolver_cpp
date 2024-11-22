@@ -69,7 +69,9 @@ int main(int argc, char **argv){
     TS ts;
     PetscCall(TSCreate(PETSC_COMM_WORLD, &ts)); 
     TSSetProblemType(ts, TS_NONLINEAR);
-    TSSetMaxTime(ts, 0.2);
+    //TSSetMaxTime(ts, 0.2);
+    TSSetMaxTime(ts, 1.0);
+
     TSSetExactFinalTime(ts, TS_EXACTFINALTIME_MATCHSTEP);
     TSSetDM(ts, driver->dmu);
     TSSetTimeStep(ts, ctx.dt);
