@@ -24,7 +24,7 @@ for k=1:numel(fstruct)
 
 filename = strcat('build/temperature',string(k));
 filename = strcat(filename,'.dat');
-fileID = fopen(strcat('build/',fcell{k}), 'r');
+fileID = fopen(filename, 'r');
 data = fscanf(fileID, '%f', [1,Inf]);
 
 data = reshape(data, M, N);
