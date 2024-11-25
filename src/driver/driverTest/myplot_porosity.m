@@ -19,20 +19,27 @@ fstruct = rmfield(fstruct,'isdir');
 fstruct = rmfield(fstruct,'datenum');
 fcell = struct2cell(fstruct);
 
-for k=1:numel(fstruct)
+loops = numel(fstruct)
+%M(loops) = struct('cdata',[],'colormap',[]);
 
-fileID = fopen(strcat('build/',fcell{k}), 'r');
+h = figure;
+
+for k=1:loops
+
+filename = strcat('build/porosity',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
 data = fscanf(fileID, '%f', [1,Inf]);
 
 data = reshape(data, M, N);
 
-figure
 subplot(1,2,1)
 contourf(pX, pY, data,20);
-title(fcell{k})
+title(strcat('porosity',string(k)));
 ylabel("depth (Dimensionless)");
 set(gcf, 'Position',[50 50 400 700])
 colorbar
+caxis([0,0.3])
 
 % Add 1D plot
 subplot(1,2,2)
@@ -41,6 +48,8 @@ title("Porosity Distribution");
 ylabel("Depth");
 xlabel("Porosity");
 
+pause
+F= getframe(gcf);
 end
 
 fclose(fileID);
