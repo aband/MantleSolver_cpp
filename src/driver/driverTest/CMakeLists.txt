@@ -171,6 +171,7 @@ add_library(driver_lib
 		  ${SRC}/driver/driver.cpp
 		  ${SRC}/driver/transDriver.cpp
 		  ${SRC}/driver/flowDriver.cpp
+		  ${SRC}/driver/RKDriver.cpp
 		  )
 
 target_include_directories(driver_lib

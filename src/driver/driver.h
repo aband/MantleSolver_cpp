@@ -235,6 +235,11 @@ class Driver {
                            const vector<double>& edgefluxHD,
                            const vector<double>& edgefluxCD);
 
+       int RK(const double& dt, 
+              const double& Tmax,
+              const double& tolUzawa,
+              const int& maxIter);
+
        // ===================================================================
        /**!
         * counting how many events happen throughout time stepping

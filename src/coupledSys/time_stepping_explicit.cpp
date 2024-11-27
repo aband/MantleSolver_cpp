@@ -58,10 +58,10 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     PetscCall(DMDAVecGetArray(dmu, HF, &hf));
 
     //! Update smoothness indicator
-    user->driver->UpdateSmoothnessIndicator();
+  //  user->driver->UpdateSmoothnessIndicator();
 
     //! Update nonlinear weights using new smoothness indicator
-    user->driver->UpdateNonlinearWgts();
+  //  user->driver->UpdateNonlinearWgts();
 
     if ((int)floor(time/user->dt) % 10 == 1){
         // solve for stokes equation when real time meets some standards
@@ -73,21 +73,21 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
         user->driver->CreateScatterVec();
 
         // eventCount++ should always be called before calling print event functions
-        user->driver->eventCount++;
-        user->driver->PrintPhaseEvent();
+        //user->driver->eventCount++;
+        //user->driver->PrintPhaseEvent();
     
-        user->driver->PrintFlowEvent();
-        user->driver->PrintPressureEvent();
+        //user->driver->PrintFlowEvent();
+        //user->driver->PrintPressureEvent();
 
-        user->driver->PrintHDEvent();
-        user->driver->PrintCDEvent();
+        //user->driver->PrintHDEvent();
+        //user->driver->PrintCDEvent();
     }
 
     //! Compute updated edge flux
     vector<double> edgefluxHD;
     vector<double> edgefluxCD;
 
-    user->driver->UpdateEdgeFluxAll(edgefluxHD, edgefluxCD, advFlux, advFluxBndry, advFlux, advFluxBndry);
+  //  user->driver->UpdateEdgeFluxAll(edgefluxHD, edgefluxCD, advFlux, advFluxBndry, advFlux, advFluxBndry);
 
     for (int j=user->driver->mi.MPIlocalCellStart[1]; 
              j<user->driver->mi.MPIlocalCellStart[1] + user->driver->mi.MPIlocalCellSize[1]; j++){
@@ -96,7 +96,7 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
 
         double fluxHD, fluxCD;
 
-        user->driver->ComputeCellFlux({i,j}, fluxHD, fluxCD, edgefluxHD, edgefluxCD);
+   //     user->driver->ComputeCellFlux({i,j}, fluxHD, fluxCD, edgefluxHD, edgefluxCD);
 
         //cf[j][i] = -1.0 * fluxCD;
 
@@ -104,7 +104,7 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
 
         cf[j][i] = 0.0;
 
-        hf[j][i] = 10.0;
+        hf[j][i] = 100.0;
 
     }}
 
@@ -117,6 +117,9 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     PetscCall(DMDAVecRestoreArray(dmu, localh, &lh));
     PetscCall(DMRestoreLocalVector(dmu, &localc));
     PetscCall(DMRestoreLocalVector(dmu, &localh));
+
+    VecView(F, PETSC_VIEWER_STDOUT_WORLD);
+    VecView(U, PETSC_VIEWER_STDOUT_WORLD);
 
     PetscFunctionReturn(0);
 }

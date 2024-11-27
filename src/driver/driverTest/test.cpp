@@ -59,6 +59,7 @@ int main(int argc, char **argv){
     driver->PrintGrid();
     driver->PrintLithoPressure();
 
+/*
     // Time stepping
     ctx_driver ctx;
     ctx.driver = driver;
@@ -91,6 +92,7 @@ int main(int argc, char **argv){
     TSSetUp(ts);
 
     TSSolve(ts, U);
+*/
 
     // =============== Print functions ==============================================
 
