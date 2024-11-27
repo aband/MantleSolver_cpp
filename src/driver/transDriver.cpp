@@ -339,3 +339,53 @@ int Driver::ComputeCellFlux(const indice& lCell,
 
     return 1;
 }
+
+int Driver::PrintHDEvent(){
+
+    // Output cell averaged HD per event
+    FILE * HD = fopen(GetFilename("HD"),"w");
+
+    int istart = mi.MPIlocalCellStart[0];
+    int jstart = mi.MPIlocalCellStart[1];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
+
+        int nelem = FlatIndic(mi, {i,j});
+
+        double hd = 0.0;
+  
+        PetscCall(VecGetValues(globalHD, 1, &nelem, &hd));
+
+        fprintf(HD, "%f ", hd);
+    }fprintf(HD, "\n");}
+
+    fclose(HD);
+
+    return 1;
+}
+
+int Driver::PrintCDEvent(){
+
+    // Output cell averaged CD per event
+    FILE * CD = fopen(GetFilename("CD"),"w");
+
+    int istart = mi.MPIlocalCellStart[0];
+    int jstart = mi.MPIlocalCellStart[1];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
+
+        int nelem = FlatIndic(mi, {i,j});
+
+        double cd = 0.0;
+  
+        PetscCall(VecGetValues(globalCD, 1, &nelem, &cd));
+
+        fprintf(CD, "%f ", cd);
+    }fprintf(CD, "\n");}
+
+    fclose(CD);
+
+    return 1;
+}

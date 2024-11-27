@@ -105,6 +105,13 @@ class Driver {
         Vec globalCD, globalHD;
         Vec localCD, localHD;
 
+       /**!
+        * Print global vector CD and HD to file for visualization.
+        * Works in serial for now.
+        */
+        int PrintCDEvent();
+        int PrintHDEvent();
+
         int InitTransport(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
                           double (*funcCD)(const valarray<double>& point, const vector<double>& param));
 

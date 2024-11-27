@@ -78,6 +78,9 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
     
         user->driver->PrintFlowEvent();
         user->driver->PrintPressureEvent();
+
+        user->driver->PrintHDEvent();
+        user->driver->PrintCDEvent();
     }
 
     //! Compute updated edge flux
@@ -95,9 +98,13 @@ PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void* ctx){
 
         user->driver->ComputeCellFlux({i,j}, fluxHD, fluxCD, edgefluxHD, edgefluxCD);
 
-        cf[j][i] = -1.0 * fluxCD;
+        //cf[j][i] = -1.0 * fluxCD;
 
-        hf[j][i] = -1.0 * fluxHD;
+        //hf[j][i] = -1.0 * fluxHD;
+
+        cf[j][i] = 0.0;
+
+        hf[j][i] = 10.0;
 
     }}
 

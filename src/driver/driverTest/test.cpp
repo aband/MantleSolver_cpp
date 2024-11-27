@@ -95,11 +95,12 @@ int main(int argc, char **argv){
     // =============== Print functions ==============================================
 
     driver->eventCount++;
+
     driver->PrintPhaseEvent();
-
     driver->PrintFlowEvent();
-
     driver->PrintPressureEvent();
+    driver->PrintHDEvent();
+    driver->PrintCDEvent();
 
     //driver->clean();
 

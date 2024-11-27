@@ -108,10 +108,7 @@ bndryTypeTrans AssignBoundary(const MeshInfo& mi,
 
     bndryTypeTrans bt;
 
-    if (globalCell[1] == 0){
-
-
-    cout << globalCell[0] << "  " << globalCell[1] << endl;
+    if (globalCell[1] == mi.MPIglobalCellSize[1]-1){
 
         if (edgetype == 1) {
             bt = noFlow;

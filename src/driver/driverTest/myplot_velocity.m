@@ -52,21 +52,33 @@ fstruct = rmfield(fstruct,'isdir');
 fstruct = rmfield(fstruct,'datenum');
 fcell = struct2cell(fstruct);
 
+figure
+
 for k=1:numel(fstruct1)
 
-fileID = fopen(strcat('build/',fcell1{k}), 'r');
+filename = strcat('build/stokesVx',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
 stokesx = fscanf(fileID, '%f', [1,Inf]);
 
-fileID = fopen(strcat('build/',fcell2{k}), 'r');
+filename = strcat('build/stokesVy',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
 stokesy = fscanf(fileID, '%f', [1,Inf]);
 
-fileID = fopen(strcat('build/',fcell3{k}), 'r');
+filename = strcat('build/darcyVx',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
 darcyx = fscanf(fileID, '%f', [1,Inf]);
 
-fileID = fopen(strcat('build/',fcell4{k}), 'r');
+filename = strcat('build/darcyVy',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
 darcyy = fscanf(fileID, '%f', [1,Inf]);
 
-fileID = fopen(strcat('build/',fcell{k}),'r');
+filename = strcat('build/porosity',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
 poro   = fscanf(fileID, '%f', [1,Inf]);
 
 stokesx = reshape(stokesx, M, N);
@@ -75,7 +87,6 @@ darcyx = reshape(darcyx, M, N);
 darcyy = reshape(darcyy, M, N);
 poro   = reshape(poro,M,N);
 
-figure
 subplot(1,3,1)
 quiver(pX, pY, stokesx, stokesy);
 title(["Stokes Velocity",num2str(k)])
@@ -87,6 +98,9 @@ title(["Scaled Darcy Velocity",num2str(k)])
 subplot(1,3,3)
 quiver(pX, pY, darcyx.*poro, darcyy.*poro);
 title(["Unscaled Darcy Velocity",num2str(k)])
+
+pause
+F = getframe(gcf);
 end
 
 fclose(fileID);
