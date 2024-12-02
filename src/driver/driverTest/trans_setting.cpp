@@ -116,6 +116,14 @@ bndryTypeTrans AssignBoundary(const MeshInfo& mi,
             bt = freeFlow;
         }
 
+    } else if(globalCell[0] == 0){ 
+
+        if (edgetype == 1) {
+            bt = noFlow;
+        } else {
+            bt = dirichletTrans;
+        }
+
     } else {
 
         bt = noFlow;

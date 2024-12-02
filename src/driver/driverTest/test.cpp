@@ -47,6 +47,8 @@ int main(int argc, char **argv){
 
     driver->InitTransport(InitHD, InitCD);
 
+    cout << InitHD({0,-1},{driver->myPhase->pp->l0,0.0}) << endl;
+
     driver->PrepareDefaultTransport();
 
     driver->PrepareFlow();
@@ -61,9 +63,7 @@ int main(int argc, char **argv){
 
     driver->maxIter = maxIter;
     driver->dt = 0.01;
-    driver->Tmax = 1.0;
-
-    driver->UpdateFluxALl();
+    driver->Tmax = 0.5;
 
     driver->RK();
 

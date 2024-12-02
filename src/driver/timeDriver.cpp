@@ -6,7 +6,6 @@
 // My RK time stepping solver
 
 int Driver::UpdateFluxAll(const bool& event,
-                          const double& dt,
                           Vec * globalhd,
                           Vec * globalcd,
                           Vec * gfluxHD,
@@ -78,8 +77,8 @@ int Driver::UpdateFluxAll(const bool& event,
         PrintFlowEvent();
         PrintPressureEvent();
 
-        PrintHDEvent();
-        PrintCDEvent();
+        PrintCellValue(&gHD, "HD");
+        PrintCellValue(&gCD, "CD");
     }
 
     // self defined time stepping solver 
@@ -96,23 +95,30 @@ int Driver::UpdateFluxAll(const bool& event,
 
         double fluxHD, fluxCD;
 
-        ComputeCellFlux({i,j}, fluxHD, fluxCD, edgefluxHD, edgefluxCD);
+        ComputeCellFlux({i-mi.MPIlocalCellStart[0],j-mi.MPIlocalCellStart[1]}, fluxHD, fluxCD, edgefluxHD, edgefluxCD);
 
-        lc[j][i] -= dt*fluxCD;
-        lh[j][i] -= dt*fluxHD;
-
+        lfcd[j][i] = -1*fluxCD;
+        lfhd[j][i] = -1*fluxHD;
     }}
 
     // Restore HD and CD
     // (Update ghost region)
+    // global vector not touched 
     PetscCall(DMDAVecRestoreArray(dmu, localc, &lc));
     PetscCall(DMDAVecRestoreArray(dmu, localh, &lh));
     PetscCall(DMRestoreLocalVector(dmu, &localc));
     PetscCall(DMRestoreLocalVector(dmu, &localh));
 
     // Restore global flux
+    // global vector updated
     PetscCall(DMDAVecRestoreArray(dmu, localfluxcd, &lfcd));
     PetscCall(DMDAVecRestoreArray(dmu, localfluxhd, &lfhd));
+
+    PetscCall(DMLocalToGlobalBegin(dmu, localfluxhd, INSERT_VALUES, fHD));
+    PetscCall(DMLocalToGlobalEnd(dmu, localfluxhd, INSERT_VALUES, fHD));
+    PetscCall(DMLocalToGlobalBegin(dmu, localfluxcd, INSERT_VALUES, fCD));
+    PetscCall(DMLocalToGlobalEnd(dmu, localfluxcd, INSERT_VALUES, fCD));
+
     PetscCall(DMRestoreLocalVector(dmu, &localfluxcd));
     PetscCall(DMRestoreLocalVector(dmu, &localfluxhd));
 
@@ -125,6 +131,17 @@ int Driver::RK(){
 
     bool event = true;
 
+    Vec fluxHD, fluxCD, solHD, solCD;
+    PetscCall(VecDuplicate(globalHD, &fluxHD));
+    PetscCall(VecDuplicate(globalCD, &fluxCD));
+    PetscCall(VecDuplicate(globalHD, &solHD));
+    PetscCall(VecDuplicate(globalCD, &solCD));
+
+    PetscCall(VecCopy(globalHD, solHD));
+    PetscCall(VecCopy(globalCD, solCD));
+
+    // Simple Euler forward first
+
     while (time < Tmax){
 
         if ((int)floor(time/dt) % 10 == 1){
@@ -133,7 +150,12 @@ int Driver::RK(){
             event = false;
         }
 
-        //UpdateFluxAll(event);
+        UpdateFluxAll(event, &solHD, &solCD, &fluxHD, &fluxCD);
+
+        PrintCellValue(&fluxHD,"fHD");
+
+        PetscCall(VecAXPY(solHD,dt,fluxHD));
+        PetscCall(VecAXPY(solCD,dt,fluxCD));
 
         time += dt;
     }

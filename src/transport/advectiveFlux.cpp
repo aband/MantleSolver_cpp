@@ -158,6 +158,9 @@ double advFluxBndry(const MeshInfo& mi,
 
     bndryTypeTrans bt = AssignBoundary(mi,gCell,edgeflag,field);
 
+            vector<double> bu;
+            bu.resize(u.size());
+
     switch (bt){
   
         case flux :
@@ -170,6 +173,17 @@ double advFluxBndry(const MeshInfo& mi,
 
         case noFlow:
             work = 0.0;
+        break;
+
+        case dirichletTrans:
+           for (auto& it: bu){
+                it = 0.308114;
+            }
+
+            if (field == "HD"){
+            work = advFlux(gwe, vel,bu,bu, unitnormal, len);}else {
+            work = 0.0;
+            }
         break;
 
         default:

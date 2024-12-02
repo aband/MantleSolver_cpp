@@ -331,8 +331,8 @@ int Driver::ComputeCellFlux(const indice& lCell,
 
     int left_flat  = FlatIndic(mi.MPIlocalVertexSize[0],left);
     int right_flat = FlatIndic(mi.MPIlocalVertexSize[0],left);
-    int bottom_flat= FlatIndic(mi.MPIlocalCellSize[0], bottom) + mi.MPIlocalHoriEdgeSize;
-    int top_flat   = FlatIndic(mi.MPIlocalCellSize[0], top) + mi.MPIlocalHoriEdgeSize;       
+    int bottom_flat= FlatIndic(mi.MPIlocalCellSize[0], bottom) + mi.MPIlocalVertEdgeSize;
+    int top_flat   = FlatIndic(mi.MPIlocalCellSize[0], top) + mi.MPIlocalVertEdgeSize;       
 
     fluxHD = edgeFluxHD.at(left_flat) - edgeFluxHD.at(right_flat) + edgeFluxHD.at(bottom_flat) - edgeFluxHD.at(top_flat); 
     fluxHD = edgeFluxCD.at(left_flat) - edgeFluxCD.at(right_flat) + edgeFluxCD.at(bottom_flat) - edgeFluxCD.at(top_flat); 

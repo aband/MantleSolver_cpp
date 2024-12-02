@@ -247,7 +247,6 @@ class Driver {
        double dt;
 
        int UpdateFluxAll(const bool& event,
-                         const double& dt,
                          Vec * globalhd, 
                          Vec * globalcd,
                          Vec * fluxHD,
