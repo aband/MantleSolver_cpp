@@ -389,3 +389,30 @@ int Driver::PrintCDEvent(){
 
     return 1;
 }
+
+int Driver::PrintCellValue(Vec * target, 
+                           const char * name){
+
+    FILE * targetFile = fopen(GetFilename(name),"w");
+
+    Vec targetVec = *target;
+
+    int istart = mi.MPIlocalCellStart[0];
+    int jstart = mi.MPIlocalCellStart[1];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
+
+        int nelem = FlatIndic(mi, {i,j});
+
+        double val = 0.0;
+  
+        PetscCall(VecGetValues(targetVec, 1, &nelem, &val));
+
+        fprintf(targetFile, "%f ", val);
+    }fprintf(targetFile, "\n");}
+
+    fclose(targetFile);
+
+    return 1;
+}

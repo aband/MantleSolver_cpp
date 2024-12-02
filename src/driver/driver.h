@@ -101,6 +101,7 @@ class Driver {
         * Assign Initial cell averaged condition.
         * Specificed for coupled system.
         * global vectors for dimensionless enthalpy and dimensionless Composition.
+		  * These global vectors serve as initial distribution vectors.
         */
         Vec globalCD, globalHD;
         Vec localCD, localHD;
@@ -111,6 +112,9 @@ class Driver {
         */
         int PrintCDEvent();
         int PrintHDEvent();
+
+        int PrintCellValue(Vec * target,
+                           const char * name);
 
         int InitTransport(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
                           double (*funcCD)(const valarray<double>& point, const vector<double>& param));
@@ -235,10 +239,21 @@ class Driver {
                            const vector<double>& edgefluxHD,
                            const vector<double>& edgefluxCD);
 
-       int RK(const double& dt, 
-              const double& Tmax,
-              const double& tolUzawa,
-              const int& maxIter);
+       double Tmax;
+       double tolUzawa;
+       int    maxIter;
+
+       double CFL;
+       double dt;
+
+       int UpdateFluxAll(const bool& event,
+                         const double& dt,
+                         Vec * globalhd, 
+                         Vec * globalcd,
+                         Vec * fluxHD,
+                         Vec * fluxCD);
+
+       int RK(); 
 
        // ===================================================================
        /**!

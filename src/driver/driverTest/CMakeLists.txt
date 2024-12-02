@@ -171,7 +171,7 @@ add_library(driver_lib
 		  ${SRC}/driver/driver.cpp
 		  ${SRC}/driver/transDriver.cpp
 		  ${SRC}/driver/flowDriver.cpp
-		  ${SRC}/driver/RKDriver.cpp
+		  ${SRC}/driver/timeDriver.cpp
 		  )
 
 target_include_directories(driver_lib
@@ -192,6 +192,7 @@ target_link_libraries(driver_lib
         mlweno_lib
 		  mfem_lib
         PkgConfig::PETSC
+		  transport_lib
 		  )
 
 # Generate an excutable file

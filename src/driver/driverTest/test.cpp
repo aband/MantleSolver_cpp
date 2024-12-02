@@ -59,6 +59,14 @@ int main(int argc, char **argv){
     driver->PrintGrid();
     driver->PrintLithoPressure();
 
+    driver->maxIter = maxIter;
+    driver->dt = 0.01;
+    driver->Tmax = 1.0;
+
+    driver->UpdateFluxALl();
+
+    driver->RK();
+
 /*
     // Time stepping
     ctx_driver ctx;
