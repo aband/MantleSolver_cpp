@@ -170,6 +170,11 @@ int Driver::SingleEdgeFlux(const indice& localedge,
                     refArrayStokesEssen_,mi,
                     gauss_p, gCellInside,*br_,*basis_);
 
+    // Check velocity
+    for (int k=0; k<vel_darcy.size(); k++){
+        
+    }
+
     // Computable in and out cell index
     indice comp_gCellIn, comp_gCellOut;
     comp_gCellIn = gCellIn; comp_gCellOut = gCellOut;
@@ -271,7 +276,6 @@ int Driver::SingleEdgeFlux(const indice& localedge,
         workHD = fluxfuncAdv(gwe, velEffectHD, HDin, HDout, unitNormal, len);
 
         workCD = fluxfuncAdv(gwe, velEffectCD, CDin, CDout, unitNormal, len);
-
     }
 
     return 1;
@@ -297,29 +301,37 @@ int Driver::UpdateEdgeFluxAll(vector<double>& edgefluxHD,
     for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
         for (int i=0; i<mi.MPIlocalVertexSize[0]; i++){
             // Vertical edge computed first
-            cout << "update edge flux line 300: stop after (i,j) = " << "(" 
-                 << i << " , " << j << ") , Flatten as " 
-					  << FlatIndic(mi.MPIlocalVertexSize[0],{i,j});
-            SingleEdgeFlux({i,j}, extractVertEdgeInfo, fluxCD, fluxHD, fluxfuncAdv, fluxfuncbndryAdv, fluxfuncAdv, fluxfuncbndryAdv);
+            SingleEdgeFlux({i,j}, extractVertEdgeInfo, fluxHD, fluxCD, fluxfuncAdv, fluxfuncbndryAdv, fluxfuncAdv, fluxfuncbndryAdv);
             edgefluxHD.at(FlatIndic(mi.MPIlocalVertexSize[0],{i,j})) = fluxHD;
             edgefluxCD.at(FlatIndic(mi.MPIlocalVertexSize[0],{i,j})) = fluxCD;
-				cout <<"  .Flux value : " << fluxHD << endl;
+
+/*
+            cout << "update edge flux line 300: stop after (i,j) = " << "(" 
+                 << i << " , " << j << ") , Flatten as " 
+                 << FlatIndic(mi.MPIlocalVertexSize[0],{i,j});
+ 
+            cout <<"  .Flux value : " << fluxHD << "  .FluxCD value : " << fluxCD << endl;
+*/
+
         }
     }
 
     for (int j=0; j< mi.MPIlocalVertexSize[1]; j++){
         for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
             // Horizontal edge computed second
-            cout << "update edge flux line 300: stop after (i,j) = " << "(" 
-                 << i << " , " << j << ") , Flatten as " 
-					  << FlatIndic(mi.MPIlocalCellSize[0],{i,j});
-
-            SingleEdgeFlux({i,j}, extractHoriEdgeInfo, fluxCD, fluxHD, fluxfuncAdv, fluxfuncbndryAdv, fluxfuncAdv, fluxfuncbndryAdv);
+            SingleEdgeFlux({i,j}, extractHoriEdgeInfo, fluxHD, fluxCD, fluxfuncAdv, fluxfuncbndryAdv, fluxfuncAdv, fluxfuncbndryAdv);
             edgefluxHD.at(FlatIndic(mi.MPIlocalCellSize[0],{i,j}) 
                           + mi.MPIlocalVertEdgeSize) = fluxHD;
             edgefluxCD.at(FlatIndic(mi.MPIlocalCellSize[0],{i,j}) 
                           + mi.MPIlocalVertEdgeSize) = fluxCD;
-				cout <<"  .Flux value : " << fluxHD << endl;
+
+/*
+            cout << "update edge flux line 300: stop after (i,j) = " << "(" 
+                 << i << " , " << j << ") , Flatten as " 
+                 << FlatIndic(mi.MPIlocalCellSize[0],{i,j});
+
+            cout <<"  .FluxHD value : " << fluxHD  << "  .FluxCD value : " << fluxCD << endl;
+*/
 
         }
     }
@@ -349,10 +361,15 @@ int Driver::ComputeCellFlux(const indice& lCell,
     // Check cell flux cell by cell
     cout << setw(6) << "At cell (" << lCell[0] << ", " << lCell[1] << ")" << endl;
     cout << setw(6) << std::right << std::scientific
-         << "Left edge flux  : " << edgeFluxHD.at(left_flat)   << "  "
-         << "Right edge flux : " << edgeFluxHD.at(right_flat)  << "  "
-         << "Bottom edge flux: " << edgeFluxHD.at(bottom_flat) << "  "
-         << "Top edge flux   : " << edgeFluxHD.at(top_flat)    << endl << endl;
+         << "Left edge flux   HD : " << edgeFluxHD.at(left_flat)   << "  "
+         << "Right edge flux  HD : " << edgeFluxHD.at(right_flat)  << "  "
+         << "Bottom edge flux HD : " << edgeFluxHD.at(bottom_flat) << "  "
+         << "Top edge flux    HD : " << edgeFluxHD.at(top_flat)    << endl << endl;
+    cout << setw(6) << std::right << std::scientific
+         << "Left edge flux   CD : " << edgeFluxCD.at(left_flat)   << "  "
+         << "Right edge flux  CD : " << edgeFluxCD.at(right_flat)  << "  "
+         << "Bottom edge flux CD : " << edgeFluxCD.at(bottom_flat) << "  "
+         << "Top edge flux    CD : " << edgeFluxCD.at(top_flat)    << endl << endl;
 
     return 1;
 }
