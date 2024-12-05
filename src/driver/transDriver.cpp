@@ -141,7 +141,7 @@ int Driver::SingleEdgeFlux(const indice& localedge,
     edgeEnds<indice> edgeEndsIndice;
 
     // returns values indicating horizontal or vertical edges
-    // 1 for horizontal edge, and 2 for vertical edge
+    // 2 for horizontal edge, and 1 for vertical edge
     int edgeFlag = edgeinfo(mi, localedge, mi.ghostShiftVertex, 
                             gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
 
@@ -297,21 +297,30 @@ int Driver::UpdateEdgeFluxAll(vector<double>& edgefluxHD,
     for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
         for (int i=0; i<mi.MPIlocalVertexSize[0]; i++){
             // Vertical edge computed first
-            //cout << "update edge flux line 300: stop after (i,j) = " << "(" << i << " , " << j << ") " << endl;
+            cout << "update edge flux line 300: stop after (i,j) = " << "(" 
+                 << i << " , " << j << ") , Flatten as " 
+					  << FlatIndic(mi.MPIlocalVertexSize[0],{i,j});
             SingleEdgeFlux({i,j}, extractVertEdgeInfo, fluxCD, fluxHD, fluxfuncAdv, fluxfuncbndryAdv, fluxfuncAdv, fluxfuncbndryAdv);
             edgefluxHD.at(FlatIndic(mi.MPIlocalVertexSize[0],{i,j})) = fluxHD;
             edgefluxCD.at(FlatIndic(mi.MPIlocalVertexSize[0],{i,j})) = fluxCD;
+				cout <<"  .Flux value : " << fluxHD << endl;
         }
     }
 
     for (int j=0; j< mi.MPIlocalVertexSize[1]; j++){
         for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
             // Horizontal edge computed second
+            cout << "update edge flux line 300: stop after (i,j) = " << "(" 
+                 << i << " , " << j << ") , Flatten as " 
+					  << FlatIndic(mi.MPIlocalCellSize[0],{i,j});
+
             SingleEdgeFlux({i,j}, extractHoriEdgeInfo, fluxCD, fluxHD, fluxfuncAdv, fluxfuncbndryAdv, fluxfuncAdv, fluxfuncbndryAdv);
             edgefluxHD.at(FlatIndic(mi.MPIlocalCellSize[0],{i,j}) 
                           + mi.MPIlocalVertEdgeSize) = fluxHD;
             edgefluxCD.at(FlatIndic(mi.MPIlocalCellSize[0],{i,j}) 
                           + mi.MPIlocalVertEdgeSize) = fluxCD;
+				cout <<"  .Flux value : " << fluxHD << endl;
+
         }
     }
     return 1;
@@ -330,12 +339,20 @@ int Driver::ComputeCellFlux(const indice& lCell,
     indice top    = {lCell[0], lCell[1]+1};
 
     int left_flat  = FlatIndic(mi.MPIlocalVertexSize[0],left);
-    int right_flat = FlatIndic(mi.MPIlocalVertexSize[0],left);
+    int right_flat = FlatIndic(mi.MPIlocalVertexSize[0],right);
     int bottom_flat= FlatIndic(mi.MPIlocalCellSize[0], bottom) + mi.MPIlocalVertEdgeSize;
     int top_flat   = FlatIndic(mi.MPIlocalCellSize[0], top) + mi.MPIlocalVertEdgeSize;       
 
     fluxHD = edgeFluxHD.at(left_flat) - edgeFluxHD.at(right_flat) + edgeFluxHD.at(bottom_flat) - edgeFluxHD.at(top_flat); 
-    fluxHD = edgeFluxCD.at(left_flat) - edgeFluxCD.at(right_flat) + edgeFluxCD.at(bottom_flat) - edgeFluxCD.at(top_flat); 
+    fluxCD = edgeFluxCD.at(left_flat) - edgeFluxCD.at(right_flat) + edgeFluxCD.at(bottom_flat) - edgeFluxCD.at(top_flat); 
+
+    // Check cell flux cell by cell
+    cout << setw(6) << "At cell (" << lCell[0] << ", " << lCell[1] << ")" << endl;
+    cout << setw(6) << std::right << std::scientific
+         << "Left edge flux  : " << edgeFluxHD.at(left_flat)   << "  "
+         << "Right edge flux : " << edgeFluxHD.at(right_flat)  << "  "
+         << "Bottom edge flux: " << edgeFluxHD.at(bottom_flat) << "  "
+         << "Top edge flux   : " << edgeFluxHD.at(top_flat)    << endl << endl;
 
     return 1;
 }

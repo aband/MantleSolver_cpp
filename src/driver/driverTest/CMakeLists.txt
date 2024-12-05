@@ -143,8 +143,6 @@ target_link_libraries(mlweno_lib
 add_library(transport_lib
 		  ${SRC}/transport/advectiveFlux.cpp
 		  ${SRC}/transport/lagrange_tmp.cpp
-		  ${SRC}/coupledSys/time_stepping_explicit.cpp
-		  #${SRC}/coupledSys/edgeFlux_coupled.cpp
 )
 
 # Specify any additional include directories if needed

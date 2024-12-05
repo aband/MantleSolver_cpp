@@ -85,12 +85,12 @@ int Driver::UpdateFluxAll(const bool& event,
     vector<double> edgefluxHD;
     vector<double> edgefluxCD;
 
+    for (int k=0; k<edgefluxHD.size(); k++){
+    cout << edgefluxHD.at(k) << endl;
+    }
+
     UpdateEdgeFluxAll(edgefluxHD, edgefluxCD, advFlux, advFluxBndry, 
                                               advFlux, advFluxBndry);
-
-//    for (int k=0; k<edgefluxHD.size(); k++){
-//    cout << edgefluxHD.at(k) << endl;
-//    }
 
     for (int j=mi.MPIlocalCellStart[1]; 
              j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1]; j++){

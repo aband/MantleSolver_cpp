@@ -35,6 +35,9 @@ int main(int argc, char **argv){
     double tolUzawa = 10e-7; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
 
+    double Tmax = 0.009; // Stop at the first step 
+    PetscCall(PetscOptionsGetReal(NULL, NULL, "-tmax", &Tmax, NULL)); 
+
     // ==============================================================================
 
     Driver * driver = new Driver();
@@ -47,7 +50,7 @@ int main(int argc, char **argv){
 
     driver->InitTransport(InitHD, InitCD);
 
-    cout << InitHD({0,-1},{driver->myPhase->pp->l0,0.0}) << endl;
+    //cout << InitHD({0,-1},{driver->myPhase->pp->l0,0.0}) << endl;
 
     driver->PrepareDefaultTransport();
 
@@ -61,9 +64,9 @@ int main(int argc, char **argv){
     driver->PrintGrid();
     driver->PrintLithoPressure();
 
+    driver->Tmax = Tmax;
     driver->maxIter = maxIter;
     driver->dt = 0.01;
-    driver->Tmax = 0.5;
 
     driver->RK();
 
