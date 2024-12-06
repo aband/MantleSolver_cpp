@@ -172,7 +172,7 @@ int Driver::SingleEdgeFlux(const indice& localedge,
 
     // Check velocity
     for (int k=0; k<vel_darcy.size(); k++){
-        
+        cout << vel_stokes.at(k)[0] << "  " << vel_stokes.at(k)[1] << endl;    
     }
 
     // Computable in and out cell index
