@@ -216,24 +216,7 @@ int Driver::SingleEdgeFlux(const indice& localedge,
         gauss_p.at(g), comp_gCellIn, mi, location(mi,comp_gCellIn),"CD");
 
         // Check Reconstructed values on the edge
-		  // It is a complete check point by point reconstruction
-
-        if (comp_gCellOut[1] == 2 && comp_gCellOut[0] == 0){
-            cout << "This computation uses global cell " << comp_gCellIn[0]
-                 << ", " << comp_gCellIn[1] 
-                 << "  And global cell " << comp_gCellOut[0] << ", " 
-                 << comp_gCellOut[1] << endl;
-
-            cout << "Field HDout reconstructed at index " << g << " is " 
-                 << HDout.at(g) 
-                 << " Field HDin reconstructed at index " << g << " is "
-                 << HDin.at(g) << endl;
-
-            cout << "Field CDout reconstructed at index " << g << " is " 
-                 << CDout.at(g) 
-                 << " Field CDin reconstructed at index " << g << " is "
-                 << CDin.at(g) << endl;
-        }
+        // It is a complete check point by point reconstruction
 
         // temperatury pressure value
         double depth  = myPhase->pPtr->GetDepth(gauss_p.at(g)[1], myPhase->pp->l0);  
@@ -266,7 +249,7 @@ int Driver::SingleEdgeFlux(const indice& localedge,
 
         // Compute effective velocity
         velEffectHD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), lambda_mean, phif_mean);  
-        velEffectCD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), kappa_mean, phif_mean);  
+        velEffectCD.at(g) = effectVel(vel_darcy.at(g), vel_stokes.at(g), kappa_mean, phif_mean); 
     }
 
     // Classify between different flux situation

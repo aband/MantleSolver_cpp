@@ -35,7 +35,7 @@ int main(int argc, char **argv){
     double tolUzawa = 10e-7; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
 
-    double Tmax = 0.009; // Stop at the first step 
+    double Tmax = 10; // Stop at the first step 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tmax", &Tmax, NULL)); 
 
     // ==============================================================================
@@ -66,12 +66,9 @@ int main(int argc, char **argv){
 
     driver->Tmax = Tmax;
     driver->maxIter = maxIter;
-    driver->dt = 0.01;
+    driver->dt = 0.1;
 
     driver->RK();
-
-    VecView(driver->globalHD, PETSC_VIEWER_STDOUT_WORLD);
-    VecView(driver->globalCD, PETSC_VIEWER_STDOUT_WORLD);
 
 /*
     // Time stepping

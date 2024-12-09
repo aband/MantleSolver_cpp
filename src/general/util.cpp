@@ -464,7 +464,7 @@ int extractHoriEdgeInfo(const MeshInfo& mi,
     gCellOut= {gCellIn[0],gCellIn[1] - 1};
 
     edgeEndsIndice.start = local + ghostShift; 
-    edgeEndsIndice.end   = {edgeEndsIndice.start[0] + 1, edgeEndsIndice.start[0]};
+    edgeEndsIndice.end   = {edgeEndsIndice.start[0] + 1, edgeEndsIndice.start[1]};
 
     edgeEndsVertex.start = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.start)];
     edgeEndsVertex.end   = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.end)];
