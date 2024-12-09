@@ -70,6 +70,9 @@ int main(int argc, char **argv){
 
     driver->RK();
 
+    VecView(driver->globalHD, PETSC_VIEWER_STDOUT_WORLD);
+    VecView(driver->globalCD, PETSC_VIEWER_STDOUT_WORLD);
+
 /*
     // Time stepping
     ctx_driver ctx;

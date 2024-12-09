@@ -29,7 +29,7 @@ endif (FORTRAN_COMPILER)
 
 # Set Optimization flags
 #set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
-set(CMAKE_CXX_FLAGS "-g")
+#set(CMAKE_CXX_FLAGS "-g")
 
 project(test)
 
@@ -42,44 +42,89 @@ pkg_search_module(HDF5 REQUIRED IMPORTED_TARGET hdf5)
 #pkg_search_module(CGNS REQUIRED IMPORTED_TARGET cgns)
 
 # Build library
-# Create a library from the files in src file
+# Create a library from the files in general folder
 add_library(general_lib
-		  ${SRC}/general/integral.cpp 
-		  ${SRC}/general/mesh.c 
-		  ${SRC}/general/util.cpp
+        ${SRC}/general/integral.cpp 
+        ${SRC}/general/mesh.c 
+        ${SRC}/general/util.cpp
 )
 
 target_include_directories(general_lib
-		  PUBLIC SRC/general
+    PUBLIC ${SRC}/general
+	 PUBLIC ${PETSC_DIR}/include
 )
 
 target_link_libraries(general_lib
     PkgConfig::PETSC
 )
 
-# Create a library from the files in the io directroy
+# Create library from io folder 
 add_library(io_lib
-		  ${SRC}/io/input.cpp
-		  ${SRC}/io/output.c
+        ${SRC}/io/input.cpp
+        ${SRC}/io/output.c
 #		  ${SRC}/io/cgns_io.c
 )
 
 target_include_directories(io_lib
 		  PUBLIC ${SRC}/io
-		  PUBLIC ${SRC}/general
+		  PUBLIC ${PETSC_DIR}/include
 )
 
 target_link_libraries(io_lib
     general_lib
     PkgConfig::PETSC
     PkgConfig::HDF5
-#    PkgConfig::CGNS
+#	 PkgConfig::CGNS
 )
+
+#Create a library from files in mfem file
+add_library(mfem_lib
+        ${SRC}/mfem/basis.cpp
+        ${SRC}/mfem/Hdivmixed.cpp
+        ${SRC}/mfem/brmixed.cpp
+        ${SRC}/mfem/assemble.cpp
+        ${SRC}/mfem/bndry.cpp
+        ${SRC}/mfem/solve.cpp
+        ${SRC}/mfem/error.cpp
+		  ${SRC}/mfem/shape.tpp
+		  ${SRC}/mfem/parallel/passemble.cpp
+		  ${SRC}/mfem/parallel/locmat.cpp
+		  ${SRC}/mfem/parallel/psolve.cpp
+		  ${SRC}/mfem/parallel/preconst.cpp
+		  ${SRC}/coupledSys/locmat_coupled.cpp
+		  ${SRC}/coupledSys/passemble_coupled.cpp
+)
+
+target_include_directories(mfem_lib
+		  PUBLIC ${SRC}/mfem
+		  PUBLIC ${SRC}/mfem/parallel
+		  PUBLIC ${SRC}/coupledSys
+		  PUBLIC ${SRC}/transport
+#		  PUBLIC /workspace/CGNS/src
+#		  PUBLIC /workspace/CGNS/build/src
+)
+
+target_link_libraries(mfem_lib
+	 mlweno_lib
+    phase_lib
+    general_lib
+)
+
+#Create a library from phase folder
+add_library(phase_lib
+		  ${SRC}/phase/eutectic.cpp
+)
+
+target_include_directories(phase_lib
+		  PUBLIC ${SRC}/phase
+		  PUBLIC ${SRC}/include
+		  )
 
 # Create a library from the files in the mlweno directory
 add_library(mlweno_lib 
-		  ${SRC}/mlweno/reconstruction.cpp 
-		  ${SRC}/mlweno/polynomial.cpp 
+		  ${SRC}/mlweno/reconstMLWENO.cpp
+		  ${SRC}/mlweno/polynomial.cpp
+		  ${SRC}/mlweno/mlwenouse.cpp
 )
 
 # Specify any additional include directories if needed
@@ -94,24 +139,79 @@ target_link_libraries(mlweno_lib
         PkgConfig::PETSC
 )
 
-# Add to excutable
-add_executable(test 
-        test.cpp 
+# Create a library from the files in the transport directory
+add_library(transport_lib
+		  ${SRC}/transport/advectiveFlux.cpp
+		  ${SRC}/transport/lagrange_tmp.cpp
 )
 
-add_executable(parallel
-        parallel.cpp
+# Specify any additional include directories if needed
+target_include_directories(transport_lib 
+		  PUBLIC ${SRC}/transport
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/general
+		  PUBLIC ${SRC}/mfem/parallel
+		  PUBLIC ${PETSC_DIR}/include 
+		  PUBLIC ${SRC}/driver
+
 )
 
-# Link static libraries generated previously
-target_link_libraries(test 
-    mlweno_lib
-    io_lib
-    PkgConfig::LAPACKE 
+target_link_libraries(transport_lib
+        io_lib
+        general_lib
+        mlweno_lib
+		  mfem_lib
+        PkgConfig::PETSC
+		  driver_lib
 )
 
-target_link_libraries(parallel
-    mlweno_lib
-    io_lib
-    PkgConfig::LAPACKE 
+add_library(driver_lib
+		  ${SRC}/driver/driver.cpp
+		  ${SRC}/driver/transDriver.cpp
+		  ${SRC}/driver/flowDriver.cpp
+		  ${SRC}/driver/timeDriver.cpp
+		  )
+
+target_include_directories(driver_lib
+		  PUBLIC ${SRC}/transport
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/general
+        PUBLIC ${PETSC_DIR}/include 
+		  PUBLIC ${SRC}/phase
+		  PUBLIC ${SRC}/mfem
+		  PUBLIC ${SRC}/mfem/parallel
+		  PUBLIC ${SRC}/coupledSys
+		  PUBLIC ${SRC}/driver
+		  )
+
+target_link_libraries(driver_lib
+		  io_lib
+        general_lib
+        mlweno_lib
+		  mfem_lib
+        PkgConfig::PETSC
+		  transport_lib
+		  )
+
+# Generate an excutable file
+add_executable(test
+		  flow_setting.cpp
+		  trans_setting.cpp
+        new_mluse_test.cpp
+)
+
+target_include_directories(test
+		  PUBLIC ${SRC}/coupledSys
+		  )
+
+target_link_libraries(test
+		  io_lib
+		  phase_lib
+		  mfem_lib
+		  mlweno_lib
+		  transport_lib
+		  driver_lib
+		  PkgConfig::LAPACKE
+		  phase_lib
+#        PkgConfig::CGNS
 )

@@ -97,7 +97,7 @@ int Driver::PrepareDefaultTransport(){
 int Driver::UpdateSmoothnessIndicator(){
 
     mlpPtr_->UpdateSmoothnessIndic(mi, mi.localCD, "CD");
-    mlpPtr_->UpdateSmoothnessIndic(mi, mi.localCD, "HD");
+    mlpPtr_->UpdateSmoothnessIndic(mi, mi.localHD, "HD");
 
     // Diffusion later
 
@@ -170,11 +170,6 @@ int Driver::SingleEdgeFlux(const indice& localedge,
                     refArrayStokesEssen_,mi,
                     gauss_p, gCellInside,*br_,*basis_);
 
-    // Check velocity
-    for (int k=0; k<vel_darcy.size(); k++){
-        cout << vel_stokes.at(k)[0] << "  " << vel_stokes.at(k)[1] << endl;    
-    }
-
     // Computable in and out cell index
     indice comp_gCellIn, comp_gCellOut;
     comp_gCellIn = gCellIn; comp_gCellOut = gCellOut;
@@ -219,6 +214,26 @@ int Driver::SingleEdgeFlux(const indice& localedge,
         gauss_p.at(g), comp_gCellIn, mi, location(mi,comp_gCellIn),"HD");
         CDin.at(g) = mluseAdv_->Evaluate(
         gauss_p.at(g), comp_gCellIn, mi, location(mi,comp_gCellIn),"CD");
+
+        // Check Reconstructed values on the edge
+		  // It is a complete check point by point reconstruction
+
+        if (comp_gCellOut[1] == 2 && comp_gCellOut[0] == 0){
+            cout << "This computation uses global cell " << comp_gCellIn[0]
+                 << ", " << comp_gCellIn[1] 
+                 << "  And global cell " << comp_gCellOut[0] << ", " 
+                 << comp_gCellOut[1] << endl;
+
+            cout << "Field HDout reconstructed at index " << g << " is " 
+                 << HDout.at(g) 
+                 << " Field HDin reconstructed at index " << g << " is "
+                 << HDin.at(g) << endl;
+
+            cout << "Field CDout reconstructed at index " << g << " is " 
+                 << CDout.at(g) 
+                 << " Field CDin reconstructed at index " << g << " is "
+                 << CDin.at(g) << endl;
+        }
 
         // temperatury pressure value
         double depth  = myPhase->pPtr->GetDepth(gauss_p.at(g)[1], myPhase->pp->l0);  
@@ -359,6 +374,7 @@ int Driver::ComputeCellFlux(const indice& lCell,
     fluxCD = edgeFluxCD.at(left_flat) - edgeFluxCD.at(right_flat) + edgeFluxCD.at(bottom_flat) - edgeFluxCD.at(top_flat); 
 
     // Check cell flux cell by cell
+/*
     cout << setw(6) << "At cell (" << lCell[0] << ", " << lCell[1] << ")" << endl;
     cout << setw(6) << std::right << std::scientific
          << "Left edge flux   HD : " << edgeFluxHD.at(left_flat)   << "  "
@@ -370,6 +386,7 @@ int Driver::ComputeCellFlux(const indice& lCell,
          << "Right edge flux  CD : " << edgeFluxCD.at(right_flat)  << "  "
          << "Bottom edge flux CD : " << edgeFluxCD.at(bottom_flat) << "  "
          << "Top edge flux    CD : " << edgeFluxCD.at(top_flat)    << endl << endl;
+*/
 
     return 1;
 }

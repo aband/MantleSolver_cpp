@@ -262,6 +262,10 @@ class Driver {
 
        char * GetFilename(const char * filename);
 
+       // For testing, make it public temperarily
+        MLWENO::MLWENOUse * mluseAdv_;
+
+
     private:
 
         /**!
@@ -280,7 +284,7 @@ class Driver {
          * WENO useage objects
 			* Two objects, one for advection and another for diffusion
          */
-        MLWENO::MLWENOUse * mluseAdv_;
+//        MLWENO::MLWENOUse * mluseAdv_;
 
         MLWENO::MLWENOUse * mluseDif_;
 
