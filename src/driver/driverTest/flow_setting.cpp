@@ -112,7 +112,8 @@ const vertex traction(const vertex& point, PhysProperty * pp){
 // =========================================================================
 const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global,
-                                const int& local){
+                                const int& local,
+                                const std::vector<double>& parameter){
 
     bndryType type = missed;
 

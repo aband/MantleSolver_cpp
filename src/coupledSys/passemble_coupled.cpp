@@ -20,7 +20,8 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
                                       int * refArrayStokes, 
                                       int * refArrayDarcy,
                                       const int& bndryDOFStokes,
-                                      const int& bndryDOFDarcy){
+                                      const int& bndryDOFDarcy,
+                                      const std::vector<double>& parameter){
 
     PetscMPIInt   size, rank; 
     MPI_Comm_size(PETSC_COMM_WORLD, &size);
@@ -114,10 +115,11 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
 
         // ! Assign local values to global matrix
         if (elemOnBndry(mi, global)){
+            // ! Dealing wiht boundary dofs
             AssignLocRedSys(redsysStokes, locmatS, refArrayStokes, 
-                            mi, bndryEssenStokes, global, stokesFuncSp); 
+                            mi, bndryEssenStokes, global, stokesFuncSp,parameter); 
             AssignLocRedSys(redsysDarcy, locmatD, refArrayDarcy,
-                            mi, bndryEssenDarcy, global, darcyFuncSp);
+                            mi, bndryEssenDarcy, global, darcyFuncSp,parameter);
         } else {
             AssignLocRedSys(redsysStokes, locmatS, refArrayStokes, mi, global, br_);
             AssignLocRedSys(redsysDarcy, locmatD, refArrayDarcy, mi, global, hdiv_);

@@ -30,6 +30,7 @@ bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
                   const std::string& name){
 
     // Need global cell index and local 
+    // Default bMarker function with no parameter input
 
     bndryType type = missed;
 
@@ -45,7 +46,7 @@ bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
         } else if (name == "BR"){
 
             indice globalCell = Bend(mi,work[0]);
-            type = bndryTypeMarker(mi, globalCell, work[1]);
+            type = bndryTypeMarker(mi, globalCell, work[1],{-1});
         }
 
     }
@@ -53,39 +54,31 @@ bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
     return type;
 }
 
-/*
-template <typename T>
-int CreateRefMap(T& funcSp, int * refArray, 
-                 const MeshInfo& mi, int * bndryDOFEssen){
+bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
+                  const std::string& name,
+                  const std::vector<double>& parameter){
 
-    // Each processor has to create its own mapping
-    // Control Essential dof only
+    bndryType type = missed;
 
-    // !!!!!! Caution !!!!!!!
-    // This function has not been finished
-    // Cannot do natural boundary condition yet
+    if (work[0] != -1){
 
-    int bndryIndex = 0;
-    int intrIndex  = 0;
+        if (name == "BDM"){
 
-    for (int dof=0; dof<funcSp.getDOF(); dof++){
+            // Bndry dof
+            indice globalCell = Bend(mi,work[0]); 
+            int edge = work[1]%4;
+            type = bndryTypeMarkerDarcy(mi, globalCell,edge);
 
-        if (funcSp.onBndry(mi, dof)){
+        } else if (name == "BR"){
 
-            refArray[dof] = intrIndex;
-            intrIndex ++;
-        }else {
-            refArray[dof] = bndryIndex;
-            bndryIndex ++;
+            indice globalCell = Bend(mi,work[0]);
+            type = bndryTypeMarker(mi, globalCell, work[1],parameter);
         }
 
     }
 
-    *bndryDOFEssen = intrIndex;
-
-    return 0;  
+    return type;
 }
-*/
 
 // Assemble sparse matrix parallelly
 // Parallel assemble need boundary condition pre allocated
@@ -121,15 +114,6 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
 
     // Calculate dofs 
     int totalElem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
-
-//    int bndryDOFStokes = 0.0;
-//    int bndryDOFDarcy = 0.0;
-
-//    int * refArrayStokes = new int[br_.getDOF()];
-//    int * refArrayDarcy  = new int[hdiv_.getDOF()];
-
-//    CreateRefMap(br_, refArrayStokes, mi, &bndryDOFStokes);
-//    CreateRefMap(hdiv_, refArrayDarcy, mi, &bndryDOFDarcy);
 
     int reducedDOFStokes = br_.getDOF() - bndryDOFStokes;
 

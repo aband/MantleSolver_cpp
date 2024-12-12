@@ -50,18 +50,37 @@ inline int CreateRefMap(T& funcSp, int * refArray,
 bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
                   const std::string& name);
 
+bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
+                  const std::string& name,
+                  const std::vector<double>& parameter);
+
 // ! A completed version of assigning boundary essential conditions
 // ! Attention!!
 // ! A mistake was made here.
 // ! Essential bndry dof was mistakenly refered to as dirichlet
 // ! Natrual bndry dof was mistakenly refered to as neumann
-template <typename T>
+template <typename T> 
 inline int CreateRefMap(T& funcSp, 
                         const MeshInfo& mi, 
                         int * refArray,
                         unordered_map<int, int>& refMapNatur,
                         int * EssenDOFCount,
                         int * NaturDOFCount){
+
+    CreateRefMap(funcSp, mi, refArray, refMapNatur, 
+                 EssenDOFCount , NaturDOFCount, {0});
+
+    return 0;
+}
+
+template <typename T>
+inline int CreateRefMap(T& funcSp, 
+                        const MeshInfo& mi, 
+                        int * refArray,
+                        unordered_map<int, int>& refMapNatur,
+                        int * EssenDOFCount,
+                        int * NaturDOFCount,
+                        const std::vector<double>& parameter){
 
     int essenCount = 0; 
     int naturCount = 0;
@@ -77,7 +96,7 @@ inline int CreateRefMap(T& funcSp,
 
         std::vector<int> work = funcSp.GlobalToLocalMapBndry(mi, dof);
 
-        bndryType bt = bMarker(mi, work, funcSp.name);
+        bndryType bt = bMarker(mi, work, funcSp.name, parameter);
 
         if (bt == dirichlet){
             refArray[dof] = essenCount;
@@ -149,7 +168,8 @@ PetscErrorCode ParallelMatrixAssemble(const MeshInfo& mi,
                                       int * refArrayStokes, 
                                       int * refArrayDarcy,
                                       const int& bndryDOFStokes,
-                                      const int& bndryDOFDarcy);
+                                      const int& bndryDOFDarcy,
+                                      const std::vector<double>& parameter);
 #endif
 
 // ======= Inline functions =====================
@@ -242,6 +262,7 @@ inline int AssembleReducedSys(ReducedSys * redsys){
 }
 
 // Used for elements on the boundary (has dofs on the boundary)
+
 template <typename T> 
 inline int AssignLocRedSys(ReducedSys * redsys,
                            LocMat * loc,
@@ -250,6 +271,21 @@ inline int AssignLocRedSys(ReducedSys * redsys,
                            const bndryVal& bndryEssen,
                            const indice& global,
                            shape<T>& funcSp){
+
+    AssignLocRedSys(redsys, loc, ref, mi, bndryEssen, global, funcSp, {0});
+
+    return 0;
+}
+
+template <typename T> 
+inline int AssignLocRedSys(ReducedSys * redsys,
+                           LocMat * loc,
+                           int * ref,
+                           const MeshInfo& mi,
+                           const bndryVal& bndryEssen,
+                           const indice& global,
+                           shape<T>& funcSp,
+                           const std::vector<double>& parameter){
 
     // ! Get global index of local dofs 
     const std::vector<int> elemDofs = funcSp.LocalToGlobal(mi, global);
@@ -261,10 +297,8 @@ inline int AssignLocRedSys(ReducedSys * redsys,
         const int idxm = ref[elemDofs.at(row)];
         const double valB = loc->B.at(row);
 
-        //std::cout << row <<  "   " << funcSp.onBndry(mi, elemDofs.at(row)) << "  " << bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(row)),funcSp.name()) << endl;
-
 //        if (funcSp.onBndry(mi, elemDofs.at(row))){
-        if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(row)),funcSp.name()) == dirichlet){
+        if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(row)),funcSp.name(),parameter) == dirichlet){
 
             // This dof is a dirichlet dof on the boundary
             // Should be assign to Bg
@@ -293,7 +327,7 @@ inline int AssignLocRedSys(ReducedSys * redsys,
                 const double val = loc->A.at(row+col*elemDofs.size()); 
 
 //                if (funcSp.onBndry(mi,elemDofs.at(col))){
-                  if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(col)),funcSp.name()) == dirichlet){
+                  if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(col)),funcSp.name(),parameter) == dirichlet){
 
                     // It is a non bndry dof - bndry dof interaction
                     // Val assigned to M
@@ -313,6 +347,7 @@ inline int AssignLocRedSys(ReducedSys * redsys,
 }
 
 // Used for elements on the boundary (Separating essential and natural boundary conditions)
+/*
 template <typename T>
 inline int AssignLocRedSys(ReducedSys * redsys, 
                            LocMat * loc,
@@ -395,11 +430,13 @@ inline int AssignLocRedSys(ReducedSys * redsys,
     }
     return 0;
 }
+*/
 
 // Used for interior elements (no need to identify boundary dofs)
 // Set multiple values at the same time
 // need const int id array
 // Stokes and Darcy part are separated
+
 inline int AssignLocRedSys(ReducedSys * redsys,
                            LocMat * loc,
                            int * ref,

@@ -48,7 +48,8 @@ int MarkBndryDOFStokes(bndryVal& bndryDiri,
                        const MeshInfo& mi,
                        basis& basis_,
                        BRMixed& br_,
-                       PhysProperty * pp){
+                       PhysProperty * pp,
+                       const std::vector<double>& parameter){
 
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
@@ -96,7 +97,7 @@ int MarkBndryDOFStokes(bndryVal& bndryDiri,
             for (int dofi = 0; dofi < 3; dofi++){
                 int locdof = edge + dofi*4;
 
-                switch (bndryTypeMarker(mi, global, locdof)){
+                switch (bndryTypeMarker(mi, global, locdof,parameter)){
                     case dirichlet:
                         // Dirichlet boundary condition
                         bndryDiri.insert(std::make_pair<int, bndryInfo>
@@ -122,6 +123,19 @@ int MarkBndryDOFStokes(bndryVal& bndryDiri,
     }}
 
     return 0; 
+}
+
+int MarkBndryDOFStokes(bndryVal& bndryDiri,
+                       bndryVal& bndryNeum,
+                       const MeshInfo& mi,
+                       basis& basis_,
+                       BRMixed& br_,
+                       PhysProperty * pp){
+
+    // Default boundary condition marker with no parameter needed
+    MarkBndryDOFStokes(bndryDiri, bndryNeum, mi, basis_, br_, pp, {-1});
+
+    return 0;
 }
 
 int MarkBndryDOFDarcy(bndryVal& bndryDiri,

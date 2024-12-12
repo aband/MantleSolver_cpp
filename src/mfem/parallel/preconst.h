@@ -79,6 +79,19 @@ int CGNSPrepareParallel(Vec * sol, Vec * g,
                         double * ux, double * uy,
                         T& funcSp, basis& basis_){
 
+    CGNSPrepareParallel(sol, g, refmap, mi, ux, uy, funcSp, basis_, {0});
+
+    return 1;
+}
+
+template <typename T>
+int CGNSPrepareParallel(Vec * sol, Vec * g, 
+                        const int *refmap, 
+                        const MeshInfo& mi,
+                        double * ux, double * uy,
+                        T& funcSp, basis& basis_,
+                        const std::vector<double>& parameter){
+
     int istart = mi.MPIlocalCellStart[0];
     int jstart = mi.MPIlocalCellStart[1];
 
@@ -109,7 +122,7 @@ int CGNSPrepareParallel(Vec * sol, Vec * g,
 
         for (int k=0; k<locdof.size(); k++){
 //            if(funcSp.onBndry(mi, locdof.at(k))){
-            if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,locdof.at(k)),funcSp.name)==dirichlet){
+            if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,locdof.at(k)),funcSp.name, parameter)==dirichlet){
                 val += valuesg[refmap[locdof.at(k)]] * basisVal.at(k);
             } else {
                 val += valuesSol[refmap[locdof.at(k)]] * basisVal.at(k);
@@ -136,6 +149,19 @@ vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
                                T& funcSp,
                                basis& mybasis){
 
+   return ExtractVelocity(sol, g, refmap, mi, points, gCell, funcSp, mybasis, {0}); 
+}
+
+template <typename T>
+vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
+                               int *refmap,
+                               const MeshInfo& mi,
+                               vector<vertex> points,
+                               const indice& gCell,
+                               T& funcSp,
+                               basis& mybasis,
+                               const std::vector<double>& parameter){
+
     std::vector<vertex> work;
     work.resize(points.size());
 
@@ -160,7 +186,7 @@ vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
         // Reconstruction of value with element basis
         for (int k=0; k<elemDofs.size(); k++){
 
-            if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(k)),funcSp.name) == dirichlet){
+            if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(k)),funcSp.name, parameter) == dirichlet){
                 work.at(g) += valuesg[refmap[elemDofs.at(k)]] * basisVal.at(k);
             } else {
                 work.at(g) += valuesSol[refmap[elemDofs.at(k)]] * basisVal.at(k);

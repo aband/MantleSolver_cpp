@@ -8,8 +8,10 @@ int Driver::PrepareFlow(){
 
     br_->ComputeTotalDOF(mi);
     hdiv_->ComputeTotalDOF(mi);
+  
+    // 
 
-    MarkBndryDOFStokes(bndryStokesEssen_, bndryStokesNatur_, mi, *basis_, *br_, myPhase->pp);
+    MarkBndryDOFStokes(bndryStokesEssen_, bndryStokesNatur_, mi, *basis_, *br_, myPhase->pp, {1});
     MarkBndryDOFDarcy(bndryDarcyEssen_, bndryDarcyNatur_, mi, *basis_, *hdiv_, myPhase->pp);
 
     reducedDarcy_ = (ReducedSys *)malloc(sizeof(ReducedSys));
@@ -21,8 +23,8 @@ int Driver::PrepareFlow(){
 //    CreateRefMap(*br_, refArrayStokesEssen_, mi, &bndryDOFStokes_);
 //    CreateRefMap(*hdiv_, refArrayDarcyEssen_, mi, &bndryDOFDarcy_);
 
-    CreateRefMap(*br_  , mi, refArrayStokesEssen_, refArrayStokesNatur_, &bndryDOFStokes_, &bndryDOFStokesNatur_);
-    CreateRefMap(*hdiv_, mi, refArrayDarcyEssen_ , refArrayDarcyNatur_ , &bndryDOFDarcy_ , &bndryDOFDarcyNatur_ );
+    CreateRefMap(*br_  , mi, refArrayStokesEssen_, refArrayStokesNatur_, &bndryDOFStokes_, &bndryDOFStokesNatur_, {1});
+    CreateRefMap(*hdiv_, mi, refArrayDarcyEssen_ , refArrayDarcyNatur_ , &bndryDOFDarcy_ , &bndryDOFDarcyNatur_ , {1});
 
     Result_ = (ReducedSys *)malloc(sizeof(ReducedSys));
 
@@ -37,7 +39,7 @@ int Driver::SolveFlow(int maxIter, double tolUzawa){
                                                  bndryDarcyEssen_,  reducedDarcy_, 
                            &K_, *br_, *hdiv_ , mluseAdv_,
 
-                           refArrayStokesEssen_, refArrayDarcyEssen_, bndryDOFStokes_, bndryDOFDarcy_);
+                           refArrayStokesEssen_, refArrayDarcyEssen_, bndryDOFStokes_, bndryDOFDarcy_, {1});
 
     CreateLinearSys(reducedStokes_, M_*N_);
     CreateLinearSys(reducedDarcy_, M_*N_);
@@ -151,10 +153,10 @@ int Driver::PrintFlow(){
                &destDarcy_sol, &destDarcy_g);  
 
     CGNSPrepareParallel(&destStokes_sol, &destStokes_g, refArrayStokesEssen_, mi,
-                        ux, uy, *br_, *basis_);
+                        ux, uy, *br_, *basis_, {1});
 
     CGNSPrepareParallel(&destDarcy_sol, &destDarcy_g, refArrayDarcyEssen_, mi,
-                        vx, vy, *hdiv_, *basis_);
+                        vx, vy, *hdiv_, *basis_, {1});
 
 #ifdef CGNS_OUT
     char stokesfile[] = "stokes.cgns";   
@@ -194,9 +196,9 @@ int Driver::PrintFlowEvent(){
     Vec darcyv;
 
     CGNSPrepareParallel(&sresult_->vel_stokes, &sresult_->g_stokes, 
-                        refArrayStokesEssen_, mi, ux, uy, *br_, *basis_);   
+                        refArrayStokesEssen_, mi, ux, uy, *br_, *basis_, {1});   
     CGNSPrepareParallel(&sresult_->vel_darcy, &sresult_->g_darcy,
-                        refArrayDarcyEssen_, mi, vx, vy, *hdiv_, *basis_);
+                        refArrayDarcyEssen_, mi, vx, vy, *hdiv_, *basis_, {1});
 
 //#ifdef CGNS_OUT
 //    char stokesfile[] = "stokes.cgns";   

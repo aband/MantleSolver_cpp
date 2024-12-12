@@ -59,6 +59,14 @@ int MarkBndryDOFStokes(bndryVal& bndryDiri,
                        BRMixed& br_,
                        PhysProperty * pp);
 
+int MarkBndryDOFStokes(bndryVal& bndryDiri,
+                       bndryVal& bndryNeum,
+                       const MeshInfo& mi,
+                       basis& basis_,
+                       BRMixed& br_,
+                       PhysProperty * pp,
+                       const std::vector<double>& parameter);
+
 int MarkBndryDOFDarcy(bndryVal& bndryDrir,
                       bndryVal& bndryNeum,
                       const MeshInfo& mi,

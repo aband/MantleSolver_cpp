@@ -163,12 +163,12 @@ int Driver::SingleEdgeFlux(const indice& localedge,
     vector<vertex> vel_darcy = 
     ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
                     refArrayDarcyEssen_,mi,
-                    gauss_p, gCellInside,*hdiv_,*basis_);
+                    gauss_p, gCellInside,*hdiv_,*basis_,{1});
 
     vector<vertex> vel_stokes = 
     ExtractVelocity(&sresult_->vel_stokes, &sresult_->g_stokes,
                     refArrayStokesEssen_,mi,
-                    gauss_p, gCellInside,*br_,*basis_);
+                    gauss_p, gCellInside,*br_,*basis_,{1});
 
     // Computable in and out cell index
     indice comp_gCellIn, comp_gCellOut;

@@ -95,6 +95,11 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const int& local);
 
 const bndryType bndryTypeMarker(const MeshInfo& mi,
+                                const indice& global,
+                                const int& local,
+                                const std::vector<double>& parameter);
+
+const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global);
 
 const bndryType bndryTypeMarkerStokes(const MeshInfo& mi,
