@@ -148,7 +148,7 @@ int Driver::RK(){
 
     while (time < Tmax){
 
-        if ((int)floor(time/dt) % 10 == 1){
+        if ((int)floor(time/dt) % 5 == 1){
             event = true;
         } else {
             event = false;

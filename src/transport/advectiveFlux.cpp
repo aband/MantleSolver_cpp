@@ -71,15 +71,16 @@ double advFluxBndry(const MeshInfo& mi,
         break;
 
         case dirichletTrans:
-           for (auto& it: bu){
-                it = 0.308114;
-            }
-
             if (field == "HD"){
-                work = advFlux(gwe, vel,bu,bu, unitnormal, len);
-//                cout << work << endl;
+                for (auto& it: bu){
+                    it = 0.308114;
+                }
+                work = advFlux(gwe, vel, bu, bu, unitnormal, len);
             }else {
-            work = 0.0;
+                for (auto& it: bu){
+                     it = 0.1;
+                 }
+                work = advFlux(gwe, vel, bu, bu, unitnormal, len);
             }
         break;
 

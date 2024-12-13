@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  10 DEC 2024 14:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  13 DEC 2024 11:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -984,197 +984,215 @@ LaTeX Info: Redefining \nameref on input line 104.
 )) (./outline.tex) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-(./sections/simulation1.tex
-
-LaTeX Warning: Citation `ModellingMeltingRates' on page 2 undefined on input li
-ne 4.
-
-
-LaTeX Warning: Citation `ModellingMeltingRates' on page 2 undefined on input li
-ne 13.
-
-
-LaTeX Warning: Citation `ModellingMeltingRates' on page 2 undefined on input li
-ne 18.
-
-
-Overfull \hbox (9.64066pt too wide) in paragraph at lines 11--20
- \OT1/ptm/m/n/10 2.1. Math-e-mat-i-cal model.[][] We are go-ing to show our cou
--pled darcy-stokes semi-degenerate
- []
-
+(./sections/mfem.tex
 LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line
- 21.
+ 4.
+
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
 File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
 )
 LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line
- 21.
+ 4.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd
 File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
 )
 LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line
- 21.
+ 4.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd
 File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
 )
 LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line
- 21.
+ 4.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd
 File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 21.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 4.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 21.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 4.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 21.
-LaTeX Font Info:    Trying to load font information for U+rsfs on input line 21
-.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 4.
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 4.
+
 
 (/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 
 Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
-d on input line 23.
+d on input line 6.
+
+[2] [3] [4] (./sections/modified_BR.tex
+
+LaTeX Warning: Citation `AnalysisFiniteElemStokes_Bernardi_Raugel' on page 5 un
+defined on input line 4.
 
 
-LaTeX Warning: Citation `ModellingMeltingRates' on page 2 undefined on input li
-ne 69.
+LaTeX Warning: Citation `FinElemMethNavierStokes' on page 5 undefined on input 
+line 5.
+
+) [5]
+
+LaTeX Warning: Citation `InexactUzawa_Elam_Golub' on page 6 undefined on input 
+line 245.
 
 
-LaTeX Warning: Citation `ModellingMeltingRates' on page 2 undefined on input li
-ne 70.
+LaTeX Warning: Citation `AnalysisInexactUzawa_Bramble_Pasciak_Vassilev' on page
+ 6 undefined on input line 245.
 
-[2]
-<sections/pics/TDz_corrected.png, id=76, 225.84375pt x 451.6875pt>
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 261.
+
+LaTeX Warning: Citation `AnalysisInexactUzawa_Bramble_Pasciak_Vassilev' on page
+ 6 undefined on input line 269.
+
+
+LaTeX Warning: Citation `SolSparseIndef_Paige_Saunders' on page 6 undefined on 
+input line 274.
+
+[6]
+
+LaTeX Warning: Citation `AcceleratingUzawa_ho_Olson_Walker' on page 7 undefined
+ on input line 304.
+
+[7]) [8] (./sections/phase.tex
+
+LaTeX Warning: Citation `DownwardOxidantTransport' on page 9 undefined on input
+ line 8.
+
+
+LaTeX Warning: Citation `DownwardOxidantTransport' on page 9 undefined on input
+ line 25.
+
+<sections/pics/eutectic.png, id=121, 430.54468pt x 322.90851pt>
+File: sections/pics/eutectic.png Graphic file (type png)
+<use sections/pics/eutectic.png>
+Package pdftex.def Info: sections/pics/eutectic.png  used on input line 61.
+(pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
+[9 <./sections/pics/eutectic.png (PNG copy)>] [10]
+
+LaTeX Warning: Citation `TheCompositionEarth' on page 11 undefined on input lin
+e 162.
+
+<sections/pics/TX.png, id=154, 438.23297pt x 317.5267pt>
+File: sections/pics/TX.png Graphic file (type png)
+<use sections/pics/TX.png>
+Package pdftex.def Info: sections/pics/TX.png  used on input line 167.
+(pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
+<sections/pics/HX.png, id=155, 429.10312pt x 310.91156pt>
+File: sections/pics/HX.png Graphic file (type png)
+<use sections/pics/HX.png>
+Package pdftex.def Info: sections/pics/HX.png  used on input line 168.
+(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
+<sections/pics/HC.png, id=156, 421.575pt x 316.18124pt>
+File: sections/pics/HC.png Graphic file (type png)
+<use sections/pics/HC.png>
+Package pdftex.def Info: sections/pics/HC.png  used on input line 185.
+(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
+
+Underfull \vbox (badness 1540) has occurred while \output is active []
+
+ [11 <./sections/pics/TX.png (PNG copy)> <./sections/pics/HX.png (PNG copy)> <.
+/sections/pics/HC.png (PNG copy)>]
+File: sections/pics/HX.png Graphic file (type png)
+<use sections/pics/HX.png>
+Package pdftex.def Info: sections/pics/HX.png  used on input line 251.
+(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
+File: sections/pics/HC.png Graphic file (type png)
+<use sections/pics/HC.png>
+Package pdftex.def Info: sections/pics/HC.png  used on input line 252.
+(pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
+ [12]
+<sections/pics/HCP.png, id=181, 429.10312pt x 310.91156pt>
+File: sections/pics/HCP.png Graphic file (type png)
+<use sections/pics/HCP.png>
+Package pdftex.def Info: sections/pics/HCP.png  used on input line 256.
+(pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
+) (./sections/simulation1.tex
+
+LaTeX Warning: Citation `ModellingMeltingRates' on page 13 undefined on input l
+ine 4.
+
+
+LaTeX Warning: Citation `ModellingMeltingRates' on page 13 undefined on input l
+ine 13.
+
+
+LaTeX Warning: Citation `ModellingMeltingRates' on page 13 undefined on input l
+ine 18.
+
+
+Overfull \hbox (9.64066pt too wide) in paragraph at lines 11--20
+ \OT1/ptm/m/n/10 7.1. Math-e-mat-i-cal model.[][] We are go-ing to show our cou
+-pled darcy-stokes semi-degenerate
+ []
+
+[13 <./sections/pics/HCP.png (PNG copy)>]
+
+LaTeX Warning: Citation `ModellingMeltingRates' on page 14 undefined on input l
+ine 69.
+
+
+LaTeX Warning: Citation `ModellingMeltingRates' on page 14 undefined on input l
+ine 70.
+
+<sections/pics/TDz_corrected.png, id=191, 225.84375pt x 451.6875pt>
 File: sections/pics/TDz_corrected.png Graphic file (type png)
 <use sections/pics/TDz_corrected.png>
 Package pdftex.def Info: sections/pics/TDz_corrected.png  used on input line 85
 .
 (pdftex.def)             Requested size: 156.49744pt x 284.54395pt.
-<sections/pics/Vfz_corrected.png, id=77, 233.37187pt x 446.41782pt>
+<sections/pics/Vfz_corrected.png, id=192, 233.37187pt x 446.41782pt>
 File: sections/pics/Vfz_corrected.png Graphic file (type png)
 <use sections/pics/Vfz_corrected.png>
 Package pdftex.def Info: sections/pics/Vfz_corrected.png  used on input line 86
 .
 (pdftex.def)             Requested size: 156.49721pt x 284.52798pt.
-<sections/pics/stokes.png, id=78, 421.575pt x 316.18124pt>
-File: sections/pics/stokes.png Graphic file (type png)
-<use sections/pics/stokes.png>
-Package pdftex.def Info: sections/pics/stokes.png  used on input line 92.
-(pdftex.def)             Requested size: 156.48848pt x 284.546pt.
-<sections/pics/darcy.png, id=79, 429.10312pt x 310.91156pt>
-File: sections/pics/darcy.png Graphic file (type png)
-<use sections/pics/darcy.png>
-Package pdftex.def Info: sections/pics/darcy.png  used on input line 93.
-(pdftex.def)             Requested size: 156.4871pt x 284.52872pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [3 <./sections/pics/TDz_corrected.png (PNG copy)> <./sections/pics/Vfz_correct
-ed.png (PNG copy)>]
-<sections/pics/stokesv.png, id=84, 685.05937pt x 816.04875pt>
-File: sections/pics/stokesv.png Graphic file (type png)
-<use sections/pics/stokesv.png>
-Package pdftex.def Info: sections/pics/stokesv.png  used on input line 97.
-(pdftex.def)             Requested size: 156.48366pt x 284.52557pt.
-<sections/pics/darcyv.png, id=85, 764.10469pt x 846.16125pt>
-File: sections/pics/darcyv.png Graphic file (type png)
-<use sections/pics/darcyv.png>
-Package pdftex.def Info: sections/pics/darcyv.png  used on input line 98.
-(pdftex.def)             Requested size: 156.4909pt x 284.52774pt.
-<sections/pics/test1/darcyv.png, id=86, 414.04688pt x 321.45094pt>
-File: sections/pics/test1/darcyv.png Graphic file (type png)
-<use sections/pics/test1/darcyv.png>
-Package pdftex.def Info: sections/pics/test1/darcyv.png  used on input line 102
-.
-(pdftex.def)             Requested size: 156.49284pt x 284.53557pt.
-<sections/pics/test1/stokesv.png, id=87, 414.04688pt x 321.45094pt>
-File: sections/pics/test1/stokesv.png Graphic file (type png)
-<use sections/pics/test1/stokesv.png>
-Package pdftex.def Info: sections/pics/test1/stokesv.png  used on input line 10
-3.
-(pdftex.def)             Requested size: 156.49284pt x 284.53557pt.
-<sections/pics/test1/darcyp.png, id=88, 429.10312pt x 310.91156pt>
-File: sections/pics/test1/darcyp.png Graphic file (type png)
-<use sections/pics/test1/darcyp.png>
-Package pdftex.def Info: sections/pics/test1/darcyp.png  used on input line 104
-.
-(pdftex.def)             Requested size: 156.4871pt x 284.52872pt.
-<sections/pics/test1/stokesp.png, id=89, 429.10312pt x 310.91156pt>
-File: sections/pics/test1/stokesp.png Graphic file (type png)
-<use sections/pics/test1/stokesp.png>
-Package pdftex.def Info: sections/pics/test1/stokesp.png  used on input line 10
-5.
-(pdftex.def)             Requested size: 156.4871pt x 284.52872pt.
-<sections/pics/test1/uscaleddarcyp.png, id=90, 421.575pt x 316.18124pt>
-File: sections/pics/test1/uscaleddarcyp.png Graphic file (type png)
-<use sections/pics/test1/uscaleddarcyp.png>
-Package pdftex.def Info: sections/pics/test1/uscaleddarcyp.png  used on input l
-ine 106.
-(pdftex.def)             Requested size: 156.48848pt x 284.546pt.
-<sections/pics/test1/stokespori.png, id=91, 429.10312pt x 310.91156pt>
-File: sections/pics/test1/stokespori.png Graphic file (type png)
-<use sections/pics/test1/stokespori.png>
-Package pdftex.def Info: sections/pics/test1/stokespori.png  used on input line
- 107.
-(pdftex.def)             Requested size: 156.4871pt x 284.52872pt.
-<sections/pics/test1/litho.png, id=92, 429.10312pt x 310.91156pt>
-File: sections/pics/test1/litho.png Graphic file (type png)
-<use sections/pics/test1/litho.png>
-Package pdftex.def Info: sections/pics/test1/litho.png  used on input line 108.
-
-(pdftex.def)             Requested size: 156.4871pt x 284.52872pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [4 <./sections/pics/Stokes.png (PNG copy)> <./sections/pics/darcy.png (PNG cop
-y)> <./sections/pics/stokesv.png (PNG copy)> <./sections/pics/darcyv.png (PNG c
-opy)>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [5 <./sections/pics/test1/darcyv.png (PNG copy)> <./sections/pics/test1/stokes
-v.png (PNG copy)> <./sections/pics/test1/darcyp.png (PNG copy)> <./sections/pic
-s/test1/stokesp.png (PNG copy)>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [6 <./sections/pics/test1/uscaleddarcyp.png (PNG copy)> <./sections/pics/test1
-/stokespori.png (PNG copy)> <./sections/pics/test1/litho.png (PNG copy)>])
+[14 <./sections/pics/TDz_corrected.png (PNG copy)> <./sections/pics/Vfz_correct
+ed.png (PNG copy)>]) [15] (./main.bbl)
 \tf@thm=\write5
 \openout5 = `main.thm'.
 
- [7] (./main.aux)
+ [16] (./main.aux)
 
 LaTeX Warning: There were undefined references.
 
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 9D0EAF2F1608C6F783A620C059E939F8;1352.
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 1C0058F9F980724438537267C54E5AE4;362
+(rerunfilecheck)             After:  70258A7F28B610CD5C1BF504B251FF47;6883.
  ) 
 Here is how much of TeX's memory you used:
- 26180 strings out of 478287
- 472381 string characters out of 5849289
- 716457 words of memory out of 5000000
- 42268 multiletter control sequences out of 15000+600000
- 493041 words of font info for 78 fonts, out of 8000000 for 9000
+ 26235 strings out of 478287
+ 471195 string characters out of 5849289
+ 725459 words of memory out of 5000000
+ 42207 multiletter control sequences out of 15000+600000
+ 496138 words of font info for 85 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
- 85i,10n,80p,422b,398s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 85i,13n,80p,422b,398s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/urw/symbol/usyr.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/symbol
-/usyr.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (7 pages, 458490 bytes).
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+urw/symbol/usyr.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (16 pages, 261726 bytes).
 PDF statistics:
- 156 PDF objects out of 1000 (max. 8388607)
- 116 compressed objects within 2 object streams
- 36 named destinations out of 1000 (max. 500000)
- 142 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 295 PDF objects out of 1000 (max. 8388607)
+ 249 compressed objects within 3 object streams
+ 143 named destinations out of 1000 (max. 500000)
+ 64 words of extra memory for PDF output out of 10000 (max. 10000000)
 

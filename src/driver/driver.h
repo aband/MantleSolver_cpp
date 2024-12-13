@@ -263,8 +263,10 @@ class Driver {
        char * GetFilename(const char * filename);
 
        // For testing, make it public temperarily
-        MLWENO::MLWENOUse * mluseAdv_;
+       MLWENO::MLWENOUse * mluseAdv_;
 
+       // parameters used in calculation of boundary conditions
+       std::vector<double> parameter;
 
     private:
 

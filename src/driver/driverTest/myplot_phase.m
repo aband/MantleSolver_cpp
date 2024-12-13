@@ -35,7 +35,7 @@ contourf(pX, pY, porosity,20);
 title(strcat('porosity',string(k)));
 ylabel("depth (Dimensionless)");
 colorbar
-caxis([0,0.3])
+%caxis([0,0.5])
 
 % Add 1D plot
 subplot(1,8,2)
@@ -56,7 +56,7 @@ contourf(pX, pY, data,20);
 title(strcat('temperature',string(k)))
 ylabel("depth (Dimensionless)");
 colorbar
-caxis([0,0.5])
+%caxis([0,0.5])
 
 % Add 1D plot
 subplot(1,8,4)
@@ -65,6 +65,7 @@ title("Temperature Distribution");
 ylabel("Depth");
 xlabel("Temperature");
 
+%plot of HD
 filename = strcat('build/HD',string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
@@ -77,7 +78,7 @@ contourf(pX, pY, data,20);
 title(strcat('HD',string(k)))
 ylabel("depth (Dimensionless)");
 colorbar
-caxis([0,0.5])
+%caxis([0,0.5])
 
 % Add 1D plot
 subplot(1,8,6)
@@ -86,6 +87,7 @@ title("HD Distribution");
 ylabel("Depth");
 xlabel("HD");
 
+% Plot of CD
 filename = strcat('build/CD',string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
@@ -98,7 +100,7 @@ contourf(pX, pY, data,20);
 title(strcat('CD',string(k)))
 ylabel("depth (Dimensionless)");
 colorbar
-caxis([0,0.5])
+%caxis([0,0.5])
 
 % Add 1D plot
 subplot(1,8,8)

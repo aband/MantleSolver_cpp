@@ -72,7 +72,7 @@ weak form
 \begin{equation}
 \begin{aligned}
 (\nabla \bold{u} , \nabla \bold{v})_{\Omega} - (p,\nabla \cdot \bold{v})_{\Omega} &= (\bold{f},\bold{v})_{\Omega} + 
-\langle\tau^T \nabla \bold{u} \nu, \bold{v}\cdot \taulrangle_{\Gamma_i}\\
+\langle\tau^T \nabla \bold{u} \nu, \bold{v}\cdot \tau\rangle_{\Gamma_i}\\
 &+ \langle\nu^T \nabla \bold{u} \nu - p_0, \bold{v}\cdot \nu\rangle_{\Gamma_i} - \langle\nabla \bold{u}_0, \nabla \bold{v}\rangle_{\Gamma_u}\\
 (\nabla \cdot \bold{u}, \omega) &= 0
 \end{aligned}
@@ -108,7 +108,7 @@ weak form
 \begin{equation}
 \begin{aligned}
 (\bold{u}, \bold{v})_{\Omega} - (p, \nabla \cdot \bold{v})_{\Omega} &= (\bold{g},\bold{v})_{\Omega} 
-- \langlep_0, v_n\rangle_{\Gamma_i} - \langle\bold{u}_0, \bold{v}\rangle_{\Gamma_u}\\
+- \langle p_0, v_n\rangle_{\Gamma_i} - \langle\bold{u}_0, \bold{v}\rangle_{\Gamma_u}\\
 (\nabla \cdot \bold{u}, \omega) &= 0
 \end{aligned}
 \end{equation}
