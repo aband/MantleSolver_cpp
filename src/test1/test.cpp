@@ -24,7 +24,7 @@ int main(int argc, char **argv){
     int stencilWidthMesh = 5;
     int stencilWidthU = 3;
 
-    int physicsScale = 1;
+    int physicsScale = 0;
     PetscCall(PetscOptionsGetInt(NULL,NULL, "-scale", &physicsScale, NULL));
 
     int meshType = 0; 
