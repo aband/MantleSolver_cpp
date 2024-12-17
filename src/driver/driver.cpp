@@ -13,6 +13,15 @@ int Driver::CreatePhase(){
     return 0;
 }
 
+int Driver::ShowPhase(){
+
+    // Showing phase attributes
+
+    cout << "Compaction Length: " << myPhase->pp->l0 << " m" << endl;
+
+    return 1;
+}
+
 int Driver::CreateMesh(const int& M, const int& N,
                        double L, double H, 
                        double xstart, double ystart,

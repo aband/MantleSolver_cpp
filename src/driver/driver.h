@@ -81,6 +81,8 @@ class Driver {
 
        int CreatePhase();
 
+       int ShowPhase();
+
        /**!
         * Create Data management objects.
         * And Mesh vector.

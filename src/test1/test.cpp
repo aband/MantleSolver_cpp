@@ -38,11 +38,18 @@ int main(int argc, char **argv){
     double Tmax = 10; // Stop at the first step 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tmax", &Tmax, NULL)); 
 
+    int showPhase = 0;
+    PetscCall(PetscOptionsGetInt(NULL, NULL, "-showphase", &showPhase, NULL)); 
+
     // ==============================================================================
 
     Driver * driver = new Driver();
 
     driver->CreatePhase();
+
+    if (showPhase){
+        driver->ShowPhase();
+    }
 
     driver->CreateMesh(M, N, L, H, xstart, ystart, 
                        stencilWidthMesh, stencilWidthU,
