@@ -18,7 +18,8 @@ int Driver::ShowPhase(){
     // Showing phase attributes
 
     cout << "Compaction Length: " << myPhase->pp->l0 << " m" << endl;
-    cout << "Characteristic Velocity: (" << << ", " << ") m/s" << endl;
+    cout << "Upwelling solid velocity: " << myPhase->pp->V0 << " m/s" << endl;
+    cout << "Characteristic Velocity: " << myPhase->pp->u0 << " m/s" << endl;
     cout << "Time step: " << endl;
     cout << "Characteristic permeability: " << endl;
     cout << "Characteristic Enthalpy: "     << endl;

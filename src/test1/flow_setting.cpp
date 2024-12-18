@@ -13,6 +13,7 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->phi0  = 0.4;
     pp->U0    = 1e-9;
     pp->L0    = 160*1000;
+    pp->V0    = 3.2/100/(365*24*60*60); //3.2 (cm/y)
 
     // Non dimensionalization parameters
 
@@ -67,12 +68,10 @@ const vertex stress(const vertex& point, PhysProperty * pp){
 vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     // Stokes
-    double V0 = 3.2/100/(365*24*60*60); //3.2 (cm/y)
+    double V0 = pp->V0 / pp->u0 * -1;
 
-    V0 = V0 / pp->u0 * -1;
-
-    //return {0.0,V0};
-    return {0.0, 1.0};
+    return {0.0,V0};
+    //return {0.0, 1.0};
 }
 
 vertex bndryu(const vertex& point, PhysProperty * pp){
@@ -94,7 +93,8 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Returns nondimensionalized gravity.
     // Attention!!! It should not be scaled by porosity
 	 // porosity scale will be added in another function
-    return {0.0, -1.0};
+    //return {0.0, -1.0};
+    return {0.0,0.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){

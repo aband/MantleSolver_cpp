@@ -21,6 +21,7 @@ typedef struct {
     double phi0  ;
     double U0    ;
     double phi_f_hat ;
+    double V0    ;
 
     double l0    ;
     double u0    ;
