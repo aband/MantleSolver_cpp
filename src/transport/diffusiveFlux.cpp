@@ -77,25 +77,30 @@ double getDifFlux(const MLWENO::MLWENOUse& mlu,
     return work;
 }
 
-double getDifFlux(const MLWENO::MLWENOUse& mlu,
-                  const MeshInfo& mi,
-                  const std::array<vertex,2>& edge,
-                  const vertex& unitNormal,
-                  const double& len,
-                  const indice& globalCellIn,
-                  const int& locationIn,
-                  const valarray<double>& gwe,
-                  const valarray<double>& gpe,
-                  const double& scale,
-                  bndryTypeTrans bt){
+// ================= new standard compatible diffusive flux function
+// Being regarded as a fluxfunc type of function
+// This new 
+double diffFlux(const valarray<double>& gwe,
+                const vector<vertex>& param,
+                const vector<double>& uIn,
+                const vector<double>& uOut,
+                const vertex& unitnormal,
+                const double& len){
+
+    // In order to comply with the template flux function 
+    // Data lay out in these vectors are being modified
 
     double work = 0.0;
-
     int degree = gwe.size() + 1;
     const int numPts = std::ceil((degree+1)/2.0) * 2;
 
-    // No outside cell for cells on the boundary
-    const double h = mi.cellArea.at(FlatIndic(mi, globalCellIn));
+    // Get mesh cell diameter
+    // mesh cell diameter will be passed through param vector
+    vertex diameter = param.at(0);
+    const double hIn  = diameter[0];
+    const double hOut = diameter[1];
+    
+    const double h = scale * ((hIn < hOut) ? hIn : hOut);
 
     const double dx = h /(double)(numPts - 1);
 
@@ -103,34 +108,23 @@ double getDifFlux(const MLWENO::MLWENOUse& mlu,
 
     const int halfPts = numPts/2;
 
-    // Diffusion function are evaluated at the points in the order of 
-    // from outside to inside.
-    vector<double> diffVals(numPts, 0);
-
-    vertexSet tmpEdge = {edge[0], edge[1]};
-
+    // Sampling points are stored in two vectors separately
+    vector<double> diffVals(numpPts, 0);
 
 
     return work;
 }
 
-// ================= new standard compatible diffusive flux function
-// Being regarded as a fluxfunc type of function
-// This new 
-double difFlux(const valarray<double>& gwe,
-               const vector<vertex>& param,
-               const vector<double>& uIn,
-               const vector<double>& uOut,
-               const vertex& unitnormal,
-               const double& len){
-
-    double work = 0.0;
-    int degree = gwe.size() + 1;
-    const int numPts = std::ceil((degree+1)/2.0) * 2;
-
-
+double diffFluxBndry(const MeshInfo& mi,
+                     const valarray<double>& gwe,
+                     const vector<vertex>& vel,
+                     const vector<double>& u,
+                     const vertex& unitnormal,
+                     const double& len,
+                     const indice& gCell,
+                     const int& edgeflag,
+                     const std::string& field){
 
 
     return work;
 }
-

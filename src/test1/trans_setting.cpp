@@ -92,11 +92,13 @@ double InitHD(const valarray<double>& point,
 
     // Linear simple distribution of enthalpy
 	 // We pass nondimensionalize normalization factor in param.at(0)
-    double HD = 0.15;
+    //double HD = 0.01;
+    double HD = 0.01;
 
-    HD -= 0.0000005*point[1]*param.at(0);
+    HD -= 0.0000145*point[1]*param.at(0);
 
     return HD;
+    //return 0.0;
 }
 
 bndryTypeTrans AssignBoundary(const MeshInfo& mi,

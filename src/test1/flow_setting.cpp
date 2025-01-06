@@ -93,19 +93,14 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Returns nondimensionalized gravity.
     // Attention!!! It should not be scaled by porosity
 	 // porosity scale will be added in another function
-    //return {0.0, -1.0};
-    return {0.0,0.0};
+    return {0.0, -1.0};
+    //return {0.0,0.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
     // return traction defined on the boundary
-/*
-    if (point[0] < -0.999*pp->L0/pp->l0 || point[0] > 0.999*pp->L0/pp->l0) {
-        return {0.0,abs(point[1])*pp->L0/pp->l0};
-    } else {
-        return {0.0,0.0};
-    }
-*/
+    // zero traction situation
+
     return {0.0,0.0}; // free stress
 }
 
@@ -131,100 +126,59 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 
     std::set<int>::iterator it;
 
-    // left edge without two corners
-    if (global[0] == 0 && 
-        global[1] != 0 && global[1] != mi.MPIglobalCellSize[1]-1){
+    type = dirichlet;
 
-        it = left_normal.find(local);
-        if (it != left_normal.end()){
-            type = dirichlet;
+    // Top edge all normal component are set free 
+    if (global[1] == mi.MPIglobalCellSize[1]-1){
+        it = top_normal.find(local);
+        if (it != top_normal.end()){
+            type = neumann;
         }
+    } 
 
+
+    if (global[0] == 0) {
         it = left_tang.find(local);
         if (it != left_tang.end()){
             type = neumann;
         }
-    }
-
-    // bottom edge 
-    if (global[1] == 0 && 
-        global[0] != 0 && global[0] != mi.MPIglobalCellSize[0]-1){
-
-        type = dirichlet;
-
-    }
-
-    // right edge
-    if (global[0] == mi.MPIglobalCellSize[0]-1 &&
-        global[1] != 0 && global[1] != mi.MPIglobalCellSize[1]-1){
-
-        it = right_normal.find(local);
-        if (it != right_normal.end()){
-            type = dirichlet;
-        }
-
+    } 
+ 
+    if (global[0] == mi.MPIglobalCellSize[0]-1){
         it = right_tang.find(local);
         if (it != right_tang.end()){
             type = neumann;
         }
     }
 
-    // top edge
-    if (global[1] == mi.MPIglobalCellSize[1]-1 &&
-        global[0] != 0 && global[0] != mi.MPIglobalCellSize[0]-1){
 
-        it = top_normal.find(local);
-        if (it != top_normal.end()){
-            type = neumann;
-        }
-
-        it = top_tang.find(local);
-        if (it != top_tang.end()){
-            type = dirichlet;
-        }
+    if (global[1] == 0 ){
+        type = dirichlet;
     }
 
-    // Four corners are treated differently
-    if (global[0] == 0 && global[1] == 0){
-        // bottom left
-        if (local == 7){
-            type = neumann; 
-        } else {
-            type = dirichlet;
-        }
-    }
 
-    if (global[0] == 0 && global[1] == mi.MPIglobalCellSize[1]-1){
+    return type;
+    //return dirichlet;
+}
 
-        // top left
-        if (local == 11 || local == 4 || local == 7 || local == 6){
-            type = neumann;
-        } else {
-            type = dirichlet;
-        }
+inline int getdofset(std::set<int>& directionSet, 
+                     const MeshInfo& mi,
+                     const std::string& direction){
 
-    }
+    return 0;
+}
 
-    if (global[0] == mi.MPIglobalCellSize[0]-1 && global[1] == 0){
+// A more direct way of marking boundary type
+// Marking boundary type with global dof index
+const bndryType bndryTypeMarker(const MeshInfo& mi,
+                                const int& global){
 
-        // bottom right
-        if (local == 6){
-            type = neumann;
-        } else {
-            type = dirichlet;
-        }
-    }
+    bndryType type = missed;
 
-    if (global[0] == mi.MPIglobalCellSize[0]-1 && global[1] == mi.MPIglobalCellSize[1]-1){
-
-        // top right
-        if (local == 11 || local == 6 || local == 7 || local == 5){
-            type = neumann;
-        } else {
-            type = dirichlet;
-        }
-
-    }
+    std::set<int> bottom;
+    std::set<int> top;
+    std::set<int> left;
+    std::set<int> right;
 
     return type;
 }

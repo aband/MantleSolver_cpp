@@ -17,4 +17,21 @@ double getDifFluxInterior(const MLWENO::MLWENOUse& mlu,
                           const valarray<double>& gpe,
                           const double& scale);
 
+double diffFlux(const valarray<double>& gwe,
+                const vector<vertex>& param,
+                const vector<double>& uIn,
+                const vector<double>& uOut,
+                const vertex& unitnormal,
+                const double& len);
+
+double diffFluxBndry(const MeshInfo& mi,
+                     const valarray<double>& gwe,
+                     const vector<vertex>& vel,
+                     const vector<double>& u,
+                     const vertex& unitnormal,
+                     const double& len,
+                     const indice& gCell,
+                     const int& edgeflag,
+                     const std::string& field);
+
 #endif

@@ -283,6 +283,11 @@ int Driver::PrintGrid(){
 
         vertex global = GaussMapPointsFace(local, basis_->corners());
 
+        if (withUnit){
+            global[0] *= myPhase->pp->l0;
+            global[1] *= myPhase->pp->l0;
+        }
+
         fprintf(gridPorox,"%f ",global[0]);
         fprintf(gridPoroy,"%f ",global[1]);
 
@@ -532,13 +537,13 @@ int Driver::PrintPressureEvent(){
 
 int Driver::PrintBoundaryDOFs(){
 
-    // Prevent mesh to be too large
+    // Prevent mesh from being too large
+	 // Do a upto 3*3 mesh 
+	 // Print dof information to screen with restriction to mesh size
     assert(M_ < 3);
     assert(N_ < 3);
 
     std::cout << "Total number of essential dof for Stokes : " << bndryDOFStokes_ << std::endl;
-
-    std::cout << "Print out ref map." << std::endl;
 
     for (int i=0; i<br_->getDOF(); i++){
         // Print out all dirichlet dofs
@@ -561,6 +566,37 @@ int Driver::PrintBoundaryDOFs(){
         std::cout << refArrayDarcyEssen_[i] << std::endl;
     }
 */
+
+    return 1;
+}
+
+int Driver::PrintStokesBoundaryDOFs(){
+
+    FILE * stokesBndryDOF = fopen("stokesBndryDOF.txt","w");
+
+    fprintf(stokesBndryDOF, "Boundary dof details for stokes: \nEssential boundary dofs : %d \nNatural boundary dofs : %d \n\n", bndryDOFStokes_, bndryDOFStokesNatur_);
+
+    fprintf(stokesBndryDOF, "Details of essential boundary dofs: \n"); 
+
+    //cout << br_->getDOF() << endl;
+
+    // Print all essential boundary dofs to the file
+    for (int i=0; i<br_->getDOF(); i++){
+        std::vector<int> localinfo = br_->GlobalToLocalMapBndry(mi, i);
+        if (localinfo.at(0) > -1){
+            //Interior dof will be marked -1
+            bndryType type = bndryTypeMarker(mi, Bend(mi, localinfo.at(0)),localinfo.at(1), {0}); 
+
+            fprintf(stokesBndryDOF, "Global dof index : %d, global cell index : %d, local dof index : %d ", i, localinfo.at(0), localinfo.at(1));
+            if (type == dirichlet){
+                fprintf(stokesBndryDOF, " Dirichlet\n");
+            } else {
+                fprintf(stokesBndryDOF, " Neumann \n");
+            }
+        }
+    }
+
+    fclose(stokesBndryDOF);
 
     return 1;
 }

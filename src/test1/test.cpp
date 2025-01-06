@@ -14,8 +14,8 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
-    double L = 0.2, H = 1;
-    double xstart = -0.1, ystart = -1.0001;
+    double L = 0.05, H = 0.2;
+    double xstart = -0.5*L, ystart = -1.0001*H;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
@@ -41,11 +41,17 @@ int main(int argc, char **argv){
     int showPhase = 0;
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-showphase", &showPhase, NULL)); 
 
+    int withUnit = 0;
+    PetscCall(PetscOptionsGetInt(NULL, NULL, "-unit", &withUnit, NULL));
+
     // ==============================================================================
 
     Driver * driver = new Driver();
 
+    driver->withUnit = withUnit;
     driver->CreatePhase();
+
+    driver->getDomainSize(L, H);
 
     if (showPhase){
         driver->ShowPhase();
@@ -64,6 +70,11 @@ int main(int argc, char **argv){
     driver->PrepareFlow();
 
     driver->SolveFlow(maxIter, tolUzawa);
+
+    cout << bndryTypeMarker(driver->mi, {0,1}, 7, {0}) << endl;
+
+    //driver->PrintBoundaryDOFs();
+    driver->PrintStokesBoundaryDOFs();
 
     driver->CreateScatterVec();
 

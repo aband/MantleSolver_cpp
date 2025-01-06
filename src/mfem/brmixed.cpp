@@ -334,6 +334,19 @@ std::vector<int> BRMixed::GlobalToLocalMapBndry(const MeshInfo& mi,
             work.push_back(-1);
         }
 
+        // manually fixing right bottom corner
+        if (bend[0] == mi.MPIglobalVertexSize[0] -1 &&
+            bend[1] == 0){
+            work[0] = mi.MPIglobalCellSize[0]-1;
+            work[1] = 1+shift;
+        } 
+
+        if (bend[0] == 0 &&
+            bend[1] == 1){
+            work[0] = mi.MPIglobalCellSize[0];
+            work[1] = 0+shift;
+        }
+
     }
 
     return work;

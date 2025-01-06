@@ -61,6 +61,8 @@ class Driver {
 
         int clean();
 
+        int withUnit;
+
         /**!
          * MeshInfo struct
          * Can be accessed from outside the class directly.
@@ -216,6 +218,9 @@ class Driver {
         */
        int PrintBoundaryDOFs();
 
+       // Print boundary dof information to a file
+       int PrintStokesBoundaryDOFs();
+
        /**!
         * Functions used to compute flux happening on the edges 
         */
@@ -270,6 +275,8 @@ class Driver {
        // parameters used in calculation of boundary conditions
        std::vector<double> parameter;
 
+       void getDomainSize(const double& L, const double& H) {L_ = L; H_ = H;};
+
     private:
 
         /**!
@@ -277,6 +284,9 @@ class Driver {
          */
         int M_;
         int N_;
+
+        double L_;
+        double H_;
 
         /**!
          * Old struct object used in limited functions.
