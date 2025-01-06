@@ -87,17 +87,33 @@ darcyx = reshape(darcyx, M, N);
 darcyy = reshape(darcyy, M, N);
 poro   = reshape(poro,M,N);
 
-subplot(1,3,1)
+%subplot(2,3,1)
+subplot(2,2,1)
 quiver(pX, pY, stokesx, stokesy);
 title(["Stokes Velocity",num2str(k)])
 
-subplot(1,3,2)
-quiver(pX, pY, darcyx, darcyy);
-title(["Scaled Darcy Velocity",num2str(k)])
+%subplot(2,3,2)
+%quiver(pX, pY, darcyx, darcyy);
+%title(["Scaled Darcy Velocity",num2str(k)])
 
-subplot(1,3,3)
-quiver(pX, pY, darcyx.*poro, darcyy.*poro);
+unscaleddarcyy = darcyy.*poro;
+
+%subplot(2,3,3)
+subplot(2,2,2)
+quiver(pX, pY, darcyx.*poro, unscaleddarcyy);
 title(["Unscaled Darcy Velocity",num2str(k)])
+
+% Add 1d plots
+%subplot(2,3,4)
+subplot(2,2,3)
+plot(stokesy(2,:), pY(2,:));
+
+%subplot(2,3,5)
+%plot(darcyy(2,:), pY(2,:));
+
+%subplot(2,3,6)
+subplot(2,2,4)
+plot(unscaleddarcyy(2,:), pY(2,:));
 
 pause
 F = getframe(gcf);

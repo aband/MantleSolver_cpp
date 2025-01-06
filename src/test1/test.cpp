@@ -63,15 +63,11 @@ int main(int argc, char **argv){
 
     driver->InitTransport(InitHD, InitCD);
 
-    //cout << InitHD({0,-1},{driver->myPhase->pp->l0,0.0}) << endl;
-
     driver->PrepareDefaultTransport();
 
     driver->PrepareFlow();
 
     driver->SolveFlow(maxIter, tolUzawa);
-
-    cout << bndryTypeMarker(driver->mi, {0,1}, 7, {0}) << endl;
 
     //driver->PrintBoundaryDOFs();
     driver->PrintStokesBoundaryDOFs();
