@@ -18,6 +18,143 @@
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Outline}{1}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}todo}{1}{section.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}A coupled partial melting Stokes-Darcy system}{2}{section.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Variational form and discretization}{3}{subsection.24}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Stokes and variational formulation}{3}{subsubsection.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Darcy}{3}{subsection.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}A degenerate Darcy test problem}{3}{subsubsection.32}\protected@file@percent }
+\citation{AnalysisFiniteElemStokes_Bernardi_Raugel}
+\citation{FinElemMethNavierStokes}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Modified BR element}{5}{subsubsection.39}\protected@file@percent }
+\citation{InexactUzawa_Elam_Golub}
+\citation{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}
+\citation{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}
+\citation{SolSparseIndef_Paige_Saunders}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Linear system and Uzawa type algorithm}{6}{section.41}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {4.1}{\ignorespaces Preconditioned Inexact Uzawa Iteration}}{6}{algorithm.46}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {4.2}{\ignorespaces Preconditioned Inexact Uzawa Iteration}}{6}{algorithm.50}\protected@file@percent }
+\citation{AcceleratingUzawa_ho_Olson_Walker}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Convergence and stability analysis}{7}{subsection.57}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Anderson acceleration}{7}{subsubsection.58}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Test cases}{8}{section.59}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Constant porosity and balanced pressure (divergence free velocity field)}{8}{subsection.60}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Const porosity and unbalanced pressure}{8}{subsection.61}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Retrieve of physical variables}{8}{section.66}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Hyperbolic Equation System}{8}{section.67}\protected@file@percent }
+\citation{MultiLevelWeno}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Calculation of $\kappa $}{9}{subsection.72}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Algorithms and flux}{9}{subsection.73}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Notes}{9}{subsection.74}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Problem setting}{9}{section.75}\protected@file@percent }
+\newlabel{eq:ad}{{8.1}{9}{Problem setting}{equation.76}{}}
+\newlabel{eq:ad@cref}{{[equation][1][8]8.1}{[1][9][]9}}
+\newlabel{eq:sad}{{8.2}{9}{Problem setting}{equation.77}{}}
+\newlabel{eq:sad@cref}{{[equation][2][8]8.2}{[1][9][]9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Finite volume scheme}{9}{subsection.78}\protected@file@percent }
+\newlabel{eq:cellaveu}{{8.3}{9}{Finite volume scheme}{equation.79}{}}
+\newlabel{eq:cellaveu@cref}{{[equation][3][8]8.3}{[1][9][]9}}
+\newlabel{eq:lax}{{8.4}{9}{Finite volume scheme}{equation.80}{}}
+\newlabel{eq:lax@cref}{{[equation][4][8]8.4}{[1][9][]9}}
+\newlabel{eq:fv}{{8.5}{9}{Finite volume scheme}{equation.81}{}}
+\newlabel{eq:fv@cref}{{[equation][5][8]8.5}{[1][9][]9}}
+\newlabel{eq:LaxFriedrichs}{{8.6}{9}{Finite volume scheme}{equation.82}{}}
+\newlabel{eq:LaxFriedrichs@cref}{{[equation][6][8]8.6}{[1][9][]9}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Computation of Jacobian}{10}{section.83}\protected@file@percent }
+\newlabel{eq:nonlinear}{{9.1}{10}{Computation of Jacobian}{equation.84}{}}
+\newlabel{eq:nonlinear@cref}{{[equation][1][9]9.1}{[1][10][]10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}ML-WENO reconstruction and derivatives}{10}{subsection.86}\protected@file@percent }
+\newlabel{eq:fstage}{{9.3}{10}{ML-WENO reconstruction and derivatives}{equation.87}{}}
+\newlabel{eq:fstage@cref}{{[equation][3][9]9.3}{[1][10][]10}}
+\newlabel{eq:fstagenorm}{{9.4}{10}{ML-WENO reconstruction and derivatives}{equation.88}{}}
+\newlabel{eq:fstagenorm@cref}{{[equation][4][9]9.4}{[1][10][]10}}
+\newlabel{eq:sstage}{{9.5}{10}{ML-WENO reconstruction and derivatives}{equation.89}{}}
+\newlabel{eq:sstage@cref}{{[equation][5][9]9.5}{[1][10][]10}}
+\newlabel{eq:sstagenorm}{{9.6}{10}{ML-WENO reconstruction and derivatives}{equation.90}{}}
+\newlabel{eq:sstagenorm@cref}{{[equation][6][9]9.6}{[1][10][]10}}
+\newlabel{eq:weno}{{9.7}{10}{ML-WENO reconstruction and derivatives}{equation.91}{}}
+\newlabel{eq:weno@cref}{{[equation][7][9]9.7}{[1][10][]10}}
+\newlabel{eq:derivR}{{9.8}{10}{ML-WENO reconstruction and derivatives}{equation.92}{}}
+\newlabel{eq:derivR@cref}{{[equation][8][9]9.8}{[1][10][]10}}
+\newlabel{eq:spolyn}{{9.9}{10}{ML-WENO reconstruction and derivatives}{equation.93}{}}
+\newlabel{eq:spolyn@cref}{{[equation][9][9]9.9}{[1][10][]10}}
+\newlabel{eq:tensorProductPolyn}{{9.10}{11}{ML-WENO reconstruction and derivatives}{equation.94}{}}
+\newlabel{eq:tensorProductPolyn@cref}{{[equation][10][9]9.10}{[1][10][]11}}
+\newlabel{eq:Spolyn}{{9.11}{11}{ML-WENO reconstruction and derivatives}{equation.95}{}}
+\newlabel{eq:Spolyn@cref}{{[equation][11][9]9.11}{[1][10][]11}}
+\newlabel{eq:c_alpha}{{9.12}{11}{ML-WENO reconstruction and derivatives}{equation.96}{}}
+\newlabel{eq:c_alpha@cref}{{[equation][12][9]9.12}{[1][11][]11}}
+\newlabel{eq:derivR_detail}{{9.13}{11}{ML-WENO reconstruction and derivatives}{equation.97}{}}
+\newlabel{eq:derivR_detail@cref}{{[equation][13][9]9.13}{[1][11][]11}}
+\newlabel{eq:derivNonlinearWgt}{{9.14}{11}{ML-WENO reconstruction and derivatives}{equation.98}{}}
+\newlabel{eq:derivNonlinearWgt@cref}{{[equation][14][9]9.14}{[1][11][]11}}
+\newlabel{eq:JiangShuSmoothnessInd}{{9.15}{11}{ML-WENO reconstruction and derivatives}{equation.99}{}}
+\newlabel{eq:JiangShuSmoothnessInd@cref}{{[equation][15][9]9.15}{[1][11][]11}}
+\newlabel{eq:PolynSmoothnessInd}{{9.16}{11}{ML-WENO reconstruction and derivatives}{equation.100}{}}
+\newlabel{eq:PolynSmoothnessInd@cref}{{[equation][16][9]9.16}{[1][11][]11}}
+\newlabel{eq:derivative_c_alpha}{{9.17}{11}{ML-WENO reconstruction and derivatives}{equation.101}{}}
+\newlabel{eq:derivative_c_alpha@cref}{{[equation][17][9]9.17}{[1][11][]11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Derivative of flux}{12}{subsection.102}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.2.1}Derivative of advection flux}{12}{subsubsection.103}\protected@file@percent }
+\newlabel{eq:diffLaxFriedrichs}{{9.18}{12}{Derivative of advection flux}{equation.104}{}}
+\newlabel{eq:diffLaxFriedrichs@cref}{{[equation][18][9]9.18}{[1][12][]12}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.2.2}Derivative of diffusion flux}{12}{subsubsection.105}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Implicit time stepping}{12}{section.106}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.1}Backward Euler}{12}{subsection.107}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2}Implicit SSP time stepping}{12}{subsection.108}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11}Parallelism}{12}{section.109}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.1}Logically rectangular mesh and stencils}{12}{subsection.110}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11.1}{\ignorespaces Logically rectangular mesh displayed in full. The index of a stencil (colored cells) is the same as the index of the red cell.}}{12}{figure.111}\protected@file@percent }
+\newlabel{fig:fullmesh}{{11.1}{12}{Logically rectangular mesh displayed in full. The index of a stencil (colored cells) is the same as the index of the red cell}{figure.111}{}}
+\newlabel{fig:fullmesh@cref}{{[figure][1][11]11.1}{[1][12][]12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11.2}{\ignorespaces Two sample stencils used by cell $E_{i,j}$. The index of these two stencils are $S_{i-2,j}$ and $S_{i,j-2}$. Consistent with the index of bottom left cell.}}{12}{figure.114}\protected@file@percent }
+\newlabel{fig:stencil}{{11.2}{12}{Two sample stencils used by cell $E_{i,j}$. The index of these two stencils are $S_{i-2,j}$ and $S_{i,j-2}$. Consistent with the index of bottom left cell}{figure.114}{}}
+\newlabel{fig:stencil@cref}{{[figure][2][11]11.2}{[1][12][]12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.2}Mesh partition}{12}{subsection.115}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.3}Sparsity pattern of Jacobian matrix}{12}{subsection.118}\protected@file@percent }
+\newlabel{fig:partitionmesh}{{11.3}{13}{Mesh partition}{figure.116}{}}
+\newlabel{fig:partitionmesh@cref}{{[figure][3][11]11.3}{[1][12][]13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11.3}{\ignorespaces Illustration of mesh partition. Ghost cells are drawn with dashed lines. The size of ghost layer is determined by the number of cells need in the time stepping computation.}}{13}{figure.116}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.4}Optimal preconditioner}{13}{subsection.119}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.5}Scalability}{13}{subsection.120}\protected@file@percent }
+\citation{DownwardOxidantTransport}
+\citation{DownwardOxidantTransport}
+\@writefile{toc}{\contentsline {section}{\numberline {12}Eutectic phase behavior}{14}{section.121}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.1}Primary phase split}{15}{subsection.124}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.1.1}Region I}{15}{subsubsection.131}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.1.2}Region II}{15}{subsubsection.134}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.1.3}Region III}{15}{subsubsection.136}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.1.4}Region IV}{15}{subsubsection.138}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.1.5}Region V}{15}{subsubsection.140}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.1.6}Region VI}{15}{subsubsection.141}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.2}Further approximation and simplified phase split}{15}{subsection.143}\protected@file@percent }
+\citation{TheCompositionEarth}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.2.1}Phase diagrams}{16}{subsubsection.145}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.2.2}Region II}{17}{subsubsection.147}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.2.3}Region III}{17}{subsubsection.150}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.2.4}Region IV}{17}{subsubsection.152}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.2.5}Region VI}{17}{subsubsection.156}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.3}Pressure and melting point}{17}{subsection.158}\protected@file@percent }
+\citation{MagmaDynamicsEnthalpyMethod}
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.4}Modified phase behavior}{18}{subsection.160}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.4.1}Region I}{18}{subsubsection.162}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.4.2}Region II}{18}{subsubsection.163}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.4.3}Region III}{18}{subsubsection.164}\protected@file@percent }
+\citation{ModellingMeltingRates}
+\citation{ModellingMeltingRates}
+\citation{ModellingMeltingRates}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.4.4}Region IV}{19}{subsubsection.166}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.4.5}Region VI}{19}{subsubsection.170}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {12.4.6}Two lines}{19}{subsubsection.172}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {13}Magma migration}{19}{section.174}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.1}Mathematical model}{19}{subsection.175}\protected@file@percent }
+\citation{ModellingMeltingRates}
+\citation{ModellingMeltingRates}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {13.1.1}Boundary conditions}{20}{subsubsection.179}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {13.1.2}Initial conditions}{20}{subsubsection.180}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {13.1.3}Melting depth}{21}{subsubsection.181}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.2}Interpolation of stokes pressure}{21}{subsection.182}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.3}Approximation of physical values on the cell edges}{21}{subsection.183}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.4}Nondimensionalization and reterive of oridinary physical variables}{21}{subsection.184}\protected@file@percent }
 \bibstyle{siam}
 \bibdata{ref}
 \bibcite{SolSparseIndef_Paige_Saunders}{1}
@@ -31,5 +168,5 @@
 \bibcite{AcceleratingUzawa_ho_Olson_Walker}{9}
 \bibcite{MultiLevelWeno}{10}
 \bibcite{TheCompositionEarth}{11}
-\@writefile{toc}{\contentsline {section}{References}{3}{section.19}\protected@file@percent }
-\gdef \@abspage@last{3}
+\@writefile{toc}{\contentsline {section}{References}{24}{subsection.184}\protected@file@percent }
+\gdef \@abspage@last{24}
