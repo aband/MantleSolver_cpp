@@ -32,6 +32,12 @@ int CellAvePorosity(const MeshInfo& mi,
         phase->pPtr->evalPhase(HD,CD,lithoP);
         double phif = phase->pPtr->phi.mlt;
 
+        // Test =================================================
+
+        phif = AssignPorosity(mapped, phase->pp); 
+
+        // ======================================================
+
         double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
         phi_f_hat += gw * jac * phif;
@@ -88,6 +94,13 @@ int AssignLocMat(const MeshInfo& mi,
 
         // Calculate point wise porosity =========================================
         phi_f = phase->pPtr->phi.mlt;            // Fluid porosity
+
+        // Test ==================================================================
+
+        phi_f = AssignPorosity(mapped, phase->pp);
+
+        // =======================================================================
+
         phi_s = AssignPorosity(phi_f);       // Solid porosity
 
         std::array<std::array<double,4>, 12> brwork = 
@@ -176,6 +189,13 @@ int AssignLocMat(const MeshInfo& mi,
 
         // Calculate point wise porosity =========================================
         phi_f = phase->pPtr->phi.mlt;  // Fluid porosity
+
+        // Test ==================================================================
+
+        phi_f = AssignPorosity(mapped, phase->pp);
+
+		  // =======================================================================
+
         phi_s = AssignPorosity(phi_f);
 
         std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
@@ -229,6 +249,12 @@ int AssignLocMat(const MeshInfo& mi,
             // Calculate point wise porosity =========================================
             double phi_f_e = phase->pPtr->phi.mlt;  // Fluid porosity on edge gauss point
 
+            // Testing =================================================
+
+            phi_f_e = AssignPorosity(mapped, phase->pp);
+
+            // =========================================================
+
             for (int j=0; j<8; j++){
                 // With dimension version
                 loc->B[j] += len/2.0*gwe[g]*
@@ -276,6 +302,13 @@ int AssignLocMat(const MeshInfo& mi,
 
         // Calculate point wise porosity ===================================
         phi_f = phase->pPtr->phi.mlt;  // Fluid porosity
+
+        // Test ============================================================
+
+        phi_f = AssignPorosity(mapped, phase->pp);
+
+		  // =================================================================
+
         phi_s = AssignPorosity(phi_f);
 
         *k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * br_.Pressure() * 
