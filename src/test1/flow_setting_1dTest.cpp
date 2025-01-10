@@ -3,8 +3,7 @@
 void AssignPhyProperties(PhysProperty * pp){
 
     pp->theta = 0.0;
-    //pp->mu_s  = 1e19;
-    pp->mu_s = 1e1;
+    pp->mu_s  = 1e19;
     pp->mu_f  = 1.0;
     pp->rho_f = 3000;
     pp->rho_s = 3000;
@@ -25,10 +24,6 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->p0    = pp->gy*pp->l0*rho_r;
     pp->u0    = pp->gy*rho_r/pp->mu_f/pp->invk0;
 
-    pp->l0    = 1.0;
-    pp->p0    = 1.0;
-    pp->u0    = 1.0;
-
     pp->l = 20/pp->l0;
 }
 
@@ -37,7 +32,7 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
     // used to identify incorrect porosity
 
     // Constant porosity
-    return 0.04;
+    //return 0.04;
 
     // Porosity with step
 //    if (point[1] > 0){
@@ -47,11 +42,11 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
 //    }
 
     // quadratic porosity
-    //if (point[1]<0 || point[1] == 0){
-    //    return 0.001 * point[1]*point[1];
-    //} else {
-    //    return 0.0;
-    //}
+    if (point[1]<0 || point[1] == 0){
+        return 0.001 * point[1]*point[1];
+    } else {
+        return 0.0;
+    }
 
 }
 

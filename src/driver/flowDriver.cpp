@@ -52,6 +52,26 @@ int Driver::SolveFlow(int maxIter, double tolUzawa){
     return 1;
 }
 
+int Driver::SolveFlow(int maxIterStokes, double tolStokes, 
+                      int maxIterDarcy,  double tolDarcy){
+
+    // Solve linear system separately
+    // Solve separate system without coupling matrix
+    ParallelMatrixAssemble(mi, *basis_, myPhase, bndryStokesEssen_, reducedStokes_, 
+                                                 bndryDarcyEssen_,  reducedDarcy_, 
+                           &K_, *br_, *hdiv_ , mluseAdv_,
+
+                           refArrayStokesEssen_, refArrayDarcyEssen_, bndryDOFStokes_, bndryDOFDarcy_, parameter);
+
+    CreateLinearSys(reducedStokes_, M_*N_);
+    CreateLinearSys(reducedDarcy_, M_*N_);
+
+    Uzawa(reducedStokes_, tolStokes, maxIterStokes);
+    Uzawa(reducedDarcy_,  tolDarcy,  maxIterDarcy);
+
+    return 1;
+}
+
 int Driver::CreateScatterVec(){
 
     // Scatter distributed vector to all processors
@@ -79,10 +99,13 @@ int Driver::quiverOutputEvent(double * ux, double * uy, double * vx, double * vy
     for (int j=0; j<N_; j++){
     for (int i=0; i<M_; i++){
 
-        fprintf(stokesVx, "%f ", ux[j*M_+i]);
-        fprintf(stokesVy, "%f ", uy[j*M_+i]);
-        fprintf(darcyVx, "%f ", vx[j*M_+i]);
-        fprintf(darcyVy, "%f ", vy[j*M_+i]);
+        fprintf(stokesVx, "%.21f ", ux[j*M_+i]);
+        fprintf(stokesVy, "%.21f ", uy[j*M_+i]);
+        fprintf(darcyVx, "%.21f ", vx[j*M_+i]);
+        fprintf(darcyVy, "%.21f ", vy[j*M_+i]);
+
+
+
     }
     fprintf(stokesVx,"\n");
     fprintf(stokesVy,"\n");
@@ -110,10 +133,10 @@ inline int quiverOutputSerial(double * ux, double * uy, double *vx, double *vy, 
     for (int j=0; j<N; j++){
     for (int i=0; i<M; i++){
 
-        fprintf(stokesVx, "%f ", ux[j*M+i]);
-        fprintf(stokesVy, "%f ", uy[j*M+i]);
-        fprintf(darcyVx, "%f ", vx[j*M+i]);
-        fprintf(darcyVy, "%f ", vy[j*M+i]);
+        fprintf(stokesVx, "%.21f ", ux[j*M+i]);
+        fprintf(stokesVy, "%.21f ", uy[j*M+i]);
+        fprintf(darcyVx, "%.21f ", vx[j*M+i]);
+        fprintf(darcyVy, "%.21f ", vy[j*M+i]);
     }
     fprintf(stokesVx,"\n");
     fprintf(stokesVy,"\n");
@@ -216,6 +239,35 @@ int Driver::PrintFlowEvent(){
 #ifndef CGNS_OUT
     quiverOutputEvent(ux,uy,vx,vy);
 #endif
+
+    return 1;
+}
+
+int Driver::testPrint(){
+
+    int nelemloc = mi.MPIlocalCellSize[0]*mi.MPIlocalCellSize[1];
+    double * ux = (double *)malloc(sizeof(double)*nelemloc);
+    double * uy = (double *)malloc(sizeof(double)*nelemloc);
+
+    double * vx = (double *)malloc(sizeof(double)*nelemloc);
+    double * vy = (double *)malloc(sizeof(double)*nelemloc);
+ 
+    Vec destStokes_sol, destStokes_g;
+    Vec destDarcy_sol, destDarcy_g;
+
+    SolScatAll(&reducedStokes_->x, &reducedStokes_->g, 
+               &destStokes_sol, &destStokes_g);  
+
+    SolScatAll(&reducedDarcy_->x, &reducedDarcy_->g, 
+               &destDarcy_sol, &destDarcy_g);  
+
+    CGNSPrepareParallel(&destStokes_sol, &destStokes_g, refArrayStokesEssen_, mi,
+                        ux, uy, *br_, *basis_, parameter);
+
+    CGNSPrepareParallel(&destDarcy_sol, &destDarcy_g, refArrayDarcyEssen_, mi,
+                        vx, vy, *hdiv_, *basis_, parameter);
+
+    quiverOutputSerial(ux,uy,vx,vy,M_,N_);
 
     return 1;
 }
@@ -331,12 +383,12 @@ int Driver::PrintPhaseEvent(){
 
         myPhase->pPtr->evalPhase(HD, CD, lithoP);
 
-        //fprintf(fp, "%f ", myPhase->pPtr->phi.mlt);
+        fprintf(fp, "%.21f ", myPhase->pPtr->phi.mlt);
 
         // Test ========================================================
 
-        double temp = AssignPorosity(global, myPhase->pp);
-        fprintf(fp, "%f ", temp);
+        //double temp = AssignPorosity(global, myPhase->pp);
+        //fprintf(fp, "%f ", temp);
 
         // =============================================================
 
@@ -382,8 +434,8 @@ int Driver::PrintPressureConstant(){
         PetscCall(VecGetValues(stokesP,1, &nelem, &sp));
         PetscCall(VecGetValues(darcyP,1, &nelem, &dp));
 
-        fprintf(darcyp, "%f ", dp);
-        fprintf(stokesp, "%f ", sp);
+        fprintf(darcyp, "%.21f ", dp);
+        fprintf(stokesp, "%.21f ", sp);
 
     }fprintf(darcyp, "\n");
      fprintf(stokesp, "\n");}
@@ -444,7 +496,7 @@ int Driver::PrintPressureConstantOriginal(){
 
         fprintf(darcypori, "%f ", dp);
         fprintf(stokespori, "%f ", sp);
-        fprintf(referencep, "%f ", rp);
+        fprintf(referencep, "%.21f ", rp);
 
     }fprintf(darcypori, "\n");
      fprintf(stokespori, "\n");
@@ -475,7 +527,7 @@ int Driver::PrintLithoPressure(){
 
         double rp = myPhase->pp->rho_s * myPhase->pp->gy * myPhase->pp->l0*(globalver[1]);
 
-        fprintf(referencep, "%f ", rp);
+        fprintf(referencep, "%.21f ", rp);
 
     }fprintf(referencep, "\n");}
 
@@ -512,8 +564,8 @@ int Driver::PrintPressureEvent(){
         PetscCall(VecGetValues(stokesP,1, &nelem, &sp));
         PetscCall(VecGetValues(darcyP,1, &nelem, &dp));
 
-        fprintf(stokesq, "%f ", sp);
-        fprintf(darcyq, "%f ", dp);
+        fprintf(stokesq, "%.21f ", sp);
+        fprintf(darcyq, "%.21f ", dp);
 
         vertex local {0.0,0.0};
 
@@ -527,8 +579,8 @@ int Driver::PrintPressureEvent(){
 
         double rp = myPhase->pp->rho_s * myPhase->pp->gy * myPhase->pp->l0*(globalver[1]);
 
-        fprintf(stokesp, "%f ", sp);
-        fprintf(darcyp, "%f ", dp);
+        fprintf(stokesp, "%.21f ", sp);
+        fprintf(darcyp, "%.21f ", dp);
 
     }fprintf(stokesq, "\n");
      fprintf(darcyq, "\n");

@@ -34,7 +34,7 @@ int CellAvePorosity(const MeshInfo& mi,
 
         // Test =================================================
 
-        phif = AssignPorosity(mapped, phase->pp); 
+//        phif = AssignPorosity(mapped, phase->pp); 
 
         // ======================================================
 
@@ -97,7 +97,7 @@ int AssignLocMat(const MeshInfo& mi,
 
         // Test ==================================================================
 
-        phi_f = AssignPorosity(mapped, phase->pp);
+        //phi_f = AssignPorosity(mapped, phase->pp);
 
         // =======================================================================
 
@@ -192,7 +192,7 @@ int AssignLocMat(const MeshInfo& mi,
 
         // Test ==================================================================
 
-        phi_f = AssignPorosity(mapped, phase->pp);
+        //phi_f = AssignPorosity(mapped, phase->pp);
 
 		  // =======================================================================
 
@@ -251,7 +251,7 @@ int AssignLocMat(const MeshInfo& mi,
 
             // Testing =================================================
 
-            phi_f_e = AssignPorosity(mapped, phase->pp);
+            //phi_f_e = AssignPorosity(mapped, phase->pp);
 
             // =========================================================
 
@@ -305,7 +305,7 @@ int AssignLocMat(const MeshInfo& mi,
 
         // Test ============================================================
 
-        phi_f = AssignPorosity(mapped, phase->pp);
+        //phi_f = AssignPorosity(mapped, phase->pp);
 
 		  // =================================================================
 

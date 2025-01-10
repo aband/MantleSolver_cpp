@@ -14,4 +14,6 @@ int CreateCoupledSystem(ReducedSys * redsys1, ReducedSys * redsys2,
 
 int CoupledUzawa(ReducedSys * redsys, double tol, int MaxIter);
 
+int Uzawa(ReducedSys * redsys, double tol, int MaxIter);
+
 #endif

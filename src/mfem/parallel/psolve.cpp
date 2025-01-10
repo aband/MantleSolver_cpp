@@ -239,3 +239,104 @@ int CoupledUzawa(ReducedSys * redsys, double tol, int MaxIter){
     }
 
 }
+
+int Uzawa(ReducedSys * redsys, double tol, int MaxIter){
+
+    MatScale(redsys->B, -1);
+    MatScale(redsys->C, -1);
+    VecScale(redsys->G, -1);
+
+    MatZeroEntries(redsys->C);
+
+    // ===========================================================
+    KSP kspCG;
+    PC  pcCG; 
+    PetscCall(KSPCreate(PETSC_COMM_WORLD, &kspCG));
+    PetscCall(KSPSetOperators(kspCG, redsys->M, redsys->M));
+    PetscCall(KSPSetType(kspCG, KSPCG));
+    PetscCall(KSPCGSetType(kspCG, KSP_CG_SYMMETRIC));
+    PetscCall(KSPSetInitialGuessNonzero(kspCG, PETSC_FALSE));
+
+    // Define KSP for schur complement for Darcy part
+    KSP kspMINRES, kspSchur;
+    Mat S, BT;
+
+    PetscCall(MatCreateTranspose(redsys->B, &BT));
+
+    PetscCall(KSPCreate(PETSC_COMM_WORLD, &kspMINRES));
+    PetscCall(MatCreateSchurComplement(redsys->M, redsys->M, redsys->B, BT, redsys->C, &S));
+ 
+    PetscCall(MatSchurComplementGetKSP(S, &kspSchur));
+    PetscCall(KSPSetType(kspSchur, KSPCG));
+    PetscCall(KSPCGSetType(kspSchur, KSP_CG_SYMMETRIC));
+    PetscCall(KSPSetInitialGuessNonzero(kspSchur, PETSC_FALSE));
+
+    PetscCall(KSPSetOperators(kspMINRES, S, S));
+    PetscCall(KSPSetType(kspMINRES, KSPMINRES)); 
+    PetscCall(KSPSetInitialGuessNonzero(kspMINRES, PETSC_FALSE));
+    PetscCall(KSPSetTolerances(kspMINRES, 1e-15, 10e-20, 10, 2000));
+
+    double r = 1.0;
+    int    iter = 0;
+
+    Vec tmp1, tmp2, tmp3, tmp4;
+
+    PetscCall(VecDuplicate(redsys->F, &tmp1));
+    PetscCall(VecDuplicate(redsys->F, &tmp2));
+    PetscCall(VecDuplicate(redsys->G, &tmp3));
+    PetscCall(VecDuplicate(redsys->G, &tmp4));
+
+    PetscCall(VecZeroEntries(tmp1));
+    PetscCall(VecZeroEntries(tmp2));
+    PetscCall(VecZeroEntries(tmp3));
+    PetscCall(VecZeroEntries(tmp4));
+
+    PetscCall(VecDuplicate(redsys->F, &redsys->x));
+    PetscCall(VecDuplicate(redsys->G, &redsys->y));
+
+    PetscCall(VecZeroEntries(redsys->x));
+    PetscCall(VecZeroEntries(redsys->y));
+
+    while (r> tol && iter < MaxIter){
+
+        PetscCall(MatMult(redsys->B, redsys->y, tmp1));
+
+        PetscCall(MatMult(redsys->M, redsys->x, tmp2));
+
+        // tmp2 = ls-f - (Ax + B'y)
+        PetscCall(VecAXPBYPCZ(tmp2, 1.0, -1.0, -1.0, redsys->F, tmp1));
+
+        // tmp1 = A^-1 tmp2
+        PetscCall(KSPSolve(kspCG,tmp2,tmp1));
+
+        PetscCall(VecAXPY(redsys->x,1,tmp1)); 
+
+        PetscCall(MatMult(BT,redsys->x,tmp3));
+        PetscCall(MatMult(redsys->C,redsys->y,tmp4));
+
+        // tmp3 = Bx + Cy - G
+        PetscCall(VecAXPBYPCZ(tmp3, -1.0, 1.0, 1.0, redsys->G, tmp4));
+
+        // Use MINRES to calculate Darcy part 
+        KSPSolve(kspMINRES, tmp3, tmp3);
+
+        PetscCall(VecAXPY(redsys->y,-1.0,tmp3));
+
+        // Check norm of increment
+        PetscReal val1, val2;
+        PetscCall(VecNorm(tmp1,NORM_2,&val1));
+        PetscCall(VecNorm(tmp3,NORM_2,&val2));
+        r = val1 + val2; 
+
+        iter++;
+
+    }
+
+    if (iter < MaxIter){
+        printf("Uzawa converged successfully! r = %.3e, Used %d iterations. \n", r, iter);
+        return 0;
+    } else {
+        printf("Uzawa failed to converge! r = %.3e \n", r);
+        return -1;
+    }
+}

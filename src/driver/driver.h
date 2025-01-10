@@ -157,6 +157,9 @@ class Driver {
         */
        int SolveFlow(int maxIter, double tolUzawa);
 
+       int SolveFlow(int maxIterStokes, double tolStokes,
+                     int maxIterDarcy,  double tolDarcy);
+
        /**!
         * Scatter distributed vector to all processor.
         * Prepare for velocity reconstruction on gauss points
@@ -191,6 +194,8 @@ class Driver {
         */
        int quiverOutputEvent(double * ux, double * uy, double * vx, double * vy);
        int PrintFlowEvent();
+
+       int testPrint();
 
        /**!
         * Print out porosity 
