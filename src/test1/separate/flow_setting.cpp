@@ -3,8 +3,7 @@
 void AssignPhyProperties(PhysProperty * pp){
 
     pp->theta = 0.0;
-    //pp->mu_s  = 1e19;
-    pp->mu_s = 1e1;
+    pp->mu_s  = 1e19;
     pp->mu_f  = 1.0;
     pp->rho_f = 3000;
     pp->rho_s = 3000;
@@ -25,39 +24,44 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->p0    = pp->gy*pp->l0*rho_r;
     pp->u0    = pp->gy*rho_r/pp->mu_f/pp->invk0;
 
-    pp->l0    = 1.0;
-    pp->p0    = 1.0;
-    pp->u0    = 1.0;
-
     pp->l = 20/pp->l0;
 }
 
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
     // used to identify incorrect porosity
-
-    // Constant porosity
-    return 0.04;
-
-    // Porosity with step
-//    if (point[1] > 0){
-//        return 0.04;
-//    } else {
-//        return 0.0;
-//    }
-
-    // quadratic porosity
-    //if (point[1]<0 || point[1] == 0){
-    //    return 0.001 * point[1]*point[1];
-    //} else {
-    //    return 0.0;
-    //}
-
+    return -1.0;
 }
 
 double AssignPorosity(double phi_f){
     return 1-phi_f;
 }
+
+// ===================================================
+// Below not needed if no true solution posted
+/*
+const vertex darcyPressureGrad(const vertex& point, PhysProperty * pp){
+
+    return {0.0,0.0}; 
+}
+
+const vertex stokesPressureGrad(const vertex& point, PhysProperty * pp){
+
+    return {0.0,0.0};
+}
+
+const vertex divdivVel(const vertex& point, PhysProperty * pp){
+
+    return {2*point[1], -2*point[0]};
+}
+
+const vertex stress(const vertex& point, PhysProperty * pp){
+
+    // Calculate deviatoric stress
+    double coef = 4*pow(pp->phi0,0.5)/(3*(1-pp->phi0));
+}
+*/
+// =============================================================
 
 // Boundary values
 // Constant upwelling velocity ascending model
@@ -66,8 +70,8 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     // Stokes
     double V0 = pp->V0 / pp->u0 * -1;
 
-    //return {0.0,V0};
-    return {0.0, 0.0};
+    return {0.0,V0};
+    //return {0.0, 1.0};
 }
 
 vertex bndryu(const vertex& point, PhysProperty * pp){
@@ -100,8 +104,6 @@ const vertex traction(const vertex& point, PhysProperty * pp){
     return {0.0,0.0}; // free stress
 }
 
-
-
 // =========================================================================
 const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global,
@@ -126,8 +128,15 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 
     type = dirichlet;
 
-
     // Top edge all normal component are set free 
+    if (global[1] == mi.MPIglobalCellSize[1]-1){
+        it = top_normal.find(local);
+        if (it != top_normal.end()){
+            type = neumann;
+        }
+    } 
+
+
     if (global[0] == 0) {
         it = left_tang.find(local);
         if (it != left_tang.end()){
@@ -142,12 +151,6 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         }
     }
 
-    if (global[1] == mi.MPIglobalCellSize[1]-1){
-        it = top_normal.find(local);
-        if (it != top_normal.end()){
-            type = dirichlet;
-        }
-    } 
 
     if (global[1] == 0 ){
         type = dirichlet;
@@ -199,7 +202,7 @@ const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
     //if (global[1] == mi.MPIglobalCellSize[1]-1 && exit(1.05, mi.MPIglobalCellSize[0], global[0]) ){
     if (global[1] == mi.MPIglobalCellSize[1]-1){
         if (edge == 3){
-            type = dirichlet; 
+            type = neumann; 
         }else {
             type = dirichlet;
         }

@@ -95,8 +95,11 @@ int CGNSPrepareParallel(Vec * sol, Vec * g,
     int istart = mi.MPIlocalCellStart[0];
     int jstart = mi.MPIlocalCellStart[1];
 
-    PetscScalar *valuesSol;
-    PetscScalar *valuesg;
+    //PetscScalar *valuesSol;
+    //PetscScalar *valuesg;
+
+    double *valuesSol;
+    double *valuesg;
 
     VecGetArray(*sol, &valuesSol);
     VecGetArray(*g, &valuesg);
@@ -165,8 +168,11 @@ vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
     std::vector<vertex> work;
     work.resize(points.size());
 
-    PetscScalar *valuesSol;
-    PetscScalar *valuesg;
+    //PetscScalar *valuesSol;
+    //PetscScalar *valuesg;
+
+    double *valuesSol;
+    double *valuesg;
 
     VecGetArray(*sol, &valuesSol);
     VecGetArray(*g, &valuesg);

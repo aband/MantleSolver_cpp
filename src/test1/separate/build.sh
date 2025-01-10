@@ -5,7 +5,7 @@ cmake ..
 make
 
 echo " "
-echo -n "Transport Test Built!"
+echo -n "Test Built Successfully!"
 echo " "
 
 #valgrind --leak-check=full --show-leak-kinds=all ./test

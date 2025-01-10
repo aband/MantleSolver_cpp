@@ -132,7 +132,8 @@ inline std::vector<double> ExtractWeightsParallel(Vec * sol, Vec * g,
 
         VecCreateSeq(PETSC_COMM_SELF, 1 ,&destination);
 
-        PetscScalar *values;
+        //PetscScalar *values;
+        double * values;
 
         ISCreateGeneral(PETSC_COMM_SELF, 1, &id_from, PETSC_COPY_VALUES, &from);
         ISCreateGeneral(PETSC_COMM_SELF, 1, &id_to, PETSC_COPY_VALUES, &to);

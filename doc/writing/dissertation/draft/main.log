@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  8 JAN 2025 13:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  9 JAN 2025 13:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -983,94 +983,121 @@ LaTeX Info: Redefining \nameref on input line 104.
 \everyMPtoPDFconversion=\toks60
 )) (./outline.tex) (./todo.tex) [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./tmpPlot/plot.tex
-<tmpPlot/pics/const_small_1d.png, id=41, 1081.06363pt x 413.91pt>
-File: tmpPlot/pics/const_small_1d.png Graphic file (type png)
-<use tmpPlot/pics/const_small_1d.png>
-Package pdftex.def Info: tmpPlot/pics/const_small_1d.png  used on input line 16
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./sections/mfem.tex
+LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line
+ 4.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
+File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line
+ 4.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd
+File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line
+ 4.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd
+File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
+)
+LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line
+ 4.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd
+File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 4.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 4.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 4.
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 4.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
+File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
+)
+
+Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
+d on input line 6.
+
+[2] [3] [4] (./sections/modified_BR.tex) [5]
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 261.
+ [6] [7]) [8]
+(./sections/simulation1.tex
+Overfull \hbox (9.64066pt too wide) in paragraph at lines 11--20
+ \OT1/ptm/m/n/10 7.1. Math-e-mat-i-cal model.[][] We are go-ing to show our cou
+-pled darcy-stokes semi-degenerate
+ []
+
+[9]
+<sections/pics/TDz_corrected.png, id=185, 225.84375pt x 451.6875pt>
+File: sections/pics/TDz_corrected.png Graphic file (type png)
+<use sections/pics/TDz_corrected.png>
+Package pdftex.def Info: sections/pics/TDz_corrected.png  used on input line 85
 .
-(pdftex.def)             Requested size: 426.79276pt x 284.52454pt.
-<tmpPlot/pics/const_large_1d.png, id=42, 1081.06363pt x 413.91pt>
-File: tmpPlot/pics/const_large_1d.png Graphic file (type png)
-<use tmpPlot/pics/const_large_1d.png>
-Package pdftex.def Info: tmpPlot/pics/const_large_1d.png  used on input line 17
+(pdftex.def)             Requested size: 156.49744pt x 284.54395pt.
+<sections/pics/Vfz_corrected.png, id=186, 233.37187pt x 446.41782pt>
+File: sections/pics/Vfz_corrected.png Graphic file (type png)
+<use sections/pics/Vfz_corrected.png>
+Package pdftex.def Info: sections/pics/Vfz_corrected.png  used on input line 86
 .
-(pdftex.def)             Requested size: 426.79276pt x 284.52454pt.
-<tmpPlot/pics/step_small_1d.png, id=43, 1081.06363pt x 413.91pt>
-File: tmpPlot/pics/step_small_1d.png Graphic file (type png)
-<use tmpPlot/pics/step_small_1d.png>
-Package pdftex.def Info: tmpPlot/pics/step_small_1d.png  used on input line 18.
-
-(pdftex.def)             Requested size: 426.79276pt x 284.52454pt.
-<tmpPlot/pics/step_large_1d.png, id=44, 1081.06363pt x 413.91pt>
-File: tmpPlot/pics/step_large_1d.png Graphic file (type png)
-<use tmpPlot/pics/step_large_1d.png>
-Package pdftex.def Info: tmpPlot/pics/step_large_1d.png  used on input line 19.
-
-(pdftex.def)             Requested size: 426.79276pt x 284.52454pt.
-<tmpPlot/pics/quadratic_large_1d.png, id=45, 1081.06363pt x 413.91pt>
-File: tmpPlot/pics/quadratic_large_1d.png Graphic file (type png)
-<use tmpPlot/pics/quadratic_large_1d.png>
-Package pdftex.def Info: tmpPlot/pics/quadratic_large_1d.png  used on input lin
-e 20.
-(pdftex.def)             Requested size: 426.79276pt x 284.52454pt.
-
-Overfull \hbox (56.40901pt too wide) in paragraph at lines 16--21
- [] 
- []
-
-
-Overfull \hbox (56.40901pt too wide) in paragraph at lines 16--21
- [] 
- []
-
-
-Overfull \hbox (56.40901pt too wide) in paragraph at lines 16--21
- [] 
- []
-
-
-Overfull \hbox (56.40901pt too wide) in paragraph at lines 16--21
- [] 
- []
-
-
-Overfull \hbox (56.40901pt too wide) in paragraph at lines 16--21
- [] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [2 <./tmpPlot/pics/const_small_1d.png (PNG copy)> <./tmpPlot/pics/const_large_
-1d.png (PNG copy)>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [3 <./tmpPlot/pics/step_small_1d.png (PNG copy)> <./tmpPlot/pics/step_large_1d
-.png (PNG copy)>]) [4 <./tmpPlot/pics/quadratic_large_1d.png (PNG copy)>] (./ma
-in.bbl)
+(pdftex.def)             Requested size: 156.49721pt x 284.52798pt.
+ [10 <./sections/pics/TDz_corrected.png (PNG copy)> <./sections/pics/Vfz_correc
+ted.png (PNG copy)>]) [11] (./main.bbl)
 \tf@thm=\write5
 \openout5 = `main.thm'.
 
+ [12] (./main.aux)
 
-[5] (./main.aux)
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 805236281644867B3F9FDA17B1DEB1C8;236.
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 42DB9DD660AE3D34F499B0310ECAE5EB;1920
+(rerunfilecheck)             After:  794C07892CBE51A69433B6F64A2EE23E;4838.
  ) 
 Here is how much of TeX's memory you used:
- 25922 strings out of 478287
- 466383 string characters out of 5849289
- 711004 words of memory out of 5000000
- 42065 multiletter control sequences out of 15000+600000
- 472429 words of font info for 32 fonts, out of 8000000 for 9000
+ 26145 strings out of 478287
+ 469428 string characters out of 5849289
+ 726010 words of memory out of 5000000
+ 42161 multiletter control sequences out of 15000+600000
+ 495716 words of font info for 83 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
- 85i,8n,80p,422b,398s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
-Output written on main.pdf (5 pages, 199734 bytes).
+ 85i,13n,80p,464b,394s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{subsection.30} has been referenced but does not e
+xist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.28} has been referenced but does not exi
+st, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.27} has been referenced but does not 
+exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsubsection.26} has been referenced but does not 
+exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{subsection.21} has been referenced but does not exi
+st, replaced by a fixed one
+
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/ur
+w/symbol/usyr.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (12 pages, 137573 bytes).
 PDF statistics:
- 89 PDF objects out of 1000 (max. 8388607)
- 74 compressed objects within 1 object stream
- 36 named destinations out of 1000 (max. 500000)
- 62 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 272 PDF objects out of 1000 (max. 8388607)
+ 235 compressed objects within 3 object streams
+ 106 named destinations out of 1000 (max. 500000)
+ 111 words of extra memory for PDF output out of 10000 (max. 10000000)
 

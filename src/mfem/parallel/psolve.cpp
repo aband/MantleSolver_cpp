@@ -144,7 +144,7 @@ int CoupledUzawa(ReducedSys * redsys, double tol, int MaxIter){
     PetscCall(KSPSetOperators(kspMINRESd, Sd, Sd));
     PetscCall(KSPSetType(kspMINRESd, KSPMINRES)); 
     PetscCall(KSPSetInitialGuessNonzero(kspMINRESd, PETSC_FALSE));
-    PetscCall(KSPSetTolerances(kspMINRESd, 1e-12, 10e-20, 10, 2000));
+    PetscCall(KSPSetTolerances(kspMINRESd, 1e-15, 10e-20, 10, 2000));
 
     // ===================================================================
     PetscCall(MatNestGetSubMat(redsys->M, 0, 0, &As));
@@ -163,7 +163,7 @@ int CoupledUzawa(ReducedSys * redsys, double tol, int MaxIter){
     PetscCall(KSPSetOperators(kspMINRESs, Ss, Ss));
     PetscCall(KSPSetType(kspMINRESs, KSPMINRES)); 
     PetscCall(KSPSetInitialGuessNonzero(kspMINRESs, PETSC_FALSE));
-    PetscCall(KSPSetTolerances(kspMINRESs, 1e-14, 10e-20, 10, 2000));
+    PetscCall(KSPSetTolerances(kspMINRESs, 1e-15, 10e-20, 10, 2000));
 
     double r = 1.0;
     int    iter = 0;
