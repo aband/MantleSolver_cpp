@@ -80,7 +80,7 @@ int main(int argc, char **argv){
 
     driver->Tmax = Tmax;
     driver->maxIter = maxIter;
-    driver->dt = 0.1;
+    driver->dt = 1;
 
     driver->RK();
 

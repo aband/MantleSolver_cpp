@@ -152,8 +152,34 @@ The value of $\bar{c}$ are directly obtained by WENO reconstruction. Therefore, 
 $\kappa_{In}$ and $\kappa_{Out}$ will be obtained during this computation process, which will be 
 used in the calculation of the numerical flux.
 
-\subsection{Nondimensionalization and reterive of oridinary physical variables}
-We do the simulation with nondimensionlized variables.
-The unit less variables should be converted back to proper units.
-
-Dimensionless time
+\subsection{Nondimensionalization and reterive of original physical variables}
+We converting scaled and nondimensionalized computational variables back to original physical variables.
+Note, the characteristic length defined similarly to the definition of compact length.
+\begin{equation*}
+\tilde{\bold{v}}_r = \phi^{-1-\Phi}\bold{u} \quad \text{,} \quad \tilde{q}_f = \phi^{1/2} q_f \quad \text{and} \quad  q = q_s + \phi(q_f - q_s)
+\end{equation*}
+while the pressure potentials are defined as
+\begin{equation*}
+q_f = p_f - \rho_fgz \quad \text{and} \quad q_s = p_s - \rho_f g z
+\end{equation*}
+and we define reference physical variables as:
+\begin{equation*}
+l_0 = (\frac{k_0 \mu_s}{\mu_f})^{1/2} \quad \text{and} \quad q_0 = \rho_r g l_0 \quad \text{and} \quad w = \frac{k_0 \rho_r g}{\mu_f}
+\end{equation*}
+Hence we can reterive the two original physical pressure as:
+\begin{equation*}
+\begin{aligned}
+p_f &= q_0 \hat{q}_f + \rho_f g z\\
+p_s &= \frac{\hat{q} - \phi\hat{q}_f}{1-\phi} q_0 + \rho_f g z
+\end{aligned}
+\end{equation*}
+where $\hat{q}$ and $\hat{q}_f$ are dimensionless variables computed in the linear system.
+\begin{center}
+\begin{tabular} {c| c| c| c}
+\text{Scale} & \text{Definition} & \text{Typical value} & \text{Units} \\
+\hline
+$V_0$ & \quad & 3.2 & $\text{cm y}^{-1}$ \\
+$l_0$ & $(\frac{k_0 \mu_s}{\mu_f})^{1/2}$ & \\ 
+\hline
+\end{tabular}
+\end{center}
