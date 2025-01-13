@@ -51,17 +51,34 @@ Enthalpy is transported in a similar manner.
 
 \subsubsection{Boundary conditions}
 In order to solve the proposed darcy-stokes coupled equation, 
-we need appropriate boundary condtions defined around the computational domain.
-A detailed description is presented as following:
+we need appropriate boundary condtions defined around the computational domain for stokes and darcy
+subproblems.
+The behavior of solid matrix is governed by Stokes equation.
+Bernardi-raugel style element is used for this Stokes system, hence we need to provide
+proper boundary conditions for two dofs per nodal and one additional supplemental 
+flux bubble function for each edge dof.
+The corresponding boundary condition are shown as follows.
 \begin{itemize}
 		  \item Prescribe essential boundary condition of constant upwelling ascending
-					 velocity all around the computational domain. $\bold{v}_s = \bold{W}$
-					 at no melting region.
-					 \item Prescribe natural boundary conditon at the place where melting 
-					 happens. 
-	 \item Prescribe essential (dirichlet) boundary condition of zero normal velocity on
-	 bottom , left and right sides.
-   \item Prescribe natural boundary condition on top. A free outlet 
+					 velocity at supplying depth $z = z_0$ with $\bold{v}_s = \bold{W}$.
+        \item Prescribe essential boundary condition to normal velocity and supplemental flux with the value of zero 
+					 on two sides of the physical domain.
+		  \item Prescribe zero traction (free dof) boundary condition (natural boundary condition) to tangantial 
+					 velocity on two sides of the physical domain.
+        \item Prescribe natural boundary conditoint to normal velocity and supplemental flux on the top side of
+					 the physical domain representing a free outlet scenerio.
+		  \item Prescribe essential boundary condition to tangential velocity with value zero on the top side of the physical domain.
+\end{itemize}
+The behavior do molten matrix is governed by Darcy equation.
+We used BDM sytle element for this Darcy system, hence we just need to provide
+proper boundary condition for each edges.
+The corresponding boundary condition are shown as follows:
+\begin{itemize}
+        \item Prescribe zero values on two sides of the physical domain. 
+        \item Prescribe zero values on the bottom of the physical domain representing no melting enters the
+					 computational domain form bottom.
+        \item Prescribe free (natural) boundary condition on the top of the physical domain representing
+					 a free outlet of the melt.
 \end{itemize}
 
 \subsubsection{Initial conditions}
