@@ -108,7 +108,7 @@ namespace MLWENO{
 
              // A special update nonlinear weight function
              // Updates all nonlinear weights for all fields and positions at 
-				 // the same time.
+             // the same time.
              void UpdateNonLinearWgts(const MeshInfo& mi,
                                       const std::set<std::string>& locSet,
                                       const std::unordered_map<std::string, LocFunc> funcSet,
