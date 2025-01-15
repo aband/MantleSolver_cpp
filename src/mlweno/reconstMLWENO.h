@@ -80,6 +80,11 @@ namespace MLWENO{
 
             double Evaluate(const MeshInfo& mi, const indice& owner, const vertex& point, const int& local);
 
+            /**
+             * Create Jacobian for smoothness indicator
+             */
+            int SmIndicDerivative(derivMatrix& derivmatrix);
+
             // ======================================================================
             //! class members for checking and verification
             void CheckStencils() const {cout<< "Constructed "<< interior_.size() << " stencils with the size of " << stencilSizeX_ << " " << stencilSizeY_ << endl;};
@@ -228,6 +233,12 @@ namespace MLWENO{
                                    const vertex& point,
                                    const indice& globalCell,
                                    const std::string& name) const;
+
+            /**!
+             * Create jacobian for the given field name 
+             */
+            int CreateJacobian(Mat* jacobian, 
+                               const std::string& name);
 
             /**!
              * Print information of non linear weights

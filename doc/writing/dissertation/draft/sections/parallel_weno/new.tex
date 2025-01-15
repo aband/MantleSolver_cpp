@@ -1,0 +1,18 @@
+\section{Finite Volume with MLWENO reconstruction}
+A general scalar advection-diffusion equation can be represented as follows:
+\begin{equation} \label{eq:newad}
+		  u_t + \div (F(u) - D(u) \nabla u) = 0, \ \bfx\in\Re^d
+\end{equation}
+which can be discretized with finite volume scheme.
+\begin{equation}\label{eq:newfv}
+		  \bar u_{E,t} + \frac{1}{|E|} \int_{\partial E} (\hat f(u) - \nabla u \cdot \nu_E) d\sigma(\bfx) = 0
+\end{equation}
+where piece-wise constant solution $\bar{u}_E = \frac{1}{|E|}\int_{E} u(\bfx, t) d\bfx$. We choose Lax-Friedrichs scheme to
+represent our numerical flux scheme.
+We approximate integrals over each facet with quadrature rule.
+\begin{equation*}
+\bar{u}_{E,t} + \sum_{j=1}^{L_E} \frac{e_j}{|E|} \sum_{k} \omega_{j,k} [\hat{f}(\mathscr{R}^+, \mathscr{R}^-) - \mathscr{D}(u)] = 0
+\end{equation*}
+where $\mathscr{D}$ denotes an approximation to diffusion flux along normal direction, and $\mathscr{R}$ represents a MLWENO
+reconstruction of values on the edge.
+
