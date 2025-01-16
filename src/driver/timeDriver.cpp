@@ -156,7 +156,10 @@ int Driver::RK(){
 
         UpdateFluxAll(event, &solHD, &solCD, &fluxHD, &fluxCD);
 
-        PrintCellValue(&fluxHD,"fHD");
+        //PrintCellValue(&fluxHD,"fHD");
+
+        //PetscCall(VecView(fluxHD, PETSC_VIEWER_STDOUT_WORLD));
+        //PetscCall(VecView(fluxCD, PETSC_VIEWER_STDOUT_WORLD));
 
         PetscCall(VecAXPY(solHD,dt,fluxHD));
         PetscCall(VecAXPY(solCD,dt,fluxCD));

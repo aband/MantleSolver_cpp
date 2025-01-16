@@ -38,6 +38,9 @@ int main(int argc, char **argv){
     double Tmax = 10; // Stop at the first step 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tmax", &Tmax, NULL)); 
 
+    double dt = 1;
+    PetscCall(PetscOptionsGetReal(NULL, NULL, "-dt", &dt, NULL));
+
     int showPhase = 0;
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-showphase", &showPhase, NULL)); 
 
@@ -80,7 +83,11 @@ int main(int argc, char **argv){
 
     driver->Tmax = Tmax;
     driver->maxIter = maxIter;
-    driver->dt = 1;
+    driver->dt = dt;
+
+    double dx = H/(double)N;
+
+    cout << "CFL number is : " <<  abs(driver->myPhase->pp->V0/driver->myPhase->pp->u0) * dt/dx << endl;
 
     driver->RK();
 

@@ -10,6 +10,8 @@
  * DONOT compile it with reconstruction.h. with cause fatal error.
  */
 
+using derivMatrix = unordered_map<int, double>;
+
 namespace MLWENO{
 
     //! Single level reconstruction class
