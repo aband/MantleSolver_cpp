@@ -1,2 +1,0 @@
-/usr/bin/ar qc libmlweno_lib.a  CMakeFiles/mlweno_lib.dir/workspace/MantleSolver_cpp/src/mlweno/reconstMLWENO.cpp.o CMakeFiles/mlweno_lib.dir/workspace/MantleSolver_cpp/src/mlweno/polynomial.cpp.o CMakeFiles/mlweno_lib.dir/workspace/MantleSolver_cpp/src/mlweno/mlwenouse.cpp.o
-/usr/bin/ranlib libmlweno_lib.a

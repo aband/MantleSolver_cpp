@@ -1,2 +1,0 @@
-/usr/bin/ar qc libphase_lib.a  CMakeFiles/phase_lib.dir/workspace/MantleSolver_cpp/src/phase/eutectic.cpp.o
-/usr/bin/ranlib libphase_lib.a

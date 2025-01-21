@@ -1,2 +1,0 @@
-/usr/bin/ar qc libdriver_lib.a  CMakeFiles/driver_lib.dir/workspace/MantleSolver_cpp/src/driver/driver.cpp.o CMakeFiles/driver_lib.dir/workspace/MantleSolver_cpp/src/driver/transDriver.cpp.o CMakeFiles/driver_lib.dir/workspace/MantleSolver_cpp/src/driver/flowDriver.cpp.o CMakeFiles/driver_lib.dir/workspace/MantleSolver_cpp/src/driver/timeDriver.cpp.o
-/usr/bin/ranlib libdriver_lib.a
