@@ -63,7 +63,6 @@ int Driver::PrepareDefaultTransport(){
 
     // Three different treatment on interior, edge and corner cells
     mluseAdv_->AddMLWENOLevel("interior", {"(3,3)","(2,2)"}, mlpPtr_);
-
     mluseAdv_->AssignWENOStencils("interior","(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
     mluseAdv_->AssignWENOStencils("interior","(3,3)",{{-1,-1}});
     mluseAdv_->AssignLinearWgts("interior","(2,2)",{1,1,1,1});
@@ -96,9 +95,47 @@ int Driver::PrepareDefaultTransport(){
 
 int Driver::PrepareTransport(const std::string& name){
 
+    // Need to add levels in advance
+    posSet_.insert("interior");
+    posSet_.insert("corner");
+    posSet_.insert("edge");
+
+    locFuncSet_["edge"] = edge; 
+    locFuncSet_["corner"] = corner; 
+    locFuncSet_["interior"] = interior; 
+
+    fieldSet_.insert(name);
+
+    mlpPtr_->UpdateSmoothnessIndic(mi, mi.localValsMap.at(name), name);
+
+    mluseAdv_->AddMLWENOLevel("interior", {"(3,3)","(2,2)"}, mlpPtr_);
+    mluseAdv_->AssignWENOStencils("interior","(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
+    mluseAdv_->AssignWENOStencils("interior","(3,3)",{{-1,-1}});
+    mluseAdv_->AssignLinearWgts("interior","(2,2)",{1,1,1,1});
+    mluseAdv_->AssignLinearWgts("interior","(3,3)",{5});
+    mluseAdv_->UpdateNonLinearWgts(mi, "interior", interior, name); 
+
+    mluseAdv_->AddMLWENOLevel("edge", {"(3,3)", "(2,2)"}, mlpPtr_);
+    mluseAdv_->AssignWENOStencils("edge","(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
+    mluseAdv_->AssignWENOStencils("edge","(3,3)",{{0,-1},{-2,-1},{-1,0},{-1,-2}});
+    mluseAdv_->AssignLinearWgts("edge","(2,2)",{1,1,1,1});
+    mluseAdv_->AssignLinearWgts("edge","(3,3)",{5,5,5,5});
+    mluseAdv_->UpdateNonLinearWgts(mi, "edge", edge, name); 
+
+    mluseAdv_->AddMLWENOLevel("corner", {"(3,3)", "(2,2)"}, mlpPtr_);
+    mluseAdv_->AssignWENOStencils("corner","(2,2)",{{-1,0},{-1,-1},{0,0},{0,-1}});
+    mluseAdv_->AssignWENOStencils("corner","(3,3)",{{-2,-2},{0,0},{-2,0},{0,-2}});
+    mluseAdv_->AssignLinearWgts("corner","(2,2)",{1,1,1,1});
+    mluseAdv_->AssignLinearWgts("corner","(3,3)",{5,5,5,5});
+    mluseAdv_->UpdateNonLinearWgts(mi, "corner", corner, name); 
 
 
     return 1;
+}
+
+int Driver::PrintMLWENOInfo(const std::string& name){
+
+
 }
 
 int Driver::UpdateSmoothnessIndicator(){

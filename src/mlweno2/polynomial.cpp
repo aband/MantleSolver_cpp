@@ -1,0 +1,94 @@
+#include "polynomial.h"
+
+// Evaluate derivative of 1D polynomial up to a given derivative with Horner's method
+inline int computeDerivative(const int& der,  const int& degree, 
+                             const double& x, const double& scale,
+                             double * coef, double * work){
+
+    double xx = x/scale;
+
+    for (int i=0; i<der; i++){work[i] = 0.0;}
+
+    for (int i=degree; i>=0; i--){
+        for (int d= der; d>=0; d--){
+            work[d] = work[d]*xx + d*work[d-1];
+        }
+        work[0] = work[0]*xx + coef[i];
+    }
+
+    for(int d=1; d<=der; d++) work[d] /= pow(scale,d);
+
+    return 1;
+}
+
+polynomial::polynomial(const int& degreex,
+                       const int& degreey){
+
+    degree[0] = degreex;
+    degree[1] = degreey;
+}
+
+polynomial::~polynomial(){
+    delete [] coef;
+}
+
+// Only used for testing purpose
+int polynomial::resetDegree(const int& degreex, 
+                            const int& degreey){
+
+    degree[0] = degreex;
+    degree[1] = degreey;
+
+    return 1;
+}
+
+int polynomial::setCoef(double* setcoef){
+
+    if (degree[0] == -1 || degree[1] == -1) {
+        cout <<" Max Degrees weren't assigned properly ! " << endl;
+    }
+
+    if (coef) {delete [] coef;}
+    int coefSize = degree[0]*degree[1];
+    coef = new double [coefSize]();
+    for (int i=0; i<coefSize; i++){coef[i] = setcoef[i];}
+
+    return 1;
+}
+
+int polynomial::printCoef() const {
+    for (int i=0; i<degree[0]*degree[1]; i++){
+        cout << std::setprecision(5)<< coef[i] << "  " ;
+    }cout << endl;
+    return 1;
+}
+
+double polynomial::eval(const double& x,
+                        const double& y) const{
+
+    double ycoef[degree[1]];
+
+    int start = 0;
+
+    for (int r=0; r<degree[1]; r++ ){
+        ycoef[r] = polyEval(x,&coef[start],degree[0]-1);
+        start += degree[0];
+    }
+
+    return polyEval(y,ycoef,degree[1]-1);
+}
+
+int polynomial::evalDer(const int& derx,    const int& dery,
+                        const int& degreex, const int& degreey,
+                        const double& x,    const double& y){
+
+    double * test = new double [derx];  
+
+    computeDerivative(derx, degreex, x, 1, coef, test);  
+
+    for (int i=0; i<derx; i++){
+        cout << test[i] << "  ";
+    }cout << endl;
+
+    return 1;
+}

@@ -175,6 +175,11 @@ class Driver {
        int CreateScatterVec();
 
        /**!
+        * Print MLWENO information
+        */
+       int PrintMLWENOInfo();
+
+       /**!
         * Update smoothness indicator and nonlinear weights for all field and mluse
         */
        int UpdateSmoothnessIndicator();

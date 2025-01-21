@@ -43,11 +43,15 @@ int main(int argc, char **argv){
 
     driver->InitTransport(InitCD, "test", false);
 
-    driver->PrintMesh("test");
+    //driver->PrintMesh("test");
 
     driver->AddLevels(1);
     driver->AddLevels(2);
     driver->AddLevels(3);
+
+    driver->PrepareTransport("test");
+
+
 
     return 1;
 }
