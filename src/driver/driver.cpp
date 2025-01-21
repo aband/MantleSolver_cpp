@@ -95,6 +95,19 @@ int Driver::PrintMesh(){
     return 0;
 }
 
+int Driver::PrintMesh(const std::string& name){
+
+    VecView(globalmesh, PETSC_VIEWER_STDOUT_WORLD);
+    PrintFullMesh(dmMesh, &globalmesh);
+
+    for (int j=0; j<N_; j++){
+    for (int i=0; i<M_; i++){
+        cout << mi.localValsMap.at(name)[j][i] << "  ";
+    }cout << endl;}
+
+    return 0;
+}
+
 char * Driver::GetFilename(const char * fieldname){
 
     char * filename = (char *)malloc(strlen(fieldname)+10+4);
@@ -147,6 +160,46 @@ int Driver::InitTransport(double (*funcHD)(const valarray<double>& point, const 
 
     return 0;
 }
+
+int Driver::InitTransport(
+    double (*func)(const valarray<double>& point, const vector<double>& param), 
+    const std::string& name,
+    const bool& eventflag){
+
+    if (eventflag){
+        eventCount = 0;
+    }
+
+    Vec globalvec, localvec;
+    double **locVals;
+
+    PetscCall(DMCreateGlobalVector(dmu, &globalvec));
+
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {0.0,0.0}, func);
+
+    // Distribute local part to local vectors.
+    PetscCall(DMGetLocalVector(dmu, &localvec)); 
+
+    PetscCall(DMGlobalToLocalBegin(dmu, globalvec, INSERT_VALUES, localvec));
+    PetscCall(DMGlobalToLocalEnd(dmu, globalvec, INSERT_VALUES, localvec));
+
+    PetscCall(DMDAVecGetArray(dmu, localvec, &locVals));
+
+    mi.localValsMap.insert(std::make_pair(name, locVals));
+
+    // Assign mesh information to mi object
+    AssignValuesMeshInfo(mi, dmMesh, dmu);
+
+    // Prepare mlweno objects
+    mlpPtr_   = new MLWENO::MLWENOPrepare();
+    mluseAdv_ = new MLWENO::MLWENOUse();
+    mluseDif_ = new MLWENO::MLWENOUse();
+
+    globalVecMap.insert(std::make_pair(name, &globalvec));
+    localVecMap.insert(std::make_pair(name, &localvec));
+
+    return 0;
+} 
 
 int Driver::clean(){
 

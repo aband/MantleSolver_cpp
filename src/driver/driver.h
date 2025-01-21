@@ -100,6 +100,7 @@ class Driver {
         Vec globalmesh;  
 
         int PrintMesh();
+        int PrintMesh(const std::string& name);
 
        /**!
         * Assign Initial cell averaged condition.
@@ -123,6 +124,11 @@ class Driver {
         int InitTransport(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
                           double (*funcCD)(const valarray<double>& point, const vector<double>& param));
 
+        int InitTransport(
+    double (*func)(const valarray<double>& point, const vector<double>& param), 
+    const std::string& name,
+    const bool& eventflag);
+
        // ================================================================================================
        
        /**!
@@ -144,6 +150,8 @@ class Driver {
         * (4,3) interior, (3,2) on the edge, level 3 on the edge being biased
         */
        int PrepareDefaultTransport();
+
+       int PrepareTransport(const std::string& name);
 
        // ========================================================================
 
@@ -281,6 +289,14 @@ class Driver {
        std::vector<double> parameter;
 
        void getDomainSize(const double& L, const double& H) {L_ = L; H_ = H;};
+
+       // =================================
+
+       std::set<std::string> fields;
+
+       std::unordered_map<std::string, Vec*> globalVecMap;
+       std::unordered_map<std::string, Vec*> localVecMap;
+       // =================================
 
     private:
 

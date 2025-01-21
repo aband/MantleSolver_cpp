@@ -137,10 +137,15 @@ namespace MLWENO{
               * Print non-linear weights relating to weights.
               */
              void PrintNonLinearWgts(const int& location,
-                                    const MeshInfo& mi);
+                                     const MeshInfo& mi);
 
              void PrintNonLinearWgts(const std::string& location,
-                                    const MeshInfo& mi);
+                                     const MeshInfo& mi);
+
+             /**!
+              * Print Stencils and reconstruction
+              */
+             void PrintInfo(const indice& globalCell);
 
         private:
 

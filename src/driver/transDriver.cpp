@@ -94,6 +94,13 @@ int Driver::PrepareDefaultTransport(){
     return 1;
 }
 
+int Driver::PrepareTransport(const std::string& name){
+
+
+
+    return 1;
+}
+
 int Driver::UpdateSmoothnessIndicator(){
 
     mlpPtr_->UpdateSmoothnessIndic(mi, mi.localCD, "CD");
