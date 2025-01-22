@@ -2,7 +2,12 @@
 #define POLYNOMIAL_H_
 
 #include "util.h"
+#include "tensor.h"
 #include <map>
+
+int computeDerivative(const int& der,  const int& degree, 
+                      const double& x, const double& scale,
+                      double * coef, double * work);
 
 // A 2D polynomial class
 class polynomial {
@@ -46,7 +51,8 @@ class polynomial {
          */
         int evalDer(const int& derx,    const int& dery,
                     const int& degreex, const int& degreey,
-                    const double& x,    const double& y);
+                    const double& x,    const double& y,
+                    const double& scale, Tensor<double>& tensor);
 
     private:
 

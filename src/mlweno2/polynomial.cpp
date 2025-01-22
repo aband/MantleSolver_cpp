@@ -2,22 +2,22 @@
 
 // Evaluate derivative of 1D polynomial up to a given derivative with Horner's method
 // Input der starts from 0.
-inline int computeDerivative(const int& der,  const int& degree, 
-                             const double& x, const double& scale,
-                             double * coef, double * work){
+int computeDerivative(const int& der,  const int& degree, 
+                      const double& x, const double& scale,
+                      double * coef, double * work){
 
     double xx = x/scale;
 
-    for (int i=0; i<der; i++){work[i] = 0.0;}
+    for (int d=0; d<=der; d++){work[d] = 0.0;}
 
-    for (int i=degree; i>=0; i--){
-        for (int d= der; d>=0; d--){
+    for (int i=degree-1; i>=0; i--){
+        for (int d=der; d>=1; d--){
             work[d] = work[d]*xx + d*work[d-1];
         }
         work[0] = work[0]*xx + coef[i];
     }
 
-    for(int d=1; d<=der; d++) work[d] /= pow(scale,d);
+    for(int d=1; d<=der; d++) {work[d] /= pow(scale,d);}
 
     return 1;
 }
@@ -81,16 +81,29 @@ double polynomial::eval(const double& x,
 
 int polynomial::evalDer(const int& derx,    const int& dery,
                         const int& degreex, const int& degreey,
-                        const double& x,    const double& y){
+                        const double& x,    const double& y,
+                        const double& scale, Tensor<double>& derTensor){
 
     double * workx = new double [derx + 1];  
     double * worky = new double [dery + 1];
 
+    double ycoef[derx + 1][degreey];
+
     int start = 0;
 
+    // Horner's method in y
     for (int r=0; r<degree[1]; r++){
-        computeDerivative(derx, degreex, x, 1, &coef[start], workx); 
-        start += degree[0];
+        computeDerivative(derx, degreex, x, scale, &coef[start], workx); 
+        for (int d=0; d<=derx; d++){ycoef[d][r] = workx[d];}
+        start += degreex;
+    }
+
+    // Horner's method in x
+    for (int dx=0; dx<=derx; dx++){
+        computeDerivative(dery, degreey, y, scale, ycoef[dx], worky);
+        for (int dy=0; dy<=dery; dy++){
+            derTensor({dx,dy}) = worky[dy];
+        }
     }
 
     return 1;

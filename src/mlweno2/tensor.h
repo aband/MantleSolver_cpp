@@ -16,15 +16,20 @@ class Tensor{
 
         int setRank(const int& r)
         {rank = r;
-         dim.resize(r); 
-         val.resize(r); return 1;}
+         dim.resize(r); return 1;}
 
         int setSize(vector<int> inputdim)
         {assert(inputdim.size() == rank);
-         dim = inputdim; return 1;}
+         dim = inputdim; 
+         size = 1; for (const auto& it : dim) {size *= it;}
+         val.resize(size);
+         return 1;}
 
         int getIndex(const vector<int>& index) 
         {return flattern(index);}
+
+        int getSize()
+        {return size;}
 
         // Get corresponding values using rank n index
         T &operator()(const vector<int>& index){
@@ -35,6 +40,16 @@ class Tensor{
         T operator()(const vector<int>& index) const{
             assert(index.size() == rank);
             return val[flattern(index)];
+        }
+
+        T &operator()(const int& index){
+            assert(index < size);
+            return val[index];
+        } 
+
+        T operator()(const int& index) const{
+            assert(index < size);
+            return val[index];
         }
 
     private:
