@@ -2,7 +2,6 @@
 #define POLYNOMIAL_H_
 
 #include "util.h"
-#include "stencil.h"
 #include <map>
 
 // A 2D polynomial class

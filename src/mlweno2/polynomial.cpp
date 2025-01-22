@@ -1,6 +1,7 @@
 #include "polynomial.h"
 
 // Evaluate derivative of 1D polynomial up to a given derivative with Horner's method
+// Input der starts from 0.
 inline int computeDerivative(const int& der,  const int& degree, 
                              const double& x, const double& scale,
                              double * coef, double * work){
@@ -82,13 +83,15 @@ int polynomial::evalDer(const int& derx,    const int& dery,
                         const int& degreex, const int& degreey,
                         const double& x,    const double& y){
 
-    double * test = new double [derx];  
+    double * workx = new double [derx + 1];  
+    double * worky = new double [dery + 1];
 
-    computeDerivative(derx, degreex, x, 1, coef, test);  
+    int start = 0;
 
-    for (int i=0; i<derx; i++){
-        cout << test[i] << "  ";
-    }cout << endl;
+    for (int r=0; r<degree[1]; r++){
+        computeDerivative(derx, degreex, x, 1, &coef[start], workx); 
+        start += degree[0];
+    }
 
     return 1;
 }

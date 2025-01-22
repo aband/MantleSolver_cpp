@@ -1,4 +1,5 @@
 #include "polynomial.h"
+#include "tensor.h"
 
 extern "C"{
 #include "mesh.h"
@@ -21,6 +22,9 @@ int main(int argc, char ** argv){
 
     testpoly->evalDer(4,0,4,1,1,0);
 
+    Tensor<double> mytensor = Tensor<double>(2);
+
+    mytensor.setSize({3,2});
 
     return 0;
 }
