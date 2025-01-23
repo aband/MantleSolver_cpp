@@ -26,6 +26,8 @@ class polynomial {
 
         int setCoef (double * setcoef);
 
+        int setCoef (int index, double val);
+
         /*!
          * Return a pointer pointing to a 
          * copy of polynomial coefficient.
@@ -48,12 +50,13 @@ class polynomial {
          */
         double eval(const double& x, const double& y) const;
         double operator() (const double& x, const double& y) const {return eval(x,y);}
+        double eval(const vertex& p) const {return eval(p[0],p[1]);};
+        double operator() (const vertex& p) const {return eval(p);}
 
          /*! 
          * Evaluation of point value with Horner's method
          */
         int evalDer(const int& derx,    const int& dery,
-                    const int& degreex, const int& degreey,
                     const double& x,    const double& y,
                     const double& scale, Tensor<double>& tensor);
 

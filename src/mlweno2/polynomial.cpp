@@ -94,6 +94,15 @@ int polynomial::setCoef(double* setcoef){
     return 1;
 }
 
+int polynomial::setCoef(int index, double val){
+
+    if (coef == nullptr){coef = new double [degree[0]*degree[1]]();};
+
+    coef[index] = val;
+
+    return 1;
+}
+
 int polynomial::printCoef() const {
     for (int i=0; i<degree[0]*degree[1]; i++){
         cout << std::setprecision(5)<< coef[i] << "  " ;
@@ -117,9 +126,11 @@ double polynomial::eval(const double& x,
 }
 
 int polynomial::evalDer(const int& derx,    const int& dery,
-                        const int& degreex, const int& degreey,
                         const double& x,    const double& y,
                         const double& scale, Tensor<double>& derTensor){
+
+    int degreex = degree[0];
+    int degreey = degree[1];
 
     double * workx = new double [derx + 1];  
     double * worky = new double [dery + 1];

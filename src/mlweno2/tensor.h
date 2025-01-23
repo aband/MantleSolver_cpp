@@ -20,7 +20,8 @@ class Tensor{
          dim.resize(r); return 1;}
 
         int setSize(vector<int> inputdim)
-        {assert(inputdim.size() == rank);
+        {//assert(inputdim.size() == rank);
+         rank = inputdim.size();
          dim = inputdim; 
          size = 1; for (const auto& it : dim) {size *= it;}
          val.resize(size);
@@ -29,10 +30,10 @@ class Tensor{
         int getIndex(const vector<int>& index) 
         {return flattern(index);}
 
-        int getSize()
+        int getSize() const
         {return size;}
 
-        int getSize(const int& i)
+        int getSize(const int& i) const
         {return dim.at(i);}
 
         // Get corresponding values using rank n index
@@ -56,7 +57,6 @@ class Tensor{
             return val[index];
         }
 
-        vector<T> val;
 
     private:
         int rank;
@@ -73,7 +73,9 @@ class Tensor{
                 multiplier *= dim[i];
             }
             return in;
-        } 
+        }
+
+        vector<T> val;
 };
 
 #endif

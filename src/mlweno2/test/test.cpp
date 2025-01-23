@@ -41,15 +41,15 @@ int main(int argc, char ** argv){
     //cout << testpoly->eval(1,0) << endl;
     //cout << testpoly->eval(0,1) << endl;
 
-    int derx = 2;
-    int dery = 3;
+    int derx = 1;
+    int dery = 2;
 
     Tensor<double> derTensor = Tensor<double>(2);
     derTensor.setSize({derx+1, dery+1});
 
     cout << endl;
 
-    testpoly->evalDer(derx,dery,degreex, degreey, .1,.1,1.0,derTensor);
+    testpoly->evalDer(derx,dery, .1,.1,1.0,derTensor);
 
     cout << endl;
 
@@ -62,32 +62,51 @@ int main(int argc, char ** argv){
 
     // =======================================================
     // Create pseudo mesh for testing  
-    int M = 4;
-    int N = 4;
+    int M = 3;
+    int N = 3;
     double hx = 1.0/(double)M;
     double hy = 1.0/(double)N;
 
     Tensor<vertex> mesh = Tensor<vertex>(2);
 
-    mesh.setSize({M,N});
+    mesh.setSize({M+1,N+1});
 
-    for (int j=0; j<N; j++){
-        for (int i=0; i<M; i++){
+    for (int j=0; j<N+1; j++){
+        for (int i=0; i<M+1; i++){
             mesh({i,j}) = {i*hx, j*hy};
         }
     }
 
     vector<vertex> cornerSet;
-    cout << endl;
     cornerSet.push_back(mesh({1,1}));
-    cout << mesh({1,1})[0] << "  " << mesh({1,1})[1] << endl;
+    //cout << mesh({1,1})[0] << "  " << mesh({1,1})[1] << endl;
     cornerSet.push_back(mesh({2,1}));
-    cout << mesh({2,1})[0] << "  " << mesh({2,1})[1] << endl;
+    //cout << mesh({2,1})[0] << "  " << mesh({2,1})[1] << endl;
     cornerSet.push_back(mesh({2,2}));
-    cout << mesh({2,2})[0] << "  " << mesh({2,2})[1] << endl;
+    //cout << mesh({2,2})[0] << "  " << mesh({2,2})[1] << endl;
     cornerSet.push_back(mesh({1,2}));
-    cout << mesh({1,2})[0] << "  " << mesh({1,2})[1] << endl;
- 
+    //cout << mesh({1,2})[0] << "  " << mesh({1,2})[1] << endl;
+
+    vector<vertex> cornerSet1;
+    cornerSet1.push_back(mesh({1,0}));
+    cornerSet1.push_back(mesh({2,0}));
+    cornerSet1.push_back(mesh({2,1}));
+    cornerSet1.push_back(mesh({1,1}));
+
+    vector<vertex> cornerSet2;
+    cornerSet2.push_back(mesh({2,0}));
+    cornerSet2.push_back(mesh({3,0}));
+    cornerSet2.push_back(mesh({3,1}));
+    cornerSet2.push_back(mesh({2,1}));
+
+    vector<vertex> cornerSet3;
+    cornerSet3.push_back(mesh({2,1}));
+    cornerSet3.push_back(mesh({3,1}));
+    cornerSet3.push_back(mesh({3,2}));
+    cornerSet3.push_back(mesh({2,2}));
+
+    vertex center = (mesh({1,0}) + mesh({3,0}) + mesh({3,2}) + mesh({1,2})) / 4.0;
+
     degreex = 2;
     degreey = 2;
 
@@ -97,10 +116,63 @@ int main(int argc, char ** argv){
 
     testint.setCoef(intcoef);
 
-    cout << "poly integral : "  << polyNumIntegralFace(cornerSet, 1.0, {0.0,0.0}, testint) << endl; 
-    cout << "Previously defined integral : " << NumIntegralFace(cornerSet, {1,1}, {0.0,0.0}, 1.0, basePoly) << endl;
+    cout << cornerSet.size() << endl;
 
+    cout <<std::setprecision(20) << "poly integral : "  << polyNumIntegralFace(cornerSet, hx, center, testint) << endl; 
+    cout <<std::setprecision(20) << "Previously defined integral : " << NumIntegralFace(cornerSet, {1,1}, center, hx, basePoly) << endl;
+
+    cout << endl;
     // poly num matched with previously defined function
+    stencilpolynomial teststencilpoly = stencilpolynomial(2,2);
+
+    vector<vector<vertex>> cornerSetSet;
+    cornerSetSet.push_back(cornerSet);
+    cornerSetSet.push_back(cornerSet1);
+    cornerSetSet.push_back(cornerSet2);
+    cornerSetSet.push_back(cornerSet3);
+
+    teststencilpoly.setCoef(cornerSetSet ,center, hx);
+
+    teststencilpoly.printCoef();
+
+    // ===========================================================================================================================
+    cout << endl; 
+    vector<vector<vertex>> cornerSetSet2;
+    vector<indice> order {{0,0},{1,0},{1,1},{0,1}};
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        indice start = {i,j};
+        indice now ; 
+        vector<vertex> work;
+        for (const auto& it: order){now = start + it; work.push_back(mesh({now[0],now[1]}));}
+        cornerSetSet2.push_back(work);
+    }}
+    stencilpolynomial teststencilpoly2 = stencilpolynomial(3,3);
+
+    center = (mesh({0,0}) + mesh({3,0}) + mesh({0,3}) + mesh({3,3}))/4;
+    double h = hx;
+
+    center = {0.1,0.123};
+
+    h = 0.1;
+
+    teststencilpoly2.setCoef(cornerSetSet2 ,center, h);
+    teststencilpoly2.printCoef();
+
+    vector<double> tmp {0.037037037037043, 0.259259259259265, 0.703703703703710,0.037037037037043, 0.259259259259265, 0.703703703703710,0.037037037037043, 0.259259259259265, 0.703703703703710};
+
+    Tensor<double> sol = Tensor<double>(2);
+
+    sol.setSize({3,3});
+
+    for (int i=0; i<9; i++) {sol(i) = tmp.at(i);}
+
+    vertex test {0.27,0.27};
+
+    cout << std::setprecision(15) << teststencilpoly2.eval(sol, test, center, h) << "  " << 0.27*0.27 << endl;
+
+
 
     return 0;
 }

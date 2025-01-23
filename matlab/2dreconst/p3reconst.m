@@ -1,5 +1,5 @@
 function p3 = p3reconst(N)
-
+format long
 % Get mesh
 x = linspace(0,1,4);
 y = linspace(0,1,4);
@@ -10,11 +10,6 @@ y = linspace(0,1,4);
  {
  %}
 % Normalize
-x = x/N;
-y = y/N;
-
-x = (x - 0.5)*3;
-y = (y - 0.5)*3;
 
 % Center reference point (0.5,0.5)
 
@@ -28,13 +23,7 @@ a6 = @(x,y) y.^2;
 a7 = @(x,y) (y.^2).*x;
 a8 = @(x,y) (y.^2).*(x.^2);
 
-% Calculate region integrals
 
-area = integral2(a0,x(1),x(2),y(1),y(2));
-
-% cell coordinates
-cx = (x(1:end-1) + x(2:end))/2;
-cy = (y(1:end-1) + y(2:end))/2;
 
 %fun = @(x,y) sin(x).*sin(y);
 fun = @(x,y) x.^2;
@@ -42,7 +31,16 @@ fun = @(x,y) x.^2;
 exact   = zeros(3,3);
 cellave = zeros(3,3);
 
-% exact solution and cell averaged values
+x = x/N;
+y = y/N;
+
+% cell coordinates
+cx = (x(1:end-1) + x(2:end))/2;
+cy = (y(1:end-1) + y(2:end))/2;
+
+
+area = integral2(a0,x(1),x(2),y(1),y(2));
+
 for j=1:3
     for i = 1:3
         exact(j,i)   = fun(cx(i),cy(j));
@@ -50,11 +48,18 @@ for j=1:3
     end
 end
 
+x = (x - 0.5)*3;
+y = (y - 0.5)*3;
+
+% Calculate region integrals
+
+area = integral2(a0,x(1),x(2),y(1),y(2));
+
+% exact solution and cell averaged values
 % Calculate region integrals
 
 M = zeros(9,9);
 
-area = integral2(a0,x(1),x(2),y(1),y(2));
 
 sol = zeros(9,9);
 

@@ -14,18 +14,29 @@ class stencilpolynomial {
         ~stencilpolynomial() {};
 
         /**!
-         * Obtain cell indice where counting starts.
+         * Compute stencil polynomial coefficients
+         * Takes in one vector of all corners.
+         * No direct involvement of MeshInfo object
          */
-        int getStart(const indice& input){start = input;  return 1;};
-        int getStart(const int& inputx,
-                     const int& inputy){start[0] = inputx; start[1] = inputy; return 1;};
+        int setCoef(const vector<vector<vertex>>& cornerSet,
+                    const vertex& center, const double& scale);
 
         /**!
-         * Compute stencil polynomial coefficients
+         * Print stencil polynomial coefficient
          */
-        int setCoef(const MeshInfo& mi,
-                    const Tensor<indice>& stencilindice,
-                    const vertex& center, const double& scale);
+        int printCoef();
+
+        /**!
+         * Evaluate with given points.
+         */
+        double eval(const Tensor<double>& sol, const vertex& point, const vertex& center, const double& h); 
+
+        /**!
+         * Evaluate smoothness indicator tensor.
+         */
+        int preparesigma(const vector<double>& area,
+                         const vector<vector<vertex>>& cornerSet, 
+                         const vertex& center, const double& scale);
 
     private:
 
@@ -33,7 +44,11 @@ class stencilpolynomial {
 
         Tensor<polynomial> tensorpoly;
 
-        indice start {-1,-1};
+        Tensor<double> sigma;
+
+        // Calculate cell wise sigma, being called by function preparesigma
+        double cellsigma(const double& area, const vector<vertex>& corners, 
+                         const vertex& center, const double& scale, const int& index);
 
 };
 
