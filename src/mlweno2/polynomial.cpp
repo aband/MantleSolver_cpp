@@ -22,6 +22,43 @@ int computeDerivative(const int& der,  const int& degree,
     return 1;
 }
 
+// Numerical integral function but used specifically for polynomial
+double polyNumIntegralFace(const vector<vertex>& corners,
+                           const double& h,
+                           const vertex& center,
+                           polynomial& mypoly){
+
+    // Copy gauss weights and gauss points
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussPointsFace;
+
+    assert(corners.size() == 4);
+
+    vector< valarray<double> > tmp = corners;
+    /*
+     *Transform original corner coordinates with given
+     *parameter h and center point. If no transform, pass
+     *in h=1.0 and center point as (0.0,0.0).
+     */
+    for (auto & p : tmp){
+        p -= center;
+        p = p/h; 
+    }
+
+    double work = 0.0;
+
+    for (size_t i=0; i<gpf.size(); i++){
+        valarray<double> mapped = GaussMapPointsFace(gpf[i],tmp);
+        double jac = abs(GaussJacobian(gpf[i],tmp));
+        double gw = gwf[i];
+        work += jac*gw*mypoly.eval(mapped[0], mapped[1]); 
+    }
+
+    return work;
+}
+
+// ===================================================================================
+
 polynomial::polynomial(const int& degreex,
                        const int& degreey){
 

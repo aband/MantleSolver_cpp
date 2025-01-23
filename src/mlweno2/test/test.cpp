@@ -1,4 +1,4 @@
-#include "polynomial.h"
+#include "stencilpolynomial.h"
 #include "tensor.h"
 
 extern "C"{
@@ -49,7 +49,7 @@ int main(int argc, char ** argv){
 
     cout << endl;
 
-    testpoly->evalDer(derx,dery,degreex, degreey, 1,1,1.0,derTensor);
+    testpoly->evalDer(derx,dery,degreex, degreey, .1,.1,1.0,derTensor);
 
     cout << endl;
 
@@ -59,6 +59,48 @@ int main(int argc, char ** argv){
 
         }cout << endl;
     }
+
+    // =======================================================
+    // Create pseudo mesh for testing  
+    int M = 4;
+    int N = 4;
+    double hx = 1.0/(double)M;
+    double hy = 1.0/(double)N;
+
+    Tensor<vertex> mesh = Tensor<vertex>(2);
+
+    mesh.setSize({M,N});
+
+    for (int j=0; j<N; j++){
+        for (int i=0; i<M; i++){
+            mesh({i,j}) = {i*hx, j*hy};
+        }
+    }
+
+    vector<vertex> cornerSet;
+    cout << endl;
+    cornerSet.push_back(mesh({1,1}));
+    cout << mesh({1,1})[0] << "  " << mesh({1,1})[1] << endl;
+    cornerSet.push_back(mesh({2,1}));
+    cout << mesh({2,1})[0] << "  " << mesh({2,1})[1] << endl;
+    cornerSet.push_back(mesh({2,2}));
+    cout << mesh({2,2})[0] << "  " << mesh({2,2})[1] << endl;
+    cornerSet.push_back(mesh({1,2}));
+    cout << mesh({1,2})[0] << "  " << mesh({1,2})[1] << endl;
+ 
+    degreex = 2;
+    degreey = 2;
+
+    polynomial testint = polynomial(degreex,degreey);
+
+    double intcoef[4] = {0,0,0,1};
+
+    testint.setCoef(intcoef);
+
+    cout << "poly integral : "  << polyNumIntegralFace(cornerSet, 1.0, {0.0,0.0}, testint) << endl; 
+    cout << "Previously defined integral : " << NumIntegralFace(cornerSet, {1,1}, {0.0,0.0}, 1.0, basePoly) << endl;
+
+    // poly num matched with previously defined function
 
     return 0;
 }

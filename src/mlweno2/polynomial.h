@@ -5,6 +5,7 @@
 #include "tensor.h"
 #include <map>
 
+// Some auxilliary funcitons defined for using polynomial class
 int computeDerivative(const int& der,  const int& degree, 
                       const double& x, const double& scale,
                       double * coef, double * work);
@@ -16,6 +17,8 @@ class polynomial {
         /*!
          * Highest polynomial order will be degree - 1
          */
+        polynomial() {};
+
         polynomial(const int& degreex, 
                    const int& degreey);
 
@@ -61,5 +64,11 @@ class polynomial {
         // Store coefficient in a 1D array
         double * coef = nullptr;
 };
+
+// Special numerical integral function
+double polyNumIntegralFace(const vector<vertex>& corners,
+                           const double& h,
+                           const vertex& center,
+                           polynomial& mypoly);
 
 #endif

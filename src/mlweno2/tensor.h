@@ -11,6 +11,7 @@
 template <class T>
 class Tensor{
     public:
+        Tensor () {};
         Tensor(const int& r) {setRank(r);};
         ~Tensor() {};
 
@@ -30,6 +31,9 @@ class Tensor{
 
         int getSize()
         {return size;}
+
+        int getSize(const int& i)
+        {return dim.at(i);}
 
         // Get corresponding values using rank n index
         T &operator()(const vector<int>& index){
@@ -52,12 +56,13 @@ class Tensor{
             return val[index];
         }
 
+        vector<T> val;
+
     private:
         int rank;
         int size;
 
         vector<int> dim;
-        vector<T> val;
 
         int flattern(const vector<int>& index){
             int in = 0;
