@@ -127,7 +127,7 @@ double polynomial::eval(const double& x,
 
 int polynomial::evalDer(const int& derx,    const int& dery,
                         const double& x,    const double& y,
-                        const double& scale, Tensor<double>& derTensor){
+                        const double& scale, Tensor<double>& derTensor) const{
 
     int degreex = degree[0];
     int degreey = degree[1];

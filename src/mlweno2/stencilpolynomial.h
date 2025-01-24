@@ -37,6 +37,16 @@ class stencilpolynomial {
         int sigma(const vector<vertex>& corners, const double& area,
                   const vertex& center, const double& h);
 
+        double sigma(const Tensor<double>& sol);
+
+        /**!
+         * Function will be used for testing purpose
+         */
+        polynomial createCollapsePoly(const Tensor<double>& sol);
+
+        double sigma(const polynomial& collapse, const vector<vertex>& corners,
+                     const double& area, const vertex& center, const double& h);
+
     private:
 
         vector<int> size {-1,-1};

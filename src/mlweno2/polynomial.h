@@ -28,6 +28,8 @@ class polynomial {
 
         int setCoef (int index, double val);
 
+        double getCoef (int index) const {return coef[index];};
+
         /*!
          * Return a pointer pointing to a 
          * copy of polynomial coefficient.
@@ -58,7 +60,7 @@ class polynomial {
          */
         int evalDer(const int& derx,    const int& dery,
                     const double& x,    const double& y,
-                    const double& scale, Tensor<double>& tensor);
+                    const double& scale, Tensor<double>& tensor) const;
 
     private:
 

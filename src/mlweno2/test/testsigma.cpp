@@ -8,7 +8,6 @@ extern "C"{
 
 int main(int argc, char ** argv){
 
-
     // Create pseudo mesh for testing  
     int M = 3;
     int N = 3;
@@ -72,11 +71,17 @@ int main(int argc, char ** argv){
 
     vertex test {0.27,0.27};
 
+    polynomial collapse = stencilpoly.createCollapsePoly(sol);
+
     cout << std::setprecision(10) << stencilpoly.eval(sol, test, center, h) << "  " << 0.27*0.27 << endl;
+
+    cout << "Collapse polynomial result : " << collapse.eval((test[0]-center[0])/h, (test[1]-center[1])/h) << endl;
 
     stencilpoly.sigma(refcell, refarea, center, h);
 
     cout << "Current smoothness indicator is : " << stencilpoly.sigma(sol) << endl;;
+
+    cout << "Smoothness indicator calculated using collapse is : " << stencilpoly.sigma(collapse, refcell, refarea, center, h) << endl;
 
     return 1;
 }

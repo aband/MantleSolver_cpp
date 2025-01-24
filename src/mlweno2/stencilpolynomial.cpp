@@ -131,7 +131,7 @@ double stencilpolynomial::sigmaintegral(const vector<vertex>& corners,
     }
 
     // Sum through all order of derivatives
-    for (int i=0; i<total; i++){
+    for (int i=1; i<total; i++){
         work += der(i) * pow(area/h*h,i); 
     }
 
@@ -157,4 +157,69 @@ int stencilpolynomial::sigma(const vector<vertex>& corners, const double& area,
     }
 
     return 1;
+}
+
+double stencilpolynomial::sigma(const Tensor<double>& sol){
+
+    double work = 0.0;
+
+    for (int j=0; j<size[0]*size[1]; j++){
+        for (int i=0; i<size[0]*size[1]; i++){
+            work += tensorsigma({i,j}) * sol(j)* sol(i);
+        }
+    }
+
+    return work;
+}
+
+// ================================================================
+polynomial stencilpolynomial::createCollapsePoly(const Tensor<double>& sol){
+
+    polynomial collapse = polynomial(size[0], size[1]);
+
+    for (int p=0; p<size[0]*size[1]; p++){
+        double work = 0.0;
+        for (int i=0; i<size[0]*size[1]; i++){
+            work += sol(i) * tensorpoly(i).getCoef(p);  
+        }
+        collapse.setCoef(p,work);
+    }
+
+    return collapse;
+}
+
+// Compute simga with collapse polynomial
+double stencilpolynomial::sigma(const polynomial& collapse, const vector<vertex>& corners,
+                                const double& area, const vertex& center, const double& h){
+
+    double work = 0.0;
+
+    Tensor<double> der = Tensor<double>(2);
+    der.setSize(size);
+
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>&   gpf = GaussPointsFace;
+
+    vector<vertex> tmp = corners;          // Extract four corners
+    for (auto & p: tmp) {p-=center; p/=h;} // Transform points locally
+
+    Tensor<double> dest = Tensor<double>(2);
+    dest.setSize(size);
+    Tensor_zero(dest);
+
+    for (int i=0; i<gpf.size(); i++){
+        valarray<double> mapped = GaussMapPointsFace(gpf[i],tmp);
+        double jac = abs(GaussJacobian(gpf[i],tmp));
+        double gw = gwf[i];
+
+        collapse.evalDer(size[0]-1, size[1]-1,mapped[0], mapped[1], 1.0, der);
+
+        Tensor_multi_add(der, der, gw*jac, dest);
+    }
+
+    for (int i=1; i<size[0]*size[1]; i++){
+        work += dest(i) * pow(area/h*h,i); 
+    }
+
+    return work;
 }
