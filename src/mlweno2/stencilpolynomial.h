@@ -45,6 +45,7 @@ class stencilpolynomial {
 
         Tensor<double> tensorsigma;
 
+        // Calculate the integral in smoothness indicator
         double sigmaintegral(const vector<vertex>& corners, const double& area,
                              const vertex& center, const double& h,
                              const int& index1, const int& index2);

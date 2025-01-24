@@ -172,6 +172,22 @@ int main(int argc, char ** argv){
 
     cout << std::setprecision(15) << teststencilpoly2.eval(sol, test, center, h) << "  " << 0.27*0.27 << endl;
 
+    // Test for smoothness indicator
+    vector<vertex>  refcell;
+    vertex cellcenter = (mesh({0,0}) + mesh({1,0}) + mesh({1,1}) + mesh({0,1}))/4;
+    refcell.push_back(cellcenter);
+
+    cellcenter = (mesh({2,0}) + mesh({3,0}) + mesh({3,1}) + mesh({2,1}))/4;
+    refcell.push_back(cellcenter);
+
+    cellcenter = (mesh({2,2}) + mesh({3,2}) + mesh({3,3}) + mesh({2,3}))/4;
+    refcell.push_back(cellcenter);
+
+    cellcenter = (mesh({0,2}) + mesh({1,2}) + mesh({1,3}) + mesh({0,3}))/4;
+    refcell.push_back(cellcenter);
+
+    double refarea = NumIntegralFace(refcell, {0,0}, {0.0,0.0}, 1.0, constFunc);
+
     // ===============================================================================
     Tensor<double> testt1 = Tensor<double>(2);
     Tensor<double> testt2 = Tensor<double>(2);

@@ -101,7 +101,18 @@ add_executable(test
         test.cpp
 )
 
+add_executable(testsigma
+        testsigma.cpp
+)
+
 target_link_libraries(test
+		  general_lib
+		  io_lib
+		  mlweno_lib
+		  PkgConfig::LAPACKE
+)
+
+target_link_libraries(testsigma
 		  general_lib
 		  io_lib
 		  mlweno_lib
