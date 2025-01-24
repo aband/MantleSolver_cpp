@@ -34,9 +34,8 @@ class stencilpolynomial {
         /**!
          * Evaluate smoothness indicator tensor.
          */
-        int preparesigma(const vector<double>& area,
-                         const vector<vector<vertex>>& cornerSet, 
-                         const vertex& center, const double& scale);
+        int sigma(const vector<vertex>& corners, const double& area,
+                  const vertex& center, const double& h);
 
     private:
 
@@ -44,11 +43,11 @@ class stencilpolynomial {
 
         Tensor<polynomial> tensorpoly;
 
-        Tensor<double> sigma;
+        Tensor<double> tensorsigma;
 
-        // Calculate cell wise sigma, being called by function preparesigma
-        double cellsigma(const double& area, const vector<vertex>& corners, 
-                         const vertex& center, const double& scale, const int& index);
+        double sigmaintegral(const vector<vertex>& corners, const double& area,
+                             const vertex& center, const double& h,
+                             const int& index1, const int& index2);
 
 };
 

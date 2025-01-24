@@ -93,64 +93,66 @@ double stencilpolynomial::eval(const Tensor<double>& sol, const vertex& point,
     return work;
 }
 
-double stencilpolynomial::cellsigma(const double& area,
-                                    const vector<vertex>& corners, 
-                                    const vertex& center, 
-                                    const double& scale,
-                                    const int& index){
+double stencilpolynomial::sigmaintegral(const vector<vertex>& corners, 
+                     const double& area,
+                     const vertex& center, const double& h,
+                     const int& index1, const int& index2){
+
+    double work = 0.0;
 
     const valarray<double>& gwf = GaussWeightsFace;
-    const vector<vertex>& gpf   = GaussPointsFace;
+    const vector<vertex>&   gpf = GaussPointsFace;
 
-    double work;
+    vector<vertex> tmp = corners;          // Extract four corners
+    for (auto & p: tmp) {p-=center; p/=h;} // Transform points locally
 
-    vector<vertex> tmp = corners;
-    /*
-     *Transform original corner coordinates with given
-     *parameter h and center point. If no transform, pass
-     *in h=1.0 and center point as (0.0,0.0).
-     */
-    for (auto & p : tmp){
-        p -= center;
-        p = p/h; 
-    }
+    int total = size[0] * size[1];  
+
+    Tensor<double> der = Tensor<double>(2);
+    der.setSize(size);
+    Tensor_zero(der);
 
     for (int i=0; i<gpf.size(); i++){
         valarray<double> mapped = GaussMapPointsFace(gpf[i],tmp);
         double jac = abs(GaussJacobian(gpf[i],tmp));
         double gw = gwf[i];
- 
-        Tensor
+
+        Tensor<double> der1 = Tensor<double>(2);
+        der1.setSize(size);
+        Tensor<double> der2 = Tensor<double>(2);
+        der2.setSize(size);
+
+        tensorpoly(index1).evalDer(size[0]-1,size[1]-1,mapped[0], mapped[1], 1.0, 
+                                   der1);
+        tensorpoly(index2).evalDer(size[0]-1,size[1]-1,mapped[0], mapped[1], 1.0, 
+                                   der2);
+
+        Tensor_multi_add(der1,der2,gw*jac,der);
+    }
+
+    // Sum through all order of derivatives
+    for (int i=0; i<total; i++){
+        work += der(i) * pow(area/h*h,i); 
     }
 
     return work;
 }
 
-int stencilpolynomial::preparesigma(const vector<double>& area,
-                                    const vector<vector<vertex>>& cornerSet,
-                                    const vertex& center, const double& scale){
+int stencilpolynomial::sigma(const vector<vertex>& corners, const double& area,
+                             const vertex& center, const double& h){
 
     int total = size[0] * size[1];
+    tensorsigma.setSize({total, total});
 
-    sigma.setSize({total, total});
-
-    // For aach cell
-    for (int c=0; c<area.size(); c++){
-        vector<vertex> corners = cornerSet.at(c);  // Extract four corners
-        for (auto & p: corners) {p-=center; p/=h;} // Transform points locally 
-        vertex mapped = GaussMapPointsFace(gpf[i],corners); // Map to gauss points
-        double jac = abs(GaussJacobian(gpf[i], tmp));
-        double gw  = gwf[i];
-        
-    }
-
-    for (int j=0; j<total; j++){
-        Tensor<double> der1 = Tensor<double>(2);
-        der1.setSize(size);
-        tensorpoly(j).evalDer(size[0]-1, size[1]-1, );
-        for (int i=0; i<total; i++){  
-            Tensor<double> der2 = Tensor<double>(2);
-            der2.setSize(size); 
+    // diagonal first
+    for (int d=0; d<total; d++)
+    {tensorsigma({d,d}) = sigmaintegral(corners, area, center, h, d, d);}
+ 
+    // symmetrical applied by computing upper triangle only
+    for (int j=1; j<total; j++){
+        for (int i=0; i<j; i++){
+            tensorsigma({i,j}) = sigmaintegral(corners, area, center, h, i, j);
+            tensorsigma({j,i}) = tensorsigma({i,j});
         }
     }
 

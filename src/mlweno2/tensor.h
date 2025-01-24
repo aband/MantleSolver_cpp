@@ -78,4 +78,24 @@ class Tensor{
         vector<T> val;
 };
 
+// Some arithmetic functions that will be used
+// Restricted to double data type for the fact that T can be 
+// non numeric type like pointer
+int Tensor_add(const Tensor<double>& t1, 
+               const Tensor<double>& t2, 
+               Tensor<double>& t3);
+
+int Tensor_multi(const Tensor<double>& t1, 
+                 const Tensor<double>& t2, 
+                 Tensor<double>& t3);
+
+int Tensor_zero(Tensor<double>& t);
+
+int Tensor_multi_add(const Tensor<double>& t1, 
+                     const Tensor<double>& t2, 
+                     double scale,
+                     Tensor<double>& t3);
+
+int Tensor_scale(double scale, Tensor<double>& t);
+
 #endif

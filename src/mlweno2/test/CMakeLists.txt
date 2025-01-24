@@ -81,6 +81,7 @@ target_link_libraries(io_lib
 add_library(mlweno_lib 
 		  ${SRC}/mlweno2/polynomial.cpp
 		  ${SRC}/mlweno2/stencilpolynomial.cpp
+		  ${SRC}/mlweno2/tensor.cpp
 )
 
 # Specify any additional include directories if needed

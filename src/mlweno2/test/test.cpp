@@ -172,6 +172,32 @@ int main(int argc, char ** argv){
 
     cout << std::setprecision(15) << teststencilpoly2.eval(sol, test, center, h) << "  " << 0.27*0.27 << endl;
 
+    // ===============================================================================
+    Tensor<double> testt1 = Tensor<double>(2);
+    Tensor<double> testt2 = Tensor<double>(2);
+    Tensor<double> testt3 = Tensor<double>(2);
+
+    testt1.setSize({2,2});
+    testt2.setSize({2,2});
+    testt3.setSize({2,2});
+
+    for (int i=0; i<testt1.getSize(); i++){
+        testt1(i) = i;
+        testt2(i) = 3;
+    }
+
+    Tensor_add(testt1,testt2,testt3);
+    cout << endl;
+    for (int i=0; i<testt1.getSize(); i++){
+        cout << testt3(i) << endl;
+    }
+
+    Tensor_multi(testt1,testt2,testt3);
+    cout << endl;
+    for (int i=0; i<testt1.getSize(); i++){
+        cout << testt3(i) << endl;
+    }
+
 
 
     return 0;
