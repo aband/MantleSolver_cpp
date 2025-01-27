@@ -1,5 +1,5 @@
-#ifndef POLYNOMIAL_H_
-#define POLYNOMIAL_H_
+#ifndef POLYNOMIAL_PTR_H_
+#define POLYNOMIAL_PTR_H_
 
 #include "util.h"
 #include "tensor.h"
@@ -10,6 +10,7 @@ int computeDerivative(const int& der,  const int& degree,
                       const double& x, const double& scale,
                       double * coef, double * work);
 
+// A 2D polynomial class
 class polynomial {
 
     public:
@@ -21,7 +22,7 @@ class polynomial {
         polynomial(const int& degreex, 
                    const int& degreey);
 
-        ~polynomial() {};
+        ~polynomial();
 
         int setCoef (double * setcoef);
 
@@ -30,14 +31,18 @@ class polynomial {
         double getCoef (int index) const {return coef[index];};
 
         /*!
+         * Return a pointer pointing to a 
+         * copy of polynomial coefficient.
+         */
+        double* getCoefPtr() {return coef;};
+
+        /*!
          * Print out coefficients.
          */
         int printCoef() const;
 
         /*!
          * Reset polynomial degrees, which should only be used in testing
-         * Be careful with it, number of coefficient may change due to change of 
-         * degree of x and y.
          */
         int resetDegree(const int& degreex,
                         const int& degreey);
@@ -59,10 +64,10 @@ class polynomial {
 
     private:
 
-        vector<int> degree {-1,-1};
+        int degree[2] = {-1,-1};
 
         // Store coefficient in a 1D array
-        vector<double> coef;
+        double * coef = nullptr;
 };
 
 // Special numerical integral function
@@ -70,7 +75,5 @@ double polyNumIntegralFace(const vector<vertex>& corners,
                            const double& h,
                            const vertex& center,
                            polynomial& mypoly);
-
-
 
 #endif

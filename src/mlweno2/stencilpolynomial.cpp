@@ -79,7 +79,7 @@ int stencilpolynomial::printCoef(){
 }
 
 double stencilpolynomial::eval(const Tensor<double>& sol, const vertex& point, 
-                               const vertex& center, const double& h){
+                               const vertex& center, const double& h) const{
 
     assert(sol.getSize() == tensorpoly.getSize());
 
@@ -159,7 +159,7 @@ int stencilpolynomial::sigma(const vector<vertex>& corners, const double& area,
     return 1;
 }
 
-double stencilpolynomial::sigma(const Tensor<double>& sol){
+double stencilpolynomial::sigma(const Tensor<double>& sol) const{
 
     double work = 0.0;
 

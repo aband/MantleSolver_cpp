@@ -57,41 +57,18 @@ double polyNumIntegralFace(const vector<vertex>& corners,
     return work;
 }
 
-
+// ===================================================================================
 
 polynomial::polynomial(const int& degreex,
                        const int& degreey){
 
     degree[0] = degreex;
     degree[1] = degreey;
-
-    coef.resize(degreex*degreey);
 }
 
-int polynomial::setCoef(double* setcoef){
-
-    if (degree[0] == -1 || degree[1] == -1) {
-        cout <<" Max Degrees weren't assigned properly ! " << endl;
-    }
-
-    int coefSize = degree[0]*degree[1];
-    for (int i=0; i<coefSize; i++){coef[i] = setcoef[i];}
-
-    return 1;
-}
-
-int polynomial::setCoef(int index, double val){
-
-    coef[index] = val;
-
-    return 1;
-}
-
-int polynomial::printCoef() const {
-    for (int i=0; i<degree[0]*degree[1]; i++){
-        cout << std::setprecision(5)<< coef.at(i) << "  " ;
-    }cout << endl;
-    return 1;
+polynomial::~polynomial(){
+    //cout << "called " << endl;
+    delete [] coef;
 }
 
 // Only used for testing purpose
@@ -104,18 +81,45 @@ int polynomial::resetDegree(const int& degreex,
     return 1;
 }
 
+int polynomial::setCoef(double* setcoef){
+
+    if (degree[0] == -1 || degree[1] == -1) {
+        cout <<" Max Degrees weren't assigned properly ! " << endl;
+    }
+
+    if (coef) {delete [] coef;}
+    int coefSize = degree[0]*degree[1];
+    coef = new double [coefSize]();
+    for (int i=0; i<coefSize; i++){coef[i] = setcoef[i];}
+
+    return 1;
+}
+
+int polynomial::setCoef(int index, double val){
+
+    if (coef == nullptr){coef = new double [degree[0]*degree[1]]();};
+
+    coef[index] = val;
+
+    return 1;
+}
+
+int polynomial::printCoef() const {
+    for (int i=0; i<degree[0]*degree[1]; i++){
+        cout << std::setprecision(5)<< coef[i] << "  " ;
+    }cout << endl;
+    return 1;
+}
+
 double polynomial::eval(const double& x,
                         const double& y) const{
 
     double ycoef[degree[1]];
-    double xcoef[degree[0]];
 
     int start = 0;
 
     for (int r=0; r<degree[1]; r++ ){
-        //for (int i=0; i<degree[0]; i++){xcoef[i] = coef[start+i];}
-        std::copy(coef.begin()+start,coef.begin()+start+degree[0], xcoef);
-        ycoef[r] = polyEval(x,xcoef,degree[0]-1);
+        ycoef[r] = polyEval(x,&coef[start],degree[0]-1);
         start += degree[0];
     }
 
@@ -134,15 +138,11 @@ int polynomial::evalDer(const int& derx,    const int& dery,
 
     double ycoef[derx + 1][degreey];
 
-    double xcoef[degree[0]];
-
     int start = 0;
 
     // Horner's method in y
     for (int r=0; r<degree[1]; r++){
-        //for (int i=0; i<degree[0]; i++) {xcoef[i] = coef[start+i];}
-        std::copy(coef.begin()+start,coef.begin()+start+degree[0], xcoef);
-        computeDerivative(derx, degreex, x, scale, xcoef, workx); 
+        computeDerivative(derx, degreex, x, scale, &coef[start], workx); 
         for (int d=0; d<=derx; d++){ycoef[d][r] = workx[d];}
         start += degreex;
     }

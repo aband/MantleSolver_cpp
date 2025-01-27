@@ -13,6 +13,9 @@ class stencilpolynomial {
 
         ~stencilpolynomial() {};
 
+        vertex center;
+        double h;
+
         /**!
          * Compute stencil polynomial coefficients
          * Takes in one vector of all corners.
@@ -29,7 +32,10 @@ class stencilpolynomial {
         /**!
          * Evaluate with given points.
          */
-        double eval(const Tensor<double>& sol, const vertex& point, const vertex& center, const double& h); 
+        double eval(const Tensor<double>& sol, const vertex& point, const vertex& center, const double& h) const; 
+
+        double eval(const Tensor<double>& sol, const vertex& point) const 
+        {return eval(sol, point, center, h);};
 
         /**!
          * Evaluate smoothness indicator tensor.
@@ -37,7 +43,7 @@ class stencilpolynomial {
         int sigma(const vector<vertex>& corners, const double& area,
                   const vertex& center, const double& h);
 
-        double sigma(const Tensor<double>& sol);
+        double sigma(const Tensor<double>& sol) const;
 
         /**!
          * Function will be used for testing purpose

@@ -108,10 +108,9 @@ double reconstruction::eval(const vector<int>& index,
     return stencilPoly(index).eval(sol, point);
 }
 
-double reconstruction::sigma(const vector<int>& index,
-                             const Tensor<double>& sol) const{
+double reconstruction::sigma(){
 
-    return stencilPoly(index).sigma(sol);
+    return stencilPoly(index).sigma(sol)
 }
 
 // ================================================================================
@@ -142,15 +141,14 @@ double multilevel::eval(const std::string& name,
     return mlrecons.at(name).eval(index,sol,point);
 } 
 
-double multilevel::sigma(const std::string& name, 
-                         const vector<int>& index,
+double multilevel::sigma(const vector<int>& index,
                          const Tensor<double>& sol) const{
 
     return mlrecons.at(name).sigma(index, sol);
 }
 
 // ================================================================================
-int mluse::setmethod(const std::string& pos,
+int mluse::getmethod(const std::string& pos,
                      const unordered_map<std::string, vector<indice>>& method){
 
     reconstMethod.erase(pos);
@@ -175,40 +173,3 @@ int mluse::getsol(Tensor<double>& stencilsol, double ** localsol,
     return 1;
 }
 
-int mluse::updatesigma(const multilevel& ml,
-                       double ** localsol){
-
-    Tensor<double> stensigma = Tensor<double>(2);
-    Tensor<double> stensol   = Tensor<double>(2);
-   
-    for (const auto& it: ml.reconlevelSet){
-        sigma.erase(it);
-        int sizex = ml.getSize(it,0); 
-        int sizey = ml.getSize(it,1);
-        stensigma.setSize({sizex,sizey});
-        stensol.setSize({ml.getStencilSize(it,0),ml.getStencilSize(it,1)});
-        for (int j=0; j<sizey; j++){
-        for (int i=0; i<sizex; i++){
-            getsol(stensol, localsol, {i,j}); 
-            stensigma({i,j}) = ml.sigma(it, {i,j}, stensol); 
-        }}
-        sigma.insert(std::make_pair(it, stensigma));
-    }
-
-    return 1;
-}
-
-int mluse::printsigma(const std::string& name){
-
-    cout << "Print smoothness indicators for reconstruction " << name << endl;
-
-    int sizex = sigma.at(name).getSize(0);
-    int sizey = sigma.at(name).getSize(1);
-
-    for (int j=0; j<sizey; j++){
-    for (int i=0; i<sizex; i++){
-        cout << sigma.at(name)({i,j}) << "  ";
-    }cout << endl;}
-
-    return 1;
-}

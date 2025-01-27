@@ -184,6 +184,10 @@ typedef struct {
 
     std::unordered_map<std::string , double**> localValsMap;
 
+    // Physical length and height
+    double L = 0.0;
+    double H = 0.0;
+
 } MeshInfo;
 
 // Define function type of location functions

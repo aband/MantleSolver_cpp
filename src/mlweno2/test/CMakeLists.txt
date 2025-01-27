@@ -82,6 +82,7 @@ add_library(mlweno_lib
 		  ${SRC}/mlweno2/polynomial.cpp
 		  ${SRC}/mlweno2/stencilpolynomial.cpp
 		  ${SRC}/mlweno2/tensor.cpp
+		  ${SRC}/mlweno2/reconstruction.cpp
 )
 
 # Specify any additional include directories if needed
@@ -105,6 +106,10 @@ add_executable(testsigma
         testsigma.cpp
 )
 
+add_executable(reconsTest
+        reconsTest.cpp
+)
+
 target_link_libraries(test
 		  general_lib
 		  io_lib
@@ -116,5 +121,13 @@ target_link_libraries(testsigma
 		  general_lib
 		  io_lib
 		  mlweno_lib
+		  PkgConfig::LAPACKE
+)
+
+target_link_libraries(reconsTest
+		  general_lib
+		  io_lib
+		  mlweno_lib
+		  PkgConfig::PETSC
 		  PkgConfig::LAPACKE
 )

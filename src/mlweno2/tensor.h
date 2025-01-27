@@ -57,14 +57,13 @@ class Tensor{
             return val[index];
         }
 
-
     private:
         int rank;
         int size;
 
         vector<int> dim;
 
-        int flattern(const vector<int>& index){
+        int flattern(const vector<int>& index) const{
             int in = 0;
             double multiplier = 1;
             for (int i=0; i<rank; i++){
