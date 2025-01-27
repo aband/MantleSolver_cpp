@@ -84,14 +84,14 @@ class multilevel{
 class mluse {
 
     public:
-        mluse() {};
+        mluse() { ep = 1e-4; s = 1;};
         ~mluse() {};
 
         int setmethod(const std::string& pos,
                       const unordered_map<std::string, vector<indice>>& method);
 
         int getsol(Tensor<double>& stencilsol, double** localsol, 
-                   const indice& stencilindex);
+                   const indice& stencilindex) const;
 
         /**!
          * Update smoothness indicator for all recorded levels.
@@ -101,10 +101,26 @@ class mluse {
         int printsigma(const std::string& name);
 
         /**!
-         * Compute non linear weight
+         * Compute non linear weights
+         * with mlweno weighting scheme
          */
-        int computeWgts(const unordered_map<std::string, vector<indce>>& method,
-                        unordered_map<std::string, vector<double>>& wgts);
+
+        int setbias(const multilevel& ml);
+
+        int computeWgts(const unordered_map<std::string, vector<indice>>& method,
+                        unordered_map<std::string, vector<double>>& wgts, 
+                        const multilevel& ml, const double& h0,
+                        const indice& index);
+
+        int printWgts(const unordered_map<std::string, vector<double>>& wgts);
+
+        /**!
+         * Evaluation of the nonllinear weighted value at the given point.
+         */
+        double eval(const vertex& point, const multilevel& ml,
+                    const unordered_map<std::string, vector<indice>>& method,
+                    const unordered_map<std::string, vector<double>>& wgts,
+                    const indice& index, double ** localsol)const;
 
     public:
 
@@ -113,6 +129,15 @@ class mluse {
         unordered_map<std::string, unordered_map<std::string, vector<indice>>> reconstMethod;
 
         unordered_map<std::string, Tensor<double>> sigma;
+
+        double ep = 1e-4;
+        int    s  = 1;
+
+        unordered_map<std::string, double> bias;
+
+        int geteta (const int& rl) const;
+
+        bool stencilexist(const multilevel& ml, const indice& index, const std::string& name) const;
 };
 
 #endif

@@ -11,15 +11,7 @@ extern "C"{
 double func(const vertex& point,
             const vector<double>& param){
 
-    if (point[0] < param[0]) {
-
     return point[0]*point[0];
-
-    } else {
-
-    return point[0]*point[0] + 1;
-
-    }
 }
 
 int main(int argc, char ** argv){
@@ -54,12 +46,6 @@ int main(int argc, char ** argv){
 
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
-
-    double dscale = 1.0;
-    PetscCall(PetscOptionsGetReal(NULL,NULL,"-scale",&dscale,NULL));
-
-    L/=dscale;
-    H/=dscale;
 
     // Create dmMesh
     PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
@@ -104,11 +90,7 @@ int main(int argc, char ** argv){
     mi.L = L;
     mi.H = H;
 
-    double h0 = sqrt((L*H)/(double)(M*N));
-
-    vertex test {0.5,0.5};
-
-    test = (test-h0 /3)/dscale;
+    vertex test {0.27,0.25};
 
     multilevel ml = multilevel();
 
@@ -121,7 +103,7 @@ int main(int argc, char ** argv){
 
     PetscCall(DMCreateGlobalVector(dmu, &globalvec));
 
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {(L-h0)/2.0,0.0}, func);
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {0.0,0.0}, func);
 
     // Distribute local part to local vectors.
     PetscCall(DMGetLocalVector(dmu, &localvec)); 
@@ -135,22 +117,7 @@ int main(int argc, char ** argv){
 
     mluse use = mluse();
 
-    Tensor<double> stencilsol33 = Tensor<double>(2);
-    stencilsol33.setSize({3,3});
-
-    Tensor<double> stencilsol22 = Tensor<double>(2);
-    stencilsol22.setSize({2,2});
-
-    use.getsol(stencilsol33, locvals, {0,0});
-
-    use.getsol(stencilsol22, locvals, {0,0});
-
     use.updatesigma(ml, locvals);
-
-    //cout << std::setprecision(10) << ml.eval("(3,3)",{0,0}, stencilsol33, test) << "  " << test[0]*test[0] << endl;
-
-    use.printsigma("(3,3)");
-    use.printsigma("(2,2)");
 
     use.setbias(ml);
 
@@ -161,14 +128,10 @@ int main(int argc, char ** argv){
     method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
     method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
 
-    indice target {1,1};
+    double h0 = sqrt((L*H)/(double)(M*N));
 
     use.setbias(ml);
-    use.computeWgts(method, testwgts, ml, h0, target);
-    use.printWgts(testwgts);
-
-    cout << "Reconstructed value : " << use.eval(test, ml, method, testwgts, target, locvals) << endl 
-         << "Function value : " << func(test, {(L-h0)/2,0.0})<< endl;
+    use.computeWgts(method, testwgts, ml, h0, {1,0});
 
     // =================================================================
 
