@@ -24,6 +24,8 @@ class reconstruction{
 
         int getStencilSize(const int& dim) const{return size.at(dim);};
 
+        int printcoef(){for (int i=0;i<stencilPoly.getSize(); i++){stencilPoly(i).printCoef();} return 1;}
+
         // Derivative
 
     private:
@@ -67,12 +69,31 @@ class multilevel{
         int getStencilSize(const std::string& name, const int& index)const 
         {return mlrecons.at(name).getStencilSize(index);};
 
+        /**!
+         * Extract cell averaged solution to a tensor object
+         */
+        int getsol(Tensor<double>& stencilsol, double ** localsol,
+                   const indice& stencilindex, const std::string& name) const;
+
+        /**!
+         * Update smoothness indicator of all levels with cell-averaged value
+         */
+        int updatesigma(double ** localsol);
+
+        int printsigma(const std::string& name);
+
+        /**!
+         * Print out all stencil polynomial coefficients
+         */
+        int printcoef(const std::string& name);
+
         // Set holds all the reconstruction levels
         set<std::string> reconlevelSet;
 
     private:
 
         unordered_map<std::string, reconstruction> mlrecons;
+        unordered_map<std::string, Tensor<double>> alllevelsigma;
 };
 
 /**!
@@ -105,7 +126,9 @@ class mluse {
          * with mlweno weighting scheme
          */
 
-        int setbias(const multilevel& ml);
+        int setbias(const unordered_map<std::string, vector<indice>>& method);
+
+        int setbias(const std::string& pos);
 
         int computeWgts(const unordered_map<std::string, vector<indice>>& method,
                         unordered_map<std::string, vector<double>>& wgts, 

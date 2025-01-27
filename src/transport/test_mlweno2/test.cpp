@@ -8,11 +8,7 @@ extern "C"{
 #include "output.h"
 }
 
-double func(const vertex& point,
-            const vector<double>& param){
-
-    return point[0]*point[0];
-}
+#include "temp.h"
 
 int main(int argc, char ** argv){
 
@@ -46,6 +42,12 @@ int main(int argc, char ** argv){
 
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
+
+    double dt = 0.1;
+    PetscCall(PetscOptionsGetReal(NULL,NULL,"-dt", &dt, NULL));
+
+    int Nt = 10;
+    ierr = PetscOptionsGetInt(NULL,NULL,"-Nt",&Nt,NULL);CHKERRQ(ierr);
 
     // Create dmMesh
     PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
@@ -90,8 +92,6 @@ int main(int argc, char ** argv){
     mi.L = L;
     mi.H = H;
 
-    vertex test {0.27,0.25};
-
     multilevel ml = multilevel();
 
     ml.addLevel("(3,3)", {3,3}, mi);
@@ -117,21 +117,17 @@ int main(int argc, char ** argv){
 
     mluse use = mluse();
 
-    use.updatesigma(ml, locvals);
-
-    use.setbias(ml);
-
     // Test for nonlinear weighting
-    unordered_map<std::string, vector<double>> testwgts;
-
     unordered_map<std::string, vector<indice>> method;
     method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
     method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
 
     double h0 = sqrt((L*H)/(double)(M*N));
 
-    use.setbias(ml);
-    use.computeWgts(method, testwgts, ml, h0, {1,0});
+    use.setmethod("all", method);
+    use.setbias("all");
+
+    RK(dt, Nt, &globalvec, mi, ml, use);
 
     // =================================================================
 

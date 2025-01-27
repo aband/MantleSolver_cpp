@@ -149,6 +149,70 @@ double multilevel::sigma(const std::string& name,
     return mlrecons.at(name).sigma(index, sol);
 }
 
+int multilevel::getsol(Tensor<double>& stencilsol, double ** localsol,
+                       const indice& stencilindex, const std::string& name) const{
+
+    int localcellindexx = 0;
+    int localcellindexy = 0;
+
+    stencilsol.setSize({getStencilSize(name, 0), getStencilSize(name, 1)});
+
+    for (int j=0; j<stencilsol.getSize(0); j++){
+    for (int i=0; i<stencilsol.getSize(1); i++){
+        localcellindexx = stencilindex[0] + i;
+        localcellindexy = stencilindex[1] + j;
+        stencilsol({i,j}) = localsol[localcellindexy][localcellindexx];
+    }}
+
+    return 1;
+}
+
+int multilevel::updatesigma(double ** localsol){
+
+    Tensor<double> stensigma = Tensor<double>(2);
+    Tensor<double> stensol   = Tensor<double>(2);
+   
+    for (const auto& it: reconlevelSet){
+        alllevelsigma.erase(it);
+        int sizex = getSize(it,0); 
+        int sizey = getSize(it,1);
+        stensigma.setSize({sizex,sizey});
+        //stensol.setSize({getStencilSize(it,0),getStencilSize(it,1)});
+        for (int j=0; j<sizey; j++){
+        for (int i=0; i<sizex; i++){
+            getsol(stensol, localsol, {i,j}, it); 
+            stensigma({i,j}) = sigma(it, {i,j}, stensol); 
+        }}
+        alllevelsigma.insert(std::make_pair(it, stensigma));
+    }
+
+    return 1;
+}
+
+int multilevel::printsigma(const std::string& name){
+
+    cout << "Print smoothness indicators for reconstruction " << name << endl;
+
+    int sizex = alllevelsigma.at(name).getSize(0);
+    int sizey = alllevelsigma.at(name).getSize(1);
+
+    for (int j=0; j<sizey; j++){
+    for (int i=0; i<sizex; i++){
+        cout << alllevelsigma.at(name)({i,j}) << "  ";
+    }cout << endl;}
+
+    return 1;
+}
+
+int multilevel::printcoef(const std::string& name){
+
+    cout << "Print stencil polynomial coefficients for reconstruction " << name << endl;
+
+    mlrecons.at(name).printcoef();
+
+    return 1;
+}
+
 // ================================================================================
 int mluse::setmethod(const std::string& pos,
                      const unordered_map<std::string, vector<indice>>& method){
@@ -213,10 +277,19 @@ int mluse::printsigma(const std::string& name){
     return 1;
 }
 
-int mluse::setbias(const multilevel& ml){
+int mluse::setbias(const unordered_map<std::string, vector<indice>>& method){
 
-    for (const auto& it: ml.reconlevelSet){
-        bias.insert(std::make_pair(it, 1));    
+    for (const auto& it: method){
+        bias.insert(std::make_pair(it.first, 1));    
+    }
+
+    return 1;
+}
+
+int mluse::setbias(const std::string& pos){
+
+    for (const auto& it: reconstMethod.at(pos)){
+        bias.insert(std::make_pair(it.first, 1));    
     }
 
     return 1;

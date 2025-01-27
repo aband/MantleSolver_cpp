@@ -17,7 +17,7 @@ double func(const vertex& point,
 
     } else {
 
-    return point[0]*point[0] + 1;
+    return point[0]*point[0] + 10;
 
     }
 }
@@ -40,7 +40,8 @@ int main(int argc, char ** argv){
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
     double L = 1, H = 1;
-    double xstart = 0, ystart = 0;
+    //double xstart = -L/2, ystart = -H/2;
+    double xstart = 0.0, ystart = 0.0;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
@@ -145,14 +146,18 @@ int main(int argc, char ** argv){
 
     use.getsol(stencilsol22, locvals, {0,0});
 
+    ml.updatesigma(locvals);
+
     use.updatesigma(ml, locvals);
 
     //cout << std::setprecision(10) << ml.eval("(3,3)",{0,0}, stencilsol33, test) << "  " << test[0]*test[0] << endl;
+    VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
 
-    use.printsigma("(3,3)");
-    use.printsigma("(2,2)");
+    ml.printsigma("(3,3)");
+    ml.printsigma("(2,2)");
 
-    use.setbias(ml);
+    ml.printcoef("(3,3)");
+    ml.printcoef("(2,2)");
 
     // Test for nonlinear weighting
     unordered_map<std::string, vector<double>> testwgts;
@@ -163,7 +168,7 @@ int main(int argc, char ** argv){
 
     indice target {1,1};
 
-    use.setbias(ml);
+    use.setbias(method);
     use.computeWgts(method, testwgts, ml, h0, target);
     use.printWgts(testwgts);
 

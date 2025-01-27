@@ -120,6 +120,7 @@ target_link_libraries(transport_lib
 # Add to excutable
 add_executable(test 
         test.cpp 
+		  temp.cpp
 )
 
 # Link static libraries generated previously
