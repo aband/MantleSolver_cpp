@@ -1,5 +1,6 @@
 #include "stencilpolynomial.h"
 #include "reconstruction.h"
+#include "mluse.h"
 #include "petsc.h"
 #include "input.h"
 
@@ -13,11 +14,11 @@ double func(const vertex& point,
 
     if (point[0] < param[0]) {
 
-    return point[0]*point[0];
+    return sin(point[0])*cos(point[1]);
 
     } else {
 
-    return point[0]*point[0] + 0.1;
+    return sin(point[0])*cos(point[1]) + 0.1;
 
     }
 }
@@ -142,13 +143,13 @@ int main(int argc, char ** argv){
     Tensor<double> stencilsol22 = Tensor<double>(2);
     stencilsol22.setSize({2,2});
 
-    use.getsol(stencilsol33, locvals, {0,0});
+    ml.getsol(stencilsol33, locvals, {0,0}, "(3,3)");
 
-    use.getsol(stencilsol22, locvals, {0,0});
+    ml.getsol(stencilsol22, locvals, {0,0}, "(2,2)");
 
     ml.updatesigma(locvals);
 
-    use.updatesigma(ml, locvals);
+    //use.updatesigma(ml, locvals);
 
     //cout << std::setprecision(10) << ml.eval("(3,3)",{0,0}, stencilsol33, test) << "  " << test[0]*test[0] << endl;
     //VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
@@ -161,6 +162,7 @@ int main(int argc, char ** argv){
 
     // Test for nonlinear weighting
     unordered_map<std::string, vector<double>> testwgts;
+    unordered_map<std::string, vector<double>> testwgts2;
 
     unordered_map<std::string, vector<indice>> method;
     method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
@@ -168,11 +170,15 @@ int main(int argc, char ** argv){
 
     indice target {1,1};
 
-    use.setbias(method);
-    use.computeWgts(method, testwgts, ml, h0, target);
-    use.printWgts(testwgts);
+    use.setmethod("all",method);
+    use.setbias("all");
 
-    cout << "Reconstructed value : " << use.eval(test, ml, method, testwgts, target, locvals) << endl 
+    //use.computeWgts(method, testwgts, ml, h0, target);
+    use.computeWgts("all",ml, target, h0, testwgts2);
+    //use.printWgts(testwgts);
+    use.printWgts(testwgts2);
+
+    cout << "Reconstructed value : " << use.eval(test, ml, "all", testwgts2, target, locvals) << endl 
          << "Function value : " << func(test, {(L-h0)/2,0.0})<< endl;
 
     // =================================================================

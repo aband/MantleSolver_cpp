@@ -83,6 +83,7 @@ add_library(mlweno_lib
 		  ${SRC}/mlweno2/stencilpolynomial.cpp
 		  ${SRC}/mlweno2/tensor.cpp
 		  ${SRC}/mlweno2/reconstruction.cpp
+		  ${SRC}/mlweno2/mluse.cpp
 )
 
 # Specify any additional include directories if needed
