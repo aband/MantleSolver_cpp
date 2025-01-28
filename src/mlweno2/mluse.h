@@ -8,6 +8,8 @@
  */
 #include "reconstruction.h"
 
+using weights = std::unordered_map<std::string, std::vector<double>>;
+
 class mluse {
 
     public:
@@ -21,43 +23,32 @@ class mluse {
                       const unordered_map<std::string, vector<indice>>& method);
 
         /**!
-         * Compute non linear weights
+         * Set linear weights
          * with mlweno weighting scheme 
          * should be called after setmethod being called
          */
-
         int setbias(const std::string& pos);
 
-
-        //int getsol(Tensor<double>& stencilsol, double** localsol, 
-        //           const indice& stencilindex) const;
-
         /**!
-         * Update smoothness indicator for all recorded levels.
+         * Compute non linear weighting
          */
-        //int updatesigma(const multilevel& ml, double ** localsol);
-
-        int printsigma(const std::string& name);
-
-//        int computeWgts(const unordered_map<std::string, vector<indice>>& method,
-//                        unordered_map<std::string, vector<double>>& wgts, 
-//                        const multilevel& ml, const double& h0,
-//                        const indice& index);
-
         int computeWgts(const std::string& pos, const multilevel& ml,
                         const indice& index,    const double& h0,
-                        unordered_map<std::string, vector<double>>& wgts);
+                        weights& wgts);
 
-        int printWgts(const unordered_map<std::string, vector<double>>& wgts);
+        int printWgts(const weights& wgts);
+
+        int printWgts(const Tensor<weights>& allwgts, const vector<int>& index) {return printWgts(allwgts(index));};
+
+        /**!
+         * Compute non linear weighting for all stencils at once
+         * and store in a tensor object.
+         */
+        int computeWgts(const multilevel& ml, const MeshInfo& mi, const double& h0, Tensor<weights>& allwgts);
 
         /**!
          * Evaluation of the nonllinear weighted value at the given point.
          */
-        //double eval(const vertex& point, const multilevel& ml,
-        //            const unordered_map<std::string, vector<indice>>& method,
-        //            const unordered_map<std::string, vector<double>>& wgts,
-        //            const indice& index, double ** localsol)const;
-
         double eval(const vertex& point, const multilevel& ml,
                     const std::string& pos, 
                     const unordered_map<std::string, vector<double>>& wgts,

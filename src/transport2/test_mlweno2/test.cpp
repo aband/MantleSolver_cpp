@@ -127,7 +127,7 @@ int main(int argc, char ** argv){
     use.setmethod("all", method);
     use.setbias("all");
 
-    RK(dt, Nt, &globalvec, mi, ml, use);
+    RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 
     // =================================================================
 

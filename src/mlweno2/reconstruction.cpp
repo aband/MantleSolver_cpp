@@ -20,7 +20,7 @@ int reconstruction::prepare(const vector<int>& insize, const MeshInfo& mi){
     right = (i_end > mi.MPIglobalCellSize[0]) ? mi.MPIglobalCellSize[0] : i_end;
 
     bottom = (j_start<0) ? 0 : j_start;
-    top    = (j_end > mi.MPIglobalCellSize[1]) ? mi.MPIglobalCellSize[1] : i_end;
+    top    = (j_end > mi.MPIglobalCellSize[1]) ? mi.MPIglobalCellSize[1] : j_end;
 
     stencilPoly = Tensor<stencilpolynomial>(2);
 

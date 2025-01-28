@@ -111,6 +111,10 @@ add_executable(reconsTest
         reconsTest.cpp
 )
 
+add_executable(parallel
+        parallel.cpp
+)
+
 target_link_libraries(test
 		  general_lib
 		  io_lib
@@ -126,6 +130,14 @@ target_link_libraries(testsigma
 )
 
 target_link_libraries(reconsTest
+		  general_lib
+		  io_lib
+		  mlweno_lib
+		  PkgConfig::PETSC
+		  PkgConfig::LAPACKE
+)
+
+target_link_libraries(parallel
 		  general_lib
 		  io_lib
 		  mlweno_lib

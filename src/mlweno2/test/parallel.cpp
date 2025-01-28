@@ -134,58 +134,23 @@ int main(int argc, char ** argv){
     PetscCall(DMDAVecGetArray(dmu, localvec, &locvals));
 
     // =================================================================
+    //PetscPrintf(PETSC_COMM_SELF, "Local cell start and size : %d, %d ,,, %d, %d \n",
+    //            mi.MPIlocalCellStart[0], mi.MPIlocalCellStart[1], 
+    //            mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]);
+ 
+    int add = mi.cellGhostLayerSize;
+    add = 0;
 
-    mluse use = mluse();
+    if (rank == 0){
+    for (int j = mi.MPIlocalCellStart[1]-add; 
+             j<mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1]+add; j++){
+        for (int i = mi.MPIlocalCellStart[0]-add; 
+                 i<mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0]+add; i++){
+            PetscPrintf(PETSC_COMM_WORLD, "(%d,%d), %f  ", j, i, locvals[j][i]);
+        }PetscPrintf(PETSC_COMM_WORLD, "\n");
+    }
+    }
 
-    Tensor<double> stencilsol33 = Tensor<double>(2);
-    stencilsol33.setSize({3,3});
-
-    Tensor<double> stencilsol22 = Tensor<double>(2);
-    stencilsol22.setSize({2,2});
-
-    ml.getsol(stencilsol33, locvals, {0,0}, "(3,3)");
-
-    ml.getsol(stencilsol22, locvals, {0,0}, "(2,2)");
-
-    ml.updatesigma(locvals);
-
-    //use.updatesigma(ml, locvals);
-
-    //cout << std::setprecision(10) << ml.eval("(3,3)",{0,0}, stencilsol33, test) << "  " << test[0]*test[0] << endl;
-    //VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
-
-    ml.printsigma("(3,3)");
-    ml.printsigma("(2,2)");
-
-    //ml.printcoef("(3,3)");
-    //ml.printcoef("(2,2)");
-
-    // Test for nonlinear weighting
-    unordered_map<std::string, vector<double>> testwgts;
-    unordered_map<std::string, vector<double>> testwgts2;
-
-    unordered_map<std::string, vector<indice>> method;
-    method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
-    method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
-
-    indice target {1,1};
-
-    use.setmethod("all",method);
-    use.setbias("all");
-
-    //use.computeWgts(method, testwgts, ml, h0, target);
-    use.computeWgts("all",ml, target, h0, testwgts2);
-    //use.printWgts(testwgts);
-    use.printWgts(testwgts2);
-
-    cout << "Reconstructed value : " << use.eval(test, ml, "all", testwgts2, target, locvals) << endl 
-         << "Function value : " << func(test, {(L-h0)/2,0.0})<< endl;
-
-    Tensor<weights> allwgts;
-
-    use.computeWgts(ml, mi, h0, allwgts);
-
-    use.printWgts(allwgts, {1,1});
 
     // =================================================================
 
