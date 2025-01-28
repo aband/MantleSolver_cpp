@@ -17,7 +17,7 @@ double func(const vertex& point,
 
     } else {
 
-    return point[0]*point[0] + 10;
+    return point[0]*point[0] + 0.1;
 
     }
 }
@@ -151,13 +151,13 @@ int main(int argc, char ** argv){
     use.updatesigma(ml, locvals);
 
     //cout << std::setprecision(10) << ml.eval("(3,3)",{0,0}, stencilsol33, test) << "  " << test[0]*test[0] << endl;
-    VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
 
     ml.printsigma("(3,3)");
     ml.printsigma("(2,2)");
 
-    ml.printcoef("(3,3)");
-    ml.printcoef("(2,2)");
+    //ml.printcoef("(3,3)");
+    //ml.printcoef("(2,2)");
 
     // Test for nonlinear weighting
     unordered_map<std::string, vector<double>> testwgts;
