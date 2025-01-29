@@ -53,8 +53,7 @@ int getflux(const MeshInfo& mi, multilevel& ml, mluse& use, Vec * innow, Vec * i
     Tensor<double> vertedgeflux = Tensor<double>(2);
     vertedgeflux.setSize({mi.MPIlocalCellSize[0]+1, mi.MPIlocalCellSize[1]});
 
-
-
+    getedgefluxall(mi, ml, use, lu, allwgts, horiedgeflux, vertedgeflux);
 
     // Loop through physical domain
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
@@ -89,4 +88,48 @@ int advfunc(const vector<double>& uin, const vector<double>& uout,
     return 1;
 }
 
+int getedgefluxall(const MeshInfo& mi, multilevel& ml, mluse& use, double ** lu,
+                   const Tensor<weights>& allwgts,
+                   Tensor<double>& horiedgeflux, Tensor<double>& vertedgeflux){
 
+    for (int j=0; j<mi.MPIlocalCellSize[1]; j++){
+        for (int i=0; i<mi.MPIlocalCellSize[0]; i++){
+
+        }
+    }
+
+    return 1;
+}
+
+// Calculate flux on the single edge
+int edgeflux(double& flux, const MeshInfo& mi, 
+             multilevel& ml, mluse& use, double ** lu, 
+             const indice& stencilindex, const indice& localedge,
+             extractEdgeInfoFunc edgeinfo,
+             const Tensor<weights>& allwgts){
+
+    indice      gCellIn, gCellOut, gCellInside;
+    std::string locationIn, locationOut, locationInside;
+    edgeEnds<vertex> edgeEndsVertex;
+    edgeEnds<indice> edgeEndsIndice;
+
+    int edgeFlag = edgeinfo(mi, localedge, mi.ghostShiftVertex, 
+                            gCellOut, gCellIn, edgeEndsVertex, edgeEndsIndice);
+
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    std::vector<vertex> edge {edgeEndsVertex.start, edgeEndsVertex.end};
+
+    double len = length(edge);
+    vertex unitNormal = UnitNormal(edge,len);
+
+    std::vector<vertex> gauss_p;
+    gauss_p.resize(gpe.size());
+
+    for (int g=0; g<gpe.size(); g++){
+    gauss_p.at(g) = GaussMapPointsEdge({gpe[g]}, edge);}
+
+
+
+    return 1;
+}

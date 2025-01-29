@@ -19,4 +19,14 @@ int RK(double dt, int Nt, Vec * init, const MeshInfo& mi, multilevel& ml, const 
 
 int getflux(const MeshInfo& mi, multilevel& ml, mluse& use, Vec * now, Vec * flux, DM dmu, DM dmmesh);
 
+int getedgefluxall(const MeshInfo& mi, multilevel& ml, mluse& use, double ** lu,
+                   const Tensor<weights>& allwgts,
+                   Tensor<double>& horiedgeflux, Tensor<double>& vertedgeflux);
+
+int edgeflux(double& flux, const MeshInfo& mi, 
+             multilevel& ml, mluse& use, double ** lu, 
+             const indice& stencilindex, const indice& edgeindex,
+             extractEdgeInfoFunc edgeinfo,
+             const Tensor<weights>& allwgts);
+
 #endif

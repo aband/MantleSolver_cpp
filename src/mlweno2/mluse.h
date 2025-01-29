@@ -51,7 +51,7 @@ class mluse {
          */
         double eval(const vertex& point, const multilevel& ml,
                     const std::string& pos, 
-                    const unordered_map<std::string, vector<double>>& wgts,
+                    const weights& wgts,
                     const indice& index, double ** localsol) const;
 
     public:

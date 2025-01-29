@@ -22,3 +22,9 @@ double fluxintegral(const vertex& unitnormal,
 
     return work;
 }
+
+double fluxintegralbndry(){
+
+
+    return 0;
+}
