@@ -128,5 +128,6 @@ add_executable(test
 target_link_libraries(test 
     io_lib
     transport_lib
+	 general_lib
     PkgConfig::LAPACKE 
 )

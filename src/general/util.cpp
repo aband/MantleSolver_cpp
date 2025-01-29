@@ -436,7 +436,9 @@ int extractVertEdgeInfo(const MeshInfo& mi,
     gCellIn  = local + mi.MPIlocalCellStart; 
     gCellOut = {gCellIn[0] - 1, gCellIn[1]};
 
-    edgeEndsIndice.end   = local + ghostShift;
+    indice add {0,1};
+
+    edgeEndsIndice.end   = local + ghostShift + add;
     edgeEndsIndice.start = {edgeEndsIndice.end[0], edgeEndsIndice.end[1]-1};
 
     edgeEndsVertex.start = mi.lmesh[FlatIndic(mi.MPIlocalVertexSizeFull[0], edgeEndsIndice.start)];

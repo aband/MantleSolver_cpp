@@ -18,4 +18,6 @@ double fluxintegral(const vertex& unitnormal,
                     const vector<double>& uOut,
                     const vector<vertex>& param);
 
+double fluxintegralbndry();
+
 #endif

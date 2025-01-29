@@ -27,8 +27,8 @@ int main(int argc, char ** argv){
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
-    double L = 1, H = 1;
-    double xstart = 0, ystart = 0;
+    double L = 3, H = 1;
+    double xstart = 0.0, ystart = 0;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
@@ -43,10 +43,10 @@ int main(int argc, char ** argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    double dt = 0.1;
+    double dt = 0.02;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-dt", &dt, NULL));
 
-    int Nt = 10;
+    int Nt = 100;
     ierr = PetscOptionsGetInt(NULL,NULL,"-Nt",&Nt,NULL);CHKERRQ(ierr);
 
     // Create dmMesh
@@ -126,6 +126,8 @@ int main(int argc, char ** argv){
 
     use.setmethod("all", method);
     use.setbias("all");
+
+    printGrid(mi);
 
     RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 
