@@ -5,19 +5,22 @@
 #include "trans_param.h"
 
 // Numerical flux
-inline double flux(const double& uin,  const double& uout, 
-                   const double& fin, const double& fout,
-                   const double& LF){
 
-    return 0.5*(fout + fin - LF*(uout - uin));
-}
+double edgefluxintegral(const MeshInfo& mi, 
+                        const indice& gcellin,
+                        const indice& gcellout,
+                        const vertexSet& edge,
+                        const Tensor<weights>& allwgts,
+                        multilevel& ml,
+                        mluse& use,
+                        double ** lu);
 
-double fluxintegral(const vertex& unitnormal,
-                    const double& len,
-                    const vector<double>& uIn,
-                    const vector<double>& uOut,
-                    const vector<vertex>& param);
+int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
+                   const MeshInfo& mi, double ** lu,
+                   mluse& use, multilevel& ml, const Tensor<weights>& allwgts);
 
-double fluxintegralbndry();
+double getcellflux(const MeshInfo& mi, const indice& gcell,
+                   const Tensor<double>& vertedge, 
+                   const Tensor<double>& horiedge);
 
 #endif

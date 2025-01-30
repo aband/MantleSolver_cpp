@@ -6,7 +6,7 @@
 #include "petsc.h"
 //#include "trans_param.h"
 #include "util.h"
-#include "../advectiveflux.h"
+#include "advectiveflux.h"
 
 extern "C"{
 #include "mesh.h"
@@ -24,9 +24,5 @@ double func(const vertex& point, const vector<double>& param);
 int RK(double dt, int Nt, Vec * init, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh);
 
 int getflux(const MeshInfo& mi, multilevel& ml, mluse& use, Vec * now, Vec * flux, DM dmu, DM dmmesh);
-
-int getedgefluxall(const MeshInfo& mi, multilevel& ml, mluse& use, double ** lu,
-                   const Tensor<weights>& allwgts,
-                   Tensor<double>& horiedgeflux, Tensor<double>& vertedgeflux);
 
 #endif

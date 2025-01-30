@@ -32,7 +32,7 @@ int Tensor_multi(const Tensor<double>& t1,
 
 int Tensor_zero(Tensor<double>& t){
 
-    for (int i=0; i<t.getSize(); i++){
+    for (int i=0;i<t.getSize(); i++){
         t(i) = 0.0;
     }
 

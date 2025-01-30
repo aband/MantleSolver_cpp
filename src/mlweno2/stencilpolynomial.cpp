@@ -172,6 +172,42 @@ double stencilpolynomial::sigma(const Tensor<double>& sol) const{
     return work;
 }
 
+int stencilpolynomial::sigma(const Tensor<double>& sol,
+                             double& sig,
+                             vector<double>& der){
+
+    der.resize(sol.getSize());
+
+    std::fill(der.begin(), der.end(), 0.0);
+    sig = 0.0;
+
+    for (int i=0; i<sol.getSize(); i++){
+        for (int j=0; j<sol.getSize(); j++){
+            double temp = sol(j)*tensorsigma({i,j});
+            sig += sol(i)*temp;
+            der.at(i) += temp;
+        }
+    }
+
+    return 1;
+}
+
+int stencilpolynomial::dsigma(const Tensor<double>& sol,
+                              vector<double>& der){
+
+    der.resize(sol.getSize());
+
+    std::fill(der.begin(), der.end(), 0.0);
+
+    for (int i=0; i<sol.getSize(); i++){
+        for (int j=0; j<sol.getSize(); j++){
+            der.at(i) += sol(j)*tensorsigma({i,j});
+        }
+    }
+
+    return 1;
+}
+
 // ================================================================
 polynomial stencilpolynomial::createCollapsePoly(const Tensor<double>& sol){
 

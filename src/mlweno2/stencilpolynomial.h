@@ -46,6 +46,17 @@ class stencilpolynomial {
         double sigma(const Tensor<double>& sol) const;
 
         /**!
+         * Compute derivative of smoothness indicator at the same time
+         * Used when doing implicit time stepping
+         */
+        int sigma(const Tensor<double>& sol, double& sig, vector<double>& der);
+
+        /**!
+         * Get derivative of smoothness indicator only
+         */
+        int dsigma(const Tensor<double>& sol, vector<double>& der);
+
+        /**!
          * Function will be used for testing purpose
          */
         polynomial createCollapsePoly(const Tensor<double>& sol);
