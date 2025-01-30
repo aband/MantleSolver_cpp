@@ -92,6 +92,11 @@ double advfunc(const double& u,
     return u*u/2.0 *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 }
 
+std::string position(const indice& gcell){
+
+    return "all";
+}
+
 int RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,  mluse& use, DM dmu, DM dmmesh){
 
     Vec sol  = *insol;

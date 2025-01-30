@@ -93,6 +93,15 @@ double stencilpolynomial::eval(const Tensor<double>& sol, const vertex& point,
     return work;
 }
 
+double stencilpolynomial::eval(const vertex& point, 
+                               const vector<int>& baseindex) const{
+
+    vertex trans = (point-center)/h;
+    double work = 0.0;
+
+    return tensorpoly(baseindex).eval(trans);
+}
+
 double stencilpolynomial::sigmaintegral(const vector<vertex>& corners, 
                      const double& area,
                      const vertex& center, const double& h,

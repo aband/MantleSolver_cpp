@@ -37,6 +37,11 @@ class stencilpolynomial {
         double eval(const Tensor<double>& sol, const vertex& point) const 
         {return eval(sol, point, center, h);};
 
+        /*!
+         * Evaluate base polynomial
+         */
+        double eval(const vertex& point, const vector<int>& baseindex) const;
+
         /**!
          * Evaluate smoothness indicator tensor.
          */

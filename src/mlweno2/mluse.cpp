@@ -74,7 +74,41 @@ int mluse::computeWgts(const std::string& pos, const multilevel& ml,
             if (stencilexist(ml, targetstencilindex, it.first)) {
                 // extract smoothness indicator
                 double stensigma = ml.getsigma(it.first,{targetstencilindex[0],targetstencilindex[1]});
-                wgts.at(it.first).at(m) = bias.at("all").at(it.first)/ pow(stensigma + ep * h0*h0, s*rl + nl);
+                wgts.at(it.first).at(m) = bias.at(pos).at(it.first)/ pow(stensigma + ep * h0*h0, s*rl + nl);
+                sum += wgts.at(it.first).at(m);
+            } else {
+                wgts.at(it.first).at(m) = 0.0;
+            }
+        }
+    }
+
+    for (auto& nw : wgts){
+        for (auto& w : nw.second){
+            w /= sum;
+        }
+    }
+
+    return 1;
+}
+
+// Compute non linear weights with precomputed scaled smoothness indicators
+int mluse::computeWgts(const std::string& pos, const indice& gcell, const multilevel& ml, weights& wgts){
+
+    indice targetstencilindex;
+    double sum = 0;
+
+    for (const auto& it: bias.at(pos)){
+        vector<double> nlw;
+        nlw.resize(reconstMethod.at(pos).at(it.first).size());
+        wgts.insert(std::make_pair(it.first,nlw));
+ 
+        for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
+            targetstencilindex = gcell + reconstMethod.at(pos).at(it.first).at(m);
+            if (stencilexist(ml, targetstencilindex, it.first)) {
+                // extract smoothness indicator
+                wgts.at(it.first).at(m) = bias.at(pos).at(it.first)* ml.getscaledsigma(it.first,{targetstencilindex[0],
+                                                                                                 targetstencilindex[1]});
+
                 sum += wgts.at(it.first).at(m);
             } else {
                 wgts.at(it.first).at(m) = 0.0;
@@ -158,6 +192,54 @@ int mluse::computeWgts(const multilevel& ml, const MeshInfo& mi,const double& h0
     return 1;
 }
 
+int mluse::computeWgts(const multilevel& ml, const MeshInfo& mi, Tensor<weights>& allwgts){
+
+    allwgts = Tensor<weights>(2);
+
+    int i_start = mi.MPIlocalCellStart[0] - 1;
+    int i_end   = mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + 1; 
+
+    int j_start = mi.MPIlocalCellStart[1] - 1;
+    int j_end   = mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + 1; 
+
+    int left  = (i_start<0) ? 0 : i_start;
+    int right = (i_end > mi.MPIglobalCellSize[0]) ? mi.MPIglobalCellSize[0] : i_end;
+
+    int bottom = (j_start<0) ? 0 : j_start;
+    int top    = (j_end > mi.MPIglobalCellSize[1]) ? mi.MPIglobalCellSize[1] : j_end;
+
+    allwgts.setSize({right-left, top-bottom});
+
+    int converti = 0;
+    int convertj = 0;
+
+    if (left == 0){
+        converti = 0;
+    } else {
+        converti = mi.cellGhostLayerSize-1;;
+    }
+
+    if (bottom == 0){
+        convertj = 0;
+    } else {
+        convertj = mi.cellGhostLayerSize-1;;
+    }
+
+    for (int j=0; j<top-bottom; j++){
+        for (int i=0; i<right-left; i++){
+            weights wgts;
+            // convert index
+            indice stencilindex {i + converti, 
+                                 j + convertj};
+
+            computeWgts(pos(mi,stencilindex), stencilindex, ml, allwgts({i,j}));
+        }
+    }
+
+
+    return 1;
+}
+
 double mluse::eval(const vertex& point, const multilevel& ml,
                    const std::string& pos, 
                    const unordered_map<std::string, vector<double>>& wgts,
@@ -175,7 +257,7 @@ double mluse::eval(const vertex& point, const multilevel& ml,
             if (stencilexist(ml, targetstencilindex, it.first)) {
                 Tensor<double> sol = Tensor<double>(2);
                 ml.getsol(sol, localsol, targetstencilindex, it.first); 
-                // extract smoothness indicator
+                // extract nonlinear weights
                 work += wgts.at(it.first).at(m) * ml.eval(it.first,{targetstencilindex[0], targetstencilindex[1]},sol,point);
             } else {
                 work += 0;
@@ -184,4 +266,98 @@ double mluse::eval(const vertex& point, const multilevel& ml,
     }
 
     return work;
+}
+
+/*!
+ * Stencil index equal to local index of its left bottom cell.
+ */
+
+int mluse::der(const vertex& point, const multilevel& ml,
+               const::string& pos,  const weights& wgts, 
+               const indice& index, double ** localsol,
+               const MeshInfo& mi,
+               unordered_map<int, double>& derivative) const{
+
+    // Derivative of a reconstruction consists of two parts
+    // dR/du = \sum dw/du P = \sum w dP/du
+
+    derivative.clear();
+
+    indice targetstencilindex;
+
+    int rl = 0;
+    int nl = 0;
+
+    for (const auto& it : bias.at(pos)){
+        // Loop through all levels first
+
+        double sum = 0.0;
+        vector<>
+        // Get sum first
+        for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
+
+            targetstencilindex = index + reconstMethod.at(pos).at(it.first).at(m);
+            if (stencilexist(ml, targetstencilindex, it.first)) {
+                sum += bias.at(pos).at(it.first) * ml.getscaledsigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
+            }
+        }
+
+        for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
+            // Loop through method to find target stencil
+
+            targetstencilindex = index + reconstMethod.at(pos).at(it.first).at(m);
+
+            if (stencilexist(ml, targetstencilindex, it.first)) {
+                // Check if this stencil actually exists
+
+                Tensor<double> sol = Tensor<double>(2);
+                ml.getsol(sol, localsol, targetstencilindex, it.first); 
+
+                // Extract non linear weight for this tencil
+                double nlw = wgts.at(it.first).at(m);
+
+                // Compute d\tilde{w}
+                double stensigma = ml.getsigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
+                vector<double> stendersigma = ml.getdersigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
+
+                
+
+                for (int j=0; j<sol.getSize(1); j++){
+                for (int i=0; i<sol.getSize(0); i++){
+                    // Loop through the selected solution stencil 
+                    // Be careful with parallel there will be offset for paralle case
+                    indice globalcell = {i,j}; // Reterive global cell index first
+                    globalcell += targetstencilindex;
+                    int flatgcell = FlatIndic(mi, globalcell);
+
+                    // The complete derivative consists of two parts
+                    // p1 representing dw/du
+                    // p2 representing dp/du
+                    double p1 = 0.0;
+                    double p2 = 0.0;
+
+                    // p1 = dw/du * p
+                     
+
+                    // p2 = w * dp/du
+                    p2 = nlw * ml.eval(it.first, {targetstencilindex[0], targetstencilindex[1]},
+                                                 {i,j}, point);
+
+                    std::unordered_map<int, double>::const_iterator got = derivative.find(flatgcell);
+
+                    if (got == derivative.end()){
+                        // This derivative has not been calculated
+                        derivative.insert(std::make_pair(flatgcell, p1+p2));
+                    } else {
+                        derivative.at(flatgcell) += p1+p2;
+                    }
+
+                }}
+
+            } 
+
+        }
+    }
+
+    return  1;
 }

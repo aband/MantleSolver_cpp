@@ -16,8 +16,16 @@ class reconstruction{
                     const Tensor<double>& sol,
                     const vertex& point) const;
 
+        double eval(const vector<int>& stencilindex,
+                    const vector<int>& baseindex,
+                    const vertex& point) const;
+
         double sigma(const vector<int>& index,
                      const Tensor<double>& sol) const;
+
+        int dsigma(const vector<int>& index,
+                   const Tensor<double>& sol,
+                   vector<double>& der) const;
 
         int getSize() const{return stencilPoly.getSize();};
         int getSize(const int& dim) const{return stencilPoly.getSize(dim);};
@@ -25,8 +33,6 @@ class reconstruction{
         int getStencilSize(const int& dim) const{return size.at(dim);};
 
         int printcoef(){for (int i=0;i<stencilPoly.getSize(); i++){stencilPoly(i).printCoef();} return 1;}
-
-        // Derivative
 
     private:
 
@@ -56,9 +62,19 @@ class multilevel{
                     const Tensor<double>& sol,
                     const vertex& point) const;
 
+        double eval(const std::string& name, 
+                    const vector<int>& stencilindex,
+                    const vector<int>& baseindex,
+                    const vertex& point) const;
+
         double sigma(const std::string& name, 
                      const vector<int>& index,
                      const Tensor<double>& sol) const;
+
+        int dsigma(const std::string& name, 
+                   const vector<int>& index,
+                   const Tensor<double>& sol,
+                   vector<double>& der) const;
 
         int getSize(const std::string& name)const 
         {return mlrecons.at(name).getSize();};
@@ -82,8 +98,18 @@ class multilevel{
 
         int printsigma(const std::string& name);
 
+        int printscaledsigma(const std::string& name);
+
         double getsigma(const std::string& name, const vector<int>& index) const
         {return alllevelsigma.at(name)(index);};
+
+        int updatedersigma(double ** localsol);
+
+        vector<double> getdersigma(const std::string& name, const vector<int>& index) const
+        {return allleveldersigma.at(name)(index);}
+
+        double getscaledsigma(const std::string& name, const vector<int>& index)const
+        {return alllevelscaled.at(name)(index);}
 
         /**!
          * Print out all stencil polynomial coefficients
@@ -93,10 +119,20 @@ class multilevel{
         // Set holds all the reconstruction levels
         set<std::string> reconlevelSet;
 
+        int geteta(const int& rl) const;
+
+        // Calculate everything all at once
+        int updateall(double ** localsol, const double& h0, const int& s, const double& ep) ;
+
     private:
 
         unordered_map<std::string, reconstruction> mlrecons;
         unordered_map<std::string, Tensor<double>> alllevelsigma;
+        unordered_map<std::string, Tensor<vector<double>>> allleveldersigma;
+
+        // Compute identifier utilizing smoothness indicator and derivative of smoothness indicator
+        unordered_map<std::string, Tensor<double>> alllevelscaled;
+        unordered_map<std::string, Tensor<vector<double>>>  alllevelderscaled;
 };
 
 #endif

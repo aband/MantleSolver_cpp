@@ -108,10 +108,26 @@ double reconstruction::eval(const vector<int>& index,
     return stencilPoly(index).eval(sol, point);
 }
 
+double reconstruction::eval(const vector<int>& stencilindex,
+                            const vector<int>& baseindex,
+                            const vertex& point) const{
+
+    return stencilPoly(stencilindex).eval(point, baseindex);
+}
+
 double reconstruction::sigma(const vector<int>& index,
                              const Tensor<double>& sol) const{
 
     return stencilPoly(index).sigma(sol);
+}
+
+int reconstruction::dsigma(const vector<int>& index,
+                           const Tensor<double>& sol,
+                           vector<double>& der) const{
+
+    stencilPoly(index).dsigma(sol, der);
+
+    return 1;
 }
 
 // ================================================================================
@@ -142,11 +158,29 @@ double multilevel::eval(const std::string& name,
     return mlrecons.at(name).eval(index,sol,point);
 } 
 
+double multilevel::eval(const std::string& name, 
+                        const vector<int>& stencilindex,
+                        const vector<int>& baseindex,
+                        const vertex& point)const{
+
+    return mlrecons.at(name).eval(stencilindex, baseindex, point);
+}
+
 double multilevel::sigma(const std::string& name, 
                          const vector<int>& index,
                          const Tensor<double>& sol) const{
 
     return mlrecons.at(name).sigma(index, sol);
+}
+
+int multilevel::dsigma(const std::string& name,
+                       const vector<int>& index,
+                       const Tensor<double>& sol,
+                       vector<double>& der)const{
+
+    mlrecons.at(name).dsigma(index,sol,der);
+
+    return 1;
 }
 
 int multilevel::getsol(Tensor<double>& stencilsol, double ** localsol,
@@ -156,6 +190,8 @@ int multilevel::getsol(Tensor<double>& stencilsol, double ** localsol,
     int localcellindexy = 0;
 
     stencilsol.setSize({getStencilSize(name, 0), getStencilSize(name, 1)});
+
+    // Needs offset for parallel condition
 
     for (int j=0; j<stencilsol.getSize(0); j++){
     for (int i=0; i<stencilsol.getSize(1); i++){
@@ -189,6 +225,101 @@ int multilevel::updatesigma(double ** localsol){
     return 1;
 }
 
+int multilevel::updatedersigma(double ** localsol){
+
+    Tensor<vector<double>> stendersigma = Tensor<vector<double>>(2); 
+
+    Tensor<double> stensol   = Tensor<double>(2);
+   
+    for (const auto& it: reconlevelSet){
+        allleveldersigma.erase(it);
+        int sizex = getSize(it,0); 
+        int sizey = getSize(it,1);
+        stendersigma.setSize({sizex,sizey});
+        //stensol.setSize({getStencilSize(it,0),getStencilSize(it,1)});
+        for (int j=0; j<sizey; j++){
+        for (int i=0; i<sizex; i++){
+            getsol(stensol, localsol, {i,j}, it); 
+            dsigma(it, {i,j}, stensol, stendersigma({i,j}));
+        }}
+        allleveldersigma.insert(std::make_pair(it, stendersigma));
+    }
+
+    return 1;
+}
+
+int multilevel::geteta(const int& rl) const{
+ 
+    int work = 0;
+
+    if (rl == 1) {
+        work = 1;
+    } else if (rl == 2) {
+        work = 3;
+    } else {
+        work = 4;
+    }
+
+    return work;
+}
+
+int multilevel::updateall(double ** localsol, const double& h0, const int& s, const double& ep){
+
+    Tensor<double> stencilsigma = Tensor<double>(2);
+    Tensor<double> scaled_sigma = Tensor<double>(2);
+    Tensor<vector<double>> dersigma        = Tensor<vector<double>>(2); 
+    Tensor<vector<double>> derscaled_sigma = Tensor<vector<double>>(2); 
+
+    Tensor<double> stensol   = Tensor<double>(2);
+
+    int rl = 0;
+    int nl = 0;
+
+    for (const auto& it: reconlevelSet){
+
+        allleveldersigma.erase(it);
+        alllevelsigma.erase(it);
+        alllevelscaled.erase(it);
+        alllevelderscaled.erase(it);
+
+        int sizex = getSize(it,0); 
+        int sizey = getSize(it,1);
+
+        stencilsigma.setSize({sizex,sizey});
+        dersigma.setSize({sizex,sizey});
+        scaled_sigma.setSize({sizex, sizey});
+        derscaled_sigma.setSize({sizex, sizey});
+
+        //stensol.setSize({getStencilSize(it,0),getStencilSize(it,1)});
+        for (int j=0; j<sizey; j++){
+        for (int i=0; i<sizex; i++){
+            getsol(stensol, localsol, {i,j}, it); 
+            rl = find_max(getStencilSize(it,0), getStencilSize(it,1));
+            nl = geteta(rl);
+
+            stencilsigma({i,j}) = sigma(it, {i,j}, stensol);
+            dsigma(it, {i,j}, stensol, dersigma({i,j}));
+
+            scaled_sigma({i,j}) = 1.0/pow(stencilsigma({i,j}) + ep*h0*h0,s*rl+nl);
+
+            derscaled_sigma({i,j}).resize(dersigma({i,j}).size());
+            for (int s=0; s<dersigma({i,j}).size(); s++){
+                derscaled_sigma({i,j}).at(s) = 
+                -1 * (double)(s*rl+nl) * dersigma({i,j}).at(s)/ pow(stencilsigma({i,j}) + ep*h0*h0,s*rl+nl+1);
+            }
+        }}
+
+        alllevelsigma.insert(std::make_pair(it, stencilsigma));
+        allleveldersigma.insert(std::make_pair(it, dersigma));
+        alllevelscaled.insert(std::make_pair(it, scaled_sigma));
+        alllevelderscaled.insert(std::make_pair(it, derscaled_sigma));
+    }
+
+    return 1;
+}
+
+// ===========================================================================
+
 int multilevel::printsigma(const std::string& name){
 
     cout << "Print smoothness indicators for reconstruction " << name << endl;
@@ -209,6 +340,21 @@ int multilevel::printcoef(const std::string& name){
     cout << "Print stencil polynomial coefficients for reconstruction " << name << endl;
 
     mlrecons.at(name).printcoef();
+
+    return 1;
+}
+
+int multilevel::printscaledsigma(const std::string& name){
+
+    cout << "Print scaled smoothness indicators for reconstruction " << name << endl;
+
+    int sizex = alllevelscaled.at(name).getSize(0);
+    int sizey = alllevelscaled.at(name).getSize(1);
+
+    for (int j=0; j<sizey; j++){
+    for (int i=0; i<sizex; i++){
+        cout << alllevelscaled.at(name)({i,j}) << "  ";
+    }cout << endl;}
 
     return 1;
 }

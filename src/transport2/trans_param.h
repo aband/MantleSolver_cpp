@@ -4,4 +4,7 @@
 // This is the only costumized function in simulation
 double advfunc(const double& u, const vertex& vel, const vertex& unitnormal);
 
+// Position function that returns where the cell is
+std::string positin(const indice& gcell);
+
 #endif

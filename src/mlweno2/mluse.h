@@ -36,6 +36,9 @@ class mluse {
                         const indice& index,    const double& h0,
                         weights& wgts);
 
+        int computeWgts(const std::string& pos, const indice& gcell, 
+                        const multilevel& ml, weights& wgts);
+
         int printWgts(const weights& wgts);
 
         int printWgts(const Tensor<weights>& allwgts, const vector<int>& index) {return printWgts(allwgts(index));};
@@ -46,6 +49,8 @@ class mluse {
          */
         int computeWgts(const multilevel& ml, const MeshInfo& mi, const double& h0, Tensor<weights>& allwgts);
 
+        int computeWgts(const multilevel& ml, const MeshInfo& mi, Tensor<weights>& allwgts);
+
         /**!
          * Evaluation of the nonllinear weighted value at the given point.
          */
@@ -54,13 +59,17 @@ class mluse {
                     const weights& wgts,
                     const indice& index, double ** localsol) const;
 
+        int der(const vertex& point, const multilevel& ml,
+                const::string& pos,  const weights& wgts, 
+                const indice& index, double ** localsol,
+                const MeshInfo& mi,
+                unordered_map<int, double>& derivative) const;
+
     public:
 
         set<std::string> posSet;
 
         unordered_map<std::string, unordered_map<std::string, vector<indice>>> reconstMethod;
-
-        unordered_map<std::string, Tensor<double>> sigma;
 
         double ep = 1e-4;
         int    s  = 1;

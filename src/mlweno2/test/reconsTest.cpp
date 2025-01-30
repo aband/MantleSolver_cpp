@@ -149,13 +149,23 @@ int main(int argc, char ** argv){
 
     ml.updatesigma(locvals);
 
+    ml.printsigma("(3,3)");
+    ml.printsigma("(2,2)");
+
+    cout << endl;
+
     //use.updatesigma(ml, locvals);
+
+    ml.updateall(locvals, h0,1,1e-4);
 
     //cout << std::setprecision(10) << ml.eval("(3,3)",{0,0}, stencilsol33, test) << "  " << test[0]*test[0] << endl;
     //VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
 
     ml.printsigma("(3,3)");
     ml.printsigma("(2,2)");
+
+    ml.printscaledsigma("(3,3)");
+    ml.printscaledsigma("(2,2)");
 
     //ml.printcoef("(3,3)");
     //ml.printcoef("(2,2)");
@@ -186,6 +196,12 @@ int main(int argc, char ** argv){
     use.computeWgts(ml, mi, h0, allwgts);
 
     use.printWgts(allwgts, {1,1});
+
+    Tensor<weights> allwgts2;
+
+    use.computeWgts(ml, mi, allwgts2);
+
+    use.printWgts(allwgts2, {1,1});
 
     // =================================================================
 
