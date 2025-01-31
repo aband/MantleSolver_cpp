@@ -140,10 +140,10 @@ title("HD");
 
 set(gcf, 'Position',[50 50 1800 700]);
 
-%pause
+pause
 G = getframe(gcf);
 
-writeVideo(v,G);
+%writeVideo(v,G);
 end
 
 close(v);

@@ -225,9 +225,9 @@ int multilevel::updatesigma(double ** localsol){
     return 1;
 }
 
-int multilevel::updatedersigma(double ** localsol){
+int multilevel::updatedersigma(double ** localsol, const MeshInfo& mi){
 
-    Tensor<vector<double>> stendersigma = Tensor<vector<double>>(2); 
+    Tensor<unordered_map<int, double>> dersigma = Tensor<unordered_map<int, double>>(2);
 
     Tensor<double> stensol   = Tensor<double>(2);
    
@@ -235,14 +235,22 @@ int multilevel::updatedersigma(double ** localsol){
         allleveldersigma.erase(it);
         int sizex = getSize(it,0); 
         int sizey = getSize(it,1);
-        stendersigma.setSize({sizex,sizey});
+        dersigma.setSize({sizex,sizey});
         //stensol.setSize({getStencilSize(it,0),getStencilSize(it,1)});
         for (int j=0; j<sizey; j++){
         for (int i=0; i<sizex; i++){
-            getsol(stensol, localsol, {i,j}, it); 
-            dsigma(it, {i,j}, stensol, stendersigma({i,j}));
+            getsol(stensol, localsol, {i,j}, it);
+            vector<double> stendersigma;
+            dsigma(it, {i,j}, stensol, stendersigma);
+            for (int n=0; n<stensol.getSize(1); n++){
+            for (int m=0; m<stensol.getSize(0); m++){
+                // Should be adjusted later for parallel
+                int gcell = FlatIndic(mi, i+m, j+n);
+                dersigma({i,j}).insert(
+                make_pair(gcell, stendersigma.at(stensol.getIndex({m,n}))));  
+            }}
         }}
-        allleveldersigma.insert(std::make_pair(it, stendersigma));
+        allleveldersigma.insert(std::make_pair(it, dersigma));
     }
 
     return 1;
@@ -263,12 +271,14 @@ int multilevel::geteta(const int& rl) const{
     return work;
 }
 
-int multilevel::updateall(double ** localsol, const double& h0, const int& s, const double& ep){
+int multilevel::updateall(double ** localsol, const double& h0, const int& s, const double& ep, const MeshInfo& mi){
 
     Tensor<double> stencilsigma = Tensor<double>(2);
     Tensor<double> scaled_sigma = Tensor<double>(2);
-    Tensor<vector<double>> dersigma        = Tensor<vector<double>>(2); 
-    Tensor<vector<double>> derscaled_sigma = Tensor<vector<double>>(2); 
+    Tensor<unordered_map<int,double>> dersigma        
+                     = Tensor<unordered_map<int,double>>(2); 
+    Tensor<unordered_map<int,double>> derscaled_sigma 
+                     = Tensor<unordered_map<int,double>>(2); 
 
     Tensor<double> stensol   = Tensor<double>(2);
 
@@ -296,17 +306,24 @@ int multilevel::updateall(double ** localsol, const double& h0, const int& s, co
             getsol(stensol, localsol, {i,j}, it); 
             rl = find_max(getStencilSize(it,0), getStencilSize(it,1));
             nl = geteta(rl);
-
+            vector<double> stendersigma;
+ 
             stencilsigma({i,j}) = sigma(it, {i,j}, stensol);
-            dsigma(it, {i,j}, stensol, dersigma({i,j}));
-
+            dsigma(it, {i,j}, stensol, stendersigma);
             scaled_sigma({i,j}) = 1.0/pow(stencilsigma({i,j}) + ep*h0*h0,s*rl+nl);
 
-            derscaled_sigma({i,j}).resize(dersigma({i,j}).size());
-            for (int s=0; s<dersigma({i,j}).size(); s++){
-                derscaled_sigma({i,j}).at(s) = 
-                -1 * (double)(s*rl+nl) * dersigma({i,j}).at(s)/ pow(stencilsigma({i,j}) + ep*h0*h0,s*rl+nl+1);
-            }
+            for (int n=0; n<stensol.getSize(1); n++){
+            for (int m=0; m<stensol.getSize(0); m++){
+                // Should be adjusted later for parallel
+                int gcell = FlatIndic(mi, {i+m, j+n});
+                dersigma({i,j}).insert(
+                make_pair(gcell, stendersigma.at(stensol.getIndex({m,n}))));
+                derscaled_sigma({i,j}).insert(
+                make_pair(gcell, -1*(double)(s*rl+nl) * 
+                stendersigma.at(stensol.getIndex({m,n}))/
+                pow(stencilsigma({i,j})+ ep*h0*h0,s+rl+nl+1)));
+            }}
+ 
         }}
 
         alllevelsigma.insert(std::make_pair(it, stencilsigma));

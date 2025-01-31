@@ -12,6 +12,7 @@ double edgefluxintegral(const MeshInfo& mi,
                         const indice& gcellout,
                         const vertexSet& edge,
                         const Tensor<weights>& allwgts,
+                        const vector<vertex>& vel,
                         multilevel& ml,
                         mluse& use,
                         double ** lu){
@@ -26,9 +27,6 @@ double edgefluxintegral(const MeshInfo& mi,
     double len = length(edge);
     vertex unitNormal = UnitNormal(edge,len);
 
-    // Constant velocity for testing
-    vertex vel = {1,0};
-
     for (int g=0; g<gpe.size(); g++){
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
         double uin  = use.eval(mapped, ml, "all", 
@@ -37,8 +35,8 @@ double edgefluxintegral(const MeshInfo& mi,
                       allwgts({gcellout[0],gcellout[1]}), gcellout, lu); 
 
         work += gwe[g] * LFflux(uin, uout, 
-                                advfunc(uin,vel,unitNormal),
-                                advfunc(uout,vel,unitNormal),1.0) * len/2.0; 
+                                advfunc(uin,vel.at(g),unitNormal),
+                                advfunc(uout,vel.at(g),unitNormal),1.0) * len/2.0; 
     }
 
     return work;
@@ -54,6 +52,13 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
 	 // Test for serial now
     Tensor_zero(vertedge);
     Tensor_zero(horiedge);
+
+    const valarray<double>& gwe = GaussPointsEdge;
+    vector<vertex> vel;
+    vel.resize(gwe.size());
+    for (int i=0; i<vel.size(); i++){
+        vel.at(i) = {1,0};
+    }
 
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
@@ -73,7 +78,7 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
             flux    = 0.0;
         } else {
             cellout = globalcell + mi.faceNormal[0];
-            flux    = edgefluxintegral(mi, globalcell, cellout, hori, allwgts,
+            flux    = edgefluxintegral(mi, globalcell, cellout, hori, allwgts, vel,
                                        ml, use, lu); 
         }
 
@@ -86,7 +91,7 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
             flux    = 0.0;
         } else {
             cellout = globalcell + mi.faceNormal[3];
-            flux    = edgefluxintegral(mi, globalcell, cellout, vert, allwgts, 
+            flux    = edgefluxintegral(mi, globalcell, cellout, vert, allwgts, vel,
                                        ml, use, lu);
         }
         vertedge({i,j}) = flux;

@@ -292,7 +292,6 @@ int mluse::der(const vertex& point, const multilevel& ml,
         // Loop through all levels first
 
         double sum = 0.0;
-        vector<>
         // Get sum first
         for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
 
@@ -318,7 +317,7 @@ int mluse::der(const vertex& point, const multilevel& ml,
 
                 // Compute d\tilde{w}
                 double stensigma = ml.getsigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
-                vector<double> stendersigma = ml.getdersigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
+                unordered_map<int,double> stendersigma = ml.getdersigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
 
                 
 
@@ -351,11 +350,8 @@ int mluse::der(const vertex& point, const multilevel& ml,
                     } else {
                         derivative.at(flatgcell) += p1+p2;
                     }
-
                 }}
-
             } 
-
         }
     }
 

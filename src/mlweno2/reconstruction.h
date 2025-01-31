@@ -103,9 +103,9 @@ class multilevel{
         double getsigma(const std::string& name, const vector<int>& index) const
         {return alllevelsigma.at(name)(index);};
 
-        int updatedersigma(double ** localsol);
+        int updatedersigma(double ** localsol, const MeshInfo& mi);
 
-        vector<double> getdersigma(const std::string& name, const vector<int>& index) const
+        unordered_map<int,double> getdersigma(const std::string& name, const vector<int>& index) const
         {return allleveldersigma.at(name)(index);}
 
         double getscaledsigma(const std::string& name, const vector<int>& index)const
@@ -122,17 +122,17 @@ class multilevel{
         int geteta(const int& rl) const;
 
         // Calculate everything all at once
-        int updateall(double ** localsol, const double& h0, const int& s, const double& ep) ;
+        int updateall(double ** localsol, const double& h0, const int& s, const double& ep, const MeshInfo& mi) ;
 
     private:
 
         unordered_map<std::string, reconstruction> mlrecons;
         unordered_map<std::string, Tensor<double>> alllevelsigma;
-        unordered_map<std::string, Tensor<vector<double>>> allleveldersigma;
+        unordered_map<std::string, Tensor<unordered_map<int,double>>> allleveldersigma;
 
         // Compute identifier utilizing smoothness indicator and derivative of smoothness indicator
         unordered_map<std::string, Tensor<double>> alllevelscaled;
-        unordered_map<std::string, Tensor<vector<double>>>  alllevelderscaled;
+        unordered_map<std::string, Tensor<unordered_map<int,double>>>  alllevelderscaled;
 };
 
 #endif

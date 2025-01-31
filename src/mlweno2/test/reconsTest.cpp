@@ -156,7 +156,7 @@ int main(int argc, char ** argv){
 
     //use.updatesigma(ml, locvals);
 
-    ml.updateall(locvals, h0,1,1e-4);
+    ml.updateall(locvals, h0,1,1e-4, mi);
 
     //cout << std::setprecision(10) << ml.eval("(3,3)",{0,0}, stencilsol33, test) << "  " << test[0]*test[0] << endl;
     //VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);

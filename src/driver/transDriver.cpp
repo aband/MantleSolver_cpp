@@ -400,6 +400,9 @@ int Driver::ComputeCellFlux(const indice& lCell,
     fluxHD = edgeFluxHD.at(left_flat) - edgeFluxHD.at(right_flat) + edgeFluxHD.at(bottom_flat) - edgeFluxHD.at(top_flat); 
     fluxCD = edgeFluxCD.at(left_flat) - edgeFluxCD.at(right_flat) + edgeFluxCD.at(bottom_flat) - edgeFluxCD.at(top_flat); 
 
+    fluxHD /= mi.cellArea.at(0); 
+    fluxCD /= mi.cellArea.at(0); 
+
     // Check cell flux cell by cell
 /*
     cout << setw(6) << "At cell (" << lCell[0] << ", " << lCell[1] << ")" << endl;

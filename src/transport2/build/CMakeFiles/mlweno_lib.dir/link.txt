@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmlweno_lib.a CMakeFiles/mlweno_lib.dir/home/renpo/Research/MantleSolver/src/mlweno2/polynomial.cpp.o CMakeFiles/mlweno_lib.dir/home/renpo/Research/MantleSolver/src/mlweno2/stencilpolynomial.cpp.o CMakeFiles/mlweno_lib.dir/home/renpo/Research/MantleSolver/src/mlweno2/tensor.cpp.o CMakeFiles/mlweno_lib.dir/home/renpo/Research/MantleSolver/src/mlweno2/reconstruction.cpp.o CMakeFiles/mlweno_lib.dir/home/renpo/Research/MantleSolver/src/mlweno2/mluse.cpp.o
+/usr/bin/ranlib libmlweno_lib.a
