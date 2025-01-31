@@ -96,10 +96,6 @@ class multilevel{
          */
         int updatesigma(double ** localsol);
 
-        int printsigma(const std::string& name);
-
-        int printscaledsigma(const std::string& name);
-
         double getsigma(const std::string& name, const vector<int>& index) const
         {return alllevelsigma.at(name)(index);};
 
@@ -111,19 +107,28 @@ class multilevel{
         double getscaledsigma(const std::string& name, const vector<int>& index)const
         {return alllevelscaled.at(name)(index);}
 
-        /**!
-         * Print out all stencil polynomial coefficients
-         */
-        int printcoef(const std::string& name);
-
         // Set holds all the reconstruction levels
         set<std::string> reconlevelSet;
 
         int geteta(const int& rl) const;
 
-        // Calculate everything all at once
+        /**!
+         * Calculate everything at once including sigma, derivative of sigma,
+         * scaled sigma, and derivative of scaled sigma
+         */
         int updateall(double ** localsol, const double& h0, const int& s, const double& ep, const MeshInfo& mi) ;
 
+        // =======================================================================================================
+        /**!
+         * Print out all stencil polynomial coefficients
+         */
+        int printcoef(const std::string& name);
+
+        int printsigma(const std::string& name);
+
+        int printscaledsigma(const std::string& name);
+
+        int printdsigma(const std::string& name);
     private:
 
         unordered_map<std::string, reconstruction> mlrecons;

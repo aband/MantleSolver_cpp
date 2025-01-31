@@ -268,6 +268,34 @@ double mluse::eval(const vertex& point, const multilevel& ml,
     return work;
 }
 
+int mluse::sumweights(const multilevel& ml, const mluse& use,
+                      double& sumwgts, derivative& sumderwgts,
+                      const std::string& pos, const indice& gcell) const{
+
+    indice targetstencilindex;
+    sumwgts = 0.0;
+    sumderwgts.clear();
+
+    for (const auto& it: bias.at(pos)){
+
+        for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
+
+            targetstencilindex = gcell + reconstMethod.at(pos).at(it.first).at(m);
+
+            if (stencilexist(ml, targetstencilindex, it.first)) {
+
+                sumwgts += bias.at(pos).at(it.first)* 
+                           ml.getscaledsigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
+
+                unordered_map_arithmetic(sumderwgts, ml.getdersigma(it.first,{targetstencilindex[0],targetstencilindex[1]}), 
+                                         std::plus<double>(), bias.at(pos).at(it.first), std::multiplies<double>());
+            }
+        }
+    }
+
+    return 1;
+}
+
 /*!
  * Stencil index equal to local index of its left bottom cell.
  */
@@ -285,21 +313,11 @@ int mluse::der(const vertex& point, const multilevel& ml,
 
     indice targetstencilindex;
 
-    int rl = 0;
-    int nl = 0;
+    double sumwgts;
+    derivative sumder;
 
     for (const auto& it : bias.at(pos)){
         // Loop through all levels first
-
-        double sum = 0.0;
-        // Get sum first
-        for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
-
-            targetstencilindex = index + reconstMethod.at(pos).at(it.first).at(m);
-            if (stencilexist(ml, targetstencilindex, it.first)) {
-                sum += bias.at(pos).at(it.first) * ml.getscaledsigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
-            }
-        }
 
         for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
             // Loop through method to find target stencil

@@ -80,11 +80,6 @@ int Driver::CreateMesh(const int& M, const int& N,
     }
 
     ReadMeshPortion(dmMesh, &globalmesh, mi.lmesh);
-
-    M_ = M;
-    N_ = N;
   
     return 0;
 }
-
-

@@ -98,9 +98,6 @@ class Driver {
         /**!
          * Record global cell sizes
          */
-        int M_;
-        int N_;
-
         double L_;
         double H_;
 

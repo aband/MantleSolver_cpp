@@ -170,6 +170,9 @@ int main(int argc, char ** argv){
     //ml.printcoef("(3,3)");
     //ml.printcoef("(2,2)");
 
+    ml.printdsigma("(3,3)");
+    ml.printdsigma("(2,2)");
+
     // Test for nonlinear weighting
     unordered_map<std::string, vector<double>> testwgts;
     unordered_map<std::string, vector<double>> testwgts2;

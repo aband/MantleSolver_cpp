@@ -39,10 +39,6 @@ class mluse {
         int computeWgts(const std::string& pos, const indice& gcell, 
                         const multilevel& ml, weights& wgts);
 
-        int printWgts(const weights& wgts);
-
-        int printWgts(const Tensor<weights>& allwgts, const vector<int>& index) {return printWgts(allwgts(index));};
-
         /**!
          * Compute non linear weighting for all stencils at once
          * and store in a tensor object.
@@ -52,12 +48,26 @@ class mluse {
         int computeWgts(const multilevel& ml, const MeshInfo& mi, Tensor<weights>& allwgts);
 
         /**!
+         * Print selected non linear weights.
+         */
+
+        int printWgts(const weights& wgts);
+
+        int printWgts(const Tensor<weights>& allwgts, const vector<int>& index) {return printWgts(allwgts(index));};
+
+        /**!
          * Evaluation of the nonllinear weighted value at the given point.
          */
         double eval(const vertex& point, const multilevel& ml,
                     const std::string& pos, 
                     const weights& wgts,
                     const indice& index, double ** localsol) const;
+
+        int sumweights(const multilevel& ml, const mluse& use,
+                       double& sumwgts,
+                       derivative& sumderwgts,
+                       const std::string& pos,
+                       const indice& gcell) const;
 
         int der(const vertex& point, const multilevel& ml,
                 const::string& pos,  const weights& wgts, 

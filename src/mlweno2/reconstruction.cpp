@@ -375,3 +375,18 @@ int multilevel::printscaledsigma(const std::string& name){
 
     return 1;
 }
+
+int multilevel::printdsigma(const std::string& name){
+
+    cout << "Print derivative of smoothness indicator for reconstruction " << name << endl;
+
+    int sizex = alllevelscaled.at(name).getSize(0);
+    int sizey = alllevelscaled.at(name).getSize(1);
+
+    for (int j=0; j<sizey; j++){
+    for (int i=0; i<sizex; i++){
+        unordered_map_print(allleveldersigma.at(name)({i,j}) );
+    }cout << endl;}
+
+    return 1;
+}
