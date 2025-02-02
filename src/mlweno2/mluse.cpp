@@ -1,4 +1,5 @@
 #include "mluse.h"
+#include "util.h"
 
 // ================================================================================
 int mluse::setmethod(const std::string& pos,
@@ -268,13 +269,15 @@ double mluse::eval(const vertex& point, const multilevel& ml,
     return work;
 }
 
-int mluse::sumweights(const multilevel& ml, const mluse& use,
-                      double& sumwgts, derivative& sumderwgts,
-                      const std::string& pos, const indice& gcell) const{
+int mluse::sumscaled(const multilevel& ml,
+                     double& sum, 
+                     derivative& sumder,
+                     const std::string& pos, 
+                     const indice& gcell) const{
 
     indice targetstencilindex;
-    sumwgts = 0.0;
-    sumderwgts.clear();
+    sum = 0.0;
+    sumder.clear();
 
     for (const auto& it: bias.at(pos)){
 
@@ -284,10 +287,10 @@ int mluse::sumweights(const multilevel& ml, const mluse& use,
 
             if (stencilexist(ml, targetstencilindex, it.first)) {
 
-                sumwgts += bias.at(pos).at(it.first)* 
-                           ml.getscaledsigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
+                sum += bias.at(pos).at(it.first)* 
+                       ml.getscaledsigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
 
-                unordered_map_arithmetic(sumderwgts, ml.getdersigma(it.first,{targetstencilindex[0],targetstencilindex[1]}), 
+                unordered_map_arithmetic(sumder, ml.getderscaledsigma(it.first,{targetstencilindex[0],targetstencilindex[1]}), 
                                          std::plus<double>(), bias.at(pos).at(it.first), std::multiplies<double>());
             }
         }
@@ -304,17 +307,21 @@ int mluse::der(const vertex& point, const multilevel& ml,
                const::string& pos,  const weights& wgts, 
                const indice& index, double ** localsol,
                const MeshInfo& mi,
-               unordered_map<int, double>& derivative) const{
+               unordered_map<int, double>& der) const{
 
     // Derivative of a reconstruction consists of two parts
     // dR/du = \sum dw/du P = \sum w dP/du
 
-    derivative.clear();
+    // Clear target derivative object
+    der.clear();
 
     indice targetstencilindex;
 
-    double sumwgts;
+    double sum;
     derivative sumder;
+
+    // Compute sum of weights and sum of derivative of weights
+    sumscaled(ml,sum, sumder, pos, index);
 
     for (const auto& it : bias.at(pos)){
         // Loop through all levels first
@@ -331,13 +338,25 @@ int mluse::der(const vertex& point, const multilevel& ml,
                 ml.getsol(sol, localsol, targetstencilindex, it.first); 
 
                 // Extract non linear weight for this tencil
-                double nlw = wgts.at(it.first).at(m);
+                double scaled = bias.at(pos).at(it.first)*
+                ml.getscaledsigma(it.first, {targetstencilindex[0], 
+                                             targetstencilindex[1]});
 
-                // Compute d\tilde{w}
-                double stensigma = ml.getsigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
-                unordered_map<int,double> stendersigma = ml.getdersigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
+                double nlw = scaled/sum;
 
-                
+                // Compute dw/du for each stencil
+                derivative dscaled = ml.getderscaledsigma(it.first,
+                {targetstencilindex[0], targetstencilindex[1]});   
+                unordered_map_arithmetic(dscaled, 1.0/sum, std::multiplies<double>()); 
+
+                unordered_map_arithmetic(dscaled, sumder, std::plus<double>(), 
+                -1*scaled/sum/sum, std::multiplies<double>());
+
+                double val = ml.eval(it.first, 
+                {targetstencilindex[0],targetstencilindex[1]}, sol, point);
+
+                // p1 = dw/du * p
+                unordered_map_arithmetic(dscaled, val, std::multiplies<double>()); 
 
                 for (int j=0; j<sol.getSize(1); j++){
                 for (int i=0; i<sol.getSize(0); i++){
@@ -348,27 +367,24 @@ int mluse::der(const vertex& point, const multilevel& ml,
                     int flatgcell = FlatIndic(mi, globalcell);
 
                     // The complete derivative consists of two parts
-                    // p1 representing dw/du
-                    // p2 representing dp/du
-                    double p1 = 0.0;
-                    double p2 = 0.0;
+                    // p representing dp/du
+                    double p = 0.0;
 
-                    // p1 = dw/du * p
-                     
-
-                    // p2 = w * dp/du
-                    p2 = nlw * ml.eval(it.first, {targetstencilindex[0], targetstencilindex[1]},
+                    // p = w * dp/du
+                    p = nlw * ml.eval(it.first, {targetstencilindex[0], targetstencilindex[1]},
                                                  {i,j}, point);
 
-                    std::unordered_map<int, double>::const_iterator got = derivative.find(flatgcell);
+                    std::unordered_map<int, double>::const_iterator got = dscaled.find(flatgcell);
 
-                    if (got == derivative.end()){
+                    if (got == dscaled.end()){
                         // This derivative has not been calculated
-                        derivative.insert(std::make_pair(flatgcell, p1+p2));
+                        dscaled.insert(std::make_pair(flatgcell, p));
                     } else {
-                        derivative.at(flatgcell) += p1+p2;
+                        dscaled.at(flatgcell) += p;
                     }
                 }}
+
+                unordered_map_arithmetic(der,dscaled,std::plus<double>());
             } 
         }
     }

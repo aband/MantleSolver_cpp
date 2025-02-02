@@ -23,6 +23,22 @@ double func(const vertex& point, const vector<double>& param);
 
 int RK(double dt, int Nt, Vec * init, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh);
 
+int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh);
+
 int getflux(const MeshInfo& mi, multilevel& ml, mluse& use, Vec * now, Vec * flux, DM dmu, DM dmmesh);
+
+int getall(const MeshInfo& mi, multilevel& ml, mluse& use, 
+           Vec * now, Vec * flux, Mat *Jacobian, DM dmu, DM dmmesh, 
+           const double& dt);
+
+typedef struct{
+
+    Vec * previous;
+
+    MeshInfo * mi;
+
+    DM dmu;
+
+} param;
 
 #endif

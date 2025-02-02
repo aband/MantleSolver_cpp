@@ -63,11 +63,11 @@ class mluse {
                     const weights& wgts,
                     const indice& index, double ** localsol) const;
 
-        int sumweights(const multilevel& ml, const mluse& use,
-                       double& sumwgts,
-                       derivative& sumderwgts,
-                       const std::string& pos,
-                       const indice& gcell) const;
+        int sumscaled(const multilevel& ml,
+                      double& sumwgts,
+                      derivative& sumderwgts,
+                      const std::string& pos,
+                      const indice& gcell) const;
 
         int der(const vertex& point, const multilevel& ml,
                 const::string& pos,  const weights& wgts, 

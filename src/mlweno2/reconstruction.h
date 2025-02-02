@@ -99,13 +99,16 @@ class multilevel{
         double getsigma(const std::string& name, const vector<int>& index) const
         {return alllevelsigma.at(name)(index);};
 
+        double getscaledsigma(const std::string& name, const vector<int>& index)const
+        {return alllevelscaled.at(name)(index);}
+
         int updatedersigma(double ** localsol, const MeshInfo& mi);
 
         unordered_map<int,double> getdersigma(const std::string& name, const vector<int>& index) const
         {return allleveldersigma.at(name)(index);}
 
-        double getscaledsigma(const std::string& name, const vector<int>& index)const
-        {return alllevelscaled.at(name)(index);}
+        unordered_map<int,double> getderscaledsigma(const std::string& name, const vector<int>& index) const
+        {return alllevelderscaled.at(name)(index);}
 
         // Set holds all the reconstruction levels
         set<std::string> reconlevelSet;
@@ -129,6 +132,8 @@ class multilevel{
         int printscaledsigma(const std::string& name);
 
         int printdsigma(const std::string& name);
+
+        int printdscaledsigma(const std::string& name);
     private:
 
         unordered_map<std::string, reconstruction> mlrecons;

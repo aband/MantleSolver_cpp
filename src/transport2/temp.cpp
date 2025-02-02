@@ -92,6 +92,17 @@ double advfunc(const double& u,
     return u*u/2.0 *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 }
 
+int dadvfunc(const derivative& du, const double& u, const vertex& vel, const vertex& unitnormal, derivative& work){
+
+    // compute df/du = df/dR * dR/du
+
+    double direction = u*(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+
+    unordered_map_arithmetic(work, du, std::plus<double>(), direction, std::multiplies<double>());
+
+    return 1;
+}
+
 std::string position(const indice& gcell){
 
     return "all";
@@ -114,9 +125,77 @@ int RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,  mlus
         printSol(event,&sol,mi);
         event ++;
         }
-
-        printSol(event,&sol,mi);
     }
+    printSol(event,&sol,mi);
+
+    return 1;
+}
+
+int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh){
+
+    KSP ksp;
+    PetscCall(KSPCreate(PETSC_COMM_WORLD, &ksp));
+    PetscCall(KSPSetType(ksp, KSPGMRES));
+    PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE));
+
+    Mat J;
+
+    Vec sol = *insol;
+    int event = 1;
+
+    Vec flux;
+    VecDuplicate(sol, &flux);
+
+    Vec previous;
+    VecDuplicate(sol, &previous);
+    VecCopy(sol, previous);
+
+    double tol = 0.0;
+
+    for (int t=0; t<Nt; t++){
+
+        // Newton's iteration 
+        // 1. Get initial guess x0 = u-dtF
+        // store x0 in sol
+        getflux(mi, ml, use, &sol, &flux, dmu, dmmesh);
+        VecAXPY(sol, -1*dt, flux);
+
+        // Enter Newton's iteration
+        while (tol > 1e-10){
+
+            Vec tmp1, tmp2;
+            PetscCall(VecDuplicate(sol, &tmp1));
+            PetscCall(VecDuplicate(sol, &tmp2));
+            VecCopy(sol, tmp1);
+
+            // 2. Compute function F(x) = x-previous + dt*f(x)
+            // At the same time jacobian J(x) is computed
+            // x stored in sol
+            getall(mi, ml, use, &sol, &flux, &J, dmu, dmmesh, dt);
+
+            VecAXPY(tmp1, -1.0, previous);
+            VecAXPY(tmp1, 1.0, flux);
+
+            // 3. Solve for J^-1(x)F(x)
+            KSPSetOperators(ksp, J, J);
+            KSPSolve(ksp, tmp1, tmp2);
+
+            // 4. Update sol
+            VecAXPY(sol, -1.0, tmp2);
+
+            // 5. Compute 2nd norm of tmp2 and serve as tolerance indicator
+            VecNorm(sol, NORM_2, &tol);
+        }
+
+        VecCopy(sol,previous);
+
+        if (t%5 == 0){
+        printSol(event,&sol,mi);
+        event ++;
+        }
+    }
+
+    printSol(event, &sol, mi);
 
     return 1;
 }
@@ -159,8 +238,97 @@ int getflux(const MeshInfo& mi, multilevel& ml, mluse& use, Vec * innow, Vec * i
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
-        f[j][i] = getcellflux(mi, {i,j}, vertedgeflux, horiedgeflux);;
+        f[j][i] = getcellflux(mi, {i,j}, vertedgeflux, horiedgeflux);
     }}
+
+    DMDAVecRestoreArray(dmu, flux, &f);
+    DMDAVecRestoreArray(dmu, localu, &lu);
+    DMRestoreLocalVector(dmu, &localu);
+
+    return 1;
+}
+
+// Get jacobian as well
+int getall(const MeshInfo& mi, multilevel& ml, mluse& use, 
+           Vec * innow, Vec * influx, Mat *Jacobian, DM dmu, DM dmmesh, 
+           const double& dt){
+
+    Vec now  = *innow; 
+    Vec flux = *influx;
+
+    Mat J = *Jacobian;
+
+    int nelem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
+
+    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
+                           nelem, nelem, 
+                           nelem, NULL, nelem, NULL, &J));
+    PetscCall(MatSetUp(J));
+
+    Vec localu;
+
+    DMGetLocalVector(dmu, &localu);
+
+    DMGlobalToLocalBegin(dmu, now, INSERT_VALUES, localu);
+    DMGlobalToLocalEnd(dmu, now, INSERT_VALUES, localu); 
+
+    double ** lu;
+    DMDAVecGetArray(dmu, localu, &lu);
+
+    double ** f;
+    DMDAVecGetArray(dmu, flux, &f);
+
+    // Update non linear weights with current cell-averaged solution
+    ml.updatesigma(lu);
+
+    Tensor<weights> allwgts;
+    double h0 = sqrt((mi.L*mi.H)/(double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
+    use.computeWgts(ml, mi, h0, allwgts);
+
+    // Update edgeflux
+    Tensor<double> horiedgeflux = Tensor<double>(2);
+    horiedgeflux.setSize({mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]+1});
+
+    Tensor<double> vertedgeflux = Tensor<double>(2);
+    vertedgeflux.setSize({mi.MPIlocalCellSize[0]+1, mi.MPIlocalCellSize[1]});
+
+    Tensor<derivative> horiedgefluxder = Tensor<derivative>(2);
+    horiedgefluxder.setSize({mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]+1});
+
+    Tensor<derivative> vertedgefluxder = Tensor<derivative>(2);
+    vertedgefluxder.setSize({mi.MPIlocalCellSize[0]+1, mi.MPIlocalCellSize[1]});
+
+    updateEdgeFlux(vertedgeflux,    horiedgeflux, 
+                   vertedgefluxder, horiedgefluxder,
+                   mi, lu, use, ml, allwgts);
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        double flux = 0.0;
+        derivative dflux;
+
+        getcellflux(mi, {i,j}, vertedgeflux, horiedgeflux, 
+                    vertedgefluxder, horiedgefluxder, flux, dflux);
+
+        f[j][i] = flux*dt;
+
+        const int indexn = FlatIndic(mi, {i,j});
+
+        for (const auto& it: dflux){
+            const int indexm = it.first;
+            const double val = it.second*dt;
+
+            PetscCall(MatSetValues(J, 1, &indexm, 1, &indexn, &val, ADD_VALUES));
+        }
+
+        const double val = 1.0;
+        PetscCall(MatSetValues(J, 1, &indexn, 1, &indexn, &val, ADD_VALUES));
+ 
+    }}
+
+    PetscCall(MatAssemblyBegin(J, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(J, MAT_FINAL_ASSEMBLY));
 
     DMDAVecRestoreArray(dmu, flux, &f);
     DMDAVecRestoreArray(dmu, localu, &lu);

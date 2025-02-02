@@ -318,10 +318,11 @@ int multilevel::updateall(double ** localsol, const double& h0, const int& s, co
                 int gcell = FlatIndic(mi, {i+m, j+n});
                 dersigma({i,j}).insert(
                 make_pair(gcell, stendersigma.at(stensol.getIndex({m,n}))));
+
                 derscaled_sigma({i,j}).insert(
                 make_pair(gcell, -1*(double)(s*rl+nl) * 
                 stendersigma.at(stensol.getIndex({m,n}))/
-                pow(stencilsigma({i,j})+ ep*h0*h0,s+rl+nl+1)));
+                pow(stencilsigma({i,j})+ ep*h0*h0,s*rl+nl+1)));
             }}
  
         }}
@@ -386,6 +387,21 @@ int multilevel::printdsigma(const std::string& name){
     for (int j=0; j<sizey; j++){
     for (int i=0; i<sizex; i++){
         unordered_map_print(allleveldersigma.at(name)({i,j}) );
+    }cout << endl;}
+
+    return 1;
+}
+
+int multilevel::printdscaledsigma(const std::string& name){
+
+    cout << "Print derivative of smoothness indicator for reconstruction " << name << endl;
+
+    int sizex = alllevelscaled.at(name).getSize(0);
+    int sizey = alllevelscaled.at(name).getSize(1);
+
+    for (int j=0; j<sizey; j++){
+    for (int i=0; i<sizex; i++){
+        unordered_map_print(alllevelderscaled.at(name)({i,j}) );
     }cout << endl;}
 
     return 1;

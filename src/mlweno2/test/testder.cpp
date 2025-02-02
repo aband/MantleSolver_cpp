@@ -1,5 +1,6 @@
 #include "stencilpolynomial.h"
 #include "reconstruction.h"
+#include "mluse.h"
 #include "petsc.h"
 #include "input.h"
 
@@ -8,7 +9,19 @@ extern "C"{
 #include "output.h"
 }
 
-#include "temp.h"
+double func(const vertex& point,
+            const vector<double>& param){
+
+    if (point[0] < param[0]) {
+
+    return sin(point[0])*cos(point[1]);
+
+    } else {
+
+    return sin(point[0])*cos(point[1]) + 0.0;
+
+    }
+}
 
 int main(int argc, char ** argv){
 
@@ -27,8 +40,9 @@ int main(int argc, char ** argv){
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
-    double L = 3, H = 1;
-    double xstart = 0.0, ystart = 0;
+    double L = 1, H = 1;
+    //double xstart = -L/2, ystart = -H/2;
+    double xstart = 0.0, ystart = 0.0;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
@@ -43,11 +57,11 @@ int main(int argc, char ** argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    double dt = 0.02;
-    PetscCall(PetscOptionsGetReal(NULL,NULL,"-dt", &dt, NULL));
+    double dscale = 1.0;
+    PetscCall(PetscOptionsGetReal(NULL,NULL,"-scale",&dscale,NULL));
 
-    int Nt = 100;
-    ierr = PetscOptionsGetInt(NULL,NULL,"-Nt",&Nt,NULL);CHKERRQ(ierr);
+    L/=dscale;
+    H/=dscale;
 
     // Create dmMesh
     PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
@@ -92,6 +106,12 @@ int main(int argc, char ** argv){
     mi.L = L;
     mi.H = H;
 
+    double h0 = sqrt((L*H)/(double)(M*N));
+
+    vertex test {0.5,0.5};
+
+    test = (test-h0 /3)/dscale;
+
     multilevel ml = multilevel();
 
     ml.addLevel("(3,3)", {3,3}, mi);
@@ -103,7 +123,7 @@ int main(int argc, char ** argv){
 
     PetscCall(DMCreateGlobalVector(dmu, &globalvec));
 
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {0.0,0.0}, func);
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {(L-h0)/2.0,0.0}, func);
 
     // Distribute local part to local vectors.
     PetscCall(DMGetLocalVector(dmu, &localvec)); 
@@ -115,23 +135,47 @@ int main(int argc, char ** argv){
 
     // =================================================================
 
+    //Updating sigma , dsigma , scaled sigma and d scaled sigma all at once
+    ml.updateall(locvals, h0,1,1e-4, mi);
+
+/*
+    ml.printsigma("(3,3)");
+    ml.printsigma("(2,2)");
+
+    ml.printscaledsigma("(3,3)");
+    ml.printscaledsigma("(2,2)");
+
+    ml.printdsigma("(3,3)");
+    ml.printdsigma("(2,2)");
+
+    ml.printdscaledsigma("(3,3)");
+    ml.printdscaledsigma("(2,2)");
+*/
+
     mluse use = mluse();
 
-    // Test for nonlinear weighting
     unordered_map<std::string, vector<indice>> method;
     method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
     method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
 
-    double h0 = sqrt((L*H)/(double)(M*N));
-
-    use.setmethod("all", method);
+    use.setmethod("all",method);
     use.setbias("all");
 
-    printGrid(mi);
+    Tensor<weights> allwgts;
 
-    //RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    use.computeWgts(ml, mi, allwgts);
 
-    iRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    indice target {M/2,N/2};
+
+    cout << "Reconstructed value : " << use.eval(test, ml, "all", 
+         allwgts({target[0], target[1]}), target, locvals) << endl 
+         << "Function value : " << func(test, {(L-h0)/2,0.0})<< endl;
+
+    derivative testder;
+    use.der(test, ml, "all", allwgts({target[0], target[1]}), {target[0],target[0]}, locvals,
+             mi, testder); 
+
+    unordered_map_print(testder);
     // =================================================================
 
     DMDAVecRestoreArray(dmu,localvec,&locvals);
@@ -145,3 +189,4 @@ int main(int argc, char ** argv){
 
     return 1;
 }
+
