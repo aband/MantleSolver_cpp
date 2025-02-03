@@ -172,9 +172,14 @@ int main(int argc, char ** argv){
          << "Function value : " << func(test, {(L-h0)/2,0.0})<< endl;
 
     derivative testder;
-    use.der(test, ml, "all", allwgts({target[0], target[1]}), {target[0],target[0]}, locvals,
-             mi, testder); 
+//    use.der(test, ml, "all", allwgts({target[0], target[1]}), {target[0],target[1]}, locvals,
+//             mi, testder); 
 
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+    use.der(test, ml, "all", allwgts({i, j}), {i,j}, locvals,
+             mi, testder); 
+    }}
     unordered_map_print(testder);
     // =================================================================
 

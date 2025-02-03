@@ -282,14 +282,12 @@ int mluse::sumscaled(const multilevel& ml,
     for (const auto& it: bias.at(pos)){
 
         for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
-
             targetstencilindex = gcell + reconstMethod.at(pos).at(it.first).at(m);
 
             if (stencilexist(ml, targetstencilindex, it.first)) {
 
                 sum += bias.at(pos).at(it.first)* 
                        ml.getscaledsigma(it.first, {targetstencilindex[0], targetstencilindex[1]});
-
                 unordered_map_arithmetic(sumder, ml.getderscaledsigma(it.first,{targetstencilindex[0],targetstencilindex[1]}), 
                                          std::plus<double>(), bias.at(pos).at(it.first), std::multiplies<double>());
             }

@@ -150,7 +150,7 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
     VecDuplicate(sol, &previous);
     VecCopy(sol, previous);
 
-    double tol = 0.0;
+    double tol = 1.0;
 
     for (int t=0; t<Nt; t++){
 
@@ -162,7 +162,7 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
 
         // Enter Newton's iteration
         while (tol > 1e-10){
-
+ 
             Vec tmp1, tmp2;
             PetscCall(VecDuplicate(sol, &tmp1));
             PetscCall(VecDuplicate(sol, &tmp2));
@@ -182,9 +182,8 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
 
             // 4. Update sol
             VecAXPY(sol, -1.0, tmp2);
-
             // 5. Compute 2nd norm of tmp2 and serve as tolerance indicator
-            VecNorm(sol, NORM_2, &tol);
+            VecNorm(tmp2, NORM_2, &tol);
         }
 
         VecCopy(sol,previous);
@@ -256,14 +255,12 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
     Vec now  = *innow; 
     Vec flux = *influx;
 
-    Mat J = *Jacobian;
-
     int nelem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
 
     PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
                            nelem, nelem, 
-                           nelem, NULL, nelem, NULL, &J));
-    PetscCall(MatSetUp(J));
+                           nelem, NULL, nelem, NULL, &(*Jacobian)));
+    PetscCall(MatSetUp((*Jacobian)));
 
     Vec localu;
 
@@ -278,11 +275,12 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
     double ** f;
     DMDAVecGetArray(dmu, flux, &f);
 
+    double h0 = sqrt((mi.L*mi.H)/(double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
+
     // Update non linear weights with current cell-averaged solution
-    ml.updatesigma(lu);
+    ml.updateall(lu, h0, 1, 1e-4, mi);
 
     Tensor<weights> allwgts;
-    double h0 = sqrt((mi.L*mi.H)/(double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
     use.computeWgts(ml, mi, h0, allwgts);
 
     // Update edgeflux
@@ -312,24 +310,22 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
                     vertedgefluxder, horiedgefluxder, flux, dflux);
 
         f[j][i] = flux*dt;
-
         const int indexn = FlatIndic(mi, {i,j});
 
         for (const auto& it: dflux){
             const int indexm = it.first;
             const double val = it.second*dt;
 
-            PetscCall(MatSetValues(J, 1, &indexm, 1, &indexn, &val, ADD_VALUES));
+            PetscCall(MatSetValues((*Jacobian), 1, &indexm, 1, &indexn, &val, ADD_VALUES));
         }
 
         const double val = 1.0;
-        PetscCall(MatSetValues(J, 1, &indexn, 1, &indexn, &val, ADD_VALUES));
+        PetscCall(MatSetValues((*Jacobian), 1, &indexn, 1, &indexn, &val, ADD_VALUES));
  
     }}
 
-    PetscCall(MatAssemblyBegin(J, MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd(J, MAT_FINAL_ASSEMBLY));
-
+    PetscCall(MatAssemblyBegin((*Jacobian), MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd((*Jacobian), MAT_FINAL_ASSEMBLY));
     DMDAVecRestoreArray(dmu, flux, &f);
     DMDAVecRestoreArray(dmu, localu, &lu);
     DMRestoreLocalVector(dmu, &localu);

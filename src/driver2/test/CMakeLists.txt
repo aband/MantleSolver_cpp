@@ -170,6 +170,7 @@ target_link_libraries(driver_lib
 # Generate an excutable file
 add_executable(test
         test.cpp
+		  flow_setting.cpp
 )
 
 target_include_directories(test

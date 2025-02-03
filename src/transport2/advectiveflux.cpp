@@ -252,7 +252,7 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         }
 
         horiedge({i,j}) = flux;
-       
+
         vertexSet vert {corners.at(3), corners.at(0)};
 
         // boundary
@@ -292,16 +292,16 @@ int getcellflux(const MeshInfo& mi, const indice& gcell,
 
     // dflux 
 
-    unordered_map_arithmetic(dflux, horiedge({gcell[0], gcell[1]}),
+    unordered_map_arithmetic(dflux, horiedgeder({gcell[0], gcell[1]}),
                              std::plus<double>());
 
-    unordered_map_arithmetic(dflux, horiedge({gcell[0], gcell[1]+1}),
+    unordered_map_arithmetic(dflux, horiedgeder({gcell[0], gcell[1]+1}),
                              std::minus<double>());
 
-    unordered_map_arithmetic(dflux, vertedge({gcell[0], gcell[1]}),
+    unordered_map_arithmetic(dflux, vertedgeder({gcell[0], gcell[1]}),
                              std::plus<double>());
 
-    unordered_map_arithmetic(dflux, horiedge({gcell[0]+1, gcell[1]}),
+    unordered_map_arithmetic(dflux, vertedgeder({gcell[0]+1, gcell[1]}),
                              std::minus<double>());
 
     unordered_map_arithmetic(dflux, 1.0/area,

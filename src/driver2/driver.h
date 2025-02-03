@@ -39,21 +39,23 @@ class Driver {
 
         Driver() {};
 
-        ~Driver() {delete myPhase;};
+        ~Driver() { delete myPhase;};
 
+        /**! 
+         * Mesh parameters 
+         */
         MeshInfo  mi;
-
         DM dmMesh;
         DM dmu;
+        Vec globalmesh;  
 
        /**!
         * Initialize phase package
         */
        Phase * myPhase;
-
        int CreatePhase();
-
        int ShowPhase();
+       int withUnit; 
 
        /**!
         * Create Data management objects.
@@ -67,12 +69,11 @@ class Driver {
                        const bool& physicsScale,
                        const int& meshType); 
 
-        Vec globalmesh;  
-
         Vec globalCD, globalHD;
-
-        int InitTransport(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
-                          double (*funcCD)(const valarray<double>& point, const vector<double>& param));
+        int PrepareTransport(double (*funcHD)(const valarray<double>& point, 
+                                              const vector<double>& param),
+                             double (*funcCD)(const valarray<double>& point, 
+                                              const vector<double>& param));
 
        /**!
         * Create boundary condition vectors
@@ -83,7 +84,6 @@ class Driver {
         * Solve flow at the given time step.
         */
        int SolveFlow(int maxIter, double tolUzawa);
-
        int SolveFlow(int maxIterStokes, double tolStokes,
                      int maxIterDarcy,  double tolDarcy);
 
@@ -102,16 +102,8 @@ class Driver {
         double H_;
 
         /**!
-         * Old struct object used in limited functions.
-         * Be used for only once.
-         */
-        MeshParam mp_;
-
-
-        /**!
          * Finite Element spaces.
          */
-
         basis * basis_;
         Hdivmixed * hdiv_;
         BRMixed * br_;
@@ -119,7 +111,6 @@ class Driver {
         /**!
          * Boundary conditions
          */
-
         // Mark boundary values
         bndryVal bndryStokesEssen_;
         bndryVal bndryStokesNatur_;
@@ -129,7 +120,6 @@ class Driver {
         /**!
          * Reduced linear system excluding essential boundary conditions
          */
-
         ReducedSys * reducedDarcy_;
         ReducedSys * reducedStokes_;
 
@@ -141,7 +131,6 @@ class Driver {
        /**!
         * Create boundary dof reference mapping
         */
-
        int bndryDOFStokes_ = 0.0;
        int bndryDOFDarcy_  = 0.0;
 
@@ -164,7 +153,11 @@ class Driver {
 
        ScatterResult * sresult_;
 
+       // ==================================================
+       multilevel ml;
 
+       mluse advection;
+       mluse diffusion;
 };
 
 #endif

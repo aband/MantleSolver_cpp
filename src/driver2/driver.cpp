@@ -50,7 +50,8 @@ int Driver::CreateMesh(const int& M, const int& N,
     // Create dmMesh
     PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
     DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, 
-    M, N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidthMesh, NULL, NULL, &dmMesh));
+    M, N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidthMesh, NULL, NULL, 
+    &dmMesh));
     PetscCall(DMSetFromOptions(dmMesh));              
     PetscCall(DMSetUp(dmMesh));
 
@@ -63,23 +64,58 @@ int Driver::CreateMesh(const int& M, const int& N,
     PetscCall(DMSetUp(dmu));     
 
     // Create MeshParam object (historical object one time use only)
-    mp_.xstart = xstart;
-    mp_.ystart = ystart;
-    mp_.L = L;
-    mp_.H = H;
+    MeshParam mp;
+    mp.xstart = xstart;
+    mp.ystart = ystart;
+    mp.L = L;
+    mp.H = H;
 
     // Create global vector containing mesh
     PetscCall(DMCreateGlobalVector(dmMesh, &globalmesh));
-
     switch(meshType){
-        case 0: CreateFullMesh(dmMesh, &globalmesh, &mp_); break;
-        case 1: LogicRectMesh(dmMesh, &globalmesh, &mp_);  break;
-        case 2: RefineMesh(dmMesh, &globalmesh, &mp_);
+        case 0: CreateFullMesh(dmMesh, &globalmesh, &mp); break;
+        case 1: LogicRectMesh(dmMesh, &globalmesh, &mp);  break;
+        case 2: RefineMesh(dmMesh, &globalmesh, &mp);
         //case 2: TestControlMeshSecond(dmCell,L,H); break;
         //case 3: TestControlMeshThird(dmCell,L,H);  break;
     }
 
     ReadMeshPortion(dmMesh, &globalmesh, mi.lmesh);
-  
-    return 0;
+
+    return 1;
 }
+
+int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point, 
+                                              const vector<double>& param),
+                             double (*funcCD)(const valarray<double>& point, 
+                                              const vector<double>& param)){
+
+    PetscCall(DMCreateGlobalVector(dmu, &globalCD));
+    PetscCall(DMCreateGlobalVector(dmu, &globalHD));
+
+    // Assign cell averaged values as initial condition
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalCD, {H_,0.0}, funcCD);
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {myPhase->pp->l0*H_,0.0}, funcHD);
+
+    // Initialization of multi level weno and corresponding usage
+    ml = multilevel(); 
+
+    ml.addLevel("(3,3)", {3,3}, mi);
+    ml.addLevel("(2,2)", {2,2}, mi);
+
+    advection = mluse();
+
+    // Test for nonlinear weighting
+    unordered_map<std::string, vector<indice>> method;
+    method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+
+    // Area scale
+    double h0 = sqrt((L_*H_)/
+                (double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
+
+    advection.setmethod("all", method);
+    advection.setbias("all");
+
+    return 1;
+} 

@@ -58,11 +58,15 @@ int main(int argc, char **argv){
                        stencilWidthMesh, stencilWidthU,
                        physicsScale, meshType);
 
-    driver->InitTransport(InitHD, InitCD);
 
 
 
-    //driver->clean();
+
+
+
+    VecDestroy(&driver->globalmesh);
+    DMDestroy(&driver->dmu);
+    DMDestroy(&driver->dmMesh);
 
     PetscFinalize();
 
