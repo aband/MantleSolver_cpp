@@ -16,8 +16,10 @@ inline int derLFflux(const derivative& derin,  const derivative& derout,
 
     work = fderin;
     unordered_map_arithmetic(work, fderout, std::plus<double>());
+
     unordered_map_arithmetic(work, derout, std::minus<double>(), 
                                    LF, std::multiplies<double>());
+
     unordered_map_arithmetic(work, derin,  std::plus<double>(), 
                                    LF, std::multiplies<double>());
 
@@ -186,7 +188,7 @@ int edgefluxintegral(const MeshInfo& mi,
 
         derivative derout;
         use.der(mapped, ml, "all", allwgts({gcellout[0], gcellout[1]}), 
-                gcellout, lu, mi, derin);
+                gcellout, lu, mi, derout);
 
         double uin  = use.eval(mapped, ml, "all", 
                       allwgts({gcellin[0],gcellin[1]}), gcellin, lu); 
@@ -194,14 +196,23 @@ int edgefluxintegral(const MeshInfo& mi,
                       allwgts({gcellout[0],gcellout[1]}), gcellout, lu); 
 
         f += gwe[g] * LFflux(uin, uout, 
-                                advfunc(uin,vel.at(g),unitNormal),
-                                advfunc(uout,vel.at(g),unitNormal),1.0) * len/2.0; 
+                             advfunc(uin,vel.at(g),unitNormal),
+                             advfunc(uout,vel.at(g),unitNormal),1.0) * len/2.0; 
         derivative derfin;
         derivative derfout;
         derivative derLF;
 
         dadvfunc(derin , uin , vel.at(g), unitNormal, derfin);
         dadvfunc(derout, uout, vel.at(g), unitNormal, derfout);
+
+        cout << "derin : " << gcellin[0] << "  " << gcellin[1]<< endl;
+        unordered_map_print(derin);
+        cout << "derout : " << gcellout[0] << "  " << gcellout[1] << endl;
+        unordered_map_print(derout);
+        cout << "derfin : " << endl;
+        unordered_map_print(derfin);
+        cout << "derfout : " << endl;
+        unordered_map_print(derfout);
 
         derLFflux(derin, derout, derfin, derfout, 1.0, derLF);
 
@@ -248,7 +259,8 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
             cellout = globalcell + mi.faceNormal[0];
             edgefluxintegral(mi, globalcell, cellout, hori, 
             allwgts, vel, ml, use, lu, horiedgeder({i,j}), flux);
-            
+            cout << i << "  " << j << endl;
+            unordered_map_print(horiedgeder({i,j})); cout << endl;
         }
 
         horiedge({i,j}) = flux;

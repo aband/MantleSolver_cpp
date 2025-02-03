@@ -136,33 +136,49 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
     KSP ksp;
     PetscCall(KSPCreate(PETSC_COMM_WORLD, &ksp));
     PetscCall(KSPSetType(ksp, KSPGMRES));
+    PetscCall(KSPSetTolerances(ksp, 1.e-10, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT));
     PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE));
 
-    Mat J;
+    int nelem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
 
-    Vec sol = *insol;
+    Vec sol;
+    VecDuplicate(*insol, &sol);
+    VecCopy(*insol, sol);
     int event = 1;
 
     Vec flux;
-    VecDuplicate(sol, &flux);
+    VecDuplicate(*insol, &flux);
 
     Vec previous;
-    VecDuplicate(sol, &previous);
-    VecCopy(sol, previous);
+    VecDuplicate(*insol, &previous);
+    VecCopy(*insol, previous);
 
     double tol = 1.0;
+
+    Vec expsol;
+    VecDuplicate(*insol, &expsol);
+    VecCopy(*insol, expsol);
+
+    Vec expflux;
+    VecDuplicate(*insol, &expflux);
 
     for (int t=0; t<Nt; t++){
 
         // Newton's iteration 
         // 1. Get initial guess x0 = u-dtF
         // store x0 in sol
-        getflux(mi, ml, use, &sol, &flux, dmu, dmmesh);
-        VecAXPY(sol, -1*dt, flux);
+        getflux(mi, ml, use, &expsol, &expflux, dmu, dmmesh);
+        VecAXPY(expsol, -1*dt, expflux);
+
+        cout << "Reference explicit solution " << endl;
+        VecView(expsol, PETSC_VIEWER_STDOUT_WORLD);
+
+        cout << endl;
 
         // Enter Newton's iteration
-        while (tol > 1e-10){
- 
+        int it = 0;
+//        while (tol > 1e-7){
+while(it < 2){ 
             Vec tmp1, tmp2;
             PetscCall(VecDuplicate(sol, &tmp1));
             PetscCall(VecDuplicate(sol, &tmp2));
@@ -171,6 +187,16 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
             // 2. Compute function F(x) = x-previous + dt*f(x)
             // At the same time jacobian J(x) is computed
             // x stored in sol
+            cout << endl << "Solution Value "  ;
+
+    Mat J;
+    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
+                           nelem, nelem, 
+                           nelem, NULL, nelem, NULL, &J));
+    PetscCall(MatSetUp((J)));
+
+
+            VecView(sol, PETSC_VIEWER_STDOUT_WORLD);
             getall(mi, ml, use, &sol, &flux, &J, dmu, dmmesh, dt);
 
             VecAXPY(tmp1, -1.0, previous);
@@ -178,12 +204,19 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
 
             // 3. Solve for J^-1(x)F(x)
             KSPSetOperators(ksp, J, J);
+            MatView(J, PETSC_VIEWER_STDOUT_WORLD);
+            VecView(tmp1, PETSC_VIEWER_STDOUT_WORLD);
+
             KSPSolve(ksp, tmp1, tmp2);
 
             // 4. Update sol
             VecAXPY(sol, -1.0, tmp2);
+
+            //VecView(sol, PETSC_VIEWER_STDOUT_WORLD);
             // 5. Compute 2nd norm of tmp2 and serve as tolerance indicator
             VecNorm(tmp2, NORM_2, &tol);
+
+            it ++;
         }
 
         VecCopy(sol,previous);
@@ -195,6 +228,62 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
     }
 
     printSol(event, &sol, mi);
+
+    return 1;
+}
+
+int iRK2(double dt, int Nt, Vec * insol, MeshInfo* mi, multilevel* ml, mluse* use, DM dmu, DM dmmesh ){
+
+    SNES snes;
+    KSP  ksp;
+    PC   pc;
+    Vec  x, r; 
+    Mat  J;
+
+    SNESCreate(PETSC_COMM_WORLD, &snes);
+    SNESSetType(snes, SNESNEWTONLS);
+
+    VecDuplicate(*insol, &x);
+    VecDuplicate(*insol, &r);
+
+    VecCopy(*insol, x);
+
+    int nelem = mi->MPIglobalCellSize[0] * mi->MPIglobalCellSize[1];
+
+    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
+                           nelem, nelem, 
+                           nelem, NULL, nelem, NULL, &J));
+    PetscCall(MatSetUp(J));
+
+    int event = 0;
+
+    param * myparam = new param();
+    myparam->mi = mi;
+    myparam->ml = ml;
+    myparam->use = use;
+    myparam->dt = dt;
+    myparam->dmu = dmu;
+    myparam->dmmesh = dmmesh;
+    myparam->previous = insol;
+
+    Vec flux;
+    VecDuplicate(*insol, &flux);
+    myparam->flux = &flux;
+
+    SNESSetFunction(snes, r, FormFunction, myparam);
+    SNESSetJacobian(snes, J, J, FormJacobian, myparam);
+
+    for (int t=0; t<Nt; t++){
+
+        SNESSolve(snes, NULL, x);
+
+        if (t%5 == 0){
+        printSol(event,&x,*myparam->mi);
+        event ++;
+        }
+
+        VecCopy(*myparam->previous, x);
+    }
 
     return 1;
 }
@@ -310,17 +399,17 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
                     vertedgefluxder, horiedgefluxder, flux, dflux);
 
         f[j][i] = flux*dt;
-        const int indexn = FlatIndic(mi, {i,j});
+        const int indexm = FlatIndic(mi, {i,j});
 
         for (const auto& it: dflux){
-            const int indexm = it.first;
+            const int indexn = it.first;
             const double val = it.second*dt;
-
+cout << "row : " << indexm << " coloum : " << indexn << " value : " << val << endl;
             PetscCall(MatSetValues((*Jacobian), 1, &indexm, 1, &indexn, &val, ADD_VALUES));
         }
 
         const double val = 1.0;
-        PetscCall(MatSetValues((*Jacobian), 1, &indexn, 1, &indexn, &val, ADD_VALUES));
+        PetscCall(MatSetValues((*Jacobian), 1, &indexm, 1, &indexm, &val, ADD_VALUES));
  
     }}
 
@@ -331,4 +420,38 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
     DMRestoreLocalVector(dmu, &localu);
 
     return 1;
+}
+
+
+PetscErrorCode FormFunction(SNES snes, Vec x, Vec f, void *ctx){
+
+    PetscFunctionBeginUser;
+ 
+    param * user = (param *) ctx;
+
+    //! Get local vector
+    getflux((*user->mi), (*user->ml), (*user->use), &x, user->flux, user->dmu, user->dmmesh); 
+
+    VecCopy(f, x);
+
+    VecAXPY(f, -1.0, (*user->previous));
+    VecAXPY(f, user->dt, (*user->flux));
+
+    PetscFunctionReturn(PETSC_SUCCESS);
+}
+
+PetscErrorCode FormJacobian(SNES snes, Vec x, Mat jac, Mat B, void *ctx){
+
+    PetscFunctionBeginUser;
+
+    param * user = (param *)ctx;
+
+    Vec flux;
+    VecDuplicate(x, &flux);
+    getall((*user->mi), (*user->ml), (*user->use), &x, &flux, &jac, user->dmu, user->dmmesh, user->dt); 
+
+    PetscCall(MatAssemblyBegin(jac, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(jac, MAT_FINAL_ASSEMBLY));
+ 
+    PetscFunctionReturn(PETSC_SUCCESS);
 }

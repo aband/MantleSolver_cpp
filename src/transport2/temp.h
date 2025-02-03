@@ -25,6 +25,8 @@ int RK(double dt, int Nt, Vec * init, const MeshInfo& mi, multilevel& ml, mluse&
 
 int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh);
 
+int iRK2(double dt, int Nt, Vec * insol, MeshInfo* mi, multilevel* ml, mluse* use, DM dmu, DM dmmesh);
+
 int getflux(const MeshInfo& mi, multilevel& ml, mluse& use, Vec * now, Vec * flux, DM dmu, DM dmmesh);
 
 int getall(const MeshInfo& mi, multilevel& ml, mluse& use, 
@@ -39,6 +41,20 @@ typedef struct{
 
     DM dmu;
 
+    DM dmmesh;
+
+    multilevel * ml;
+
+    mluse * use;
+
+    double dt;
+
+    Vec * flux;
+
 } param;
+
+// Using petsc standard snes solver
+PetscErrorCode FormFunction(SNES snes, Vec x, Vec f, void *ctx);
+PetscErrorCode FormJacobian(SNES snes, Vec x, Mat jac, Mat B, void *ctx);
 
 #endif

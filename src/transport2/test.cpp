@@ -132,6 +132,8 @@ int main(int argc, char ** argv){
     //RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 
     iRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    //iRK2(dt, Nt, &globalvec, &mi, &ml, &use, dmu, dmMesh);
+
     // =================================================================
 
     DMDAVecRestoreArray(dmu,localvec,&locvals);

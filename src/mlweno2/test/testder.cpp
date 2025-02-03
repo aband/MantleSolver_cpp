@@ -36,7 +36,7 @@ int main(int argc, char ** argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    int M = 3, N = 3;
+    int M = 5, N = 5;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
@@ -123,7 +123,13 @@ int main(int argc, char ** argv){
 
     PetscCall(DMCreateGlobalVector(dmu, &globalvec));
 
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {(L-h0)/2.0,0.0}, func);
+//    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {(L-h0)/2.0,0.0}, func);
+
+    const PetscScalar y[25] = { 0.271849 , 0.994933, 0.408574, 0.00365381, -3.21759e-20, 0.272165, 0.993494, 0.410133, 0.00322378,-3.34346e-18, 0.272162, 0.993547, 0.410113, 0.00320021, -3.66537e-18, 0.271801, 0.996462 ,0.407558 ,0.00317677 ,-3.1735e-18 ,0.271842 ,0.994967 ,0.408554 ,0.00365379 ,-2.84709e-20 };
+    const PetscInt id[25] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24};
+    VecSetValues(globalvec, 25, id, y, INSERT_VALUES);
+
+   // VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
 
     // Distribute local part to local vectors.
     PetscCall(DMGetLocalVector(dmu, &localvec)); 
@@ -175,11 +181,19 @@ int main(int argc, char ** argv){
 //    use.der(test, ml, "all", allwgts({target[0], target[1]}), {target[0],target[1]}, locvals,
 //             mi, testder); 
 
-    for (int j=0; j<N; j++){
-    for (int i=0; i<M; i++){
-    use.der(test, ml, "all", allwgts({i, j}), {i,j}, locvals,
+    derivative sum;
+
+//    for (int j=0; j<N; j++){
+//    for (int i=0; i<M; i++){
+//    use.der(test, ml, "all", allwgts({i, j}), {i,j}, locvals,
+//             mi, testder); 
+
+//    unordered_map_arithmetic(sum, testder, std::plus<double>()); 
+//    }}
+
+    use.der(test, ml, "all", allwgts({1, 2}), {1,2}, locvals,
              mi, testder); 
-    }}
+
     unordered_map_print(testder);
     // =================================================================
 
