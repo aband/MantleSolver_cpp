@@ -318,19 +318,14 @@ int multilevel::updateall(double ** localsol, const double& h0, const int& s, co
                 int gcell = FlatIndic(mi, {i+m, j+n});
                 dersigma({i,j}).insert(
                 make_pair(gcell, stendersigma.at(stensol.getIndex({m,n}))));
-
-                derscaled_sigma({i,j}).insert(
-                make_pair(gcell, -1*(double)(s*rl+nl) * 
-                stendersigma.at(stensol.getIndex({m,n}))/
-                pow(stencilsigma({i,j})+ ep*h0*h0,s*rl+nl+1)));
-
             }}
 
-            cout << i << "  " << j << endl; 
-            cout << "sigma : " << stencilsigma({i,j}) << " scaled sigma : " << scaled_sigma({i,j}) << endl;
-            unordered_map_print(dersigma({i,j}));
-            unordered_map_print(derscaled_sigma({i,j}));
-            cout << endl;
+            derscaled_sigma({i,j}).clear();
+
+            double coef = -1*(double)(s*rl+nl)/pow(stencilsigma({i,j})+ ep*h0*h0,s*rl+nl+1);
+            for (const auto it: dersigma({i,j})){
+                derscaled_sigma({i,j}).insert(std::make_pair(it.first, it.second*coef));
+            }
 
         }}
 

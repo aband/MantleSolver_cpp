@@ -133,13 +133,19 @@ int RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,  mlus
 
 int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh){
 
+    int nelem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
+
+    Mat J;
+    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
+                           nelem, nelem, 
+                           nelem, NULL, nelem, NULL, &J));
+    PetscCall(MatSetUp((J)));
+
     KSP ksp;
     PetscCall(KSPCreate(PETSC_COMM_WORLD, &ksp));
     PetscCall(KSPSetType(ksp, KSPGMRES));
-    PetscCall(KSPSetTolerances(ksp, 1.e-10, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT));
+    PetscCall(KSPSetTolerances(ksp, 1.e-12, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT));
     PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE));
-
-    int nelem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
 
     Vec sol;
     VecDuplicate(*insol, &sol);
@@ -153,7 +159,6 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
     VecDuplicate(*insol, &previous);
     VecCopy(*insol, previous);
 
-    double tol = 1.0;
 
     Vec expsol;
     VecDuplicate(*insol, &expsol);
@@ -164,21 +169,10 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
 
     for (int t=0; t<Nt; t++){
 
-        // Newton's iteration 
-        // 1. Get initial guess x0 = u-dtF
-        // store x0 in sol
-        getflux(mi, ml, use, &expsol, &expflux, dmu, dmmesh);
-        VecAXPY(expsol, -1*dt, expflux);
-
-        cout << "Reference explicit solution " << endl;
-        VecView(expsol, PETSC_VIEWER_STDOUT_WORLD);
-
-        cout << endl;
-
+        double tol = 1.0;
         // Enter Newton's iteration
         int it = 0;
-//        while (tol > 1e-7){
-while(it < 2){ 
+        while (tol > 1e-7){
             Vec tmp1, tmp2;
             PetscCall(VecDuplicate(sol, &tmp1));
             PetscCall(VecDuplicate(sol, &tmp2));
@@ -187,16 +181,7 @@ while(it < 2){
             // 2. Compute function F(x) = x-previous + dt*f(x)
             // At the same time jacobian J(x) is computed
             // x stored in sol
-            cout << endl << "Solution Value "  ;
 
-    Mat J;
-    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
-                           nelem, nelem, 
-                           nelem, NULL, nelem, NULL, &J));
-    PetscCall(MatSetUp((J)));
-
-
-            VecView(sol, PETSC_VIEWER_STDOUT_WORLD);
             getall(mi, ml, use, &sol, &flux, &J, dmu, dmmesh, dt);
 
             VecAXPY(tmp1, -1.0, previous);
@@ -204,20 +189,19 @@ while(it < 2){
 
             // 3. Solve for J^-1(x)F(x)
             KSPSetOperators(ksp, J, J);
-            MatView(J, PETSC_VIEWER_STDOUT_WORLD);
-            VecView(tmp1, PETSC_VIEWER_STDOUT_WORLD);
 
             KSPSolve(ksp, tmp1, tmp2);
 
             // 4. Update sol
             VecAXPY(sol, -1.0, tmp2);
 
-            //VecView(sol, PETSC_VIEWER_STDOUT_WORLD);
             // 5. Compute 2nd norm of tmp2 and serve as tolerance indicator
             VecNorm(tmp2, NORM_2, &tol);
 
             it ++;
         }
+
+        cout << "Newton iteration count : " << it << endl;
 
         VecCopy(sol,previous);
 
@@ -404,7 +388,6 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
         for (const auto& it: dflux){
             const int indexn = it.first;
             const double val = it.second*dt;
-cout << "row : " << indexm << " coloum : " << indexn << " value : " << val << endl;
             PetscCall(MatSetValues((*Jacobian), 1, &indexm, 1, &indexn, &val, ADD_VALUES));
         }
 

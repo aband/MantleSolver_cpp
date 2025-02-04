@@ -321,8 +321,8 @@ int mluse::der(const vertex& point, const multilevel& ml,
     // Compute sum of weights and sum of derivative of weights
     sumscaled(ml,sum, sumder, pos, index);
 
-    cout << "Print sum and sum of derivatives : "  <<sum << endl;
-    unordered_map_print(sumder);
+//    cout << "Print sum and sum of derivatives : "  <<sum << endl;
+//    unordered_map_print(sumder);
 
     for (const auto& it : bias.at(pos)){
         // Loop through all levels first
@@ -348,7 +348,7 @@ int mluse::der(const vertex& point, const multilevel& ml,
                 // Compute dw/du for each stencil
                 derivative dscaled = ml.getderscaledsigma(it.first,
                 {targetstencilindex[0], targetstencilindex[1]});
-
+/*
                 cout << "dsigmas : " << endl;
                 unordered_map_print(ml.getdersigma(it.first, {targetstencilindex[0], targetstencilindex[1]}));
 
@@ -360,7 +360,7 @@ int mluse::der(const vertex& point, const multilevel& ml,
 
                 cout << "dscalde sigmas : " << endl;
                 unordered_map_print(ml.getderscaledsigma(it.first, {targetstencilindex[0], targetstencilindex[1]}));
-
+*/
                 unordered_map_arithmetic(dscaled, 1.0/sum, std::multiplies<double>()); 
 
                 unordered_map_arithmetic(dscaled, sumder, std::plus<double>(), 

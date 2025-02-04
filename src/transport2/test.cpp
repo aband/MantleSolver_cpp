@@ -129,9 +129,16 @@ int main(int argc, char ** argv){
 
     printGrid(mi);
 
-    //RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    int timestepping = 1;
+    ierr = PetscOptionsGetInt(NULL,NULL,"-step",&timestepping,NULL);CHKERRQ(ierr);
 
-    iRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    if (timestepping == 1){
+        cout << "Explicit time stepping: " << endl;
+        RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    } else {
+        cout << "Implicit time stepping: " << endl;
+        iRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    }
     //iRK2(dt, Nt, &globalvec, &mi, &ml, &use, dmu, dmMesh);
 
     // =================================================================

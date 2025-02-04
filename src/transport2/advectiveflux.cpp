@@ -205,14 +205,14 @@ int edgefluxintegral(const MeshInfo& mi,
         dadvfunc(derin , uin , vel.at(g), unitNormal, derfin);
         dadvfunc(derout, uout, vel.at(g), unitNormal, derfout);
 
-        cout << "derin : " << gcellin[0] << "  " << gcellin[1]<< endl;
-        unordered_map_print(derin);
-        cout << "derout : " << gcellout[0] << "  " << gcellout[1] << endl;
-        unordered_map_print(derout);
-        cout << "derfin : " << endl;
-        unordered_map_print(derfin);
-        cout << "derfout : " << endl;
-        unordered_map_print(derfout);
+//        cout << "derin : " << gcellin[0] << "  " << gcellin[1]<< endl;
+//        unordered_map_print(derin);
+//        cout << "derout : " << gcellout[0] << "  " << gcellout[1] << endl;
+//        unordered_map_print(derout);
+//        cout << "derfin : " << endl;
+//        unordered_map_print(derfin);
+//        cout << "derfout : " << endl;
+//        unordered_map_print(derfout);
 
         derLFflux(derin, derout, derfin, derfout, 1.0, derLF);
 
@@ -259,8 +259,8 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
             cellout = globalcell + mi.faceNormal[0];
             edgefluxintegral(mi, globalcell, cellout, hori, 
             allwgts, vel, ml, use, lu, horiedgeder({i,j}), flux);
-            cout << i << "  " << j << endl;
-            unordered_map_print(horiedgeder({i,j})); cout << endl;
+//            cout << i << "  " << j << endl;
+//            unordered_map_print(horiedgeder({i,j})); cout << endl;
         }
 
         horiedge({i,j}) = flux;
