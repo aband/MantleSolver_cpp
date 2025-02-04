@@ -27,15 +27,6 @@ int edgefluxintegral(const MeshInfo& mi,
                      derivative& der,
                      double& f);
 
-int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
-                   const MeshInfo& mi, double ** lu,
-                   mluse& use, multilevel& ml, const Tensor<weights>& allwgts);
-
-int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
-                   Tensor<derivative>& vertedgeder, Tensor<derivative>& horiedgeder,
-                   const MeshInfo& mi, double ** lu,
-                   mluse& use, multilevel& ml, const Tensor<weights>& allwgts);
-
 double getcellflux(const MeshInfo& mi, const indice& gcell,
                    const Tensor<double>& vertedge, 
                    const Tensor<double>& horiedge);
@@ -47,5 +38,16 @@ int getcellflux(const MeshInfo& mi, const indice& gcell,
                 const Tensor<derivative>& horiedgeder,
                 double& flux,
                 derivative& dflux);
+
+// ======================================================================================
+
+int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
+                   const MeshInfo& mi, double ** lu,
+                   mluse& use, multilevel& ml, const Tensor<weights>& allwgts);
+
+int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
+                   Tensor<derivative>& vertedgeder, Tensor<derivative>& horiedgeder,
+                   const MeshInfo& mi, double ** lu,
+                   mluse& use, multilevel& ml, const Tensor<weights>& allwgts);
 
 #endif

@@ -1,4 +1,5 @@
 #include "driver.h"
+#include "print.h"
 
 int main(int argc, char **argv){
 
@@ -30,7 +31,7 @@ int main(int argc, char **argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    int maxIter = 1; 
+    int maxIter = 10; 
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL));        
     double tolUzawa = 10e-7; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
@@ -58,11 +59,60 @@ int main(int argc, char **argv){
                        stencilWidthMesh, stencilWidthU,
                        physicsScale, meshType);
 
+    /**!
+     * Initialize global cell averaged value vectors.
+     * Initialize multi level reconstruction objects
+     */
+    driver->PrepareTransport(InitHD, InitCD);
 
+    printCellCenterGrid(driver->mi);
+    printCellAve(1, &driver->globalHD, driver->mi, "HD");
+    printCellAve(1, &driver->globalCD, driver->mi, "CD");
 
+    /**!
+     * Create boundary reference arrays
+     * Allocate memory space for solutions vectors
+     */
+    driver->PrepareFlow();
 
+    double h0 = sqrt((L*H)/(double)(M*N));
 
+    // Solve for initial velocity
+    Vec localHD, localCD;
+    double ** lHD;
+    double ** lCD;
 
+    PetscCall(DMGetLocalVector(driver->dmu, &localHD)); 
+
+    PetscCall(DMGlobalToLocalBegin(driver->dmu, driver->globalHD, INSERT_VALUES, localHD));
+    PetscCall(DMGlobalToLocalEnd(driver->dmu, driver->globalHD, INSERT_VALUES, localHD));
+
+    PetscCall(DMDAVecGetArray(driver->dmu, localHD, &lHD));
+
+    PetscCall(DMGetLocalVector(driver->dmu, &localCD)); 
+
+    PetscCall(DMGlobalToLocalBegin(driver->dmu, driver->globalCD, INSERT_VALUES, localCD));
+    PetscCall(DMGlobalToLocalEnd(driver->dmu, driver->globalCD, INSERT_VALUES, localCD));
+
+    PetscCall(DMDAVecGetArray(driver->dmu, localCD, &lCD));
+
+    driver->ml.updatesigma(lHD);
+    Tensor<weights> allwgtsHD;
+    driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgtsHD);
+
+    driver->ml.updatesigma(lCD);
+    Tensor<weights> allwgtsCD;
+    driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgtsCD);
+
+    driver->SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
+
+    driver->PrintFlowEvent(1);
+    driver->PrintPhaseEvent(1);
+
+    DMDAVecRestoreArray(driver->dmu,localHD,&lHD);
+    DMRestoreLocalVector(driver->dmu, &localHD); 
+    DMDAVecRestoreArray(driver->dmu,localCD,&lCD);
+    DMRestoreLocalVector(driver->dmu, &localCD); 
 
     VecDestroy(&driver->globalmesh);
     DMDestroy(&driver->dmu);

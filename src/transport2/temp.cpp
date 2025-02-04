@@ -172,6 +172,10 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
         double tol = 1.0;
         // Enter Newton's iteration
         int it = 0;
+       
+        //getflux(mi, ml, use, &sol, &flux, dmu, dmmesh);
+        //VecAXPY(sol,-1.0*dt, flux);
+
         while (tol > 1e-7){
             Vec tmp1, tmp2;
             PetscCall(VecDuplicate(sol, &tmp1));
@@ -197,6 +201,8 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
 
             // 5. Compute 2nd norm of tmp2 and serve as tolerance indicator
             VecNorm(tmp2, NORM_2, &tol);
+
+            cout << tol << endl;
 
             it ++;
         }

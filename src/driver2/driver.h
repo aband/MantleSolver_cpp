@@ -27,6 +27,9 @@
 #include "stencilpolynomial.h"
 #include "tensor.h"
 
+#include "advectiveflux.h"
+#include "trans_param.h"
+
 extern "C"{
 #include "mesh.h"
 #include "output.h"
@@ -83,15 +86,38 @@ class Driver {
        /**!
         * Solve flow at the given time step.
         */
-       int SolveFlow(int maxIter, double tolUzawa);
-       int SolveFlow(int maxIterStokes, double tolStokes,
-                     int maxIterDarcy,  double tolDarcy);
+       int SolveFlow(int maxIter, double tolUzawa, const Tensor<weights>& allwgtsHD, double ** lHD, 
+                                                   const Tensor<weights>& allwgtsCD, double ** lCD);
 
        /**!
         * Scatter distributed vector to all processor.
         * Prepare for velocity reconstruction on gauss points
         */
        int CreateScatterVec();
+
+       /**!
+        * Assemble reduced linear system.
+        * Reducing boundary dofs
+        */
+       PetscErrorCode ParallelMatrixAssemble(const Tensor<weights>& allwgtsHD, double ** lHD,
+                                             const Tensor<weights>& allwgtsCD, double ** lCD);
+
+       std::vector<double> parameter;
+
+       /**!
+        * Interface objects to multileve object
+        */
+       multilevel ml;
+
+       mluse advection;
+       mluse diffusion;
+
+       /**!
+        * Simple visualization functions
+        */
+       int PrintFlowEvent(int mark);
+
+       int PrintPhaseEvent(int mark);
 
     private:
 
@@ -126,7 +152,7 @@ class Driver {
         /**!
          * Coupling matrix.
          */
-        Mat K_;
+        Mat K;
 
        /**!
         * Create boundary dof reference mapping
@@ -154,10 +180,33 @@ class Driver {
        ScatterResult * sresult_;
 
        // ==================================================
-       multilevel ml;
 
-       mluse advection;
-       mluse diffusion;
+       int CellAvePorosity(const indice& gcell,
+                           const Tensor<weights>& allwgtsHD,
+                           double ** lHD,
+                           const Tensor<weights>& allwgtsCD,
+                           double ** lCD);
+
+       int AssignLocMatStokes(const indice& gcell,
+                              const Tensor<weights>& allwgtsHD,
+                              double ** lHD,
+                              const Tensor<weights>& allwgtsCD,
+                              double ** lCD,
+                              LocMat * loc);
+
+       int AssignLocMatDarcy(const indice& gcell,
+                             const Tensor<weights>& allwgtsHD,
+                             double ** lHD,
+                             const Tensor<weights>& allwgtsCD,
+                             double ** lCD,
+                             LocMat * loc);
+
+       int AssignLocMatCouple(const indice& gcell,
+                              const Tensor<weights>& allwgtsHD,
+                              double ** lHD,
+                              const Tensor<weights>& allwgtsCD,
+                              double ** lCD,
+                              double& k);
 };
 
 #endif

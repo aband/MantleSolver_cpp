@@ -98,9 +98,9 @@ double InitHD(const valarray<double>& point,
     HD -= 0.0000145*point[1]*param.at(0);
 
     return HD;
-    //return 0.0;
 }
 
+/*
 bndryTypeTrans AssignBoundary(const MeshInfo& mi,
                               const indice& globalCell, 
                               const int& edgetype, 
@@ -144,3 +144,5 @@ double bndryValAdv(const indice& gCell, const int& edgeflag){
     return 0.0;
 
 }
+
+*/

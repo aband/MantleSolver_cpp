@@ -105,7 +105,7 @@ add_library(transport_lib
 
 # Specify any additional include directories if needed
 target_include_directories(transport_lib 
-		  PUBLIC ${SRC}/transport
+		  PUBLIC ${SRC}/transport2
 		  PUBLIC ${SRC}/mlweno2
 		  PUBLIC ${SRC}/general
     PUBLIC ${PETSC_DIR}/include 

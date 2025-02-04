@@ -70,6 +70,11 @@ int Driver::CreateMesh(const int& M, const int& N,
     mp.L = L;
     mp.H = H;
 
+    mi.L = L;
+    mi.H = H;
+    L_ = L;
+    H_ = H;
+
     // Create global vector containing mesh
     PetscCall(DMCreateGlobalVector(dmMesh, &globalmesh));
     switch(meshType){
@@ -81,6 +86,8 @@ int Driver::CreateMesh(const int& M, const int& N,
     }
 
     ReadMeshPortion(dmMesh, &globalmesh, mi.lmesh);
+
+    AssignValuesMeshInfo(mi, dmMesh, dmu);
 
     return 1;
 }
@@ -118,4 +125,68 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     advection.setbias("all");
 
     return 1;
-} 
+}
+
+int Driver::PrepareFlow(){
+
+    basis_ = new basis();
+    hdiv_  = new Hdivmixed();
+    br_    = new BRMixed();
+
+    br_->ComputeTotalDOF(mi);
+    hdiv_->ComputeTotalDOF(mi);
+  
+    // Define boundary parameter
+    parameter.push_back(-0.2);
+
+    MarkBndryDOFStokes(bndryStokesEssen_, bndryStokesNatur_, mi, *basis_, *br_, myPhase->pp, parameter);
+    MarkBndryDOFDarcy(bndryDarcyEssen_, bndryDarcyNatur_, mi, *basis_, *hdiv_, myPhase->pp);
+
+    reducedDarcy_ = (ReducedSys *)malloc(sizeof(ReducedSys));
+    reducedStokes_ = (ReducedSys *)malloc(sizeof(ReducedSys));
+
+    refArrayStokesEssen_ = new int[br_->getDOF()];
+    refArrayDarcyEssen_  = new int[hdiv_->getDOF()];
+
+    CreateRefMap(*br_  , mi, refArrayStokesEssen_, refArrayStokesNatur_, &bndryDOFStokes_, &bndryDOFStokesNatur_, parameter);
+    CreateRefMap(*hdiv_, mi, refArrayDarcyEssen_ , refArrayDarcyNatur_ , &bndryDOFDarcy_ , &bndryDOFDarcyNatur_ , parameter);
+
+    Result_ = (ReducedSys *)malloc(sizeof(ReducedSys));
+
+    sresult_ = (ScatterResult *)malloc(sizeof(ScatterResult));
+
+    return 1;
+}
+
+int Driver::SolveFlow(int maxIter, double tolUzawa, const Tensor<weights>& allwgtsHD, double ** lHD, 
+                                                    const Tensor<weights>& allwgtsCD, double ** lCD){
+
+    ParallelMatrixAssemble(allwgtsHD, lHD, allwgtsCD, lCD);
+
+    int nelem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
+
+    CreateLinearSys(reducedStokes_, nelem);
+    CreateLinearSys(reducedDarcy_, nelem);
+
+    CreateCoupledSystem(reducedStokes_, reducedDarcy_, Result_, &K);
+
+    CoupledUzawa(Result_, tolUzawa, maxIter);
+
+    return 1;
+}
+
+int Driver::CreateScatterVec(){
+
+    // Scatter distributed vector to all processors
+    Vec stokesv, darcyv;
+    PetscCall(VecNestGetSubVec(Result_->x, 0, &stokesv));
+    PetscCall(VecNestGetSubVec(Result_->x, 1, &darcyv));
+
+    SolScatAll(&stokesv, &reducedStokes_->g, 
+               &sresult_->vel_stokes, &sresult_->g_stokes);  
+
+    SolScatAll(&darcyv, &reducedDarcy_->g, 
+               &sresult_->vel_darcy, &sresult_->g_darcy);  
+
+    return 1;
+}

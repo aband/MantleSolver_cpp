@@ -141,11 +141,31 @@ target_link_libraries(mlweno_lib
         PkgConfig::PETSC
 )
 
+add_library(transport_lib
+		  ${SRC}/transport2/advectiveflux.cpp
+)
+
+target_include_directories(transport_lib 
+		  PUBLIC ${SRC}/transport2
+		  PUBLIC ${SRC}/mlweno2
+		  PUBLIC ${SRC}/general
+    PUBLIC ${PETSC_DIR}/include 
+)
+
+target_link_libraries(transport_lib
+        io_lib
+        general_lib
+        mlweno_lib
+        PkgConfig::PETSC
+)
 
 # Specify any additional include directories if needed
 
 add_library(driver_lib
 		  ${SRC}/driver2/driver.cpp
+		  ${SRC}/driver2/coupledsys/coupled_assemble.cpp
+		  ${SRC}/driver2/coupledsys/coupled_locmat.cpp
+		  ${SRC}/driver2/print.cpp
 		  )
 
 target_include_directories(driver_lib
@@ -154,6 +174,7 @@ target_include_directories(driver_lib
         PUBLIC ${PETSC_DIR}/include 
 		  PUBLIC ${SRC}/phase
 		  PUBLIC ${SRC}/mfem
+		  PUBLIC ${SRC}/transport2
 		  PUBLIC ${SRC}/mfem/parallel
 		  #PUBLIC ${SRC}/coupledSys
 		  PUBLIC ${SRC}/driver2
@@ -164,6 +185,7 @@ target_link_libraries(driver_lib
         general_lib
         mlweno_lib
 		  mfem_lib
+		  transport_lib
         PkgConfig::PETSC
 		  )
 
@@ -171,6 +193,7 @@ target_link_libraries(driver_lib
 add_executable(test
         test.cpp
 		  flow_setting.cpp
+		  trans_setting.cpp
 )
 
 target_include_directories(test
@@ -183,6 +206,7 @@ target_link_libraries(test
 		  mfem_lib
 		  mlweno_lib
 		  driver_lib
+		  transport_lib
 		  PkgConfig::LAPACKE
 		  phase_lib
 #        PkgConfig::CGNS
