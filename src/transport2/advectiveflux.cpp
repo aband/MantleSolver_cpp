@@ -63,6 +63,85 @@ double edgefluxintegral(const MeshInfo& mi,
     return work;
 }
 
+double edgefluxintegral(const MeshInfo& mi, 
+                        const indice& gcell,
+                        const vertexSet& edge,
+                        const Tensor<weights>& allwgts,
+                        const vector<vertex>& vel,
+                        multilevel& ml,
+                        mluse& use,
+                        double ** lu){
+
+    double work = 0.0;
+
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    // Get edge lendth and unit vector normal to the given edge
+    double len = length(edge);
+    vertex unitNormal = UnitNormal(edge,len);
+
+    for (int g=0; g<gpe.size(); g++){
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+        double u  = use.eval(mapped, ml, "all", 
+                    allwgts({gcell[0],gcell[1]}), gcell, lu); 
+
+        work += gwe[g] * LFflux(u, u, 
+                                advfunc(u,vel.at(g),unitNormal),
+                                advfunc(u,vel.at(g),unitNormal),1.0) * len/2.0; 
+    }
+
+    return work;
+}
+
+double edgefluxintegral(const vertexSet& edge,
+                        const vector<double>& bnval,
+                        const vector<vertex>& vel){
+
+    double work = 0.0;
+
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    // Get edge lendth and unit vector normal to the given edge
+    double len = length(edge);
+    vertex unitNormal = UnitNormal(edge,len);
+
+    for (int g=0; g<gpe.size(); g++){
+        double val = bnval.at(g);
+        work += gwe[g] * LFflux(val, val, advfunc(val, vel.at(g), unitNormal),
+                                          advfunc(val, vel.at(g), unitNormal),1.0) *len/2.0;
+
+    }
+
+    return work;
+}
+
+double edgefluxintegral(const vertexSet& edge,
+                        const double& bnval,
+                        const vector<vertex>& vel){
+
+    double work = 0.0;
+
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    // Get edge lendth and unit vector normal to the given edge
+    double len = length(edge);
+    vertex unitNormal = UnitNormal(edge,len);
+
+    for (int g=0; g<gpe.size(); g++){
+        work += gwe[g] * LFflux(bnval, bnval, advfunc(bnval, vel.at(g), unitNormal),
+                                              advfunc(bnval, vel.at(g), unitNormal),1.0) *len/2.0;
+
+    }
+
+    return work;
+}
+
 double getcellflux(const MeshInfo& mi, const indice& gcell,
                    const Tensor<double>& vertedge, 
                    const Tensor<double>& horiedge){

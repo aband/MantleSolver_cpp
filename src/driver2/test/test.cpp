@@ -66,8 +66,8 @@ int main(int argc, char **argv){
     driver->PrepareTransport(InitHD, InitCD);
 
     printCellCenterGrid(driver->mi);
-    printCellAve(1, &driver->globalHD, driver->mi, "HD");
-    printCellAve(1, &driver->globalCD, driver->mi, "CD");
+//    printCellAve(1, &driver->globalHD, driver->mi, "HD");
+//    printCellAve(1, &driver->globalCD, driver->mi, "CD");
 
     /**!
      * Create boundary reference arrays
@@ -75,6 +75,7 @@ int main(int argc, char **argv){
      */
     driver->PrepareFlow();
 
+/*
     double h0 = sqrt((L*H)/(double)(M*N));
 
     // Solve for initial velocity
@@ -113,8 +114,13 @@ int main(int argc, char **argv){
     DMRestoreLocalVector(driver->dmu, &localHD); 
     DMDAVecRestoreArray(driver->dmu,localCD,&lCD);
     DMRestoreLocalVector(driver->dmu, &localCD); 
+*/
+
+    driver->RK(dt, Tmax, maxIter, tolUzawa);
 
     VecDestroy(&driver->globalmesh);
+    VecDestroy(&driver->globalHD);
+    VecDestroy(&driver->globalCD);
     DMDestroy(&driver->dmu);
     DMDestroy(&driver->dmMesh);
 

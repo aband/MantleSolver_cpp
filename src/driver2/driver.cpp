@@ -118,11 +118,15 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
 
     // Area scale
-    double h0 = sqrt((L_*H_)/
-                (double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
+    h0 = sqrt((L_*H_)/
+         (double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
 
     advection.setmethod("all", method);
     advection.setbias("all");
+
+    // Compute bottom fixed value
+    HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,0.0});
+    CDbottom = 0.1;
 
     return 1;
 }

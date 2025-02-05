@@ -77,7 +77,7 @@ class Driver {
                                               const vector<double>& param),
                              double (*funcCD)(const valarray<double>& point, 
                                               const vector<double>& param));
-
+        double h0;
        /**!
         * Create boundary condition vectors
         */
@@ -118,6 +118,14 @@ class Driver {
        int PrintFlowEvent(int mark);
 
        int PrintPhaseEvent(int mark);
+
+       double HDbottom;
+       double CDbottom;
+
+        /**!
+         * Time stepping function
+         */
+       int RK(double dt, double Tmax, int maxIter, double tolUzawa);
 
     private:
 
@@ -241,6 +249,9 @@ class Driver {
                           const Tensor<weights>& allwgtsHD, double ** lHD,
                           const Tensor<weights>& allwgtsCD, double ** lCD);
 
+       int getflux(const Tensor<weights>& allwgtsHD, double ** lHD, 
+                   const Tensor<weights>& allwgtsCD, double ** lCD, 
+                   double **lfHD, double** lfCD);
 
 };
 

@@ -100,6 +100,24 @@ double InitHD(const valarray<double>& point,
     return HD;
 }
 
+double advfunc(const double& u, 
+               const vertex& vel, const vertex& unitnormal){
+
+//    cout << "Called correct one" << endl;
+
+    return u *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+}
+
+int dadvfunc(const derivative& du, const double& u, const vertex& vel, const vertex& unitnormal, derivative& work){
+
+    // compute df/du = df/dR * dR/du
+
+    double direction = u*(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+
+
+    return 1;
+}
+
 /*
 bndryTypeTrans AssignBoundary(const MeshInfo& mi,
                               const indice& globalCell, 

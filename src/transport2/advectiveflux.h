@@ -11,9 +11,29 @@ double edgefluxintegral(const MeshInfo& mi,
                         const indice& gcellout,
                         const vertexSet& edge,
                         const Tensor<weights>& allwgts,
+                        const vector<vertex>& vel,
                         multilevel& ml,
                         mluse& use,
                         double ** lu);
+
+// free flow boundary conditions
+double edgefluxintegral(const MeshInfo& mi, 
+                        const indice& gcell,
+                        const vertexSet& edge,
+                        const Tensor<weights>& allwgts,
+                        const vector<vertex>& vel,
+                        multilevel& ml,
+                        mluse& use,
+                        double ** lu);
+
+// Dirichlet boundary functions
+double edgefluxintegral(const vertexSet& edge,
+                        const vector<double>& bnval,
+                        const vector<vertex>& vel);
+
+double edgefluxintegral(const vertexSet& edge,
+                        const double& bnval,
+                        const vector<vertex>& vel);
 
 int edgefluxintegral(const MeshInfo& mi, 
                      const indice& gcellin,

@@ -34,7 +34,7 @@ sol = fscanf(fileID, '%f', [1,Inf]);
 sol = reshape(sol, M, N);
 
 %surf(pX, pY, sol)
-
+pause
 plot(sol(2,:), pY(2,:));
 title(name)
 ylabel("Depth");

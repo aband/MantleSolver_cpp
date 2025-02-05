@@ -167,6 +167,7 @@ add_library(driver_lib
 		  ${SRC}/driver2/coupledsys/coupled_locmat.cpp
 		  ${SRC}/driver2/print.cpp
         ${SRC}/driver2/coupledsys/coupled_advection.cpp
+		  ${SRC}/driver2/coupledsys/coupled_time.cpp
 		  )
 
 target_include_directories(driver_lib
