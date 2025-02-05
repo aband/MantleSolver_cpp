@@ -166,6 +166,7 @@ add_library(driver_lib
 		  ${SRC}/driver2/coupledsys/coupled_assemble.cpp
 		  ${SRC}/driver2/coupledsys/coupled_locmat.cpp
 		  ${SRC}/driver2/print.cpp
+        ${SRC}/driver2/coupledsys/coupled_advection.cpp
 		  )
 
 target_include_directories(driver_lib
@@ -176,7 +177,6 @@ target_include_directories(driver_lib
 		  PUBLIC ${SRC}/mfem
 		  PUBLIC ${SRC}/transport2
 		  PUBLIC ${SRC}/mfem/parallel
-		  #PUBLIC ${SRC}/coupledSys
 		  PUBLIC ${SRC}/driver2
 		  )
 

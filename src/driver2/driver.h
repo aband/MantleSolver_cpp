@@ -207,6 +207,41 @@ class Driver {
                               const Tensor<weights>& allwgtsCD,
                               double ** lCD,
                               double& k);
+
+       // =======================================================
+       int computephase(const std::vector<vertex>& gaussp,
+                        const vertexSet& edgep,
+                        const indice& gcell,
+                        const Tensor<weights>& allwgtsHD, double ** lHD,
+                        const Tensor<weights>& allwgtsCD, double ** lCD,
+                        vector<double>& kappa,
+                        vector<double>& lambda,
+                        vector<double>& phif);
+
+       // Function used in the interior region
+       int computeEffVel(const vector<vertex>& gaussp,
+                         const vertexSet& edgep,
+                         const indice& gcellin, const indice& gcellout,
+                         const Tensor<weights>& allwgtsHD, double ** lHD,
+                         const Tensor<weights>& allwgtsCD, double ** lCD,
+                         vector<vertex>& effvelHD, 
+                         vector<vertex>& effvelCD);
+
+       // Function used on the boundary
+       int computeEffVel(const vector<vertex>& gaussp,
+                         const vertexSet& edgep,
+                         const indice& gcell,
+                         const Tensor<weights>& allwgtsHD, double ** lHD,
+                         const Tensor<weights>& allwgtsCD, double ** lCD,
+                         vector<vertex>& effvelHD, 
+                         vector<vertex>& effvelCD);
+
+       int updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeHD,
+                          Tensor<double>& vertedgeCD, Tensor<double>& horiedgeCD,
+                          const Tensor<weights>& allwgtsHD, double ** lHD,
+                          const Tensor<weights>& allwgtsCD, double ** lCD);
+
+
 };
 
 #endif
