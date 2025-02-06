@@ -51,7 +51,7 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         advection.computeWgts(ml, mi, h0, allwgtsCD);
 
         // Solve for velocity
-        if (t%5 == 0){
+        if (t == 0){
             cout << "Darcy-Stokes system solved at : " << t*dt << endl;
             SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
             CreateScatterVec();
@@ -65,6 +65,8 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         DMDAVecRestoreArray(dmu, localCD, &lCD);
         DMRestoreLocalVector(dmu, &localHD);
         DMRestoreLocalVector(dmu, &localCD);
+
+        VecView(fluxHD, PETSC_VIEWER_STDOUT_WORLD);
 
         VecAXPY(globalHD, -1*dt, fluxHD);
         VecAXPY(globalCD, -1*dt, fluxCD);

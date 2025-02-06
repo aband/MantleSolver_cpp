@@ -182,7 +182,7 @@ int main(int argc, char ** argv){
 //             mi, testder); 
 
     derivative sum;
-
+/*
     for (int j=0; j<N; j++){
     for (int i=0; i<M; i++){
     use.der(test, ml, "all", allwgts({i, j}), {i,j}, locvals,
@@ -190,11 +190,11 @@ int main(int argc, char ** argv){
 
     unordered_map_arithmetic(sum, testder, std::plus<double>()); 
     }}
+*/
+    use.der(test, ml, "all", allwgts({1, 1}), {1,1}, locvals,
+             mi, testder); 
 
-//    use.der(test, ml, "all", allwgts({1, 2}), {1,2}, locvals,
-//             mi, testder); 
-
-    unordered_map_print(sum);
+    unordered_map_print(testder);
     // =================================================================
 
     DMDAVecRestoreArray(dmu,localvec,&locvals);

@@ -89,7 +89,8 @@ double advfunc(const double& u,
 
     // A Burgers type flux
 
-    return u*u/2.0 *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+    //return u*u/2.0 *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+    return u *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 }
 
 int dadvfunc(const derivative& du, const double& u, const vertex& vel, const vertex& unitnormal, derivative& work){

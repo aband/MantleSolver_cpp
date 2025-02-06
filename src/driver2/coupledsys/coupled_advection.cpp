@@ -231,9 +231,8 @@ fluxCD = 0.0;
 
         computeEffVel(gaussp, hori, gcell, allwgtsHD, lHD, allwgtsCD, lCD, effvelHD, effvelCD);
 
-        horiedgeHD({i, mi.MPIglobalCellSize[1]}) = edgefluxintegral(mi, gcell, hori, allwgtsHD, effvelHD, ml, advection, lHD);
+    //    horiedgeHD({i, mi.MPIglobalCellSize[1]}) = edgefluxintegral(mi, gcell, hori, allwgtsHD, effvelHD, ml, advection, lHD);
         //horiedgeCD({i, mi.MPIglobalCellSize[1]}) = edgefluxintegral(mi, gcell, hori, allwgtsCD, effvelCD, ml, advection, lCD);
-
     }
 
     return 1;

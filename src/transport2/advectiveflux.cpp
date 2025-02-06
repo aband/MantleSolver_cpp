@@ -298,11 +298,10 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
 	 // Test for serial now
     Tensor_zero(vertedge);
     Tensor_zero(horiedge);
-
    
-    const valarray<double>& gwe = GaussPointsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
     vector<vertex> vel;
-    vel.resize(gwe.size());
+    vel.resize(gpe.size());
     for (int i=0; i<vel.size(); i++){
         vel.at(i) = {1,0};
     }
@@ -332,6 +331,11 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         horiedge({i,j}) = flux;
        
         vertexSet vert {corners.at(3), corners.at(0)};
+
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]}, vert);
+				vel.at(g) = {3.0-mapped[0],0};
+        } 
 
         // boundary
         if (i==0){
