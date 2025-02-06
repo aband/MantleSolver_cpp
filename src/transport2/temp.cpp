@@ -62,48 +62,6 @@ int printGrid(const MeshInfo& mi){
     return 1;
 }
 
-// Initial consition
-double func(const vertex& point,
-            const vector<double>& param){
-
-    // Initial condition
-
-    // Initialize with simple Reimann shock and rarefaction function
-    // time inputed as param[0] 
-
-    if (point[0] < 0.5 || point[0] >=(0.5*param[0]+1.5)){
-        return 0;
-    } else if (point[0]>=0.5 && point[0]<param[0]+0.5){
-        return (point[0]-0.5)/param[0];
-    } else if (point[0]>=point[0]+0.5 || point[0] <0.5*param[0]+1.5){
-        return 1;
-    } else {
-        return 0;
-    }
-
-}
-
-// Burgers for testing
-double advfunc(const double& u, 
-               const vertex& vel, const vertex& unitnormal){
-
-    // A Burgers type flux
-
-    //return u*u/2.0 *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
-    return u *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
-}
-
-int dadvfunc(const derivative& du, const double& u, const vertex& vel, const vertex& unitnormal, derivative& work){
-
-    // compute df/du = df/dR * dR/du
-
-    double direction = u*(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
-
-    unordered_map_arithmetic(work, du, std::plus<double>(), direction, std::multiplies<double>());
-
-    return 1;
-}
-
 std::string position(const indice& gcell){
 
     return "all";

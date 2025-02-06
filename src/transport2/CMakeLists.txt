@@ -119,13 +119,29 @@ target_link_libraries(transport_lib
 )
 
 # Add to excutable
-add_executable(test 
+add_executable(case1 
         test.cpp 
 		  temp.cpp
+		  case1.cpp
 )
 
 # Link static libraries generated previously
-target_link_libraries(test 
+target_link_libraries(case1
+    io_lib
+    transport_lib
+	 general_lib
+    PkgConfig::LAPACKE 
+)
+
+# Add to excutable
+add_executable(case2
+        test.cpp 
+		  temp.cpp
+		  case2.cpp
+)
+
+# Link static libraries generated previously
+target_link_libraries(case2
     io_lib
     transport_lib
 	 general_lib

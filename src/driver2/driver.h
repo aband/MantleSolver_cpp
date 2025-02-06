@@ -127,6 +127,10 @@ class Driver {
          */
        int RK(double dt, double Tmax, int maxIter, double tolUzawa);
 
+       int PrintEffVel(int mark, int side,
+                       const Tensor<weights>& allwgtsHD, double ** lHD,
+                       const Tensor<weights>& allwgtsCD, double ** lCD);
+
     private:
 
         /**!

@@ -106,6 +106,104 @@ int Driver::PrintFlowEvent(int mark){
     return 1;
 }
 
+int Driver::PrintEffVel(int mark, int side,
+                        const Tensor<weights>& allwgtsHD, double ** lHD,
+                        const Tensor<weights>& allwgtsCD, double ** lCD){
+
+    // Print Effective computed at the gauss points of each edge
+    // Only plot in selected direction
+    FILE * vxHD = fopen(GetFilename("effvelxHD", mark),"w");
+    FILE * vyHD = fopen(GetFilename("effvelyHD", mark),"w");
+    FILE * vxCD = fopen(GetFilename("effvelxCD", mark),"w");
+    FILE * vyCD = fopen(GetFilename("effvelyCD", mark),"w");
+
+    FILE * gaussgridx = fopen("gaussgridx.dat", "w");
+    FILE * gaussgridy = fopen("gaussgridy.dat", "w");
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    std::vector<vertex> gaussp;
+    gaussp.resize(gpe.size());
+
+    vertexSet edge;
+
+    vector<vertex> effvelHD; effvelHD.resize(gaussp.size());
+    vector<vertex> effvelCD; effvelCD.resize(gaussp.size());
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice gcell {i,j};
+        indice gcellout;
+        vertexSet corners = extractCorners(mi, gcell);
+
+        effvelHD.clear(); effvelHD.resize(gaussp.size());
+        effvelCD.clear(); effvelCD.resize(gaussp.size());
+
+        if (side==1){
+        // vertical
+
+            edge = {corners.at(3), corners.at(0)};
+
+            for (int g=0; g<gpe.size(); g++){
+                gaussp.at(g) = GaussMapPointsEdge({gpe[g]},edge);
+            }   
+
+            if (i==0){ // left side
+                computeEffVel(gaussp, edge, gcell, allwgtsHD, lHD, allwgtsCD, lCD, effvelHD, effvelCD);
+            } else {
+                gcellout = gcell + mi.faceNormal[3];
+                computeEffVel(gaussp, edge, gcell, gcellout, allwgtsHD, lHD, allwgtsCD, lCD, effvelHD, effvelCD);
+            }
+
+        } else if (side==2){
+        // horizontal
+
+            edge = {corners.at(0), corners.at(1)};
+
+            for (int g=0; g<gpe.size(); g++){
+                gaussp.at(g) = GaussMapPointsEdge({gpe[g]},edge);
+            }   
+            if (j==0){ // bottom side
+                computeEffVel(gaussp, edge, gcell, allwgtsHD, lHD, allwgtsCD, lCD, effvelHD, effvelCD);
+            } else {
+                gcellout = gcell + mi.faceNormal[0];
+
+                computeEffVel(gaussp, edge, gcell, gcellout, allwgtsHD, lHD, allwgtsCD, lCD, effvelHD, effvelCD);
+            }
+
+        } else {
+            cout << "Pick a side. " << endl;
+        }
+
+        for (int g=0; g<gpe.size(); g++){
+
+            fprintf(vxHD, "%e ", effvelHD.at(g)[0]);
+            fprintf(vyHD, "%e ", effvelHD.at(g)[1]);
+            fprintf(vxCD, "%e ", effvelCD.at(g)[0]);
+            fprintf(vyCD, "%e ", effvelCD.at(g)[1]);
+            fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
+            fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
+        }
+
+    } fprintf(vxHD, "\n ");
+      fprintf(vyHD, "\n ");
+      fprintf(vxCD, "\n ");
+      fprintf(vyCD, "\n ");
+      fprintf(gaussgridx, "\n ");
+      fprintf(gaussgridy, "\n ");}
+
+    fclose(vxHD);
+    fclose(vyHD);
+    fclose(vxCD);
+    fclose(vyCD);
+    fclose(gaussgridx);
+    fclose(gaussgridy);
+
+    return 1;
+}
+
 int quiverOutputEvent(double * ux, double * uy, double * vx, double * vy, int mark, int M, int N){
 
     // Separate velocity in x or y direction

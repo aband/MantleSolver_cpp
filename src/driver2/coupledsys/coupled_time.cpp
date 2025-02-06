@@ -57,6 +57,10 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
             CreateScatterVec();
         }
 
+        if (t%2 == 0){
+             PrintEffVel(mark-1, 2, allwgtsHD, lHD, allwgtsCD, lCD);
+        }
+
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
         DMDAVecRestoreArray(dmu, fluxHD, &lfHD);
@@ -65,8 +69,6 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         DMDAVecRestoreArray(dmu, localCD, &lCD);
         DMRestoreLocalVector(dmu, &localHD);
         DMRestoreLocalVector(dmu, &localCD);
-
-        VecView(fluxHD, PETSC_VIEWER_STDOUT_WORLD);
 
         VecAXPY(globalHD, -1*dt, fluxHD);
         VecAXPY(globalCD, -1*dt, fluxCD);
