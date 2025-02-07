@@ -7,14 +7,12 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
     int Nt = (int)(Tmax/dt);
 
+    printCellAve(mark, &globalHD, mi, "HD");
+    printCellAve(mark, &globalCD, mi, "CD");
+
     for (int t=0; t<Nt; t++) {
 
-        if (t%2 == 0){
-            printCellAve(mark, &globalHD, mi, "HD");
-            printCellAve(mark, &globalCD, mi, "CD");
-            mark ++;
-        }
- 
+
         Vec localHD, localCD; 
         PetscCall(DMGetLocalVector(dmu, &localHD));
         PetscCall(DMGetLocalVector(dmu, &localCD));
@@ -51,16 +49,18 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         advection.computeWgts(ml, mi, h0, allwgtsCD);
 
         // Solve for velocity
-        if (t == 0){
+        if (t  == 0){
             cout << "Darcy-Stokes system solved at : " << t*dt << endl;
             SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
             CreateScatterVec();
+           PrintFlowEvent(mark);
+           PrintPhaseEvent(mark);
         }
-
+/*
         if (t%2 == 0){
              PrintEffVel(mark-1, 2, allwgtsHD, lHD, allwgtsCD, lCD);
         }
-
+*/
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
         DMDAVecRestoreArray(dmu, fluxHD, &lfHD);
@@ -72,6 +72,12 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
         VecAXPY(globalHD, -1*dt, fluxHD);
         VecAXPY(globalCD, -1*dt, fluxCD);
+
+        if (t%5 == 0){
+           mark ++;
+           printCellAve(mark, &globalHD, mi, "HD");
+           printCellAve(mark, &globalCD, mi, "CD");
+       }
     }
 
     printCellAve(mark, &globalHD, mi, "HD");

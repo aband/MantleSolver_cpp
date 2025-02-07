@@ -55,9 +55,11 @@ double edgefluxintegral(const MeshInfo& mi,
         double uout = use.eval(mapped, ml, "all", 
                       allwgts({gcellout[0],gcellout[1]}), gcellout, lu); 
 
+        double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+
         work += gwe[g] * LFflux(uin, uout, 
                                 advfunc(uin,vel.at(g),unitNormal),
-                                advfunc(uout,vel.at(g),unitNormal),1.0) * len/2.0; 
+                                advfunc(uout,vel.at(g),unitNormal),LF) * len/2.0; 
     }
 
     return work;
@@ -87,9 +89,11 @@ double edgefluxintegral(const MeshInfo& mi,
         double u  = use.eval(mapped, ml, "all", 
                     allwgts({gcell[0],gcell[1]}), gcell, lu); 
 
+        double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+
         work += gwe[g] * LFflux(u, u, 
                                 advfunc(u,vel.at(g),unitNormal),
-                                advfunc(u,vel.at(g),unitNormal),1.0) * len/2.0; 
+                                advfunc(u,vel.at(g),unitNormal),LF) * len/2.0; 
     }
 
     return work;
@@ -111,8 +115,11 @@ double edgefluxintegral(const vertexSet& edge,
 
     for (int g=0; g<gpe.size(); g++){
         double val = bnval.at(g);
+
+        double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+
         work += gwe[g] * LFflux(val, val, advfunc(val, vel.at(g), unitNormal),
-                                          advfunc(val, vel.at(g), unitNormal),1.0) *len/2.0;
+                                          advfunc(val, vel.at(g), unitNormal),LF) *len/2.0;
 
     }
 
@@ -134,8 +141,11 @@ double edgefluxintegral(const vertexSet& edge,
     vertex unitNormal = UnitNormal(edge,len);
 
     for (int g=0; g<gpe.size(); g++){
+
+        double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+
         work += gwe[g] * LFflux(bnval, bnval, advfunc(bnval, vel.at(g), unitNormal),
-                                              advfunc(bnval, vel.at(g), unitNormal),1.0) *len/2.0;
+                                              advfunc(bnval, vel.at(g), unitNormal),LF) *len/2.0;
 
     }
 
@@ -216,9 +226,11 @@ int edgefluxintegral(const MeshInfo& mi,
         double uout = use.eval(mapped, ml, "all", 
                       allwgts({gcellout[0],gcellout[1]}), gcellout, lu); 
 
+        double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+
         f += gwe[g] * LFflux(uin, uout, 
                              advfunc(uin,vel.at(g),unitNormal),
-                             advfunc(uout,vel.at(g),unitNormal),1.0) * len/2.0; 
+                             advfunc(uout,vel.at(g),unitNormal),LF) * len/2.0; 
         derivative derfin;
         derivative derfout;
         derivative derLF;
@@ -235,7 +247,7 @@ int edgefluxintegral(const MeshInfo& mi,
 //        cout << "derfout : " << endl;
 //        unordered_map_print(derfout);
 
-        derLFflux(derin, derout, derfin, derfout, 1.0, derLF);
+        derLFflux(derin, derout, derfin, derfout, LF, derLF);
 
         unordered_map_arithmetic(der, derLF, std::plus<double>(), 
                          gwe[g]*len/2.0, std::multiplies<double>());

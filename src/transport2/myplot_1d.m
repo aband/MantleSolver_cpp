@@ -31,7 +31,7 @@ sol = fscanf(fileID, '%f', [1,Inf]);
 sol = reshape(sol, M, N);
 
 surf(pX, pY, sol)
-title("sol")
+title(filename)
 ylabel("Depth");
 
 set(gcf, 'Position',[50 50 1800 700]);

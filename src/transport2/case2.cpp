@@ -11,9 +11,9 @@ double func(const vertex& point,
     // time inputed as param[0] 
 
     // Rarefraction initial condition
-    //return 3-point[0];
+    //return 0.1*(3-point[0]);
 
-    return 1;
+    return 0.1;
 }
 
 // Burgers for testing
@@ -29,7 +29,7 @@ int dadvfunc(const derivative& du, const double& u, const vertex& vel, const ver
 
     // compute df/du = df/dR * dR/du
 
-    double direction = u*(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+    double direction = (unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 
     unordered_map_arithmetic(work, du, std::plus<double>(), direction, std::multiplies<double>());
 
@@ -49,12 +49,17 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
 	 // Test for serial now
     Tensor_zero(vertedge);
     Tensor_zero(horiedge);
-   
+  
+    double velval = 0.1;
+    //double coef = 0.1;
+    double coef = 0.1; 
+    //double coef = 1;
+
     const valarray<double>& gpe = GaussPointsEdge;
     vector<vertex> vel;
     vel.resize(gpe.size());
     for (int i=0; i<vel.size(); i++){
-        vel.at(i) = {0.1,0};
+        vel.at(i) = {velval,0};
     }
 
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
@@ -83,16 +88,14 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
        
         vertexSet vert {corners.at(3), corners.at(0)};
 
-
         for (int g=0; g<gpe.size(); g++){
             vertex mapped = GaussMapPointsEdge({gpe[g]}, vert);
-				vel.at(g) = {3.0-mapped[0],0};
+				vel.at(g) = {(4.0-mapped[0])*coef,0};
         } 
-
 
         // boundary
         if (i==0){
-            flux = edgefluxintegral(vert, 3, vel);
+            flux = edgefluxintegral(vert, coef, vel);
 
         } else {
             cellout = globalcell + mi.faceNormal[3];

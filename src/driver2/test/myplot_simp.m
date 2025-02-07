@@ -36,7 +36,7 @@ sol = reshape(sol, M, N);
 %surf(pX, pY, sol)
 pause
 plot(sol(2,:), pY(2,:));
-title(name)
+title(filename)
 ylabel("Depth");
 
 set(gcf, 'Position',[50 50 1800 700]);
