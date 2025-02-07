@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 
     driver->withUnit = withUnit;
     driver->CreatePhase();
-
+    driver->ShowPhase();
     driver->CreateMesh(M, N, L, H, xstart, ystart, 
                        stencilWidthMesh, stencilWidthU,
                        physicsScale, meshType);

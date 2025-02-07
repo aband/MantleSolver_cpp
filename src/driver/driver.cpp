@@ -50,7 +50,8 @@ int Driver::CreateMesh(const int& M, const int& N,
     // Create dmMesh
     PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
     DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, 
-    M, N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidthMesh, NULL, NULL, &dmMesh));
+    M, N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidthMesh, NULL, NULL, 
+    &dmMesh));
     PetscCall(DMSetFromOptions(dmMesh));              
     PetscCall(DMSetUp(dmMesh));
 
@@ -63,158 +64,133 @@ int Driver::CreateMesh(const int& M, const int& N,
     PetscCall(DMSetUp(dmu));     
 
     // Create MeshParam object (historical object one time use only)
-    mp_.xstart = xstart;
-    mp_.ystart = ystart;
-    mp_.L = L;
-    mp_.H = H;
+    MeshParam mp;
+    mp.xstart = xstart;
+    mp.ystart = ystart;
+    mp.L = L;
+    mp.H = H;
+
+    mi.L = L;
+    mi.H = H;
+    L_ = L;
+    H_ = H;
 
     // Create global vector containing mesh
     PetscCall(DMCreateGlobalVector(dmMesh, &globalmesh));
-
     switch(meshType){
-        case 0: CreateFullMesh(dmMesh, &globalmesh, &mp_); break;
-        case 1: LogicRectMesh(dmMesh, &globalmesh, &mp_);  break;
-        case 2: RefineMesh(dmMesh, &globalmesh, &mp_);
+        case 0: CreateFullMesh(dmMesh, &globalmesh, &mp); break;
+        case 1: LogicRectMesh(dmMesh, &globalmesh, &mp);  break;
+        case 2: RefineMesh(dmMesh, &globalmesh, &mp);
         //case 2: TestControlMeshSecond(dmCell,L,H); break;
         //case 3: TestControlMeshThird(dmCell,L,H);  break;
     }
 
     ReadMeshPortion(dmMesh, &globalmesh, mi.lmesh);
 
-    M_ = M;
-    N_ = N;
+    AssignValuesMeshInfo(mi, dmMesh, dmu);
+
+    return 1;
+}
+
+int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point, 
+                                              const vector<double>& param),
+                             double (*funcCD)(const valarray<double>& point, 
+                                              const vector<double>& param)){
+
+    PetscCall(DMCreateGlobalVector(dmu, &globalCD));
+    PetscCall(DMCreateGlobalVector(dmu, &globalHD));
+
+    // Assign cell averaged values as initial condition
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalCD, {H_,0.0}, funcCD);
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {myPhase->pp->l0*H_,0.0}, funcHD);
+
+    // Initialization of multi level weno and corresponding usage
+    ml = multilevel(); 
+
+    ml.addLevel("(3,3)", {3,3}, mi);
+    ml.addLevel("(2,2)", {2,2}, mi);
+
+    advection = mluse();
+
+    // Test for nonlinear weighting
+    unordered_map<std::string, vector<indice>> method;
+    method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+
+    // Area scale
+    h0 = sqrt((L_*H_)/
+         (double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
+
+    advection.setmethod("all", method);
+    advection.setbias("all");
+
+    // Compute bottom fixed value
+    HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,0.0});
+    CDbottom = 0.1;
+
+    return 1;
+}
+
+int Driver::PrepareFlow(){
+
+    basis_ = new basis();
+    hdiv_  = new Hdivmixed();
+    br_    = new BRMixed();
+
+    br_->ComputeTotalDOF(mi);
+    hdiv_->ComputeTotalDOF(mi);
   
-    return 0;
+    // Define boundary parameter
+    parameter.push_back(-0.2);
+
+    MarkBndryDOFStokes(bndryStokesEssen_, bndryStokesNatur_, mi, *basis_, *br_, myPhase->pp, parameter);
+    MarkBndryDOFDarcy(bndryDarcyEssen_, bndryDarcyNatur_, mi, *basis_, *hdiv_, myPhase->pp);
+
+    reducedDarcy_ = (ReducedSys *)malloc(sizeof(ReducedSys));
+    reducedStokes_ = (ReducedSys *)malloc(sizeof(ReducedSys));
+
+    refArrayStokesEssen_ = new int[br_->getDOF()];
+    refArrayDarcyEssen_  = new int[hdiv_->getDOF()];
+
+    CreateRefMap(*br_  , mi, refArrayStokesEssen_, refArrayStokesNatur_, &bndryDOFStokes_, &bndryDOFStokesNatur_, parameter);
+    CreateRefMap(*hdiv_, mi, refArrayDarcyEssen_ , refArrayDarcyNatur_ , &bndryDOFDarcy_ , &bndryDOFDarcyNatur_ , parameter);
+
+    Result_ = (ReducedSys *)malloc(sizeof(ReducedSys));
+
+    sresult_ = (ScatterResult *)malloc(sizeof(ScatterResult));
+
+    return 1;
 }
 
-int Driver::PrintMesh(){
+int Driver::SolveFlow(int maxIter, double tolUzawa, const Tensor<weights>& allwgtsHD, double ** lHD, 
+                                                    const Tensor<weights>& allwgtsCD, double ** lCD){
 
-    VecView(globalmesh, PETSC_VIEWER_STDOUT_WORLD);
-    PrintFullMesh(dmMesh, &globalmesh);
+    ParallelMatrixAssemble(allwgtsHD, lHD, allwgtsCD, lCD);
 
-    return 0;
+    int nelem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
+
+    CreateLinearSys(reducedStokes_, nelem);
+    CreateLinearSys(reducedDarcy_, nelem);
+
+    CreateCoupledSystem(reducedStokes_, reducedDarcy_, Result_, &K);
+
+    CoupledUzawa(Result_, tolUzawa, maxIter);
+
+    return 1;
 }
 
-int Driver::PrintMesh(const std::string& name){
+int Driver::CreateScatterVec(){
 
-    VecView(globalmesh, PETSC_VIEWER_STDOUT_WORLD);
-    PrintFullMesh(dmMesh, &globalmesh);
+    // Scatter distributed vector to all processors
+    Vec stokesv, darcyv;
+    PetscCall(VecNestGetSubVec(Result_->x, 0, &stokesv));
+    PetscCall(VecNestGetSubVec(Result_->x, 1, &darcyv));
 
-    for (int j=0; j<N_; j++){
-    for (int i=0; i<M_; i++){
-        cout << mi.localValsMap.at(name)[j][i] << "  ";
-    }cout << endl;}
+    SolScatAll(&stokesv, &reducedStokes_->g, 
+               &sresult_->vel_stokes, &sresult_->g_stokes);  
 
-    return 0;
-}
+    SolScatAll(&darcyv, &reducedDarcy_->g, 
+               &sresult_->vel_darcy, &sresult_->g_darcy);  
 
-char * Driver::GetFilename(const char * fieldname){
-
-    char * filename = (char *)malloc(strlen(fieldname)+10+4);
-
-    char n_char[10];
-    std::sprintf(n_char,"%d",eventCount);
-    strcpy(filename, fieldname);
-    strcat(filename, n_char);
-    strcat(filename, ".dat");
-
-    return filename;
-}
-
-int Driver::InitTransport(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
-                          double (*funcCD)(const valarray<double>& point, const vector<double>& param)){
-
-    eventCount = 0;
-
-    // Create global vectors
-    PetscCall(DMCreateGlobalVector(dmu,&globalHD));
-    PetscCall(DMCreateGlobalVector(dmu,&globalCD));
-
-    // Assign Initial values in the form of cell-averaged value
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalCD, {H_,0.0}, funcCD); 
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {myPhase->pp->l0*H_,0.0}, funcHD); 
-
-    // Distribute global to local vectors
-    DMGetLocalVector(dmu, &localHD);
-
-    DMGlobalToLocalBegin(dmu, globalHD, INSERT_VALUES, localHD);
-    DMGlobalToLocalEnd(dmu, globalHD, INSERT_VALUES, localHD);
-
-    DMGetLocalVector(dmu, &localCD);
-
-    DMGlobalToLocalBegin(dmu, globalCD, INSERT_VALUES, localCD);
-    DMGlobalToLocalEnd(dmu, globalCD, INSERT_VALUES, localCD);
-
-    DMDAVecGetArray(dmu, localCD, &mi.localCD);
-    DMDAVecGetArray(dmu, localHD, &mi.localHD);
-
-    AssignValuesMeshInfo(mi, dmMesh, dmu);
-
-    // Preparation for MLWENO
-    mlpPtr_ = new MLWENO::MLWENOPrepare();
-
-    // Initialize MLWENO objects
-    mluseAdv_ = new MLWENO::MLWENOUse();
-
-    mluseDif_ = new MLWENO::MLWENOUse();
-
-    return 0;
-}
-
-int Driver::InitTransport(
-    double (*func)(const valarray<double>& point, const vector<double>& param), 
-    const std::string& name,
-    const bool& eventflag){
-
-    if (eventflag){
-        eventCount = 0;
-    }
-
-    Vec globalvec, localvec;
-    double **locVals;
-
-    PetscCall(DMCreateGlobalVector(dmu, &globalvec));
-
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {0.0,0.0}, func);
-
-    // Distribute local part to local vectors.
-    PetscCall(DMGetLocalVector(dmu, &localvec)); 
-
-    PetscCall(DMGlobalToLocalBegin(dmu, globalvec, INSERT_VALUES, localvec));
-    PetscCall(DMGlobalToLocalEnd(dmu, globalvec, INSERT_VALUES, localvec));
-
-    PetscCall(DMDAVecGetArray(dmu, localvec, &locVals));
-
-    mi.localValsMap.insert(std::make_pair(name, locVals));
-
-    // Assign mesh information to mi object
-    AssignValuesMeshInfo(mi, dmMesh, dmu);
-
-    // Prepare mlweno objects
-    mlpPtr_   = new MLWENO::MLWENOPrepare();
-    mluseAdv_ = new MLWENO::MLWENOUse();
-    mluseDif_ = new MLWENO::MLWENOUse();
-
-    globalVecMap.insert(std::make_pair(name, &globalvec));
-    localVecMap.insert(std::make_pair(name, &localvec));
-
-    return 0;
-} 
-
-int Driver::clean(){
-
-    // Restore local vectors
-    DMDAVecRestoreArray(dmu,localCD,&mi.localCD);
-    DMRestoreLocalVector(dmu, &localCD); 
-    DMDAVecRestoreArray(dmu,localHD,&mi.localHD);
-    DMRestoreLocalVector(dmu, &localHD); 
-
-    PetscCall(VecDestroy(&globalHD));
-    PetscCall(VecDestroy(&globalCD));
- 
-    PetscCall(VecDestroy(&globalmesh));
-    PetscCall(DMDestroy(&dmMesh));
-    PetscCall(DMDestroy(&dmu));
-
-    return 0;
+    return 1;
 }

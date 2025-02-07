@@ -61,7 +61,7 @@ target_link_libraries(general_lib
 add_library(io_lib
 		  ${SRC}/io/input.cpp
 		  ${SRC}/io/output.c
-		  ${SRC}/io/cgns_io.c
+		  #${SRC}/io/cgns_io.c
 )
 
 target_include_directories(io_lib
@@ -78,8 +78,11 @@ target_link_libraries(io_lib
 
 # Create a library from the files in the mlweno directory
 add_library(mlweno_lib 
-		  ${SRC}/mlweno/reconstruction.cpp 
-		  ${SRC}/mlweno/polynomial.cpp 
+		  ${SRC}/mlweno/polynomial.cpp
+		  ${SRC}/mlweno/stencilpolynomial.cpp
+		  ${SRC}/mlweno/tensor.cpp
+		  ${SRC}/mlweno/reconstruction.cpp
+		  ${SRC}/mlweno/mluse.cpp
 )
 
 # Specify any additional include directories if needed
@@ -96,10 +99,9 @@ target_link_libraries(mlweno_lib
 
 # Create a library from the files in the transport directory
 add_library(transport_lib
-		  ${SRC}/transport/transport.cpp 
-		  ${SRC}/transport/timestepping.cpp 
-		  ${SRC}/transport/diffusion.cpp 
-		  ${SRC}/transport/advection.cpp
+		  ${SRC}/transport/advectiveflux.cpp
+		  ${SRC}/transport/temp.cpp
+		  #${SRC}/transport/lagrange_tmp.cpp
 )
 
 # Specify any additional include directories if needed
@@ -114,18 +116,33 @@ target_link_libraries(transport_lib
         io_lib
         general_lib
         mlweno_lib
-        PkgConfig::PETSC
+        #PkgConfig::PETSC
 )
 
 # Add to excutable
-add_executable(test 
-        func.cpp
+add_executable(case1 
         test.cpp 
+		  case1.cpp
 )
 
 # Link static libraries generated previously
-target_link_libraries(test 
+target_link_libraries(case1
     io_lib
     transport_lib
+	 general_lib
+    PkgConfig::LAPACKE 
+)
+
+# Add to excutable
+add_executable(case2
+        test.cpp 
+		  case2.cpp
+)
+
+# Link static libraries generated previously
+target_link_libraries(case2
+    io_lib
+    transport_lib
+	 general_lib
     PkgConfig::LAPACKE 
 )

@@ -13,7 +13,7 @@
 // MFEM parameter header file
 #include "myFunc.h"
 
-#define COUPLED
+//#define COUPLED
 #include "passemble.h"
 #include "Hdivmixed.h"
 #include "brmixed.h"
@@ -21,11 +21,14 @@
 #include "preconst.h"
 #include "psolve.h"
 
-// MLWENO parameter header file
-#include "mlwenouse.h"
+// Using new mlweno functions
+#include "mluse.h"
+#include "reconstruction.h"
+#include "stencilpolynomial.h"
+#include "tensor.h"
+
+#include "advectiveflux.h"
 #include "trans_param.h"
-#include "advectiveFlux.h"
-#include "edgeFlux.h"
 
 extern "C"{
 #include "mesh.h"
@@ -33,57 +36,29 @@ extern "C"{
 //#include "cgns_io.h"
 }
 
-#include<sys/stat.h>
-
-enum transportType {adv, diff, adv_diff, adv_diff_react};
-
 class Driver {
-    public:
-        //! A constructor
-        /**!
-         * Construct a driver class.
-         * Driver class holding a pointer to meshInfo object.
-         * Driver class will be used to interact with underlaying functions.
-         */
+
+    public :
+
         Driver() {};
 
-        //! A destructor
-        /**!
-         * Destruct a Initialize class.
+        ~Driver() { delete myPhase;};
+
+        /**! 
+         * Mesh parameters 
          */
-        ~Driver() {delete myPhase;};
-
-        //! A post work clean function
-        /**!
-         * Clean used dm and vec objects.
-         * Should be called at the end of main function.
-         */
-
-        int clean();
-
-        int withUnit;
-
-        /**!
-         * MeshInfo struct
-         * Can be accessed from outside the class directly.
-         */
-        MeshInfo mi;
-
-       /**!
-         * Data management objects for mesh and solution.
-         * showing up in compuation process.
-         */ 
-        DM dmMesh;       
-        DM dmu; 
+        MeshInfo  mi;
+        DM dmMesh;
+        DM dmu;
+        Vec globalmesh;  
 
        /**!
         * Initialize phase package
         */
        Phase * myPhase;
-
        int CreatePhase();
-
        int ShowPhase();
+       int withUnit; 
 
        /**!
         * Create Data management objects.
@@ -97,64 +72,12 @@ class Driver {
                        const bool& physicsScale,
                        const int& meshType); 
 
-        Vec globalmesh;  
-
-        int PrintMesh();
-        int PrintMesh(const std::string& name);
-
-       /**!
-        * Assign Initial cell averaged condition.
-        * Specificed for coupled system.
-        * global vectors for dimensionless enthalpy and dimensionless Composition.
-		  * These global vectors serve as initial distribution vectors.
-        */
         Vec globalCD, globalHD;
-        Vec localCD, localHD;
-
-       /**!
-        * Print global vector CD and HD to file for visualization.
-        * Works in serial for now.
-        */
-        int PrintCDEvent();
-        int PrintHDEvent();
-
-        int PrintCellValue(Vec * target,
-                           const char * name);
-
-        int InitTransport(double (*funcHD)(const valarray<double>& point, const vector<double>& param),
-                          double (*funcCD)(const valarray<double>& point, const vector<double>& param));
-
-        int InitTransport(
-    double (*func)(const valarray<double>& point, const vector<double>& param), 
-    const std::string& name,
-    const bool& eventflag);
-
-       // ================================================================================================
-       
-       /**!
-        * Add reconstruction levels to transport problem.
-        */
-       int AddLevels(const int& stencilSize);
-       int AddLevels(const int& stencilSizeX,
-                     const int& stencilSizeY);
-
-       int AddLevels(const vector<int>& stencilSizes);
-
-       int AddLevels(const vector<pair<int, int>>& stencilSizes);
-
-       /**!
-        * Add default reconstruction levels to transport problem.
-        * For advection:
-        * (3,2) interior, (3,2,1) on the edge, level 3 on the edge being biased
-        * For diffusion:
-        * (4,3) interior, (3,2) on the edge, level 3 on the edge being biased
-        */
-       int PrepareDefaultTransport();
-
-       int PrepareTransport(const std::string& name);
-
-       // ========================================================================
-
+        int PrepareTransport(double (*funcHD)(const valarray<double>& point, 
+                                              const vector<double>& param),
+                             double (*funcCD)(const valarray<double>& point, 
+                                              const vector<double>& param));
+        double h0;
        /**!
         * Create boundary condition vectors
         */
@@ -163,10 +86,8 @@ class Driver {
        /**!
         * Solve flow at the given time step.
         */
-       int SolveFlow(int maxIter, double tolUzawa);
-
-       int SolveFlow(int maxIterStokes, double tolStokes,
-                     int maxIterDarcy,  double tolDarcy);
+       int SolveFlow(int maxIter, double tolUzawa, const Tensor<weights>& allwgtsHD, double ** lHD, 
+                                                   const Tensor<weights>& allwgtsCD, double ** lCD);
 
        /**!
         * Scatter distributed vector to all processor.
@@ -175,178 +96,52 @@ class Driver {
        int CreateScatterVec();
 
        /**!
-        * Print MLWENO information
+        * Assemble reduced linear system.
+        * Reducing boundary dofs
         */
-       int PrintMLWENOInfo();
+       PetscErrorCode ParallelMatrixAssemble(const Tensor<weights>& allwgtsHD, double ** lHD,
+                                             const Tensor<weights>& allwgtsCD, double ** lCD);
 
-       /**!
-        * Update smoothness indicator and nonlinear weights for all field and mluse
-        */
-       int UpdateSmoothnessIndicator();
-
-       int UpdateNonlinearWgts();
-
-       // =================================================================================
-       /**!
-        * Print cell center grid to a file
-        */
-       int PrintGrid();
-
-       /**!
-		  * Print Lithostatic pressure for reference
-		  */
-       int PrintLithoPressure();
-
-       /**!
-        * Output of the calculated result
-        */
-       int PrintFlow();
-
-       /**!
-        * Print flow during time stepping process
-        */
-       int quiverOutputEvent(double * ux, double * uy, double * vx, double * vy);
-       int PrintFlowEvent();
-
-       int testPrint();
-
-       /**!
-        * Print out porosity 
-        */
-       int PrintPorosity();
-
-       /**!
-        * Print out porosity and temperature and also other physical variables
-        * that need phase package evaluation.
-        */
-       int PrintPhaseEvent();
-
-       /**!
-        * Print out Pressure
-        */
-       int PrintPressureConstant();
-
-       int PrintPressureConstantOriginal();
-
-       int PrintPressureEvent();
-
-       /**!
-        * Show asigned boundary condition.
-        * Print assigned boundary conditions type to each dof on the boundary
-        */
-       int PrintBoundaryDOFs();
-
-       // Print boundary dof information to a file
-       int PrintStokesBoundaryDOFs();
-
-       /**!
-        * Functions used to compute flux happening on the edges 
-        */
-       int SingleEdgeFlux(const indice& localedge,
-                          extractEdgeInfoFunc edgeinfo, 
-                          double& workCD,
-                          double& workHD,
-                          fluxFunc      fluxfuncAdv, 
-                          fluxFuncBndry fluxfuncbndryAdv,
-                          fluxFunc      fluxfuncDif,
-                          fluxFuncBndry fluxfuncbndryDif);
-
-       int UpdateEdgeFluxAll(vector<double>& edgefluxHD,
-                             vector<double>& edgefluxCD,
-                             fluxFunc      fluxfuncAdv, 
-                             fluxFuncBndry fluxfuncbndryAdv,
-                             fluxFunc      fluxfuncDif,
-                             fluxFuncBndry fluxfuncbndryDif);
-
-       int ComputeCellFlux(const indice& lCell,
-                           double& fluxHD,
-                           double& fluxCD,
-                           const vector<double>& edgefluxHD,
-                           const vector<double>& edgefluxCD);
-
-       double Tmax;
-       double tolUzawa;
-       int    maxIter;
-
-       double CFL;
-       double dt;
-
-       int UpdateFluxAll(const bool& event,
-                         Vec * globalhd, 
-                         Vec * globalcd,
-                         Vec * fluxHD,
-                         Vec * fluxCD);
-
-       int RK(); 
-
-       // ===================================================================
-       /**!
-        * counting how many events happen throughout time stepping
-        */
-       int eventCount;
-
-       char * GetFilename(const char * filename);
-
-       // For testing, make it public temperarily
-       MLWENO::MLWENOUse * mluseAdv_;
-
-       // parameters used in calculation of boundary conditions
        std::vector<double> parameter;
 
-       void getDomainSize(const double& L, const double& H) {L_ = L; H_ = H;};
+       /**!
+        * Interface objects to multileve object
+        */
+       multilevel ml;
 
-       // =================================
+       mluse advection;
+       mluse diffusion;
 
-       std::set<std::string> fields;
+       /**!
+        * Simple visualization functions
+        */
+       int PrintFlowEvent(int mark);
 
-       std::unordered_map<std::string, Vec*> globalVecMap;
-       std::unordered_map<std::string, Vec*> localVecMap;
-       // =================================
+       int PrintPhaseEvent(int mark);
+
+       double HDbottom;
+       double CDbottom;
+
+        /**!
+         * Time stepping function
+         */
+       int RK(double dt, double Tmax, int maxIter, double tolUzawa);
+
+       int PrintEffVel(int mark, int side,
+                       const Tensor<weights>& allwgtsHD, double ** lHD,
+                       const Tensor<weights>& allwgtsCD, double ** lCD);
 
     private:
 
         /**!
          * Record global cell sizes
          */
-        int M_;
-        int N_;
-
         double L_;
         double H_;
 
         /**!
-         * Old struct object used in limited functions.
-         * Be used for only once.
-         */
-        MeshParam mp_;
-
-        /**!
-         * WENO useage objects
-			* Two objects, one for advection and another for diffusion
-         */
-//        MLWENO::MLWENOUse * mluseAdv_;
-
-        MLWENO::MLWENOUse * mluseDif_;
-
-        /**!
-         * WENO preparation object.
-         */
-        MLWENO::MLWENOPrepare * mlpPtr_;
-
-        /**!
-			* Position set including all possible positions
-			*/
-        std::set<std::string> posSet_;
-        std::set<std::string> fieldSet_;
-
-        std::unordered_map<std::string, LocFunc> locFuncSet_;
-
-        // ===========================================================
-
-        /**!
          * Finite Element spaces.
          */
-
         basis * basis_;
         Hdivmixed * hdiv_;
         BRMixed * br_;
@@ -354,7 +149,6 @@ class Driver {
         /**!
          * Boundary conditions
          */
-
         // Mark boundary values
         bndryVal bndryStokesEssen_;
         bndryVal bndryStokesNatur_;
@@ -364,19 +158,17 @@ class Driver {
         /**!
          * Reduced linear system excluding essential boundary conditions
          */
-
         ReducedSys * reducedDarcy_;
         ReducedSys * reducedStokes_;
 
         /**!
          * Coupling matrix.
          */
-        Mat K_;
+        Mat K;
 
        /**!
         * Create boundary dof reference mapping
         */
-
        int bndryDOFStokes_ = 0.0;
        int bndryDOFDarcy_  = 0.0;
 
@@ -399,22 +191,72 @@ class Driver {
 
        ScatterResult * sresult_;
 
+       // ==================================================
+
+       int CellAvePorosity(const indice& gcell,
+                           const Tensor<weights>& allwgtsHD,
+                           double ** lHD,
+                           const Tensor<weights>& allwgtsCD,
+                           double ** lCD);
+
+       int AssignLocMatStokes(const indice& gcell,
+                              const Tensor<weights>& allwgtsHD,
+                              double ** lHD,
+                              const Tensor<weights>& allwgtsCD,
+                              double ** lCD,
+                              LocMat * loc);
+
+       int AssignLocMatDarcy(const indice& gcell,
+                             const Tensor<weights>& allwgtsHD,
+                             double ** lHD,
+                             const Tensor<weights>& allwgtsCD,
+                             double ** lCD,
+                             LocMat * loc);
+
+       int AssignLocMatCouple(const indice& gcell,
+                              const Tensor<weights>& allwgtsHD,
+                              double ** lHD,
+                              const Tensor<weights>& allwgtsCD,
+                              double ** lCD,
+                              double& k);
+
+       // =======================================================
+       int computephase(const std::vector<vertex>& gaussp,
+                        const vertexSet& edgep,
+                        const indice& gcell,
+                        const Tensor<weights>& allwgtsHD, double ** lHD,
+                        const Tensor<weights>& allwgtsCD, double ** lCD,
+                        vector<double>& kappa,
+                        vector<double>& lambda,
+                        vector<double>& phif);
+
+       // Function used in the interior region
+       int computeEffVel(const vector<vertex>& gaussp,
+                         const vertexSet& edgep,
+                         const indice& gcellin, const indice& gcellout,
+                         const Tensor<weights>& allwgtsHD, double ** lHD,
+                         const Tensor<weights>& allwgtsCD, double ** lCD,
+                         vector<vertex>& effvelHD, 
+                         vector<vertex>& effvelCD);
+
+       // Function used on the boundary
+       int computeEffVel(const vector<vertex>& gaussp,
+                         const vertexSet& edgep,
+                         const indice& gcell,
+                         const Tensor<weights>& allwgtsHD, double ** lHD,
+                         const Tensor<weights>& allwgtsCD, double ** lCD,
+                         vector<vertex>& effvelHD, 
+                         vector<vertex>& effvelCD);
+
+       int updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeHD,
+                          Tensor<double>& vertedgeCD, Tensor<double>& horiedgeCD,
+                          const Tensor<weights>& allwgtsHD, double ** lHD,
+                          const Tensor<weights>& allwgtsCD, double ** lCD);
+
+       int getflux(const Tensor<weights>& allwgtsHD, double ** lHD, 
+                   const Tensor<weights>& allwgtsCD, double ** lCD, 
+                   double **lfHD, double** lfCD);
+
 };
-
-// Time stepping struct
-// In compleying with C format
-typedef struct {
-
-    Driver * driver; 
-
-    double dt;
-
-    int maxIter;
-
-    double tolUzawa;
-
-} ctx_driver;
-
-PetscErrorCode Explicit(TS ts, PetscReal time, Vec U, Vec F, void * ctx);
 
 #endif

@@ -19,41 +19,46 @@ int main(int argc, char ** argv){
 
     PetscCall(PetscPrintf(PETSC_COMM_WORLD,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n"));
 
-    int M = 2, N = 2;
+    int M = 3, N = 3;
     PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);
     PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);
 
-    DM test;
-
-    DMStagCreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, 
-                   M, N, PETSC_DECIDE, PETSC_DECIDE, 2, 1, 0, DMSTAG_STENCIL_BOX,0,
-                   NULL, NULL,&test);
-    DMSetUp(test); 
-
-    DMView(test, PETSC_VIEWER_STDOUT_WORLD);
-
     // ======================
-    Vec   fullmesh;
-    DM    dm;
 
-    const int stencilWidth = 2;
+    int stencilwidth = 0;
 
-    DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidth, NULL, NULL, &dm);
-    DMSetFromOptions(dm); 
-    DMSetUp(dm); 
-    DMCreateGlobalVector(dm, &fullmesh); 
+    DM    dmbr;
+    DMStagCreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_NONE, DM_BOUNDARY_NONE, M, N, PETSC_DECIDE, PETSC_DECIDE, 2, 1, 0, 
+                   DMSTAG_STENCIL_BOX, stencilwidth, NULL, NULL, &dmbr);
+    DMSetFromOptions(dmbr); 
+    DMSetUp(dmbr); 
 
-    MeshParam mp;
-    mp.xstart = -1;
-    mp.ystart = -1;
-    mp.L = 2;
-    mp.H = 2;
+    DMView(dmbr, PETSC_VIEWER_STDOUT_WORLD);
 
-    CreateFullMesh(dm, &fullmesh, &mp);
+    Vec testbr;
+    DMCreateGlobalVector(dmbr, &testbr);
 
-    VecDestroy(&fullmesh);
-    DMDestroy(&dm);
-    DMDestroy(&test);
+    Mat Abr;
+    DMCreateMatrix(dmbr, &Abr);
+
+    // ==================================================
+
+    DM dmbdm;
+    DMStagCreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_NONE, DM_BOUNDARY_NONE, M, N, PETSC_DECIDE, PETSC_DECIDE, 0, 2, 0, 
+                   DMSTAG_STENCIL_BOX, stencilwidth, NULL, NULL, &dmbdm);
+    DMSetFromOptions(dmbdm); 
+    DMSetUp(dmbdm); 
+
+    DMView(dmbdm, PETSC_VIEWER_STDOUT_WORLD);
+
+    Vec testbdm;
+    DMCreateGlobalVector(dmbdm, &testbdm);
+
+    Mat Abdm;
+    DMCreateMatrix(dmbdm, &Abdm);
+
+    DMDestroy(&dmbr);
+    DMDestroy(&dmbdm);
 
     PetscFinalize();
 

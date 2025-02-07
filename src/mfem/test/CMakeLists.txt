@@ -128,18 +128,18 @@ target_include_directories(phase_lib
 #        myfunc4.cpp
 #)
 #
-add_executable(testBasis
-        testBasis.cpp
-)
-
-add_executable(testParallel
-        testParallel.cpp
-		  myfunc.cpp
-)
-
-#add_executable(testDMstag
-#        testDMstag.cpp 
+#add_executable(testBasis
+#        testBasis.cpp
 #)
+
+#add_executable(testParallel
+#        testParallel.cpp
+#		  myfunc.cpp
+#)
+
+add_executable(testDMstag
+        testDMstag.cpp 
+)
 
 #add_executable(scatter
 #        scatterTest.cpp 
@@ -159,24 +159,24 @@ add_executable(testParallel
 #    PkgConfig::CGNS
 #)
 
-target_link_libraries(testBasis
-    mfem_lib
-    io_lib
-    PkgConfig::LAPACKE 
+#target_link_libraries(testBasis
+#    mfem_lib
+#    io_lib
+#    PkgConfig::LAPACKE 
 #    PkgConfig::CGNS
-)
-
-target_link_libraries(testParallel
-    mfem_lib
-    io_lib
-    PkgConfig::LAPACKE 
-#    PkgConfig::CGNS
-)
-
-#target_link_libraries(testDMstag
-#		  PkgConfig::PETSC
-#		  general_lib
 #)
+
+#target_link_libraries(testParallel
+#    mfem_lib
+#    io_lib
+#    PkgConfig::LAPACKE 
+#    PkgConfig::CGNS
+#)
+
+target_link_libraries(testDMstag
+		  PkgConfig::PETSC
+		  general_lib
+)
 
 #target_link_libraries(scatter
 #       PkgConfig::PETSC 

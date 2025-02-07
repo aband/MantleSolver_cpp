@@ -1,338 +1,220 @@
-#include <iostream>
-#include <petsc.h>
-#include "integral.h"
-
-#include "stencil.h"
-#include "util.h"
-#include "input.h"
-#include "reconstruction.h"
-//#include <adolc/adolc.h>
+#include "stencilpolynomial.h"
+#include "tensor.h"
 
 extern "C"{
 #include "mesh.h"
 #include "output.h"
 }
 
-using namespace std;
-
-double func(const vertex& point, const vector<double>& param){
-	 if (point[0]<param[0]){
-//		  return point[0]*point[0]+point[1]*point[1];
-	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
-//        return sin(point[0] + point[1] + 0.1);
-	 } else {
-//		  return point[0]*point[0]*point[1]*point[1] + 1.0;
-	     return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1) + 10;
-//        return sin(point[0] + point[1] + 0.1) + 10;
-	 }
-
-    //return sin(point[0]*3.0+0.5)+cos(point[1]/2.0-0.2) + pow(point[0]+0.1,3)*(point[1]+1);
-    //return sin(point[0] + point[1] + 0.1);
-    //return point[0]*point[0] + point[1]*point[1];
-    //return 0.5;
-    //return point[0] + point[1];
-
-}
-
-int main(int argc, char **argv){
-
-    // Initializing petsc function
-    PetscErrorCode ierr;
-    PetscMPIInt   size,rank;
-    PetscInitialize(&argc, &argv, NULL, NULL);
-
-    MPI_Init(NULL,NULL);
-    MPI_Comm_size(PETSC_COMM_WORLD,&size);
-    MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
-
-    //ierr = PetscPrintf(PETSC_COMM_WORLD,"The code is running on %d processor(s) \n",size);CHKERRQ(ierr);
-
-    //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
-
-    // ==========================================================================================================================
-
-    // Start testing mesh function
-    // Initializing problem size with 3X3
-    int M = 3, N = 3;
-    ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
-
-    // Create data management object
-    DM    dm;
-    Vec   fullmesh;
-    const int stencilWidth = 5;
-
-    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, DM_BOUNDARY_GHOSTED, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 2, stencilWidth, NULL, NULL, &dm);CHKERRQ(ierr);
-    ierr = DMSetFromOptions(dm);               CHKERRQ(ierr);
-    ierr = DMSetUp(dm);                        CHKERRQ(ierr);
-    ierr = DMCreateGlobalVector(dm, &fullmesh);CHKERRQ(ierr); 
-
-    double L = 2.0, H = 2.0;
-    double xstart = -1.0, ystart = -1.0;
-    ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
-    ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
-    ierr = PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL); CHKERRQ(ierr);
-    ierr = PetscOptionsGetReal(NULL,NULL,"-ystart", &ystart, NULL); CHKERRQ(ierr);
-
-    int singleStencilTest = 0;
-    double scale = 1;
-    ierr = PetscOptionsGetInt(NULL,NULL, "-single", &singleStencilTest, NULL);CHKERRQ(ierr);
-    ierr = PetscOptionsGetReal(NULL,NULL, "-scale", &scale, NULL);CHKERRQ(ierr);
-
-    if (singleStencilTest){
-        L = L/scale;
-        H = H/scale;
-        xstart = -L/2.0;
-        ystart = -H/2.0;
-    }
+int main(int argc, char ** argv){
 
-    MeshParam mp;
-    mp.xstart = xstart;
-    mp.ystart = ystart;
-    mp.L = L;
-    mp.H = H;
+    polynomial * t2 = new polynomial(2,1);
+    double coef2[2] = {1,2};
 
-    // Uniform or distorted mesh
-    int meshtype=0;
-    ierr = PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshtype,NULL);CHKERRQ(ierr);
-    switch(meshtype){
-        case 0: CreateFullMesh(dm, &fullmesh, &mp); break;
-        case 1: LogicRectMesh(dm, &fullmesh, &mp);  break;
-        //case 2: TestControlMeshSecond(dmCell,L,H); break;
-        //case 3: TestControlMeshThird(dmCell,L,H);  break;
-    }
+    t2->setCoef(coef2);
 
-    int printmesh=0;
-    ierr = PetscOptionsGetInt(NULL,NULL,"-printmesh",&printmesh,NULL);CHKERRQ(ierr);
-    if(printmesh){ 
-        VecView(fullmesh, PETSC_VIEWER_STDOUT_WORLD);
-        PrintFullMesh(dm, &fullmesh);
-    }
+    cout << t2->eval(1,0) << endl;
+    cout << t2->eval(0,1) << endl;
 
-    //cout << "Mesh Created. To check full mesh, rerun with -printmesh 1 " << endl;
-    //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    double der = 1;
 
-    // ==========================================================================================================================
+    double work[2] = {0.0,0.0};
 
-    // Contain defined mesh in vector container.
-    // and verify it.
-    vector< valarray<double> > mesh;
-    
-    ReadMeshPortion(dm, &fullmesh, mesh);
+    computeDerivative(der,2,1,1,coef2,work);
 
-    //cout << "Converted c array of local mesh into vector container c++ " << endl;
-    //cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+    //for (int i=0; i<2; i++){
+    //    cout << work[i] << " " ;
+    //} cout << endl;
 
-    // ====================================================================================================================================
+    // =======================================================
 
-    DM dmu;
+    int degreex = 2; 
+    int degreey = 3;
 
-    int cell_ghost = 3;
+    polynomial * testpoly = new polynomial(degreex,degreey);
 
-    ierr = DMDACreate2d(PETSC_COMM_WORLD, DM_BOUNDARY_PERIODIC, DM_BOUNDARY_PERIODIC, DMDA_STENCIL_BOX, M,N, PETSC_DECIDE, PETSC_DECIDE, 1, cell_ghost, NULL, NULL, &dmu);CHKERRQ(ierr);
-    ierr = DMSetFromOptions(dmu);               CHKERRQ(ierr);
-    ierr = DMSetUp(dmu);                        CHKERRQ(ierr);
+    double testcoef[6] = {1,2,3,4,5,6};
 
-    Vec globalu;
-    ierr = DMCreateGlobalVector(dmu,&globalu);CHKERRQ(ierr);
+    testpoly->setCoef(testcoef);
+    //testpoly->printCoef();
 
-    // Initialize with oblique data for Burgers equation 
-    //ObliqueBurgers(dm,dmu,&fullmesh,&globalu,Initial_Condition);
-    SimpleInitialValue(dm,dmu,&fullmesh,&globalu,{-L/(2*M)},func);
+    //cout << testpoly->eval(1,0) << endl;
+    //cout << testpoly->eval(0,1) << endl;
 
-    Vec localu; 
-    DMGetLocalVector(dmu, &localu);
+    int derx = 1;
+    int dery = 2;
 
-    DMGlobalToLocalBegin(dmu, globalu, INSERT_VALUES, localu);
-    DMGlobalToLocalEnd(dmu, globalu, INSERT_VALUES, localu);
+    Tensor<double> derTensor = Tensor<double>(2);
+    derTensor.setSize({derx+1, dery+1});
 
-    // It can be changed later to not be double
-    double ** lu;
-    DMDAVecGetArray(dmu, localu, &lu);
-
-    // ====================================================================================================================================
-
-    // Create MeshInfo object
-    MeshInfo mi; 
-
-    // Assign local mesh and local values to mi
-    mi.lmesh = mesh;
-    mi.localVals = lu;
-
-    AssignValuesMeshInfo(mi,dm,dmu); 
-
-// ========================================================================================================================================
-
-    // Test multi level reconstruction
-    MLWENO::multiLevelReconstruction * mlrPtr = new MLWENO::multiLevelReconstruction(mi,2,2,{{-1,0},{-1,-1,},{0,-1},{0,0}});
-    //mlrPtr->AddLevel(mi,3,3,{{-1,-1}});
-    mlrPtr->AddLevel(mi,3,3,{{-2,0},{-2,-2},{0,0},{0,-2}});
-    //mlrPtr->AddLevel(mi,2,3,{{-1,-1},{0,-1}});
-    //mlrPtr->AddLevel(mi,3,2,{{-1,-1},{-1,0}});
-    mlrPtr->AddLevel(mi,5,5,{{-2,-2}});
-
-    mlrPtr->AddLevel(mi,1,1,{{0,0}});
-
-    // Test rearrange weno reconstruction levels
-
-    //mlrPtr->ModifyReconstMethod("(2,2)",{{-1,-1}});
-
-    mlrPtr->SelectWenoReconstLevel({"(5,5)","(3,3)","(1,1)"});
-
-    //mlrPtr->SelectWenoReconstLevel({"(2,2)","(1,1)"});
-
-    mlrPtr->SeparateBoundaryLayer(mi);
-
-    unordered_set <int> bl = mlrPtr->GetboundaryCells();
-    unordered_set <int> il = mlrPtr->GetinteriorCells();
-
-    mlrPtr->AssignboundaryCells(bl);
-    mlrPtr->AssigninteriorCells(il);
-
-    mlrPtr->UpdateNonLinearWgts(mi,1);
-
-    vertex center {0.0,0.0};
-
-    // Test point wise reconstruction
-    cout << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) << endl;
-    cout << "Point wise reconstruction error at center " << mlrPtr->EvaluateMLWENO(mi,center,{M/2,N/2}) - func(center, {-L/(2*M)}) << endl;
-
-    // Test derivative of point wise reconstruction
-//    unordered_map<int, double> deriv = mlrPtr->EvaluateDerivMLWENO(mi,center,{M/2,N/2});
-
-//    for (auto & d: deriv){
-//        indice b = Bend(mi,d.first);
-//        cout << "( " << b[0] << ", " << b[1] << " )  " << d.second <<  endl;
-//    }
-
-    // Compute lr norm
-    int r=1;
-    const valarray<double>& gwf = GaussWeightsFace;
-    const vector<valarray<double>>& gpf = GaussPointsFace;
-
-    vertex p0 = {-L/(2*M), -H/(2*N)};
-    vertex p1 = { L/(2*M), -H/(2*N)};
-    vertex p2 = { L/(2*M),  H/(2*N)};
-    vertex p3 = {-L/(2*M),  H/(2*N)};
-
-    vector<vertex> corner = {p0,p1,p2,p3};
-    double work = 0.0;
-
-    for (size_t i=0; i<gpf.size(); i++){
-        vertex mapped = GaussMapPointsFace(gpf[i],corner);
-        double jac = abs(GaussJacobian(gpf[i],corner));
-        double gw = gwf[i];
-        //work += jac*gw*pow(abs(mlrPtr->EvaluateMLWENO(mi,mapped,{1,1}) - func(mapped, {-L/(2*M)})),r);
-    }
-
-    work = work / ((L*H)/9);
-
-    //cout << "Average L 1 norm at center cell " << work << endl;
-
-    // Print required information
-    //mlrPtr->GetInfo();
-
-    //mlrPtr->PrintSmoothnessIndicator(mi);
-
-    //mlrPtr->PrintNonLinearWgts(mi); 
-
-    // ========== Test WENOPrepare class ====================
-    MLWENO::MLWENOPrepare * mlpPtr = new MLWENO::MLWENOPrepare();
-
-    mlpPtr->AddLevel(mi,1,1);
-    mlpPtr->AddLevel(mi,2,2);
-    mlpPtr->AddLevel(mi,3,3);
-    mlpPtr->AddLevel(mi,4,4);
-    mlpPtr->AddLevel(mi,5,5);
-    mlpPtr->AddLevel(mi,4,5);
-
-    mlpPtr->UpdateSmoothnessIndic(mi);
-
-//    mlpPtr->PrintInfo();
-
-    MLWENO::multiLevelReconstruction * mlrIns1 = new MLWENO::multiLevelReconstruction();
-    MLWENO::multiLevelReconstruction * mlrIns2 = new MLWENO::multiLevelReconstruction();
-
-    mlrIns1->SelectWenoReconstLevel({"(1,1)", "(2,2)", "(3,3)"},(*mlpPtr));
-
-//    mlrIns1->ModifyReconstMethod("(2,2)",{{-1,-1}});
-//    mlrIns1->ModifyReconstMethod("(1,1)",{{0,0}});
-//    mlrIns1->ModifyReconstMethod("(3,3)",{{-1,-1}});
-
-    //mlrIns1->ModifyReconstMethod("(1,1)",{{0,0}}); 
-    //mlrIns1->ModifyReconstMethod("(2,2)",{{-1,0},{0,0},{-1,-1},{0,-1}}); 
-    //trPtr->ModifyReconstMethod("(3,3)",{{-1,0},{-2,0},{-2,-2},{-1,-2}}); 
-    mlrIns1->ModifyReconstMethod("(3,3)",{{0,0},{-3,0},{-3,-2},{0,-2}});  
-    mlrIns1->ModifyReconstMethod("(4,5)",{{-2,-2}});            
-
-    //mlrIns1->SeparateBoundaryLayer(mi);
-
-    //mlrIns1->UpdateNonLinearWgts(mi,2);
-
-    //mlrIns1->EvaluateMLWENO(mi,{-0.85 -0.98873}, {3,0}); 
-
-    //mlrIns1->GetInfo();
-
-    //mlrIns1->PrintSmoothnessIndicator(mi);
-
-    //mlrIns1->PrintNonLinearWgts(mi); 
-
-    mlrIns2->SelectWenoReconstLevel({"(3,3)", "(4,4)", "(5,5)"},(*mlpPtr));
-
-    mlrIns2->ModifyReconstMethod("(4,4)",{{0,0}});
-    mlrIns2->ModifyReconstMethod("(5,5)",{{0,0}});
-    mlrIns2->ModifyReconstMethod("(3,3)",{{-1,-1}});
-
-    mlrIns2->SeparateBoundaryLayer(mi);
-
-    //mlrIns2->UpdateNonLinearWgts(mi,1);
-
-    //mlrIns2->GetInfo();
-
-    //mlrIns1->PrintSmoothnessIndicator(mi);
-
-    //mlrIns1->PrintNonLinearWgts(mi); 
-/*
-    derivative testmap1 {{1,2},{2,7},{9,0.5}};
-    derivative testmap2 {{1,0.5},{2,5},{4,6},{-2,0.6},{1000,0.003}};
-    double modify = 10;
-    unordered_map_arithmetic(testmap2, modify, std::multiplies<double>());
-    unordered_map_arithmetic(testmap1, testmap2, std::multiplies<double>());
     cout << endl;
-    for (const auto& t: testmap2){
-        cout << t.first << " " << t.second << endl;
-    }
+
+    testpoly->evalDer(derx,dery, .1,.1,1.0,derTensor);
+
     cout << endl;
-    for (const auto& t: testmap1){
-        cout << t.first << " " << t.second << endl;
+
+    for (int dy=0; dy<dery+1; dy++){
+        for (int dx=0; dx<derx+1; dx++){
+            cout << derTensor({dx,dy}) << " " ;
+
+        }cout << endl;
     }
 
-    unordered_map_arithmetic(testmap1, testmap2, std::multiplies<double>(), modify, std::minus<double>());
+    // =======================================================
+    // Create pseudo mesh for testing  
+    int M = 3;
+    int N = 3;
+    double hx = 1.0/(double)M;
+    double hy = 1.0/(double)N;
+
+    Tensor<vertex> mesh = Tensor<vertex>(2);
+
+    mesh.setSize({M+1,N+1});
+
+    for (int j=0; j<N+1; j++){
+        for (int i=0; i<M+1; i++){
+            mesh({i,j}) = {i*hx, j*hy};
+        }
+    }
+
+    vector<vertex> cornerSet;
+    cornerSet.push_back(mesh({1,1}));
+    //cout << mesh({1,1})[0] << "  " << mesh({1,1})[1] << endl;
+    cornerSet.push_back(mesh({2,1}));
+    //cout << mesh({2,1})[0] << "  " << mesh({2,1})[1] << endl;
+    cornerSet.push_back(mesh({2,2}));
+    //cout << mesh({2,2})[0] << "  " << mesh({2,2})[1] << endl;
+    cornerSet.push_back(mesh({1,2}));
+    //cout << mesh({1,2})[0] << "  " << mesh({1,2})[1] << endl;
+
+    vector<vertex> cornerSet1;
+    cornerSet1.push_back(mesh({1,0}));
+    cornerSet1.push_back(mesh({2,0}));
+    cornerSet1.push_back(mesh({2,1}));
+    cornerSet1.push_back(mesh({1,1}));
+
+    vector<vertex> cornerSet2;
+    cornerSet2.push_back(mesh({2,0}));
+    cornerSet2.push_back(mesh({3,0}));
+    cornerSet2.push_back(mesh({3,1}));
+    cornerSet2.push_back(mesh({2,1}));
+
+    vector<vertex> cornerSet3;
+    cornerSet3.push_back(mesh({2,1}));
+    cornerSet3.push_back(mesh({3,1}));
+    cornerSet3.push_back(mesh({3,2}));
+    cornerSet3.push_back(mesh({2,2}));
+
+    vertex center = (mesh({1,0}) + mesh({3,0}) + mesh({3,2}) + mesh({1,2})) / 4.0;
+
+    degreex = 2;
+    degreey = 2;
+
+    polynomial testint = polynomial(degreex,degreey);
+
+    double intcoef[4] = {0,0,0,1};
+
+    testint.setCoef(intcoef);
+
+    cout << cornerSet.size() << endl;
+
+    cout <<std::setprecision(20) << "poly integral : "  << polyNumIntegralFace(cornerSet, hx, center, testint) << endl; 
+    cout <<std::setprecision(20) << "Previously defined integral : " << NumIntegralFace(cornerSet, {1,1}, center, hx, basePoly) << endl;
+
     cout << endl;
-    for (const auto& t: testmap1){
-        cout << t.first << " " << t.second << endl;
+    // poly num matched with previously defined function
+    stencilpolynomial teststencilpoly = stencilpolynomial(2,2);
+
+    vector<vector<vertex>> cornerSetSet;
+    cornerSetSet.push_back(cornerSet);
+    cornerSetSet.push_back(cornerSet1);
+    cornerSetSet.push_back(cornerSet2);
+    cornerSetSet.push_back(cornerSet3);
+
+    teststencilpoly.setCoef(cornerSetSet ,center, hx);
+
+    teststencilpoly.printCoef();
+
+    // ===========================================================================================================================
+    cout << endl; 
+    vector<vector<vertex>> cornerSetSet2;
+    vector<indice> order {{0,0},{1,0},{1,1},{0,1}};
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        indice start = {i,j};
+        indice now ; 
+        vector<vertex> work;
+        for (const auto& it: order){now = start + it; work.push_back(mesh({now[0],now[1]}));}
+        cornerSetSet2.push_back(work);
+    }}
+    stencilpolynomial teststencilpoly2 = stencilpolynomial(3,3);
+
+    center = (mesh({0,0}) + mesh({3,0}) + mesh({0,3}) + mesh({3,3}))/4;
+    double h = hx;
+
+    center = {0.1,0.123};
+
+    h = 0.1;
+
+    teststencilpoly2.setCoef(cornerSetSet2 ,center, h);
+    teststencilpoly2.printCoef();
+
+    vector<double> tmp {0.037037037037043, 0.259259259259265, 0.703703703703710,0.037037037037043, 0.259259259259265, 0.703703703703710,0.037037037037043, 0.259259259259265, 0.703703703703710};
+
+    Tensor<double> sol = Tensor<double>(2);
+
+    sol.setSize({3,3});
+
+    for (int i=0; i<9; i++) {sol(i) = tmp.at(i);}
+
+    vertex test {0.27,0.27};
+
+    cout << std::setprecision(15) << teststencilpoly2.eval(sol, test, center, h) << "  " << 0.27*0.27 << endl;
+
+    // Test for smoothness indicator
+    vector<vertex>  refcell;
+    vertex cellcenter = (mesh({0,0}) + mesh({1,0}) + mesh({1,1}) + mesh({0,1}))/4;
+    refcell.push_back(cellcenter);
+
+    cellcenter = (mesh({2,0}) + mesh({3,0}) + mesh({3,1}) + mesh({2,1}))/4;
+    refcell.push_back(cellcenter);
+
+    cellcenter = (mesh({2,2}) + mesh({3,2}) + mesh({3,3}) + mesh({2,3}))/4;
+    refcell.push_back(cellcenter);
+
+    cellcenter = (mesh({0,2}) + mesh({1,2}) + mesh({1,3}) + mesh({0,3}))/4;
+    refcell.push_back(cellcenter);
+
+    double refarea = NumIntegralFace(refcell, {0,0}, {0.0,0.0}, 1.0, constFunc);
+
+    // ===============================================================================
+    Tensor<double> testt1 = Tensor<double>(2);
+    Tensor<double> testt2 = Tensor<double>(2);
+    Tensor<double> testt3 = Tensor<double>(2);
+
+    testt1.setSize({2,2});
+    testt2.setSize({2,2});
+    testt3.setSize({2,2});
+
+    for (int i=0; i<testt1.getSize(); i++){
+        testt1(i) = i;
+        testt2(i) = 3;
     }
 
-    // Print initial condition
-    char * filename = (char*) "initial.txt"; 
-    PlainOutput(dmu, &globalu, filename);
-    PlainMeshOutput(dm, &fullmesh);
-*/
-    delete mlrPtr;
-    delete mlpPtr;
-    delete mlrIns1;
-    delete mlrIns2;
-	 // ====================================================================================================================================
-    // Clear used objects
-    DMDAVecRestoreArray(dmu,localu,&lu);
-    DMRestoreLocalVector(dmu, &localu); 
+    Tensor_add(testt1,testt2,testt3);
+    cout << endl;
+    for (int i=0; i<testt1.getSize(); i++){
+        cout << testt3(i) << endl;
+    }
 
-    VecDestroy(&fullmesh);
-    VecDestroy(&globalu);
-    DMDestroy(&dm);
-    DMDestroy(&dmu);
+    Tensor_multi(testt1,testt2,testt3);
+    cout << endl;
+    for (int i=0; i<testt1.getSize(); i++){
+        cout << testt3(i) << endl;
+    }
 
-    PetscFinalize();
+
 
     return 0;
 }

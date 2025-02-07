@@ -77,13 +77,56 @@ target_link_libraries(io_lib
 #	 PkgConfig::CGNS
 )
 
+#Create a library from files in mfem file
+add_library(mfem_lib
+        ${SRC}/mfem/basis.cpp
+        ${SRC}/mfem/Hdivmixed.cpp
+        ${SRC}/mfem/brmixed.cpp
+        ${SRC}/mfem/assemble.cpp
+        ${SRC}/mfem/bndry.cpp
+        ${SRC}/mfem/solve.cpp
+        ${SRC}/mfem/error.cpp
+		  ${SRC}/mfem/shape.tpp
+		  ${SRC}/mfem/parallel/passemble.cpp
+		  ${SRC}/mfem/parallel/locmat.cpp
+		  ${SRC}/mfem/parallel/psolve.cpp
+		  ${SRC}/mfem/parallel/preconst.cpp
+		  #		  ${SRC}/coupledSys/locmat_coupled.cpp
+		  #		  ${SRC}/coupledSys/passemble_coupled.cpp
+)
+
+target_include_directories(mfem_lib
+		  PUBLIC ${SRC}/mfem
+		  PUBLIC ${SRC}/mfem/parallel
+		  PUBLIC ${SRC}/coupledSys
+		  #PUBLIC ${SRC}/transport
+#		  PUBLIC /workspace/CGNS/src
+#		  PUBLIC /workspace/CGNS/build/src
+)
+
+target_link_libraries(mfem_lib
+	 mlweno_lib
+    phase_lib
+    general_lib
+)
+
+#Create a library from phase folder
+add_library(phase_lib
+		  ${SRC}/phase/eutectic.cpp
+)
+
+target_include_directories(phase_lib
+		  PUBLIC ${SRC}/phase
+		  PUBLIC ${SRC}/include
+		  )
+
 # Create a library from the files in the mlweno directory
 add_library(mlweno_lib 
+		  ${SRC}/mlweno/reconstruction.cpp
 		  ${SRC}/mlweno/polynomial.cpp
 		  ${SRC}/mlweno/stencilpolynomial.cpp
-		  ${SRC}/mlweno/tensor.cpp
-		  ${SRC}/mlweno/reconstruction.cpp
 		  ${SRC}/mlweno/mluse.cpp
+		  ${SRC}/mlweno/tensor.cpp
 )
 
 # Specify any additional include directories if needed
@@ -98,61 +141,74 @@ target_link_libraries(mlweno_lib
         PkgConfig::PETSC
 )
 
+add_library(transport_lib
+		  ${SRC}/transport/advectiveflux.cpp
+)
+
+target_include_directories(transport_lib 
+		  PUBLIC ${SRC}/transport
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/general
+    PUBLIC ${PETSC_DIR}/include 
+)
+
+target_link_libraries(transport_lib
+        io_lib
+        general_lib
+        mlweno_lib
+        PkgConfig::PETSC
+)
+
+# Specify any additional include directories if needed
+
+add_library(driver_lib
+		  ${SRC}/driver/driver.cpp
+		  ${SRC}/driver/coupledsys/coupled_assemble.cpp
+		  ${SRC}/driver/coupledsys/coupled_locmat.cpp
+		  ${SRC}/driver/print.cpp
+        ${SRC}/driver/coupledsys/coupled_advection.cpp
+		  ${SRC}/driver/coupledsys/coupled_time.cpp
+		  )
+
+target_include_directories(driver_lib
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/general
+        PUBLIC ${PETSC_DIR}/include 
+		  PUBLIC ${SRC}/phase
+		  PUBLIC ${SRC}/mfem
+		  PUBLIC ${SRC}/transport
+		  PUBLIC ${SRC}/mfem/parallel
+		  PUBLIC ${SRC}/driver
+		  )
+
+target_link_libraries(driver_lib
+		  io_lib
+        general_lib
+        mlweno_lib
+		  mfem_lib
+		  transport_lib
+        PkgConfig::PETSC
+		  )
+
 # Generate an excutable file
 add_executable(test
         test.cpp
+		  flow_setting.cpp
+		  trans_setting.cpp
 )
 
-add_executable(testsigma
-        testsigma.cpp
-)
-
-add_executable(reconsTest
-        reconsTest.cpp
-)
-
-add_executable(parallel
-        parallel.cpp
-)
-
-add_executable(testder
-		  testder.cpp
+target_include_directories(test
+		  PUBLIC ${SRC}/coupledSys
 		  )
 
 target_link_libraries(test
-		  general_lib
 		  io_lib
+		  phase_lib
+		  mfem_lib
 		  mlweno_lib
+		  driver_lib
+		  transport_lib
 		  PkgConfig::LAPACKE
-)
-
-target_link_libraries(testsigma
-		  general_lib
-		  io_lib
-		  mlweno_lib
-		  PkgConfig::LAPACKE
-)
-
-target_link_libraries(reconsTest
-		  general_lib
-		  io_lib
-		  mlweno_lib
-		  PkgConfig::PETSC
-		  PkgConfig::LAPACKE
-)
-
-target_link_libraries(parallel
-		  general_lib
-		  io_lib
-		  mlweno_lib
-		  PkgConfig::PETSC
-		  PkgConfig::LAPACKE
-)
-
-target_link_libraries(testder
-		  general_lib
-		  io_lib
-		  mlweno_lib
-		  PkgConfig::PETSC
-		  PkgConfig::LAPACKE
+		  phase_lib
+#        PkgConfig::CGNS
 )
