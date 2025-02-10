@@ -194,7 +194,7 @@ int stencilpolynomial::sigma(const Tensor<double>& sol,
         for (int j=0; j<sol.getSize(); j++){
             double temp = sol(j)*tensorsigma({i,j});
             sig += sol(i)*temp;
-            der.at(i) += temp;
+            der.at(i) += 2*temp;
         }
     }
 
@@ -210,7 +210,7 @@ int stencilpolynomial::dsigma(const Tensor<double>& sol,
 
     for (int i=0; i<sol.getSize(); i++){
         for (int j=0; j<sol.getSize(); j++){
-            der.at(i) += sol(j)*tensorsigma({i,j});
+            der.at(i) += 2*sol(j)*tensorsigma({i,j});
         }
     }
 

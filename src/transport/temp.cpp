@@ -372,7 +372,6 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
     return 1;
 }
 
-
 PetscErrorCode FormFunction(SNES snes, Vec x, Vec f, void *ctx){
 
     PetscFunctionBeginUser;

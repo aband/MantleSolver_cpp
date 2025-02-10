@@ -33,16 +33,18 @@ fileID = fopen(filename, 'r');
 sol = fscanf(fileID, '%f', [1,Inf]);
 sol = reshape(sol, M, N);
 
-%surf(pX, pY, sol)
-pause
+subplot(1,2,1)
+surf(pX, pY, sol)
+
+subplot(1,2,2)
 plot(sol(2,:), pY(2,:));
 title(filename)
 ylabel("Depth");
 
 set(gcf, 'Position',[50 50 1800 700]);
 
-%pause
-G = getframe(gcf);
+pause
+%G = getframe(gcf);
 
 %writeVideo(v,G);
 end
