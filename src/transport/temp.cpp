@@ -152,6 +152,7 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
 
             // 3. Solve for J^-1(x)F(x)
             KSPSetOperators(ksp, J, J);
+//MatView(J, PETSC_VIEWER_STDOUT_WORLD);
             KSPSolve(ksp, tmp1, tmp2);
 
             // 4. Update sol

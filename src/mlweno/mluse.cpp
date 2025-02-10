@@ -440,12 +440,6 @@ int mluse::der(const vertex& point, const multilevel& ml,
     // Compute sum of weights and sum of derivative of weights
     sumscaled(ml,sum, sumder, pos, index);
 
-//    cout << "Print sum and sum of derivatives : "  <<sum << endl;
-//    unordered_map_print(sumder);
-
-//    cout << "Target cell index : " << index[0] << " " << index[1] << endl;
-//    cout << "target point : "  << point[0] << " "<< point[1] << endl;
-
     for (const auto& it : bias.at(pos)){
         // Loop through all levels first
 
@@ -483,17 +477,7 @@ int mluse::der(const vertex& point, const multilevel& ml,
                 cout << "dscalde sigmas : " << endl;
                 unordered_map_print(ml.getderscaledsigma(it.first, {targetstencilindex[0], targetstencilindex[1]}));
 */
-/*
-cout << targetstencilindex[0] << "  " << targetstencilindex[1] << endl;
-printf("Weighted as : %e \n", nlw);
-for (int iiii=0; iiii<sol.getSize(); iiii++){
-cout << sol(iiii) << "  ";
-}cout << endl;
-unordered_map_print(sumder);
-*/
                 unordered_map_arithmetic(dscaled, 1.0/sum, std::multiplies<double>()); 
-
-//unordered_map_print(dscaled);
 
                 unordered_map_arithmetic(dscaled, sumder, std::plus<double>(), 
                 -1*scaled/sum/sum, std::multiplies<double>());
@@ -504,7 +488,6 @@ unordered_map_print(sumder);
                 // p1 = dw/du * p
                 unordered_map_arithmetic(dscaled, val, std::multiplies<double>()); 
 
-//unordered_map_print(dscaled);
                 for (int j=0; j<sol.getSize(1); j++){
                 for (int i=0; i<sol.getSize(0); i++){
                     // Loop through the selected solution stencil 
@@ -523,21 +506,20 @@ unordered_map_print(sumder);
 
                     std::unordered_map<int, double>::const_iterator got = dscaled.find(flatgcell);
 
-                    //if (got == dscaled.end()){
-                    //    // This derivative has not been calculated
-                    //    dscaled.insert(std::make_pair(flatgcell, p));
-                    //} else {
-                    //    dscaled.at(flatgcell) += p;
-                   // }
+                    if (got == dscaled.end()){
+                        // This derivative has not been calculated
+                        dscaled.insert(std::make_pair(flatgcell, p));
+                    } else {
+                        dscaled.at(flatgcell) += p;
+                    }
 
-                    der[flatgcell] += p;
+                    //der[flatgcell] += p;
                 }}
 
                 unordered_map_arithmetic(der,dscaled,std::plus<double>());
             } 
         }
     }
-//cout << endl;
     return  1;
 }
 

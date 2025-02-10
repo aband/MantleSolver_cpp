@@ -169,7 +169,7 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         vertedge({i,j}) = flux;
     }}
 
-/*
+
     // Free outflow
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
         double flux = 0;
@@ -182,7 +182,7 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
                          vertedgeder({mi.MPIglobalCellSize[0], j}), flux);
         vertedge({mi.MPIglobalCellSize[0], j}) = flux;
     }
-*/
+
 
     return 1;
 }
