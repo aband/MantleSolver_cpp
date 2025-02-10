@@ -94,7 +94,7 @@ int main(int argc, char ** argv){
 
     multilevel ml = multilevel();
 
-    ml.addLevel("(3,3)", {3,3}, mi);
+    //ml.addLevel("(3,3)", {3,3}, mi);
     ml.addLevel("(2,2)", {2,2}, mi);
 
     // =================================================================
@@ -119,7 +119,7 @@ int main(int argc, char ** argv){
 
     // Test for nonlinear weighting
     unordered_map<std::string, vector<indice>> method;
-    method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    //method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
     method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
 
     double h0 = sqrt((L*H)/(double)(M*N));
@@ -132,12 +132,15 @@ int main(int argc, char ** argv){
     int timestepping = 1;
     ierr = PetscOptionsGetInt(NULL,NULL,"-step",&timestepping,NULL);CHKERRQ(ierr);
 
+    int maxiter = 10;
+    ierr = PetscOptionsGetInt(NULL,NULL,"-maxiter",&maxiter,NULL);CHKERRQ(ierr);
+
     if (timestepping == 1){
         cout << "Explicit time stepping: " << endl;
         RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     } else {
         cout << "Implicit time stepping: " << endl;
-        iRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+        iRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh, maxiter);
     }
     //iRK2(dt, Nt, &globalvec, &mi, &ml, &use, dmu, dmMesh);
 

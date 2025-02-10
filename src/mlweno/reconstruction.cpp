@@ -193,8 +193,8 @@ int multilevel::getsol(Tensor<double>& stencilsol, double ** localsol,
 
     // Needs offset for parallel condition
 
-    for (int j=0; j<stencilsol.getSize(0); j++){
-    for (int i=0; i<stencilsol.getSize(1); i++){
+    for (int j=0; j<stencilsol.getSize(1); j++){
+    for (int i=0; i<stencilsol.getSize(0); i++){
         localcellindexx = stencilindex[0] + i;
         localcellindexy = stencilindex[1] + j;
         stencilsol({i,j}) = localsol[localcellindexy][localcellindexx];
@@ -307,10 +307,15 @@ int multilevel::updateall(double ** localsol, const double& h0, const int& s, co
             rl = find_max(getStencilSize(it,0), getStencilSize(it,1));
             nl = geteta(rl);
             vector<double> stendersigma;
- 
+            stendersigma.clear();
+
+            derscaled_sigma({i,j}).clear();
+
             stencilsigma({i,j}) = sigma(it, {i,j}, stensol);
             dsigma(it, {i,j}, stensol, stendersigma);
             scaled_sigma({i,j}) = 1.0/pow(stencilsigma({i,j}) + ep*h0*h0,s*rl+nl);
+
+            double coef = -1*(double)(s*rl+nl)/pow(stencilsigma({i,j})+ ep*h0*h0,s*rl+nl+1);
 
             for (int n=0; n<stensol.getSize(1); n++){
             for (int m=0; m<stensol.getSize(0); m++){
@@ -320,13 +325,16 @@ int multilevel::updateall(double ** localsol, const double& h0, const int& s, co
                 make_pair(gcell, stendersigma.at(stensol.getIndex({m,n}))));
             }}
 
-            derscaled_sigma({i,j}).clear();
-
-            double coef = -1*(double)(s*rl+nl)/pow(stencilsigma({i,j})+ ep*h0*h0,s*rl+nl+1);
             for (const auto it: dersigma({i,j})){
                 derscaled_sigma({i,j}).insert(std::make_pair(it.first, it.second*coef));
             }
-
+/*
+            cout << i << "  " << j << " unscaled and scaled sigma : " << s*rl+nl << 
+                 "  " <<  
+                 stencilsigma({i,j}) << "  " << scaled_sigma({i,j}) << endl;
+            unordered_map_print(dersigma({i,j})); 
+            unordered_map_print(derscaled_sigma({i,j}));
+*/
         }}
 
         alllevelsigma.insert(std::make_pair(it, stencilsigma));

@@ -35,9 +35,25 @@ double edgefluxintegral(const vertexSet& edge,
                         const double& bnval,
                         const vector<vertex>& vel);
 
+/**!
+ * Used in implicit time stepping.
+ * Compute Jacobian along with flux
+ */
 int edgefluxintegral(const MeshInfo& mi, 
                      const indice& gcellin,
                      const indice& gcellout,
+                     const vertexSet& edge,
+                     const Tensor<weights>& allwgts,
+                     const vector<vertex>& vel,
+                     multilevel& ml,
+                     mluse& use,
+                     double ** lu,
+                     derivative& der,
+                     double& f);
+
+// Used on free outflow boundary condition
+int edgefluxintegral(const MeshInfo& mi, 
+                     const indice& gcell,
                      const vertexSet& edge,
                      const Tensor<weights>& allwgts,
                      const vector<vertex>& vel,

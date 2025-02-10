@@ -55,7 +55,8 @@ double edgefluxintegral(const MeshInfo& mi,
         double uout = use.eval(mapped, ml, "all", 
                       allwgts({gcellout[0],gcellout[1]}), gcellout, lu); 
 
-        double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        //double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
 
         work += gwe[g] * LFflux(uin, uout, 
                                 advfunc(uin,vel.at(g),unitNormal),
@@ -89,7 +90,8 @@ double edgefluxintegral(const MeshInfo& mi,
         double u  = use.eval(mapped, ml, "all", 
                     allwgts({gcell[0],gcell[1]}), gcell, lu); 
 
-        double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        //double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
 
         work += gwe[g] * LFflux(u, u, 
                                 advfunc(u,vel.at(g),unitNormal),
@@ -116,7 +118,8 @@ double edgefluxintegral(const vertexSet& edge,
     for (int g=0; g<gpe.size(); g++){
         double val = bnval.at(g);
 
-        double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        //double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
 
         work += gwe[g] * LFflux(val, val, advfunc(val, vel.at(g), unitNormal),
                                           advfunc(val, vel.at(g), unitNormal),LF) *len/2.0;
@@ -142,7 +145,8 @@ double edgefluxintegral(const vertexSet& edge,
 
     for (int g=0; g<gpe.size(); g++){
 
-        double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        //double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
 
         work += gwe[g] * LFflux(bnval, bnval, advfunc(bnval, vel.at(g), unitNormal),
                                               advfunc(bnval, vel.at(g), unitNormal),LF) *len/2.0;
@@ -217,16 +221,24 @@ int edgefluxintegral(const MeshInfo& mi,
         use.der(mapped, ml, "all", allwgts({gcellin[0], gcellin[1]}), 
                 gcellin, lu, mi, derin);
 
+        //use.derpseudo(mapped, ml, "all", allwgts({gcellin[0], gcellin[1]}), 
+        //              gcellin, lu, mi, derin);
+
         derivative derout;
         use.der(mapped, ml, "all", allwgts({gcellout[0], gcellout[1]}), 
                 gcellout, lu, mi, derout);
+
+        //use.derpseudo(mapped, ml, "all", allwgts({gcellout[0], gcellout[1]}), 
+        //              gcellout, lu, mi, derout);
+
 
         double uin  = use.eval(mapped, ml, "all", 
                       allwgts({gcellin[0],gcellin[1]}), gcellin, lu); 
         double uout = use.eval(mapped, ml, "all", 
                       allwgts({gcellout[0],gcellout[1]}), gcellout, lu); 
 
-        double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        //double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
 
         f += gwe[g] * LFflux(uin, uout, 
                              advfunc(uin,vel.at(g),unitNormal),
@@ -252,6 +264,77 @@ int edgefluxintegral(const MeshInfo& mi,
         unordered_map_arithmetic(der, derLF, std::plus<double>(), 
                          gwe[g]*len/2.0, std::multiplies<double>());
 
+    }
+
+    return 1;
+}
+
+// Similar way to obtain derivatives against u
+int edgefluxintegral(const MeshInfo& mi, 
+                     const indice& gcell,
+                     const vertexSet& edge,
+                     const Tensor<weights>& allwgts,
+                     const vector<vertex>& vel,
+                     multilevel& ml,
+                     mluse& use,
+                     double ** lu,
+                     derivative& der,
+                     double& f){
+
+    // Attention!!!!!! 
+    // In serial code, stencil index equals global index
+    // Which is not the case in parallel !!!!!!!!!!!
+	 // fix it later
+
+    f = 0.0;
+    der.clear();
+
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    // Get edge lendth and unit vector normal to the given edge
+    double len = length(edge);
+    vertex unitNormal = UnitNormal(edge,len);
+
+    for (int g=0; g<gpe.size(); g++){
+
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+
+        derivative derin;
+        use.der(mapped, ml, "all", allwgts({gcell[0], gcell[1]}), 
+                gcell, lu, mi, derin);
+
+        //use.derpseudo(mapped, ml, "all", allwgts({gcellin[0], gcellin[1]}), 
+        //              gcellin, lu, mi, derin);
+
+        double uin  = use.eval(mapped, ml, "all", 
+                      allwgts({gcell[0],gcell[1]}), gcell, lu); 
+
+        //double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
+
+        f += gwe[g] * LFflux(uin, uin, 
+                             advfunc(uin,vel.at(g),unitNormal),
+                             advfunc(uin,vel.at(g),unitNormal),LF) * len/2.0; 
+        derivative derfin;
+        derivative derLF;
+
+        dadvfunc(derin , uin , vel.at(g), unitNormal, derfin);
+
+//        cout << "derin : " << gcellin[0] << "  " << gcellin[1]<< endl;
+//        unordered_map_print(derin);
+//        cout << "derout : " << gcellout[0] << "  " << gcellout[1] << endl;
+//        unordered_map_print(derout);
+//        cout << "derfin : " << endl;
+//        unordered_map_print(derfin);
+//        cout << "derfout : " << endl;
+//        unordered_map_print(derfout);
+
+        derLFflux(derin, derin, derfin, derfin, LF, derLF);
+
+        unordered_map_arithmetic(der, derLF, std::plus<double>(), 
+                         gwe[g]*len/2.0, std::multiplies<double>());
     }
 
     return 1;

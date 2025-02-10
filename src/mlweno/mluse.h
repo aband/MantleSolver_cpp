@@ -30,6 +30,13 @@ class mluse {
         int setbias(const std::string& pos);
 
         /**!
+         * Set definition range for stencils.
+         * Used for parallel computation.
+         * Should be called once after parallel partion
+         */
+        int setstencilrange(const MeshInfo& mi);
+
+        /**!
          * Compute non linear weighting
          */
         int computeWgts(const std::string& pos, const multilevel& ml,
@@ -39,13 +46,29 @@ class mluse {
         int computeWgts(const std::string& pos, const indice& gcell, 
                         const multilevel& ml, weights& wgts);
 
+        // Set constant weights for testing purpose
+        int computeWgtsConst(const std::string& pos, const multilevel& ml,
+                             const indice& index,    const double& h0,
+                             weights& wgts);
+
         /**!
          * Compute non linear weighting for all stencils at once
          * and store in a tensor object.
          */
-        int computeWgts(const multilevel& ml, const MeshInfo& mi, const double& h0, Tensor<weights>& allwgts);
+        int computeWgts(const multilevel& ml, 
+                        const MeshInfo& mi, 
+                        const double& h0, 
+                        Tensor<weights>& allwgts);
 
-        int computeWgts(const multilevel& ml, const MeshInfo& mi, Tensor<weights>& allwgts);
+        int computeWgts(const multilevel& ml, 
+                        const MeshInfo& mi, 
+                        Tensor<weights>& allwgts);
+
+        // Set constant weights for testing purpose
+        int computeWgtsConst(const multilevel& ml, 
+                             const MeshInfo& mi,
+                             const double& h0,
+                             Tensor<weights>& allwgts);
 
         /**!
          * Print selected non linear weights.
@@ -70,10 +93,17 @@ class mluse {
                       const indice& gcell) const;
 
         int der(const vertex& point, const multilevel& ml,
-                const::string& pos,  const weights& wgts, 
+                const std::string& pos,  const weights& wgts, 
                 const indice& index, double ** localsol,
                 const MeshInfo& mi,
                 unordered_map<int, double>& derivative) const;
+
+        // For testing purpose
+        int derpseudo(const vertex& point, const multilevel& ml,
+                      const std::string& pos, const weights& wgts,
+                      const indice& index, double ** localsol,
+                      const MeshInfo& mi,
+                      derivative& der) const;
 
     public:
 

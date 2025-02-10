@@ -7,21 +7,14 @@
 double func(const vertex& point,
             const vector<double>& param){
 
-    // Initial condition
-
-    // Initialize with simple Reimann shock and rarefaction function
-    // time inputed as param[0] 
-
-    // Rarefraction initial condition
-    if (point[0] < 0.5 || point[0] >=(0.5*param[0]+1.5)){
-        return 0;
-    } else if (point[0]>=0.5 && point[0]<param[0]+0.5){
-        return (point[0]-0.5)/param[0];
-    } else if (point[0]>=point[0]+0.5 || point[0] <0.5*param[0]+1.5){
-        return 1;
-    } else {
-        return 0;
+    // Sine wave provide a smooth solution
+    if (point[0]> 0.5 && point[0] < 2.5){
+    return pow(sin(M_PI*(point[0]+1.5)/2),2)*pow(sin(M_PI*(point[1])),2);
+	 } else {
+    return 0;
     }
+
+//    return 1;
 }
 
 // Burgers for testing
@@ -30,14 +23,14 @@ double advfunc(const double& u,
 
     // A Burgers type flux
 
-    return u*u/2.0 *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+    return u *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 }
 
 int dadvfunc(const derivative& du, const double& u, const vertex& vel, const vertex& unitnormal, derivative& work){
 
     // compute df/du = df/dR * dR/du
 
-    double direction = u*(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+    double direction = (unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 
     unordered_map_arithmetic(work, du, std::plus<double>(), direction, std::multiplies<double>());
 
@@ -72,6 +65,8 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         indice globalcell {i,j};
         indice cellout;
 
+        use.printWgts(allwgts,{i,j});
+
         // Extract corners with respect to given global indice
         vertexSet corners = extractCorners(mi, globalcell); 
 
@@ -94,7 +89,7 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         // boundary
         if (i==0){
             flux = 0.0;
-
+            //flux = edgefluxintegral(vert, 1.0, vel); 
         } else {
             cellout = globalcell + mi.faceNormal[3];
             flux    = edgefluxintegral(mi, globalcell, cellout, vert, allwgts, vel,
@@ -147,6 +142,7 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         if (j==0){
             // Temperatory
             flux    = 0.0;
+ 
         } else {
             cellout = globalcell + mi.faceNormal[0];
             edgefluxintegral(mi, globalcell, cellout, hori, 
@@ -162,6 +158,8 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         // boundary
         if (i==0){
             flux    = 0.0;
+
+//            flux = edgefluxintegral(vert, 1.0, vel); 
         } else {
             cellout = globalcell + mi.faceNormal[3];
             edgefluxintegral(mi, globalcell, cellout, vert, allwgts, vel,
@@ -170,6 +168,21 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         }
         vertedge({i,j}) = flux;
     }}
+
+/*
+    // Free outflow
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+        double flux = 0;
+
+        indice gcell {mi.MPIglobalCellSize[0]-1, j};
+        vertexSet corners = extractCorners(mi, gcell);
+        vertexSet vert    = {corners.at(2), corners.at(1)};
+    
+        edgefluxintegral(mi, gcell, vert, allwgts, vel, ml, use, lu, 
+                         vertedgeder({mi.MPIglobalCellSize[0], j}), flux);
+        vertedge({mi.MPIglobalCellSize[0], j}) = flux;
+    }
+*/
 
     return 1;
 }

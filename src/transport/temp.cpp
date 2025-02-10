@@ -90,7 +90,7 @@ int RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,  mlus
     return 1;
 }
 
-int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh){
+int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh, int maxiter){
 
     int nelem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
 
@@ -103,7 +103,7 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
     KSP ksp;
     PetscCall(KSPCreate(PETSC_COMM_WORLD, &ksp));
     PetscCall(KSPSetType(ksp, KSPGMRES));
-    PetscCall(KSPSetTolerances(ksp, 1.e-12, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT));
+    PetscCall(KSPSetTolerances(ksp, 1.e-14, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT));
     PetscCall(KSPSetInitialGuessNonzero(ksp, PETSC_FALSE));
 
     Vec sol;
@@ -135,7 +135,7 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
         //getflux(mi, ml, use, &sol, &flux, dmu, dmmesh);
         //VecAXPY(sol,-1.0*dt, flux);
 
-        while (tol > 1e-7){
+        while (tol > 1e-7 && it<maxiter){
             Vec tmp1, tmp2;
             PetscCall(VecDuplicate(sol, &tmp1));
             PetscCall(VecDuplicate(sol, &tmp2));
@@ -152,7 +152,6 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
 
             // 3. Solve for J^-1(x)F(x)
             KSPSetOperators(ksp, J, J);
-
             KSPSolve(ksp, tmp1, tmp2);
 
             // 4. Update sol
@@ -260,7 +259,9 @@ int getflux(const MeshInfo& mi, multilevel& ml, mluse& use, Vec * innow, Vec * i
 
     Tensor<weights> allwgts;
     double h0 = sqrt((mi.L*mi.H)/(double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
+
     use.computeWgts(ml, mi, h0, allwgts);
+    //use.computeWgtsConst(ml, mi, h0, allwgts);
 
     // Update edgeflux
     Tensor<double> horiedgeflux = Tensor<double>(2);
@@ -320,6 +321,7 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
 
     Tensor<weights> allwgts;
     use.computeWgts(ml, mi, h0, allwgts);
+    //use.computeWgtsConst(ml, mi, h0, allwgts);
 
     // Update edgeflux
     Tensor<double> horiedgeflux = Tensor<double>(2);

@@ -23,7 +23,7 @@ double func(const vertex& point, const vector<double>& param);
 
 int RK(double dt, int Nt, Vec * init, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh);
 
-int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh);
+int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh, int maxiter);
 
 int iRK2(double dt, int Nt, Vec * insol, MeshInfo* mi, multilevel* ml, mluse* use, DM dmu, DM dmmesh);
 

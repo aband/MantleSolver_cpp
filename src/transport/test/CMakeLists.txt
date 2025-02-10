@@ -146,3 +146,17 @@ target_link_libraries(case2
 	 general_lib
     PkgConfig::LAPACKE 
 )
+
+# Add to excutable
+add_executable(smooth
+        test.cpp 
+		  smooth.cpp
+)
+
+# Link static libraries generated previously
+target_link_libraries(smooth
+    io_lib
+    transport_lib
+	 general_lib
+    PkgConfig::LAPACKE 
+)
