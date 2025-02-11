@@ -91,9 +91,16 @@ class mluse {
                       derivative& sumderwgts,
                       const std::string& pos,
                       const indice& gcell) const;
-
+/*
         int der(const vertex& point, const multilevel& ml,
                 const std::string& pos,  const weights& wgts, 
+                const indice& index, double ** localsol,
+                const MeshInfo& mi,
+                unordered_map<int, double>& derivative) const;
+*/
+
+        int der(const vertex& point, const multilevel& ml,
+                const std::string& pos,  
                 const indice& index, double ** localsol,
                 const MeshInfo& mi,
                 unordered_map<int, double>& derivative) const;

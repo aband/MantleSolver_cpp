@@ -203,7 +203,6 @@ int stencilpolynomial::sigma(const Tensor<double>& sol,
 
 int stencilpolynomial::dsigma(const Tensor<double>& sol,
                               vector<double>& der){
-
     der.resize(sol.getSize());
 
     std::fill(der.begin(), der.end(), 0.0);

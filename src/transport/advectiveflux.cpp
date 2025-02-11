@@ -218,15 +218,13 @@ int edgefluxintegral(const MeshInfo& mi,
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
         derivative derin;
-        use.der(mapped, ml, "all", allwgts({gcellin[0], gcellin[1]}), 
-                gcellin, lu, mi, derin);
+        use.der(mapped, ml, "all", gcellin, lu, mi, derin);
 
         //use.derpseudo(mapped, ml, "all", allwgts({gcellin[0], gcellin[1]}), 
         //              gcellin, lu, mi, derin);
 
         derivative derout;
-        use.der(mapped, ml, "all", allwgts({gcellout[0], gcellout[1]}), 
-                gcellout, lu, mi, derout);
+        use.der(mapped, ml, "all", gcellout, lu, mi, derout);
 
         //use.derpseudo(mapped, ml, "all", allwgts({gcellout[0], gcellout[1]}), 
         //              gcellout, lu, mi, derout);
@@ -302,8 +300,7 @@ int edgefluxintegral(const MeshInfo& mi,
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
         derivative derin;
-        use.der(mapped, ml, "all", allwgts({gcell[0], gcell[1]}), 
-                gcell, lu, mi, derin);
+        use.der(mapped, ml, "all", gcell, lu, mi, derin);
 
         //use.derpseudo(mapped, ml, "all", allwgts({gcellin[0], gcellin[1]}), 
         //              gcellin, lu, mi, derin);

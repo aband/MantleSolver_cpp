@@ -65,7 +65,7 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         indice globalcell {i,j};
         indice cellout;
 
-        use.printWgts(allwgts,{i,j});
+        //use.printWgts(allwgts,{i,j});
 
         // Extract corners with respect to given global indice
         vertexSet corners = extractCorners(mi, globalcell); 

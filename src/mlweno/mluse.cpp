@@ -421,7 +421,7 @@ int mluse::sumscaled(const multilevel& ml,
  */
 
 int mluse::der(const vertex& point, const multilevel& ml,
-               const::string& pos,  const weights& wgts, 
+               const::string& pos,  
                const indice& index, double ** localsol,
                const MeshInfo& mi,
                unordered_map<int, double>& der) const{

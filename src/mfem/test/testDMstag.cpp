@@ -23,6 +23,8 @@ int main(int argc, char ** argv){
     PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);
     PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);
 
+    PetscInt startx, starty, nx, ny;
+
     // ======================
 
     int stencilwidth = 0;
@@ -40,6 +42,34 @@ int main(int argc, char ** argv){
 
     Mat Abr;
     DMCreateMatrix(dmbr, &Abr);
+
+    PetscCall(DMStagGetCorners(dmbr, &startx, &starty, NULL, &nx, &ny, NULL, NULL, NULL, NULL));
+    PetscCall(DMStagGetGlobalSizes(dmbr, &M, &N, NULL));
+
+    DMStagStencil sten;
+    sten.i = 1;
+    sten.j = 1;
+    sten.loc = DMSTAG_UP;
+    sten.c = 0;
+
+    double val = 1.0;
+
+    DMStagMatSetValuesStencil(dmbr, Abr, 1, &sten, 1, &sten, &val, INSERT_VALUES);
+
+/*
+    for (int j=starty; j<starty+ny; j++){
+    for (int i=startx; i<startx+nx; i++){
+
+        int dof[12];
+
+
+    }}
+*/
+
+    MatAssemblyBegin(Abr, MAT_FINAL_ASSEMBLY);
+    MatAssemblyEnd(Abr, MAT_FINAL_ASSEMBLY);
+
+    MatView(Abr, PETSC_VIEWER_STDOUT_WORLD);
 
     // ==================================================
 

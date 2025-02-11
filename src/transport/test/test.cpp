@@ -94,7 +94,7 @@ int main(int argc, char ** argv){
 
     multilevel ml = multilevel();
 
-    //ml.addLevel("(3,3)", {3,3}, mi);
+    ml.addLevel("(3,3)", {3,3}, mi);
     ml.addLevel("(2,2)", {2,2}, mi);
 
     // =================================================================
@@ -119,7 +119,7 @@ int main(int argc, char ** argv){
 
     // Test for nonlinear weighting
     unordered_map<std::string, vector<indice>> method;
-    //method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
     method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
 
     double h0 = sqrt((L*H)/(double)(M*N));
