@@ -15,6 +15,7 @@ typedef struct {
     double mu_f  ;
     double rho_f ;
     double rho_s ;
+    double rho_r ;
     double gx    ;
     double gy    ;
     double invk0 ;

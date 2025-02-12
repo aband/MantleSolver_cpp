@@ -278,7 +278,92 @@ int Driver::PrintPhaseEvent(int mark){
     fclose(fp);
     fclose(ft);
 
+    return 1;
+}
 
+int Driver::printPressureSerialApprox(int mark){
+    // Print approximated pressure value in serial index system
+    // This output is approximation of the pressure doing the following approximation:
+
+    // 1. Pressure is represented by cell-averaged value
+    // 2. Porosity computed using lithostatic pressure not actual pressure
+
+    // Attention!! This approximated visual is for testing purpose only.
+
+    // These two variables are solved in the reduced linear system
+    Vec vectildeqf;
+    Vec vecq;
+
+    PetscCall(VecNestGetSubVec(Result_->y, 0, &vecq));   
+    PetscCall(VecNestGetSubVec(Result_->y, 1, &vectildeqf));
+
+    FILE * fqs = fopen(GetFilename("qs", mark), "w");
+    FILE * fqf = fopen(GetFilename("qf", mark), "w");
+    FILE * fps = fopen(GetFilename("ps", mark), "w");
+    FILE * fpf = fopen(GetFilename("pf", mark), "w"); 
+
+    FILE * fstokes = fopen(GetFilename("rawstokesq", mark), "w"); 
+    FILE * fdarcy  = fopen(GetFilename("rawdarcyq", mark), "w");
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice globalcell {i,j};
+        int nelem = FlatIndic(mi, globalcell);
+        double q, tildeqf;
+
+        PetscCall(VecGetValues(vectildeqf, 1, &nelem, &tildeqf));
+        PetscCall(VecGetValues(vecq, 1, &nelem, &q));
+
+        // Get Porosity
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi, globalcell);
+
+        vertex global = GaussMapPointsFace(local, basis_->corners());
+ 
+        double depth  = myPhase->pPtr->GetDepth(global[1], myPhase->pp->l0);  
+        double lithoP = myPhase->pPtr->GetScaledLithoP(global[1]*(-1)*myPhase->pp->l0*0.6); 
+
+        // Extract HD and CD from global solution vectors
+        double HD, CD; // Get cell averaged values for approximation
+        const int idx = FlatIndic(mi, globalcell);
+        PetscCall(VecGetValues(globalHD, 1, &idx, &HD));
+        PetscCall(VecGetValues(globalCD, 1, &idx, &CD));
+
+        myPhase->pPtr->evalPhase(HD, CD, lithoP);
+        double phif = myPhase->pPtr->phi.mlt;
+        double coef = 0.0; 
+        // Adjust phif
+        if (phif > 2e-16) {
+            coef = 1.0/sqrt(phif);
+        }
+
+        // Reterive original physical variables with physical units
+        double qf = tildeqf * coef; 
+        double qs = qf - 1.0/(1-phif)*(qf-q);
+        double scale = myPhase->pp->rho_r * 10 * myPhase->pp->l0;
+
+        qf *= scale;
+        qs *= scale;
+
+        double add = myPhase->pp->rho_f * 10 * global[1]*myPhase->pp->l0;
+
+        double pf = qf + add;
+        double ps = qs + add; 
+
+        fprintf(fqs, "%e ", qs);
+        fprintf(fqf, "%e ", qf);
+        fprintf(fps, "%e ", ps);
+        fprintf(fpf, "%e ", pf);
+        fprintf(fstokes, "%e ", q);
+        fprintf(fdarcy, "%e ", tildeqf);
+    }fprintf(fqs, "\n");
+     fprintf(fps, "\n");
+     fprintf(fqf, "\n");
+     fprintf(fps, "\n");
+     fprintf(fstokes, "\n");
+     fprintf(fdarcy, "\n");}
 
     return 1;
 }
