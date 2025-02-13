@@ -328,13 +328,15 @@ int multilevel::updateall(double ** localsol, const double& h0, const int& s, co
             for (const auto it: dersigma({i,j})){
                 derscaled_sigma({i,j}).insert(std::make_pair(it.first, it.second*coef));
             }
-/*
-            cout << i << "  " << j << " unscaled and scaled sigma : " << s*rl+nl << 
-                 "  " <<  
+
+            cout <<it << "  " << i << "  " << j << 
+                 " order, unscaled and scaled sigma : " << s*rl+nl << "  " <<  
                  stencilsigma({i,j}) << "  " << scaled_sigma({i,j}) << endl;
+            cout << "Derivative of sigma: " << endl;
             unordered_map_print(dersigma({i,j})); 
+            cout << "Derivative of scaled sigma: " << endl;
             unordered_map_print(derscaled_sigma({i,j}));
-*/
+            cout << endl;
         }}
 
         alllevelsigma.insert(std::make_pair(it, stencilsigma));

@@ -119,6 +119,10 @@ add_executable(testder
 		  testder.cpp
 		  )
 
+add_executable(fullcontrol
+		  fullcontrol.cpp
+		  )
+
 target_link_libraries(test
 		  general_lib
 		  io_lib
@@ -156,3 +160,11 @@ target_link_libraries(testder
 		  PkgConfig::PETSC
 		  PkgConfig::LAPACKE
 )
+
+target_link_libraries(fullcontrol
+		  general_lib
+		  io_lib
+		  mlweno_lib
+		  PkgConfig::PETSC
+		  PkgConfig::LAPACKE
+		  )

@@ -124,7 +124,7 @@ int main(int argc, char ** argv){
     PetscCall(DMCreateGlobalVector(dmu, &globalvec));
 
     SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {(L-h0)/2.0,0.0}, func);
-
+VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
     // Distribute local part to local vectors.
     PetscCall(DMGetLocalVector(dmu, &localvec)); 
 

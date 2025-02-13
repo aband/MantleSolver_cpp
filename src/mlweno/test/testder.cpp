@@ -191,7 +191,7 @@ int main(int argc, char ** argv){
     unordered_map_arithmetic(sum, testder, std::plus<double>()); 
     }}
 */
-    use.der(test, ml, "all", allwgts({1, 1}), {1,1}, locvals,
+    use.der(test, ml, "all", {1,1}, locvals,
              mi, testder); 
 
     unordered_map_print(testder);
