@@ -75,7 +75,9 @@ int main(int argc, char **argv){
      */
     driver->PrepareFlow();
 
-/*
+    /**!
+     * One step computation for flow problem
+     */
     double h0 = sqrt((L*H)/(double)(M*N));
 
     // Solve for initial velocity
@@ -114,9 +116,13 @@ int main(int argc, char **argv){
     DMRestoreLocalVector(driver->dmu, &localHD); 
     DMDAVecRestoreArray(driver->dmu,localCD,&lCD);
     DMRestoreLocalVector(driver->dmu, &localCD); 
-*/
 
-    driver->RK(dt, Tmax, maxIter, tolUzawa);
+    driver->printPressureSerialApprox(1);
+
+    /**!
+     * Actual time stepping.
+     */
+//    driver->RK(dt, Tmax, maxIter, tolUzawa);
 
     VecDestroy(&driver->globalmesh);
     VecDestroy(&driver->globalHD);
