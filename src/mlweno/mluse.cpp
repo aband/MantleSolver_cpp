@@ -24,6 +24,11 @@ int mluse::setbias(const std::string& pos){
     return 1;
 }
 
+int mluse::setbias(){
+
+    return 1;
+}
+
 int mluse::geteta(const int& rl) const{
  
     int work = 0;
@@ -574,6 +579,64 @@ int mluse::derpseudo(const vertex& point, const multilevel& ml,
                     }
                 }}
             }
+        }
+    }
+
+    return 1;
+}
+
+int mluse::dnlwtest(const multilevel& ml,
+                    const std::string& pos,
+                    const indice& index, 
+                    double ** localsol,
+                    const MeshInfo& mi) const{
+
+    // Derivative of a reconstruction consists of two parts
+    // dR/du = \sum dw/du P = \sum w dP/du
+
+    indice targetstencilindex;
+
+    double sum;
+    derivative sumder;
+
+    // Compute sum of weights and sum of derivative of weights
+    sumscaled(ml,sum, sumder, pos, index);
+
+    for (const auto& it : bias.at(pos)){
+        // Loop through all levels first
+
+        for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
+            // Loop through method to find target stencil
+
+            targetstencilindex = index + reconstMethod.at(pos).at(it.first).at(m);
+
+            if (stencilexist(ml, targetstencilindex, it.first)) {
+                // Check if this stencil actually exists
+
+                Tensor<double> sol = Tensor<double>(2);
+                ml.getsol(sol, localsol, targetstencilindex, it.first); 
+
+                // Extract non linear weight for this tencil
+                double scaled = bias.at(pos).at(it.first)*
+                ml.getscaledsigma(it.first, {targetstencilindex[0], 
+                                             targetstencilindex[1]});
+
+                double nlw = scaled/sum;
+
+                // Compute dw/du for each stencil
+                derivative dscaled = ml.getderscaledsigma(it.first,
+                {targetstencilindex[0], targetstencilindex[1]});
+
+                unordered_map_arithmetic(dscaled, 1.0/sum, std::multiplies<double>()); 
+
+                unordered_map_arithmetic(dscaled, sumder, std::plus<double>(), 
+                -1*scaled/sum/sum, std::multiplies<double>());
+
+
+                cout << it.first << " stencil index : " << targetstencilindex[0] << "  " << targetstencilindex[1] << endl;
+                unordered_map_print(dscaled);
+
+            } 
         }
     }
 

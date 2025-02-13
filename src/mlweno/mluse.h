@@ -112,6 +112,12 @@ class mluse {
                       const MeshInfo& mi,
                       derivative& der) const;
 
+        int dnlwtest(const multilevel& ml,
+                     const std::string& pos,
+                     const indice& index, 
+                     double ** localsol,
+                     const MeshInfo& mi) const;
+
     public:
 
         set<std::string> posSet;

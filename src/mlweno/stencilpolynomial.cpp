@@ -210,10 +210,10 @@ int stencilpolynomial::dsigma(const Tensor<double>& sol,
     for (int i=0; i<sol.getSize(); i++){
         for (int j=0; j<sol.getSize(); j++){
             der.at(i) += 2*sol(j)*tensorsigma({i,j});
-            cout <<sol(j) << "  " << tensorsigma({i,j}) << "  ";
-        }cout << endl;
+            //cout <<sol(j) << "  " << tensorsigma({i,j}) << "  ";
+        }//cout << endl;
     }
-cout << endl;
+//cout << endl;
     return 1;
 }
 

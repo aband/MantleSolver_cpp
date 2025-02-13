@@ -96,6 +96,7 @@ int main(int argc, char ** argv){
     mi.H = H;
 
     double h0 = sqrt((L*H)/(double)(M*N));
+cout << h0 << endl;
 
     vertex test {0.5,0.5};
 
@@ -130,6 +131,7 @@ int main(int argc, char ** argv){
     }cout << endl;}
 
     VecSetValues(globalvec, 9, id, y, INSERT_VALUES);
+
     PetscCall(DMGetLocalVector(dmu, &localvec)); 
 
     PetscCall(DMGlobalToLocalBegin(dmu, globalvec, INSERT_VALUES, localvec));
@@ -145,7 +147,15 @@ int main(int argc, char ** argv){
 
     use.printWgts(allwgts, {1,1});
 
+    double sumwgts = 0.0;
+    derivative sumdwgts;
+    use.sumscaled(ml, sumwgts, sumdwgts, "all", {1,1});
 
+    cout << "sum of wgts : " << sumwgts << endl;
+    unordered_map_print(sumdwgts);
+    cout << endl;
+
+    use.dnlwtest(ml, "all", {1,1}, locvals, mi);
 
     // ===============================================================
     DMDAVecRestoreArray(dmu,localvec,&locvals);

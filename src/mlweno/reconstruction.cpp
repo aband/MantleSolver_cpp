@@ -304,6 +304,7 @@ int multilevel::updateall(double ** localsol, const double& h0, const int& s, co
         for (int j=0; j<sizey; j++){
         for (int i=0; i<sizex; i++){
             getsol(stensol, localsol, {i,j}, it); 
+
             rl = find_max(getStencilSize(it,0), getStencilSize(it,1));
             nl = geteta(rl);
             vector<double> stendersigma;
@@ -328,7 +329,7 @@ int multilevel::updateall(double ** localsol, const double& h0, const int& s, co
             for (const auto it: dersigma({i,j})){
                 derscaled_sigma({i,j}).insert(std::make_pair(it.first, it.second*coef));
             }
-
+/*
             cout <<it << "  " << i << "  " << j << 
                  " order, unscaled and scaled sigma : " << s*rl+nl << "  " <<  
                  stencilsigma({i,j}) << "  " << scaled_sigma({i,j}) << endl;
@@ -337,6 +338,7 @@ int multilevel::updateall(double ** localsol, const double& h0, const int& s, co
             cout << "Derivative of scaled sigma: " << endl;
             unordered_map_print(derscaled_sigma({i,j}));
             cout << endl;
+*/
         }}
 
         alllevelsigma.insert(std::make_pair(it, stencilsigma));

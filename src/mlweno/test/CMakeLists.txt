@@ -119,7 +119,7 @@ add_executable(testder
 		  testder.cpp
 		  )
 
-add_executable(fullcontrol
+add_executable(fulltest
 		  fullcontrol.cpp
 		  )
 
@@ -161,7 +161,7 @@ target_link_libraries(testder
 		  PkgConfig::LAPACKE
 )
 
-target_link_libraries(fullcontrol
+target_link_libraries(fulltest
 		  general_lib
 		  io_lib
 		  mlweno_lib
