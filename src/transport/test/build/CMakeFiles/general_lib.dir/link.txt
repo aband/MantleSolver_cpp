@@ -1,2 +1,0 @@
-/usr/bin/ar qc libgeneral_lib.a CMakeFiles/general_lib.dir/home/renpo/Research/MantleSolver/src/general/integral.cpp.o CMakeFiles/general_lib.dir/home/renpo/Research/MantleSolver/src/general/mesh.c.o CMakeFiles/general_lib.dir/home/renpo/Research/MantleSolver/src/general/util.cpp.o
-/usr/bin/ranlib libgeneral_lib.a
