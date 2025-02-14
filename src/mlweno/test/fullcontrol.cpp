@@ -115,7 +115,7 @@ cout << h0 << endl;
 
     use.setmethod("all",method);
     use.setbias("all");
-
+    use.setbias("all", "(3,3)", 0);
     // =================================================================
     Vec globalvec, localvec;
     double ** locvals;

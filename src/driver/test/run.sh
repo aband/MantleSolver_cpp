@@ -1,2 +1,2 @@
 cd build;
-rm *.dat; ./test -dt 50 -Tmax 1000
+rm *.dat; ./test -dt 40 -Tmax 3000

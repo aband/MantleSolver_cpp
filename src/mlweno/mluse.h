@@ -29,6 +29,10 @@ class mluse {
          */
         int setbias(const std::string& pos);
 
+        int setbias(const std::string& pos, 
+                    const std::string& level,
+                    const double& newbias);
+
         /**!
          * Set definition range for stencils.
          * Used for parallel computation.

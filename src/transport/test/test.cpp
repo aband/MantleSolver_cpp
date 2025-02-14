@@ -126,6 +126,7 @@ int main(int argc, char ** argv){
 
     use.setmethod("all", method);
     use.setbias("all");
+//    use.setbias("all", "(3,3)", 0);
 
     printGrid(mi);
 

@@ -77,7 +77,7 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
            printCellAve(mark, &globalCD, mi, "CD");
            PrintFlowEvent(mark);
            PrintPhaseEvent(mark);
-
+           PrintPressureSerialApprox(mark);
            mark ++;
        }
     }

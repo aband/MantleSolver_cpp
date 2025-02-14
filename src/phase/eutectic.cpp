@@ -221,15 +221,25 @@ void EUTECTIC::phase::evalPhase(const double& HD,
    
 }
 
-int EUTECTIC::phase::phaseSplit_(const double& HD, 
-                                 const double& CD,
+int EUTECTIC::phase::phaseSplit_(const double& inHD, 
+                                 const double& inCD,
                                  const double& P){
 
     int region = 0;
 
     // Check valid pair of (C,H)
-    assert(CD<1+std::numeric_limits<double>::epsilon());// "Opx composition beyond eutectic.\n");
-    assert(CD>0-std::numeric_limits<double>::epsilon());// "Opx composition below zero.\n");
+//    assert(CD<1+std::numeric_limits<double>::epsilon());// "Opx composition beyond eutectic.\n");
+//    assert(CD>0-std::numeric_limits<double>::epsilon());// "Opx composition below zero.\n");
+
+    double HD = inHD;
+    double CD = inCD;
+    if(inCD > 1) {
+        CD = 1;
+    }
+
+    if (inCD < 0){
+        CD = 0;
+    }
 
     // Two lines separating phase regions
     double lineb = L_* CD + gamma_ * P;

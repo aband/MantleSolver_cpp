@@ -24,7 +24,11 @@ int mluse::setbias(const std::string& pos){
     return 1;
 }
 
-int mluse::setbias(){
+int mluse::setbias(const std::string& pos, 
+                   const std::string& level, 
+                   const double& newbias){
+
+    bias.at(pos).at(level) = newbias;
 
     return 1;
 }
@@ -482,8 +486,10 @@ int mluse::der(const vertex& point, const multilevel& ml,
                 cout << "dscalde sigmas : " << endl;
                 unordered_map_print(ml.getderscaledsigma(it.first, {targetstencilindex[0], targetstencilindex[1]}));
 */
-                unordered_map_arithmetic(dscaled, 1.0/sum, std::multiplies<double>()); 
+                unordered_map_arithmetic(dscaled, bias.at(pos).at(it.first),
+                                         std::multiplies<double>());
 
+                unordered_map_arithmetic(dscaled, 1.0/sum, std::multiplies<double>()); 
                 unordered_map_arithmetic(dscaled, sumder, std::plus<double>(), 
                 -1*scaled/sum/sum, std::multiplies<double>());
 
@@ -627,11 +633,19 @@ int mluse::dnlwtest(const multilevel& ml,
                 derivative dscaled = ml.getderscaledsigma(it.first,
                 {targetstencilindex[0], targetstencilindex[1]});
 
+                unordered_map_arithmetic(dscaled, bias.at(pos).at(it.first),
+                                         std::multiplies<double>());
+
                 unordered_map_arithmetic(dscaled, 1.0/sum, std::multiplies<double>()); 
+					 cout << endl;
+unordered_map_print(dscaled);
 
                 unordered_map_arithmetic(dscaled, sumder, std::plus<double>(), 
                 -1*scaled/sum/sum, std::multiplies<double>());
 
+derivative testsumder = sumder;
+                unordered_map_arithmetic(testsumder, -1*scaled/sum/sum, std::multiplies<double>());
+unordered_map_print(testsumder);
 
                 cout << it.first << " stencil index : " << targetstencilindex[0] << "  " << targetstencilindex[1] << endl;
                 unordered_map_print(dscaled);
