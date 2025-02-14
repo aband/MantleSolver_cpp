@@ -318,7 +318,7 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
     double h0 = sqrt((mi.L*mi.H)/(double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
 
     // Update non linear weights with current cell-averaged solution
-    ml.updateall(lu, h0, 1, 1e-7, mi);
+    ml.updateall(lu, h0, 1, 1e-4, mi);
 
     Tensor<weights> allwgts;
     use.computeWgts(ml, mi, h0, allwgts);

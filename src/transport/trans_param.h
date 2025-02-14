@@ -7,6 +7,8 @@
 // This is the only costumized function in simulation
 double advfunc(const double& u, const vertex& vel, const vertex& unitnormal);
 
+double dfdu(const double& u);
+
 int dadvfunc(const derivative& du, const double& u, const vertex& vel, const vertex& unitnormal, derivative& work);
 
 // Position function that returns where the cell is

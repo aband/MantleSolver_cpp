@@ -24,6 +24,11 @@ double func(const vertex& point,
     }
 }
 
+double dfdu(const double& u){
+
+    return u;
+}
+
 // Burgers for testing
 double advfunc(const double& u, 
                const vertex& vel, const vertex& unitnormal){
@@ -37,7 +42,7 @@ int dadvfunc(const derivative& du, const double& u, const vertex& vel, const ver
 
     // compute df/du = df/dR * dR/du
 
-    double direction = u*(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+    double direction = dfdu(u)*(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 
     unordered_map_arithmetic(work, du, std::plus<double>(), direction, std::multiplies<double>());
 
