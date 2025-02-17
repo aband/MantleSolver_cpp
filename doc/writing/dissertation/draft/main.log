@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  12 FEB 2025 15:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  14 FEB 2025 18:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1029,25 +1029,25 @@ d on input line 6.
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 261.
  [6] [7]) [8] (./sections/parallel_weno/new.tex) (./sections/phase.tex [9]
-<sections/pics/eutectic.png, id=152, 430.54468pt x 322.90851pt>
+<sections/pics/eutectic.png, id=282, 430.54468pt x 322.90851pt>
 File: sections/pics/eutectic.png Graphic file (type png)
 <use sections/pics/eutectic.png>
 Package pdftex.def Info: sections/pics/eutectic.png  used on input line 61.
 (pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
  [10 <./sections/pics/eutectic.png (PNG copy)>]
-<sections/pics/TX.png, id=173, 438.23297pt x 317.5267pt>
+<sections/pics/TX.png, id=300, 438.23297pt x 317.5267pt>
 File: sections/pics/TX.png Graphic file (type png)
 <use sections/pics/TX.png>
 Package pdftex.def Info: sections/pics/TX.png  used on input line 167.
 (pdftex.def)             Requested size: 156.49323pt x 113.81047pt.
-<sections/pics/HX.png, id=174, 429.10312pt x 310.91156pt>
+<sections/pics/HX.png, id=301, 429.10312pt x 310.91156pt>
 File: sections/pics/HX.png Graphic file (type png)
 <use sections/pics/HX.png>
 Package pdftex.def Info: sections/pics/HX.png  used on input line 168.
 (pdftex.def)             Requested size: 156.4871pt x 113.81148pt.
 
 [11 <./sections/pics/TX.png (PNG copy)> <./sections/pics/HX.png (PNG copy)>]
-<sections/pics/HC.png, id=189, 421.575pt x 316.18124pt>
+<sections/pics/HC.png, id=311, 421.575pt x 316.18124pt>
 File: sections/pics/HC.png Graphic file (type png)
 <use sections/pics/HC.png>
 Package pdftex.def Info: sections/pics/HC.png  used on input line 185.
@@ -1062,7 +1062,7 @@ File: sections/pics/HC.png Graphic file (type png)
 <use sections/pics/HC.png>
 Package pdftex.def Info: sections/pics/HC.png  used on input line 252.
 (pdftex.def)             Requested size: 156.48848pt x 113.81068pt.
-<sections/pics/HCP.png, id=205, 429.10312pt x 310.91156pt>
+<sections/pics/HCP.png, id=323, 429.10312pt x 310.91156pt>
 File: sections/pics/HCP.png Graphic file (type png)
 <use sections/pics/HCP.png>
 Package pdftex.def Info: sections/pics/HCP.png  used on input line 256.
@@ -1074,13 +1074,13 @@ Overfull \hbox (9.64066pt too wide) in paragraph at lines 11--20
  []
 
 [14]
-<sections/pics/TDz_corrected.png, id=229, 225.84375pt x 451.6875pt>
+<sections/pics/TDz_corrected.png, id=343, 225.84375pt x 451.6875pt>
 File: sections/pics/TDz_corrected.png Graphic file (type png)
 <use sections/pics/TDz_corrected.png>
 Package pdftex.def Info: sections/pics/TDz_corrected.png  used on input line 10
 2.
 (pdftex.def)             Requested size: 156.49744pt x 284.54395pt.
-<sections/pics/Vfz_corrected.png, id=230, 233.37187pt x 446.41782pt>
+<sections/pics/Vfz_corrected.png, id=344, 233.37187pt x 446.41782pt>
 File: sections/pics/Vfz_corrected.png Graphic file (type png)
 <use sections/pics/Vfz_corrected.png>
 Package pdftex.def Info: sections/pics/Vfz_corrected.png  used on input line 10
@@ -1092,26 +1092,17 @@ ted.png (PNG copy)>]) [16] (./main.bbl)
 \openout5 = `main.thm'.
 
  [17] (./main.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `main.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: 4D70B209E4BD6C1D922F728361E692C1;429
-(rerunfilecheck)             After:  1C61D20A7C2B904D012AF294DA7EB183;7136.
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: 1C61D20A7C2B904D012AF294DA7EB183;7136.
  ) 
 Here is how much of TeX's memory you used:
- 26249 strings out of 478287
- 471392 string characters out of 5849289
- 731206 words of memory out of 5000000
- 42213 multiletter control sequences out of 15000+600000
+ 26284 strings out of 478287
+ 471966 string characters out of 5849289
+ 731241 words of memory out of 5000000
+ 42248 multiletter control sequences out of 15000+600000
  496138 words of font info for 85 fonts, out of 8000000 for 9000
  2715 hyphenation exceptions out of 8191
- 85i,13n,80p,422b,394s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 85i,13n,80p,506b,394s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist
@@ -1123,10 +1114,10 @@ r.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
 e1/urw/times/utmri8a.pfb>
-Output written on main.pdf (17 pages, 275125 bytes).
+Output written on main.pdf (17 pages, 277663 bytes).
 PDF statistics:
- 332 PDF objects out of 1000 (max. 8388607)
- 281 compressed objects within 3 object streams
+ 441 PDF objects out of 1000 (max. 8388607)
+ 389 compressed objects within 4 object streams
  147 named destinations out of 1000 (max. 500000)
- 72 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 360 words of extra memory for PDF output out of 10000 (max. 10000000)
 
