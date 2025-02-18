@@ -1,4 +1,4 @@
-PetscErrorCode ParallelMatrixAssemble(DM dmstag){
+PetscErrorCode ParallelMatrixAssemble(DM dmstag, DM dmpressure){
 
     PetscInt startx, starty, nx, ny, M, N;
 
