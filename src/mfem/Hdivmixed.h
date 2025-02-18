@@ -12,8 +12,8 @@ class Hdivmixed{
         Hdivmixed() {name = "BDM";elemDOF = 8;};
         ~Hdivmixed() {};
 
-        std::array<int, 8>  LocalToGlobal(const MeshInfo& mi,
-                                          const indice& globalElement) const;
+        std::array<int, 8> LocalToGlobal(const MeshInfo& mi,
+                                         const indice& globalElement) const;
 
         //! Constant part
         vertex phic(const basis& basis_,
