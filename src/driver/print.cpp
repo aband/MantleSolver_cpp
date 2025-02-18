@@ -281,7 +281,7 @@ int Driver::PrintPhaseEvent(int mark){
     return 1;
 }
 
-int Driver::printPressureSerialApprox(int mark){
+int Driver::PrintPressureSerialApprox(int mark){
     // Print approximated pressure value in serial index system
     // This output is approximation of the pressure doing the following approximation:
 

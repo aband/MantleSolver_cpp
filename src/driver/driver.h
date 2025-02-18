@@ -112,15 +112,6 @@ class Driver {
        mluse advection;
        mluse diffusion;
 
-       /**!
-        * Simple visualization functions
-        */
-       int PrintFlowEvent(int mark);
-
-       int PrintPhaseEvent(int mark);
-
-       int printPressureSerialApprox(int mark);
-
        double HDbottom;
        double CDbottom;
 
@@ -128,6 +119,15 @@ class Driver {
          * Time stepping function
          */
        int RK(double dt, double Tmax, int maxIter, double tolUzawa);
+
+       /**!
+        * Simple visualization functions
+        */
+       int PrintFlowEvent(int mark);
+
+       int PrintPhaseEvent(int mark);
+
+       int PrintPressureSerialApprox(int mark);
 
        int PrintEffVel(int mark, int side,
                        const Tensor<weights>& allwgtsHD, double ** lHD,

@@ -186,6 +186,12 @@ const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
         }else {
             type = dirichlet;
         }
+    } else if (global[1] == 0){
+        if (edge == 3){
+            type = neumann;
+        } else {
+            type = dirichlet;
+        }
     } else {
         type = dirichlet;
     }

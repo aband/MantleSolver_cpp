@@ -10,6 +10,9 @@ pY = fscanf(fileID, '%f', [1,Inf]);
 pX = reshape(pX, M, N);
 pY = reshape(pY, M, N);
 
+v = VideoWriter('velocity.avi','Motion JPEG AVI');
+open(v);
+
 fstruct1 = dir('build/*stokesVx*.dat');
 fstruct2 = dir('build/*stokesVy*.dat');
 fstruct3 = dir('build/*darcyVx*.dat');
@@ -117,6 +120,9 @@ plot(unscaleddarcyy(2,:), pY(2,:));
 
 pause
 F = getframe(gcf);
+
+writeVideo(v,F);
+
 end
 
 fclose(fileID);

@@ -108,12 +108,16 @@ double advfunc(const double& u,
     return u *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 }
 
+double dfdu(const double& u){
+
+    return 1.0;
+}
+
 int dadvfunc(const derivative& du, const double& u, const vertex& vel, const vertex& unitnormal, derivative& work){
 
     // compute df/du = df/dR * dR/du
 
-    double direction = u*(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
-
+    double direction = dfdu(u)*(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 
     return 1;
 }

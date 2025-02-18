@@ -11,6 +11,9 @@ pY = fscanf(fileID, '%f', [1,Inf]);
 pX = reshape(pX, M, N);
 pY = reshape(pY, M, N);
 
+v = VideoWriter('phase.avi','Motion JPEG AVI');
+open(v);
+
 fstruct1 = dir('build/*porosity*.dat');
 fcell1 = struct2cell(fstruct1);
 
@@ -113,6 +116,9 @@ set(gcf, 'Position',[50 50 1800 700])
 
 pause
 F= getframe(gcf);
+
+writeVideo(v,F);
+
 end
 
 fclose(fileID);

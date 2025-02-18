@@ -55,12 +55,10 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
            //PrintFlowEvent(mark);
            //PrintPhaseEvent(mark);
         //}
-/*
-        if (t%2 == 0){
-             PrintEffVel(mark-1, 2, allwgtsHD, lHD, allwgtsCD, lCD);
-        }
-*/
+
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
+
+        PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
 
         DMDAVecRestoreArray(dmu, fluxHD, &lfHD);
         DMDAVecRestoreArray(dmu, fluxCD, &lfCD);
@@ -72,14 +70,14 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         VecAXPY(globalHD, -1*dt, fluxHD);
         VecAXPY(globalCD, -1*dt, fluxCD);
 
-        if (t%5 == 0){
+        //if (t%5 == 0){
            printCellAve(mark, &globalHD, mi, "HD");
            printCellAve(mark, &globalCD, mi, "CD");
            PrintFlowEvent(mark);
            PrintPhaseEvent(mark);
            PrintPressureSerialApprox(mark);
            mark ++;
-       }
+       //}
     }
 
     printCellAve(mark, &globalHD, mi, "HD");
