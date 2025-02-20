@@ -56,6 +56,9 @@ int main(int argc, char ** argv){
 
     DMStagMatSetValuesStencil(dmbr, Abr, 1, &sten, 1, &sten, &val, INSERT_VALUES);
 
+    //int id;
+	 //DMStagStencilToIndexLocal(dmbr, 2, 1, &sten, &id);
+	 //std::cout << id << std::endl;
 /*
     for (int j=starty; j<starty+ny; j++){
     for (int i=startx; i<startx+nx; i++){
