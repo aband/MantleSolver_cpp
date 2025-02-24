@@ -75,21 +75,27 @@ int mluse::setstencilrange(const MeshInfo& mi){
     int bottom = (j_start<0) ? 0 : j_start;
     int top    = (j_end > mi.MPIglobalCellSize[1]) ? mi.MPIglobalCellSize[1] : j_end;
 
+    cout << "called ?" << endl << endl;
+
 //    allwgts.setSize({right-left, top-bottom});
 
-    int converti = 0;
-    int convertj = 0;
+    //int converti = 0;
+    //int convertj = 0;
 
     if (left == 0){
-        converti = 0;
+        //converti = 0;
+        offseti = 0;
     } else {
-        converti = mi.cellGhostLayerSize-1;;
+        //converti = mi.cellGhostLayerSize-1;
+        offseti = mi.cellGhostLayerSize-1;
     }
 
     if (bottom == 0){
-        convertj = 0;
+        //convertj = 0;
+        offsetj = 0;
     } else {
-        convertj = mi.cellGhostLayerSize-1;;
+        //convertj = mi.cellGhostLayerSize-1;
+        offsetj = mi.cellGhostLayerSize-1;
     }
 
     return 1;

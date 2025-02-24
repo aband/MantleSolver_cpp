@@ -26,7 +26,7 @@ struct PhaseComp{
   int region;
 
   // Melting temperature
-  doublt Tm_p;
+  double Tm_p;
 };
 
 class phase{

@@ -102,7 +102,7 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
 
     // Assign cell averaged values as initial condition
     SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalCD, {H_,0.0}, funcCD);
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {myPhase->pp->l0*H_,0.0}, funcHD);
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {myPhase->pp->l0*H_,-0.7*H_}, funcHD);
 
     // Initialization of multi level weno and corresponding usage
     ml = multilevel(); 
@@ -125,7 +125,7 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     advection.setbias("all");
 
     // Compute bottom fixed value
-    HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,0.0});
+    HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});
     CDbottom = 0.1;
 
     return 1;

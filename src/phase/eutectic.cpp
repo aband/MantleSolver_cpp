@@ -63,7 +63,7 @@ void EUTECTIC::phase::evalPhase(const double& HD,
 
     // Pressure corrected melting temperature
     double Tm = 1+ gamma_*P;
-    phi.Tm_p = Tm;
+    phi.Tm_p = gamma_*P;
 
     switch(phaseSplit(HD,CD,P)){
         // Single phase solidus

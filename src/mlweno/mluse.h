@@ -136,6 +136,11 @@ class mluse {
         int geteta (const int& rl) const;
 
         bool stencilexist(const multilevel& ml, const indice& index, const std::string& name) const;
+
+        // Parallel offset
+        // Needed to be calculated to differentiate interior domain and physical boundaries
+        int offseti = 0;
+        int offsetj = 0;
 };
 
 #endif

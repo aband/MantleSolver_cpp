@@ -44,7 +44,7 @@ porosity = reshape(porosity, M, N);
 % Add 1D plot
 subplot(1,5,1)
 plot(porosity(2,:),pY(2,:));
-title("Porosity Distribution");
+title("Porosity");
 ylabel("Depth");
 xlabel("Porosity");
 
@@ -53,6 +53,12 @@ filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 data = fscanf(fileID, '%f', [1,Inf]);
 data = reshape(data, M, N);
+
+filename = strcat('build/meltT',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+mT = fscanf(fileID, '%f', [1,Inf]);
+mT = reshape(mT, M, N);
 
 %subplot(1,8,3)
 %contourf(pX, pY, data,20);
@@ -64,7 +70,10 @@ data = reshape(data, M, N);
 % Add 1D plot
 subplot(1,5,2)
 plot(data(2,:),pY(2,:));
-title("Temperature Distribution");
+hold on 
+plot(mT(2,:),pY(2,:), 'o');
+hold off
+title("Temperature");
 ylabel("Depth");
 xlabel("Temperature");
 
