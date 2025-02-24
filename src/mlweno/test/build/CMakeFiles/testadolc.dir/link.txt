@@ -1,1 +1,0 @@
-/home/renpo/system/mpich-install-4.1.1/bin/mpicxx -rdynamic -Wl,-rpath,/home/renpo/system/adolc-install/lib64 CMakeFiles/testadolc.dir/testadolc.cpp.o -o testadolc  -Wl,-rpath,/home/renpo/system/adolc-install/lib64 /home/renpo/system/adolc-install/lib64/libadolc.so -lm 
