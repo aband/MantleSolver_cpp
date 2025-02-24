@@ -237,6 +237,7 @@ int Driver::PrintPhaseEvent(int mark){
 
     FILE *fp = fopen(GetFilename("porosity", mark), "w");
     FILE *ft = fopen(GetFilename("temperature", mark), "w");
+    FILE *fphase = fopen(GetFilename("phase", mark), "w");
 
     int M = mi.MPIglobalCellSize[0];
     int N = mi.MPIglobalCellSize[1];
@@ -271,12 +272,16 @@ int Driver::PrintPhaseEvent(int mark){
         // =============================================================
 
         fprintf(ft, "%f ", myPhase->pPtr->TD);
+
+        fprintf(fphase, "%d ", myPhase->pPtr->phi.region);
     }
     fprintf(fp, "\n"); 
-    fprintf(ft, "\n");}
+    fprintf(ft, "\n");
+    fprintf(fphase, "\n");}
 
     fclose(fp);
     fclose(ft);
+    fclose(fphase);
 
     return 1;
 }

@@ -24,24 +24,25 @@ loops = numel(fstruct1)
 
 h = figure;
 
+set(gcf, 'Position',[100 100 1210 693])
+
 for k=1:loops
 
 filename = strcat('build/porosity',string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 porosity = fscanf(fileID, '%f', [1,Inf]);
-
 porosity = reshape(porosity, M, N);
 
-subplot(1,8,1)
-contourf(pX, pY, porosity,20);
-title(strcat('porosity',string(k)));
-ylabel("depth (Dimensionless)");
-colorbar
+%subplot(1,5,1)
+%contourf(pX, pY, porosity,20);
+%title(strcat('porosity',string(k)));
+%ylabel("depth (Dimensionless)");
+%colorbar
 %caxis([0,0.5])
 
 % Add 1D plot
-subplot(1,8,2)
+subplot(1,5,1)
 plot(porosity(2,:),pY(2,:));
 title("Porosity Distribution");
 ylabel("Depth");
@@ -51,18 +52,17 @@ filename = strcat('build/temperature',string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 data = fscanf(fileID, '%f', [1,Inf]);
-
 data = reshape(data, M, N);
 
-subplot(1,8,3)
-contourf(pX, pY, data,20);
-title(strcat('temperature',string(k)))
-ylabel("depth (Dimensionless)");
-colorbar
+%subplot(1,8,3)
+%contourf(pX, pY, data,20);
+%title(strcat('temperature',string(k)))
+%ylabel("depth (Dimensionless)");
+%colorbar
 %caxis([0,0.5])
 
 % Add 1D plot
-subplot(1,8,4)
+subplot(1,5,2)
 plot(data(2,:),pY(2,:));
 title("Temperature Distribution");
 ylabel("Depth");
@@ -73,18 +73,17 @@ filename = strcat('build/HD',string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 data = fscanf(fileID, '%f', [1,Inf]);
-
 data = reshape(data, M, N);
 
-subplot(1,8,5)
-contourf(pX, pY, data,20);
-title(strcat('HD',string(k)))
-ylabel("depth (Dimensionless)");
-colorbar
+%subplot(1,8,5)
+%contourf(pX, pY, data,20);
+%title(strcat('HD',string(k)))
+%ylabel("depth (Dimensionless)");
+%colorbar
 %caxis([0,0.5])
 
 % Add 1D plot
-subplot(1,8,6)
+subplot(1,5,3)
 plot(data(2,:),pY(2,:));
 title("HD Distribution");
 ylabel("Depth");
@@ -95,24 +94,36 @@ filename = strcat('build/CD',string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 data = fscanf(fileID, '%f', [1,Inf]);
-
 data = reshape(data, M, N);
 
-subplot(1,8,7)
-contourf(pX, pY, data,20);
-title(strcat('CD',string(k)))
-ylabel("depth (Dimensionless)");
-colorbar
+%subplot(1,8,7)
+%contourf(pX, pY, data,20);
+%title(strcat('CD',string(k)))
+%ylabel("depth (Dimensionless)");
+%colorbar
 %caxis([0,0.5])
 
 % Add 1D plot
-subplot(1,8,8)
+subplot(1,5,4)
 plot(data(2,:),pY(2,:));
+axis([0.09,0.11, -0.2, 0.0])
 title("CD Distribution");
 ylabel("Depth");
 xlabel("CD");
 
-set(gcf, 'Position',[50 50 1800 700])
+% Plot of phase split region
+filename = strcat('build/phase', string(k));
+filename = strcat(filename, '.dat');
+fileID   = fopen(filename, 'r');
+data     = fscanf(fileID, '%f', [1, Inf]);
+data = reshape(data, M, N);
+
+subplot(1,5,5);
+%contourf(pX, pY, data, 3);
+stairs(data(2,:), pY(2,:));
+axis([0, 4, -0.2,0.0])
+title(strcat('Phase split'));
+
 
 pause
 F= getframe(gcf);

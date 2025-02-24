@@ -20,7 +20,13 @@ struct PhaseComp{
 
   T olv;
   T opx; 
-  T mlt; 
+  T mlt;
+
+  // Phase region
+  int region;
+
+  // Melting temperature
+  doublt Tm_p;
 };
 
 class phase{
