@@ -7,6 +7,7 @@
 //#include "trans_param.h"
 #include "util.h"
 #include "advectiveflux.h"
+#include "diffusiveflux.h"
 
 extern "C"{
 #include "mesh.h"
@@ -14,24 +15,24 @@ extern "C"{
 }
 
 // A temperory file holding simple time stepping for a transport problem
-
 int printSol(int mark, Vec * global, const MeshInfo& mi);
 
 int printGrid(const MeshInfo& mi);
 
+// ====================================================================
 double func(const vertex& point, const vector<double>& param);
 
 int RK(double dt, int Nt, Vec * init, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh);
 
 int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh, int maxiter);
 
-int iRK2(double dt, int Nt, Vec * insol, MeshInfo* mi, multilevel* ml, mluse* use, DM dmu, DM dmmesh);
-
 int getflux(const MeshInfo& mi, multilevel& ml, mluse& use, Vec * now, Vec * flux, DM dmu, DM dmmesh);
 
 int getall(const MeshInfo& mi, multilevel& ml, mluse& use, 
            Vec * now, Vec * flux, Mat *Jacobian, DM dmu, DM dmmesh, 
            const double& dt);
+
+
 
 typedef struct{
 
@@ -52,9 +53,5 @@ typedef struct{
     Vec * flux;
 
 } param;
-
-// Using petsc standard snes solver
-PetscErrorCode FormFunction(SNES snes, Vec x, Vec f, void *ctx);
-PetscErrorCode FormJacobian(SNES snes, Vec x, Mat jac, Mat B, void *ctx);
 
 #endif

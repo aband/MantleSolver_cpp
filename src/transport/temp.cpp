@@ -181,62 +181,6 @@ int iRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mlus
     return 1;
 }
 
-int iRK2(double dt, int Nt, Vec * insol, MeshInfo* mi, multilevel* ml, mluse* use, DM dmu, DM dmmesh ){
-
-    SNES snes;
-    KSP  ksp;
-    PC   pc;
-    Vec  x, r; 
-    Mat  J;
-
-    SNESCreate(PETSC_COMM_WORLD, &snes);
-    SNESSetType(snes, SNESNEWTONLS);
-
-    VecDuplicate(*insol, &x);
-    VecDuplicate(*insol, &r);
-
-    VecCopy(*insol, x);
-
-    int nelem = mi->MPIglobalCellSize[0] * mi->MPIglobalCellSize[1];
-
-    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
-                           nelem, nelem, 
-                           nelem, NULL, nelem, NULL, &J));
-    PetscCall(MatSetUp(J));
-
-    int event = 0;
-
-    param * myparam = new param();
-    myparam->mi = mi;
-    myparam->ml = ml;
-    myparam->use = use;
-    myparam->dt = dt;
-    myparam->dmu = dmu;
-    myparam->dmmesh = dmmesh;
-    myparam->previous = insol;
-
-    Vec flux;
-    VecDuplicate(*insol, &flux);
-    myparam->flux = &flux;
-
-    SNESSetFunction(snes, r, FormFunction, myparam);
-    SNESSetJacobian(snes, J, J, FormJacobian, myparam);
-
-    for (int t=0; t<Nt; t++){
-
-        SNESSolve(snes, NULL, x);
-
-        if (t%5 == 0){
-        printSol(event,&x,*myparam->mi);
-        event ++;
-        }
-
-        VecCopy(*myparam->previous, x);
-    }
-
-    return 1;
-}
-
 int getflux(const MeshInfo& mi, multilevel& ml, mluse& use, Vec * innow, Vec * influx, DM dmu, DM dmmesh){
 
     Vec now  = *innow; 
@@ -371,37 +315,4 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
     DMRestoreLocalVector(dmu, &localu);
 
     return 1;
-}
-
-PetscErrorCode FormFunction(SNES snes, Vec x, Vec f, void *ctx){
-
-    PetscFunctionBeginUser;
- 
-    param * user = (param *) ctx;
-
-    //! Get local vector
-    getflux((*user->mi), (*user->ml), (*user->use), &x, user->flux, user->dmu, user->dmmesh); 
-
-    VecCopy(f, x);
-
-    VecAXPY(f, -1.0, (*user->previous));
-    VecAXPY(f, user->dt, (*user->flux));
-
-    PetscFunctionReturn(PETSC_SUCCESS);
-}
-
-PetscErrorCode FormJacobian(SNES snes, Vec x, Mat jac, Mat B, void *ctx){
-
-    PetscFunctionBeginUser;
-
-    param * user = (param *)ctx;
-
-    Vec flux;
-    VecDuplicate(x, &flux);
-    getall((*user->mi), (*user->ml), (*user->use), &x, &flux, &jac, user->dmu, user->dmmesh, user->dt); 
-
-    PetscCall(MatAssemblyBegin(jac, MAT_FINAL_ASSEMBLY));
-    PetscCall(MatAssemblyEnd(jac, MAT_FINAL_ASSEMBLY));
- 
-    PetscFunctionReturn(PETSC_SUCCESS);
 }

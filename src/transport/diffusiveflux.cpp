@@ -31,7 +31,7 @@ inline int getsamples(const indice& gcellin,
                              allwgts({gcellout[0], gcellout[0]}), gcellout, lu);
 
 
-        samples.at(i)            = diffunc(u0):
+        samples.at(i)            = diffunc(u0);
         samples.at(i+halfnumPts) = diffunc(u1);
 
     }
@@ -39,15 +39,15 @@ inline int getsamples(const indice& gcellin,
     return 1;
 }
 
-double getfluxintegral(const MeshInfo& mi,
-                       const indice& gcellin,
-                       const indice& gcellout,
-                       const vertexSet& edge,
-                       multilevel& ml,
-                       mluse& use,
-                       double ** lu,
-                       const Tensor<weights>& allwgts,
-                       const std::string& loc){
+double edgefluxintegral(const MeshInfo& mi,
+                        const indice& gcellin,
+                        const indice& gcellout,
+                        const vertexSet& edge,
+                        const Tensor<weights>& allwgts,
+                        multilevel& ml,
+                        mluse& use,
+                        double ** lu,
+                        const std::string& loc){
 
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
@@ -59,10 +59,10 @@ double getfluxintegral(const MeshInfo& mi,
     const int numPts = std::ceil((degree+1)/2.0) * 2;
 
     // Compute geometry constant hin and hout
-    const double hIn  = mi.cellArea.at(FlatIndic(mi,globalCellIn));
-    const double hOut = mi.cellArea.at(FlatIndic(mi,globalCellOut));
+    const double hIn  = mi.cellArea.at(FlatIndic(mi,gcellin));
+    const double hOut = mi.cellArea.at(FlatIndic(mi,gcellout));
     
-    const double h = scale * ((hIn < hOut) ? hIn : hOut);
+    const double h = 0.1 * ((hIn < hOut) ? hIn : hOut);
 
     // Compute sample interval
     const double dx = h /(double)(numPts - 1);
@@ -85,11 +85,15 @@ double getfluxintegral(const MeshInfo& mi,
 
         getsamples(gcellin, gcellout, ml, use, lu, samples, dx, unitNormal, mapped, allwgts, loc);
 
+        for (int g=0; g<samples.size(); g++){
+            cout << samples.at(g) << "  ";
+        } cout << endl;
+
         for (int i=0; i<numPts; i++){
             work -= lagDer.middle(numPts-1, i) / dx * gwe[g] * len/2.0 * samples.at(i);
         }        
    
     }
-
+    cout << work << endl;
     return work;
 }

@@ -9,9 +9,9 @@ double edgefluxintegral(const MeshInfo& mi,
                         const indice& gcellin,
                         const indice& gcellout,
                         const vertexSet& edge,
+                        const Tensor<weights>& allwgts,
                         multilevel& ml,
                         mluse& use,
                         double ** lu,
-                        const Tensor<weights>& allwgts,
                         const std::string& loc); 
 #endif

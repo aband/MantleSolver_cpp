@@ -101,7 +101,8 @@ target_link_libraries(mlweno_lib
 add_library(transport_lib
 		  ${SRC}/transport/advectiveflux.cpp
 		  ${SRC}/transport/temp.cpp
-		  #${SRC}/transport/lagrange_tmp.cpp
+		  ${SRC}/transport/lagrange_tmp.cpp
+		  ${SRC}/transport/diffusiveflux.cpp
 )
 
 # Specify any additional include directories if needed
@@ -160,3 +161,19 @@ target_link_libraries(smooth
 	 general_lib
     PkgConfig::LAPACKE 
 )
+
+# Add to excutable
+add_executable(diff_test
+        diff_test.cpp 
+		  diff_case1.cpp
+)
+
+# Link static libraries generated previously
+target_link_libraries(diff_test
+    io_lib
+    transport_lib
+	 general_lib
+    PkgConfig::LAPACKE 
+)
+
+
