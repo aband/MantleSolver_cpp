@@ -156,6 +156,8 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
 
         horiedge({i,j}) = flux;
 
+flux = 0.0;
+
         vertexSet vert {corners.at(3), corners.at(0)};
 
         // boundary
