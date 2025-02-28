@@ -71,6 +71,7 @@ int RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,  mlus
 
     Vec sol  = *insol;
     int event = 1;
+    printSol(event,&sol,mi);
     for (int t=0 ; t<Nt; t++){
 
         Vec flux;
@@ -81,8 +82,8 @@ int RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,  mlus
         VecAXPY(sol, -1*dt, flux);
 
         if (t%5 == 0){
-        printSol(event,&sol,mi);
         event ++;
+        printSol(event,&sol,mi);
         }
     }
     printSol(event,&sol,mi);

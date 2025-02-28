@@ -6,12 +6,13 @@
 double func(const vertex& point,
             const vector<double>& param){
 
-    // Sine wave provide a smooth solution
-    if (point[0]> 0.5 && point[0] < 2.5){
-    return pow(sin(M_PI*(point[0]+1.5)/2),2)*pow(sin(M_PI*(point[1])),2);
-	 } else {
-    return 0;
+    if (abs(point[0]-0.5)<0.1 && 
+        abs(point[1]-0.5)<0.1){
+        return 1.0;
+    } else {
+        return 0.0;
     }
+
 }
 
 // Burgers for testing
@@ -71,10 +72,12 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
             flux = 0.0;
         } else {
             gcellout = gcell + mi.faceNormal[0];
-            flux    = 0.01*edgefluxintegral(mi, gcell, gcellout, hori, allwgts, ml, use, lu, "all");
+            flux     = edgefluxintegral(mi, gcell, gcellout, hori, allwgts, ml, use, lu, "all");
         }
 
-        horiedge({i,j}) = flux;
+        horiedge({i,j}) = 0.1*flux;
+
+flux = 0.0;
 
         // Compute flux on vertical edges
         vertexSet vert {corners.at(3), corners.at(0)};
@@ -85,10 +88,10 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
             flux = 0.0;
         } else {
             gcellout = gcell + mi.faceNormal[3];
-            flux    = 0.01*edgefluxintegral(mi, gcell, gcellout, hori, allwgts, ml, use, lu, "all");
+            flux     = edgefluxintegral(mi, gcell, gcellout, vert, allwgts, ml, use, lu, "all");
         }
 
-        horiedge({i,j}) = flux;
+        vertedge({i,j}) = 0.1*flux;
 
     }}
 

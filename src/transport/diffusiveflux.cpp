@@ -25,10 +25,10 @@ inline int getsamples(const indice& gcellin,
 
         // Reconstruct values at the given sample points
         double u0 = use.eval(point0, ml, loc, 
-                             allwgts({gcellin[0], gcellin[0]}), gcellin, lu);
+                             allwgts({gcellin[0], gcellin[1]}), gcellin, lu);
 
         double u1 = use.eval(point1, ml, loc, 
-                             allwgts({gcellout[0], gcellout[0]}), gcellout, lu);
+                             allwgts({gcellout[0], gcellout[1]}), gcellout, lu);
 
 
         samples.at(i)            = diffunc(u0);
@@ -62,7 +62,7 @@ double edgefluxintegral(const MeshInfo& mi,
     const double hIn  = mi.cellArea.at(FlatIndic(mi,gcellin));
     const double hOut = mi.cellArea.at(FlatIndic(mi,gcellout));
     
-    const double h = 0.1 * ((hIn < hOut) ? hIn : hOut);
+    const double h = 2.0 * ((hIn < hOut) ? hIn : hOut);
 
     // Compute sample interval
     const double dx = h /(double)(numPts - 1);
@@ -85,15 +85,10 @@ double edgefluxintegral(const MeshInfo& mi,
 
         getsamples(gcellin, gcellout, ml, use, lu, samples, dx, unitNormal, mapped, allwgts, loc);
 
-        for (int g=0; g<samples.size(); g++){
-            cout << samples.at(g) << "  ";
-        } cout << endl;
-
         for (int i=0; i<numPts; i++){
             work -= lagDer.middle(numPts-1, i) / dx * gwe[g] * len/2.0 * samples.at(i);
         }        
    
     }
-    cout << work << endl;
     return work;
 }
