@@ -36,7 +36,8 @@ int Driver::computephase(const std::vector<vertex>& gaussp,
 
 inline vertex effectVel(const vertex& vf, const vertex& vs, const double& c, const double& phif){
 
-    return vf*phif*c + (1-c)*vs;
+    //return vf*phif*c + (1-c)*vs;
+    return c*phif*vf + vs;
 }
 
 // Compute effective velocity (interior edges)

@@ -59,7 +59,7 @@ double EUTECTIC::phase::Getcf(const double& CD){
 
 void EUTECTIC::phase::evalPhase(const double& HD,
                                 const double& CD,
-										  const double& P){
+                                const double& P){
 
     // Pressure corrected melting temperature
     double Tm = 1+ gamma_*P;
@@ -110,7 +110,7 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.olv = 1-phi.opx-phi.mlt;
 
             phi.dTD_dCD = -L_/sqrt(pow(HD+Tm,2)- 4*(Tm*HD-CD*L_));
-            phi.dTD_dHD = 0.5 * (1 + 0.5/sqrt(pow(HD+Tm,2)- 4*(Tm*HD-CD*L_) * (2*HD - 4*Tm) );
+            phi.dTD_dHD = 0.5 * (1 + 0.5/sqrt(pow(HD+Tm,2)- 4*(Tm*HD-CD*L_)) * (2*HD - 4*Tm) );
 
         break;
 

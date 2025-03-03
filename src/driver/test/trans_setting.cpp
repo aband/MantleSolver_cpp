@@ -99,6 +99,7 @@ double InitHD(const valarray<double>& point,
 // Linear HD distribution
 //    HD -= 0.0000145*point[1]*param.at(0);
 
+
 // Linear constant distribution
     double tmp = HD - 0.0000145*param.at(0)*param.at(1);
 
@@ -107,6 +108,7 @@ double InitHD(const valarray<double>& point,
     } else {
         HD = tmp;
     }
+
 
     return HD;
 }

@@ -11,8 +11,8 @@ pY = fscanf(fileID, '%f', [1,Inf]);
 pX = reshape(pX, M, N);
 pY = reshape(pY, M, N);
 
-%v = VideoWriter('video.avi','Motion JPEG AVI');
-%open(v);
+v = VideoWriter('test.avi','Motion JPEG AVI');
+open(v);
 
 fstruct1 = dir('build/*sol*.dat');
 fcell1 = struct2cell(fstruct1);
@@ -20,6 +20,8 @@ fcell1 = struct2cell(fstruct1);
 loops = numel(fstruct1)
 
 h = figure;
+
+set(gcf, 'Position',[50 50 1800 700]);
 
 for k=1:loops
 
@@ -34,12 +36,10 @@ surf(pX, pY, sol)
 title(filename)
 ylabel("Depth");
 
-set(gcf, 'Position',[50 50 1800 700]);
-
 pause
 G = getframe(gcf);
 
-%writeVideo(v,G);
+writeVideo(v,G);
 end
 
-%close(v);
+close(v);
