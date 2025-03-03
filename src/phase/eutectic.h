@@ -27,6 +27,10 @@ struct PhaseComp{
 
   // Melting temperature
   double Tm_p;
+
+  // Derivative
+  T dTD_dCD;
+  T dTD_dHD; 
 };
 
 class phase{

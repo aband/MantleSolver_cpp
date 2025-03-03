@@ -73,8 +73,8 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.mlt = 0;
             TD      = HD;
 
-            dTD_dCD = 0;
-            dTD_dHD = 1;
+            phi.dTD_dCD = 0;
+            phi.dTD_dHD = 1;
 
         break;
  
@@ -85,8 +85,8 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.mlt = 0;
             TD      = HD;
 
-            dTD_dCD = 0;
-            dTD_dHD = 1;
+            phi.dTD_dCD = 0;
+            phi.dTD_dHD = 1;
 
         break;
 
@@ -97,8 +97,8 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.olv = 1-phi.mlt-phi.opx;
             TD      = gamma_*P;
 
-            dTD_dCD = 0;
-            dTD_dHD = 0;
+            phi.dTD_dCD = 0;
+            phi.dTD_dHD = 0;
 
         break;
 
@@ -109,9 +109,8 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.mlt = CD/(Tm-TD);
             phi.olv = 1-phi.opx-phi.mlt;
 
-            dTD_dCD = -1./sqrt(pow(HD+Tm,2)- 4*(Tm*HD-CD*L_));
-// It is WRONG!!!! 
-//            dTD_dHD = 0.5 * (1 -1./sqrt(pow(HD+1,2)- 4*(HD-CD*L_)) * ((HD+1)-2));
+            phi.dTD_dCD = -L_/sqrt(pow(HD+Tm,2)- 4*(Tm*HD-CD*L_));
+            phi.dTD_dHD = 0.5 * (1 + 0.5/sqrt(pow(HD+Tm,2)- 4*(Tm*HD-CD*L_) * (2*HD - 4*Tm) );
 
         break;
 
@@ -122,8 +121,8 @@ void EUTECTIC::phase::evalPhase(const double& HD,
             phi.mlt = 1;
             TD      = HD - L_;
 
-            dTD_dCD = 0;
-            dTD_dHD = 1;
+            phi.dTD_dCD = 0;
+            phi.dTD_dHD = 1;
 
         break;
 
