@@ -1,18 +1,28 @@
-\section{Multiphase conservation laws}
+\chapter[Governing Equations]{Governing Equations in Mantle Dynamics}
+\label{equations}
+\section{Mechanics of Mantle Dynamics}
 Fluid dynamics of the mixture of two phase flow has been extensively discussed.
-I will disscuss the three governing equations of mass, momentum and energy referring
-to discussion in \cite{MagmaPhysics} and \cite{DynamicsPartiallyMoltenRock}.
-I begin with the previous discussion on two-phase flow.
+I will disscuss the three governing equations of mass and momentum referring
+to the similar discussion in \cite{AveragedEquationsTwoPhase}, 
+\cite{MagmaPhysics} and \cite{DynamicsPartiallyMoltenRock}.
 Considering a conservation equation for given volumetric variable $\gamma$ in 
 a representative volume element $V$.
-\begin{equation}\label{eq:conservationlaw}
+\begin{equation}\label{eq:generalconservationlaw}
 		  \frac{d}{dt} \int_{V} \gamma d\bold{v} = 
-		  - \int_{\partial V} \bold{f} \cdot d\sigma + \int_{V} \bold{S} d\bold{v}
+		  - \int_{\partial V} \bold{f} \cdot d\sigma + \int_{V} S d\bold{v}
 \end{equation}
-We also define the quantity of porosity rigorously with the help of an 
+where $\bold{f}$ represents flux travelling across the boundary of a representative 
+volume element $V$. The minus sign indicates that the positive directions aligns with
+normal unit vector pointing outwards. $S$, source/sink term, represents the volumetric
+production rate of $\gamma$.
+We can apply Gauss's theorem to obtain differential form,
+\begin{equation}\label{eq:conservationlawpde}
+\frac{\partial \gamma}{\partial t} + \nabla \cdot \bold{f} = S
+\end{equation}
+We also define the quantity of phase fraction rigorously with the help of an 
 indicator function admitting that multiple phase cannot coexist at the same
 spatial point, which are regarded as immiscible phases.
-We define indicator function:
+We define indicator function,
 \begin{equation}\label{eq:indicatorfunction}
 		  i(\bold{x}) = \left \{ 
 		  \begin{aligned}
@@ -21,9 +31,50 @@ We define indicator function:
 		  \end{aligned}
 		  \right.
 \end{equation}
-We then define point wise macroscopic porosity function:
+We then define macroscopic phase fraction function:
 \begin{equation}\label{eq:porosityfunction}
-		  \phi_i = \lim_{\delta \bold{v} \to 0} \frac{1}{\delta \bold{v}} 
+		  \phi_i = \frac{1}{\delta \bold{v}} 
 		  \int_{\delta \bold{v}} i(\bold{x}) d\bold{v}
 \end{equation}
+In the beginning of my discussion, I will discuss two immiscible phases liquid magma 
+and solid mantle. Phase fraction of liquid magam is labelled as $\phi_f$ and phase
+fraction of solid mantle is labelled as $\phi_s$, where $\phi_f + \phi_s = 1$ is
+always attained.
 
+Substituting bulk density $\overline{\rho} = \phi_f \rho_f + \phi_s \rho_s$ for generalized 
+volumetric variable $\gamma$ in equation \ref{eq:generalconservationlaw}, I can obtain
+conservation law for bulk mass,
+\begin{equation}\label{eq:massconservation}
+\frac{\partial \overline{\rho}}{\partial t} + \nabla \cdot \overline{\rho \bold{v}} = 0
+\end{equation}
+with the help of Boussinesq approximation ignoring compressibility of each individual
+phase, and extend Boussinesq approximation further applying to density difference 
+between each phase except body force term. I can write continuous function for two 
+phase mixture simply as,
+\begin{equation}\label{eq:continuousfunction}
+\nabla \cdot \overline{\bold{v}} = 0
+\end{equation}
+I then write conservation of momentum with phase averaged term,
+\begin{equation}\label{eq:momentumconservation}
+\frac{\partial \overline{\rho \bold{v}}}{\partial t} + \nabla \cdot \overline{\rho \bold{v} \otimes \bold{v}}  = 
+\overline{\rho}\bold{g} + \nabla \cdot \overline{\bold{\tau}} - \nabla \overline{P}
+\end{equation}
+where $\bold{\tau}$ represents deviatoric stress,
+Ignoring change of inertia term due to near zero Reynolds number in magma and mantle, 
+\begin{equation}\label{eq:staticmomentumconservation}
+\overline{\rho}\bold{g} + \nabla \cdot \overline{\bold{\tau}} - \nabla \overline{P} = 0
+\end{equation}
+
+\vspace{1cm}
+Insert more details later!
+\vspace{1cm}
+
+\subsection{A Darcy-Stokes Flow System}
+Compbining equations ...., I finally arive with the full flow mechanical system of a two-phase system. 
+
+
+\section{Conservation of species and energy}
+
+\section{Eutectic Phase Behavior}
+
+\section{Rescaling and Nondimensionalization}

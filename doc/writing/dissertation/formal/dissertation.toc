@@ -13,12 +13,15 @@
 \contentsline {subsubsection}{\numberline {1.3.1.1}Example Subsubsection}{17}{subsubsection.1.3.1.1}%
 \contentsline {chapter}{Chapter 2:\hspace *{1em}Main Text Short Title}{18}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Section Title}{18}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Equations governing two phase flow}{22}{section.2.2}%
-\contentsline {chapter}{Appendix A:\hspace *{1em}Appendix Name}{23}{appendix.a.A}%
-\contentsline {section}{\numberline {A.1}Appendix section}{23}{section.a.A.1}%
-\contentsline {subsection}{\numberline {A.1.1}Appendix section}{23}{subsection.a.A.1.1}%
-\contentsline {subsubsection}{\numberline {A.1.1.1}Appendix section}{23}{subsubsection.a.A.1.1.1}%
-\contentsline {chapter}{Appendix B:\hspace *{1em}Another Appendix}{24}{appendix.a.B}%
-\contentsline {chapter}{Glossary}{25}{appendix*.11}%
-\contentsline {chapter}{Works Cited}{26}{appendix*.12}%
-\contentsline {chapter}{Vita}{27}{appendix*.13}%
+\contentsline {chapter}{Chapter 3:\hspace *{1em}Governing Equations}{22}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Mechanics of Mantle Dynamics}{22}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}A Darcy-Stokes Flow System}{23}{subsection.3.1.1}%
+\contentsline {section}{\numberline {3.2}Conservation of species and energy}{23}{section.3.2}%
+\contentsline {chapter}{Appendix A:\hspace *{1em}Appendix Name}{24}{appendix.a.A}%
+\contentsline {section}{\numberline {A.1}Appendix section}{24}{section.a.A.1}%
+\contentsline {subsection}{\numberline {A.1.1}Appendix section}{24}{subsection.a.A.1.1}%
+\contentsline {subsubsection}{\numberline {A.1.1.1}Appendix section}{24}{subsubsection.a.A.1.1.1}%
+\contentsline {chapter}{Appendix B:\hspace *{1em}Another Appendix}{25}{appendix.a.B}%
+\contentsline {chapter}{Glossary}{26}{appendix*.11}%
+\contentsline {chapter}{Works Cited}{27}{appendix*.12}%
+\contentsline {chapter}{Vita}{28}{appendix*.13}%
