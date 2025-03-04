@@ -1,15 +1,132 @@
 % This document should contain your references in a format compatible with the natbib package.
+@String{MMS = "Multiscale Model. Simul."}
+@String{SINUM = "SIAM. J. Numer. Anal."}
+@String{SISC = "SIAM. J. Sci. Comput."}
+@String{SIMA = "SIAM. J. Math. Anal."}
+@String{TiPM = "Transport in Porous Media"}
+@String{CMAME = "Comput. Methods Appl. Mech. Engrg."}
+@STRING{CG = "Computat. Geosci."}
+@STRING{JCP = "J. Comput. Phys."}
+@STRING{IJNMF = "Int. J. Numer. Meth. Fl."}
+@STRING{JSC = "J. Sci. Comput."}
 
-@BOOK{knuth:tb,
-  author = "Donald K. Knuth",
-  title = "The \TeX book",
-  publisher = "Addison-Wesley",
-  year = "1984",
+@Article{InexactUzawa_Elam_Golub,
+	author  = {Howard C. Elman and Gene H. Golub},
+	title   = {Inexact and preconditioned uzawa algorithms for saddle point problems},
+	journal = SINUM,
+	year    = {1994},
+	volume  = {31},
+	pages   = {1645--1661},}
+
+@Article{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev,
+	author  = {James H. Bramble, Joseph E. Pasciak, Apostol T. Vassilev},
+	title   = {Analysis of the inexact uzawa algorithm for saddle point problems},
+	journal = SINUM,
+	year    = 1997,
+	volume  = 34,
+	pages   = {1072--1092},}
+
+@Article{AcceleratingUzawa_Ho_Olson_Walker,
+	author  = {Nguyenho Ho, Sarah D. Olson, Homer F. Walker},
+	title   = {Accelerating the uzawa algorithm},
+	journal = SISC,
+	year    = 2017,
+	volume  = {39},
+	pages   = {S461--S476},}
+
+@Article{SolSparseIndef_Paige_Saunders,
+	author  = {C. C. Paige, M. A. Saungers},
+	title   = {Solution of sparse indefinite systems of linear equations},
+	journal = SINUM,
+	year    = 1975,
+	volume  = {12},
+	pages   = {617--629},}
+
+@Article{AnalysisFiniteElemStokes_Bernardi_Raugel,
+	author  = {Christine Bernardi, Genevieve Raugel},
+	title   = {Analysis of some finite elements for the Stokes problem},
+	journal = {Math. of Comput.},
+	year    = 1985,
+	volume  = 44,
+	pages   = {71-79},}
+
+@Article{FiniteVolumeMethod,
+	author = {Robert Eymard, Thierry Gallouët, Raphaèle Herbin},
 }
 
-@book{example,
-  author = "Author A. Person",
-  title = "Example Citation",
-  publisher = "Self-Published",
-  year = "2023",
+@Article{EutecticParamMantle,
+	author  = {Dan Mckenzie, Mike J. Bickle},
+	title   = {A Eutectic Parameterization of Mantle Melting},
+	journal = {J. Phys. Earth},
+	year    = {1990},
+	volume  = {38},
+	pages   = {511-515},}
+
+@Article{MagmaPhysics,
+	author  = {Dan Mckenzie},
+	title   = {The Generation and Compaction of Partially Molten Rock},
+	journal = {Journal of Petrology},
+	year    = {1984},
+	volume  = {25},
+	pages   = {713-765},}
+
+@book{DynamicsPartiallyMoltenRock,
+	author  = {Richard F. Katz},
+   title   = {The Dynamics of Partially Molten Rock},
+   year    = {2022},
+   isbn    = {9780691232645},
+	publisher = {Princeton University Press},
+	edition  = {1st},}
+
+@Article{DownwardOxidantTransport,
+	author  = {Marc A. Hesse, Jacob S. Jordan, Steve D. Vance and Apurva V. Oza},
+	title   = {Supporting Information for "Downward oxidant transport through Europa's ice shell by density-driven brine percolation"},
+	journal = {Geophysical Research Letters},
+	year    = {2022},}
+
+@Article{TheCompositionEarth,
+	author  = {W.F. McDonough, S.-s. Sun},
+	title   = {The composition of the Earth},
+	journal = {Chemical Geology},
+	year    = {1995},
+   volume  = {120},
+	pages   = {223-253},}
+
+@Article{ModellingMeltingRates,
+	author  = {Ian J. Hewitt},
+	title   = {Modelling melting rates in upwelling mantle},
+	journal = {Earth and Planetary Science Letters},
+	year    = {2010},
+	volume  = {300},
+	pages   = {264-274},}
+
+@book{FinElemMethNavierStokes,
+author = {Girault, Vivette and Raviart, Pierre-Arnaud},
+title = {Finite Element Methods for Navier-Stokes Equations: Theory and Algorithms},
+year = {2011},
+isbn = {3642648886},
+publisher = {Springer Publishing Company, Incorporated},
+edition = {1st}
 }
+
+@Article{WENOAOSimplifiedSmoothness,
+		  author = {Huang, CS., Arbogast, T. and Tian, C},
+		  title  = {Multidimensional WENO-AO Reconstructions Using a Simplified Smoothness Indicator and Applications to Conservation Laws},
+		  journal= JSC,
+		  year   = 2023,
+		  volume = {97},}
+
+@Article{MultiLevelWeno,
+		  author = {Todd Arbogast, Chieh-Sen Huang and Chenyu Tian},
+		  title  = {A finite volume multilevel WENO scheme for multidimensional scalar conservation laws},
+		  journal= CMAME,
+		  year   = {2024},
+		  volume = {421},}
+
+@Article{MagmaDynamicsEnthalpyMethod,
+		  author = {Richard F. Katz},
+		  title  = {Magma Dynamics with the Enthalpy Method: Benchmark Solutions and Magmatic Focusing at Mid-ocean Ridges},
+		  journal= {Journal of Petrology},
+		  year   = {2008},
+		  volume = {49},
+		  pages  = {2099-2121},}

@@ -1,10 +1,29 @@
-\section{Equations governing two phase flow}
+\section{Multiphase conservation laws}
 Fluid dynamics of the mixture of two phase flow has been extensively discussed.
 I will disscuss the three governing equations of mass, momentum and energy referring
-to\cite{MagmaPhysics}.
-I first write two equations governing conservation of mass. The change of 
-
-\begin{equation}\label{eq:conservationlaws}
-
-
+to discussion in \cite{MagmaPhysics} and \cite{DynamicsPartiallyMoltenRock}.
+I begin with the previous discussion on two-phase flow.
+Considering a conservation equation for given volumetric variable $\gamma$ in 
+a representative volume element $V$.
+\begin{equation}\label{eq:conservationlaw}
+		  \frac{d}{dt} \int_{V} \gamma d\bold{v} = 
+		  - \int_{\partial V} \bold{f} \cdot d\sigma + \int_{V} \bold{S} d\bold{v}
 \end{equation}
+We also define the quantity of porosity rigorously with the help of an 
+indicator function admitting that multiple phase cannot coexist at the same
+spatial point, which are regarded as immiscible phases.
+We define indicator function:
+\begin{equation}\label{eq:indicatorfunction}
+		  i(\bold{x}) = \left \{ 
+		  \begin{aligned}
+					 &1 \quad \text{phase}_i\\
+					 &0 \quad \text{not phase}_i
+		  \end{aligned}
+		  \right.
+\end{equation}
+We then define point wise macroscopic porosity function:
+\begin{equation}\label{eq:porosityfunction}
+		  \phi_i = \lim_{\delta \bold{v} \to 0} \frac{1}{\delta \bold{v}} 
+		  \int_{\delta \bold{v}} i(\bold{x}) d\bold{v}
+\end{equation}
+
