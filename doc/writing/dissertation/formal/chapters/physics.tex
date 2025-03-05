@@ -2,7 +2,7 @@
 \label{equations}
 \section{Mechanics of Mantle Dynamics}
 Fluid dynamics of the mixture of two phase flow has been extensively discussed.
-I will disscuss the three governing equations of mass and momentum referring
+We will disscuss the three governing equations of mass and momentum referring
 to the similar discussion in \cite{AveragedEquationsTwoPhase}, 
 \cite{MagmaPhysics} and \cite{DynamicsPartiallyMoltenRock}.
 Considering a conservation equation for given volumetric variable $\gamma$ in 
@@ -36,26 +36,26 @@ We then define macroscopic phase fraction function:
 		  \phi_i = \frac{1}{\delta \mathbf{v}} 
 		  \int_{\delta \mathbf{v}} i(\mathbf{x}) d\mathbf{v}
 \end{equation}
-In the beginning of my discussion, I will discuss two immiscible phases liquid magma 
+In the beginning of my discussion, We will discuss two immiscible phases liquid magma 
 and solid mantle. Phase fraction of liquid magam is labelled as $\phi_l$ and phase
 fraction of solid mantle is labelled as $\phi_s$, where $\phi_l + \phi_s = 1$ is
-always attained.
+always attained. Phase fraction can also be regarded as volume fraction in macroscopic sense.
 
 Substituting bulk density $\overline{\rho} = \phi_l \rho_l + \phi_s \rho_s$ for generalized 
-volumetric variable $\gamma$ in equation \ref{eq:generalconservationlaw}, I can obtain
+volumetric variable $\gamma$ in equation \ref{eq:generalconservationlaw}, we can obtain
 conservation law for bulk mass,
 \begin{equation}\label{eq:massconservation}
 \frac{\partial \overline{\rho}}{\partial t} + \nabla \cdot \overline{\rho \mathbf{v}} = 0
 \end{equation}
 with the help of Boussinesq approximation ignoring compressibility of each individual
 phase, and extend Boussinesq approximation further applying to density difference 
-between each phase except body force term. I can write continuous function for two 
+between each phase except body force term. We can write continuous function for two 
 phase mixture simply as,
 \begin{equation}\label{eq:continuousfunction}
 \nabla \cdot \overline{\mathbf{v}} = 0
 \end{equation}
 Substituing phase averaged momentum $\overline{\rho \mathbf{v}}$,
-I then write conservation of momentum with phase averaged term,
+We then write conservation of momentum with phase averaged term,
 \begin{equation}\label{eq:momentumconservation}
 \frac{\partial \overline{\rho \mathbf{v}}}{\partial t} + \nabla \cdot \overline{\rho \mathbf{v} \otimes \mathbf{v}}  = 
 \overline{\rho}\mathbf{g} + \nabla \cdot \overline{\mathbf{\tau}} - \nabla \overline{P}
@@ -93,6 +93,21 @@ Moreover, the relative permeability is $k_{\phi_l} = k_0 \phi_l^{2+2\Theta}$, wh
 and $\mu_l$ are dynamic viscosities for solid and liquid correspondingly.
 
 \section{Conservation of species and energy}
+Chemical compositions of mantle and magma is very complicate and very hard to trace at the same time. 
+We simplify the model to a three phases system. We negelect detailed description of chemical reaction process 
+and effect on the Gibbs free energies. Similar discussion can be found in extensive literatures like 
+\cite{PartialMeltinginUpwellingMantleColumn}, \cite{DownwardOxidantTransport} and \cite{ConsequencesMeltTransport}.
+Two of the phases are solid and the other is liquid.
+
+\vspace{1cm}
+Insert pic illustration of (RVE) here.
+\vspace{1cm}
+
+Within the representative volume element $V$, $\gamma_{i,j}$ represents one quantity of phase $i$ presenting in
+phase $j$, where $i,j \in \{1,2,l\}$. We make the assumption that all three phases are immiscible.  
+Now we define $c_{i,j}$ to be the volumetric mass concentration of component $i$ in phase $j$.
+
+
 
 \section{Eutectic Phase Behavior}
 Embracing the fact that Mid-ocean ridge forms at the place where temperature 
@@ -102,20 +117,15 @@ melting behavior at certain location.
 The binary eutectic phase behavior describes the chemical behavior of 
 two immiscible crystals from a completely miscible solution.
 On a typical eutectic phase behavior diagram, we can locate any phase situation
-using temperature and composition information. I follow phase behavior
+using enthalpy and composition information. I follow phase behavior
 details described in \cite{DownwardOxidantTransport}. Some adjustments
-are made for our mantle system.
+are made for our partially molten mantle system.
 \begin{itemize}
-\item Fluid formed by eutectic melting has a constant composition of opx 
-		  denoted as $X_e$. The eutectic composition can be related to pressure
-		  and denoted as $X_e(P)$.
-\item Melting temperature relates to pressure. 
-        Decompression melting is accounted for in our model by relating eutectic 
-		  melting temperature with pressure change.
-\item Eutectic melting is of the most insterest. The temperature where eutectic melting
-		  happens has much lower temperature then actual melting temperature.
+\item The composition of component $2$ in the liquid formed by eutectic melting $X_e$ is 
+a functiont of pressure.  
+\item Melting temperature $T_m$ is a function of pressure. 
 \end{itemize}
-
+Following the previous discussion, 
 
 
 
