@@ -15,13 +15,14 @@
 \contentsline {section}{\numberline {2.1}Section Title}{18}{section.2.1}%
 \contentsline {chapter}{Chapter 3:\hspace *{1em}Governing Equations}{22}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Mechanics of Mantle Dynamics}{22}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}A Darcy-Stokes Flow System}{23}{subsection.3.1.1}%
-\contentsline {section}{\numberline {3.2}Conservation of species and energy}{23}{section.3.2}%
-\contentsline {chapter}{Appendix A:\hspace *{1em}Appendix Name}{24}{appendix.a.A}%
-\contentsline {section}{\numberline {A.1}Appendix section}{24}{section.a.A.1}%
-\contentsline {subsection}{\numberline {A.1.1}Appendix section}{24}{subsection.a.A.1.1}%
-\contentsline {subsubsection}{\numberline {A.1.1.1}Appendix section}{24}{subsubsection.a.A.1.1.1}%
-\contentsline {chapter}{Appendix B:\hspace *{1em}Another Appendix}{25}{appendix.a.B}%
-\contentsline {chapter}{Glossary}{26}{appendix*.11}%
-\contentsline {chapter}{Works Cited}{27}{appendix*.12}%
-\contentsline {chapter}{Vita}{28}{appendix*.13}%
+\contentsline {section}{\numberline {3.2}Conservation of species and energy}{24}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Eutectic Phase Behavior}{24}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Rescaling and Nondimensionalization}{24}{section.3.4}%
+\contentsline {chapter}{Appendix A:\hspace *{1em}Appendix Name}{25}{appendix.a.A}%
+\contentsline {section}{\numberline {A.1}Appendix section}{25}{section.a.A.1}%
+\contentsline {subsection}{\numberline {A.1.1}Appendix section}{25}{subsection.a.A.1.1}%
+\contentsline {subsubsection}{\numberline {A.1.1.1}Appendix section}{25}{subsubsection.a.A.1.1.1}%
+\contentsline {chapter}{Appendix B:\hspace *{1em}Another Appendix}{26}{appendix.a.B}%
+\contentsline {chapter}{Glossary}{27}{appendix*.11}%
+\contentsline {chapter}{Works Cited}{28}{appendix*.12}%
+\contentsline {chapter}{Vita}{29}{appendix*.13}%

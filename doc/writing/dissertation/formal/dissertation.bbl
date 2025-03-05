@@ -1,4 +1,4 @@
-\begin{thebibliography}{3}
+\begin{thebibliography}{4}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -15,6 +15,12 @@ Richard~F. Katz.
 \newblock \emph{The Dynamics of Partially Molten Rock}.
 \newblock Princeton University Press, 1st edition, 2022.
 \newblock ISBN 9780691232645.
+
+\bibitem[Marc A.~Hesse and Oza(2022)]{DownwardOxidantTransport}
+Steve D.~Vance Marc A.~Hesse, Jacob S.~Jordan and Apurva~V. Oza.
+\newblock Supporting information for "downward oxidant transport through
+  europa's ice shell by density-driven brine percolation".
+\newblock \emph{Geophysical Research Letters}, 2022.
 
 \bibitem[Mckenzie(1984)]{MagmaPhysics}
 Dan Mckenzie.

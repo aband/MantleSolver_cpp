@@ -8,23 +8,23 @@ to the similar discussion in \cite{AveragedEquationsTwoPhase},
 Considering a conservation equation for given volumetric variable $\gamma$ in 
 a representative volume element $V$.
 \begin{equation}\label{eq:generalconservationlaw}
-		  \frac{d}{dt} \int_{V} \gamma d\bold{v} = 
-		  - \int_{\partial V} \bold{f} \cdot d\sigma + \int_{V} S d\bold{v}
+		  \frac{d}{dt} \int_{V} \gamma d\mathbf{v} = 
+		  - \int_{\partial V} \mathbf{f} \cdot d\sigma + \int_{V} S d\mathbf{v}
 \end{equation}
-where $\bold{f}$ represents flux travelling across the boundary of a representative 
+where $\mathbf{f}$ represents flux travelling across the boundary of a representative 
 volume element $V$. The minus sign indicates that the positive directions aligns with
 normal unit vector pointing outwards. $S$, source/sink term, represents the volumetric
 production rate of $\gamma$.
 We can apply Gauss's theorem to obtain differential form,
 \begin{equation}\label{eq:conservationlawpde}
-\frac{\partial \gamma}{\partial t} + \nabla \cdot \bold{f} = S
+\frac{\partial \gamma}{\partial t} + \nabla \cdot \mathbf{f} = S
 \end{equation}
 We also define the quantity of phase fraction rigorously with the help of an 
 indicator function admitting that multiple phase cannot coexist at the same
 spatial point, which are regarded as immiscible phases.
 We define indicator function,
 \begin{equation}\label{eq:indicatorfunction}
-		  i(\bold{x}) = \left \{ 
+		  i(\mathbf{x}) = \left \{ 
 		  \begin{aligned}
 					 &1 \quad \text{phase}_i\\
 					 &0 \quad \text{not phase}_i
@@ -33,48 +33,91 @@ We define indicator function,
 \end{equation}
 We then define macroscopic phase fraction function:
 \begin{equation}\label{eq:porosityfunction}
-		  \phi_i = \frac{1}{\delta \bold{v}} 
-		  \int_{\delta \bold{v}} i(\bold{x}) d\bold{v}
+		  \phi_i = \frac{1}{\delta \mathbf{v}} 
+		  \int_{\delta \mathbf{v}} i(\mathbf{x}) d\mathbf{v}
 \end{equation}
 In the beginning of my discussion, I will discuss two immiscible phases liquid magma 
-and solid mantle. Phase fraction of liquid magam is labelled as $\phi_f$ and phase
-fraction of solid mantle is labelled as $\phi_s$, where $\phi_f + \phi_s = 1$ is
+and solid mantle. Phase fraction of liquid magam is labelled as $\phi_l$ and phase
+fraction of solid mantle is labelled as $\phi_s$, where $\phi_l + \phi_s = 1$ is
 always attained.
 
-Substituting bulk density $\overline{\rho} = \phi_f \rho_f + \phi_s \rho_s$ for generalized 
+Substituting bulk density $\overline{\rho} = \phi_l \rho_l + \phi_s \rho_s$ for generalized 
 volumetric variable $\gamma$ in equation \ref{eq:generalconservationlaw}, I can obtain
 conservation law for bulk mass,
 \begin{equation}\label{eq:massconservation}
-\frac{\partial \overline{\rho}}{\partial t} + \nabla \cdot \overline{\rho \bold{v}} = 0
+\frac{\partial \overline{\rho}}{\partial t} + \nabla \cdot \overline{\rho \mathbf{v}} = 0
 \end{equation}
 with the help of Boussinesq approximation ignoring compressibility of each individual
 phase, and extend Boussinesq approximation further applying to density difference 
 between each phase except body force term. I can write continuous function for two 
 phase mixture simply as,
 \begin{equation}\label{eq:continuousfunction}
-\nabla \cdot \overline{\bold{v}} = 0
+\nabla \cdot \overline{\mathbf{v}} = 0
 \end{equation}
+Substituing phase averaged momentum $\overline{\rho \mathbf{v}}$,
 I then write conservation of momentum with phase averaged term,
 \begin{equation}\label{eq:momentumconservation}
-\frac{\partial \overline{\rho \bold{v}}}{\partial t} + \nabla \cdot \overline{\rho \bold{v} \otimes \bold{v}}  = 
-\overline{\rho}\bold{g} + \nabla \cdot \overline{\bold{\tau}} - \nabla \overline{P}
+\frac{\partial \overline{\rho \mathbf{v}}}{\partial t} + \nabla \cdot \overline{\rho \mathbf{v} \otimes \mathbf{v}}  = 
+\overline{\rho}\mathbf{g} + \nabla \cdot \overline{\mathbf{\tau}} - \nabla \overline{P}
 \end{equation}
-where $\bold{\tau}$ represents deviatoric stress,
+where $\mathbf{\tau}$ represents deviatoric stress,
 Ignoring change of inertia term due to near zero Reynolds number in magma and mantle, 
 \begin{equation}\label{eq:staticmomentumconservation}
-\overline{\rho}\bold{g} + \nabla \cdot \overline{\bold{\tau}} - \nabla \overline{P} = 0
+\overline{\rho}\mathbf{g} + \nabla \cdot \overline{\mathbf{\tau}} - \nabla \overline{P} = 0
 \end{equation}
 
 \vspace{1cm}
 Insert more details later!
 \vspace{1cm}
 
-\subsection{A Darcy-Stokes Flow System}
-Compbining equations ...., I finally arive with the full flow mechanical system of a two-phase system. 
-
+Compbining equations ...., I finally arive with the full flow mechanical system,
+\begin{alignat}{2}
+    \label{eq:darcy}
+		  &\phi_f (\mathbf{v}_l - \mathbf{v}_s)
+		  + \frac{k_{\phi_l}}{\mu_l}\nabla(p_l - \rho_f\mathbf{g})
+	    &&= 0,\\
+	\label{eq:continuous}
+		  &\nabla \cdot (\phi_l\mathbf{v}_l + \phi_s\mathbf{v}_s) &&=0,\\
+	\label{eq:stokes}
+		  &\nabla\bar p - \nabla \cdot \mathbf{\tau}(\mathbf{v}_s) &&= (\rho_s-\rho_l)\mathbf{g},\\
+	\label{eq:compaction}
+		  &\mu_s\nabla \cdot \mathbf{v}_s - \phi_f(p_l - p_s) &&=0, 
+\end{alignat}
+where the deviatoric stress of the mixture is
+\begin{equation}\label{eq:deviatoricstress}
+		  \mathbf{\tau}(\mathbf{v}_s)
+		  = 2\mu_s\phi_s\big(\mathcal{D} \mathbf{v}_s - \tfrac{1}{3}\nabla \cdot \mathbf{v}_s \mathbf{I}\big)
+\end{equation}
+and $\mathcal{D} \mathbf{v}_s=\frac{1}{2}(\nabla\mathbf{v}_s + \nabla\mathbf{v}_s^T)$ is the symmetric gradient.
+Moreover, the relative permeability is $k_{\phi_l} = k_0 \phi_l^{2+2\Theta}$, where $\Theta \in [0,1/2]$. $\mu_s$ 
+and $\mu_l$ are dynamic viscosities for solid and liquid correspondingly.
 
 \section{Conservation of species and energy}
 
 \section{Eutectic Phase Behavior}
+Embracing the fact that Mid-ocean ridge forms at the place where temperature 
+is generally lower, eutectic melting, where melting temperature is signaficantly
+lowered with the presence of the secondary component, is a good model for modelling
+melting behavior at certain location.
+The binary eutectic phase behavior describes the chemical behavior of 
+two immiscible crystals from a completely miscible solution.
+On a typical eutectic phase behavior diagram, we can locate any phase situation
+using temperature and composition information. I follow phase behavior
+details described in \cite{DownwardOxidantTransport}. Some adjustments
+are made for our mantle system.
+\begin{itemize}
+\item Fluid formed by eutectic melting has a constant composition of opx 
+		  denoted as $X_e$. The eutectic composition can be related to pressure
+		  and denoted as $X_e(P)$.
+\item Melting temperature relates to pressure. 
+        Decompression melting is accounted for in our model by relating eutectic 
+		  melting temperature with pressure change.
+\item Eutectic melting is of the most insterest. The temperature where eutectic melting
+		  happens has much lower temperature then actual melting temperature.
+\end{itemize}
+
+
+
 
 \section{Rescaling and Nondimensionalization}
+
