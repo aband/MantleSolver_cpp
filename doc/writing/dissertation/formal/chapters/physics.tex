@@ -94,10 +94,12 @@ and $\mu_l$ are dynamic viscosities for solid and liquid correspondingly.
 
 \section{Conservation of species and energy}
 Chemical compositions of mantle and magma is very complicate and very hard to trace at the same time. 
-We simplify the model to a three phases system. We negelect detailed description of chemical reaction process 
+We simplify the model to a two-phase system with two species. We negelect detailed description of chemical reaction process 
 and effect on the Gibbs free energies. Similar discussion can be found in extensive literatures like 
-\cite{PartialMeltinginUpwellingMantleColumn}, \cite{DownwardOxidantTransport} and \cite{ConsequencesMeltTransport}.
-Two of the phases are solid and the other is liquid.
+\cite{ConsequencesMeltTransport}, \cite{PartialMeltinginUpwellingMantleColumn}, \cite{MagmaDynamicsEnthalpyMethod} 
+and \cite{DownwardOxidantTransport}. 
+Both two species can be solid or liquid. Two species are immiscible as solid but miscible as liquid.
+I consider a homogenous density $\rho_s$ for solid phase and $\rho_l$ for liquid phase.
 \begin{figure}[ht]
 \centering\small
 \begin{tikzpicture}[scale=0.4]
@@ -106,31 +108,52 @@ Two of the phases are solid and the other is liquid.
     \draw [thick] (4,4) .. controls (5,7) and (6,9) .. (7,10);
     \draw [thick] (4,4) .. controls (6,3) and (7,2) .. (7,0);
     
-    \draw (4,1) node {$\rho_2=c_{2,2}$};
-    \draw (3,8.5) node {$\rho_1=c_{1,1}=c_s$};
-    \draw (7.5,6) node {$c_{1,f}=c_{f}$};
-    \draw (7.8,3) node {$c_{2,f}$};
+    %\draw (4,1) node {$\rho_2=c_{2,2}$};
+    %\draw (3,8.5) node {$\rho_1=c_{1,1}=c_s$};
+    %\draw (7.5,6) node {$c_{1,f}=c_{f}$};
+    %\draw (7.8,3) node {$c_{2,f}$};
+
+    \draw (4,1) node {comp 2};
+    \draw (3,8.5) node {comp 1};
 
     \draw [thick, <->] (5.7,1.8) -- (6.7,2.8);
     \draw [thick, <->] (4.5,7.5) -- (5.75,6.5);
-    \draw [thick, <->] (7.8,3.8) -- (7.8,5.2);
+    %\draw [thick, <->] (7.8,3.8) -- (7.8,5.2);
     
-    \draw (2,6) node {phase 1};
-    \draw (3,3) node {phase 2};
-    \draw (8,8) node {phase f};
+    \draw (2,6) node {phase s};
+    \draw (3,3) node {phase s};
+    \draw (8,5) node {phase l};
 \end{tikzpicture}
 \caption{An representative volume element (RVE).\label{fig:RVE}}
 \end{figure}
-Within the representative volume element $V$, $\gamma_{i,j}$ represents one quantity of phase $i$ presenting in
-phase $j$, where $i,j \in \{1,2,l\}$. We make the assumption that all three phases are immiscible.  
-Now we define $c_{i,j}$ to be the volumetric mass concentration of component $i$ in phase $j$.
+Within the representative volume element $V$, $\gamma_{i,j}$ represents one quantity of the specie $i$ presenting in
+phase $j$, where $i \in {1,2}$ and $j \in \{s,l\}$.   
+The mass fraction $c_{i,j}$ of a given specie $i$ in phase $j$ is often regarded as concentration.
+Hence, we can write transport equations for a individual specie $i$ assuming a pseudo melting term $\Gamma$,
+\begin{alignat}{1}
+\label{eq:conservationliquidindividual}
+\frac{\partial}{\partial t}\big( \phi_l \rho_l c_{i,l} \big)  + \nabla \cdot \big(\phi_l \rho_l c_{i,l} \mathbf{v}_l - \phi_l \rho_l \mathcal{D}_i \nabla c_{i,l} \big) &= \Gamma_i \\
+\label{eq:conservationsolidindividual}
+\frac{\partial}{\partial t}\big( \phi_s \rho_s c_{i,s} \big)  + \nabla \cdot \big(\phi_s \rho_l c_{i,s} \mathbf{v}_s - \phi_s \rho_s \mathcal{D}_i \nabla c_{i,s} \big) &= -\Gamma_i 
+\end{alignat}
+where we can safely get rid of dissusion term in solid phase.
+Summing up equation\ref{eq:conservationliquidindividual} and equation\ref{eq:conservationsolidindividual}, 
+we can write a advection-diffusion equation in phase averaged volumetric bulk variable,
+\begin{equation} \label{eq:specietransport}
+\frac{\partial \overline{\rho c_{i}}}{\partial t} + \nabla \cdot \big( \overline{\rho c_{i} \mathbf{v}} - \phi_l \rho_l \mathcal{D}_i \nabla c_i \big) = 0
+\end{equation}
+where the phase averaged volumetric bulk variable are defined as $\overline{\rho c_i} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j}$ 
+and $\overline{\rho c_i \mathbf{v}} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j} \mathbf{v}_j$.
 
+
+\subsection{Effective Velocity}
+\cite{GeochemicalConsequence}
 
 
 \section{Eutectic Phase Behavior}
 Embracing the fact that Mid-ocean ridge forms at the place where temperature 
 is generally lower, eutectic melting, where melting temperature is signaficantly
-lowered with the presence of the secondary component, is a good model for modelling
+lowered with the presence of the secondary specie, is a good model for modelling
 melting behavior at certain location.
 The binary eutectic phase behavior describes the chemical behavior of 
 two immiscible crystals from a completely miscible solution.
@@ -139,7 +162,7 @@ using enthalpy and composition information. I follow phase behavior
 details described in \cite{DownwardOxidantTransport}. Some adjustments
 are made for our partially molten mantle system.
 \begin{itemize}
-\item The composition of component $2$ in the liquid formed by eutectic melting $X_e$ is 
+\item The composition of the second specie in the liquid formed by eutectic melting $X_e$ is 
 a functiont of pressure.  
 \item Melting temperature $T_m$ is a function of pressure. 
 \end{itemize}
