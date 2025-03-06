@@ -98,11 +98,29 @@ We simplify the model to a three phases system. We negelect detailed description
 and effect on the Gibbs free energies. Similar discussion can be found in extensive literatures like 
 \cite{PartialMeltinginUpwellingMantleColumn}, \cite{DownwardOxidantTransport} and \cite{ConsequencesMeltTransport}.
 Two of the phases are solid and the other is liquid.
+\begin{figure}[ht]
+\centering\small
+\begin{tikzpicture}[scale=0.4]
+    \draw [thick] (0,0) -- (10,0) -- (10,10) -- (0,10) -- (0,0);
+    \draw [thick] (0,5) .. controls (2,4) and (4,4) .. (4,4);
+    \draw [thick] (4,4) .. controls (5,7) and (6,9) .. (7,10);
+    \draw [thick] (4,4) .. controls (6,3) and (7,2) .. (7,0);
+    
+    \draw (4,1) node {$\rho_2=c_{2,2}$};
+    \draw (3,8.5) node {$\rho_1=c_{1,1}=c_s$};
+    \draw (7.5,6) node {$c_{1,f}=c_{f}$};
+    \draw (7.8,3) node {$c_{2,f}$};
 
-\vspace{1cm}
-Insert pic illustration of (RVE) here.
-\vspace{1cm}
-
+    \draw [thick, <->] (5.7,1.8) -- (6.7,2.8);
+    \draw [thick, <->] (4.5,7.5) -- (5.75,6.5);
+    \draw [thick, <->] (7.8,3.8) -- (7.8,5.2);
+    
+    \draw (2,6) node {phase 1};
+    \draw (3,3) node {phase 2};
+    \draw (8,8) node {phase f};
+\end{tikzpicture}
+\caption{An representative volume element (RVE).\label{fig:RVE}}
+\end{figure}
 Within the representative volume element $V$, $\gamma_{i,j}$ represents one quantity of phase $i$ presenting in
 phase $j$, where $i,j \in \{1,2,l\}$. We make the assumption that all three phases are immiscible.  
 Now we define $c_{i,j}$ to be the volumetric mass concentration of component $i$ in phase $j$.
