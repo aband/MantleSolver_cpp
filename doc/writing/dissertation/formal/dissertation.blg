@@ -4,44 +4,44 @@ The top-level auxiliary file: dissertation.aux
 A level-1 auxiliary file: chapters/physics.aux
 The style file: plainnat.bst
 Database file #1: references.bib
-You've used 7 entries,
+You've used 8 entries,
             2773 wiz_defined-function locations,
-            661 strings with 6349 characters,
-and the built_in function-call counts, 2760 in all, are:
-= -- 248
-> -- 114
-< -- 8
-+ -- 40
-- -- 33
-* -- 186
-:= -- 433
-add.period$ -- 22
-call.type$ -- 7
-change.case$ -- 32
-chr.to.int$ -- 7
-cite$ -- 14
-duplicate$ -- 142
-empty$ -- 254
-format.name$ -- 48
-if$ -- 587
+            667 strings with 6522 characters,
+and the built_in function-call counts, 3232 in all, are:
+= -- 295
+> -- 124
+< -- 10
++ -- 44
+- -- 36
+* -- 211
+:= -- 497
+add.period$ -- 25
+call.type$ -- 8
+change.case$ -- 36
+chr.to.int$ -- 8
+cite$ -- 16
+duplicate$ -- 171
+empty$ -- 299
+format.name$ -- 52
+if$ -- 698
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 8
-newline$ -- 44
-num.names$ -- 28
-pop$ -- 61
+missing$ -- 9
+newline$ -- 49
+num.names$ -- 32
+pop$ -- 70
 preamble$ -- 1
-purify$ -- 25
+purify$ -- 28
 quote$ -- 0
-skip$ -- 105
+skip$ -- 130
 stack$ -- 0
-substring$ -- 103
-swap$ -- 10
-text.length$ -- 1
+substring$ -- 133
+swap$ -- 20
+text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 72
+type$ -- 83
 warning$ -- 0
-while$ -- 26
+while$ -- 31
 width$ -- 0
-write$ -- 99
+write$ -- 112

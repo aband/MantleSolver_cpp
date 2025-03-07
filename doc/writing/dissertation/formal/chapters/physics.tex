@@ -40,7 +40,6 @@ In the beginning of my discussion, We will discuss two immiscible phases liquid 
 and solid mantle. Phase fraction of liquid magam is labelled as $\phi_l$ and phase
 fraction of solid mantle is labelled as $\phi_s$, where $\phi_l + \phi_s = 1$ is
 always attained. Phase fraction can also be regarded as volume fraction in macroscopic sense.
-
 Substituting bulk density $\overline{\rho} = \phi_l \rho_l + \phi_s \rho_s$ for generalized 
 volumetric variable $\gamma$ in equation \ref{eq:generalconservationlaw}, we can obtain
 conservation law for bulk mass,
@@ -92,7 +91,7 @@ and $\mathcal{D} \mathbf{v}_s=\frac{1}{2}(\nabla\mathbf{v}_s + \nabla\mathbf{v}_
 Moreover, the relative permeability is $k_{\phi_l} = k_0 \phi_l^{2+2\Theta}$, where $\Theta \in [0,1/2]$. $\mu_s$ 
 and $\mu_l$ are dynamic viscosities for solid and liquid correspondingly.
 
-\section{Conservation of species and energy}
+\section{Conservation of Chemical Species and Energy}
 Chemical compositions of mantle and magma is very complicate and very hard to trace at the same time. 
 We simplify the model to a two-phase system with two species. We negelect detailed description of chemical reaction process 
 and effect on the Gibbs free energies. Similar discussion can be found in extensive literatures like 
@@ -100,6 +99,8 @@ and effect on the Gibbs free energies. Similar discussion can be found in extens
 and \cite{DownwardOxidantTransport}. 
 Both two species can be solid or liquid. Two species are immiscible as solid but miscible as liquid.
 I consider a homogenous density $\rho_s$ for solid phase and $\rho_l$ for liquid phase.
+With extened Boussinesq approximation later assuming no density difference except in body force term, 
+we can make further assumption that $\rho_l = \rho_s = \rho$
 \begin{figure}[ht]
 \centering\small
 \begin{tikzpicture}[scale=0.4]
@@ -132,29 +133,49 @@ The mass fraction $c_{i,j}$ of a given specie $i$ in phase $j$ is often regarded
 Hence, we can write transport equations for a individual specie $i$ assuming a pseudo melting term $\Gamma$,
 \begin{alignat}{1}
 \label{eq:conservationliquidindividual}
-\frac{\partial}{\partial t}\big( \phi_l \rho_l c_{i,l} \big)  + \nabla \cdot \big(\phi_l \rho_l c_{i,l} \mathbf{v}_l - \phi_l \rho_l \mathcal{D}_i \nabla c_{i,l} \big) &= \Gamma_i \\
+\frac{\partial}{\partial t}\big( \phi_l \rho_l c_{i,l} \big)  + \nabla \cdot \big(\phi_l \rho_l c_{i,l} \mathbf{v}_l - \phi_l \rho_l \mathcal{D}_{i,l} \nabla c_{i,l} \big) &= \Gamma_i \\
 \label{eq:conservationsolidindividual}
-\frac{\partial}{\partial t}\big( \phi_s \rho_s c_{i,s} \big)  + \nabla \cdot \big(\phi_s \rho_l c_{i,s} \mathbf{v}_s - \phi_s \rho_s \mathcal{D}_i \nabla c_{i,s} \big) &= -\Gamma_i 
+\frac{\partial}{\partial t}\big( \phi_s \rho_s c_{i,s} \big)  + \nabla \cdot \big(\phi_s \rho_l c_{i,s} \mathbf{v}_s - \phi_s \rho_s \mathcal{D}_{i,s} \nabla c_{i,s} \big) &= -\Gamma_i 
 \end{alignat}
 where we can safely get rid of dissusion term in solid phase.
 Summing up equation\ref{eq:conservationliquidindividual} and equation\ref{eq:conservationsolidindividual}, 
 we can write a advection-diffusion equation in phase averaged volumetric bulk variable,
 \begin{equation} \label{eq:specietransport}
-\frac{\partial \overline{\rho c_{i}}}{\partial t} + \nabla \cdot \big( \overline{\rho c_{i} \mathbf{v}} - \phi_l \rho_l \mathcal{D}_i \nabla c_i \big) = 0
+\frac{\partial \overline{\rho c_{i}}}{\partial t} + \nabla \cdot \big( \overline{\rho c_{i} \mathbf{v}} - \phi_l \rho_l \mathcal{D}_{i,l} \nabla c_i \big) = 0
 \end{equation}
 where the phase averaged volumetric bulk variable are defined as $\overline{\rho c_i} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j}$ 
 and $\overline{\rho c_i \mathbf{v}} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j} \mathbf{v}_j$.
+The subscript $i$ will be omitted since only one chemical specie is traced in this two-component system.
+Extending Boussinessq approximation $\rho_l = \rho_s = \overline{\rho}$, the specie transport equation can be
+simplified as,
+\begin{equation}\label{eq:specietransportsimplified}
+\frac{\partial \overline{c}}{\partial t} + \nabla \cdot \big( \overline{ c \mathbf{v}} - \phi_l \mathcal{D}_{l} \nabla c \big) = 0
+\end{equation}
 
+We write energy balance equation in the phase-averaged internal energy form first,
+\begin{equation}\label{eq:energybalanceinternalenergy}
+\frac{\partial \overline{\rho u}}{\partial t} + \nabla \cdot \overline{\rho u \mathbf{v}} - \nabla \cdot \overline{K} \nabla T = 
+\overline{\rho \mathcal{Q}} + \nabla \cdot \overline{\sigma \cdot \mathbf{v}} + \overline{\rho \mathbf{v}} \cdot \mathbf{g}
+\end{equation}
+On the left hand side, we have time dependent rate of internal energy chage, advection term and diffusion term.
+On the right hand side, we have heating/cooling source $\mathcal{Q}$, work exerted by stress and work againt gravity $g$.
+In a thermochemical equilibrium scenerio, we are replacing internal energy with enthalpy.
+We can write energy balancing equation neglecting additional heating/cooling term $\mathcal{Q}$ and dissipative heating\cite{MagmaPhysics},
+\begin{equation}\label{eq:energyconservationenthalpy}
+\frac{\partial \overline{\rho h}}{\partial t} + \rho c_p \nabla \cdot \overline{\mathbf{v}} T = 
+\rho L \nabla \cdot \phi_s \mathbf{v}_s + \overline{K} \nabla^2 T + \rho \alpha_\rho T \overline{\mathbf{v}} \cdot \mathbf{g}
+\end{equation}
+Similar but slighted altered form was also discussed in \cite{MagmaDynamicsEnthalpyMethod}.
 
 \subsection{Effective Velocity}
 Effective velocity in equilibrium transport for concentration within liquid phase is discussed in \cite{GeochemicalConsequence}.
-We also introduce our effective velocity, but instead, we transport bulk concentration.
-Define partition coefficient $D = c_s/c_f$ and 
+We also introduce our effective velocity, but instead of transporting concentration in liquid(magma), we transport bulk concentration.
+Define partition coefficient $D_i = c_{i,s}/c_{i,f}$ and 
 \begin{alignat}{1}
 		  \label{eq:effectiveliquidcon}
-		  (\phi_l + \phi_s D) c_{i,l} &= \overline{c}_i \\
+		  (\phi_l + \phi_s D_i) c_{i,l} &= \overline{c}_i \\
 		  \label{eq:effectivesolidcon}
-		  (\phi_l/D + \phi_s) c_{i,s} &= \overline{c}_i 
+		  (\phi_l/D_i + \phi_s) c_{i,s} &= \overline{c}_i 
 \end{alignat}
 Substitute $c_{i,l}$ and $c_{i,s}$ with equation\ref{eq:effectiveliquidcon} and equation\ref{eq:effectivesolidcon} into
 bulk velocity $\overline{c_{i}\bold{v}} = \phi_s \bold{v}_s c_{i,s} + \phi_l \bold{v}_l c_{i,l}$,
@@ -164,7 +185,11 @@ bulk velocity $\overline{c_{i}\bold{v}} = \phi_s \bold{v}_s c_{i,s} + \phi_l \bo
 		  \bigg( \frac{\phi_l \bold{v}_l + D\phi_s \bold{v}_s}{\phi_l + \phi_s D} \bigg) \overline{c}_i
 \end{equation}
 Hence, we get the proper expression for the effective velocity as 
-$\bold{v}_{\text{eff}} = \frac{\phi_l \bold{v}_l + D\phi_s \bold{v}_s}{\phi_l + \phi_s D}$.
+$\bold{v}_{\text{eff}} = \frac{\phi_l \bold{v}_l + D_i\phi_s \bold{v}_s}{\phi_l + \phi_s D_i}$, 
+where the partition coefficient $D$ can be obtained through phase behavior package.
+If there is no melting $\phi_l = 0$, we can reterive $\mathbf{v}_{\text{eff}} = \mathbf{v}_s$.
+If there is all melting $\phi_l = 1$, we can obtain $\mathbf{v}_{\text{eff}} = \mathbf{v}_l$.
+Hence, the definition of effective velocity is well defined in those two boundary scenerios.
 
 \section{Eutectic Phase Behavior}
 The enthalpy method requires an explicit relationship between temperature and enthalpy.

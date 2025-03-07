@@ -1,4 +1,4 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{8}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -37,6 +37,12 @@ Steve D.~Vance Marc A.~Hesse, Jacob S.~Jordan and Apurva~V. Oza.
 Dan Mckenzie.
 \newblock The generation and compaction of partially molten rock.
 \newblock \emph{Journal of Petrology}, 25:\penalty0 713--765, 1984.
+
+\bibitem[Spiegelman(1996)]{GeochemicalConsequence}
+Marc Spiegelman.
+\newblock Geochemical consequences of melt transport in 2-d: The sensitivity of
+  trace elements to mantle dynamics.
+\newblock \emph{Earth and Planetary Science Letters}, pages 115--132, 1996.
 
 \bibitem[Spiegelman and Elliott(1993)]{ConsequencesMeltTransport}
 Marc Spiegelman and Tim Elliott.
