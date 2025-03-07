@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  6 MAR 2025 13:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  7 MAR 2025 00:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1060,20 +1060,40 @@ LaTeX Font Info:    Trying to load font information for U+eus on input line 89.
 
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/ueus.fd
 File: ueus.fd 2013/01/14 v3.01 Euler Script
-) [13] [14])
-[15] (./dissertation.bbl)) [16
+) [13] [14]
+Overfull \hbox (0.91145pt too wide) in paragraph at lines 144--147
+\OT1/cmr/m/n/12 where the phase av-er-aged vol-u-met-ric bulk vari-able are de-
+fined as $[] = [][] \OML/cmm/m/it/12 ^^^[]^^Z[]c[]$
+ []
+
+
+Package natbib Warning: Citation `GeochemicalConsequence' on page 15 undefined 
+on input line 150.
+
+
+Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
+d on input line 160.
+
+[15]) [16] (./dissertation.bbl))
+
+Package natbib Warning: There were undefined citations.
+
+[17
 
 
 
 ] (./dissertation.aux (./chapters/physics.aux))
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `dissertation.out' has not changed.
-(rerunfilecheck)             Checksum: 2DC9A74A6820984F8CC518279EAB3C0D;1399.
+(rerunfilecheck)             Checksum: 9E55844B39246543DDE57018453CB28D;1553.
  ) 
 Here is how much of TeX's memory you used:
- 27111 strings out of 478287
- 534715 string characters out of 5849289
- 815135 words of memory out of 5000000
- 44713 multiletter control sequences out of 15000+600000
+ 27120 strings out of 478287
+ 534863 string characters out of 5849289
+ 817289 words of memory out of 5000000
+ 44717 multiletter control sequences out of 15000+600000
  477627 words of font info for 59 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  88i,12n,94p,453b,734s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1091,10 +1111,10 @@ mr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
 texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/euler/eusm10.pfb></usr/share/texmf/fon
 ts/type1/public/cm-super/sfrm1200.pfb>
-Output written on dissertation.pdf (16 pages, 172645 bytes).
+Output written on dissertation.pdf (17 pages, 177167 bytes).
 PDF statistics:
- 254 PDF objects out of 1000 (max. 8388607)
- 205 compressed objects within 3 object streams
- 54 named destinations out of 1000 (max. 500000)
- 77 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 269 PDF objects out of 1000 (max. 8388607)
+ 219 compressed objects within 3 object streams
+ 59 named destinations out of 1000 (max. 500000)
+ 85 words of extra memory for PDF output out of 10000 (max. 10000000)
 

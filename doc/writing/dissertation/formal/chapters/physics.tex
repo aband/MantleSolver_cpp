@@ -147,10 +147,27 @@ and $\overline{\rho c_i \mathbf{v}} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j} 
 
 
 \subsection{Effective Velocity}
-\cite{GeochemicalConsequence}
-
+Effective velocity in equilibrium transport for concentration within liquid phase is discussed in \cite{GeochemicalConsequence}.
+We also introduce our effective velocity, but instead, we transport bulk concentration.
+Define partition coefficient $D = c_s/c_f$ and 
+\begin{alignat}{1}
+		  \label{eq:effectiveliquidcon}
+		  (\phi_l + \phi_s D) c_{i,l} &= \overline{c}_i \\
+		  \label{eq:effectivesolidcon}
+		  (\phi_l/D + \phi_s) c_{i,s} &= \overline{c}_i 
+\end{alignat}
+Substitute $c_{i,l}$ and $c_{i,s}$ with equation\ref{eq:effectiveliquidcon} and equation\ref{eq:effectivesolidcon} into
+bulk velocity $\overline{c_{i}\bold{v}} = \phi_s \bold{v}_s c_{i,s} + \phi_l \bold{v}_l c_{i,l}$,
+\begin{equation}
+\label{eq:effectivevel}
+		  \overline{c_{i}\bold{v}} = \phi_s \bold{v}_s c_{i,s} + \phi_l \bold{v}_l c_{i,l} = 
+		  \bigg( \frac{\phi_l \bold{v}_l + D\phi_s \bold{v}_s}{\phi_l + \phi_s D} \bigg) \overline{c}_i
+\end{equation}
+Hence, we get the proper expression for the effective velocity as 
+$\bold{v}_{\text{eff}} = \frac{\phi_l \bold{v}_l + D\phi_s \bold{v}_s}{\phi_l + \phi_s D}$.
 
 \section{Eutectic Phase Behavior}
+The enthalpy method requires an explicit relationship between temperature and enthalpy.
 Embracing the fact that Mid-ocean ridge forms at the place where temperature 
 is generally lower, eutectic melting, where melting temperature is signaficantly
 lowered with the presence of the secondary specie, is a good model for modelling
@@ -159,7 +176,7 @@ The binary eutectic phase behavior describes the chemical behavior of
 two immiscible crystals from a completely miscible solution.
 On a typical eutectic phase behavior diagram, we can locate any phase situation
 using enthalpy and composition information. I follow phase behavior
-details described in \cite{DownwardOxidantTransport}. Some adjustments
+details described in \cite{DownwardOxidantTransport}. Some adjustments and assumptions
 are made for our partially molten mantle system.
 \begin{itemize}
 \item The composition of the second specie in the liquid formed by eutectic melting $X_e$ is 
