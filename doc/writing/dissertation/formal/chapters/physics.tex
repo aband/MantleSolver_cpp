@@ -72,19 +72,19 @@ Insert more details later!
 Compbining equations ...., I finally arive with the full flow mechanical system,
 \begin{alignat}{2}
     \label{eq:darcy}
-		  &\phi_f (\mathbf{v}_l - \mathbf{v}_s)
+		  &\phi_l (\mathbf{v}_l - \mathbf{v}_s)
 		  + \frac{k_{\phi_l}}{\mu_l}\nabla(p_l - \rho_f\mathbf{g})
 	    &&= 0,\\
 	\label{eq:continuous}
 		  &\nabla \cdot (\phi_l\mathbf{v}_l + \phi_s\mathbf{v}_s) &&=0,\\
 	\label{eq:stokes}
-		  &\nabla\bar p - \nabla \cdot \mathbf{\tau}(\mathbf{v}_s) &&= (\rho_s-\rho_l)\mathbf{g},\\
+		  &\nabla\bar p - \nabla \cdot \tau(\mathbf{v}_s) &&= (\rho_s-\rho_l)\mathbf{g},\\
 	\label{eq:compaction}
 		  &\mu_s\nabla \cdot \mathbf{v}_s - \phi_f(p_l - p_s) &&=0, 
 \end{alignat}
 where the deviatoric stress of the mixture is
 \begin{equation}\label{eq:deviatoricstress}
-		  \mathbf{\tau}(\mathbf{v}_s)
+		  \tau(\mathbf{v}_s)
 		  = 2\mu_s\phi_s\big(\mathcal{D} \mathbf{v}_s - \tfrac{1}{3}\nabla \cdot \mathbf{v}_s \mathbf{I}\big)
 \end{equation}
 and $\mathcal{D} \mathbf{v}_s=\frac{1}{2}(\nabla\mathbf{v}_s + \nabla\mathbf{v}_s^T)$ is the symmetric gradient.
@@ -96,40 +96,43 @@ The Darcy part will mathematically degenerate in regions where the porosity is z
 To handle this issue, we use the formulation developed 
 previously\cite{DegenerateDarcy}. We first define pressure potentials as,
 \begin{equation}
-	q_f = p_f - \rho_f g z\quad\text{and}\quad q_s = p_s - \rho_f g z,
+	q_l = p_l - \rho_l g z\quad\text{and}\quad q_s = p_s - \rho_l g z,
 \end{equation}
-where $g=|\mathbf{g}|$ and $z$ is the depth, so $\mathbf{g}=g\nabla z$. Note that $\rho_f$ is used to define both potentials, so that with $q=\bar q$,
+where $g=|\mathbf{g}|$ and $z$ is the depth, so $\mathbf{g}=g\nabla z$. Note that $\rho_f$ is used to define both potentials, so that with $q=\bar q = \bar p - \rho_l g z$,
 \begin{equation*}
-	p_f - p_s = q_f - q_s = \frac{1}{1-\phi_f}(q_f - q).
+	p_l - p_s = q_l - q_s = \frac{1}{1-\phi_l}(q_l - q).
 \end{equation*}
-We can then rewrite the system \eqref{eq:darcy}--\eqref{eq:compaction} as
+We can then rewrite the system \eqref{eq:darcy}--\eqref{eq:compaction} omitting the subscript of liquid volumetric fraction,
 \begin{alignat}{2}
-		  &\phi_f\mathbf{v}_r + \frac{k_0\phi_f^{2+2\Theta}}{\mu_f}\nabla q_f &&= 0,\\
-		  &\mu_s\nabla \cdot (\phi_f\mathbf{v}_r) + \frac{\phi_f}{1-\phi_f}(q_f-q) &&=0,\\
-  		  &\nabla q - \nabla \cdot \hat{\mathbf{\sigma}}(\mathbf{v}_s) &&= -(1-\phi_f)\rho_r\mathbf{g},\\
-		  &\mu_s\nabla \cdot \mathbf{v}_s - \frac{\phi_f}{1-\phi_f}(q_f-q) &&=0.
+		  &\phi\mathbf{v}_r + \frac{k_0\phi^{2+2\Theta}}{\mu_l}\nabla q_l &&= 0,\\
+		  &\mu_s\nabla \cdot (\phi\mathbf{v}_r) + \frac{\phi}{1-\phi}(q_l-q) &&=0,\\
+  		  &\nabla q - \nabla \cdot \tau(\mathbf{v}_s) &&= -(1-\phi)\rho_r\mathbf{g},\\
+		  &\mu_s\nabla \cdot \mathbf{v}_s - \frac{\phi}{1-\phi}(q_l-q) &&=0.
 \end{alignat}
+where relative velocity $\mathbf{v}_r = \mathbf{v}_l - \mathbf{v}_s$ and density difference 
+$\rho_r = \rho_s - \rho_l$. We refer to $\phi$ as porosity in the later text.
 Scaled variables are defined,
 \begin{equation}\label{eq:scaledVariables}
-		  \tilde{\mathbf{v}}_r = \phi_f^{-\Theta}\mathbf{v}_r
+		  \tilde{\mathbf{v}}_r = \phi^{-\Theta}\mathbf{v}_r
 	\quad\text{and}\quad
-	\tilde{q}_f = \phi_f^{1/2}q_f,
+	\tilde{q}_l = \phi^{1/2}q_l,
 \end{equation}
 and the problem is reformulated as
 \begin{alignat}{2}
 \label{eq:darcy_flow_sc}
 		  &\tilde{\mathbf{v}}_r
-		  + \frac{k_0\phi_f^{1+\Theta}}{\mu_f}\nabla(\phi_f^{-1/2}\tilde{q}_f)
+		  + \frac{k_0\phi^{1+\Theta}}{\mu_f}\nabla(\phi^{-1/2}\tilde{q}_l)
         &&= 0,\\
 \label{eq:consMass_flow_sc}
-		  &\mu_s\phi^{-1/2}\nabla \cdot(\phi_f^{1+\Theta}\tilde{\mathbf{v}}_r)
-        + \frac{1}{1-\phi_f}(\tilde{q}_f - \phi_f^{1/2}q) &&=0,\\
+		  &\mu_s\phi^{-1/2}\nabla \cdot(\phi^{1+\Theta}\tilde{\mathbf{v}}_r)
+        + \frac{1}{1-\phi}(\tilde{q}_l - \phi^{1/2}q) &&=0,\\
 \label{eq:stokes_flow_sc}
-		  &\nabla q - \nabla \cdot \hat{\mathbf{\sigma}}(\mathbf{v}_s) &&= -(1-\phi_f)\rho_r \mathbf{g},\\
+		  &\nabla q - \nabla \cdot \tau(\mathbf{v}_s) &&= -(1-\phi)\rho_r \mathbf{g},\\
 \label{eq:compaction_flow_sc}
 		  &\mu_s\nabla \cdot \mathbf{v}_s
-        - \frac{\phi_f^{1/2}}{1-\phi_f}(\tilde{q}_f - \phi_f^{1/2}q) &&=0.
+        - \frac{\phi^{1/2}}{1-\phi}(\tilde{q}_l - \phi^{1/2}q) &&=0.
 \end{alignat}
+Where the new scaled relative velocity maintain numerical stability in zero prosority region.
 
 \section{Conservation of Chemical Species and Energy}
 Chemical compositions of mantle and magma is very complicate and very hard to trace at the same time. 
@@ -212,9 +215,9 @@ was added in terms of potential temperature\cite{ExtensionofLithosphere}.
 We now divide $\rho c_p$ on both sides of the equation considering 
 Boussinessq approximation.
 \begin{equation}\label{eq:normalizedenthalpy}
-		  \frac{\partial H}{\partial t} + \nabla \cdot \mathbf{v} T = 
+		  \frac{\partial H}{\partial t} + \nabla \cdot \overline{\mathbf{v}} T = 
 		  \frac{L}{c_p} \nabla \cdot \phi_s \mathbf{v}_s + \kappa \nabla^2 T + 
-		  \frac{\alpha_\rho}{c_p} T overline{\mathbf{v}} \cdot \mathbf{g}
+		  \frac{\alpha_\rho}{c_p} T \overline{\mathbf{v}} \cdot \mathbf{g}
 \end{equation}
 where $H = \overline{h}/c_p$ is the bulk specific enthalpy and $\kappa = 
 \overline{K}/\rho c_p$ is the heat diffusivity.
@@ -290,4 +293,32 @@ We relate bulk specific enthalpy with temperature and latent heat again.
 \end{equation}
 
 \section{Nondimensionalization}
+Compaction and melting are two most important aspects in mantle dynamics.
+We nondimensionlize the scaled formulation with characteristic length scale related to 
+compaction length and characteristic Darcy speed of the melt,
+\begin{equation}\label{eq:physcalscales}
+l_0 = \big( \frac{k_0 \mu_s}{\mu_l} \big)^{1/2} \quad\text{and}\quad u_0 = \frac{k_0 \rho_r g}{\mu_l}
+\end{equation}
+We can derive corresponding characteristic time scale as $t_0 = l_0/u_0$, now we can write full set of
+dimensionless equations. We represent dimensionless variables with a $ \check{}$ mark,
+\begin{alignat}{2}
+\label{eq:dimensionlessdarcy_flow_sc}
+		  &\check{\mathbf{v}}_r
+		  + \phi^{1+\Theta}\nabla(\phi^{-1/2}\check{q}_l)
+        &&= 0,\\
+\label{eq:dimensionlessconsMass_flow_sc}
+		  &\phi^{-1/2}\nabla \cdot(\phi^{1+\Theta}\check{\mathbf{v}}_r)
+        + \frac{1}{1-\phi}(\check{q}_l - \phi^{1/2}\check{q}) &&=0,\\
+\label{eq:dimensionlessstokes_flow_sc}
+		  &\nabla \check{q} - \nabla \cdot \check{\tau}(\check{\mathbf{v}}_s) &&= -(1-\phi)\mathbf{n},\\
+\label{eq:dimensionlesscompaction_flow_sc}
+		  &\nabla \cdot \check{\mathbf{v}}_s
+        - \frac{\phi^{1/2}}{1-\phi}(\check{q}_l - \phi^{1/2}\check{q}) &&=0.
+\end{alignat}
+where dimensionless deviatoric stress of the mixture is 
+$\check{\tau} = 2(1-\phi)(\mathcal{D} \check{\mathbf{v}}_s - 1/3\nabla \cdot \check{\mathbf{v}}_s \mathbf{I})$ and 
+$\mathbf{n}$ is the unit direction vector pointing downwards. Now we align transport equations with dimensionless 
+variables defined in mechanic system,
+\begin{equation}\label{dimensionlesstransport}
 
+\end{equation}
