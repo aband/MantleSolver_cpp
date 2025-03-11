@@ -222,6 +222,7 @@ Boussinessq approximation.
 where $H = \overline{h}/c_p$ is the bulk specific enthalpy and $\kappa = 
 \overline{K}/\rho c_p$ is the heat diffusivity.
 
+
 \subsection{Effective Velocity}
 Effective velocity in equilibrium transport for concentration within liquid phase is discussed in \cite{GeochemicalConsequence}.
 We also introduce our effective velocity, but instead of transporting concentration in liquid(magma), we transport bulk concentration.
@@ -280,22 +281,36 @@ Some assumptions are made for partially molten mantle system.
 \item Melting temperature $T_m$ is constant at given pressure $T_m(P)$. 
 \item Boussinessq approximation is extended to phase behavior as well.
 		  assuming $\rho_l = \rho_s$.
-\item Assume no density difference between two solid components.
+\item Assuming no density difference between two solid components.
+\item Assuming constant thermal expansion and specific heat capacity
 \end{itemize}
 We can now relate bulk mass fraction with bulk concentration directly,
 \begin{equation}\label{eq:bulkmassfraction}
-		  \mathcal{X} = \frac{\phi_l \rho_l c_{l} + \phi_s \rho_s c_s}{\phi_l \rho_l + \phi_s \rho_s} = \phi_l c_{l} + \phi_s c_{s} = C
+		  \mathcal{X} = \frac{\phi_l \rho_l c_{l} + \phi_s \rho_s c_s}{\phi_l \rho_l + \phi_s \rho_s} 
+		  = \phi_l c_{l} + \phi_s c_{s} = C = \phi_2 + \phi_l c_l
 \end{equation}
 
 We relate bulk specific enthalpy with temperature and latent heat again.
 \begin{equation}\label{eq:enthalpy}
 		  H = T + \phi_l L/c_p
 \end{equation}
+we further rescale by dividing melting temperature $T_m$ at standard atmospheric pressure 
+forming a dimensionless relationship,
+\begin{equation}\label{eq:enthalpydimensionless}
+\check{H} = \check{T} + \phi_l \check{L}
+\end{equation}
+where $\check{L} = \frac{L}{c_p T_m}$ is the dimensionless latent heat.
+
+\subsection{Eutectic Phase Split}
+For simplicity, we are now assuming a linear eutectic phase split between different phase regions.
+We can draw the eutectic phase diagram separating different phase regions with straight lines.
+
+\subsection{Melting and Eutectic Temperature}
 
 \section{Nondimensionalization}
 Compaction and melting are two most important aspects in mantle dynamics.
 We nondimensionlize the scaled formulation with characteristic length scale related to 
-compaction length and characteristic Darcy speed of the melt,
+compaction length and scaled characteristic Darcy speed of the melt,
 \begin{equation}\label{eq:physcalscales}
 l_0 = \big( \frac{k_0 \mu_s}{\mu_l} \big)^{1/2} \quad\text{and}\quad u_0 = \frac{k_0 \rho_r g}{\mu_l}
 \end{equation}
@@ -322,8 +337,8 @@ variables defined in mechanic system,
 \begin{equation}\label{dimensionlesstransport}
 		  \begin{aligned}
 					 \frac{\partial C}{\partial \check{t}} + \nabla \cdot (\check{\mathbf{v}}_{\text{eff}} C - \phi \mathcal{D}_l/u_0 \nabla c_l) &= 0\\
-					 \frac{\partial H}{\partial \check{t}} + \nabla \cdot \check{\overline{\mathbf{v}}} T - 
-					 \frac{L}{c_p} \nabla \cdot \phi_s \check{\mathbf{v}}_s - \kappa/u_0 \nabla^2 T -  
-					 \frac{\alpha_\rho}{c_p} T \check{\overline{\mathbf{v}}} \cdot \mathbf{g} &= 0
+					 \frac{\partial \check{H}}{\partial \check{t}} + \nabla \cdot \check{\overline{\mathbf{v}}} T - 
+					 \check{L} \nabla \cdot \phi_s \check{\mathbf{v}}_s - \frac{\kappa}{u_0l_0} \nabla^2 \check{T} -  
+					 \frac{\alpha_\rho l_0}{c_p} \check{T} \check{\overline{\mathbf{v}}} \cdot \mathbf{g} &= 0
 		  \end{aligned}
 \end{equation}

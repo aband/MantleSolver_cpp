@@ -7,5 +7,7 @@
 \contentsline {subsection}{\numberline {1.2.1}Effective Velocity}{17}{subsection.1.2.1}%
 \contentsline {section}{\numberline {1.3}Eutectic Phase Behavior}{18}{section.1.3}%
 \contentsline {subsection}{\numberline {1.3.1}Eutectic Phase Parameters}{18}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Eutectic Phase Split}{19}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {1.3.3}Melting and Eutectic Temperature}{19}{subsection.1.3.3}%
 \contentsline {section}{\numberline {1.4}Nondimensionalization}{19}{section.1.4}%
-\contentsline {chapter}{Works Cited}{20}{appendix*.8}%
+\contentsline {chapter}{Works Cited}{21}{appendix*.8}%
