@@ -294,18 +294,42 @@ We relate bulk specific enthalpy with temperature and latent heat again.
 \begin{equation}\label{eq:enthalpy}
 		  H = T + \phi_l L/c_p
 \end{equation}
-we further rescale by dividing melting temperature $T_m$ at standard atmospheric pressure 
+we further rescale by dividing melting temperature $T_{m0}$ at standard atmospheric pressure 
 forming a dimensionless relationship,
 \begin{equation}\label{eq:enthalpydimensionless}
 \check{H} = \check{T} + \phi_l \check{L}
 \end{equation}
-where $\check{L} = \frac{L}{c_p T_m}$ is the dimensionless latent heat.
+where $\check{L} = \frac{L}{c_p T_{m0}}$ is the dimensionless latent heat.
 
 \subsection{Eutectic Phase Split}
 For simplicity, we are now assuming a linear eutectic phase split between different phase regions.
-We can draw the eutectic phase diagram separating different phase regions with straight lines.
+We can draw the eutectic phase diagram separating different phase regions with straight lines at 
+a fixed pressure.
+\begin{figure}[ht]
+\centering\small
+\includegraphics[width=5.5cm,height=4cm]{chapters/pics/eutectic.png}
+\caption{Linear Eutectic Phase Spliting. \label{fig:Phase}}
+\end{figure}
+We now describe all six phase regions depicting in the phase split diagram above,
+\begin{enumerate}[I]
+\item Single-phase sub-solidus    : solid$1$
+\item Two-phase sub-solidus       : solid$1$ + solid$2$
+\item Three-phase eutectic        : solid$1$ + solid$2$ + melt
+\item Two-phase super-eutectic    : solid$1$ + melt
+\item Two-phase super-eutectic    : solid$2$ + melt
+\item Single-phase super-liquidus : melt
+\end{enumerate}
 
 \subsection{Melting and Eutectic Temperature}
+We approximate the melting temperature and eutectic temperature
+at a given pressure using Calusius-Clapeyron relationship,
+\begin{equation}\label{eq:calusiusclapeyron}
+\begin{aligned}
+T_m &= T_{m0} + \nu^{-1} P \\
+T_e &= T_{e0} + \nu^{-1} P \\
+\end{aligned}
+\end{equation}
+where $\mu$ is the Clausius-Clapeyron constant.
 
 \section{Nondimensionalization}
 Compaction and melting are two most important aspects in mantle dynamics.
@@ -342,3 +366,24 @@ variables defined in mechanic system,
 					 \frac{\alpha_\rho l_0}{c_p} \check{T} \check{\overline{\mathbf{v}}} \cdot \mathbf{g} &= 0
 		  \end{aligned}
 \end{equation}
+Paramters used in the flow mechanics and thermaldynamic computations are listed in Table \ref{tab:parameters},
+\begin{table}[t]
+\centering\small
+\begin{tabular}{c | c c}
+Quantity & Value & Units \\
+\hline
+$\rho$       & $3000$           & $kg\cdot m^{-3}$              \\
+$\rho_r$       & $600$           & $kg\cdot m^{-3}$              \\
+$\alpha_\rho$  & $3\times10^{-5}$ & $K^{-1}$                      \\
+$c_p$          & $1200$           & $J\cdot kg^{-1} \cdot K^{-1}$ \\
+$L$            & $5\times10^{5}$  & $J\cdot kg^{-1}$              \\
+$\mu_l$        & $1$              & $\text{Pascal} \cdot s$       \\
+$\mu_s$        & $10^{19}$        & $\text{Pascal} \cdot s$       \\
+$k_0$          & $10^{-8}$        & $m^2$                         \\
+$T_{e0}$       & $1480$           & $K$                           \\
+$T_{m0}$       & $2000$           & $K$                           \\
+$\nu$          & $6.5\times10^6$  & $\text{Pascal} \cdot K^{-1}$
+\end{tabular}
+\caption[Parameters Table]{Flow Mechanics and Thermaldynamics Parameters}
+\label{tab:parameters}
+\end{table}
