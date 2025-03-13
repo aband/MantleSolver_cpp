@@ -80,7 +80,7 @@ Compbining equations ...., I finally arive with the full flow mechanical system,
 	\label{eq:stokes}
 		  &\nabla\bar p - \nabla \cdot \tau(\mathbf{v}_s) &&= (\rho_s-\rho_l)\mathbf{g},\\
 	\label{eq:compaction}
-		  &\mu_s\nabla \cdot \mathbf{v}_s - \phi_f(p_l - p_s) &&=0, 
+		  &\mu_s\nabla \cdot \mathbf{v}_s - \phi_l(p_l - p_s) &&=0, 
 \end{alignat}
 where the deviatoric stress of the mixture is
 \begin{equation}\label{eq:deviatoricstress}
@@ -267,6 +267,16 @@ using transported enthalpy and concentration. Binary eutectic melting has
 been applied to water-salt-brine system in glacier\cite{DownwardOxidantTransport}. 
 
 \subsection{Eutectic Phase Parameters}
+We approximate the melting temperature and eutectic temperature
+at a given pressure using Calusius-Clapeyron relationship,
+\begin{equation}\label{eq:calusiusclapeyron}
+\begin{aligned}
+T_m &= T_{m0} + \nu^{-1} P \\
+T_e &= T_{e0} + \nu^{-1} P \\
+\end{aligned}
+\end{equation}
+where $\nu$ is the Clausius-Clapeyron constant.
+
 In a eutectic system, we use bulk mass fraction and bulk enthalpy to locate
 the current state of a given system.
 $\mathcal{X}_i$ represents bulk mass fraction of specie $i$ 
@@ -294,17 +304,18 @@ We relate bulk specific enthalpy with temperature and latent heat again.
 \begin{equation}\label{eq:enthalpy}
 		  H = T + \phi_l L/c_p
 \end{equation}
-we further rescale by dividing melting temperature $T_{m0}$ at standard atmospheric pressure 
+we further rescale by dividing melting temperature $\Delta T = T_{m0} - T_{e0}$ 
+at standard atmospheric pressure 
 forming a dimensionless relationship,
 \begin{equation}\label{eq:enthalpydimensionless}
 \check{H} = \check{T} + \phi_l \check{L}
 \end{equation}
-where $\check{L} = \frac{L}{c_p T_{m0}}$ is the dimensionless latent heat.
+where $\check{L} = \frac{L}{c_p \Delta T}$ is the dimensionless latent heat.
 
 \subsection{Eutectic Phase Split}
 For simplicity, we are now assuming a linear eutectic phase split between different phase regions.
-We can draw the eutectic phase diagram separating different phase regions with straight lines at 
-a fixed pressure.
+We can draw the eutectic phase diagram separating different phase regions with 
+straight lines at a fixed pressure.
 \begin{figure}[ht]
 \centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/eutectic.png}
@@ -319,17 +330,88 @@ We now describe all six phase regions depicting in the phase split diagram above
 \item Two-phase super-eutectic    : solid$2$ + melt
 \item Single-phase super-liquidus : melt
 \end{enumerate}
+In the following discussion, I will restrict all the discussion to
+a fixed pressure.
 
-\subsection{Melting and Eutectic Temperature}
-We approximate the melting temperature and eutectic temperature
-at a given pressure using Calusius-Clapeyron relationship,
-\begin{equation}\label{eq:calusiusclapeyron}
-\begin{aligned}
-T_m &= T_{m0} + \nu^{-1} P \\
-T_e &= T_{e0} + \nu^{-1} P \\
-\end{aligned}
+Region I. Pure component $1$. There is no eutectic phase behavior in this region.
+The conditions to be in region I are
+\begin{equation}
+		  C = 0 \quad \check{H} \leq \check{T}_m
 \end{equation}
-where $\mu$ is the Clausius-Clapeyron constant.
+And we can determine phase fraction, mass composition and current temperature,
+\begin{equation}
+\phi_{1} = 1, \quad \phi_{2} = \phi_l = 0 \quad \text{and} 
+		  \quad \check{T} = \check{H}
+\end{equation}
+Region II. Sub-solidus: two components coexist as solid phase.
+In this phase region, temperature hasn't reached eutectic melting temperature.
+The conditions to be in region II are
+\begin{equation}
+		  C \neq 0 \quad \check{H} \leq \check{T}_e
+\end{equation}
+We can determine phase fraction, mass composition and current temperature,
+\begin{equation}
+\phi_{2} = C \quad \phi_1 = 1-\phi_2 
+		  \quad \phi_l = 0 \quad \text{and} \quad 
+		  \check{T} = \check{H} 
+\end{equation}
+Region III. Two-phase eutectic: The system starts melting at eutectic temperature.
+Both solid component $1$ and component $2$ and melt coexist at the same time.
+Temperature fixs until component $2$ exhausts leaving eutectic melting.
+Mass composition of component $2$ in the melt is also fixed as $\mathcal{X}_e$.
+The conditions to be in region III are
+%\begin{equation}
+%		  C \leq \mathcal{X}_e \quad 
+%		  \check{H} \leq \check{T}_e + \mathcal{X}_e \check{L}
+%\end{equation}
+We can determine phase fraction, mass composition and current temperature,
+\begin{equation}
+		  \phi_l = \frac{\check{H} - \check{T}_e}{\check{L}} \quad
+		  \phi_2 = C - \phi_l \mathcal{X}_e \quad
+		  \phi_1 = 1- \phi_l - \phi_2 \quad
+		  \text{and} \quad \check{T} = \check{T}_e
+\end{equation}
+Region IV. Super-eutectic two phase region. All component $2$ in solid has
+been exhausted. The mass composition of component $2$ 
+in liquid $c_{f}$ is now approximated with
+a relation between mass fraction and temperature.
+Subscript indicating component $2$ has been dropped since only one component 
+is being tracked.
+%The conditions to be in region IV are
+%\begin{equation}
+%		  C \leq \mathcal{X}_e \quad
+%		  \check{H} \leq \check{T}_e + \check{L}
+%\end{equation}
+We can determine phase fraction first,
+\begin{equation}
+    \phi_2 = 0 \quad \phi_l = \frac{C}{c_l(\check{T})}
+\end{equation}
+The corresponding temperature should be determined by solving the following equation.
+\begin{equation}
+F(\check{T}) = \check{H} - \check{T} - 
+		  \frac{C}{c_l(\check{T})} \check{L} = 0 
+\end{equation}
+We can solve this nonlinear function with Newton iteration. However, we are 
+approximating with a linear relationship 
+$c_l = \mathcal{X}_e (\check{T}_m - \check{T}))$
+where $c_l > C$ is imposed for the fact that there is component $1$ remaining as 
+solid. Now we can solve a simple quadratic equation.
+\begin{equation}
+		  \check{T}^2 - (\check{H} + \check{T}_m)\check{T} + 
+		  \check{T}_m \check{H} - C L/\mathcal{X}_e = 0
+\end{equation}
+Omitting the root that existing melting temperature,
+\begin{equation}
+		  \begin{aligned}
+		  \check{T} &= \frac{\check{H} + \check{T}_m - 
+		  \sqrt{ (\check{H} + \check{T}_m)^2 - 
+		  4(\check{T}_m \check{H} - C L/\mathcal{X}_e)} }{2} \\
+					  &= 
+		  \frac{\check{H} + \check{T}_m - 
+		  \sqrt{ (\check{H} - \check{T}_m)^2 + 
+		  4C L/\mathcal{X}_e} }{2} 
+		  \end{aligned}
+\end{equation}
 
 \section{Nondimensionalization}
 Compaction and melting are two most important aspects in mantle dynamics.
