@@ -6,7 +6,8 @@
 #include <ctime>
 #include <chrono>
 #include "integral.h"
-#include "eutectic.h"
+//#include "eutectic.h"
+#include "eutectic_rescaled.h"
 #include "input.h"
 #include "util.h"
 
@@ -228,9 +229,13 @@ class Driver {
                         const indice& gcell,
                         const Tensor<weights>& allwgtsHD, double ** lHD,
                         const Tensor<weights>& allwgtsCD, double ** lCD,
-                        vector<double>& kappa,
-                        vector<double>& lambda,
-                        vector<double>& phif);
+                        vector<double>& cs,
+                        vector<double>& cl,
+                        vector<double>& phif,
+                        vector<double>& TD,
+                        vector<double>& dTdH,
+								vector<double>& CD,
+								vector<double>& HD);
 
        // Function used in the interior region
        int computeEffVel(const vector<vertex>& gaussp,
@@ -241,6 +246,23 @@ class Driver {
                          vector<vertex>& effvelHD, 
                          vector<vertex>& effvelCD);
 
+       int computeEffVel(const vector<vertex>& gaussp,
+                         const vertexSet& edgep,
+                         const indice& gcellin, const indice& gcellout,
+                         const Tensor<weights>& allwgtsHD, double ** lHD,
+                         const Tensor<weights>& allwgtsCD, double ** lCD,
+                         vector<vertex>& effvel,
+                         vector<vertex>& phasevel,
+                         vector<vertex>& solidvel,
+                         vector<double>& TDin,
+                         vector<double>& TDout,
+                         vector<double>& dTdHin,
+                         vector<double>& dTdHout,
+								 vector<double>& CDin,
+								 vector<double>& CDout,
+								 vector<double>& HDin,
+								 vector<double>& HDout);
+
        // Function used on the boundary
        int computeEffVel(const vector<vertex>& gaussp,
                          const vertexSet& edgep,
@@ -249,6 +271,19 @@ class Driver {
                          const Tensor<weights>& allwgtsCD, double ** lCD,
                          vector<vertex>& effvelHD, 
                          vector<vertex>& effvelCD);
+
+       int computeEffVel(const vector<vertex>& gaussp,
+                         const vertexSet& edgep,
+                         const indice& gcell,
+                         const Tensor<weights>& allwgtsHD, double ** lHD,
+                         const Tensor<weights>& allwgtsCD, double ** lCD,
+                         vector<vertex>& effvel,
+                         vector<vertex>& phasevel,
+                         vector<vertex>& solidvel,
+                         vector<double>& TDin,
+                         vector<double>& dTdHin,
+								 vector<double>& CD,
+								 vector<double>& HD);
 
        int updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeHD,
                           Tensor<double>& vertedgeCD, Tensor<double>& horiedgeCD,

@@ -60,8 +60,8 @@ T find_max(T val1, T val2){
 template <typename T>
 T harmonic_mean(T val1, T val2){
 
-    return 1.0/ (1.0/val1 + 1.0/val2);
-
+//    return 1.0/ (1.0/val1 + 1.0/val2);
+    return 2*val1*val2/(val1+val2);
 }
 
 /**

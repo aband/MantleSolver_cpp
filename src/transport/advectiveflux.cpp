@@ -67,6 +67,39 @@ double edgefluxintegral(const MeshInfo& mi,
     return work;
 }
 
+// The most generic function compute edge integral
+double edgefluxintegral(const vertexSet& edge,
+                        const vector<double>& uin,
+                        const vector<double>& uout,
+                        const vector<double>& valin,
+                        const vector<double>& valout,
+                        const vector<double>& dfduin,
+                        const vector<double>& dfduout,
+                        const vector<vertex>& vel){
+
+    double work = 0.0;
+
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+
+    // Get edge lendth and unit vector normal to the given edge
+    double len = length(edge);
+    vertex unitNormal = UnitNormal(edge,len);
+
+    for (int g=0; g<gwe.size(); g++){
+
+        double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
+        LF = find_max(abs(dfduin.at(g)), abs(dfduout.at(g))) * LF;
+
+        work += gwe[g] * LFflux(uin.at(g),  uout.at(g), 
+                                advfunc(valin.at(g) , vel.at(g), unitNormal),
+                                advfunc(valout.at(g), vel.at(g), unitNormal), 
+                                LF) * len/2.0; 
+    }
+
+    return work;
+}
+
 double edgefluxintegral(const MeshInfo& mi, 
                         const indice& gcell,
                         const vertexSet& edge,
@@ -178,12 +211,12 @@ double getcellflux(const MeshInfo& mi, const indice& gcell,
 
     work /= area;
 
-    //cout << "At cell " << gcell[0] << "  " << gcell[1] << endl;
-    //cout << "left   : " << horiedge({gcell[0], gcell[1]}) << " ";
-    //cout << "right  : " << horiedge({gcell[0], gcell[1]+1}) << " ";
-    //cout << "bottom : " << vertedge({gcell[0], gcell[1]}) << " ";
-    //cout << "top    : " << vertedge({gcell[0]+1, gcell[1]}) << " ";
-    //cout << endl << endl;;
+//    cout << "At cell " << gcell[0] << "  " << gcell[1] << endl;
+//    cout << "bottom : " << horiedge({gcell[0], gcell[1]}) << " ";
+//    cout << "top    : " << horiedge({gcell[0], gcell[1]+1}) << " ";
+//    cout << "left   : " << vertedge({gcell[0], gcell[1]}) << " ";
+//    cout << "right  : " << vertedge({gcell[0]+1, gcell[1]}) << " ";
+//    cout << endl << endl;;
 
     return work;  
 }

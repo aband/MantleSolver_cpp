@@ -62,7 +62,6 @@ namespace EUTECTIC{
 
             int printInfo() const;
 
-        private:
             double Tm0;   // Standard melting point
             double Te0;   // Standard eutectic point
             double nu;    // Clapeyron constant
@@ -77,8 +76,20 @@ namespace EUTECTIC{
             double TDm0;  // Dimensionless standard melting temperature
             double TDe0;  // Dimensionless standard eutectic temperature
             double rho;   // Density
+            double rhor;  // Density difference
 
             double Xe;    // Eutectic liquid composition
+
+            double mus;
+            double mul;
+       
+            double k0;
+            double invk0;
+
+            double l0;
+            double u0;
+            double p0;
+            double t0;
     };
 
 }

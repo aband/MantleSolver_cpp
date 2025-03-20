@@ -58,7 +58,11 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
-        PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
+//        PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
+
+//VecView(fluxHD, PETSC_VIEWER_STDOUT_WORLD);
+//VecView(fluxCD, PETSC_VIEWER_STDOUT_WORLD);
+
 
         DMDAVecRestoreArray(dmu, fluxHD, &lfHD);
         DMDAVecRestoreArray(dmu, fluxCD, &lfCD);

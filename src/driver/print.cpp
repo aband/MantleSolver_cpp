@@ -112,10 +112,14 @@ int Driver::PrintEffVel(int mark, int side,
 
     // Print Effective computed at the gauss points of each edge
     // Only plot in selected direction
-    FILE * vxHD = fopen(GetFilename("effvelxHD", mark),"w");
-    FILE * vyHD = fopen(GetFilename("effvelyHD", mark),"w");
-    FILE * vxCD = fopen(GetFilename("effvelxCD", mark),"w");
-    FILE * vyCD = fopen(GetFilename("effvelyCD", mark),"w");
+    FILE * effvx = fopen(GetFilename("effvelx", mark),"w");
+    FILE * effvy = fopen(GetFilename("effvely", mark),"w");
+
+    FILE * phasevx = fopen(GetFilename("phasevelx", mark),"w");
+    FILE * phasevy = fopen(GetFilename("phasevely", mark),"w");
+
+    FILE * solidvx = fopen(GetFilename("solidvelx", mark),"w");
+    FILE * solidvy = fopen(GetFilename("solidvely", mark),"w");
 
     FILE * gaussgridx = fopen("gaussgridx.dat", "w");
     FILE * gaussgridy = fopen("gaussgridy.dat", "w");
@@ -128,9 +132,18 @@ int Driver::PrintEffVel(int mark, int side,
 
     vertexSet edge;
 
-    vector<vertex> effvelHD; effvelHD.resize(gaussp.size());
-    vector<vertex> effvelCD; effvelCD.resize(gaussp.size());
-
+    vector<vertex> effvel; effvel.resize(gaussp.size());
+    vector<vertex> phasevel; phasevel.resize(gaussp.size());
+    vector<vertex> solidvel; solidvel.resize(gaussp.size());
+    vector<double> TDin; TDin.resize(gaussp.size());
+    vector<double> TDout; TDout.resize(gaussp.size());
+    vector<double> dTdHin; dTdHin.resize(gaussp.size());
+    vector<double> dTdHout; dTdHout.resize(gaussp.size());
+    vector<double> CDin; CDin.resize(gaussp.size());
+    vector<double> CDout; CDout.resize(gaussp.size());
+    vector<double> HDin; HDin.resize(gaussp.size());
+    vector<double> HDout; HDout.resize(gaussp.size());
+ 
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
@@ -138,8 +151,9 @@ int Driver::PrintEffVel(int mark, int side,
         indice gcellout;
         vertexSet corners = extractCorners(mi, gcell);
 
-        effvelHD.clear(); effvelHD.resize(gaussp.size());
-        effvelCD.clear(); effvelCD.resize(gaussp.size());
+        effvel.clear(); effvel.resize(gaussp.size());
+        phasevel.clear(); phasevel.resize(gaussp.size());
+        solidvel.clear(); solidvel.resize(gaussp.size());
 
         if (side==1){
         // vertical
@@ -151,10 +165,10 @@ int Driver::PrintEffVel(int mark, int side,
             }   
 
             if (i==0){ // left side
-                computeEffVel(gaussp, edge, gcell, allwgtsHD, lHD, allwgtsCD, lCD, effvelHD, effvelCD);
+                computeEffVel(gaussp, edge, gcell, allwgtsHD, lHD, allwgtsCD, lCD, effvel,phasevel,solidvel, TDin, dTdHin, CDin, HDin);
             } else {
                 gcellout = gcell + mi.faceNormal[3];
-                computeEffVel(gaussp, edge, gcell, gcellout, allwgtsHD, lHD, allwgtsCD, lCD, effvelHD, effvelCD);
+                computeEffVel(gaussp, edge, gcell, gcellout, allwgtsHD, lHD, allwgtsCD, lCD, effvel,phasevel,solidvel, TDin, TDout, dTdHin, dTdHout, CDin, CDout, HDin, HDout);
             }
 
         } else if (side==2){
@@ -166,11 +180,11 @@ int Driver::PrintEffVel(int mark, int side,
                 gaussp.at(g) = GaussMapPointsEdge({gpe[g]},edge);
             }   
             if (j==0){ // bottom side
-                computeEffVel(gaussp, edge, gcell, allwgtsHD, lHD, allwgtsCD, lCD, effvelHD, effvelCD);
+                computeEffVel(gaussp, edge, gcell, allwgtsHD, lHD, allwgtsCD, lCD, effvel,phasevel,solidvel, TDin, dTdHin, CDin, HDin);
             } else {
                 gcellout = gcell + mi.faceNormal[0];
 
-                computeEffVel(gaussp, edge, gcell, gcellout, allwgtsHD, lHD, allwgtsCD, lCD, effvelHD, effvelCD);
+                computeEffVel(gaussp, edge, gcell, gcellout, allwgtsHD, lHD, allwgtsCD, lCD, effvel,phasevel,solidvel, TDin, TDout, dTdHin, dTdHout, CDin, CDout, HDin, HDout);
             }
 
         } else {
@@ -179,25 +193,36 @@ int Driver::PrintEffVel(int mark, int side,
 
         for (int g=0; g<gpe.size(); g++){
 
-            fprintf(vxHD, "%e ", effvelHD.at(g)[0]);
-            fprintf(vyHD, "%e ", effvelHD.at(g)[1]);
-            fprintf(vxCD, "%e ", effvelCD.at(g)[0]);
-            fprintf(vyCD, "%e ", effvelCD.at(g)[1]);
+            fprintf(effvx, "%e ", effvel.at(g)[0]);
+            fprintf(effvy, "%e ", effvel.at(g)[1]);
+
+            fprintf(phasevx, "%e ", phasevel.at(g)[0]);
+            fprintf(phasevy, "%e ", phasevel.at(g)[1]);
+
+            fprintf(solidvx, "%e ", solidvel.at(g)[0]);
+            fprintf(solidvy, "%e ", solidvel.at(g)[1]);
+
             fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
         }
 
-    } fprintf(vxHD, "\n ");
-      fprintf(vyHD, "\n ");
-      fprintf(vxCD, "\n ");
-      fprintf(vyCD, "\n ");
+    } fprintf(effvx, "\n ");
+      fprintf(effvy, "\n ");
+      fprintf(phasevx, "\n ");
+      fprintf(phasevy, "\n ");
+      fprintf(solidvx, "\n ");
+      fprintf(solidvy, "\n ");
+
       fprintf(gaussgridx, "\n ");
       fprintf(gaussgridy, "\n ");}
 
-    fclose(vxHD);
-    fclose(vyHD);
-    fclose(vxCD);
-    fclose(vyCD);
+    fclose(effvx);
+    fclose(effvy);
+    fclose(phasevx);
+    fclose(phasevy);
+    fclose(solidvx);
+    fclose(solidvy);
+
     fclose(gaussgridx);
     fclose(gaussgridy);
 
@@ -252,8 +277,7 @@ int Driver::PrintPhaseEvent(int mark){
 
         vertex global = GaussMapPointsFace(local, basis_->corners());
  
-        double depth  = myPhase->pPtr->GetDepth(global[1], myPhase->pp->l0);  
-        double lithoP = myPhase->pPtr->GetScaledLithoP(global[1]*(-1)*myPhase->pp->l0*0.6); 
+        double lithoP = myPhase->pPtr->GetStaticP(global[1]*(-1), myPhase->pp->l0); 
 
         // Extract HD and CD from global solution vectors
         double HD, CD; // Get cell averaged values for approximation
@@ -263,7 +287,7 @@ int Driver::PrintPhaseEvent(int mark){
 
         myPhase->pPtr->evalPhase(HD, CD, lithoP);
 
-        fprintf(fp, "%e ", myPhase->pPtr->phi.mlt);
+        fprintf(fp, "%e ", myPhase->pPtr->pc.phil);
 
         // Test ========================================================
 
@@ -272,11 +296,11 @@ int Driver::PrintPhaseEvent(int mark){
 
         // =============================================================
 
-        fprintf(ft, "%e ", myPhase->pPtr->TD);
+        fprintf(ft, "%e ", myPhase->pPtr->pc.TDp);
 
-        fprintf(fphase, "%d ", myPhase->pPtr->phi.region);
+        fprintf(fphase, "%d ", myPhase->pPtr->pc.region);
 
-        fprintf(ftm, "%e ", myPhase->pPtr->phi.Tm_p);
+        fprintf(ftm, "%e ", myPhase->pPtr->GetTDp(myPhase->pPtr->TDe0, lithoP));
     }
     fprintf(fp, "\n"); 
     fprintf(ft, "\n");
@@ -332,8 +356,7 @@ int Driver::PrintPressureSerialApprox(int mark){
 
         vertex global = GaussMapPointsFace(local, basis_->corners());
  
-        double depth  = myPhase->pPtr->GetDepth(global[1], myPhase->pp->l0);  
-        double lithoP = myPhase->pPtr->GetScaledLithoP(global[1]*(-1)*myPhase->pp->l0*0.6); 
+        double lithoP = myPhase->pPtr->GetStaticP(global[1]*(-1), myPhase->pp->l0); 
 
         // Extract HD and CD from global solution vectors
         double HD, CD; // Get cell averaged values for approximation
@@ -342,7 +365,7 @@ int Driver::PrintPressureSerialApprox(int mark){
         PetscCall(VecGetValues(globalCD, 1, &idx, &CD));
 
         myPhase->pPtr->evalPhase(HD, CD, lithoP);
-        double phif = myPhase->pPtr->phi.mlt;
+        double phif = myPhase->pPtr->pc.phil;
         double coef = 0.0; 
         // Adjust phif
         if (phif > 2e-16) {

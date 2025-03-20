@@ -22,11 +22,16 @@ int Driver::CellAvePorosity(const indice& gcell,
         double CD = advection.eval(mapped, ml, "all", allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
         // Calculate volumetric fraction at given quadrature points
-        double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
+        //double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
 
-        double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
+        //double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
+        //myPhase->pPtr->evalPhase(HD,CD,lithoP);
+        //double phif = myPhase->pPtr->phi.mlt;
+
+        // Using new rescaled eutectic phase package
+        double lithoP = myPhase->pPtr->GetStaticP(-1*mapped[1], myPhase->pPtr->l0); 
         myPhase->pPtr->evalPhase(HD,CD,lithoP);
-        double phif = myPhase->pPtr->phi.mlt;
+        double phif = myPhase->pPtr->pc.phil;
 
         // Test =================================================
 
@@ -85,13 +90,16 @@ int Driver::AssignLocMatStokes(const indice& gcell,
         double HD = advection.eval(mapped, ml, "all", allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
         double CD = advection.eval(mapped, ml, "all", allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
-        double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
-
-        double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
-        myPhase->pPtr->evalPhase(HD,CD,lithoP);
+        //double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
+        //double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
+        //myPhase->pPtr->evalPhase(HD,CD,lithoP);
 
         // Calculate point wise porosity =========================================
-        phi_f = myPhase->pPtr->phi.mlt;            // Fluid porosity
+        //phi_f = myPhase->pPtr->phi.mlt;            // Fluid porosity
+
+        double lithoP = myPhase->pPtr->GetStaticP(-1*mapped[1], myPhase->pPtr->l0); 
+        myPhase->pPtr->evalPhase(HD,CD,lithoP);
+        double phi_f = myPhase->pPtr->pc.phil;
 
         // Test ==================================================================
 
@@ -182,13 +190,16 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
         double HD = advection.eval(mapped, ml, "all", allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
         double CD = advection.eval(mapped, ml, "all", allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
-        double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
-
-        double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
-        myPhase->pPtr->evalPhase(HD,CD,lithoP);
+//        double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
+//        double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
+//        myPhase->pPtr->evalPhase(HD,CD,lithoP);
 
         // Calculate point wise porosity =========================================
-        phi_f = myPhase->pPtr->phi.mlt;  // Fluid porosity
+//        phi_f = myPhase->pPtr->phi.mlt;  // Fluid porosity
+
+        double lithoP = myPhase->pPtr->GetStaticP(-1*mapped[1], myPhase->pPtr->l0); 
+        myPhase->pPtr->evalPhase(HD,CD,lithoP);
+        double phi_f = myPhase->pPtr->pc.phil;
 
         // Test ==================================================================
 
@@ -242,13 +253,16 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
             double HD = advection.eval(mapped, ml, "all", allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
             double CD = advection.eval(mapped, ml, "all", allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
-            double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
-
-            double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
-            myPhase->pPtr->evalPhase(HD,CD,lithoP);
+//            double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
+//            double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
+//            myPhase->pPtr->evalPhase(HD,CD,lithoP);
 
             // Calculate point wise porosity =========================================
-            double phi_f_e = myPhase->pPtr->phi.mlt;  // Fluid porosity on edge gauss point
+//            double phi_f_e = myPhase->pPtr->phi.mlt;  // Fluid porosity on edge gauss point
+
+            double lithoP = myPhase->pPtr->GetStaticP(-1*mapped[1], myPhase->pPtr->l0); 
+            myPhase->pPtr->evalPhase(HD,CD,lithoP);
+            double phi_f_e = myPhase->pPtr->pc.phil;
 
             // Testing =================================================
 
@@ -295,13 +309,17 @@ int Driver::AssignLocMatCouple(const indice& gcell,
         double HD = advection.eval(mapped, ml, "all", allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
         double CD = advection.eval(mapped, ml, "all", allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
-        double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
+//        double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
 
-        double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
-        myPhase->pPtr->evalPhase(HD,CD,lithoP);
+//        double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
+//        myPhase->pPtr->evalPhase(HD,CD,lithoP);
 
         // Calculate point wise porosity ===================================
-        phi_f = myPhase->pPtr->phi.mlt;  // Fluid porosity
+        //phi_f = myPhase->pPtr->phi.mlt;  // Fluid porosity
+
+        double lithoP = myPhase->pPtr->GetStaticP(-1*mapped[1], myPhase->pPtr->l0); 
+        myPhase->pPtr->evalPhase(HD,CD,lithoP);
+        double phi_f = myPhase->pPtr->pc.phil;
 
         // Test ============================================================
 

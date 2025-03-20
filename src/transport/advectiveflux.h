@@ -16,6 +16,16 @@ double edgefluxintegral(const MeshInfo& mi,
                         mluse& use,
                         double ** lu);
 
+// The most generic function compute edge integral
+double edgefluxintegral(const vertexSet& edge,
+                        const vector<double>& uin,
+                        const vector<double>& uout,
+                        const vector<double>& valin,
+                        const vector<double>& valout,
+                        const vector<double>& dfduin,
+                        const vector<double>& dfduout,
+                        const vector<vertex>& vel);
+
 // free flow boundary conditions
 double edgefluxintegral(const MeshInfo& mi, 
                         const indice& gcell,

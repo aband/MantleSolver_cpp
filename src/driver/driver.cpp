@@ -16,8 +16,13 @@ int Driver::CreatePhase(){
 int Driver::ShowPhase(){
 
     // Showing phase attributes
+    cout << " ========================================================= " << endl;
+    cout << "Phase attributes defined in eutectic phase class ...       " << endl;
+
+    myPhase->pPtr->printInfo();
 
     cout << " ========================================================= " << endl;
+    cout << "Phase attributes defined in AssignPhyProperties function .." << endl;
     cout << "Compaction length        : " << myPhase->pp->l0 << " m" << endl;
     cout << "Upwelling solid velocity : " << myPhase->pp->V0 <<" m/s, " << 
             myPhase->pp->V0*365*24*3600*100 << " cm/yrs "<< endl;

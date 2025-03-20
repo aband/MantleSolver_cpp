@@ -2,7 +2,8 @@
 #define MYFUNC_H_
 
 #include "util.h"
-#include "eutectic.h"
+//#include "eutectic.h"
+#include "eutectic_rescaled.h"
 
 // Boundary and initial physical attribute for mechanics
 
