@@ -1,5 +1,5 @@
 % Plot phase transitions
-function [] = myplot_phase(M, N)
+function [] = myplot_phase(M, N, L)
 
 % Input grid files
 fileID = fopen('build/gridCellX.dat','r');
@@ -10,6 +10,8 @@ pY = fscanf(fileID, '%f', [1,Inf]);
 
 pX = reshape(pX, M, N);
 pY = reshape(pY, M, N);
+
+mid = floor(M/2) + 1;
 
 v = VideoWriter('phase.avi','Motion JPEG AVI');
 open(v);
@@ -43,7 +45,7 @@ porosity = reshape(porosity, M, N);
 
 % Add 1D plot
 subplot(1,6,1)
-plot(porosity(3,:),pY(3,:));
+plot(porosity(mid,:),pY(mid,:));
 title("Porosity");
 ylabel("Depth");
 xlabel("Porosity");
@@ -69,9 +71,9 @@ mT = reshape(mT, M, N);
 
 % Add 1D plot
 subplot(1,6,2)
-plot(data(3,:),pY(3,:));
+plot(data(mid,:),pY(mid,:));
 hold on 
-plot(mT(3,:),pY(3,:), 'o');
+plot(mT(mid,:),pY(mid,:), 'o');
 hold off
 title("Temperature");
 ylabel("Depth");
@@ -93,7 +95,7 @@ data = reshape(data, M, N);
 
 % Add 1D plot
 subplot(1,6,3)
-plot(data(3,:),pY(3,:));
+plot(data(mid,:),pY(mid,:));
 title("HD Distribution");
 ylabel("Depth");
 xlabel("HD");
@@ -114,8 +116,8 @@ data = reshape(data, M, N);
 
 % Add 1D plot
 subplot(1,6,4)
-plot(data(3,:),pY(3,:));
-axis([0.09,0.11, -0.3, 0.0])
+plot(data(mid,:),pY(mid,:));
+axis([0.09,0.11, -1*L, 0.0])
 title("CD Distribution");
 ylabel("Depth");
 xlabel("CD");
@@ -129,8 +131,8 @@ data = reshape(data, M, N);
 
 subplot(1,6,5);
 %contourf(pX, pY, data, 3);
-stairs(data(3,:), pY(3,:));
-axis([0, 4, -0.3,0.0])
+stairs(data(mid,:), pY(mid,:));
+axis([0, 4, -1*L,0.0])
 title(strcat('Phase split'));
 
 % Plot of phase split region
@@ -141,8 +143,8 @@ data     = fscanf(fileID, '%f', [1, Inf]);
 data = reshape(data, M, N);
 
 subplot(1,6,6);
-plot(data(3,:),pY(3,:));
-ylim([-0.3,0.0])
+plot(data(mid,:),pY(mid,:));
+ylim([-1*L,0.0])
 xlim([0.08, 0.12])
 title("opx fraction");
 ylabel("Depth");

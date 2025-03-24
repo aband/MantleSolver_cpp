@@ -268,9 +268,17 @@ int main(int argc, char ** argv){
     use.printWgts(wgts_edge);
     use.printWgts(wgts_corner);
 
+    cout << endl;
+
     Tensor<weights> allwgts;
 
     use.computeWgts(ml, mi, h0, allwgts, pfunc);
+
+    use.printWgts(allwgts, {0,0});
+    use.printWgts(allwgts, {1,0});
+    use.printWgts(allwgts, {0,1});
+    use.printWgts(allwgts, {1,1});
+
 
     // =================================================================
 

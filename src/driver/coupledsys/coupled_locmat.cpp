@@ -18,8 +18,8 @@ int Driver::CellAvePorosity(const indice& gcell,
         vertex mapped = GaussMapPointsFace(gpf[g],basis_->corners());
 
         // Get HD and CD from reconstruction at this gaussian point
-        double HD = advection.eval(mapped, ml, "all", allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
-        double CD = advection.eval(mapped, ml, "all", allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
+        double HD = advection.eval(mapped, ml, location(mi,gcell), allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
+        double CD = advection.eval(mapped, ml, location(mi,gcell), allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
         // Calculate volumetric fraction at given quadrature points
         //double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
@@ -87,8 +87,8 @@ int Driver::AssignLocMatStokes(const indice& gcell,
         double gw = gwf[g];
 
         // Reconstruction of point wise value of HD and CD
-        double HD = advection.eval(mapped, ml, "all", allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
-        double CD = advection.eval(mapped, ml, "all", allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
+        double HD = advection.eval(mapped, ml, location(mi,gcell), allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
+        double CD = advection.eval(mapped, ml, location(mi,gcell), allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
         //double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
         //double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
@@ -187,8 +187,8 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
         double gw = gwf[g];
 
         // Reconstruction of point wise value of HD and CD
-        double HD = advection.eval(mapped, ml, "all", allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
-        double CD = advection.eval(mapped, ml, "all", allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
+        double HD = advection.eval(mapped, ml, location(mi, gcell), allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
+        double CD = advection.eval(mapped, ml, location(mi, gcell), allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
 //        double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
 //        double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
@@ -250,8 +250,8 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
             vertex nu = basis_->unitnormal(e);
 
             // Reconstruction of point wise value of HD and CD
-            double HD = advection.eval(mapped, ml, "all", allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
-            double CD = advection.eval(mapped, ml, "all", allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
+            double HD = advection.eval(mapped, ml, location(mi, gcell), allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
+            double CD = advection.eval(mapped, ml, location(mi, gcell), allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
 //            double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
 //            double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
@@ -306,8 +306,8 @@ int Driver::AssignLocMatCouple(const indice& gcell,
         double gw = gwf[g];
 
         // Reconstruction of point wise value of HD and CD
-        double HD = advection.eval(mapped, ml, "all", allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
-        double CD = advection.eval(mapped, ml, "all", allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
+        double HD = advection.eval(mapped, ml, location(mi, gcell), allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
+        double CD = advection.eval(mapped, ml, location(mi, gcell), allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
 //        double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
 

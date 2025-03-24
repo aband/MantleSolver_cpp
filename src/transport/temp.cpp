@@ -67,6 +67,11 @@ std::string position(const indice& gcell){
     return "all";
 }
 
+std::string location(const MeshInfo& mi, const indice& gcell){
+
+    return "all";
+}
+
 int RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,  mluse& use, DM dmu, DM dmmesh){
 
     Vec sol  = *insol;

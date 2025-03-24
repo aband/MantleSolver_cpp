@@ -15,7 +15,9 @@ int dadvfunc(const derivative& du, const double& u, const vertex& vel, const ver
 double diffunc(const double& u);
 
 // Position function that returns where the cell is
-std::string positin(const indice& gcell);
+std::string location(const MeshInfo& mi, const indice& gcell);
+
+std::string position(const indice& gcell);
 
 double InitCD(const valarray<double>& point, const vector<double>& param);
 

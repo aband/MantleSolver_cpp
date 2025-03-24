@@ -58,10 +58,10 @@ int Driver::computephase(const std::vector<vertex>& gaussp,
     double HD = 0.0, CD = 0.0;
 
     for (int g=0; g<gaussp.size(); g++){
-        HD = advection.eval(gaussp.at(g), ml, "all", 
+        HD = advection.eval(gaussp.at(g), ml, location(mi, gcell), 
              allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
 
-        CD = advection.eval(gaussp.at(g), ml, "all", 
+        CD = advection.eval(gaussp.at(g), ml, location(mi, gcell), 
              allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
         hd.at(g) = HD;
@@ -410,10 +410,10 @@ int Driver::computeFaceVel(const vector<vertex>& gaussp,
 
     for (int g=0; g<gaussp.size(); g++){
 
-        HD = advection.eval(gaussp.at(g), ml, "all", 
+        HD = advection.eval(gaussp.at(g), ml, location(mi, gcell), 
              allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
 
-        CD = advection.eval(gaussp.at(g), ml, "all", 
+        CD = advection.eval(gaussp.at(g), ml, location(mi, gcell), 
              allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
         double lithoP = myPhase->pPtr->GetStaticP(-1*gaussp.at(g)[1], 

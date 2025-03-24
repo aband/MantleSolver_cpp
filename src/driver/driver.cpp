@@ -115,6 +115,10 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     ml.addLevel("(3,3)", {3,3}, mi);
     ml.addLevel("(2,2)", {2,2}, mi);
 
+    // Area scale
+    h0 = sqrt((L_*H_)/
+         (double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
+
     advection = mluse();
 
     // Test for nonlinear weighting
@@ -122,12 +126,35 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
     method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
 
-    // Area scale
-    h0 = sqrt((L_*H_)/
-         (double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
-
     advection.setmethod("all", method);
     advection.setbias("all");
+
+    // ========================================================================================================
+
+    unordered_map<std::string, vector<indice>> interior;
+    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+
+    advection.setmethod("interior", interior);
+    advection.setbias("interior");
+
+    unordered_map<std::string, vector<indice>> edge;
+    edge.insert(std::make_pair<std::string, vector<indice>>
+    ("(3,3)", {{0,-1} , {-2,-1}, {-1,0}, {-1,-2}}));
+	 edge.insert(std::make_pair<std::string, vector<indice>>
+    ("(2,2)", {{-1,-1}, {0,-1} , {0,0} , {-1,0} }));
+
+    advection.setmethod("edge", edge);
+    advection.setbias("edge"); 
+
+    unordered_map<std::string, vector<indice>> corner;
+    corner.insert(std::make_pair<std::string, vector<indice>>
+    ("(3,3)", {{0,0}, {-2,0}, {0,-2}, {-2,-2}}));
+	 corner.insert(std::make_pair<std::string, vector<indice>>
+    ("(2,2)", {{-1,-1}, {0,-1} , {0,0} , {-1,0} }));
+
+    advection.setmethod("corner", corner);
+    advection.setbias("corner"); 
 
     // Compute bottom fixed value
     HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});

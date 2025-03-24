@@ -41,11 +41,13 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
         ml.updatesigma(lHD);
         Tensor<weights> allwgtsHD;
-        advection.computeWgts(ml, mi, h0, allwgtsHD);
+        //advection.computeWgts(ml, mi, h0, allwgtsHD);
+        advection.computeWgts(ml, mi, h0, allwgtsHD, location);
 
         ml.updatesigma(lCD);
         Tensor<weights> allwgtsCD;
-        advection.computeWgts(ml, mi, h0, allwgtsCD);
+        //advection.computeWgts(ml, mi, h0, allwgtsCD);
+        advection.computeWgts(ml, mi, h0, allwgtsCD, location);
 
         // Solve for velocity
         //if (t  == 0){
