@@ -18,6 +18,13 @@ Donald Drew and Lee Segel.
 \newblock Averaged equations for two-phase flows.
 \newblock \emph{Studies in Applied Mathematics}, page~3, 1971.
 
+\bibitem[Hesse et~al.(2022)Hesse, Jordan, Vance, and
+  Oza]{DownwardOxidantTransport}
+Marc Hesse, Jacob Jordan, Steve Vance, and Apurva Oza.
+\newblock Supporting information for "downward oxidant transport through
+  europa's ice shell by density-driven brine percolation".
+\newblock \emph{Geophysical Research Letters}, 2022.
+
 \bibitem[Hewitt and Fowler(2008)]{PartialMeltinginUpwellingMantleColumn}
 I.J Hewitt and A.C Fowler.
 \newblock Partial melting in an upwelling mantle column.
@@ -34,12 +41,6 @@ Richard~F. Katz.
 \newblock \emph{The Dynamics of Partially Molten Rock}.
 \newblock Princeton University Press, 1st edition, 2022.
 \newblock ISBN 9780691232645.
-
-\bibitem[Marc A.~Hesse and Oza(2022)]{DownwardOxidantTransport}
-Steve D.~Vance Marc A.~Hesse, Jacob S.~Jordan and Apurva~V. Oza.
-\newblock Supporting information for "downward oxidant transport through
-  europa's ice shell by density-driven brine percolation".
-\newblock \emph{Geophysical Research Letters}, 2022.
 
 \bibitem[Mckenzie(1984)]{MagmaPhysics}
 Dan Mckenzie.

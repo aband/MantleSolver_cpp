@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  14 MAR 2025 10:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  20 MAR 2025 15:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1073,7 +1073,7 @@ Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
 d on input line 237.
 
 [17] [18]
-<chapters/pics/eutectic.png, id=248, 430.54468pt x 322.90851pt>
+<chapters/pics/eutectic.png, id=249, 430.54468pt x 322.90851pt>
 File: chapters/pics/eutectic.png Graphic file (type png)
 <use chapters/pics/eutectic.png>
 Package pdftex.def Info: chapters/pics/eutectic.png  used on input line 321.
@@ -1091,7 +1091,7 @@ Package rerunfilecheck Info: File `dissertation.out' has not changed.
 Here is how much of TeX's memory you used:
  27231 strings out of 478287
  536867 string characters out of 5849289
- 822317 words of memory out of 5000000
+ 822327 words of memory out of 5000000
  44768 multiletter control sequences out of 15000+600000
  479383 words of font info for 66 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1111,10 +1111,10 @@ fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/euler/eusm10.pfb></usr/share/texmf/fonts/typ
 e1/public/cm-super/sfrm1200.pfb>
-Output written on dissertation.pdf (25 pages, 232436 bytes).
+Output written on dissertation.pdf (25 pages, 232579 bytes).
 PDF statistics:
- 398 PDF objects out of 1000 (max. 8388607)
- 336 compressed objects within 4 object streams
+ 399 PDF objects out of 1000 (max. 8388607)
+ 337 compressed objects within 4 object streams
  115 named destinations out of 1000 (max. 500000)
  114 words of extra memory for PDF output out of 10000 (max. 10000000)
 

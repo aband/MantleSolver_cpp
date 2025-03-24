@@ -375,6 +375,58 @@ int mluse::computeWgts(const multilevel& ml, const MeshInfo& mi, Tensor<weights>
     return 1;
 }
 
+// Using different combination for different positions
+int mluse::computeWgts(const multilevel& ml, 
+                       const MeshInfo& mi, 
+							  const double& h0,
+                       Tensor<weights>& allwgts,
+                       posFunc pfunc){
+
+    allwgts = Tensor<weights>(2);
+
+    int i_start = mi.MPIlocalCellStart[0] - 1;
+    int i_end   = mi.MPIlocalCellStart[0] + mi.MPIlocalCellSize[0] + 1; 
+
+    int j_start = mi.MPIlocalCellStart[1] - 1;
+    int j_end   = mi.MPIlocalCellStart[1] + mi.MPIlocalCellSize[1] + 1; 
+
+    int left  = (i_start<0) ? 0 : i_start;
+    int right = (i_end > mi.MPIglobalCellSize[0]) ? mi.MPIglobalCellSize[0] : i_end;
+
+    int bottom = (j_start<0) ? 0 : j_start;
+    int top    = (j_end > mi.MPIglobalCellSize[1]) ? mi.MPIglobalCellSize[1] : j_end;
+
+    allwgts.setSize({right-left, top-bottom});
+
+    int converti = 0;
+    int convertj = 0;
+
+    if (left == 0){
+        converti = 0;
+    } else {
+        converti = mi.cellGhostLayerSize-1;;
+    }
+
+    if (bottom == 0){
+        convertj = 0;
+    } else {
+        convertj = mi.cellGhostLayerSize-1;;
+    }
+
+    for (int j=0; j<top-bottom; j++){
+        for (int i=0; i<right-left; i++){
+            weights wgts;
+            // convert index
+            indice stencilindex {i + converti, 
+                                 j + convertj};
+
+            computeWgts(pfunc(mi,{i,j}), ml, stencilindex, h0, allwgts({i,j}));
+        }
+    }
+
+    return 1;
+}
+
 double mluse::eval(const vertex& point, const multilevel& ml,
                    const std::string& pos, 
                    const unordered_map<std::string, vector<double>>& wgts,

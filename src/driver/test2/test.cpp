@@ -15,7 +15,7 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
-    double L = 0.05, H = 0.3;
+    double L = 0.1, H = 0.3;
     double xstart = -0.5*L, ystart = -1.0001*H;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 
     int maxIter = 15; 
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL));        
-    double tolUzawa = 10e-13; 
+    double tolUzawa = 10e-15; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
 
     double Tmax = 20; // Stop at the first step 

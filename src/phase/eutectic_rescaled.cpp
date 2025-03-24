@@ -32,7 +32,8 @@ EUTECTIC::phase::phase(){
     u0    = k0*rhor*g/mul;
     p0    = rhor*g*l0;
     t0    = l0/u0;
-
+    
+    alpha0 = 3e-5;
 }
 
 double EUTECTIC::phase::GetTDp(const double& TD, 

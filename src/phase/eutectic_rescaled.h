@@ -90,6 +90,7 @@ namespace EUTECTIC{
             double u0;
             double p0;
             double t0;
+            double alpha0;
     };
 
 }

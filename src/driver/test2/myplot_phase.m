@@ -42,8 +42,8 @@ porosity = reshape(porosity, M, N);
 %caxis([0,0.5])
 
 % Add 1D plot
-subplot(1,5,1)
-plot(porosity(2,:),pY(2,:));
+subplot(1,6,1)
+plot(porosity(3,:),pY(3,:));
 title("Porosity");
 ylabel("Depth");
 xlabel("Porosity");
@@ -68,10 +68,10 @@ mT = reshape(mT, M, N);
 %caxis([0,0.5])
 
 % Add 1D plot
-subplot(1,5,2)
-plot(data(2,:),pY(2,:));
+subplot(1,6,2)
+plot(data(3,:),pY(3,:));
 hold on 
-plot(mT(2,:),pY(2,:), 'o');
+plot(mT(3,:),pY(3,:), 'o');
 hold off
 title("Temperature");
 ylabel("Depth");
@@ -92,8 +92,8 @@ data = reshape(data, M, N);
 %caxis([0,0.5])
 
 % Add 1D plot
-subplot(1,5,3)
-plot(data(2,:),pY(2,:));
+subplot(1,6,3)
+plot(data(3,:),pY(3,:));
 title("HD Distribution");
 ylabel("Depth");
 xlabel("HD");
@@ -113,8 +113,8 @@ data = reshape(data, M, N);
 %caxis([0,0.5])
 
 % Add 1D plot
-subplot(1,5,4)
-plot(data(2,:),pY(2,:));
+subplot(1,6,4)
+plot(data(3,:),pY(3,:));
 axis([0.09,0.11, -0.3, 0.0])
 title("CD Distribution");
 ylabel("Depth");
@@ -127,12 +127,26 @@ fileID   = fopen(filename, 'r');
 data     = fscanf(fileID, '%f', [1, Inf]);
 data = reshape(data, M, N);
 
-subplot(1,5,5);
+subplot(1,6,5);
 %contourf(pX, pY, data, 3);
-stairs(data(2,:), pY(2,:));
+stairs(data(3,:), pY(3,:));
 axis([0, 4, -0.3,0.0])
 title(strcat('Phase split'));
 
+% Plot of phase split region
+filename = strcat('build/opx', string(k));
+filename = strcat(filename, '.dat');
+fileID   = fopen(filename, 'r');
+data     = fscanf(fileID, '%f', [1, Inf]);
+data = reshape(data, M, N);
+
+subplot(1,6,6);
+plot(data(3,:),pY(3,:));
+ylim([-0.3,0.0])
+xlim([0.08, 0.12])
+title("opx fraction");
+ylabel("Depth");
+xlabel("opx");
 
 pause
 F= getframe(gcf);

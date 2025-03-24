@@ -157,6 +157,16 @@ int Driver::computeEffVel(const vector<vertex>& gaussp,
         phasevel.at(g) = phi_mean*vel_relative.at(g) + vel_stokes.at(g);
 
         solidvel.at(g) = (1-phi_mean) * vel_stokes.at(g);
+
+//        printf("vr %e, vs %e , phi %e , cl %e , cs %e , effvel %e , phasevel %e , solidvel %e\n", 
+//              vel_relative.at(g)[1], vel_stokes.at(g)[1], phi_mean, cl_mean, 
+//				  cs_mean, effvel.at(g)[1], phasevel.at(g)[1], solidvel.at(g)[1]);
+
+        // Testing 
+        //effvel.at(g)   = 1e-5;
+
+        //phasevel.at(g) = 1e-5;
+        //solidvel.at(g) = 1e-5;
     }
 
     return 1;
@@ -208,7 +218,17 @@ int Driver::computeEffVel(const vector<vertex>& gaussp,
 
         phasevel.at(g) = phi.at(g)*vel_relative.at(g) + vel_stokes.at(g);
         solidvel.at(g) = (1-phi.at(g)) * vel_stokes.at(g);
-    }
+
+//        printf("vr %e, vs %e , phi %e , cl %e , cs %e \n", 
+//              vel_relative.at(g)[1], vel_stokes.at(g)[1], phi.at(g), cl.at(g), 
+//		   		  cs.at(g));
+
+        // Testing 
+        //effvel.at(g)   = 1e-5;
+
+        //phasevel.at(g) = 1e-5;
+        //solidvel.at(g) = 1e-5;
+    } 
 
     return 1;
 }
@@ -369,6 +389,100 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
     return 1;
 }
 
+int Driver::computeFaceVel(const vector<vertex>& gaussp,
+                           const indice& gcell, 
+                           const Tensor<weights>& allwgtsHD, double ** lHD,
+                           const Tensor<weights>& allwgtsCD, double ** lCD,
+                           vector<vertex>& phasevel,
+                           vector<double>& TD){
+
+    double HD = 0.0, CD = 0.0;
+
+    vector<vertex> vel_relative = 
+    ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
+                    refArrayDarcyEssen_,mi,
+                    gaussp, gcell,*hdiv_,*basis_,{1});
+    
+    vector<vertex> vel_stokes = 
+    ExtractVelocity(&sresult_->vel_stokes, &sresult_->g_stokes,
+                    refArrayStokesEssen_,mi,
+                    gaussp, gcell,*br_,*basis_,{1});
+
+    for (int g=0; g<gaussp.size(); g++){
+
+        HD = advection.eval(gaussp.at(g), ml, "all", 
+             allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
+
+        CD = advection.eval(gaussp.at(g), ml, "all", 
+             allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
+
+        double lithoP = myPhase->pPtr->GetStaticP(-1*gaussp.at(g)[1], 
+                                                  myPhase->pPtr->l0); 
+        myPhase->pPtr->evalPhase(HD, CD, lithoP);
+ 
+        TD.at(g)  = myPhase->pPtr->pc.TDp;
+
+        phasevel.at(g) = myPhase->pPtr->pc.phil * vel_relative.at(g) + 
+                         vel_stokes.at(g);
+    }
+
+    return 1;
+}
+
+// Compute flux defined on face instead of edge
+int Driver::updateCellFlux(Tensor<double>& fluxHD,
+                           Tensor<double>& fluxCD,
+                           const Tensor<weights>& allwgtsHD, double ** lHD,
+                           const Tensor<weights>& allwgtsCD, double ** lCD){
+
+    Tensor_zero(fluxHD);
+
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussPointsFace;
+
+    std::vector<vertex> gaussp;
+    gaussp.resize(gwf.size());
+
+    vector<vertex> phasevel; phasevel.resize(gaussp.size());
+    vector<double> TD; TD.resize(gaussp.size());
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice gcell {i,j};
+        phasevel.clear(); phasevel.resize(gaussp.size());
+        TD.clear(); TD.resize(gaussp.size());
+        // Extract corners with respect to given global indice
+        vertexSet corners = extractCorners(mi, gcell); 
+
+        for (unsigned int g=0; g<gwf.size(); g++){
+            gaussp.at(g) = GaussMapPointsFace(gpf[g],corners);
+        }
+
+        computeFaceVel(gaussp, gcell, allwgtsHD, lHD, allwgtsCD, lCD, phasevel, TD);
+
+        double work = 0.0;
+
+        for (unsigned int g=0; g<gwf.size(); g++){
+
+            double jac = abs(GaussJacobian(gpf[g],corners));
+            double gw = gwf[g];
+    
+            work += -10*phasevel.at(g)[1]*TD.at(g)* jac * gw;
+
+        }
+
+	 	  double area = mi.cellArea.at(FlatIndic(mi,gcell));
+
+
+        fluxHD({i,j}) = work*myPhase->pPtr->alpha0 * myPhase->pPtr->l0 / 
+                        myPhase->pPtr->cp / area;
+
+    }}
+
+    return 1;
+}
+
 int Driver::getflux(const Tensor<weights>& allwgtsHD, double ** lHD, 
                     const Tensor<weights>& allwgtsCD, double ** lCD, 
                     double **lfHD, double** lfCD){
@@ -390,12 +504,19 @@ int Driver::getflux(const Tensor<weights>& allwgtsHD, double ** lHD,
                    allwgtsHD, lHD,
                    allwgtsCD, lCD);
 
+    Tensor<double> facefluxHD = Tensor<double>(2);
+    facefluxHD.setSize({mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]});
+    Tensor<double> facefluxCD = Tensor<double>(2);
+    facefluxCD.setSize({mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]});
+
+    updateCellFlux(facefluxHD, facefluxCD, allwgtsHD, lHD, allwgtsCD, lCD);
+
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
-        lfHD[j][i] = getcellflux(mi, {i,j}, vertedgefluxHD, horiedgefluxHD);
+        lfHD[j][i] = getcellflux(mi, {i,j}, vertedgefluxHD, horiedgefluxHD) ;
+					 //- facefluxHD({i,j});
         lfCD[j][i] = getcellflux(mi, {i,j}, vertedgefluxCD, horiedgefluxCD);
-
     }}
     return 1;
 }

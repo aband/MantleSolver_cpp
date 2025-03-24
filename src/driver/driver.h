@@ -285,8 +285,20 @@ class Driver {
 								 vector<double>& CD,
 								 vector<double>& HD);
 
+       int computeFaceVel(const vector<vertex>& gaussp,
+                          const indice& gcell, 
+                          const Tensor<weights>& allwgtsHD, double ** lHD,
+                          const Tensor<weights>& allwgtsCD, double ** lCD,
+                          vector<vertex>& phasevel,
+                          vector<double>& TD);
+
        int updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeHD,
                           Tensor<double>& vertedgeCD, Tensor<double>& horiedgeCD,
+                          const Tensor<weights>& allwgtsHD, double ** lHD,
+                          const Tensor<weights>& allwgtsCD, double ** lCD);
+
+       int updateCellFlux(Tensor<double>& fluxHD,
+                          Tensor<double>& fluxCD,
                           const Tensor<weights>& allwgtsHD, double ** lHD,
                           const Tensor<weights>& allwgtsCD, double ** lCD);
 

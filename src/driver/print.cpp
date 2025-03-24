@@ -264,6 +264,7 @@ int Driver::PrintPhaseEvent(int mark){
     FILE *ft = fopen(GetFilename("temperature", mark), "w");
     FILE *fphase = fopen(GetFilename("phase", mark), "w");
     FILE *ftm= fopen(GetFilename("meltT", mark), "w");
+    FILE *fopx = fopen(GetFilename("opx", mark), "w");
 
     int M = mi.MPIglobalCellSize[0];
     int N = mi.MPIglobalCellSize[1];
@@ -301,16 +302,20 @@ int Driver::PrintPhaseEvent(int mark){
         fprintf(fphase, "%d ", myPhase->pPtr->pc.region);
 
         fprintf(ftm, "%e ", myPhase->pPtr->GetTDp(myPhase->pPtr->TDe0, lithoP));
+
+        fprintf(fopx, "%e ", myPhase->pPtr->pc.phi2);
     }
     fprintf(fp, "\n"); 
     fprintf(ft, "\n");
     fprintf(fphase, "\n");
+	 fprintf(fopx, "\n");
     fprintf(ftm, "\n");}
 
     fclose(fp);
     fclose(ft);
     fclose(fphase);
     fclose(ftm);
+    fclose(fopx);
 
     return 1;
 }

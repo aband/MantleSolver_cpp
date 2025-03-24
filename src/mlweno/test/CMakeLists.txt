@@ -125,6 +125,10 @@ add_executable(fulltest
 		  fullcontrol.cpp
 		  )
 
+add_executable(testarea
+			testarea.cpp
+		  )
+
 #add_executable(testadolc
 #		  testadolc.cpp
 #		  )
@@ -172,6 +176,14 @@ target_link_libraries(testder
 )
 
 target_link_libraries(fulltest
+		  general_lib
+		  io_lib
+		  mlweno_lib
+		  PkgConfig::PETSC
+		  PkgConfig::LAPACKE
+		  )
+
+target_link_libraries(testarea
 		  general_lib
 		  io_lib
 		  mlweno_lib

@@ -54,7 +54,7 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
             CreateScatterVec();
            //PrintFlowEvent(mark);
            //PrintPhaseEvent(mark);
-        //}
+       // }
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 

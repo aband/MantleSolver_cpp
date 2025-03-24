@@ -10,6 +10,9 @@
 
 using weights = std::unordered_map<std::string, std::vector<double>>;
 
+typedef std::string (*posFunc) (const MeshInfo& mi,
+                                const indice& gcell);
+
 class mluse {
 
     public:
@@ -67,6 +70,12 @@ class mluse {
         int computeWgts(const multilevel& ml, 
                         const MeshInfo& mi, 
                         Tensor<weights>& allwgts);
+
+        int computeWgts(const multilevel& ml,
+								const MeshInfo& mi,
+								const double& h0,
+								Tensor<weights>& allwgts,
+								posFunc pfunc);
 
         // Set constant weights for testing purpose
         int computeWgtsConst(const multilevel& ml, 
