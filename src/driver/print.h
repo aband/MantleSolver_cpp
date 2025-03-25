@@ -11,4 +11,6 @@ char * GetFilename(const char * filename, int mark);
 
 int quiverOutputEvent(double * ux, double * uy, double *vx, double * vy, int mark, int M, int N);
 
+int quiverOutputEventTransform(double * ux, double * uy, double *vx, double * vy, int mark, int M, int N, double V0);
+
 #endif

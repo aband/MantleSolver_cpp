@@ -79,7 +79,7 @@ int main(int argc, char **argv){
      * One step computation for flow problem
      */
     double h0 = sqrt((L*H)/(double)(M*N));
-/*
+
     // Solve for initial velocity
     Vec localHD, localCD;
     double ** lHD;
@@ -101,16 +101,21 @@ int main(int argc, char **argv){
 
     driver->ml.updatesigma(lHD);
     Tensor<weights> allwgtsHD;
-    driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgtsHD);
+    driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgtsHD, location);
 
     driver->ml.updatesigma(lCD);
     Tensor<weights> allwgtsCD;
-    driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgtsCD);
+    driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgtsCD, location);
+
+    driver->V0 = driver->myPhase->pp->V0 / driver->myPhase->pPtr->u0;
+    cout << driver->V0 << endl;
 
     driver->SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
 
     driver->PrintFlowEvent(1);
-    driver->PrintPhaseEvent(1);
+    //driver->PrintFlowEventTransform(1);
+
+    //driver->PrintPhaseEvent(1);
 
     driver->PrintEffVel(1, 2, allwgtsHD, lHD, allwgtsCD, lCD);
 
@@ -120,11 +125,11 @@ int main(int argc, char **argv){
     DMRestoreLocalVector(driver->dmu, &localCD); 
 
     driver->PrintPressureSerialApprox(1);
-*/
+
     /**!
      * Actual time stepping.
      */
-    driver->RK(dt, Tmax, maxIter, tolUzawa);
+//    driver->RK(dt, Tmax, maxIter, tolUzawa);
 
     VecDestroy(&driver->globalmesh);
     VecDestroy(&driver->globalHD);

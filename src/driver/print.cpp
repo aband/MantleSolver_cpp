@@ -106,6 +106,39 @@ int Driver::PrintFlowEvent(int mark){
     return 1;
 }
 
+int Driver::PrintFlowEventTransform(int mark){
+
+    // This function plots when distributed vectors have been scattered
+    // This function should be called during the time stepping process
+    // This function plot unscaled velocity of darcy velocity
+    // This function also plots two effective velocity
+
+    int nelemloc = mi.MPIlocalCellSize[0]*mi.MPIlocalCellSize[1];
+
+    double * ux = (double *)malloc(sizeof(double)*nelemloc);
+    double * uy = (double *)malloc(sizeof(double)*nelemloc);
+
+    double * vx = (double *)malloc(sizeof(double)*nelemloc);
+    double * vy = (double *)malloc(sizeof(double)*nelemloc);
+
+    Vec stokesv;
+    Vec darcyv;
+
+    CreateScatterVec();
+
+    CGNSPrepareParallel(&sresult_->vel_stokes, &sresult_->g_stokes, 
+                        refArrayStokesEssen_, mi, ux, uy, *br_, *basis_, parameter); 
+
+    CGNSPrepareParallel(&sresult_->vel_darcy, &sresult_->g_darcy,
+                        refArrayDarcyEssen_, mi, vx, vy, *hdiv_, *basis_, parameter);
+
+    quiverOutputEventTransform(ux,uy,vx,vy, mark, mi.MPIglobalCellSize[0], mi.MPIglobalCellSize[1], V0);
+
+    return 1;
+}
+
+
+
 int Driver::PrintEffVel(int mark, int side,
                         const Tensor<weights>& allwgtsHD, double ** lHD,
                         const Tensor<weights>& allwgtsCD, double ** lCD){
@@ -244,6 +277,35 @@ int quiverOutputEvent(double * ux, double * uy, double * vx, double * vy, int ma
         fprintf(stokesVy, "%.21f ", uy[j*M+i]);
         fprintf(darcyVx, "%.21f ", vx[j*M+i]);
         fprintf(darcyVy, "%.21f ", vy[j*M+i]);
+    }
+    fprintf(stokesVx,"\n");
+    fprintf(stokesVy,"\n");
+    fprintf(darcyVx,"\n");
+    fprintf(darcyVy,"\n");}
+
+    fclose(stokesVx);
+    fclose(stokesVy);
+    fclose(darcyVx);
+    fclose(darcyVy);
+
+    return 1;
+}
+
+int quiverOutputEventTransform(double * ux, double * uy, double * vx, double * vy, int mark, int M, int N, double V0){
+
+    // Separate velocity in x or y direction
+    FILE * stokesVx = fopen(GetFilename("stokesVx_transform",mark),"w");
+    FILE * stokesVy = fopen(GetFilename("stokesVy_transform",mark),"w");
+    FILE * darcyVx  = fopen(GetFilename("darcyVx_transform",mark),"w");
+    FILE * darcyVy  = fopen(GetFilename("darcyVy_transform",mark),"w");
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+
+        fprintf(stokesVx, "%.21f ", ux[j*M+i]*V0);
+        fprintf(stokesVy, "%.21f ", uy[j*M+i]*V0);
+        fprintf(darcyVx, "%.21f ", vx[j*M+i]*V0);
+        fprintf(darcyVy, "%.21f ", vy[j*M+i]*V0);
     }
     fprintf(stokesVx,"\n");
     fprintf(stokesVy,"\n");

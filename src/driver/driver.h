@@ -125,6 +125,7 @@ class Driver {
         * Simple visualization functions
         */
        int PrintFlowEvent(int mark);
+       int PrintFlowEventTransform(int mark);
 
        int PrintPhaseEvent(int mark);
 
@@ -133,6 +134,8 @@ class Driver {
        int PrintEffVel(int mark, int side,
                        const Tensor<weights>& allwgtsHD, double ** lHD,
                        const Tensor<weights>& allwgtsCD, double ** lCD);
+
+       double V0;
 
     private:
 

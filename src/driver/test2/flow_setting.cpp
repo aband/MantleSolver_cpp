@@ -71,8 +71,9 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // Returns nondimensionalized gravity.
     // Attention!!! It should not be scaled by porosity
 	 // porosity scale will be added in another function
-    return {0.0, -1.0};
-    //return {0.0,0.0};
+double V0 = pp->V0 / pp->u0;	
+    //return {0.0, -1.0/V0};
+    return {0.0,-1.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
