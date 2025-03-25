@@ -1,16 +1,118 @@
 \chapter[numerics]{Numerical Methods}
 \label{numerics}
 I introduce a locally mass conserving numerical framework.
-\section{1}
+\section{The Mixed Finite Element Method}
 
 \subsection{Sub Stokes Problem}
 
 \subsection{Sub Darcy Problem}
 
-\subsection{Coupled Degenerated System}
+\subsection{Coupled Degenerate System}
 
-\section{2}
+\subsection{Degenerate Saddle Point Problem}
+The linear system corresponding to (insert eqcite) has the form
+\begin{equation}
+\begin{bmatrix}
+\bold{A}_s   & -\bold{B}_s & \bold{0}     &  \bold{0}   \\
+\bold{B}_s^T &  \bold{C}_s & \bold{0}     &  \bold{K}   \\
+\bold{0}     &  \bold{0}   & \bold{A}_d   & -\bold{B}_d \\
+\bold{0}     &  \bold{K}   & \bold{B}_d^T &  \bold{C}_d
+\end{bmatrix} \begin{bmatrix}
+\bold{x}_s\\
+\bold{y}_s\\
+\bold{x}_d\\
+\bold{y}_d
+\end{bmatrix}= 
+\begin{bmatrix}
+\bold{f}_s\\
+\bold{g}_s\\
+\bold{f}_d\\
+\bold{g}_d
+\end{bmatrix},
+\end{equation}
+wherein the solution represents the degrees of freem of primary variables with respect to the bases of the finite element spaces.
+(Insert details of calculation of each blocked matrix).
+We form a double saddle point system by symmetrically permutate original linear system,
+\begin{equation}
+\begin{bmatrix}
+\bold{A}_s   & \bold{0}     & -\bold{B}_s &  \bold{0}   \\
+\bold{0}     & \bold{A}_d   &  \bold{0}   & -\bold{B}_d \\
+\bold{B}_s^T & \bold{0}     &  \bold{C}_s &  \bold{K}   \\
+\bold{0}     & \bold{B}_d^T &  \bold{K}   &  \bold{C}_d
+\end{bmatrix} \begin{bmatrix}
+\bold{x}_s\\
+\bold{x}_d\\
+\bold{y}_s\\
+\bold{y}_d
+\end{bmatrix}= 
+\begin{bmatrix}
+\bold{f}_s\\
+\bold{f}_d\\
+\bold{g}_s\\
+\bold{g}_d
+\end{bmatrix}.
+\end{equation}
+We group these block matrix to form a concise version,
+\begin{equation}
+\bold{A} = \begin{bmatrix}
+\bold{A}_s   & \bold{0}    \\
+\bold{0}     & \bold{A}_d  
+\end{bmatrix},
+\quad
+\bold{B} = \begin{bmatrix}
+-\bold{B}_s & \bold{0}   \\
+\bold{0}   & -\bold{B}_d
+\end{bmatrix},
+\quad
+\bold{C} = \begin{bmatrix}
+- \bold{C}_s &  -\bold{K}   \\
+- \bold{K}   &  -\bold{C}_d
+\end{bmatrix},
+\quad \bold{F} = \begin{bmatrix}
+\bold{f}_s \\
+\bold{f}_d
+\end{bmatrix},
+\quad
+\bold{G} = \begin{bmatrix}
+-\bold{g}_s \\
+-\bold{g}_d
+\end{bmatrix},
+\end{equation}
+\begin{equation}
+\begin{bmatrix}
+		  \bold{A}   & \bold{B} \\
+		  \bold{B}^T & \bold{C}
+\end{bmatrix} \begin{bmatrix}
+\bold{x} \\ \bold{y}
+\end{bmatrix} = \begin{bmatrix}
+		  \bold{F} \\
+		  \bold{G}
+\end{bmatrix},
+\end{equation}
+where $\bold{A}$ is a positive definite matrix. However,
+$\bold{B}$ is usually a singular matrix when no melting region presents.
+We will present a modified Uzawa iteration algorithm to deal with this
+coupled degenerate singular system.
+Inexact Uzawa algorithm has been introduced in the previous literature 
+\cite{InexactUzawa_Elam_Golub} and \cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev},
+\begin{algorithm}
+\caption{Preconditioned Inexact Uzawa Iteration}
+		  \begin{algorithmic}[1]
+					 \STATE Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
+					 \STATE Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
+					 \STATE Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$
+					 \STATE Obtain $\tilde{\bold{y}} =\text{argmin}_{\bold{x}\in V} ||(\bold{B}^T\bold{A}^{-1}\bold{B} - \bold{C})^{-1}\tilde{\bold{y}}-\bold{r} ||$
+					 \STATE Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
+\end{algorithmic}
+\end{algorithm}
 
-\subsection{Boundary condition}
 
-\section{3}
+
+
+\section{The Multi-level Weighted Essentially Non-Oscillatory (WENO) Method}
+
+\subsection{Finite Volume Formulation}
+
+\subsection{Boundary Treatment}
+
+\subsection{Time Stepping}

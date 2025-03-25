@@ -9,4 +9,14 @@
 \contentsline {subsection}{\numberline {1.3.1}Eutectic Phase Parameters}{18}{subsection.1.3.1}%
 \contentsline {subsection}{\numberline {1.3.2}Eutectic Phase Split}{19}{subsection.1.3.2}%
 \contentsline {section}{\numberline {1.4}Nondimensionalization}{22}{section.1.4}%
-\contentsline {chapter}{Works Cited}{24}{appendix*.8}%
+\contentsline {chapter}{Chapter 2:\hspace *{1em}numerics}{24}{chapter.2}%
+\contentsline {section}{\numberline {2.1}The Mixed Finite Element Method}{24}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Sub Stokes Problem}{24}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Sub Darcy Problem}{24}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Coupled Degenerate System}{24}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}Degenerate Saddle Point Problem}{24}{subsection.2.1.4}%
+\contentsline {section}{\numberline {2.2}The Multi-level Weighted Essentially Non-Oscillatory (WENO) Method}{25}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Finite Volume Formulation}{25}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Boundary Treatment}{25}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Time Stepping}{25}{subsection.2.2.3}%
+\contentsline {chapter}{Works Cited}{26}{appendix*.8}%

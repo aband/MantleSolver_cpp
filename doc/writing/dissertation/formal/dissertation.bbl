@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{12}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -18,6 +18,12 @@ Donald Drew and Lee Segel.
 \newblock Averaged equations for two-phase flows.
 \newblock \emph{Studies in Applied Mathematics}, page~3, 1971.
 
+\bibitem[Elman and Golub(1994)]{InexactUzawa_Elam_Golub}
+Howard~C. Elman and Gene~H. Golub.
+\newblock Inexact and preconditioned uzawa algorithms for saddle point
+  problems.
+\newblock \emph{SIAM. J. Numer. Anal.}, 31:\penalty0 1645--1661, 1994.
+
 \bibitem[Hesse et~al.(2022)Hesse, Jordan, Vance, and
   Oza]{DownwardOxidantTransport}
 Marc Hesse, Jacob Jordan, Steve Vance, and Apurva Oza.
@@ -29,6 +35,11 @@ Marc Hesse, Jacob Jordan, Steve Vance, and Apurva Oza.
 I.J Hewitt and A.C Fowler.
 \newblock Partial melting in an upwelling mantle column.
 \newblock \emph{Proc. R. Soc. A}, 464:\penalty0 2467--2491, 2008.
+
+\bibitem[James H.~Bramble(1997)]{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}
+Apostol T.~Vassilev James H.~Bramble, Joseph E.~Pasciak.
+\newblock Analysis of the inexact uzawa algorithm for saddle point problems.
+\newblock \emph{SIAM. J. Numer. Anal.}, 34:\penalty0 1072--1092, 1997.
 
 \bibitem[Katz(2008)]{MagmaDynamicsEnthalpyMethod}
 Richard~F. Katz.

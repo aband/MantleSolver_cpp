@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 
     int maxIter = 15; 
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL));        
-    double tolUzawa = 10e-15; 
+    double tolUzawa = 10e-17; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
 
     double Tmax = 20; // Stop at the first step 
@@ -80,6 +80,7 @@ int main(int argc, char **argv){
      */
     double h0 = sqrt((L*H)/(double)(M*N));
 
+/*
     // Solve for initial velocity
     Vec localHD, localCD;
     double ** lHD;
@@ -125,11 +126,13 @@ int main(int argc, char **argv){
     DMRestoreLocalVector(driver->dmu, &localCD); 
 
     driver->PrintPressureSerialApprox(1);
+*/
 
     /**!
      * Actual time stepping.
      */
-//    driver->RK(dt, Tmax, maxIter, tolUzawa);
+    //driver->RK(dt, Tmax, maxIter, tolUzawa);
+    driver->SSP2RK(dt, Tmax, maxIter, tolUzawa);
 
     VecDestroy(&driver->globalmesh);
     VecDestroy(&driver->globalHD);

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  20 MAR 2025 15:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  25 MAR 2025 11:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -936,7 +936,7 @@ File: tikzlibrarypositioning.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 * This is a dissertation *
 * *
 * *
-(./dissertation.aux (./chapters/physics.aux))
+(./dissertation.aux (./chapters/physics.aux) (./chapters/numerics.aux))
 \openout1 = `dissertation.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
@@ -1073,29 +1073,58 @@ Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
 d on input line 237.
 
 [17] [18]
-<chapters/pics/eutectic.png, id=249, 430.54468pt x 322.90851pt>
+<chapters/pics/eutectic.png, id=300, 430.54468pt x 322.90851pt>
 File: chapters/pics/eutectic.png Graphic file (type png)
 <use chapters/pics/eutectic.png>
 Package pdftex.def Info: chapters/pics/eutectic.png  used on input line 321.
 (pdftex.def)             Requested size: 156.49382pt x 113.80801pt.
  [19] [20 <./chapters/pics/eutectic.png (PNG copy)>] [21]) [22]
-[23] (./dissertation.bbl [24
+[23]
+\openout2 = `chapters/numerics.aux'.
+
+ (./chapters/numerics.tex
+Chapter 2:
+
+Overfull \hbox (22.98314pt too wide) detected at line 80
+[][][]\OT1/cmr/bx/n/12 A \OT1/cmr/m/n/12 = [] \OML/cmm/m/it/12 ;  \OT1/cmr/bx/n
+/12 B \OT1/cmr/m/n/12 = [] \OML/cmm/m/it/12 ;  \OT1/cmr/bx/n/12 C \OT1/cmr/m/n/
+12 = [] \OML/cmm/m/it/12 ;  \OT1/cmr/bx/n/12 F \OT1/cmr/m/n/12 = [] \OML/cmm/m/
+it/12 ;  \OT1/cmr/bx/n/12 G \OT1/cmr/m/n/12 = [] \OML/cmm/m/it/12 ;
+ []
+
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 99.
+[24
 
 
 
-])) [25] (./dissertation.aux
-(./chapters/physics.aux))
+
+]
+Overfull \hbox (44.74947pt too wide) in paragraph at lines 112--112
+[]\OT1/cmr/bx/n/14.4 The Multi-level Weighted Es-sen-tially Non-Oscillatory (WE
+NO)
+ []
+
+) [25] (./dissertation.bbl [26
+
+
+
+])) [27] (./dissertation.aux
+(./chapters/physics.aux) (./chapters/numerics.aux))
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `dissertation.out' has not changed.
-(rerunfilecheck)             Checksum: BB6F4C48DE8C31945B1AECEE19ED8653;2031.
+(rerunfilecheck)             Checksum: A42EF838C55A44E518C2536DB90B83CE;4015.
  ) 
 Here is how much of TeX's memory you used:
- 27231 strings out of 478287
- 536867 string characters out of 5849289
- 822327 words of memory out of 5000000
- 44768 multiletter control sequences out of 15000+600000
+ 27336 strings out of 478287
+ 539006 string characters out of 5849289
+ 827509 words of memory out of 5000000
+ 44842 multiletter control sequences out of 15000+600000
  479383 words of font info for 66 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 88i,13n,94p,453b,738s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 88i,13n,94p,458b,738s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texlive/texmf-dist
@@ -1111,10 +1140,10 @@ fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/euler/eusm10.pfb></usr/share/texmf/fonts/typ
 e1/public/cm-super/sfrm1200.pfb>
-Output written on dissertation.pdf (25 pages, 232579 bytes).
+Output written on dissertation.pdf (27 pages, 241190 bytes).
 PDF statistics:
- 399 PDF objects out of 1000 (max. 8388607)
- 337 compressed objects within 4 object streams
- 115 named destinations out of 1000 (max. 500000)
- 114 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 478 PDF objects out of 1000 (max. 8388607)
+ 413 compressed objects within 5 object streams
+ 139 named destinations out of 1000 (max. 500000)
+ 194 words of extra memory for PDF output out of 10000 (max. 10000000)
 
