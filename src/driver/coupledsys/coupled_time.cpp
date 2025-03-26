@@ -50,21 +50,22 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         advection.computeWgts(ml, mi, h0, allwgtsCD, location);
 
         // Solve for velocity
-        //if (t  == 0){
+        if (t%10 == 0){
             cout << "Darcy-Stokes system solved at : " << t*dt << endl;
             SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
             CreateScatterVec();
-           //PrintFlowEvent(mark);
-           //PrintPhaseEvent(mark);
-        //}
+
+            printCellAve(mark, &globalHD, mi, "HD");
+            printCellAve(mark, &globalCD, mi, "CD");
+            PrintFlowEvent(mark);
+            PrintPhaseEvent(mark);
+            PrintPressureSerialApprox(mark);
+            mark ++;
+        }
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
         PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
-
-//VecView(fluxHD, PETSC_VIEWER_STDOUT_WORLD);
-//VecView(fluxCD, PETSC_VIEWER_STDOUT_WORLD);
-
 
         DMDAVecRestoreArray(dmu, fluxHD, &lfHD);
         DMDAVecRestoreArray(dmu, fluxCD, &lfCD);
@@ -76,15 +77,7 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         VecAXPY(globalHD, -1*dt, fluxHD);
         VecAXPY(globalCD, -1*dt, fluxCD);
 
-        //if (t%5 == 0){
-           printCellAve(mark, &globalHD, mi, "HD");
-           printCellAve(mark, &globalCD, mi, "CD");
-           PrintFlowEvent(mark);
-           PrintPhaseEvent(mark);
-           PrintPressureSerialApprox(mark);
-           mark ++;
-       //}
-    }
+   }
 
     printCellAve(mark, &globalHD, mi, "HD");
     printCellAve(mark, &globalCD, mi, "CD");
@@ -93,7 +86,7 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 }
 
 int Driver::getFluxAll(Vec * fCD, Vec * fHD, Vec * gCD, Vec * gHD, 
-                       double t, int maxIter, double tolUzawa){
+                       int t, double dt, int maxIter, double tolUzawa, int interval){
 
         Vec fluxHD = *fHD;
         Vec fluxCD = *fCD;
@@ -133,9 +126,11 @@ int Driver::getFluxAll(Vec * fCD, Vec * fHD, Vec * gCD, Vec * gHD,
         //advection.computeWgts(ml, mi, h0, allwgtsCD);
         advection.computeWgts(ml, mi, h0, allwgtsCD, location);
 
-        cout << "Darcy-Stokes system solved at : " << t << endl;
-        SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
-        CreateScatterVec();
+        if (t%interval == 0){
+            cout << "Darcy-Stokes system solved at : " << t *dt << endl;
+            SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
+            CreateScatterVec();
+        }
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
@@ -149,7 +144,7 @@ int Driver::getFluxAll(Vec * fCD, Vec * fHD, Vec * gCD, Vec * gHD,
     return 1;
 }
 
-int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa){
+int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa, int interval){
 
     int mark = 1;
 
@@ -169,7 +164,7 @@ int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa){
         PetscCall(VecDuplicate(globalCD, &fCD));
 
         getFluxAll(&fCD, &fHD, &globalCD, &globalHD, 
-                   t*dt, maxIter, tolUzawa);
+                   t, dt, maxIter, tolUzawa, interval);
 
         VecAXPY(gHD_temp, -1*dt, fHD);
         VecAXPY(gCD_temp, -1*dt, fCD);
@@ -179,8 +174,7 @@ int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa){
         PetscCall(VecDuplicate(globalCD, &fCD2));
 
         getFluxAll(&fCD2, &fHD2, &gCD_temp, &gHD_temp, 
-                   t*dt, maxIter, tolUzawa);
-
+                   t, dt, maxIter, tolUzawa, interval);
 
         VecScale(globalHD, 0.5);
         VecScale(globalCD, 0.5);
@@ -191,13 +185,17 @@ int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa){
         VecAXPY(globalHD, -0.5*dt, fHD2);
         VecAXPY(globalCD, -0.5*dt, fCD2); 
 
-        printCellAve(mark, &globalHD, mi, "HD");
-        printCellAve(mark, &globalCD, mi, "CD");
-        PrintFlowEvent(mark);
-        PrintPhaseEvent(mark);
-        PrintPressureSerialApprox(mark);
- 
-        mark ++;
+        if (t%interval == 0){
+
+            printCellAve(mark, &globalHD, mi, "HD");
+            printCellAve(mark, &globalCD, mi, "CD");
+            PrintFlowEvent(mark);
+            PrintPhaseEvent(mark);
+            PrintPressureSerialApprox(mark);
+
+            mark ++;
+        }
+
     }
 
     mark ++;
@@ -206,10 +204,3 @@ int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
     return 1;
 }
-
-//int Driver::evenColumn(){
-
-    
-
-//    return 1;
-//}

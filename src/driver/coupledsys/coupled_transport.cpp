@@ -322,7 +322,7 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
         gaussp.clear();gaussp.resize(gpe.size());
         // Extract velocity on this edge 
         for (int g=0; g<gpe.size(); g++){
-            gaussp.at(g) = GaussMapPointsEdge({gpe[g]},hori);
+            gaussp.at(g) = GaussMapPointsEdge({gpe[g]},vert);
         }   
 
         clearall(effvel, phasevel, solidvel, TDin, TDout, dTdHin, dTdHout, 
@@ -474,8 +474,7 @@ int Driver::updateCellFlux(Tensor<double>& fluxHD,
 
         }
 
-	 	  double area = mi.cellArea.at(FlatIndic(mi,gcell));
-
+        double area = mi.cellArea.at(FlatIndic(mi,gcell));
 
         fluxHD({i,j}) = work*myPhase->pPtr->alpha0 * myPhase->pPtr->l0 / 
                         myPhase->pPtr->cp / area;
@@ -484,6 +483,148 @@ int Driver::updateCellFlux(Tensor<double>& fluxHD,
 
     return 1;
 }
+
+int Driver::updateVel_Pause(Tensor<vertexSet>& phasevel_vert, 
+                            Tensor<vertexSet>& phasevel_hori, 
+                            Tensor<vertexSet>& effvel_vert, 
+                            Tensor<vertexSet>& effvel_hori, 
+                            Tensor<vertexSet>& solidvel_vert, 
+                            Tensor<vertexSet>& solidvel_hori, 
+                            const Tensor<weights>& allwgtsHD, double ** lHD,
+                            const Tensor<weights>& allwgtsCD, double ** lCD){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    std::vector<vertex> gaussp;
+    gaussp.resize(gpe.size());
+
+    // Effective velocity should be used for transport of concentration
+    vector<vertex> effvel; effvel.resize(gaussp.size());
+    vector<vertex> phasevel; phasevel.resize(gaussp.size());
+    vector<vertex> solidvel; phasevel.resize(gaussp.size());
+    vector<double> TDin; TDin.resize(gaussp.size());
+    vector<double> TDout; TDout.resize(gaussp.size());
+    vector<double> dTdHin; dTdHin.resize(gaussp.size());
+    vector<double> dTdHout; dTdHout.resize(gaussp.size());
+
+    vector<double> CDin; CDin.resize(gaussp.size());
+    vector<double> CDout; CDout.resize(gaussp.size());
+    vector<double> HDin; HDin.resize(gaussp.size());
+    vector<double> HDout; HDout.resize(gaussp.size());
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice gcell {i,j};
+        indice cellout;
+
+        clearall(effvel, phasevel, solidvel, TDin, TDout, dTdHin, dTdHout, 
+                 CDin, CDout, HDin, HDout);
+ 
+        // Extract corners with respect to given global indice
+        vertexSet corners = extractCorners(mi, gcell); 
+
+        // =============================================================
+        // Get horizontal edge
+        vertexSet hori {corners.at(0), corners.at(1)};
+      
+        // Extract velocity on this edge 
+        for (int g=0; g<gpe.size(); g++){
+            gaussp.at(g) = GaussMapPointsEdge({gpe[g]},hori);
+        }   
+
+        if(j==0){
+            // Use one sided velocity
+            computeEffVel(gaussp, hori, gcell, allwgtsHD, lHD, allwgtsCD, lCD, 
+                          effvel, phasevel, solidvel, TDin, dTdHin, 
+                          CDin, HDin);
+        } else {
+
+            cellout = gcell + mi.faceNormal[0];
+            computeEffVel(gaussp, hori, gcell, cellout, allwgtsHD, lHD, allwgtsCD, 
+                          lCD, effvel, phasevel, solidvel, 
+                          TDin, TDout, dTdHin, dTdHout, CDin, CDout, HDin, HDout);
+        }
+
+            phasevel_hori({i,j}) = phasevel;
+            effvel_hori({i,j}) = effvel;
+            solidvel_hori({i,j}) = solidvel;
+
+        // =============================================================
+        // Get vertical edge
+        vertexSet vert {corners.at(3), corners.at(0)};
+
+        gaussp.clear();gaussp.resize(gpe.size());
+        // Extract velocity on this edge 
+        for (int g=0; g<gpe.size(); g++){
+            gaussp.at(g) = GaussMapPointsEdge({gpe[g]},vert);
+        }   
+
+        clearall(effvel, phasevel, solidvel, TDin, TDout, dTdHin, dTdHout, 
+                 CDin, CDout, HDin, HDout);
+
+        if (i==0){
+            // Use one sided velocity
+            computeEffVel(gaussp, vert, gcell, allwgtsHD, lHD, allwgtsCD, lCD, 
+                          effvel, phasevel, solidvel, TDin, dTdHin, 
+                          CDin, HDin);
+
+        } else {
+            cellout = gcell + mi.faceNormal[3];
+            computeEffVel(gaussp, vert, gcell, cellout, allwgtsHD, lHD, allwgtsCD, 
+                          lCD, effvel, phasevel, solidvel, TDin, TDout, 
+                          dTdHin, dTdHout, CDin, CDout, HDin, HDout);
+        }
+
+        phasevel_vert({i,j}) = phasevel;
+        effvel_vert({i,j}) = effvel;
+        solidvel_vert({i,j}) = solidvel;
+
+    }}
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+
+        indice gcell {mi.MPIglobalCellSize[0]-1, j};
+        vertexSet corners = extractCorners(mi, gcell);
+        vertexSet vert    = {corners.at(2), corners.at(1)};
+
+        clearall(effvel, phasevel, solidvel, TDin, TDout, dTdHin, dTdHout, 
+                 CDin, CDout, HDin, HDout);
+
+        for (int g=0; g<gpe.size(); g++){gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, vert);}
+
+        computeEffVel(gaussp, vert, gcell, allwgtsHD, lHD, allwgtsCD, lCD, 
+                      effvel, phasevel, solidvel, TDin, dTdHin, CDin, HDin);
+
+        phasevel_vert({mi.MPIglobalCellSize[0],j}) = phasevel;
+        effvel_vert({mi.MPIglobalCellSize[0],j}) = effvel;
+        solidvel_vert({mi.MPIglobalCellSize[0],j}) = solidvel;
+    }
+
+    // right and top edges
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+        // Regarded as outside cell
+        indice gcell {i, mi.MPIglobalCellSize[1]-1};
+        vertexSet corners = extractCorners(mi, gcell);
+        vertexSet hori    = {corners.at(3), corners.at(2)};
+
+        clearall(effvel, phasevel, solidvel, TDin, TDout, dTdHin, dTdHout, 
+                 CDin, CDout, HDin, HDout);
+
+        for (int g=0; g<gpe.size(); g++){gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, hori);}
+
+        computeEffVel(gaussp, hori, gcell, allwgtsHD, lHD, allwgtsCD, lCD, 
+                      effvel, phasevel, solidvel, TDin, dTdHin, CDin, HDin);
+
+        phasevel_hori({i,mi.MPIglobalCellSize[1]}) = phasevel;
+        effvel_hori({i,mi.MPIglobalCellSize[1]}) = effvel;
+        solidvel_hori({i,mi.MPIglobalCellSize[1]}) = solidvel;
+    }
+
+    return 1;
+}
+
 
 int Driver::getflux(const Tensor<weights>& allwgtsHD, double ** lHD, 
                     const Tensor<weights>& allwgtsCD, double ** lCD, 

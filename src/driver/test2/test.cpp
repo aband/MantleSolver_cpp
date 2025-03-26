@@ -31,7 +31,7 @@ int main(int argc, char **argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    int maxIter = 15; 
+    int maxIter = 20; 
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL));        
     double tolUzawa = 10e-17; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
@@ -47,6 +47,9 @@ int main(int argc, char **argv){
 
     int withUnit = 0;
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-unit", &withUnit, NULL));
+
+    int interval = 1;
+    PetscCall(PetscOptionsGetInt(NULL, NULL, "-interval", &interval, NULL));
 
     // ==============================================================================
 
@@ -80,7 +83,6 @@ int main(int argc, char **argv){
      */
     double h0 = sqrt((L*H)/(double)(M*N));
 
-/*
     // Solve for initial velocity
     Vec localHD, localCD;
     double ** lHD;
@@ -120,19 +122,27 @@ int main(int argc, char **argv){
 
     driver->PrintEffVel(1, 2, allwgtsHD, lHD, allwgtsCD, lCD);
 
+    //Tensor<vertexSet> phasevel_vert, 
+    //Tensor<vertexSet> phasevel_hori, 
+    //Tensor<vertexSet> effvel_vert, 
+    //Tensor<vertexSet> effvel_hori, 
+    //Tensor<vertexSet> solidvel_vert, 
+    //Tensor<vertexSet> solidvel_hori
+
+    //driver->updateVel_Pause();
+
     DMDAVecRestoreArray(driver->dmu,localHD,&lHD);
     DMRestoreLocalVector(driver->dmu, &localHD); 
     DMDAVecRestoreArray(driver->dmu,localCD,&lCD);
     DMRestoreLocalVector(driver->dmu, &localCD); 
 
     driver->PrintPressureSerialApprox(1);
-*/
 
     /**!
      * Actual time stepping.
      */
-    driver->RK(dt, Tmax, maxIter, tolUzawa);
-    //driver->SSP2RK(dt, Tmax, maxIter, tolUzawa);
+    //driver->RK(dt, Tmax, maxIter, tolUzawa);
+    //driver->SSP2RK(dt, Tmax, maxIter, tolUzawa, interval);
 
     VecDestroy(&driver->globalmesh);
     VecDestroy(&driver->globalHD);

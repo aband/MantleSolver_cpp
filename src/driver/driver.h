@@ -122,11 +122,9 @@ class Driver {
        int RK(double dt, double Tmax, int maxIter, double tolUzawa);
 
        int getFluxAll(Vec * fCD, Vec * fHD,  Vec * gCD, Vec * gHD,
-                      double t, int maxIter, double tolUzawa);
+                      int t, double dt, int maxIter, double tolUzawa, int interval);
 
-       int SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa);
-
-       int evelColumn();
+       int SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa, int interval);
 
        /**!
         * Simple visualization functions
@@ -311,6 +309,15 @@ class Driver {
                           Tensor<double>& fluxCD,
                           const Tensor<weights>& allwgtsHD, double ** lHD,
                           const Tensor<weights>& allwgtsCD, double ** lCD);
+
+       int updateVel_Pause(Tensor<vector<vertex>>& phasevel_vert, 
+                           Tensor<vector<vertex>>& phasevel_hori, 
+                           Tensor<vector<vertex>>& effvel_vert, 
+                           Tensor<vector<vertex>>& effvel_hori, 
+                           Tensor<vector<vertex>>& solidvel_vert, 
+                           Tensor<vector<vertex>>& solidvel_hori, 
+                           const Tensor<weights>& allwgtsHD, double ** lHD,
+                           const Tensor<weights>& allwgtsCD, double ** lCD);
 
        int getflux(const Tensor<weights>& allwgtsHD, double ** lHD, 
                    const Tensor<weights>& allwgtsCD, double ** lCD, 

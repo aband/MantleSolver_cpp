@@ -1,0 +1,160 @@
+\documentclass[11pt,landscape,usenames,dvipsnames,letterpaper,leqno]{article}
+
+%%%\nocolor
+
+%\usepackage{equations,amssymb}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx,graphics}
+\usepackage[pdftex]{color}
+\usepackage{multirow} 
+\usepackage{verbatim} 
+\usepackage{ragged2e}
+
+\usepackage{tikz}
+\usetikzlibrary{matrix,arrows}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{shapes.misc, positioning}
+
+%\Large
+\def\largesize{\normalsize}%\small}
+\def\medsize{\footnotesize}
+\def\smallsize{\scriptsize}
+%\tiny
+
+\definecolor{myblue}{rgb}{0,0,1}
+\definecolor{myolivegreen}{cmyk}{.6,0,1,.25}
+\definecolor{mymaroon}{cmyk}{0,1,1,.2}
+\def\Maroon{\textcolor{mymaroon}}
+\def\BurntOrange{\textcolor{BurntOrange}}
+\def\Red{\textcolor{Red}}
+\def\Blue{\textcolor{myblue}}
+\def\Black{\textcolor{Black}}
+\def\Brown{\textcolor{Brown}}
+\def\PineGreen{\textcolor{PineGreen}}
+\def\OliveGreen{\textcolor{myolivegreen}}
+\def\Green{\textcolor{Green}}
+
+\pagestyle{empty}
+\raggedright
+\hyphenpenalty=10000
+
+\setlength{\textwidth}{10.2in}
+\setlength{\textheight}{7.7in}
+
+\setlength{\oddsidemargin}{-0.6in}
+\setlength{\evensidemargin}{-0.6in}
+\setlength{\topmargin}{-0.75in}
+\setlength{\headsep}{0in}
+\setlength{\headheight}{0in}
+
+%------------------------------------------------------------------------------
+
+\def\ds{\displaystyle}
+\def\0{\phantom{0}}
+\def\d{\partial}
+\def\<{\langle}
+\def\>{\rangle}
+\def\qed{\qquad\Blue{\mbox{$\Box$}}}%QED}}
+
+\def\grad{\nabla}
+\def\div{\nabla\cdot}
+\def\Div{\text{div}}
+\def\curl{\nabla\times}
+\def\Curl{\text{curl}}
+
+\newcommand\red{\text{red}}
+
+\def\argmin{\operatornamewithlimits{arg~min}}
+
+\def\twoVec(#1,#2){\left(\begin{matrix}#1\\#2\end{matrix}\right)}
+
+\fboxsep = 12pt
+\def\myfbox#1{\Blue{\fbox{\Black{$\ds#1$}}}}
+\def\myfboxMaroon#1{\Maroon{\fbox{\Black{$\ds#1$}}}}
+
+\def\Line(#1,#2)(#3,#4){\qbezier(#1,#2)(#1,#2)(#3,#4)}
+
+\def\picWidth#1#2%
+{\includegraphics[clip=true,keepaspectratio=true,width=#1]{#2}}
+\def\picHeight#1#2%
+{\includegraphics[clip=true,keepaspectratio=true,height=#1]{#2}}
+\def\picWidthHeight#1#2#3%
+{\includegraphics[clip=true,width=#1,height=#2]{#3}}
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+\def\Re{\mathbb R}
+\def\Bu{\mathbb B}
+\def\Ed{\mathbb E}
+\def\Po{\mathbb P}
+\def\Su{\mathbb S}
+
+\def\F{{\mathbf F}}
+\def\u{{\mathbf u}}
+\let\vv=\v
+\def\v{{\mathbf v}}
+\def\V{{\mathbf V}}
+\def\x{{\mathbf x}}
+\def\bpsi{{\boldsymbol\psi}}
+
+%\def\cE{{\cal E}}
+\def\cF{{\cal F}}
+\def\cO{{\cal O}}
+\def\cP{{\cal P}}
+\def\cT{{\cal T}}
+
+\def\RT{\text{RT}}
+\def\AC{\text{AC}}
+\def\BDM{\text{BDM}}
+\def\myStrut{\vphantom{\int^H}}
+
+%------------------------------------------------------------------------------
+\newcommand\heading[1]{\medskip{\largesize\bf\Blue{#1}\par}}
+\newcommand\head[1]{\medskip{\largesize\bf\Blue{#1}}}
+\newcommand\subheading[1]{\smallskip{\it\Maroon{#1}}}
+\newcommand\subhead[1]{\smallskip{\it\Maroon{#1}}}
+
+\newcommand\eq[1]{\par\smallskip\centerline{$\ds#1$}\smallskip}
+
+\let\itemOld=\item
+\def\item{\parskip=0pt\itemsep=0pt\itemOld}
+
+\newcounter{listNumber}
+\newenvironment{nlist}
+{\setcounter{listNumber}{0}
+\list{\stepcounter{listNumber}\Blue{\thelistNumber.}}
+{\leftmargin=16pt\topsep=0pt\parskip=0pt}}
+{\endlist}
+
+\newenvironment{blist}
+{\list{\PineGreen{$\bullet$}}{\leftmargin=12pt\topsep=0pt\parskip=0pt}}
+{\endlist}
+
+\newenvironment{dlist}
+{\list{}{\leftmargin=36pt\topsep=0pt\parskip=0pt}}
+{\endlist}
+
+%=====================================================================
+
+\begin{document}
+\parindent=0pt\medsize
+
+\centerline{\vbox to0pt{\parbox{\textwidth}{\setlength\unitlength{1in}
+\begin{picture}(10.2,7.7)(0,0)
+\linethickness{2pt}
+\put(-.1,-.1){\BurntOrange{\framebox(10.4,7.9){}}}
+\end{picture}}\vss}}
+
+\parbox{\textwidth}{
+\parbox[t]{10in}{\centerline{\vbox{\halign{\hfil#\hfil\cr
+{\Large\bf Simulation of partially molten mantle}\cr
+%{\Large\bf }\cr
+\noalign{\smallskip}
+\OliveGreen{{\em Todd Arbogast$^*$, and Chenyu Tian*$$}}\cr
+\noalign{\smallskip}
+\Brown{$^*$Oden Institute,
+University of Texas at Austin}\cr}}}}\hfill}
+
+\vspace*{-4pt}
+
+\end{document}
