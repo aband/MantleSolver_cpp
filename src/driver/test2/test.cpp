@@ -131,8 +131,8 @@ int main(int argc, char **argv){
     /**!
      * Actual time stepping.
      */
-    //driver->RK(dt, Tmax, maxIter, tolUzawa);
-    driver->SSP2RK(dt, Tmax, maxIter, tolUzawa);
+    driver->RK(dt, Tmax, maxIter, tolUzawa);
+    //driver->SSP2RK(dt, Tmax, maxIter, tolUzawa);
 
     VecDestroy(&driver->globalmesh);
     VecDestroy(&driver->globalHD);

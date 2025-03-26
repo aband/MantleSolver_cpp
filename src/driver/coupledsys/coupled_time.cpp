@@ -56,11 +56,11 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
             CreateScatterVec();
            //PrintFlowEvent(mark);
            //PrintPhaseEvent(mark);
-       // }
+        //}
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
-//        PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
+        PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
 
 //VecView(fluxHD, PETSC_VIEWER_STDOUT_WORLD);
 //VecView(fluxCD, PETSC_VIEWER_STDOUT_WORLD);
@@ -92,25 +92,26 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
     return 1;
 }
 
-int Driver::getFluxAll(Vec * fCD, Vec * fHD, double t, int maxIter, double tolUzawa){
+int Driver::getFluxAll(Vec * fCD, Vec * fHD, Vec * gCD, Vec * gHD, 
+                       double t, int maxIter, double tolUzawa){
 
         Vec fluxHD = *fHD;
         Vec fluxCD = *fCD;
 
+        Vec globHD = *gHD;
+        Vec globCD = *gCD;
+
         Vec localHD, localCD; 
         PetscCall(DMGetLocalVector(dmu, &localHD));
         PetscCall(DMGetLocalVector(dmu, &localCD));
-    
-//        PetscCall(VecDuplicate(globalHD, &fluxHD));
-//        PetscCall(VecDuplicate(globalCD, &fluxCD));
 
         double ** lHD;
         double ** lCD;
         double ** lfHD;
         double ** lfCD;
 
-        PetscCall(DMGlobalToLocalBegin(dmu, globalHD, INSERT_VALUES, localHD));
-        PetscCall(DMGlobalToLocalEnd(dmu, globalHD, INSERT_VALUES, localHD));
+        PetscCall(DMGlobalToLocalBegin(dmu, globHD, INSERT_VALUES, localHD));
+        PetscCall(DMGlobalToLocalEnd(dmu, globHD, INSERT_VALUES, localHD));
 
         PetscCall(DMDAVecGetArray(dmu, localHD, &lHD););
 
@@ -121,7 +122,6 @@ int Driver::getFluxAll(Vec * fCD, Vec * fHD, double t, int maxIter, double tolUz
 
         PetscCall(DMDAVecGetArray(dmu, fluxHD, &lfHD));
         PetscCall(DMDAVecGetArray(dmu, fluxCD, &lfCD));
-
 
         ml.updatesigma(lHD);
         Tensor<weights> allwgtsHD;
@@ -155,8 +155,12 @@ int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
     int Nt = (int)(Tmax/dt);
 
-    printCellAve(mark, &globalHD, mi, "HD");
-    printCellAve(mark, &globalCD, mi, "CD");
+    Vec gHD_temp, gCD_temp;
+    PetscCall(VecDuplicate(globalHD, &gHD_temp));
+    PetscCall(VecDuplicate(globalCD, &gCD_temp));
+
+    PetscCall(VecCopy(globalHD, gHD_temp));
+    PetscCall(VecCopy(globalCD, gCD_temp));
 
     for (int t=0; t<Nt; t++) {
 
@@ -164,23 +168,48 @@ int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa){
         PetscCall(VecDuplicate(globalHD, &fHD));
         PetscCall(VecDuplicate(globalCD, &fCD));
 
-        getFluxAll(&fCD, &fHD, t*dt, maxIter, tolUzawa);
+        getFluxAll(&fCD, &fHD, &globalCD, &globalHD, 
+                   t*dt, maxIter, tolUzawa);
 
-        VecAXPY(globalHD, -1*dt, fHD);
-        VecAXPY(globalCD, -1*dt, fCD);
+        VecAXPY(gHD_temp, -1*dt, fHD);
+        VecAXPY(gCD_temp, -1*dt, fCD);
 
-        //if (t%5 == 0){
-           printCellAve(mark, &globalHD, mi, "HD");
-           printCellAve(mark, &globalCD, mi, "CD");
-           PrintFlowEvent(mark);
-           PrintPhaseEvent(mark);
-           PrintPressureSerialApprox(mark);
-           mark ++;
+        Vec fHD2, fCD2; 
+        PetscCall(VecDuplicate(globalHD, &fHD2));
+        PetscCall(VecDuplicate(globalCD, &fCD2));
+
+        getFluxAll(&fCD2, &fHD2, &gCD_temp, &gHD_temp, 
+                   t*dt, maxIter, tolUzawa);
+
+
+        VecScale(globalHD, 0.5);
+        VecScale(globalCD, 0.5);
+
+        VecAXPY(globalHD, 0.5, gHD_temp);
+        VecAXPY(globalCD, 0.5, gCD_temp); 
+
+        VecAXPY(globalHD, -0.5*dt, fHD2);
+        VecAXPY(globalCD, -0.5*dt, fCD2); 
+
+        printCellAve(mark, &globalHD, mi, "HD");
+        printCellAve(mark, &globalCD, mi, "CD");
+        PrintFlowEvent(mark);
+        PrintPhaseEvent(mark);
+        PrintPressureSerialApprox(mark);
  
+        mark ++;
     }
 
+    mark ++;
     printCellAve(mark, &globalHD, mi, "HD");
     printCellAve(mark, &globalCD, mi, "CD");
 
     return 1;
 }
+
+//int Driver::evenColumn(){
+
+    
+
+//    return 1;
+//}

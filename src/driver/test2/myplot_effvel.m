@@ -71,7 +71,7 @@ subplot(2,3,6)
 plot(vy(4,:), pY(4,:));
 
 %set(gcf, 'Position',[50 50 1800 700]);
-
+pause
 G = getframe(gcf);
 
 end

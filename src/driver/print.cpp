@@ -249,6 +249,44 @@ int Driver::PrintEffVel(int mark, int side,
       fprintf(gaussgridx, "\n ");
       fprintf(gaussgridy, "\n ");}
 
+    // top and left bottom
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice gcell {i, mi.MPIglobalCellSize[1]-1};
+        vertexSet corners = extractCorners(mi, gcell);
+        vertexSet hori    = {corners.at(3), corners.at(2)};
+
+        for (int g=0; g<gpe.size(); g++){gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, hori);}
+
+        computeEffVel(gaussp, hori, gcell, allwgtsHD, lHD, allwgtsCD, lCD, 
+                      effvel, phasevel, solidvel, TDin, dTdHin, CDin, HDin);
+
+        for (int g=0; g<gpe.size(); g++){
+
+            fprintf(effvx, "%e ", effvel.at(g)[0]);
+            fprintf(effvy, "%e ", effvel.at(g)[1]);
+
+            fprintf(phasevx, "%e ", phasevel.at(g)[0]);
+            fprintf(phasevy, "%e ", phasevel.at(g)[1]);
+
+            fprintf(solidvx, "%e ", solidvel.at(g)[0]);
+            fprintf(solidvy, "%e ", solidvel.at(g)[1]);
+
+            fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
+            fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
+        }
+
+ fprintf(effvx, "\n ");
+      fprintf(effvy, "\n ");
+      fprintf(phasevx, "\n ");
+      fprintf(phasevy, "\n ");
+      fprintf(solidvx, "\n ");
+      fprintf(solidvy, "\n ");
+
+      fprintf(gaussgridx, "\n ");
+      fprintf(gaussgridy, "\n ");
+    }
+
     fclose(effvx);
     fclose(effvy);
     fclose(phasevx);

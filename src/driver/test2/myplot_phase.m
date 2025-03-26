@@ -146,7 +146,7 @@ subplot(1,6,6);
 plot(data(mid,:),pY(mid,:));
 ylim([-1*L,0.0])
 xlim([0.08, 0.12])
-title("opx fraction");
+title("opx fraction",num2str(k));
 ylabel("Depth");
 xlabel("opx");
 

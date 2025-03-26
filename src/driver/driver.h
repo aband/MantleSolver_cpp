@@ -121,9 +121,12 @@ class Driver {
          */
        int RK(double dt, double Tmax, int maxIter, double tolUzawa);
 
-       int getFluxAll(Vec * fCD, Vec * fHD, double t, int maxIter, double tolUzawa);
+       int getFluxAll(Vec * fCD, Vec * fHD,  Vec * gCD, Vec * gHD,
+                      double t, int maxIter, double tolUzawa);
 
        int SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa);
+
+       int evelColumn();
 
        /**!
         * Simple visualization functions

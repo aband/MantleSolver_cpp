@@ -95,7 +95,11 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
 
         for (int g=0; g<gpe.size(); g++){
             vertex mapped = GaussMapPointsEdge({gpe[g]}, vert);
-				vel.at(g) = {(4.0-mapped[0])*coef,0};
+				//vel.at(g) = {(4.0-mapped[0])*coef,0};
+				if (mapped[0] > 2.0){
+		vel.at(g) = {2e-5+ mapped[0]*1e-5,0};} else {
+		vel.at(g) = {2e-5, 0};		  
+		};
         } 
 
         // boundary
@@ -116,6 +120,12 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         indice gcell {mi.MPIglobalCellSize[0]-1, j};
         vertexSet corners = extractCorners(mi, gcell);
         vertexSet vert    = {corners.at(2), corners.at(1)};
+
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]}, vert);
+				//vel.at(g) = {(4.0-mapped[0])*coef,0};
+		vel.at(g) = {2e-5 +mapped[0]*1e-5,0};
+        } 
 
         vertedge({mi.MPIglobalCellSize[0], j}) = edgefluxintegral(mi, gcell, vert, allwgts, vel, ml, use, lu);
     }

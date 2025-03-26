@@ -23,7 +23,7 @@ int main(int argc, char ** argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    int M = 3, N = 3;
+    int M = 15, N = 3;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
