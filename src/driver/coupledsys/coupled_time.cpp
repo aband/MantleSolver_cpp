@@ -7,8 +7,8 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
     int Nt = (int)(Tmax/dt);
 
-    printCellAve(mark, &globalHD, mi, "HD");
-    printCellAve(mark, &globalCD, mi, "CD");
+    //printCellAve(mark, &globalHD, mi, "HD");
+    //printCellAve(mark, &globalCD, mi, "CD");
 
     for (int t=0; t<Nt; t++) {
 
@@ -50,18 +50,20 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         advection.computeWgts(ml, mi, h0, allwgtsCD, location);
 
         // Solve for velocity
-//        if (t%10 == 0){
+        //cout << t*dt << endl;
+        //if (t == 0){
             cout << "Darcy-Stokes system solved at : " << t*dt << endl;
             SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
             CreateScatterVec();
-
+ 
+        if (t % 50 == 0){
             printCellAve(mark, &globalHD, mi, "HD");
             printCellAve(mark, &globalCD, mi, "CD");
             PrintFlowEvent(mark);
             PrintPhaseEvent(mark);
             PrintPressureSerialApprox(mark);
             mark ++;
-//        }
+        }
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
@@ -79,8 +81,8 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
    }
 
-    printCellAve(mark, &globalHD, mi, "HD");
-    printCellAve(mark, &globalCD, mi, "CD");
+    //printCellAve(mark, &globalHD, mi, "HD");
+    //printCellAve(mark, &globalCD, mi, "CD");
 
     return 1;
 }

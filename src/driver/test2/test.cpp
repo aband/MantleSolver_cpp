@@ -134,8 +134,8 @@ int main(int argc, char **argv){
     /**!
      * Actual time stepping.
      */
-    //driver->RK(dt, Tmax, maxIter, tolUzawa);
-    driver->SSP2RK(dt, Tmax, maxIter, tolUzawa, interval);
+    driver->RK(dt, Tmax, maxIter, tolUzawa);
+    //driver->SSP2RK(dt, Tmax, maxIter, tolUzawa, interval);
     //driver->SSP2RK_Pause(dt, Tmax, maxIter, tolUzawa, interval);
     //driver->RK_Pause(dt, Tmax, maxIter, tolUzawa, interval);
 
