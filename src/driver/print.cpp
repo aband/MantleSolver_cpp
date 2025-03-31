@@ -300,6 +300,34 @@ int Driver::PrintEffVel(int mark, int side,
     return 1;
 }
 
+int Driver::PrintTensorVel(const Tensor<vertexSet>& pointvel, 
+                           int mark,
+                           const char * fieldname){
+
+    char * filename = (char *)malloc(strlen(fieldname)+10+4);
+
+    char n_char[10];
+    std::sprintf(n_char,"%d",mark);
+    strcpy(filename, fieldname);
+    strcat(filename, n_char);
+    strcat(filename, ".dat");
+
+    FILE * sol = fopen(filename,"w");
+
+    for (int j=0; j<pointvel.getSize(1); j++){
+    for (int i=0; i<pointvel.getSize(0); i++){
+
+        for (int g=0; g<pointvel({i,j}).size(); g++){
+            fprintf(sol, "%e ", pointvel({i,j}).at(g)[1]);
+        }
+
+    }fprintf(sol, "\n");}
+
+    fclose(sol);
+
+    return 1;
+}
+
 int quiverOutputEvent(double * ux, double * uy, double * vx, double * vy, int mark, int M, int N){
 
     // Separate velocity in x or y direction

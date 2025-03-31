@@ -5,6 +5,7 @@ inline double LFflux(const double& uin, const double& uout,
                      const double& LF){
 
     return 0.5*(fout + fin - LF*(uout - uin));
+//      return 0.5*(fout + fin - 1e-3*(uout - uin));
 }
 
 inline int derLFflux(const derivative& derin,  const derivative& derout,
@@ -54,7 +55,6 @@ double edgefluxintegral(const MeshInfo& mi,
                       allwgts({gcellin[0],gcellin[1]}), gcellin, lu); 
         double uout = use.eval(mapped, ml, location(mi,gcellout), 
                       allwgts({gcellout[0],gcellout[1]}), gcellout, lu); 
-
         //double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
         double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
         LF = find_max(abs(dfdu(uin)), abs(dfdu(uout))) * LF;

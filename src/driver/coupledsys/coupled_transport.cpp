@@ -305,8 +305,12 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
                           lCD, effvel, phasevel, solidvel, 
                           TDin, TDout, dTdHin, dTdHout, CDin, CDout, HDin, HDout);
 
+//for (int g=0; g<gaussp.size(); g++){
+//cout << effvel.at(g)[1] << "   ";
+//}cout << endl;
             fluxCD = edgefluxintegral(mi, gcell, cellout, hori, allwgtsCD, 
                                       effvel, ml, advection, lCD);
+//printf("%.16f, \n", fluxCD);
             // =========================================================
             fluxHD = edgefluxintegral(hori, HDin, HDout, TDin, TDout, 
                                       dTdHin, dTdHout, phasevel);
@@ -339,8 +343,8 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
                           lCD, effvel, phasevel, solidvel, TDin, TDout, 
                           dTdHin, dTdHout, CDin, CDout, HDin, HDout);
 
-            fluxCD = edgefluxintegral(mi, gcell, cellout, vert, allwgtsCD, 
-                                      effvel, ml, advection, lCD);
+            //fluxCD = edgefluxintegral(mi, gcell, cellout, vert, allwgtsCD, 
+            //                          effvel, ml, advection, lCD);
             fluxHD = edgefluxintegral(vert, HDin, HDout, TDin, TDout, 
                                       dTdHin, dTdHout, phasevel);
             fluxL  = myPhase->pPtr->LD * edgefluxintegral(vert, 1, solidvel);
@@ -387,6 +391,141 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
 
         horiedgeHD({i, mi.MPIglobalCellSize[1]}) = fluxHD; 
    }
+
+    return 1;
+}
+
+int Driver::updateEdgeFlux(const Tensor<vertexSet>& phasevel_vert, 
+                           const Tensor<vertexSet>& phasevel_hori, 
+                           const Tensor<vertexSet>& effvel_vert, 
+                           const Tensor<vertexSet>& effvel_hori, 
+                           const Tensor<vertexSet>& solidvel_vert, 
+                           const Tensor<vertexSet>& solidvel_hori,
+                           Tensor<double>& vertedgeHD, Tensor<double>& horiedgeHD,
+                           Tensor<double>& vertedgeCD, Tensor<double>& horiedgeCD,
+                           const Tensor<weights>& allwgtsHD, double ** lHD,
+                           const Tensor<weights>& allwgtsCD, double ** lCD){
+
+    Tensor_zero(vertedgeCD);
+    Tensor_zero(horiedgeCD);
+    Tensor_zero(vertedgeHD);
+    Tensor_zero(horiedgeHD);
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    std::vector<vertex> gaussp;
+    gaussp.resize(gpe.size());
+
+    vector<double> CDin; CDin.resize(gaussp.size());
+    vector<double> CDout; CDout.resize(gaussp.size());
+    vector<double> HDin; HDin.resize(gaussp.size());
+    vector<double> HDout; HDout.resize(gaussp.size());
+    vector<double> TDin; TDin.resize(gaussp.size());
+    vector<double> TDout; TDout.resize(gaussp.size());
+    vector<double> dTdHin; dTdHin.resize(gaussp.size());
+    vector<double> dTdHout; dTdHout.resize(gaussp.size());
+
+    vector<double> dummy; dummy.resize(gaussp.size());
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        double fluxHD = 0.0;
+        double fluxCD = 0.0;
+        double fluxL  = 0.0;
+
+        indice gcell {i,j};
+        indice cellout;
+
+        CDin.clear(); CDin.resize(gaussp.size());
+        CDout.clear(); CDout.resize(gaussp.size());
+
+        HDin.clear(); HDin.resize(gaussp.size());
+        HDout.clear(); HDout.resize(gaussp.size());
+
+        TDin.clear(); TDin.resize(gaussp.size());    
+        TDout.clear(); TDout.resize(gaussp.size()); 
+
+        dTdHin.clear(); dTdHin.resize(gaussp.size());    
+        dTdHout.clear(); dTdHout.resize(gaussp.size()); 
+
+        // Extract corners with respect to given global indice
+        vertexSet corners = extractCorners(mi, gcell); 
+
+        // =============================================================
+        // Get horizontal edge
+        vertexSet hori {corners.at(0), corners.at(1)};
+
+        // Extract velocity on this edge 
+        for (int g=0; g<gpe.size(); g++){
+            gaussp.at(g) = GaussMapPointsEdge({gpe[g]},hori);
+        }   
+
+        computephase(gaussp, hori, gcell, allwgtsHD, lHD, allwgtsCD, lCD, 
+                     dummy, dummy, dummy, TDin, dTdHin, CDin, HDin);
+
+        if(j==0){
+ 
+            // bottom edge, fix values
+            fluxCD = edgefluxintegral(hori, CDbottom, effvel_hori({i,j}));
+            // =========================================================
+            fluxHD = edgefluxintegral(hori, HDbottom, phasevel_hori({i,j}));
+            fluxL  = myPhase->pPtr->LD * 
+                     edgefluxintegral(hori, 1, solidvel_hori({i,j}));
+ 
+        } else {
+
+            cellout = gcell + mi.faceNormal[0];
+
+            computephase(gaussp, hori, cellout, allwgtsHD, lHD, allwgtsCD, lCD, 
+                         dummy, dummy, dummy, TDout, dTdHout, CDout, HDout);
+//for (int g=0; g<gaussp.size(); g++){
+//cout << effvel_hori({i,j}).at(g)[1] << "   ";
+//}cout << endl;
+            fluxCD = edgefluxintegral(mi, gcell, cellout, hori, allwgtsCD, 
+                                      effvel_hori({i,j}), ml, advection, lCD);
+//printf("%.16f, \n", fluxCD);
+            // =========================================================
+            fluxHD = edgefluxintegral(hori, HDin, HDout, TDin, TDout, 
+                                      dTdHin, dTdHout, phasevel_hori({i,j}));
+            fluxL  = myPhase->pPtr->LD * 
+                     edgefluxintegral(hori, 1, solidvel_hori({i,j}));
+
+        }
+
+        horiedgeCD({i,j}) = fluxCD;
+
+        horiedgeHD({i,j}) = fluxHD - fluxL;
+
+        // Cheating a little bit here
+
+        vertedgeCD({i,j}) = 0.0;//fluxCD;
+        vertedgeHD({i,j}) = 0.0;//fluxHD - fluxL;
+
+    }}
+
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        // Regarded as outside cell
+        indice gcell {i, mi.MPIglobalCellSize[1]-1};
+        vertexSet corners = extractCorners(mi, gcell);
+        vertexSet hori    = {corners.at(3), corners.at(2)};
+
+        computephase(gaussp, hori, gcell, allwgtsHD, lHD, allwgtsCD, lCD, 
+                     dummy, dummy, dummy, TDin, dTdHin, CDin, HDin);
+
+        double fluxCD = edgefluxintegral(mi, gcell, hori, allwgtsCD, 
+               effvel_hori({i,mi.MPIglobalCellSize[1]}), ml, advection, lCD);
+
+        horiedgeCD({i, mi.MPIglobalCellSize[1]}) = fluxCD; 
+
+        double fluxHD = edgefluxintegral(hori, HDin, HDin, TDin, TDin, 
+               dTdHin, dTdHin, phasevel_hori({i,mi.MPIglobalCellSize[1]})) - 
+        myPhase->pPtr->LD * edgefluxintegral(hori, 1, solidvel_hori({i,mi.MPIglobalCellSize[1]}));
+
+        horiedgeHD({i, mi.MPIglobalCellSize[1]}) = fluxHD; 
+    }
 
     return 1;
 }
@@ -660,6 +799,62 @@ int Driver::getflux(const Tensor<weights>& allwgtsHD, double ** lHD,
         lfHD[j][i] = getcellflux(mi, {i,j}, vertedgefluxHD, horiedgefluxHD) ;
 					 //- facefluxHD({i,j});
         lfCD[j][i] = getcellflux(mi, {i,j}, vertedgefluxCD, horiedgefluxCD);
+
+//        cout << lfHD[j][i] << "   ";
+//        cout << lfCD[j][i] << "   ";
+
     }}
+    return 1;
+}
+
+int Driver::getflux(const Tensor<vertexSet>& phasevel_vert, 
+                    const Tensor<vertexSet>& phasevel_hori, 
+                    const Tensor<vertexSet>& effvel_vert, 
+                    const Tensor<vertexSet>& effvel_hori, 
+                    const Tensor<vertexSet>& solidvel_vert, 
+                    const Tensor<vertexSet>& solidvel_hori,
+                    const Tensor<weights>& allwgtsHD, double ** lHD,
+                    const Tensor<weights>& allwgtsCD, double ** lCD,
+                    double **lfHD, double **lfCD){
+
+    Tensor<double> horiedgefluxHD = Tensor<double>(2);
+    horiedgefluxHD.setSize({mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]+1});
+
+    Tensor<double> vertedgefluxHD = Tensor<double>(2);
+    vertedgefluxHD.setSize({mi.MPIlocalCellSize[0]+1, mi.MPIlocalCellSize[1]});
+
+    Tensor<double> horiedgefluxCD = Tensor<double>(2);
+    horiedgefluxCD.setSize({mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]+1});
+
+    Tensor<double> vertedgefluxCD = Tensor<double>(2);
+    vertedgefluxCD.setSize({mi.MPIlocalCellSize[0]+1, mi.MPIlocalCellSize[1]});
+
+    updateEdgeFlux(phasevel_vert, phasevel_hori, 
+                   effvel_vert,   effvel_hori,
+                   solidvel_vert, solidvel_hori,
+                   vertedgefluxHD, horiedgefluxHD,
+                   vertedgefluxCD, horiedgefluxCD,
+                   allwgtsHD, lHD,
+                   allwgtsCD, lCD);
+
+    //Tensor<double> facefluxHD = Tensor<double>(2);
+    //facefluxHD.setSize({mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]});
+    //Tensor<double> facefluxCD = Tensor<double>(2);
+    //facefluxCD.setSize({mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]});
+
+    //updateCellFlux(facefluxHD, facefluxCD, allwgtsHD, lHD, allwgtsCD, lCD);
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        lfHD[j][i] = getcellflux(mi, {i,j}, vertedgefluxHD, horiedgefluxHD);
+					 //- facefluxHD({i,j});
+        lfCD[j][i] = getcellflux(mi, {i,j}, vertedgefluxCD, horiedgefluxCD);
+
+        //cout << lfHD[j][i] << "   " ;
+        //cout << lfCD[j][i] << "   " ;
+    } }
+ 
+
     return 1;
 }

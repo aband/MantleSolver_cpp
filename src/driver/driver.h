@@ -121,10 +121,26 @@ class Driver {
          */
        int RK(double dt, double Tmax, int maxIter, double tolUzawa);
 
+       int RK_Pause(double dt, double Tmax, int maxIter, 
+                    double tolUzawa, int interval);
+
        int getFluxAll(Vec * fCD, Vec * fHD,  Vec * gCD, Vec * gHD,
                       int t, double dt, int maxIter, double tolUzawa, int interval);
 
-       int SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa, int interval);
+       int getFluxAll(const Tensor<vertexSet>& phasevel_vert, 
+                      const Tensor<vertexSet>& phasevel_hori, 
+                      const Tensor<vertexSet>& effvel_vert, 
+                      const Tensor<vertexSet>& effvel_hori, 
+                      const Tensor<vertexSet>& solidvel_vert, 
+                      const Tensor<vertexSet>& solidvel_hori,
+                      Vec * fCD, Vec * fHD, Vec * gCD, Vec * gHD, 
+                      int t, double dt, int maxIter, double tolUzawa, int interval);
+
+       int SSP2RK(double dt, double Tmax, int maxIter, 
+                  double tolUzawa, int interval);
+
+       int SSP2RK_Pause(double dt, double Tmax, int maxIter, 
+                        double tolUzawa, int interval);
 
        /**!
         * Simple visualization functions
@@ -139,6 +155,10 @@ class Driver {
        int PrintEffVel(int mark, int side,
                        const Tensor<weights>& allwgtsHD, double ** lHD,
                        const Tensor<weights>& allwgtsCD, double ** lCD);
+
+       int PrintTensorVel(const Tensor<vertexSet>& pointvel,
+                          int mark,
+                          const char * filedname);
 
        double V0;
 
@@ -305,6 +325,17 @@ class Driver {
                           const Tensor<weights>& allwgtsHD, double ** lHD,
                           const Tensor<weights>& allwgtsCD, double ** lCD);
 
+       int updateEdgeFlux(const Tensor<vertexSet>& phasevel_vert, 
+                          const Tensor<vertexSet>& phasevel_hori, 
+                          const Tensor<vertexSet>& effvel_vert, 
+                          const Tensor<vertexSet>& effvel_hori, 
+                          const Tensor<vertexSet>& solidvel_vert, 
+                          const Tensor<vertexSet>& solidvel_hori,
+                          Tensor<double>& vertedgeHD, Tensor<double>& horiedgeHD,
+                          Tensor<double>& vertedgeCD, Tensor<double>& horiedgeCD,
+                          const Tensor<weights>& allwgtsHD, double ** lHD,
+                          const Tensor<weights>& allwgtsCD, double ** lCD);
+
        int updateCellFlux(Tensor<double>& fluxHD,
                           Tensor<double>& fluxCD,
                           const Tensor<weights>& allwgtsHD, double ** lHD,
@@ -319,9 +350,29 @@ class Driver {
                            const Tensor<weights>& allwgtsHD, double ** lHD,
                            const Tensor<weights>& allwgtsCD, double ** lCD);
 
+       int velocitycamera(Tensor<vertexSet>& phasevel_vert, 
+                          Tensor<vertexSet>& phasevel_hori, 
+                          Tensor<vertexSet>& effvel_vert, 
+                          Tensor<vertexSet>& effvel_hori, 
+                          Tensor<vertexSet>& solidvel_vert, 
+                          Tensor<vertexSet>& solidvel_hori, 
+                          Vec * gCD, Vec * gHD, 
+                          int t, double dt, int maxIter, 
+                          double tolUzawa);
+
        int getflux(const Tensor<weights>& allwgtsHD, double ** lHD, 
                    const Tensor<weights>& allwgtsCD, double ** lCD, 
                    double **lfHD, double** lfCD);
+
+       int getflux(const Tensor<vertexSet>& phasevel_vert, 
+                   const Tensor<vertexSet>& phasevel_hori, 
+                   const Tensor<vertexSet>& effvel_vert, 
+                   const Tensor<vertexSet>& effvel_hori, 
+                   const Tensor<vertexSet>& solidvel_vert, 
+                   const Tensor<vertexSet>& solidvel_hori,
+                   const Tensor<weights>& allwgtsHD, double ** lHD,
+                   const Tensor<weights>& allwgtsCD, double ** lCD,
+                   double **lfHD, double **lfCD);
 
 };
 

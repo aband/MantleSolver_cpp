@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  26 MAR 2025 13:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  28 MAR 2025 13:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -551,26 +551,304 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 146
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1
+)
+<jsg_formal_fullColor.png, id=4, 556.9608pt x 202.8378pt>
+File: jsg_formal_fullColor.png Graphic file (type png)
+<use jsg_formal_fullColor.png>
+Package pdftex.def Info: jsg_formal_fullColor.png  used on input line 160.
+(pdftex.def)             Requested size: 119.06435pt x 43.36243pt.
+<RGB_formal_Oden_ICES.png, id=7, 492.3996pt x 86.0013pt>
+File: RGB_formal_Oden_ICES.png Graphic file (type png)
+<use RGB_formal_Oden_ICES.png>
+Package pdftex.def Info: RGB_formal_Oden_ICES.png  used on input line 160.
+(pdftex.def)             Requested size: 95.16476pt x 16.62178pt.
+<mid.png, id=9, 666.0885pt x 348.5823pt>
+File: mid.png Graphic file (type png)
+<use mid.png>
+Package pdftex.def Info: mid.png  used on input line 256.
+(pdftex.def)             Requested size: 138.0939pt x 72.26999pt.
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./myposter.aux) ) 
+Overfull \hbox (508.63791pt too wide) in paragraph at lines 256--256
+[]$[]$  
+ []
+
+<CXT.png, id=11, 421.575pt x 316.18124pt>
+File: CXT.png Graphic file (type png)
+<use CXT.png>
+Package pdftex.def Info: CXT.png  used on input line 256.
+(pdftex.def)             Requested size: 67.44693pt x 50.58878pt.
+<CXV.png, id=13, 429.10312pt x 310.91156pt>
+File: CXV.png Graphic file (type png)
+<use CXV.png>
+Package pdftex.def Info: CXV.png  used on input line 256.
+(pdftex.def)             Requested size: 69.81682pt x 50.58878pt.
+<eutectic.png, id=15, 430.54468pt x 322.90851pt>
+File: eutectic.png Graphic file (type png)
+<use eutectic.png>
+Package pdftex.def Info: eutectic.png  used on input line 256.
+(pdftex.def)             Requested size: 67.44981pt x 50.58878pt.
+<rec.png, id=17, 488.82625pt x 481.8pt>
+File: rec.png Graphic file (type png)
+<use rec.png>
+Package pdftex.def Info: rec.png  used on input line 383.
+(pdftex.def)             Requested size: 65.43674pt x 56.90189pt.
+<quad.png, id=18, 516.93124pt x 429.605pt>
+File: quad.png Graphic file (type png)
+<use quad.png>
+Package pdftex.def Info: quad.png  used on input line 383.
+(pdftex.def)             Requested size: 65.43657pt x 56.89944pt.
+Missing character: There is no ( in font nullfont!
+Missing character: There is no 3 in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no , in font nullfont!
+Missing character: There is no 3 in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no ) in font nullfont!
+Missing character: There is no ( in font nullfont!
+Missing character: There is no - in font nullfont!
+Missing character: There is no 1 in font nullfont!
+Missing character: There is no 5 in font nullfont!
+Missing character: There is no , in font nullfont!
+Missing character: There is no - in font nullfont!
+Missing character: There is no 1 in font nullfont!
+Missing character: There is no 5 in font nullfont!
+Missing character: There is no ) in font nullfont!
+
+LaTeX Warning: \oval, \circle, or \line size unavailable on input line 383.
+
+
+LaTeX Warning: \oval, \circle, or \line size unavailable on input line 383.
+
+
+LaTeX Warning: \oval, \circle, or \line size unavailable on input line 383.
+
+
+LaTeX Warning: \oval, \circle, or \line size unavailable on input line 383.
+
+
+LaTeX Warning: \oval, \circle, or \line size unavailable on input line 383.
+
+
+LaTeX Warning: \oval, \circle, or \line size unavailable on input line 383.
+
+Missing character: There is no ( in font nullfont!
+Missing character: There is no 3 in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no , in font nullfont!
+Missing character: There is no 3 in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no ) in font nullfont!
+Missing character: There is no ( in font nullfont!
+Missing character: There is no - in font nullfont!
+Missing character: There is no 1 in font nullfont!
+Missing character: There is no 5 in font nullfont!
+Missing character: There is no , in font nullfont!
+Missing character: There is no - in font nullfont!
+Missing character: There is no 1 in font nullfont!
+Missing character: There is no 5 in font nullfont!
+Missing character: There is no ) in font nullfont!
+
+LaTeX Warning: \oval, \circle, or \line size unavailable on input line 383.
+
+
+LaTeX Warning: \oval, \circle, or \line size unavailable on input line 383.
+
+
+LaTeX Warning: \oval, \circle, or \line size unavailable on input line 383.
+
+<poro.png, id=19, 537.00626pt x 271.0125pt>
+File: poro.png Graphic file (type png)
+<use poro.png>
+Package pdftex.def Info: poro.png  used on input line 441.
+(pdftex.def)             Requested size: 57.27637pt x 28.90755pt.
+<dsr.png, id=21, 429.10312pt x 310.91156pt>
+File: dsr.png Graphic file (type png)
+<use dsr.png>
+Package pdftex.def Info: dsr.png  used on input line 441.
+(pdftex.def)             Requested size: 79.78877pt x 57.81621pt.
+<ssr.png, id=23, 421.575pt x 316.18124pt>
+File: ssr.png Graphic file (type png)
+<use ssr.png>
+Package pdftex.def Info: ssr.png  used on input line 441.
+(pdftex.def)             Requested size: 77.08313pt x 57.81621pt.
+
+LaTeX Warning: Command \b invalid in math mode on input line 441.
+
+Package epstopdf Info: Source file: <inflow_tiny_008.eps>
+(epstopdf)                    date: 2025-03-28 00:53:30
+(epstopdf)                    size: 24849 bytes
+(epstopdf)             Output file: <inflow_tiny_008-eps-converted-to.pdf>
+(epstopdf)                    date: 2025-03-28 00:53:30
+(epstopdf)                    size: 20673 bytes
+(epstopdf)             Command: <repstopdf --outfile=inflow_tiny_008-eps-conver
+ted-to.pdf inflow_tiny_008.eps>
+(epstopdf)             \includegraphics on input line 441.
+Package epstopdf Info: Output file is already uptodate.
+<inflow_tiny_008-eps-converted-to.pdf, id=25, 72.27pt x 361.35pt>
+File: inflow_tiny_008-eps-converted-to.pdf Graphic file (type pdf)
+<use inflow_tiny_008-eps-converted-to.pdf>
+Package pdftex.def Info: inflow_tiny_008-eps-converted-to.pdf  used on input li
+ne 441.
+(pdftex.def)             Requested size: 28.45204pt x 71.13289pt.
+Package epstopdf Info: Source file: <inflow_tiny_024.eps>
+(epstopdf)                    date: 2025-03-28 00:53:30
+(epstopdf)                    size: 32296 bytes
+(epstopdf)             Output file: <inflow_tiny_024-eps-converted-to.pdf>
+(epstopdf)                    date: 2025-03-28 00:53:30
+(epstopdf)                    size: 26418 bytes
+(epstopdf)             Command: <repstopdf --outfile=inflow_tiny_024-eps-conver
+ted-to.pdf inflow_tiny_024.eps>
+(epstopdf)             \includegraphics on input line 441.
+Package epstopdf Info: Output file is already uptodate.
+<inflow_tiny_024-eps-converted-to.pdf, id=26, 72.27pt x 361.35pt>
+File: inflow_tiny_024-eps-converted-to.pdf Graphic file (type pdf)
+<use inflow_tiny_024-eps-converted-to.pdf>
+Package pdftex.def Info: inflow_tiny_024-eps-converted-to.pdf  used on input li
+ne 441.
+(pdftex.def)             Requested size: 28.45204pt x 71.13289pt.
+Package epstopdf Info: Source file: <inflow_tiny_040.eps>
+(epstopdf)                    date: 2025-03-28 00:53:30
+(epstopdf)                    size: 36645 bytes
+(epstopdf)             Output file: <inflow_tiny_040-eps-converted-to.pdf>
+(epstopdf)                    date: 2025-03-28 00:53:30
+(epstopdf)                    size: 30328 bytes
+(epstopdf)             Command: <repstopdf --outfile=inflow_tiny_040-eps-conver
+ted-to.pdf inflow_tiny_040.eps>
+(epstopdf)             \includegraphics on input line 441.
+Package epstopdf Info: Output file is already uptodate.
+<inflow_tiny_040-eps-converted-to.pdf, id=27, 72.27pt x 361.35pt>
+File: inflow_tiny_040-eps-converted-to.pdf Graphic file (type pdf)
+<use inflow_tiny_040-eps-converted-to.pdf>
+Package pdftex.def Info: inflow_tiny_040-eps-converted-to.pdf  used on input li
+ne 441.
+(pdftex.def)             Requested size: 28.45204pt x 71.13289pt.
+Package epstopdf Info: Source file: <inflow_tiny_056.eps>
+(epstopdf)                    date: 2025-03-28 00:53:30
+(epstopdf)                    size: 40415 bytes
+(epstopdf)             Output file: <inflow_tiny_056-eps-converted-to.pdf>
+(epstopdf)                    date: 2025-03-28 00:53:30
+(epstopdf)                    size: 36483 bytes
+(epstopdf)             Command: <repstopdf --outfile=inflow_tiny_056-eps-conver
+ted-to.pdf inflow_tiny_056.eps>
+(epstopdf)             \includegraphics on input line 441.
+Package epstopdf Info: Output file is already uptodate.
+<inflow_tiny_056-eps-converted-to.pdf, id=28, 72.27pt x 361.35pt>
+File: inflow_tiny_056-eps-converted-to.pdf Graphic file (type pdf)
+<use inflow_tiny_056-eps-converted-to.pdf>
+Package pdftex.def Info: inflow_tiny_056-eps-converted-to.pdf  used on input li
+ne 441.
+(pdftex.def)             Requested size: 28.45204pt x 71.13289pt.
+Package epstopdf Info: Source file: <inflow_tiny_080.eps>
+(epstopdf)                    date: 2025-03-28 00:53:30
+(epstopdf)                    size: 41234 bytes
+(epstopdf)             Output file: <inflow_tiny_080-eps-converted-to.pdf>
+(epstopdf)                    date: 2025-03-28 00:53:30
+(epstopdf)                    size: 36905 bytes
+(epstopdf)             Command: <repstopdf --outfile=inflow_tiny_080-eps-conver
+ted-to.pdf inflow_tiny_080.eps>
+(epstopdf)             \includegraphics on input line 441.
+Package epstopdf Info: Output file is already uptodate.
+<inflow_tiny_080-eps-converted-to.pdf, id=29, 72.27pt x 361.35pt>
+File: inflow_tiny_080-eps-converted-to.pdf Graphic file (type pdf)
+<use inflow_tiny_080-eps-converted-to.pdf>
+Package pdftex.def Info: inflow_tiny_080-eps-converted-to.pdf  used on input li
+ne 441.
+(pdftex.def)             Requested size: 28.45204pt x 71.13289pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 441--441
+[]\OT1/cmr/m/n/9 ML-
+ []
+
+
+Overfull \hbox (19.27855pt too wide) in paragraph at lines 441--441
+\OT1/cmr/m/n/9 WENO(3,2,1)
+ []
+
+Package epstopdf Info: Source file: <errorDistNotiny.eps>
+(epstopdf)                    date: 2025-03-28 01:03:29
+(epstopdf)                    size: 32921 bytes
+(epstopdf)             Output file: <errorDistNotiny-eps-converted-to.pdf>
+(epstopdf)                    date: 2025-03-28 01:03:29
+(epstopdf)                    size: 19476 bytes
+(epstopdf)             Command: <repstopdf --outfile=errorDistNotiny-eps-conver
+ted-to.pdf errorDistNotiny.eps>
+(epstopdf)             \includegraphics on input line 441.
+Package epstopdf Info: Output file is already uptodate.
+<errorDistNotiny-eps-converted-to.pdf, id=30, 428.60126pt x 310.15875pt>
+File: errorDistNotiny-eps-converted-to.pdf Graphic file (type pdf)
+<use errorDistNotiny-eps-converted-to.pdf>
+Package pdftex.def Info: errorDistNotiny-eps-converted-to.pdf  used on input li
+ne 441.
+(pdftex.def)             Requested size: 56.90384pt x 36.98553pt.
+Package epstopdf Info: Source file: <errorDistTwotiny.eps>
+(epstopdf)                    date: 2025-03-28 01:03:29
+(epstopdf)                    size: 33008 bytes
+(epstopdf)             Output file: <errorDistTwotiny-eps-converted-to.pdf>
+(epstopdf)                    date: 2025-03-28 01:03:29
+(epstopdf)                    size: 19505 bytes
+(epstopdf)             Command: <repstopdf --outfile=errorDistTwotiny-eps-conve
+rted-to.pdf errorDistTwotiny.eps>
+(epstopdf)             \includegraphics on input line 441.
+Package epstopdf Info: Output file is already uptodate.
+<errorDistTwotiny-eps-converted-to.pdf, id=31, 428.60126pt x 310.15875pt>
+File: errorDistTwotiny-eps-converted-to.pdf Graphic file (type pdf)
+<use errorDistTwotiny-eps-converted-to.pdf>
+Package pdftex.def Info: errorDistTwotiny-eps-converted-to.pdf  used on input l
+ine 441.
+(pdftex.def)             Requested size: 56.90384pt x 36.98553pt.
+<init.png, id=32, 918.43124pt x 516.42938pt>
+File: init.png Graphic file (type png)
+<use init.png>
+Package pdftex.def Info: init.png  used on input line 441.
+(pdftex.def)             Requested size: 115.67249pt x 65.04256pt.
+<final.png, id=34, 918.43124pt x 516.42938pt>
+File: final.png Graphic file (type png)
+<use final.png>
+Package pdftex.def Info: final.png  used on input line 441.
+(pdftex.def)             Requested size: 115.67249pt x 65.04256pt.
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./jsg_formal_fullColor.png
+> <./RGB_formal_Oden_ICES.png> <./mid.png> <./CXT.png (PNG copy)> <./CXV.png (P
+NG copy)> <./eutectic.png (PNG copy)> <./poro.png> <./dsr.png (PNG copy)> <./ss
+r.png (PNG copy)> <./init.png (PNG copy)> <./final.png (PNG copy)> <./rec.png> 
+<./quad.png> <./inflow_tiny_008-eps-converted-to.pdf> <./inflow_tiny_024-eps-co
+nverted-to.pdf> <./inflow_tiny_040-eps-converted-to.pdf> <./inflow_tiny_056-eps
+-converted-to.pdf> <./inflow_tiny_080-eps-converted-to.pdf> <./errorDistNotiny-
+eps-converted-to.pdf> <./errorDistTwotiny-eps-converted-to.pdf>]
+(./myposter.aux) )
+(\end occurred inside a group at level 1)
+
+### simple group (level 1) entered at line 172 ({)
+### bottom level 
 Here is how much of TeX's memory you used:
- 14604 strings out of 478287
- 306561 string characters out of 5849289
- 553242 words of memory out of 5000000
- 32534 multiletter control sequences out of 15000+600000
- 474256 words of font info for 47 fonts, out of 8000000 for 9000
+ 14828 strings out of 478287
+ 311539 string characters out of 5849289
+ 588289 words of memory out of 5000000
+ 32734 multiletter control sequences out of 15000+600000
+ 475493 words of font info for 51 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 88i,11n,91p,419b,170s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on myposter.pdf (1 page, 44341 bytes).
+ 88i,14n,91p,419b,758s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+ti9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/latxfont/lci
+rclew.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/latxfont/l
+inew10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/m
+sbm10.pfb>
+Output written on myposter.pdf (1 page, 852392 bytes).
 PDF statistics:
- 31 PDF objects out of 1000 (max. 8388607)
- 19 compressed objects within 1 object stream
+ 177 PDF objects out of 1000 (max. 8388607)
+ 78 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 13 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 179 words of extra memory for PDF output out of 10000 (max. 10000000)
 

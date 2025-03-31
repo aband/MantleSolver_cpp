@@ -47,12 +47,26 @@ Vf = reshape(Vf, seed, seed);
 
 % Surface plot of dimensionless temperature
 % regarding dimensionless composition and dimensionless enthalpy
+
 figure
-surf(CD, HD, TD);
+h = surf(CD, HD, TD);
+get(h)
+%set(h,'linestyle','none','facecolor',[0 0.4470 0.7410]);
+set(h,'linestyle','none','facecolor','interp');
+light("Style","local","Position",[0 0 10]);
 title("Composition-Enthalpy-Temperature");
+xlabel("Composition");
+ylabel("Enthalpy");
+zlabel("Temperature");
+
 figure
-surf(CD, HD, Vf);
+g = surf(CD, HD, Vf);
+set(g,'linestyle','none','facecolor','interp');
+light("Style","local","Position",[0 0 10]);
 title("Composition-Enthalpy-VolumeFraction");
+xlabel("Composition");
+ylabel("Enthalpy");
+zlabel("VolumrFraction");
 
 % ============================================================
 

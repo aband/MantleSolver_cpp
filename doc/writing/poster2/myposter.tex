@@ -146,15 +146,298 @@
 \end{picture}}\vss}}
 
 \parbox{\textwidth}{
-\parbox[t]{10in}{\centerline{\vbox{\halign{\hfil#\hfil\cr
-{\Large\bf Simulation of partially molten mantle}\cr
+		 \parbox[b]{1in}{\centerline}
+		\hfill
+\parbox[t]{7in}{\centerline{\vbox{\halign{\hfil#\hfil\cr
+{\Large\bf Simulation of Partially Molten Materials}\cr
 %{\Large\bf }\cr
 \noalign{\smallskip}
-\OliveGreen{{\em Todd Arbogast$^*$, and Chenyu Tian*$$}}\cr
+\OliveGreen{{\em Todd Arbogast$^*$, Marc Hesse$^{**}$ and Chenyu Tian*$$}}\cr
 \noalign{\smallskip}
-\Brown{$^*$Oden Institute,
-University of Texas at Austin}\cr}}}}\hfill}
+\Brown{$^*$Oden Institute, University of Texas at Austin}\cr
+\Brown{$^{**}$ Jackson School of Geosciences, University of Texas at Austin}\cr}}}}
+\parbox[b]{2.0in}{\centerline{\picHeight{0.6in}{jsg_formal_fullColor.png}}
+\centerline{\picHeight{0.23in}{RGB_formal_Oden_ICES.png}}} \hfill}
+%\parbox[b]{1.0in}{\centerline{\picHeight{0.4in}{big_Oden_icon.png}}}}
 
 \vspace*{-4pt}
+
+% ====================================================================
+
+\setlength{\abovedisplayskip}{3.5pt}
+\setlength{\belowdisplayskip}{3.5pt}
+\setlength{\abovedisplayshortskip}{3.5pt}
+\setlength{\belowdisplayshortskip}{3.5pt}
+
+\hbox to\textwidth\bgroup}{%
+\parbox[t]{0.31\textwidth}{
+\vspace{-0.1in}
+\hspace{1.3cm}\raggedright{\picHeight{1.0in}{mid.png}}
+
+\vspace{-1.1in}
+%\largesize{\Blue{\textbf{Partial melting in mantle}}}
+\head{Partial melting in mantle}
+\vspace{1in}
+
+\centerline{\vbox to0pt{\parbox{\textwidth}{\setlength\unitlength{1in}
+\begin{picture}(0.2,0.7)(0,0)
+\linethickness{1pt}
+\setlength\fboxsep{0pt}
+\put(-.05,.2){\colorbox{BurntOrange!10}{\BurntOrange{\framebox(3.15,0.57){}}}}
+\end{picture}}\vss}}
+
+\vspace{-.1in}
+{1. Generates the oceanic and continental crust.}\\
+\vspace{.05in}
+{2. Determines the large-scale chemical evolution of the Earth.}
+\vspace{.3cm}
+
+\head{Governing equations for physics}
+
+\begin{minipage}{.2\textwidth}
+\Maroon{Two phase system} : Immiscible solid mixture melting into miscible liquid.
+\end{minipage}
+\begin{minipage}{.1\textwidth}
+\begin{tikzpicture}[scale=0.2]
+    \draw [thick] (0,0) -- (10,0) -- (10,10) -- (0,10) -- (0,0);
+    \draw [thick] (0,5) .. controls (2,4) and (4,4) .. (4,4);
+    \draw [thick] (4,4) .. controls (5,7) and (6,9) .. (7,10);
+    \draw [thick] (4,4) .. controls (6,3) and (7,2) .. (7,0);
+    
+    %\draw (4,1) node {$\rho_2=c_{2,2}$};
+    %\draw (3,8.5) node {$\rho_1=c_{1,1}=c_s$};
+    %\draw (7.5,6) node {$c_{1,f}=c_{f}$};
+    %\draw (7.8,3) node {$c_{2,f}$};
+
+    \draw (4,1) node {\tiny comp 2};
+    \draw (3,8.5) node {\tiny comp 1};
+
+    \draw [thick, <->] (5.7,1.8) -- (6.7,2.8);
+    \draw [thick, <->] (4.5,7.5) -- (5.75,6.5);
+    %\draw [thick, <->] (7.8,3.8) -- (7.8,5.2);
+    
+    \draw (2,6) node {\tiny solid};
+    \draw (3,3) node {\tiny solid};
+    \draw (8,5) node {\tiny liquid};
+\end{tikzpicture}
+\end{minipage}
+\vspace{0.1in}
+\Maroon{Fluid Mechanics} : High-viscosity Stokes flow governs the mantle (3), 
+while magma follows Darcy’s law (1), alongside continuity (2) 
+and compaction equations (4).
+\begin{alignat}{2}
+    \label{eq:darcy}
+		  &\phi_l (\mathbf{v}_l - \mathbf{v}_s)
+		  + \frac{k_{\phi_l}}{\mu_l}\nabla(p_l - \rho_f\mathbf{g})
+	    &&= 0,\\
+	\label{eq:continuous}
+		  &\nabla \cdot (\phi_l\mathbf{v}_l + \phi_s\mathbf{v}_s) &&=0,\\
+	\label{eq:stokes}
+		  &\nabla\bar p - \nabla \cdot \tau(\mathbf{v}_s) &&= (\rho_s-\rho_l)\mathbf{g},\\
+	\label{eq:compaction}
+		  &\mu_s\nabla \cdot \mathbf{v}_s - \phi_l(p_l - p_s) &&=0, 
+\end{alignat}
+\Maroon{Transport} : Trace the bulk composition of one specie (5) and transport
+bulk energy with enthalpy method (6).
+\begin{equation}\label{eq:specietransportsimplified}
+\frac{\partial \overline{c}}{\partial t} + \nabla \cdot \big( \overline{ c \mathbf{v}} - \phi_l \mathcal{D}_{l} \nabla c_l \big) = 0.
+\end{equation}
+\begin{equation}\label{eq:normalizedenthalpy}
+		  \frac{\partial H}{\partial t} + \nabla \cdot \overline{\mathbf{v}} T = 
+		  \frac{L}{c_p} \nabla \cdot \phi_s \mathbf{v}_s + \kappa \nabla^2 T + 
+		  \frac{\alpha_\rho}{c_p} T \overline{\mathbf{v}} \cdot \mathbf{g},
+\end{equation}
+\Maroon{Phase change} : Assume thermodynamic equilibrium
+achieves at each time step. Approximated with eutectic phase behavior.\\
+\picHeight{0.7in}{CXT.png} 
+\picHeight{0.7in}{CXV.png}
+\picHeight{0.7in}{eutectic.png}
+
+\vspace*{-8pt}}\hspace{.65cm}\parbox[t]{0.32\textwidth}{\raggedright
+\head{Numerical methods}\\
+Various numerical methods are adapted and implemented to handle the strong degeneracy and discontinuities.
+
+\vspace{0.2cm}
+
+\Maroon{Spatial discretization} : Quadrilaterals
+
+\includegraphics[width=2.3cm,height=2cm]{rec.png} 
+\includegraphics[width=2.3cm,height=2cm]{quad.png} 
+
+\Maroon{Mixed finite element method} : Scaled weak form accounting for 
+singularity induced by zero porosity.
+\vspace{0.2cm}
+\OliveGreen{(Arbogast, Hesse and Taicher, 2017)}\\
+{\it\BurntOrange{BDM element}}:
+$\mathbb{V}_{\text{\rm D}} \times \mathbb{W}_{\text{\rm D}} 
+\subset H_0(\text{\rm div};\Omega)\times L^2(\Omega)$.
+Lowest order reduced $H$(div)-conforming mixed space. 
+\OliveGreen{(Arbogast, Tao and Wang[4])}.
+\begin{minipage}{0.26\textwidth}
+		  \hspace*{2cm}
+\begin{equation*}
+\begin{aligned}
+		  \mathbb{V}_{D,h}(Q) &= \mathbb{V}_1^0(Q) = \mathbb{P}^2_1\oplus\textrm{curl}\,\mathbb{S}^{\mathcal{DS}}_2(Q)\\
+		  \mathbb{W}_{D,h}(Q) &= \mathbb{W}_1^0(Q) = \mathbb{P}_0,
+   \end{aligned} 
+\end{equation*}
+\end{minipage}
+\begin{minipage}{0.05\textwidth}
+\begin{tikzpicture}(30,30)(-15,-15)
+\thicklines
+\put(-15,-10){\line(1,0){32.7}}\put(-15,-10){\line(1,3){8}}
+\put(-7,14){\line(2,-1){17}}\put(10,5.5){\line(1,-2){7.7}}
+
+\put(0,0){\PineGreen{\circle*{2}}}
+%\put(-11,2){\makebox(0,0){\Maroon{$\times$}}}
+%\put(-12,-2){\makebox(0,0){\Maroon{$\times$}}}
+\put(-7,-3.5){\vector(-3,1){9}}\put(-6,0.6){\vector(-3,1){9}}
+
+%\put(11.7,2){\makebox(0,0){\Maroon{$\times$}}}
+%\put(13.7,-2){\makebox(0,0){\Maroon{$\times$}}}
+\put(9.5,-4){\vector(2,1){9}}\put(7,-0.3){\vector(2,1){9}}
+
+%\put(2,-10){\makebox(0,0){\Maroon{$\times$}}}
+%\put(-2,-10){\makebox(0,0){\Maroon{$\times$}}}
+\put(-2,-6){\vector(0,-1){9}}\put(2,-6){\vector(0,-1){9}}
+
+%\put(2,9.5){\makebox(0,0){\Maroon{$\times$}}}
+%\put(-2,11.5){\makebox(0,0){\Maroon{$\times$}}}
+\put(-4.2,7){\vector(1,2){4.5}}\put(0.2,6){\vector(1,2){4.5}}
+\end{tikzpicture}
+\end{minipage}
+\Brown{Accuracy} $\cO(h^2)$ and $\cO(h)$.
+\Brown{DOF} $8+1 = 9$.
+\vspace{0.2cm}
+
+{\it\BurntOrange{Modified BR element}}: $\mathbb{V}_{\text{\rm S}} \times \mathbb{W}_{\text{\rm S}} \subset (H_0^1(\Omega))^2\times L^2(\Omega)$
+
+\begin{minipage}{0.26\textwidth}
+\begin{equation*}
+\begin{aligned}
+		  \mathbb{V}_{S,h}(Q) &= \mathcal{DS}_1^2(Q)\oplus \text{span}\{\mathbf{b}_1, \mathbf{b}_2,\mathbf{b}_3, \mathbf{b}_4\}\\
+		  \mathbb{W}_{D,h}(Q) &= \mathbb{W}_1^0(Q) = \mathbb{P}_0,
+    \end{aligned}
+\end{equation*}
+\end{minipage}
+\begin{minipage}{0.05\textwidth}
+\begin{tikzpicture}(30,30)(-15,-15)
+\thicklines
+\put(-15,-10){\line(1,0){32.7}}\put(-15,-10){\line(1,3){8}}
+\put(-7,14){\line(2,-1){17}}\put(10,5.5){\line(1,-2){7.7}}
+
+\put(0,0){\PineGreen{\circle*{2}}}
+
+%\put(-11,2){\makebox(0,0){\Maroon{$\times$}}}
+\put(-6,0.6){\vector(-3,1){9}}
+
+%\put(13.7,-2){\makebox(0,0){\Maroon{$\times$}}}
+\put(9.5,-4){\vector(2,1){9}}
+
+%\put(2,-10){\makebox(0,0){\Maroon{$\times$}}}
+\put(2,-6){\vector(0,-1){9}}
+
+%\put(2,9.5){\makebox(0,0){\Maroon{$\times$}}}
+\put(0.2,6){\vector(1,2){4.5}}
+
+\put(-15,-10){\makebox(0,0){\Maroon{$\otimes$}}}
+\put(-7,14){\makebox(0,0){\Maroon{$\otimes$}}}
+\put(17.7,-10){\makebox(0,0){\Maroon{$\otimes$}}}
+\put(10,5.5){\makebox(0,0){\Maroon{$\otimes$}}}
+
+\end{tikzpicture}
+\end{minipage}
+\Brown{Accuracy} $\cO(h^2)$ and $\cO(h)$.
+\Brown{DOF} $12 + 1 = 13$.
+\vspace{0.2cm}
+
+{\it\BurntOrange{Saddle point system}}: Resulted saddle 
+point system will be solved with modified 
+Uzawa iteration.
+
+\vspace{0.3cm}
+
+\Maroon{Multi-level WENO method} : 
+New nonlinear weighting scheme,
+\OliveGreen{(Arbogast, Huang and Tian, 2024)}
+\begin{equation*}         
+\hat{\omega}_l = \frac{\omega_l}{(\sigma_l + \epsilon h^2_0)^{sr_l + \eta_l}} 
+\end{equation*}                             
+
+The biasing term $\eta_l$ is defined as following to bias away from small 
+stencils when solution is smooth:
+\begin{equation*}
+\eta_l = \left \{ \begin{aligned}
+1, & \quad \text{if} \quad r_l = 1,\\
+3, & \quad \text{if} \quad r_l = 2,\\
+4, & \quad \text{if} \quad r_l \geq 3,\\
+\end{aligned} 
+\right .
+\end{equation*}
+
+The normalized nonlinear weights are then:
+\begin{equation*}
+\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_k \hat{\omega}_l}
+\end{equation*}
+
+\vspace*{-8pt}}\hspace{.5cm}\parbox[t]{0.32\textwidth}{\raggedright
+
+\head{Code implementation}
+\begin{nlist}
+\item Iterative linear solver provided by PETSc.
+\item Direct solver provided by LAPACK.
+\item Parallelization provided by PETSc and MPI.
+\end{nlist}
+
+\head{Numerical results}
+
+\begin{minipage}{0.2\textwidth}
+\Maroon{Mid ocean ridge corner flow}
+\end{minipage}
+\begin{minipage}{0.1\textwidth}
+\picHeight{0.4in}{poro.png}
+\end{minipage}
+
+\picHeight{0.8in}{dsr.png}
+\picHeight{0.8in}{ssr.png}
+
+\Maroon{MLWENO boundary treatment}
+
+{\it \BurntOrange{Inflow Stabilization}} : Burgers-like equation
+		  $u_t + u^3 u_x = 0$ with the flux $\b{f}(u) = (u^4/4,0)$ in the 
+		  domain $(0,1)^2$.
+		  \begin{equation*}
+					 u_D(0,y,t) = \left\{ \begin{aligned}
+								&\sin^2(2\pi y), \quad y\leq0.25, y\geq0.75\\
+								&1, \quad \quad \quad \quad \quad  0.25 < y < 0.75
+					 \end{aligned}\right .
+		  \end{equation*}
+		  \begin{minipage}{0.25\textwidth}
+\includegraphics[width=1cm,height=2.5cm]{inflow_tiny_008.eps}
+\includegraphics[width=1cm,height=2.5cm]{inflow_tiny_024.eps}
+\includegraphics[width=1cm,height=2.5cm]{inflow_tiny_040.eps}
+\includegraphics[width=1cm,height=2.5cm]{inflow_tiny_056.eps}
+\includegraphics[width=1cm,height=2.5cm]{inflow_tiny_080.eps}
+		  \end{minipage}	
+\begin{minipage}{0.05\textwidth}
+		  ML-WENO(3,2,1) at inflow.
+\end{minipage}
+{\it \BurntOrange{Outflow error elimination}} : sine wave traveling diagonally across the domain 
+$(0,1)^2$ with the exact solution:
+{\tiny
+\begin{equation*}
+		  u(x,y,t) =\sin^6(\frac{x-0.1-t}{0.8}\pi)\sin^6(\frac{y-0.1-t}{0.8}\pi),
+					0.1+t\leq x,y \leq0.9+t
+\end{equation*}
+}\vspace{-0.3cm}
+		  \begin{center}
+					 \includegraphics[width=2cm,height=1.3cm]{errorDistNotiny.eps}
+					 \includegraphics[width=2cm,height=1.3cm]{errorDistTwotiny.eps}
+		  \end{center}
+		  \vspace{-0.3cm}
+\Maroon{Column melt extraction} : SSPRK2\\
+\picHeight{0.9in}{init.png} \picHeight{0.9in}{final.png} 
+%\picHeight{0.5in}{vinit.png} \picHeight{0.5in}{vfinal.png}
+}
 
 \end{document}
