@@ -16,7 +16,7 @@ typedef std::string (*posFunc) (const MeshInfo& mi,
 class mluse {
 
     public:
-        mluse() { ep = 1e-4; s = 1;};
+        mluse() { ep = 1e-7; s = 1;};
         ~mluse() {};
 
         /**!

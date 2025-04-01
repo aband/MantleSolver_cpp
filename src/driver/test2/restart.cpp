@@ -52,6 +52,9 @@ int main(int argc, char **argv){
     int interval = 1;
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-interval", &interval, NULL));
 
+    int start = 0;
+    PetscCall(PetscOptionsGetInt(NULL, NULL, "-start", &start, NULL));
+
     // ==============================================================================
 
     Driver * driver = new Driver();
@@ -66,10 +69,37 @@ int main(int argc, char **argv){
     std::vector<double> restartHD; restartHD.resize(M*N);
     std::vector<double> restartCD; restartCD.resize(M*N);
 
+    ReadValues("restartHD.dat", restartHD);
+    ReadValues("restartCD.dat", restartCD);
+
+    driver->start = start;
+
     // Initialize transport with values read from files
-    driver->PrepareTransport(restartHD, restartCD);
+    driver->PrepareTransport(restartHD, restartCD, InitHD, InitCD);
     
-    
+    //VecView(driver->globalCD, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(driver->globalHD, PETSC_VIEWER_STDOUT_WORLD);
+
+    /**!
+     * Create boundary reference arrays
+     * Allocate memory space for solutions vectors
+     */
+    driver->PrepareFlow();
+
+    /**!
+     * One step computation for flow problem
+     */
+    double h0 = sqrt((L*H)/(double)(M*N));
+
+    driver->RK(dt, Tmax, maxIter, tolUzawa);
+ 
+    VecDestroy(&driver->globalmesh);
+    VecDestroy(&driver->globalHD);
+    VecDestroy(&driver->globalCD);
+    DMDestroy(&driver->dmu);
+    DMDestroy(&driver->dmMesh);
+
+    PetscFinalize();
 
     return 1;
 }

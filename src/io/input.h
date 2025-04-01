@@ -22,6 +22,8 @@ PetscErrorCode SimpleInitialValue(DM dm, DM dmu, Vec *fullmesh, Vec *globalu,
 PetscErrorCode SimpleInitialValue(DM dm, DM dmu, Vec *fullmesh, Vec *globalu, const vector<double>& param,
                                   double (*func)(const valarray<double>& point, const vector<double>& param));
 
+PetscErrorCode SimpleInitialValue(DM dm, Vec * globalu, const std::vector<double>& data);
+
 PetscErrorCode ObliqueBurgers(DM dm, DM dmu, Vec *fullmesh, Vec *globalu, 
                               double (*func)(const valarray<double>& point, const vector<double>& param));
 

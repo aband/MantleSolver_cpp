@@ -203,6 +203,30 @@ PetscErrorCode SimpleInitialValue(DM dm, DM dmu, Vec *fullmesh, Vec *globalu, co
     PetscFunctionReturn(0);
 }
 
+PetscErrorCode SimpleInitialValue(DM dm, Vec *globalu, const std::vector<double>& data){
+
+    double **localu;
+    Vec gu = *globalu;
+
+    PetscInt xs,ys,xm,ym,M,N,stencilwidth;
+
+    PetscCall(DMDAGetCorners(dm, &xs, &ys, NULL, &xm, &ym, NULL)); 
+    PetscCall(DMDAGetInfo(dm, NULL, &M, &N, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL));
+
+    PetscCall(DMDAVecGetArray(dm,gu,&localu));
+
+    for (int j=ys; j<ym+ys; j++){
+    for (int i=xs; i<xm+xs; i++){
+
+        localu[j][i] = data.at(j*M+i);
+
+    }}
+
+    PetscCall(DMDAVecRestoreArray(dm, gu, &localu));
+
+    return PETSC_SUCCESS;
+}
+
 PetscErrorCode ObliqueBurgers(DM dm, DM dmu, Vec *fullmesh, Vec *globalu, 
                               double (*func)(valarray<double>& point, const vector<double>& param)){
 

@@ -3,7 +3,7 @@
 
 int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
-    int mark = 1;
+    int mark = 1 + start;
 
     int Nt = (int)(Tmax/dt);
 
@@ -271,7 +271,7 @@ int Driver::getFluxAll(const Tensor<vertexSet>& phasevel_vert,
 
 int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa, int interval){
 
-    int mark = 1;
+    int mark = 1 + start;
 
     int Nt = (int)(Tmax/dt);
 
@@ -333,7 +333,7 @@ int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa, int int
 int Driver::RK_Pause(double dt, double Tmax, int maxIter, 
                      double tolUzawa, int interval){
 
-    int mark = 1;
+    int mark = 1 + start;
 
     int Nt = (int)(Tmax/dt);
 
@@ -395,7 +395,7 @@ int Driver::RK_Pause(double dt, double Tmax, int maxIter,
 int Driver::SSP2RK_Pause(double dt, double Tmax, int maxIter, 
                          double tolUzawa, int interval){
 
-    int mark = 1;
+    int mark = 1 + start;
 
     int Nt = (int)(Tmax/dt);
 
@@ -421,7 +421,7 @@ int Driver::SSP2RK_Pause(double dt, double Tmax, int maxIter,
     PetscCall(VecCopy(globalHD, gHD_temp));
     PetscCall(VecCopy(globalCD, gCD_temp));
 
-    int mark2 = 1;
+    int mark2 = 1 + start;
     for (int t=0; t<Nt; t++){
 
         Vec fHD, fCD; 

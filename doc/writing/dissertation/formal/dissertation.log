@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  25 MAR 2025 11:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  1 APR 2025 13:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1084,8 +1084,8 @@ Package pdftex.def Info: chapters/pics/eutectic.png  used on input line 321.
 
  (./chapters/numerics.tex
 Chapter 2:
-
-Overfull \hbox (22.98314pt too wide) detected at line 80
+(./chapters/mfem.tex
+Overfull \hbox (22.98314pt too wide) detected at line 77
 [][][]\OT1/cmr/bx/n/12 A \OT1/cmr/m/n/12 = [] \OML/cmm/m/it/12 ;  \OT1/cmr/bx/n
 /12 B \OT1/cmr/m/n/12 = [] \OML/cmm/m/it/12 ;  \OT1/cmr/bx/n/12 C \OT1/cmr/m/n/
 12 = [] \OML/cmm/m/it/12 ;  \OT1/cmr/bx/n/12 F \OT1/cmr/m/n/12 = [] \OML/cmm/m/
@@ -1093,19 +1093,19 @@ it/12 ;  \OT1/cmr/bx/n/12 G \OT1/cmr/m/n/12 = [] \OML/cmm/m/it/12 ;
  []
 
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 99.
+put line 96.
 [24
 
 
 
 
-]
-Overfull \hbox (44.74947pt too wide) in paragraph at lines 112--112
+]) (./chapters/mlweno.tex
+Overfull \hbox (44.74947pt too wide) in paragraph at lines 1--1
 []\OT1/cmr/bx/n/14.4 The Multi-level Weighted Es-sen-tially Non-Oscillatory (WE
 NO)
  []
 
-) [25] (./dissertation.bbl [26
+)) [25] (./dissertation.bbl [26
 
 
 
@@ -1118,8 +1118,8 @@ Package rerunfilecheck Info: File `dissertation.out' has not changed.
 (rerunfilecheck)             Checksum: A42EF838C55A44E518C2536DB90B83CE;4015.
  ) 
 Here is how much of TeX's memory you used:
- 27336 strings out of 478287
- 539006 string characters out of 5849289
+ 27342 strings out of 478287
+ 539092 string characters out of 5849289
  827509 words of memory out of 5000000
  44842 multiletter control sequences out of 15000+600000
  479383 words of font info for 66 fonts, out of 8000000 for 9000
@@ -1140,7 +1140,7 @@ fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/euler/eusm10.pfb></usr/share/texmf/fonts/typ
 e1/public/cm-super/sfrm1200.pfb>
-Output written on dissertation.pdf (27 pages, 241190 bytes).
+Output written on dissertation.pdf (27 pages, 241184 bytes).
 PDF statistics:
  478 PDF objects out of 1000 (max. 8388607)
  413 compressed objects within 5 object streams

@@ -79,8 +79,12 @@ class Driver {
                              double (*funcCD)(const valarray<double>& point, 
                                               const vector<double>& param));
 
-        int PrepareTransport(std::vector<double>& restartHD,
-                             std::vector<double>& restartCD);
+        int PrepareTransport(const std::vector<double>& restartHD,
+                             const std::vector<double>& restartCD,
+                             double (*funcHD)(const valarray<double>& point, 
+                                              const vector<double>& param),
+                             double (*funcCD)(const valarray<double>& point, 
+                                              const vector<double>& param));
 
         double h0;
        /**!
@@ -165,6 +169,8 @@ class Driver {
                           const char * filedname);
 
        double V0;
+
+       int start;
 
     private:
 

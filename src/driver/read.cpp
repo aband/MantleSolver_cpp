@@ -18,7 +18,7 @@ int ReadValues(const char * fieldname, int mark, vector<double>& data){
         double val = 0.0;
         fscanf(sol, "%lf ", &val);
         data.at(i) = val;
-        printf("%.16f \n", val);
+//        printf("%.16f \n", val);
     }
 
     fclose(sol);
@@ -34,7 +34,7 @@ int ReadValues(const char * filename, vector<double>& data){
         double val = 0.0;
         fscanf(sol, "%lf ", &val);
         data.at(i) = val;
-        printf("%.16f \n", val);
+//        printf("%.16f \n", val);
     }
 
     fclose(sol);
