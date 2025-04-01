@@ -78,6 +78,10 @@ class Driver {
                                               const vector<double>& param),
                              double (*funcCD)(const valarray<double>& point, 
                                               const vector<double>& param));
+
+        int PrepareTransport(std::vector<double>& restartHD,
+                             std::vector<double>& restartCD);
+
         double h0;
        /**!
         * Create boundary condition vectors

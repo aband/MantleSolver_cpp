@@ -53,7 +53,7 @@ int printCellAve(int mark, Vec * global, const MeshInfo& mi, const char * fieldn
 
         PetscCall(VecGetValues(temp,1, &nelem, &val));
 
-        fprintf(sol, "%e ", val);
+        fprintf(sol, "%.16f ", val);
 
     }fprintf(sol, "\n");}
 

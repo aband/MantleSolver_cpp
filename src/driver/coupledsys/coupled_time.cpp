@@ -56,14 +56,14 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
             SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
             CreateScatterVec();
  
-        if (t % 50 == 0){
+        //if (t % 50 == 0){
             printCellAve(mark, &globalHD, mi, "HD");
             printCellAve(mark, &globalCD, mi, "CD");
             PrintFlowEvent(mark);
             PrintPhaseEvent(mark);
             PrintPressureSerialApprox(mark);
             mark ++;
-        }
+        //}
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 

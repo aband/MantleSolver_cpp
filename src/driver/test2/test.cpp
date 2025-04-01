@@ -1,5 +1,6 @@
 #include "driver.h"
 #include "print.h"
+#include "read.h"
 
 int main(int argc, char **argv){
 
@@ -134,10 +135,15 @@ int main(int argc, char **argv){
     /**!
      * Actual time stepping.
      */
-    driver->RK(dt, Tmax, maxIter, tolUzawa);
+    //driver->RK(dt, Tmax, maxIter, tolUzawa);
     //driver->SSP2RK(dt, Tmax, maxIter, tolUzawa, interval);
     //driver->SSP2RK_Pause(dt, Tmax, maxIter, tolUzawa, interval);
     //driver->RK_Pause(dt, Tmax, maxIter, tolUzawa, interval);
+
+    std::vector<double> test; test.resize(M*N);
+    ReadValues("CD", 10, test);
+cout << endl;
+    ReadValues("restart.dat", test);
 
     VecDestroy(&driver->globalmesh);
     VecDestroy(&driver->globalHD);

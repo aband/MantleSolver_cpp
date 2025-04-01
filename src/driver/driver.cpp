@@ -163,6 +163,15 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     return 1;
 }
 
+int Driver::PrepareTransport(std::vector<double>& restartHD,
+                             std::vector<double>& restartCD){
+
+
+
+
+    return 1;
+}
+
 int Driver::PrepareFlow(){
 
     basis_ = new basis();

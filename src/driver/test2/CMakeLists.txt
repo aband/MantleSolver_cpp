@@ -166,6 +166,7 @@ add_library(driver_lib
 		  ${SRC}/driver/coupledsys/coupled_assemble.cpp
 		  ${SRC}/driver/coupledsys/coupled_locmat.cpp
 		  ${SRC}/driver/print.cpp
+		  ${SRC}/driver/read.cpp
 		  ${SRC}/driver/coupledsys/coupled_transport.cpp
 		  ${SRC}/driver/coupledsys/coupled_time.cpp
 		  )
