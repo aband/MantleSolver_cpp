@@ -12,7 +12,7 @@ int main(int argc, char **argv){
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
     // Input mesh parameter =========================================================
-    int M=5, N=20;
+    int M=2, N=20;
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
@@ -63,69 +63,31 @@ int main(int argc, char **argv){
                        stencilWidthMesh, stencilWidthU,
                        physicsScale, meshType);
 
-    std::vector<double> restartHD; restartHD.resize(M*N);
-    std::vector<double> restartCD; restartCD.resize(M*N);
+    /**!
+     * Initialize global cell averaged value vectors.
+     * Initialize multi level reconstruction objects
+     */
+    driver->PrepareTransport(InitHD, InitCD);
 
-    ReadValues("restartHD.dat", restartHD);
-    ReadValues("restartCD.dat", restartCD);
+    printCellCenterGrid(driver->mi);
+    printCellAve(1, &driver->globalHD, driver->mi, "HD");
+    printCellAve(1, &driver->globalCD, driver->mi, "CD");
 
-    PetscCall(DMCreateGlobalVector(driver->dmu, &driver->globalCD));
-    PetscCall(DMCreateGlobalVector(driver->dmu, &driver->globalHD));
+    /**!
+     * Create boundary reference arrays
+     * Allocate memory space for solutions vectors
+     */
+    driver->PrepareFlow();
 
-    SimpleInitialValue(driver->dmu, &driver->globalCD, restartCD);
-    SimpleInitialValue(driver->dmu, &driver->globalHD, restartHD);
+    /**!
+     * One step computation for flow problem
+     */
+    double h0 = sqrt((L*H)/(double)(M*N));
 
-    multilevel ml = multilevel();
-    // 1D test ================================================================================================
-    ml.addLevel("(1,3)", {1,3}, driver->mi);
-    ml.addLevel("(1,2)", {1,2}, driver->mi);
+    driver->start = 0;
 
-    //ml.addLevel("(3,3)", {3,3}, driver->mi);
-    //ml.addLevel("(2,2)", {2,2}, driver->mi);
-
-    // Area scale
-    double h0 = sqrt((L*H)/
-         (double)(driver->mi.MPIglobalCellSize[0]*driver->mi.MPIglobalCellSize[1]));
-
-    mluse testuse = mluse();
-
-    unordered_map<std::string, vector<indice>> method;
-    method.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-1} }));
-    method.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1} , {0,0} }));
-
-    testuse.setmethod("test", method);
-    testuse.setbias("test");
-
-    // 2D test ================================================================================================
 /*
-    unordered_map<std::string, vector<indice>> interior;
-    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
-    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
-
-    testuse.setmethod("interior", interior);
-    testuse.setbias("interior");
-
-    unordered_map<std::string, vector<indice>> edge;
-    edge.insert(std::make_pair<std::string, vector<indice>>
-    ("(3,3)", {{0,-1} , {-2,-1}, {-1,0}, {-1,-2}}));
-	 edge.insert(std::make_pair<std::string, vector<indice>>
-    ("(2,2)", {{-1,-1}, {0,-1} , {0,0} , {-1,0} }));
-
-    testuse.setmethod("edge", edge);
-    testuse.setbias("edge"); 
-
-    unordered_map<std::string, vector<indice>> corner;
-    corner.insert(std::make_pair<std::string, vector<indice>>
-    ("(3,3)", {{0,0}, {-2,0}, {0,-2}, {-2,-2}}));
-	 corner.insert(std::make_pair<std::string, vector<indice>>
-    ("(2,2)", {{-1,-1}, {0,-1} , {0,0} , {-1,0} }));
-
-    testuse.setmethod("corner", corner);
-    testuse.setbias("corner"); 
-*/
-
-
-    // Get local data arrays and vectors
+    // Solve for initial velocity
     Vec localHD, localCD;
     double ** lHD;
     double ** lCD;
@@ -144,29 +106,54 @@ int main(int argc, char **argv){
 
     PetscCall(DMDAVecGetArray(driver->dmu, localCD, &lCD));
 
-    // ==============================================================
-
-    ml.updatesigma(lHD);
+    driver->ml.updatesigma(lHD);
     Tensor<weights> allwgtsHD;
-    testuse.computeWgts(ml, driver->mi, h0, allwgtsHD, location);
+    driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgtsHD, location);
 
-    ml.updatesigma(lCD);
+    driver->ml.updatesigma(lCD);
     Tensor<weights> allwgtsCD;
-    testuse.computeWgts(ml, driver->mi, h0, allwgtsCD, location);
+    driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgtsCD, location);
 
-    for (int j=0; j<N; j++){
-        for (int i=0; i<M; i++){
-            //testuse.printWgts(allwgtsHD({i,j}));
-            testuse.printWgts(allwgtsCD({i,j}));
-        }cout << endl;
-    }
+    driver->V0 = driver->myPhase->pp->V0 / driver->myPhase->pPtr->u0;
+    cout << driver->V0 << endl;
 
-    // ==============================================================
+    driver->SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
+
+    driver->PrintFlowEvent(1);
+    //driver->PrintFlowEventTransform(1);
+
+    //driver->PrintPhaseEvent(1);
+
+    driver->PrintEffVel(1, 2, allwgtsHD, lHD, allwgtsCD, lCD);
 
     DMDAVecRestoreArray(driver->dmu,localHD,&lHD);
     DMRestoreLocalVector(driver->dmu, &localHD); 
     DMDAVecRestoreArray(driver->dmu,localCD,&lCD);
     DMRestoreLocalVector(driver->dmu, &localCD); 
 
-    return 1;
+    driver->PrintPressureSerialApprox(1);
+*/
+
+    /**!
+     * Actual time stepping.
+     */
+    driver->RK(dt, Tmax, maxIter, tolUzawa);
+    //driver->SSP2RK(dt, Tmax, maxIter, tolUzawa, interval);
+    //driver->SSP2RK_Pause(dt, Tmax, maxIter, tolUzawa, interval);
+    //driver->RK_Pause(dt, Tmax, maxIter, tolUzawa, interval);
+
+    //std::vector<double> test; test.resize(M*N);
+    //ReadValues("CD", 10, test);
+//cout << endl;
+    //ReadValues("restart.dat", test);
+
+    VecDestroy(&driver->globalmesh);
+    VecDestroy(&driver->globalHD);
+    VecDestroy(&driver->globalCD);
+    DMDestroy(&driver->dmu);
+    DMDestroy(&driver->dmMesh);
+
+    PetscFinalize();
+
+    return 0;
 }

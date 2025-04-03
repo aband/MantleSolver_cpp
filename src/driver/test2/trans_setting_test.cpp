@@ -77,7 +77,8 @@ std::string location(const MeshInfo& mi,
     }
 
     //return loc;
-    return "all";
+
+    return "test";
 }
 
 // Initialize dimensionless composition and enthalpy

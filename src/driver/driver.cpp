@@ -179,8 +179,11 @@ int Driver::PrepareTransport(const std::vector<double>& restartHD,
     // Initialization of multi level weno and corresponding usage
     ml = multilevel(); 
 
-    ml.addLevel("(3,3)", {3,3}, mi);
-    ml.addLevel("(2,2)", {2,2}, mi);
+    //ml.addLevel("(3,3)", {3,3}, mi);
+    //ml.addLevel("(2,2)", {2,2}, mi);
+
+    //ml.addLevel("(1,3)", {1,3}, mi);
+    ml.addLevel("(1,2)", {1,2}, mi);
 
     // Area scale
     h0 = sqrt((L_*H_)/
@@ -188,6 +191,7 @@ int Driver::PrepareTransport(const std::vector<double>& restartHD,
 
     advection = mluse();
 
+/*
     // Test for nonlinear weighting
     unordered_map<std::string, vector<indice>> method;
     method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
@@ -222,6 +226,14 @@ int Driver::PrepareTransport(const std::vector<double>& restartHD,
 
     advection.setmethod("corner", corner);
     advection.setbias("corner"); 
+*/
+
+    unordered_map<std::string, vector<indice>> method;
+    //method.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-1} }));
+    method.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1} , {0,0} }));
+
+    advection.setmethod("all", method);
+    advection.setbias("all");
 
     // Compute bottom fixed value
     HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});

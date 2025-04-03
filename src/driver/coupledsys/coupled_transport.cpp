@@ -518,6 +518,8 @@ int Driver::updateEdgeFlux(const Tensor<vertexSet>& phasevel_vert,
         double fluxCD = edgefluxintegral(mi, gcell, hori, allwgtsCD, 
                effvel_hori({i,mi.MPIglobalCellSize[1]}), ml, advection, lCD);
 
+        if (fluxCD >0) {fluxCD = 0;}
+
         horiedgeCD({i, mi.MPIglobalCellSize[1]}) = fluxCD; 
 
         double fluxHD = edgefluxintegral(hori, HDin, HDin, TDin, TDin, 

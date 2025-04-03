@@ -204,11 +204,11 @@ add_executable(restart
 		  trans_setting.cpp
 )
 
-add_executable(readtest
-        readtest.cpp
-		  flow_setting.cpp
-		  trans_setting_test.cpp
-)
+#add_executable(readtest
+#        readtest.cpp
+#		  flow_setting.cpp
+#		  trans_setting_test.cpp
+#)
 
 target_include_directories(test
 		  PUBLIC ${SRC}/coupledSys
@@ -218,10 +218,10 @@ target_include_directories(restart
 		  PUBLIC ${SRC}/coupledSys
 		  )
 
-target_include_directories(readtest
-		  PUBLIC ${SRC}/coupledSys
-		  )
-
+#target_include_directories(readtest
+#		  PUBLIC ${SRC}/coupledSys
+#		  )
+#
 target_link_libraries(test
 		  io_lib
 		  phase_lib
@@ -246,14 +246,14 @@ target_link_libraries(restart
 #        PkgConfig::CGNS
 )
 
-target_link_libraries(readtest
-		  io_lib
-		  phase_lib
-		  mfem_lib
-		  mlweno_lib
-		  driver_lib
-		  transport_lib
-		  PkgConfig::LAPACKE
-		  phase_lib
+#target_link_libraries(readtest
+#		  io_lib
+#		  phase_lib
+#		  mfem_lib
+#		  mlweno_lib
+#		  driver_lib
+#		  transport_lib
+#		  PkgConfig::LAPACKE
+#		  phase_lib
 #        PkgConfig::CGNS
-)
+#)
