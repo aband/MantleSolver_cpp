@@ -31,16 +31,33 @@ int stencilpolynomial::setCoef(const vector<vector<vertex>>& cornerSet,
     double * b = new double [n*nrhs] ();
     lapack_int * p = new int [n] ();
 
+    Tensor<int> porder = Tensor<int>(2);
+    porder.setSize({xdegree, ydegree});
+
     for (int cell=0; cell<n; cell++){
 
         vector<vertex> work = cornerSet.at(cell);
-  
+ 
+/*
         for (int r=0; r<n; r++){
             int xpow = r%xdegree;
             int ypow = r/ydegree;
             a[cell*n+r] = NumIntegralFace(work, {xpow, ypow}, center, scale, basePoly);
+				cout << r << "  " << ydegree << "  " << xpow << "  " <<  ypow << "  " << a[cell*n+r] << endl;
         }
+*/
+//cout << endl << endl << endl;
+        for (int ypow = 0; ypow < ydegree; ypow++){
+            for (int xpow =0; xpow < xdegree; xpow++){
+            int r = porder.getIndex({xpow, ypow});
+            a[cell*n+r] = NumIntegralFace(work, {xpow, ypow}, center, scale, basePoly);
+//				cout << r << "  " << ydegree << "  " << xpow << "  " <<  ypow << "  " << a[cell*n+r] << endl;
+            }
+        }
+
+//cout << "  next cell "  << endl << endl << endl;
     }
+
 
     fill(b,b+n*nrhs,0);
     for (int i=0; i<nrhs; i++) {b[i*n+i]=a[n*i];}
