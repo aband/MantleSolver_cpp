@@ -172,6 +172,44 @@ class Driver {
 
        int start;
 
+       // Case study ===============================================================
+       int computeEffVel_case(const vector<vertex>& gaussp,
+                              const vertexSet& edgep,
+                              const indice& gcellin, const indice& gcellout,
+                              const Tensor<weights>& allwgts, double ** lphi,
+                              vector<vertex>& vel);
+ 
+       int computeEffVel_case(const vector<vertex>& gaussp,
+                              const vertexSet& edgep,
+                              const indice& gcell,
+                              const Tensor<weights>& allwgts, double ** lphi,
+                              vector<vertex>& vel);
+
+       int updateEdgeFlux_case(Tensor<double>& vertedge, Tensor<double>& horiedge,
+                                const Tensor<weights>& allwgts, double ** lphi);
+
+       int CellAvePorosity_case(const indice& gcell, 
+                                const Tensor<weights>& allwgts,
+                                double ** lphi);
+
+       int AssignLocMatStokes_case(const indice& gcell,
+                                   const Tensor<weights>& allwgts,
+                                   double ** lphi,
+                                   LocMat * loc);
+
+       int AssignLocMatDarcy(const indice& gcell,
+                             const Tensor<weights>& allwgts,
+                             double ** lphi,
+                             LocMat * loc);
+ 
+       int AssignLocMatCouple(const indice& gcell,
+                              const Tensor<weights>& allwgts,
+                              double ** lphi,
+                              double& k);
+
+       int PrepareTransport_case(double (*func)(const valarray<double>& point,
+                                                const vector<double>& param) ){
+
     private:
 
         /**!

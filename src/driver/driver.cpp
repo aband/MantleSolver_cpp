@@ -182,7 +182,7 @@ int Driver::PrepareTransport(const std::vector<double>& restartHD,
     //ml.addLevel("(3,3)", {3,3}, mi);
     //ml.addLevel("(2,2)", {2,2}, mi);
 
-    //ml.addLevel("(1,3)", {1,3}, mi);
+    ml.addLevel("(1,3)", {1,3}, mi);
     ml.addLevel("(1,2)", {1,2}, mi);
 
     // Area scale
@@ -229,7 +229,7 @@ int Driver::PrepareTransport(const std::vector<double>& restartHD,
 */
 
     unordered_map<std::string, vector<indice>> method;
-    //method.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-1} }));
+    method.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-1} }));
     method.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1} , {0,0} }));
 
     advection.setmethod("all", method);

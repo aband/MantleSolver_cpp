@@ -92,6 +92,7 @@ int main(int argc, char **argv){
     double h0 = sqrt((L*H)/(double)(M*N));
 
     driver->RK(dt, Tmax, maxIter, tolUzawa);
+    //driver->SSP2RK(dt, Tmax, maxIter, tolUzawa, interval);
  
     VecDestroy(&driver->globalmesh);
     VecDestroy(&driver->globalHD);
