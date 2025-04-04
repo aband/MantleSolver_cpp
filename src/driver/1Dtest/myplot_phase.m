@@ -117,7 +117,7 @@ data = reshape(data, M, N);
 % Add 1D plot
 subplot(1,6,4)
 plot(data(mid,:),pY(mid,:));
-axis([0.09,0.11, -1*L, 0.0])
+axis([0.08,0.11, -1*L, 0.0])
 title("CD Distribution");
 ylabel("Depth");
 xlabel("CD");
@@ -145,8 +145,8 @@ data = reshape(data, M, N);
 subplot(1,6,6);
 plot(data(mid,:),pY(mid,:));
 ylim([-1*L,0.0])
-xlim([0.08, 0.12])
-title("opx fraction",num2str(k));
+xlim([0.06, 0.12])
+title(filename);
 ylabel("Depth");
 xlabel("opx");
 
