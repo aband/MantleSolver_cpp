@@ -197,18 +197,27 @@ class Driver {
                                    double ** lphi,
                                    LocMat * loc);
 
-       int AssignLocMatDarcy(const indice& gcell,
-                             const Tensor<weights>& allwgts,
-                             double ** lphi,
-                             LocMat * loc);
+       int AssignLocMatDarcy_case(const indice& gcell,
+                                  const Tensor<weights>& allwgts,
+                                  double ** lphi,
+                                  LocMat * loc);
  
-       int AssignLocMatCouple(const indice& gcell,
-                              const Tensor<weights>& allwgts,
-                              double ** lphi,
-                              double& k);
+       int AssignLocMatCouple_case(const indice& gcell,
+                                   const Tensor<weights>& allwgts,
+                                   double ** lphi,
+                                   double& k);
 
        int PrepareTransport_case(double (*func)(const valarray<double>& point,
-                                                const vector<double>& param) ){
+                                                const vector<double>& param) );
+
+       int ParallelMatrixAssemble_case(const Tensor<weights>& allwgts,
+                                       double ** lphi);
+
+       int RK_case(double dt, double Tmax, int maxIter, 
+                   double tolUzawa);
+
+       int SolveFlow_case(int maxIter, double tolUzawa, 
+                          const Tensor<weights>& allwgts, double ** lphi);
 
     private:
 

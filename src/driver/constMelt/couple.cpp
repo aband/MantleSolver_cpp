@@ -35,7 +35,7 @@ int Driver::computeEffVel_case(const vector<vertex>& gaussp,
         if (phiin == 0.0 && phiout == 0.0){
             phi_mean = 0.0;
         } else {
-            phi_mean  = harmonic_mean(phiin.at(g) ,phiout.at(g));
+            phi_mean  = harmonic_mean(phiin ,phiout);
         }
 
         vel.at(g) = phi_mean*(vel_relative.at(g) + vel_stokes.at(g));
@@ -56,12 +56,12 @@ int Driver::computeEffVel_case(const vector<vertex>& gaussp,
     vector<vertex> vel_relative = 
     ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
                     refArrayDarcyEssen_,mi,
-                    gaussp, gcellin,*hdiv_,*basis_,{1});
+                    gaussp, gcell,*hdiv_,*basis_,{1});
     
     vector<vertex> vel_stokes = 
     ExtractVelocity(&sresult_->vel_stokes, &sresult_->g_stokes,
                     refArrayStokesEssen_,mi,
-                    gaussp, gcellin,*br_,*basis_,{1});
+                    gaussp, gcell,*br_,*basis_,{1});
 
     for (int g=0; g<gaussp.size(); g++){
 
@@ -98,7 +98,7 @@ int Driver::updateEdgeFlux_case(Tensor<double>& vertedge, Tensor<double>& horied
 
         double flux = 0.0;
 
-        indice gcell {i,j} = 0.0;
+        indice gcell {i,j};
         indice cellout;
 
         effvel.clear(); effvel.resize(gaussp.size()); 
@@ -117,13 +117,13 @@ int Driver::updateEdgeFlux_case(Tensor<double>& vertedge, Tensor<double>& horied
 
         if (j==0){
            
-           computeEffVel(gaussp, hori, gcell, allwgts, lphi, effvel);
+           computeEffVel_case(gaussp, hori, gcell, allwgts, lphi, effvel);
 
            flux = edgefluxintegral(hori, CDbottom ,effvel);
 
         } else {
 
-           computeEffVel(gaussp, hori, gcellin, cellout, allwgts, lphi, effvel);
+           computeEffVel_case(gaussp, hori, gcell, cellout, allwgts, lphi, effvel);
 
            flux = edgefluxintegral(mi, gcell, cellout, hori, allwgts, effvel, ml, advection, lphi);
 
@@ -477,13 +477,130 @@ int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
         PetscCall(DMGlobalToLocalEnd(dmu, globalCD, INSERT_VALUES, localphi));
 
         PetscCall(DMDAVecGetArray(dmu, localphi, &lphi););
-
         PetscCall(DMDAVecGetArray(dmu, fluxphi, &lfphi));
 
+        ml.updatesigma(lphi);
+        Tensor<weights> allwgts;
+        advection.computeWgts(ml, mi, h0, allwgts, location);
 
-
+        cout << "Darcy-Stokes system solved at : " << t*dt << endl;
+        SolveFlow_case(maxIter, tolUzawa, allwgts, lphi);
+        CreateScatterVec();
 
     }
+
+    return 1;
+}
+
+int Driver::ParallelMatrixAssemble_case(const Tensor<weights>& allwgts,
+                                        double ** lphi){
+
+    PetscMPIInt size, rank;
+
+    MPI_Comm_size(PETSC_COMM_WORLD, &size);
+    MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
+
+    PetscFunctionBeginUser;
+
+    // Get gauss points first
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>&   gpf = GaussPointsFace;
+
+    // Calculate dofs 
+    int totalElem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
+
+    int reducedDOFStokes = br_->getDOF() - bndryDOFStokes_;
+
+    int reducedDOFDarcy = hdiv_->getDOF() - bndryDOFDarcy_;
+
+    PrepareReducedSys(reducedStokes_, reducedDOFStokes, bndryDOFStokes_, 
+                      totalElem, 30, 30, 4, 4);
+    PrepareReducedSys(reducedDarcy_, reducedDOFDarcy, bndryDOFDarcy_, 
+                      totalElem, 14, 14, 2, 2);
+
+    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 
+                           totalElem, totalElem, 
+                           1, NULL, 0, NULL, &K));
+    PetscCall(MatSetUp(K));
+
+    // ===================================================================
+
+    LocMat * locmatS = new LocMat;
+    LocMat * locmatD = new LocMat;
+
+    double k = 0.0;
+
+    // ! Loop local portion of physical domain
+    int istart = mi.MPIlocalCellStart[0];
+    int jstart = mi.MPIlocalCellStart[1];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
+
+        // ! Get global element index
+        indice global {i,j};
+
+        int nElem = FlatIndic(mi,global);
+
+        // ! Extract corners of this element
+        basis_->GetCorners(mi, global);
+
+        // ! Compute cell averaged porosity
+        CellAvePorosity_case(global, allwgts, lphi);
+
+        // ! Compute local values associated to each dofs
+        AssignLocMatStokes_case(global, allwgts, lphi, locmatS);
+        AssignLocMatDarcy_case(global, allwgts, lphi,locmatD);
+        AssignLocMatCouple_case(global, allwgts, lphi, k);
+
+        // ! Load corresponding shape functions
+        shape stokesFuncSp(basis_, br_);
+        shape darcyFuncSp(basis_, hdiv_);
+
+        // ! Assign local values to global matrix
+        if (elemOnBndry(mi, global)){
+            // ! Dealing wiht boundary dofs
+            AssignLocRedSys(reducedStokes_, locmatS, refArrayStokesEssen_, 
+                            mi, bndryStokesEssen_, global, stokesFuncSp, parameter); 
+            AssignLocRedSys(reducedDarcy_, locmatD, refArrayDarcyEssen_,
+                            mi, bndryDarcyEssen_, global, darcyFuncSp, parameter);
+        } else {
+            AssignLocRedSys(reducedStokes_, locmatS, refArrayStokesEssen_, mi, global, *br_);
+            AssignLocRedSys(reducedDarcy_, locmatD, refArrayDarcyEssen_, mi, global, *hdiv_);
+        }
+
+        // Assign coupling K matrix and two C matrices
+        // const pressure space not affected by boundary dofs
+        PetscCall(MatSetValue(K,nElem,nElem,k,ADD_VALUES));
+        PetscCall(MatSetValue(reducedStokes_->C, nElem, nElem, locmatS->C,ADD_VALUES));
+        PetscCall(MatSetValue(reducedDarcy_->C, nElem, nElem, locmatD->C, ADD_VALUES));
+
+    }}
+
+    AssembleReducedSys(reducedStokes_);
+    AssembleReducedSys(reducedDarcy_);
+
+    PetscCall(MatAssemblyBegin(K,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(K,MAT_FINAL_ASSEMBLY));
+
+    return 1;
+}
+
+int Driver::SolveFlow_case(int maxIter, double tolUzawa, 
+                           const Tensor<weights>& allwgts, double ** lphi){
+
+    ParallelMatrixAssemble_case(allwgts, lphi);
+
+    int nelem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
+
+    CreateLinearSys(reducedStokes_, nelem);
+    CreateLinearSys(reducedDarcy_, nelem);
+
+    CreateCoupledSystem(reducedStokes_, reducedDarcy_, Result_, &K);
+
+    CoupledUzawa(Result_, tolUzawa, maxIter);
 
     return 1;
 }

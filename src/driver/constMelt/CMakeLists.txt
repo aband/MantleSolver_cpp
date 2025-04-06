@@ -169,6 +169,7 @@ add_library(driver_lib
 		  ${SRC}/driver/read.cpp
 		  ${SRC}/driver/coupledsys/coupled_transport.cpp
 		  ${SRC}/driver/coupledsys/coupled_time.cpp
+		  couple.cpp
 		  )
 
 target_include_directories(driver_lib
