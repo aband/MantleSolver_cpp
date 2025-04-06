@@ -67,11 +67,10 @@ int main(int argc, char **argv){
      * Initialize global cell averaged value vectors.
      * Initialize multi level reconstruction objects
      */
-    driver->PrepareTransport(InitHD, InitCD);
+    driver->PrepareTransport_case(InitCD);
 
     printCellCenterGrid(driver->mi);
-    printCellAve(1, &driver->globalHD, driver->mi, "HD");
-    printCellAve(1, &driver->globalCD, driver->mi, "CD");
+//    printCellAve(1, &driver->globalCD, driver->mi, "porosity");
 
     /**!
      * Create boundary reference arrays

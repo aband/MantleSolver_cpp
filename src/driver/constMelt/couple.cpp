@@ -1,4 +1,5 @@
 #include "driver.h"
+#include "print.h"
 
 /**
  * Customized transport function
@@ -123,6 +124,8 @@ int Driver::updateEdgeFlux_case(Tensor<double>& vertedge, Tensor<double>& horied
 
         } else {
 
+           cellout = gcell + mi.faceNormal[0];
+ 
            computeEffVel_case(gaussp, hori, gcell, cellout, allwgts, lphi, effvel);
 
            flux = edgefluxintegral(mi, gcell, cellout, hori, allwgts, effvel, ml, advection, lphi);
@@ -150,10 +153,91 @@ int Driver::updateEdgeFlux_case(Tensor<double>& vertedge, Tensor<double>& horied
             gaussp.at(g) = GaussMapPointsEdge({gpe[g]},hori);
         }   
 
-        double flux = edgefluxintegral(mi, gcell, hori, allwgts, effvel, ml, advection, lphi);
-
+        //double flux = edgefluxintegral(mi, gcell, hori, allwgts, effvel, ml, advection, lphi);
+		  double flux = 0.0;
         horiedge({i, mi.MPIglobalCellSize[1]}) = flux; 
     }
+
+    return 1;
+}
+
+double melting(const MeshInfo& mi, 
+               const vertex& mapped){
+
+    double rate = 0.0;
+
+    if (mapped[1] > -0.2){
+
+        rate = 0.0001*(mapped[1]+0.2);
+
+    } else {
+        rate = 0.0;
+    }
+
+    return rate;
+}
+
+int Driver::updateCellFlux_case(Tensor<double>& faceflux, 
+                                const Tensor<weights>& allwgts, double ** lphi){
+
+    Tensor_zero(faceflux);
+
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussPointsFace;
+
+    std::vector<vertex> gaussp;
+    gaussp.resize(gwf.size());
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice gcell {i,j};
+ 
+        vertexSet corners = extractCorners(mi, gcell); 
+
+        double work = 0.0;
+
+        for (unsigned int g=0; g<gwf.size(); g++){
+
+            double jac = abs(GaussJacobian(gpf[g],corners));
+            double gw = gwf[g];
+   
+            vertex mapped = GaussMapPointsFace(gpf[g],corners);
+
+            work += melting(mi, mapped)* jac * gw;
+
+        }
+
+        double area = mi.cellArea.at(FlatIndic(mi,gcell));
+
+        faceflux({i,j}) = work / area;
+    }}
+
+    return 1;
+}
+
+int Driver::getflux_case(const Tensor<weights>& allwgts,
+                         double ** lphi, double ** lfphi){
+
+    Tensor<double> horiedgeflux = Tensor<double>(2);
+    horiedgeflux.setSize({mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]+1});
+
+    Tensor<double> vertedgeflux = Tensor<double>(2);
+    vertedgeflux.setSize({mi.MPIlocalCellSize[0]+1, mi.MPIlocalCellSize[1]});
+
+    updateEdgeFlux_case(vertedgeflux, horiedgeflux, allwgts, lphi);
+
+    Tensor<double> faceflux = Tensor<double>(2);
+    faceflux.setSize({mi.MPIlocalCellSize[0], mi.MPIlocalCellSize[1]});
+
+    updateCellFlux_case(faceflux, allwgts, lphi);
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        lfphi[j][i] = getcellflux(mi, {i,j}, vertedgeflux, horiedgeflux) - faceflux({i,j});
+
+    }}
 
     return 1;
 }
@@ -175,12 +259,13 @@ int Driver::CellAvePorosity_case(const indice& gcell,
         vertex mapped = GaussMapPointsFace(gpf[g],basis_->corners());
 
         // Get HD and CD from reconstruction at this gaussian point
-        double phif = advection.eval(mapped, ml, location(mi,gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi);
-
+        double phif = 0.0;
+        phif = abs(advection.eval(mapped, ml, location(mi,gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
+//cout << phif << "  " ;
         // Test =================================================
 
         //phif = AssignPorosity(mapped, myPhase->pp); 
-
+//cout << phif << "  ";
         // ======================================================
 
         double jac = abs(GaussJacobian(gpf[g],basis_->corners()));
@@ -192,7 +277,7 @@ int Driver::CellAvePorosity_case(const indice& gcell,
     phi_f_hat /= area;
 
     myPhase->pp->phi_f_hat = phi_f_hat;
-
+//cout << phi_f_hat << endl;
     return 1;
 }
 
@@ -229,7 +314,7 @@ int Driver::AssignLocMatStokes_case(const indice& gcell,
         double gw = gwf[g];
 
         // Reconstruction of point wise value of HD and CD
-        double phi_f = advection.eval(mapped, ml, location(mi,gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi);
+        double phi_f = abs(advection.eval(mapped, ml, location(mi,gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
 
         // Test ==================================================================
 
@@ -315,7 +400,7 @@ int Driver::AssignLocMatDarcy_case(const indice& gcell,
         double gw = gwf[g];
 
         // Reconstruction of point wise value of HD and CD
-        double phi_f = advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi);
+        double phi_f = abs(advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
 
         // Test ==================================================================
 
@@ -366,7 +451,7 @@ int Driver::AssignLocMatDarcy_case(const indice& gcell,
             vertex nu = basis_->unitnormal(e);
 
             // Reconstruction of point wise value of HD and CD
-            double phi_f_e = advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi);
+            double phi_f_e = abs(advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
 
             // Testing =================================================
 
@@ -408,7 +493,7 @@ int Driver::AssignLocMatCouple_case(const indice& gcell,
         double gw = gwf[g];
 
         // Reconstruction of point wise value of HD and CD
-        double phi_f = advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi);
+        double phi_f = abs(advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
 
         // Test ============================================================
 
@@ -487,6 +572,17 @@ int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
         SolveFlow_case(maxIter, tolUzawa, allwgts, lphi);
         CreateScatterVec();
 
+        printCellAve(mark, &globalCD, mi, "porosity");
+        PrintFlowEvent(mark);
+        mark ++;
+
+        getflux_case(allwgts, lphi, lfphi);
+
+        DMDAVecRestoreArray(dmu, fluxphi, &lfphi);
+        DMDAVecRestoreArray(dmu, localphi, &lphi);
+        DMRestoreLocalVector(dmu, &localphi);
+//VecView(fluxphi, PETSC_VIEWER_STDOUT_WORLD);
+        VecAXPY(globalCD, -1*dt, fluxphi);
     }
 
     return 1;

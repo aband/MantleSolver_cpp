@@ -188,6 +188,10 @@ class Driver {
        int updateEdgeFlux_case(Tensor<double>& vertedge, Tensor<double>& horiedge,
                                 const Tensor<weights>& allwgts, double ** lphi);
 
+       int updateCellFlux_case(Tensor<double>& faceflux, const Tensor<weights>& allwgts, double ** lphi);
+
+       int getflux_case(const Tensor<weights>& allwgts, double ** lphi, double ** lfphi);
+
        int CellAvePorosity_case(const indice& gcell, 
                                 const Tensor<weights>& allwgts,
                                 double ** lphi);

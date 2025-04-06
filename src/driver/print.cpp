@@ -339,10 +339,10 @@ int quiverOutputEvent(double * ux, double * uy, double * vx, double * vy, int ma
     for (int j=0; j<N; j++){
     for (int i=0; i<M; i++){
 
-        fprintf(stokesVx, "%.21f ", ux[j*M+i]);
-        fprintf(stokesVy, "%.21f ", uy[j*M+i]);
-        fprintf(darcyVx, "%.21f ", vx[j*M+i]);
-        fprintf(darcyVy, "%.21f ", vy[j*M+i]);
+        fprintf(stokesVx, "%.19f ", ux[j*M+i]);
+        fprintf(stokesVy, "%.19f ", uy[j*M+i]);
+        fprintf(darcyVx, "%.19f ", vx[j*M+i]);
+        fprintf(darcyVy, "%.19f ", vy[j*M+i]);
     }
     fprintf(stokesVx,"\n");
     fprintf(stokesVy,"\n");
