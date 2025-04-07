@@ -52,6 +52,9 @@ int main(int argc, char **argv){
     int interval = 1;
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-interval", &interval, NULL));
 
+    int start = 0;
+    PetscCall(PetscOptionsGetInt(NULL, NULL, "-start", &start, NULL));
+
     // ==============================================================================
 
     Driver * driver = new Driver();
@@ -63,14 +66,19 @@ int main(int argc, char **argv){
                        stencilWidthMesh, stencilWidthU,
                        physicsScale, meshType);
 
-    /**!
-     * Initialize global cell averaged value vectors.
-     * Initialize multi level reconstruction objects
-     */
-    driver->PrepareTransport_case(InitCD);
+    std::vector<double> restartHD; restartHD.resize(M*N);
+    std::vector<double> restartCD; restartCD.resize(M*N);
 
-    printCellCenterGrid(driver->mi);
-//    printCellAve(1, &driver->globalCD, driver->mi, "porosity");
+    ReadValues("restartHD.dat", restartHD);
+    ReadValues("restartCD.dat", restartCD);
+
+    driver->start = start;
+
+    // Initialize transport with values read from files
+    driver->PrepareTransport(restartHD, restartCD, InitHD, InitCD);
+    
+    //VecView(driver->globalCD, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(driver->globalHD, PETSC_VIEWER_STDOUT_WORLD);
 
     /**!
      * Create boundary reference arrays
@@ -83,19 +91,15 @@ int main(int argc, char **argv){
      */
     double h0 = sqrt((L*H)/(double)(M*N));
 
-    driver->start = 0;
-
-    /**!
-     * Actual time stepping.
-     */
-    driver->RK_case(dt, Tmax, maxIter, tolUzawa);
-
+    driver->RK(dt, Tmax, maxIter, tolUzawa);
+ 
     VecDestroy(&driver->globalmesh);
+    VecDestroy(&driver->globalHD);
     VecDestroy(&driver->globalCD);
     DMDestroy(&driver->dmu);
     DMDestroy(&driver->dmMesh);
 
     PetscFinalize();
 
-    return 0;
+    return 1;
 }

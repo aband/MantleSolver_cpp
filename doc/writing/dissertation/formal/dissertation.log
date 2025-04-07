@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.5.14)  4 APR 2025 13:52
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.3.26)  7 APR 2025 13:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1019,13 +1019,23 @@ LaTeX Info: Redefining \nameref on input line 33.
 ] [8
 
 ]
-(./dissertation.toc)
+(./dissertation.toc
+LaTeX Font Info:    Trying to load font information for U+msa on input line 1.
+ (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 1.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+))
 \tf@toc=\write8
 \openout8 = `dissertation.toc'.
 
  [9
 
-] (./dissertation.lot)
+]
+(./dissertation.lot)
 \tf@lot=\write9
 \openout9 = `dissertation.lot'.
 
@@ -1035,98 +1045,35 @@ LaTeX Info: Redefining \nameref on input line 33.
 \tf@lof=\write10
 \openout10 = `dissertation.lof'.
 
-
-[11
+ [11
 
 ]
 \openout2 = `chapters/physics.aux'.
 
  (./chapters/physics.tex
 Chapter 1:
-
-Package natbib Warning: Citation `AveragedEquationsTwoPhase' on page 12 undefin
-ed on input line 6.
-
-
-Package natbib Warning: Citation `MagmaPhysics' on page 12 undefined on input l
-ine 7.
-
-
-Package natbib Warning: Citation `DynamicsPartiallyMoltenRock' on page 12 undef
-ined on input line 7.
-
-LaTeX Font Info:    Trying to load font information for U+msa on input line 8.
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 8.
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [12
+[12
 
 
 ]
 LaTeX Font Info:    Trying to load font information for U+eus on input line 88.
 
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/ueus.fd
+ (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/ueus.fd
 File: ueus.fd 2013/01/14 v3.01 Euler Script
-) [13]
-
-Package natbib Warning: Citation `DegenerateDarcy' on page 14 undefined on inpu
-t line 97.
-
-[14]
-
-Package natbib Warning: Citation `ConsequencesMeltTransport' on page 15 undefin
-ed on input line 141.
-
-
-Package natbib Warning: Citation `PartialMeltinginUpwellingMantleColumn' on pag
-e 15 undefined on input line 141.
-
-
-Package natbib Warning: Citation `MagmaDynamicsEnthalpyMethod' on page 15 undef
-ined on input line 141.
-
-
-Package natbib Warning: Citation `DownwardOxidantTransport' on page 15 undefine
-d on input line 142.
-
+) [13] [14]
 [15]
 Overfull \hbox (0.91145pt too wide) in paragraph at lines 188--194
 \OT1/cmr/m/n/12 where the phase av-er-aged vol-u-met-ric bulk vari-able are de-
 fined as $[] = [][] \OML/cmm/m/it/12 ^^^[]^^Z[]c[]$
  []
 
-
-Package natbib Warning: Citation `MagmaPhysics' on page 16 undefined on input l
-ine 207.
-
-
-Package natbib Warning: Citation `MagmaDynamicsEnthalpyMethod' on page 16 undef
-ined on input line 214.
-
-
-Package natbib Warning: Citation `ExtensionofLithosphere' on page 16 undefined 
-on input line 215.
-
 [16]
-
-Package natbib Warning: Citation `GeochemicalConsequence' on page 17 undefined 
-on input line 227.
-
 
 Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
 d on input line 237.
 
-
-Package natbib Warning: Citation `DownwardOxidantTransport' on page 17 undefine
-d on input line 267.
-
 [17] [18]
-<chapters/pics/eutectic.png, id=214, 430.54468pt x 322.90851pt>
+<chapters/pics/eutectic.png, id=303, 430.54468pt x 322.90851pt>
 File: chapters/pics/eutectic.png Graphic file (type png)
 <use chapters/pics/eutectic.png>
 Package pdftex.def Info: chapters/pics/eutectic.png  used on input line 321.
@@ -1145,14 +1092,6 @@ Overfull \hbox (22.98314pt too wide) detected at line 77
 it/12 ;  \OT1/cmr/bx/n/12 G \OT1/cmr/m/n/12 = [] \OML/cmm/m/it/12 ;
  []
 
-
-Package natbib Warning: Citation `InexactUzawa_Elam_Golub' on page 24 undefined
- on input line 94.
-
-
-Package natbib Warning: Citation `AnalysisInexactUzawa_Bramble_Pasciak_Vassilev
-' on page 24 undefined on input line 94.
-
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 96.
 [24
@@ -1161,37 +1100,50 @@ put line 96.
 
 
 ]) (./chapters/mlweno.tex
-Overfull \hbox (44.74947pt too wide) in paragraph at lines 1--1
+Overfull \hbox (44.74947pt too wide) in paragraph at lines 6--6
 []\OT1/cmr/bx/n/14.4 The Multi-level Weighted Es-sen-tially Non-Oscillatory (WE
 NO)
  []
 
-(./chapters/mesh.tex
+(./chapters/mlstencil.tex))) [25] (./dissertation.bbl [26
 
-! Package xcolor Error: Undefined color `myRed'.
 
-See the xcolor package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.51 ... -- (2.08, 2.07) -- (1.67, 2.04) -- cycle;
-                                                  
-? 
-! Emergency stop.
- ...                                              
-                                                  
-l.51 ... -- (2.08, 2.07) -- (1.67, 2.04) -- cycle;
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
 
- 
+])) [27]
+(./dissertation.aux (./chapters/physics.aux) (./chapters/numerics.aux))
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package rerunfilecheck Info: File `dissertation.out' has not changed.
+(rerunfilecheck)             Checksum: D59724F8A78B1245F57AA6ED6CFE3485;3972.
+ ) 
 Here is how much of TeX's memory you used:
- 27276 strings out of 478287
- 537231 string characters out of 5849289
- 826350 words of memory out of 5000000
- 44806 multiletter control sequences out of 15000+600000
+ 27448 strings out of 478287
+ 541172 string characters out of 5849289
+ 827634 words of memory out of 5000000
+ 44944 multiletter control sequences out of 15000+600000
  479383 words of font info for 66 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 88i,13n,94p,453b,738s stack positions out of 5000i,500n,10000p,200000b,80000s
-!  ==> Fatal error occurred, no output PDF file produced!
+ 88i,13n,94p,458b,738s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/euler/eusm10.pfb></usr/share/texmf/fonts/typ
+e1/public/cm-super/sfrm1200.pfb>
+Output written on dissertation.pdf (27 pages, 243169 bytes).
+PDF statistics:
+ 481 PDF objects out of 1000 (max. 8388607)
+ 416 compressed objects within 5 object streams
+ 140 named destinations out of 1000 (max. 500000)
+ 194 words of extra memory for PDF output out of 10000 (max. 10000000)
+

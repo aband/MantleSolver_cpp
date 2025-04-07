@@ -1,15 +1,21 @@
+\definecolor{myBlue}{RGB}{190,203,211}
+\definecolor{myRed}{RGB}{244,186,175}
+\definecolor{myGreen}{RGB}{114,138,122}
+\definecolor{myYellow}{RGB}{241,208,157}
+
 \section{The Multi-level Weighted Essentially Non-Oscillatory (WENO) Method}
 We develop a accurate, versatile, robust and efficient finite volume 
 weighted essentially non oscillatory (WENO) techniques for solving energy and composition 
 conservation laws. 
 
 \subsection{ML-WENO weighting}
-We propose a new weighting scheme
-
-\input chapters/mesh.tex
-\input chapters/stencil.tex
-\input chapters/quadmesh.tex
-
+We propose a new weighting scheme. Given a target cell $E_0 \in \mathbb{\tau}_h$
+\begin{figure}[ht]
+\centering
+\input chapters/mlstencil.tex
+\caption{An example of (3,2,1) multi-level stencils combination on logically rectangular 
+quadrilateral mesh.\label{fig:quadmesh}}
+\end{figure}
 
 \subsection{Boundary Treatment}
 

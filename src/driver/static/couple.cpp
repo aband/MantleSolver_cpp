@@ -183,28 +183,6 @@ double melting(const MeshInfo& mi,
     return rate;
 }
 
-int plotmelting(const MeshInfo& mi){
-
-    FILE *source = fopen("source.dat", "w");
-
-    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
-    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
-
-        vertex local {0.0,0.0};
-
-        vector<vertex> corners = extractCorners(mi, {i,j});
-
-        vertex global = GaussMapPointsFace(local, corners);
-
-        fprintf(source, "%.15f ", melting(mi, global));
-
-    } fprintf(source, "\n");}
-
-    fclose(source);
-
-    return 1;
-}
-
 int Driver::updateCellFlux_case(Tensor<double>& faceflux, 
                                 const Tensor<weights>& allwgts, double ** lphi){
 
@@ -289,11 +267,13 @@ int Driver::CellAvePorosity_case(const indice& gcell,
         // Get HD and CD from reconstruction at this gaussian point
         double phif = 0.0;
         phif = abs(advection.eval(mapped, ml, location(mi,gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
+if (phif<1e-16){phif = 0.0;}
+
 //cout << phif << "  " ;
         // Test =================================================
 
-        //phif = AssignPorosity(mapped, myPhase->pp); 
-//cout << phif << "  ";
+//        phif = AssignPorosity(mapped, myPhase->pp); 
+//cout << phif << endl;
         // ======================================================
 
         double jac = abs(GaussJacobian(gpf[g],basis_->corners()));
@@ -343,11 +323,12 @@ int Driver::AssignLocMatStokes_case(const indice& gcell,
 
         // Reconstruction of point wise value of HD and CD
         double phi_f = abs(advection.eval(mapped, ml, location(mi,gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
-
+if (phi_f < 1e-16) {phi_f = 0.0;}
+//cout << phi_f << "  ";
         // Test ==================================================================
 
-        //phi_f = AssignPorosity(mapped, myPhase->pp);
-
+//        phi_f = AssignPorosity(mapped, myPhase->pp);
+//cout << phi_f << endl;
         // =======================================================================
 
         phi_s = AssignPorosity(phi_f);       // Solid porosity
@@ -404,8 +385,6 @@ inline bool outside(const MeshInfo& mi, const indice& cell){
     }
 }
 
-
-
 int Driver::AssignLocMatDarcy_case(const indice& gcell,
                                    const Tensor<weights>& allwgts,
                                    double ** lphi,
@@ -440,11 +419,12 @@ int Driver::AssignLocMatDarcy_case(const indice& gcell,
 
         // Reconstruction of point wise value of HD and CD
         double phi_f = abs(advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
-
+if (phi_f < 1e-16) {phi_f = 0.0;}
+//cout << phi_f << "  " ;
         // Test ==================================================================
 
-        //phi_f = AssignPorosity(mapped, myPhase->pp);
-
+//        phi_f = AssignPorosity(mapped, myPhase->pp);
+//cout << phi_f << endl;
 		  // =======================================================================
 
         phi_s = AssignPorosity(phi_f);
@@ -489,11 +469,7 @@ int Driver::AssignLocMatDarcy_case(const indice& gcell,
             // Zeroth order constant pressure basis is always 1
             vertex nu = basis_->unitnormal(e);
 
-            // Reconstruction of point wise value of HD and CD
-//            double phi_f_e = abs(advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
-
             indice cellout = gcell + mi.faceNormal[((e-1)+4)%4];
-
 
             double phi_f_e = 0.0;
 
@@ -507,17 +483,21 @@ if (phi_f_e < 1e-16) {phi_f_e = 0.0;}
                              allwgts({cellout[0], cellout[1]}), cellout, lphi)); 
 					 if (in < 1e-16){in = 0.0;}
 					 if (out< 1e-16){out = 0.0;}
-//cout<< endl << in << "  " << out << endl;
+cout<< endl << in << "  " << out << endl;
         if (in < 1e-16 && out <1e-16){
             phi_f_e = 0.0;
         } else {
             phi_f_e  = harmonic_mean(in ,out);
         }
-}
+
+            }
+
+            // Reconstruction of point wise value of HD and CD
+cout << gcell[0] << "  " << gcell[1] << "  " << phi_f_e << "  ";
             // Testing =================================================
 
             //phi_f_e = AssignPorosity(mapped, myPhase->pp);
-
+cout << phi_f_e << endl;
             // =========================================================
 
             for (int j=0; j<8; j++){
@@ -555,11 +535,12 @@ int Driver::AssignLocMatCouple_case(const indice& gcell,
 
         // Reconstruction of point wise value of HD and CD
         double phi_f = abs(advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
-
+if (phi_f < 1e-16) {phi_f = 0.0;}
+//cout << phi_f << "  ";
         // Test ============================================================
 
-        //phi_f = AssignPorosity(mapped, myPhase->pp);
-
+//        phi_f = AssignPorosity(mapped, myPhase->pp);
+//cout << phi_f << endl;
         // =================================================================
 
         phi_s = AssignPorosity(phi_f);
@@ -603,8 +584,6 @@ int Driver::PrepareTransport_case(double (*func)(const valarray<double>& point,
 }
 
 int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
-
-    plotmelting(mi);
 
     int mark = 1 + start;
 
