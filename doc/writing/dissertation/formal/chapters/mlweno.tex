@@ -8,8 +8,9 @@ We develop a accurate, versatile, robust and efficient finite volume
 weighted essentially non oscillatory (WENO) techniques for solving energy and composition 
 conservation laws. 
 
-\subsection{ML-WENO weighting}
-We propose a new weighting scheme. Given a target cell $E_0 \in \mathbb{\tau}_h$
+\subsection{ML-WENO weighting and reconstruction}
+We propose a new non-linear weighting scheme. Given a target cell $E_0 \in \mathbb{\tau}_h$, we can create a nonempty set of stencils $S_l \ni E_0, l = 0,1, \dots, L$.
+Each stencil will 
 \begin{figure}[ht]
 \centering
 \input chapters/mlstencil.tex
