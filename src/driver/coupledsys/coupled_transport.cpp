@@ -857,6 +857,5 @@ int Driver::getflux(const Tensor<vertexSet>& phasevel_vert,
         //cout << lfCD[j][i] << "   " ;
     } }
  
-
     return 1;
 }

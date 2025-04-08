@@ -152,6 +152,15 @@ int Driver::AssignLocMatStokes(const indice& gcell,
     return 1;
 }
 
+inline bool outside(const MeshInfo& mi, const indice& cell){
+
+    if (cell[0] < 0 || cell[1] < 0 || cell[1] > mi.MPIglobalCellSize[1]-1 || cell[0] > mi.MPIglobalCellSize[0]-1){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 int Driver::AssignLocMatDarcy(const indice& gcell,
                               const Tensor<weights>& allwgtsHD,
                               double ** lHD,
@@ -249,9 +258,17 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
             // Zeroth order constant pressure basis is always 1
             vertex nu = basis_->unitnormal(e);
 
-            // Reconstruction of point wise value of HD and CD
-            double HD = advection.eval(mapped, ml, location(mi, gcell), allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
-            double CD = advection.eval(mapped, ml, location(mi, gcell), allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
+            indice cellout = gcell + mi.faceNormal[((e-1)+4)%4];
+
+            double phi_f_e = 0.0;
+
+            double lithoP = myPhase->pPtr->GetStaticP(-1*mapped[1], myPhase->pPtr->l0); 
+
+            if (outside(mi, cellout)){
+
+                // Reconstruction of point wise value of HD and CD
+                double HD = advection.eval(mapped, ml, location(mi, gcell), allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
+                double CD = advection.eval(mapped, ml, location(mi, gcell), allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
 
 //            double depth = mapped[1]*(-1)*myPhase->pp->l0*0.6;
 //            double lithoP = myPhase->pPtr->GetScaledLithoP(depth);
@@ -260,9 +277,32 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
             // Calculate point wise porosity =========================================
 //            double phi_f_e = myPhase->pPtr->phi.mlt;  // Fluid porosity on edge gauss point
 
-            double lithoP = myPhase->pPtr->GetStaticP(-1*mapped[1], myPhase->pPtr->l0); 
-            myPhase->pPtr->evalPhase(HD,CD,lithoP);
-            double phi_f_e = myPhase->pPtr->pc.phil;
+                myPhase->pPtr->evalPhase(HD,CD,lithoP);
+                phi_f_e = myPhase->pPtr->pc.phil;
+
+            } else {
+                double HDin = advection.eval(mapped, ml, location(mi, gcell), allwgtsHD({gcell[0], gcell[1]}), gcell, lHD);
+                double CDin = advection.eval(mapped, ml, location(mi, gcell), allwgtsCD({gcell[0], gcell[1]}), gcell, lCD);
+
+                double HDout = advection.eval(mapped, ml, location(mi, cellout), allwgtsHD({cellout[0], cellout[1]}), cellout, lHD);
+                double CDout = advection.eval(mapped, ml, location(mi, cellout), allwgtsCD({cellout[0], cellout[1]}), cellout, lCD);
+
+
+                myPhase->pPtr->evalPhase(HDin,CDin,lithoP);
+
+                double in = myPhase->pPtr->pc.phil; 
+
+                myPhase->pPtr->evalPhase(HDout,CDout,lithoP);
+
+                double out = myPhase->pPtr->pc.phil; 
+
+                if (in < 1e-16 && out <1e-16){
+                    phi_f_e = 0.0;
+                } else {
+                    phi_f_e  = harmonic_mean(in ,out);
+                }
+
+            }
 
             // Testing =================================================
 
