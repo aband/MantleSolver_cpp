@@ -6,10 +6,53 @@
 \section{The Multi-level Weighted Essentially Non-Oscillatory (WENO) Method}
 We develop a accurate, versatile, robust and efficient finite volume 
 weighted essentially non oscillatory (WENO) techniques for solving energy and composition 
-conservation laws. 
+conservation laws \cite{MultiLevelWeno}. 
 
-\subsection{ML-WENO weighting and reconstruction}
-We propose a new non-linear weighting scheme. Given a target cell $E_0 \in \mathbb{\tau}_h$, we can create a nonempty set of stencils $S_l \ni E_0, l = 0,1, \dots, L$.
+\subsection{Stencil Polynomial}
+Given a stencil $S = \{E_0, E_2, \dots, E_k\}$ of the quasiuniform logically rectangular mesh. We can define
+an associated tensor product stencil polynomial 
+$Q_{r,s} \in \mathbb{Q}_{(r,s)} \vcentcolon= \mathbb{P}_{r-1}(x) \otimes \mathbb{P}_{s-1}(y)$,
+where $r$ and $s$ equal to the stencil sizes in the 
+x- and y-directions, respectively.
+We scale our stencil polynomial individually as
+\begin{equation} \label{eq:stencilpolynomial}
+		  Q_{r,s} = \sum_{p<r, q<s} c_{p,q} \Big(\frac{x - x_S}{h_S}\Big)^p 
+		  \Big(\frac{y - y_S}{h_S}\Big)^q,
+\end{equation}
+where $(x_S,y_S)$ is the center point of the stencil 
+$\Omega_S = \cup_{E\in S} \subset \mathbb{R}^2$, and $h_S = 
+\sqrt{\sum_{k}E_k/k}$ is the diameter of 
+average cell size.
+In finite volume scenerio, we are dealing with cell averaged value of the
+scalar transport variable
+\begin{equation}\label{eq:cellaveraged}
+		  \overline{u}_E = \frac{1}{|E|}\int_E u(\mathbf{x}) d\mathbf{x}.
+\end{equation}
+We can calculate coefficents $c_{p,q}$ by imposing a constraint that cell averaged
+value \eqref{eq:cellaveraged} is preserved through integral with stencil polynomial
+\begin{equation}\label{eq:stencilpolycoefficent}
+		  \frac{1}{|E_k|} \int_{E_k} Q(\mathbf{x}) d\mathbf{x} = \overline{u}_{E_k}, \quad 
+		  \forall E_k \in S.
+\end{equation}
+I will replace $\overline{u}_{E_k}$ with $\overline{u}_k$ in the following
+discussion for simplicity.
+
+We can represent stencil polynomial with basis polynomials 
+$Q_{r,s} = \sum_{k} \overline{u}_{k} \phi^k_{r,s}$,
+where basis polynomials can be calcualted as
+\begin{equation}\label{eq:basispoly}
+		  \frac{1}{|E_{k'}|} \int_{E_{k'}} \phi^k_{r,s} (\mathbf{x}) d\mathbf{x} = \left \{
+					 \begin{aligned}
+								&1 \quad  k' = k\\
+								&0 \quad  k' \neq k
+					 \end{aligned}
+					 \right. \quad \forall (E_{k'}, E_k) \in S,
+\end{equation}
+which would lead to a $(r \times s) \times (r \times s)$ non-singular linear system.
+
+
+\subsection{ML-WENO weighting}
+Given a target cell $E_{i,j} \in \mathbb{\tau}_h$, we can create a nonempty set of stencils $S_l \ni E_{i,j}, l = 0,1, \dots, L$.
 Each stencil will 
 \begin{figure}[ht]
 \centering
@@ -17,6 +60,7 @@ Each stencil will
 \caption{An example of (3,2,1) multi-level stencils combination on logically rectangular 
 quadrilateral mesh.\label{fig:quadmesh}}
 \end{figure}
+
 
 \subsection{Boundary Treatment}
 
