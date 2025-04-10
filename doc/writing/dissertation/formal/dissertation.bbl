@@ -1,4 +1,4 @@
-\begin{thebibliography}{13}
+\begin{thebibliography}{16}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -19,10 +19,29 @@ Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian.
   conservation laws.
 \newblock \emph{Comput. Methods Appl. Mech. Engrg.}, 421, 2024.
 
+\bibitem[Bramble and Hilbert(1970)]{EstimationofLinearFunctionals}
+J.H. Bramble and S.~R. Hilbert.
+\newblock Estimation of linear functionals on sobolev spaces with application
+  to fourier transform and spline interpolation.
+\newblock \emph{SIAM J. Numer. Anal.}, 7\penalty0 (1), 1970.
+\newblock \doi{10.1137/0707006}.
+
+\bibitem[Demkowicz(2023)]{FETheory}
+Leszek~F. Demkowicz.
+\newblock \emph{Mathematical Theory of Finite Element}.
+\newblock SIAM, 1st edition, 2023.
+\newblock ISBN 161197772X.
+
 \bibitem[Drew and Segel(1971)]{AveragedEquationsTwoPhase}
 Donald Drew and Lee Segel.
 \newblock Averaged equations for two-phase flows.
 \newblock \emph{Studies in Applied Mathematics}, page~3, 1971.
+
+\bibitem[Dupont and Scott(1980)]{PolynomialApproximation}
+Todd Dupont and Ridgway Scott.
+\newblock Polynomial approximation of functions in sobolev spaces.
+\newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
+  441--463, 1980.
 
 \bibitem[Elman and Golub(1994)]{InexactUzawa_Elam_Golub}
 Howard~C. Elman and Gene~H. Golub.

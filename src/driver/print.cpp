@@ -417,7 +417,7 @@ int Driver::PrintPhaseEvent(int mark){
         myPhase->pPtr->evalPhase(HD, CD, lithoP);
         fprintf(fp, "%e ", myPhase->pPtr->pc.phil);
 
-//cout << HD << "  " << CD << "  " << lithoP <<  "  " << myPhase->pPtr->pc.phil << endl;
+//printf("HD: %.18f , CD: %.18f, Pressure: %e , phi: %.18f \n", HD, CD, lithoP, myPhase->pPtr->pc.phil);
         // Test ========================================================
 
         //double temp = AssignPorosity(global, myPhase->pp);

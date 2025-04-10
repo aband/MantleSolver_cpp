@@ -11,12 +11,12 @@ conservation laws \cite{MultiLevelWeno}.
 \subsection{Stencil Polynomial}
 Given a stencil $S = \{E_0, E_2, \dots, E_k\}$ of the quasiuniform logically rectangular mesh. We can define
 an associated tensor product stencil polynomial 
-$Q_{r,s} \in \mathbb{Q}_{(r,s)} \vcentcolon= \mathbb{P}_{r-1}(x) \otimes \mathbb{P}_{s-1}(y)$,
-where $r$ and $s$ equal to the stencil sizes in the 
+$Q_{s,t} \in \mathbb{Q}_{(s,t)} \vcentcolon= \mathbb{P}_{s-1}(x) \otimes \mathbb{P}_{t-1}(y)$,
+where $s$ and $t$ equal to the stencil sizes in the 
 x- and y-directions, respectively.
 We scale our stencil polynomial individually as
 \begin{equation} \label{eq:stencilpolynomial}
-		  Q_{r,s} = \sum_{p<r, q<s} c_{p,q} \Big(\frac{x - x_S}{h_S}\Big)^p 
+		  Q_{s,t} = \sum_{p<s, q<t} c_{p,q} \Big(\frac{x - x_S}{h_S}\Big)^p 
 		  \Big(\frac{y - y_S}{h_S}\Big)^q,
 \end{equation}
 where $(x_S,y_S)$ is the center point of the stencil 
@@ -26,7 +26,7 @@ average cell size.
 In finite volume scenerio, we are dealing with cell averaged value of the
 scalar transport variable
 \begin{equation}\label{eq:cellaveraged}
-		  \overline{u}_E = \frac{1}{|E|}\int_E u(\mathbf{x}) d\mathbf{x}.
+		  \overline{u}_E = \frac{1}{|E|}\int_E u(\mathbf{x}) d\mathbf{x} = \frac{1}{|E|} \int_{E}u(x,y) dx dy.
 \end{equation}
 We can calculate coefficents $c_{p,q}$ by imposing a constraint that cell averaged
 value \eqref{eq:cellaveraged} is preserved through integral with stencil polynomial
@@ -38,18 +38,47 @@ I will replace $\overline{u}_{E_k}$ with $\overline{u}_k$ in the following
 discussion for simplicity.
 
 We can represent stencil polynomial with basis polynomials 
-$Q_{r,s} = \sum_{k} \overline{u}_{k} \phi^k_{r,s}$,
+$Q_{s,t} = \sum_{k} \overline{u}_{k} \phi^k_{s,t}$,
 where basis polynomials can be calcualted as
 \begin{equation}\label{eq:basispoly}
-		  \frac{1}{|E_{k'}|} \int_{E_{k'}} \phi^k_{r,s} (\mathbf{x}) d\mathbf{x} = \left \{
+		  \frac{1}{|E_{k'}|} \int_{E_{k'}} \phi^k_{s,t} (\mathbf{x}) d\mathbf{x} = \left \{
 					 \begin{aligned}
 								&1 \quad  k' = k\\
 								&0 \quad  k' \neq k
 					 \end{aligned}
 					 \right. \quad \forall (E_{k'}, E_k) \in S,
 \end{equation}
-which would lead to a $(r \times s) \times (r \times s)$ non-singular linear system.
+which would lead to a $(s \times t) \times (s \times t)$ non-singular linear system. 
+We can define a linear projection operator $\pi_S$ and let $\pi_S u_S = Q$ be a linear 
+projection onto polynomila space $W_p$ such that $\mathbb{Q}_{s,t} \subset W_p$.
 
+We can estimate interpolation error with the Bramble-Hilbert Lemma~\cite{PolynomialApproximation} 
+and~\cite{EstimationofLinearFunctionals} in $H_r(\Omega)$ space, where $r = s$ in x direction and 
+$r=t$ in y-direction.
+%We use $\alpha$ for a two dimensional multi-index.
+%\begin{lem}\label{lem:poincare}
+%There exists a constant $C > 0$ such that
+%\begin{equation}\label{eq:poincare}
+%\norm{u}_{H^r_{\Omega}}^2 \leq C \Bigg\{\sum_{|\alpha| \leq r-1}\Big|\int_{\Omega} D^{\alpha}u \Big|^2 + |u|^2_{H^r(\Omega)} \Bigg\}
+%\end{equation}
+%\end{lem}
+%We can derive this lemma with poincar\'e lemma and mathematical induction \cite{FETheory}.
+
+\begin{lem}\label{lem:interpolation}
+%Let $\Omega_S$ be the domain covered by stencil $S$ in $\mathbb{R}^2$ and let $\pi_S u = Q$ be a linear projection onto 
+%polynomial space $W_p$ such that $\mathbb{Q}_{s,t} \subset W_p$, where $W_p$ is a subspace of $H^1(\Omega_S)$, 
+%then there exists a constant $C > 0$, such that
+Let $\Omega_S$ be the domain covered by stencil $S$ in $\mathbb{R}^2$ and let $u\in H^r(\Omega_S)$. We have: 
+\begin{equation}
+\norm{u-\pi_Su}^2 \leq h^{2(r-1)} |u|^2_{H^r(\Omega_S)}.
+\end{equation}
+\end{lem}
+
+\begin{proof}
+\begin{equation}
+\norm{u-\pi_S u} = 
+\end{equation}
+\end{proof}
 
 \subsection{ML-WENO weighting}
 Given a target cell $E_{i,j} \in \mathbb{\tau}_h$, we can create a nonempty set of stencils $S_l \ni E_{i,j}, l = 0,1, \dots, L$.

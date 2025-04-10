@@ -218,7 +218,6 @@ int Driver::computeEffVel(const vector<vertex>& gaussp,
 
         phasevel.at(g) = phi.at(g)*vel_relative.at(g) + vel_stokes.at(g);
         solidvel.at(g) = (1-phi.at(g)) * vel_stokes.at(g);
-
 //        printf("vr %e, vs %e , phi %e , cl %e , cs %e \n", 
 //              vel_relative.at(g)[1], vel_stokes.at(g)[1], phi.at(g), cl.at(g), 
 //		   		  cs.at(g));
@@ -376,7 +375,7 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
         computeEffVel(gaussp, hori, gcell, allwgtsHD, lHD, allwgtsCD, lCD, 
                       effvel, phasevel, solidvel, TDin, dTdHin, CDin, HDin);
 
-        for (int g=0; g<gpe.size(); g++){printf("effvel %e, phasevel %e, solid vel %e ", effvel.at(g)[1], phasevel.at(g)[1], solidvel.at(g)[1]); cout << endl;}
+        //for (int g=0; g<gpe.size(); g++){printf("effvel %e, phasevel %e, solid vel %e ", effvel.at(g)[1], phasevel.at(g)[1], solidvel.at(g)[1]); cout << endl;}
 
         double fluxCD = edgefluxintegral(mi, gcell, hori, allwgtsCD, effvel, ml, advection, lCD);
 //cout << fluxCD << endl;
