@@ -87,12 +87,21 @@ double InitCD(const valarray<double>& point,
     // Constant composition value 
     //return 0.00;
 
-    if (point[1] > -0.2){
+//    if (point[1] > -0.2){
         //return 0.1*pow(point[1]+0.2,0);
-        return 0.05;
-    }else {
+//        return 0.05;
+//    }else {
+//        return 0.0;
+//    }
+
+    if (point[1] > -0.100){
+        return 0.05*pow(point[1]+0.1,1) + 0.005*0.4;
+    }else if (point[1] > -0.5){
+        return 0.005*pow(point[1]+0.5,1);
+    } else {
         return 0.0;
     }
+
 }
 
 double InitHD(const valarray<double>& point,

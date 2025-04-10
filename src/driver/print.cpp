@@ -415,9 +415,9 @@ int Driver::PrintPhaseEvent(int mark){
         PetscCall(VecGetValues(globalCD, 1, &idx, &CD));
 
         myPhase->pPtr->evalPhase(HD, CD, lithoP);
-
         fprintf(fp, "%e ", myPhase->pPtr->pc.phil);
 
+//cout << HD << "  " << CD << "  " << lithoP <<  "  " << myPhase->pPtr->pc.phil << endl;
         // Test ========================================================
 
         //double temp = AssignPorosity(global, myPhase->pp);

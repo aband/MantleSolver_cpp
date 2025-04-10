@@ -29,10 +29,11 @@ void AssignPhyProperties(PhysProperty * pp){
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
     // used to identify incorrect porosity
-    if (point[1] > -0.200){
-        //return 0.1*pow(point[1]+0.2,0);
-        return 0.05;
-    }else {
+    if (point[1] > -0.100){
+        return 0.05*pow(point[1]+0.1,1) + 0.005*0.4;
+    }else if (point[1] > -0.5){
+        return 0.005*pow(point[1]+0.5,1);
+    } else {
         return 0.0;
     }
 }

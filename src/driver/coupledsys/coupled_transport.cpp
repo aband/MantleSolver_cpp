@@ -376,9 +376,14 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
         computeEffVel(gaussp, hori, gcell, allwgtsHD, lHD, allwgtsCD, lCD, 
                       effvel, phasevel, solidvel, TDin, dTdHin, CDin, HDin);
 
-//        for (int g=0; g<gpe.size(); g++){printf("effvel %e, phasevel %e, solid vel %e ", effvel.at(g)[1], phasevel.at(g)[1], solidvel.at(g)[1]); cout << endl;}
+        for (int g=0; g<gpe.size(); g++){printf("effvel %e, phasevel %e, solid vel %e ", effvel.at(g)[1], phasevel.at(g)[1], solidvel.at(g)[1]); cout << endl;}
 
         double fluxCD = edgefluxintegral(mi, gcell, hori, allwgtsCD, effvel, ml, advection, lCD);
+//cout << fluxCD << endl;
+        if (fluxCD > 0){
+            fluxCD = 0.0;
+        }
+
         horiedgeCD({i, mi.MPIglobalCellSize[1]}) = fluxCD; 
 
         double fluxHD = edgefluxintegral(hori, HDin, HDin, TDin, TDin, 

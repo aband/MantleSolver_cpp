@@ -97,7 +97,7 @@ double InitHD(const valarray<double>& point,
 
     double HD = 2.9-2.5*point[1];
 
-    if (point[1] < -0.4){HD = 3.9;}
+    if (point[1] < -0.3){HD = 2.9 + 2.5*0.3;}
 
     return HD;
 }

@@ -272,7 +272,7 @@ if (phif<1e-16){phif = 0.0;}
 //cout << phif << "  " ;
         // Test =================================================
 
-//        phif = AssignPorosity(mapped, myPhase->pp); 
+        //phif = AssignPorosity(mapped, myPhase->pp); 
 //cout << phif << endl;
         // ======================================================
 
@@ -327,7 +327,7 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
 //cout << phi_f << "  ";
         // Test ==================================================================
 
-//        phi_f = AssignPorosity(mapped, myPhase->pp);
+        //phi_f = AssignPorosity(mapped, myPhase->pp);
 //cout << phi_f << endl;
         // =======================================================================
 
@@ -423,7 +423,7 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
 //cout << phi_f << "  " ;
         // Test ==================================================================
 
-//        phi_f = AssignPorosity(mapped, myPhase->pp);
+        //phi_f = AssignPorosity(mapped, myPhase->pp);
 //cout << phi_f << endl;
 		  // =======================================================================
 
@@ -539,7 +539,7 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
 //cout << phi_f << "  ";
         // Test ============================================================
 
-//        phi_f = AssignPorosity(mapped, myPhase->pp);
+        //phi_f = AssignPorosity(mapped, myPhase->pp);
 //cout << phi_f << endl;
         // =================================================================
 

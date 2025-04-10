@@ -174,8 +174,9 @@ double melting(const MeshInfo& mi,
 
     if (mapped[1] > -0.2){
 
-        rate = 0.00005*pow(mapped[1]+0.2,1);
-
+//        rate = 0.00005*pow(mapped[1]+0.2,5);
+//rate = 0.00005;
+          rate = 0.05*pow(mapped[1]+0.2,5);
     } else {
         rate = 0.0;
     }

@@ -17,9 +17,10 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
     double L = 0.1, H = 0.4;
-    double xstart = -0.5*L, ystart = -1.0001*H;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
+
+    double xstart = -0.5*L, ystart = -1.0001*H;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-ystart", &ystart, NULL));
 

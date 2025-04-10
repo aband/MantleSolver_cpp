@@ -167,7 +167,7 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
                               const Tensor<weights>& allwgtsCD,
                               double ** lCD,
                               LocMat * loc){
-                     
+//cout << gcell[0] << "  " << gcell[1] << endl;                    
     // copy gaussian quadrature points
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
@@ -248,7 +248,7 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
     vertexSet corners = basis_->corners();
 
     for (int e =0; e<4; e++){
-
+//cout << "edge: " << e << "  ";
         vertexSet corner = {corners.at((e+3)%4),
                             corners.at(e)};
         double len = length(corner);
@@ -301,9 +301,9 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
                 } else {
                     phi_f_e  = harmonic_mean(in ,out);
                 }
-
             }
-
+//if (e==1 || e == 3){
+//cout << g << ":  " << phi_f_e;}
             // Testing =================================================
 
             //phi_f_e = AssignPorosity(mapped, myPhase->pp);
@@ -317,7 +317,7 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
                              (hdivwork[j][0] * nu[0]+
                               hdivwork[j][1] * nu[1]);
             } 
-        }
+        }//cout << endl;
     }
 
     return 0;
