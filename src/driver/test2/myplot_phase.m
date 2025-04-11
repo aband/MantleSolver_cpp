@@ -1,5 +1,5 @@
 % Plot phase transitions
-function [] = myplot_phase(M, N, L)
+function [] = myplot_phase(M, N, L, start)
 
 % Input grid files
 fileID = fopen('build/gridCellX.dat','r');
@@ -28,7 +28,9 @@ h = figure;
 
 set(gcf, 'Position',[100 100 1210 693])
 
-for k=1:loops
+for kk=1:loops
+
+k = kk + start;
 
 filename = strcat('build/porosity',string(k));
 filename = strcat(filename,'.dat');
