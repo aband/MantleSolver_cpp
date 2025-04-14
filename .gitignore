@@ -3,5 +3,6 @@
 *.swp
 *.avi
 
+CMakeLists.txt
 
 build/

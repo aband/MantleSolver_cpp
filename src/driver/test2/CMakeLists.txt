@@ -6,7 +6,7 @@ set(PETSC $ENV{PETSC_DIR}/$ENV{PETSC_ARCH})
 
 #set(ADOLC $ENV{ADOLC_DIR})
 
-set(LAPACK $ENV{LAPACK_DIR})
+#set(LAPACK $ENV{LAPACK_DIR})
 
 set(HDF5 $ENV{HDF5_DIR})
 
@@ -229,7 +229,7 @@ target_link_libraries(test
 		  mlweno_lib
 		  driver_lib
 		  transport_lib
-		  PkgConfig::LAPACKE
+		  		  PkgConfig::LAPACKE
 		  phase_lib
 #        PkgConfig::CGNS
 )
@@ -241,7 +241,7 @@ target_link_libraries(restart
 		  mlweno_lib
 		  driver_lib
 		  transport_lib
-		  PkgConfig::LAPACKE
+		  		  PkgConfig::LAPACKE
 		  phase_lib
 #        PkgConfig::CGNS
 )
@@ -253,7 +253,7 @@ target_link_libraries(readtest
 		  mlweno_lib
 		  driver_lib
 		  transport_lib
-		  PkgConfig::LAPACKE
+		  		  PkgConfig::LAPACKE
 		  phase_lib
 #        PkgConfig::CGNS
 )

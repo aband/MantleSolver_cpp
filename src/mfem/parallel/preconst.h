@@ -235,9 +235,12 @@ int ExtractVelocityAll(unordered_map<int, vector<vertex>>& velocityAll,
         gCell_inside = PickCellInside(mi, gCellIn, gCellOut); 
         velocity_gaussp = ExtractVelocity(sol, g, refmap, mi, value, gCell_inside,funcSp, mybasis);
 
-        edgeGaussPointsAll.insert(
-        make_pair<int, vector<vertex>>(key, velocity_gaussp));
- 
+        //int tmp = key;
+        //edgeGaussPointsAll.insert(
+        //make_pair<int, vector<vertex>>(tmp, velocity_gaussp));
+        int tmp = key;
+        //edgeGaussPointsAll.insert(std::make_pair(tmp, velocity_gaussp));
+        edgeGaussPointsAll.at(tmp) = velocity_gaussp; 
     }
 
     return 1;
