@@ -6,7 +6,7 @@
 \section{The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}
 We develop a accurate, versatile, robust and efficient finite volume 
 weighted essentially non oscillatory (WENO) techniques for solving energy and composition 
-conservation laws \cite{MultiLevelWeno}. 
+conservation laws in~\cite{MultiLevelWeno}. 
 
 \subsection{Stencil Polynomial}
 Given a stencil $S = \{E_0, E_2, \dots, E_k\}$ of the quasiuniform logically rectangular mesh. We can define
@@ -83,11 +83,18 @@ Let $\Omega_S$ be the domain covered by stencil $S$ in $\mathbb{R}^2$ and let $u
 \subsection{Stencil polynomial smoothness indicators}
 We can define a smoothness indicator $\sigma$ as a measurement of 
 smoothness of $u(\mathbf{x})$ on the stencil $S$. 
-Jiang and Shu's method \cite{JSSmoothness} is defined by Sobolev seminorm:
+The classic method from~\cite{JSSmoothness} is defined by Sobolev seminorm:
 \begin{equation}
 		  \sigma_P = \sum_{1\leq \lvert\alpha\rvert \leq m} 
 		  \int\int_{E_0} \lvert E_0 \rvert^{\lvert\alpha\rvert -1} 
-		  (\mathcal{D}^\alpha Q(x,y))^2 dxdy
+		  (\mathcal{D}^\alpha Q(x,y))^2 dxdy,
+\end{equation}
+where $\alpha = (\alpha_1, \alpha_2)$ is a multi-index, $\lvert \alpha \rvert = \alpha_1 + \alpha_2$, 
+and $\mathcal{D}$ is the derivative operator $\mathcal{D}^\alpha = \partial^{\lvert \alpha \rvert} / \partial x^{\alpha_1} \partial y^{\alpha_2}$.
+The Jiang-Shu smoothness indicator can be reformed with basis polynomials:
+\begin{equation}
+
+
 \end{equation}
 
 We proposed two alternative ways of defining smoothness indicator

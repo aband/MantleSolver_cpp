@@ -89,6 +89,7 @@ int main(int argc, char **argv){
      * Actual time stepping.
      */
     driver->RK_case(dt, Tmax, maxIter, tolUzawa);
+    //driver->SSP2RK_case(dt, Tmax, maxIter, tolUzawa);
 
     VecDestroy(&driver->globalmesh);
     VecDestroy(&driver->globalCD);

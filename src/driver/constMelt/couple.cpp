@@ -636,10 +636,6 @@ int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
         SolveFlow_case(maxIter, tolUzawa, allwgts, lphi);
         CreateScatterVec();
 
-        printCellAve(mark, &globalCD, mi, "porosity");
-        PrintFlowEvent(mark);
-        mark ++;
-
         getflux_case(allwgts, lphi, lfphi);
 
         DMDAVecRestoreArray(dmu, fluxphi, &lfphi);
@@ -647,6 +643,102 @@ int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
         DMRestoreLocalVector(dmu, &localphi);
 //VecView(fluxphi, PETSC_VIEWER_STDOUT_WORLD);
         VecAXPY(globalCD, -1*dt, fluxphi);
+
+        printCellAve(mark, &globalCD, mi, "porosity");
+        PrintFlowEvent(mark);
+        mark ++;
+
+    }
+
+    return 1;
+}
+
+int Driver::SSP2RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
+
+    plotmelting(mi);
+
+    int mark = 1 + start;
+
+    int Nt = (int)(Tmax/dt);
+
+    Vec temp;
+    PetscCall(VecDuplicate(globalCD, &temp));
+    PetscCall(VecCopy(globalCD, temp));
+
+    for (int t=0; t<Nt; t++){
+
+        // First step
+        Vec localphi;
+        PetscCall(DMGetLocalVector(dmu, &localphi));
+
+        Vec fluxphi;
+        PetscCall(VecDuplicate(globalCD, &fluxphi));
+
+        double ** lphi;
+        double ** lfphi;
+
+        PetscCall(DMGlobalToLocalBegin(dmu, globalCD, INSERT_VALUES, localphi));
+        PetscCall(DMGlobalToLocalEnd(dmu, globalCD, INSERT_VALUES, localphi));
+
+        PetscCall(DMDAVecGetArray(dmu, localphi, &lphi););
+        PetscCall(DMDAVecGetArray(dmu, fluxphi, &lfphi));
+
+        ml.updatesigma(lphi);
+        Tensor<weights> allwgts;
+        advection.computeWgts(ml, mi, h0, allwgts, location);
+
+        cout << "Darcy-Stokes system solved at : " << t*dt << endl;
+        SolveFlow_case(maxIter, tolUzawa, allwgts, lphi);
+        CreateScatterVec();
+
+        getflux_case(allwgts, lphi, lfphi);
+
+        DMDAVecRestoreArray(dmu, fluxphi, &lfphi);
+        DMDAVecRestoreArray(dmu, localphi, &lphi);
+        DMRestoreLocalVector(dmu, &localphi);
+        VecAXPY(temp, -1*dt, fluxphi);
+
+        // Second step
+        Vec localphi2;
+        PetscCall(DMGetLocalVector(dmu, &localphi2));
+
+        Vec fluxphi2;
+        PetscCall(VecDuplicate(globalCD, &fluxphi2));
+
+        double ** lphi2;
+        double ** lfphi2;
+
+        PetscCall(DMGlobalToLocalBegin(dmu, temp, INSERT_VALUES, localphi2));
+        PetscCall(DMGlobalToLocalEnd(dmu, temp, INSERT_VALUES, localphi2));
+
+        PetscCall(DMDAVecGetArray(dmu, localphi2, &lphi2););
+        PetscCall(DMDAVecGetArray(dmu, fluxphi2, &lfphi2));
+
+        ml.updatesigma(lphi2);
+        Tensor<weights> allwgts2;
+        advection.computeWgts(ml, mi, h0, allwgts2, location);
+
+        cout << "Darcy-Stokes system solved at : " << t*dt << endl;
+        SolveFlow_case(maxIter, tolUzawa, allwgts2, lphi2);
+        CreateScatterVec();
+
+        getflux_case(allwgts2, lphi2, lfphi2);
+
+        DMDAVecRestoreArray(dmu, fluxphi2, &lfphi2);
+        DMDAVecRestoreArray(dmu, localphi2, &lphi2);
+        DMRestoreLocalVector(dmu, &localphi2);
+ 
+
+        VecScale(globalCD, 0.5);
+
+        VecAXPY(globalCD, 0.5, temp); 
+
+        VecAXPY(globalCD, -0.5*dt, fluxphi2);
+
+        printCellAve(mark, &globalCD, mi, "porosity");
+        PrintFlowEvent(mark);
+        mark ++;
+
     }
 
     return 1;

@@ -3,6 +3,15 @@
 *.swp
 *.avi
 
+*.log
+*.aux
+*.blg
+*.ill
+*.lot
+*.map
+*.out
+*.toc
+
 CMakeLists.txt
 
 build/

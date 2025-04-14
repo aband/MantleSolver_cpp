@@ -220,6 +220,9 @@ class Driver {
        int RK_case(double dt, double Tmax, int maxIter, 
                    double tolUzawa);
 
+       int SSP2RK_case(double dt, double Tmax, int maxIter, 
+                       double tolUzawa);
+
        int SolveFlow_case(int maxIter, double tolUzawa, 
                           const Tensor<weights>& allwgts, double ** lphi);
 

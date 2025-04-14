@@ -57,35 +57,55 @@ Substituing phase averaged momentum $\overline{\rho \mathbf{v}}$,
 we then write conservation of momentum with phase averaged term,
 \begin{equation}\label{eq:momentumconservation}
 \frac{\partial \overline{\rho \mathbf{v}}}{\partial t} + \nabla \cdot \overline{\rho \mathbf{v} \otimes \mathbf{v}}  = 
-\overline{\rho}\mathbf{g} + \nabla \cdot \overline{\mathbf{\tau}} - \nabla \overline{P},
+\overline{\rho}\mathbf{g} + \nabla \cdot \overline{\mathbf{\tau}} - \nabla \overline{p},
 \end{equation}
 where $\mathbf{\tau}$ represents deviatoric stress.
 Ignoring change of inertia term due to near zero Reynolds number in magma and mantle, 
 \begin{equation}\label{eq:staticmomentumconservation}
-\overline{\rho}\mathbf{g} + \nabla \cdot \overline{\mathbf{\tau}} - \nabla \overline{P} = 0,
+\overline{\rho}\mathbf{g} + \nabla \cdot \overline{\mathbf{\tau}} - \nabla \overline{p} = 0,
 \end{equation}
 which represents the bulk conservation of momentum. 
+This buld equation cannot determine two different velocities at the same time, hence, we need additional relationship
+governing the behavior of liquid through a porous media.
 We now take a closer look at the interphase force between solid and liquid phases.
-We will align governing equation of liquid flow 
-through porous solid mantle with classic Darcy's law with the help of mixture theory\cite{mixturetheory}. 
-We first assume balanced stress across the interface between solid and liquid phases.
-
-
-
-Combining equations ...., I finally arive with the full flow mechanical system,
+I will provide a brief overview of how the individual equations governing the liquid and solid phases are derived, 
+while more detailed and rigorous proofs can be found in the mixture theory literature like \cite{mixturetheory}.
+I can write momentum balances for each individual phase as:
+\begin{equation}\label{eq:phasemomentum}
+\begin{aligned}
+0 &= \phi_l \rho_l \mathbf{g} + \nabla \cdot (\phi_l \tau_l) - \nabla (\phi_l p_l) + \mathbf{I}_l,\\
+0 &=  \phi_s \rho_s \mathbf{g} + \nabla \cdot (\phi_s \tau_s) - \nabla (\phi_s p_s) - \mathbf{I}_s,
+\end{aligned}
+\end{equation}
+where $\mathbf{I}_l + \mathbf{I}_s = 0$ is the interphase force between solid and liquid phases.
+We ignore deviatoric stress in liquid and keep isotropic stress only. 
+We balance the remaining stress with drag force and we can reach the following equation aligning with Darcy's Law:
+\begin{equation}\label{eq:darcylaw}
+		  \phi_l (\mathbf{v}_l - \mathbf{v}_s)
+		  + \frac{k_{\phi_l}}{\mu_l}(\nabla p_l - \rho_f\mathbf{g})
+	    = 0.
+\end{equation}
+We need an additional relation connecting liquid and solid pressure,
+\begin{equation}\label{eq:compaction}
+		  \mu_s\nabla \cdot \mathbf{v}_s - \phi_l(p_l - p_s) =0, 
+\end{equation}
+which need more details on compaction =====.
+Combining equations~\eqref{eq:continuousfunction},~\eqref{eq:staticmomentumconservation},~\eqref{eq:darcylaw} 
+and~\eqref{eq:compaction},
+I finally arive with the full flow mechanical system,
 \begin{alignat}{2}
     \label{eq:darcy}
 		  &\phi_l (\mathbf{v}_l - \mathbf{v}_s)
-		  + \frac{k_{\phi_l}}{\mu_l}\nabla(p_l - \rho_f\mathbf{g})
+		  + \frac{k_{\phi_l}}{\mu_l}(\nabla p_l - \rho_f\mathbf{g})
 	    &&= 0,\\
 	\label{eq:continuous}
 		  &\nabla \cdot (\phi_l\mathbf{v}_l + \phi_s\mathbf{v}_s) &&=0,\\
 	\label{eq:stokes}
-		  &\nabla\bar p - \nabla \cdot \tau(\mathbf{v}_s) &&= (\rho_s-\rho_l)\mathbf{g},\\
+		  &\nabla\bar p - \nabla \cdot \tau(\mathbf{v}_s) + \overline{\rho}\mathbf{g}&&= 0,\\
 	\label{eq:compaction}
 		  &\mu_s\nabla \cdot \mathbf{v}_s - \phi_l(p_l - p_s) &&=0, 
 \end{alignat}
-where the deviatoric stress of the mixture is
+where the deviatoric stress of the solid is
 \begin{equation}\label{eq:deviatoricstress}
 		  \tau(\mathbf{v}_s)
 		  = 2\mu_s\phi_s\big(\mathcal{D} \mathbf{v}_s - \tfrac{1}{3}\nabla \cdot \mathbf{v}_s \mathbf{I}\big),
@@ -94,10 +114,10 @@ and $\mathcal{D} \mathbf{v}_s=\frac{1}{2}(\nabla\mathbf{v}_s + \nabla\mathbf{v}_
 Moreover, the relative permeability is $k_{\phi_l} = k_0 \phi_l^{2+2\Theta}$, where $\Theta \in [0,1/2]$. $\mu_s$ 
 and $\mu_l$ are dynamic viscosities for solid and liquid correspondingly.
 
-\subsection{Scaled variables}
+\subsection{Scaled Formulation}
 The Darcy part will mathematically degenerate in regions where the porosity is zero.
 To handle this issue, we use the formulation developed 
-previously\cite{DegenerateDarcy}. We first define pressure potentials as,
+previously~\cite{DegenerateDarcy}. We first define pressure potentials as,
 \begin{equation}
 	q_l = p_l - \rho_l g z\quad\text{and}\quad q_s = p_s - \rho_l g z,
 \end{equation}
@@ -133,9 +153,9 @@ and the problem is reformulated as
 		  &\nabla q - \nabla \cdot \tau(\mathbf{v}_s) &&= -(1-\phi)\rho_r \mathbf{g},\\
 \label{eq:compaction_flow_sc}
 		  &\mu_s\nabla \cdot \mathbf{v}_s
-        - \frac{\phi^{1/2}}{1-\phi}(\tilde{q}_l - \phi^{1/2}q) &&=0.
+        - \frac{\phi^{1/2}}{1-\phi}(\tilde{q}_l - \phi^{1/2}q) &&=0,
 \end{alignat}
-Where the new scaled relative velocity maintain numerical stability in zero prosority region.
+where the new scaled relative velocity maintain numerical stability in zero prosority region.
 
 \section{Conservation of Chemical Species and Energy}
 Chemical compositions of mantle and magma is very complicate and very hard to trace at the same time. 
@@ -267,7 +287,7 @@ The binary eutectic phase behavior describes the chemical behavior of
 two immiscible crystals from a completely miscible solution.
 On a typical eutectic phase behavior diagram, we can locate any phase situation
 using transported enthalpy and concentration. Binary eutectic melting has
-been applied to water-salt-brine system in glacier\cite{DownwardOxidantTransport}. 
+been applied to water-salt-brine system in glacier~\cite{DownwardOxidantTransport}. 
 
 \subsection{Eutectic Phase Parameters}
 We approximate the melting temperature and eutectic temperature
@@ -288,14 +308,13 @@ The subscript $i$ will be omitted in the later context since only one specie
 is being traced in transport equation.
 Some assumptions are made for partially molten mantle system.
 \begin{itemize}
-\item Assuming chemical equilibrium is achieved that phase state can be calculated
+\item Assuming thermodynamic equilibrium is achieved at every time step that phase state can be calculated
 		  with phase diagram.
-\item The composition of the second specie in the liquid formed by eutectic melting $\mathcal{X}_e$ is constant at given pressure $\mathcal{X}_e(P)$.  
-\item Melting temperature $T_m$ is constant at given pressure $T_m(P)$. 
-\item Boussinessq approximation is extended to phase behavior as well.
-		  assuming $\rho_l = \rho_s$.
+\item The composition of the second specie in the liquid formed by eutectic melting $\mathcal{X}_e$ is constant.  
+\item Melting temperature $T_m$ and eutectic temperature $T_e$ are functions to pressure $T_m(P)$ and $T_e(P)$. 
+\item Boussinessq approximation is extended to phase behavior as well $\rho_l = \rho_s$.
 \item Assuming no density difference between two solid components.
-\item Assuming constant thermal expansion and specific heat capacity
+\item Assuming constant thermal expansion and specific heat capacity.
 \end{itemize}
 We can now relate bulk mass fraction with bulk concentration directly,
 \begin{equation}\label{eq:bulkmassfraction}
@@ -439,7 +458,7 @@ dimensionless equations. We represent dimensionless variables with a $ \check{}$
 		  &\nabla \cdot \check{\mathbf{v}}_s
         - \frac{\phi^{1/2}}{1-\phi}(\check{q}_l - \phi^{1/2}\check{q}) &&=0,
 \end{alignat}
-where dimensionless deviatoric stress of the mixture is 
+where dimensionless deviatoric stress of the solid phase is 
 $\check{\tau} = 2(1-\phi)(\mathcal{D} \check{\mathbf{v}}_s - 1/3\nabla \cdot \check{\mathbf{v}}_s \mathbf{I})$ and 
 $\mathbf{n}$ is the unit direction vector pointing downwards. Now we align transport equations with dimensionless 
 variables defined in mechanic system,
