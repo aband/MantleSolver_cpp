@@ -1,10 +1,73 @@
 \section{The Mixed Finite Element Method}
 
-\subsection{Sub Stokes Problem}
+\subsection{Stokes Problem}
+We briefly describe solving static Stokes equation with mixed finite element scheme.
+We begin with strong form of the Stokes problem,
+\begin{equation}\label{eq:strongStokes}
+\begin{aligned}
+-\Delta \bold{u} + \nabla p &= \bold{f}, \\
+\nabla \cdot \bold{u} &= 0.
+\end{aligned}
+\end{equation}
+We derive weak form 
+\begin{equation}\label{eq:weakStokes}
+\begin{aligned}
+(\nabla \bold{u} , \nabla \bold{v})_{\Omega} - (p,\nabla \cdot \bold{v})_{\Omega} &= (\bold{f},\bold{v})_{\Omega} + 
+\langle\tau^T \nabla \bold{u} \nu, \bold{v}\cdot \tau\rangle_{\Gamma_i},\\
+&+ \langle\nu^T \nabla \bold{u} \nu - p_0, \bold{v}\cdot \nu\rangle_{\Gamma_i} - \langle\nabla \bold{u}_0, \nabla \bold{v}\rangle_{\Gamma_u}\\
+(\nabla \cdot \bold{u}, \omega) &= 0.
+\end{aligned}
+\end{equation}
+Let stress $\bold{s}\cdot \tau = \tau^T \nabla \bold{u} \nu $ and  $\bold{s} \cdot \nu =  \nu^T \nabla \bold{u} \nu - p_0$, 
+we have traction boundary condition term defined on $\Gamma_i$ which is $<\bold{s},\bold{v}>_{\Gamma_i}$.
+We employ a test space $\{ \bold{v} \in H^1(\Omega) : \bold{v} = 0$ on $\Gamma_u \}$ here,
+\begin{equation}\label{eq:weakStokes2}
+\begin{aligned}
+(\nabla \bold{u}_h , \nabla \bold{v}_h)_{\Omega_h} - (p_h,\nabla \cdot \bold{v}_h)_{\Omega_h} &= (\bold{f},\bold{v}_h)_{\Omega_h} + 
+		  \langle\bold{s}, \bold{v}_h\rangle_{\Gamma_{i,h}} - \langle\nabla \bold{u}_{0,h}, \nabla \bold{v}_h\rangle_{\Gamma_{u,h}},\\
+(\nabla \cdot \bold{u}, \omega) &= 0.
+\end{aligned}
+\end{equation}
+We can separate normal and tangent part of stress on the boundary easily when physical boundary align with x-y axis.
+In the situation when a rectangular computational domain is used, we can mix stress and dirichlet boundary condition
+even further. 
 
-\subsection{Sub Darcy Problem}
+\subsection{Darcy Problem}
+\begin{equation}
+\begin{aligned}
+\bold{u} + \nabla p & = \bold{g}\\
+\nabla \cdot \bold{u} & = 0
+\end{aligned}
+\end{equation}
+
+weak form
+
+\begin{equation}
+\begin{aligned}
+(\bold{u}, \bold{v})_{\Omega} - (p, \nabla \cdot \bold{v})_{\Omega} &= (\bold{g},\bold{v})_{\Omega} 
+- \langle p_0, v_n\rangle_{\Gamma_i} - \langle\bold{u}_0, \bold{v}\rangle_{\Gamma_u}\\
+(\nabla \cdot \bold{u}, \omega) &= 0
+\end{aligned}
+\end{equation}
+
+Test space $\{\bold{v} \in H(\text{div},\Omega): v_n =0$ on $\Gamma_u\}$.
 
 \subsection{Coupled Degenerate System}
+
+scaled nondimensionalized weak form
+let $\check{\sigma} = \mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bold{\text{I}}$
+
+\begin{equation}
+		  \begin{aligned}
+					 (2\phi_s\check{\sigma}(\bold{v}_{s,h}),\nabla \Psi_s) - (\check{q}_h, \nabla \cdot \Psi_s) &= -(\phi_s\check{\bold{f}}, \Psi_s) \\
+					 (\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  + \Big(\frac{\hat{\phi}_f}{\phi_s} \check{q}_h, \omega\Big) - 
+					\Big(\frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_{f,h},\omega \Big) &= 0\\
+					 (\bold{\check{v}}_{r,h},\Psi_r)  - (\check{q}_{f,h},\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r)) &= 0\\
+					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0
+		  \end{aligned}
+\end{equation}
+
+
 
 \subsection{Degenerate Saddle Point Problem}
 The linear system corresponding to (insert eqcite) has the form

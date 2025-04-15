@@ -9,20 +9,20 @@ weighted essentially non oscillatory (WENO) techniques for solving energy and co
 conservation laws in~\cite{MultiLevelWeno}. 
 
 \subsection{Stencil Polynomial}
-Given a stencil $S = \{E_0, E_2, \dots, E_k\}$ of the quasiuniform logically rectangular mesh. We can define
+Given a stencil $\mathcal{S} = \{E_0, E_2, \dots, E_k\}$ of the quasiuniform logically rectangular mesh. We can define
 an associated tensor product stencil polynomial 
 $Q_{s,t} \in \mathbb{Q}_{(s,t)} \vcentcolon= \mathbb{P}_{s-1}(x) \otimes \mathbb{P}_{t-1}(y)$,
 where $s$ and $t$ equal to the stencil sizes in the 
 x- and y-directions, respectively.
 We scale our stencil polynomial individually as
 \begin{equation} \label{eq:stencilpolynomial}
-		  Q_{s,t} = \sum_{p<s, q<t} c_{p,q} \Big(\frac{x - x_S}{h_S}\Big)^p 
-		  \Big(\frac{y - y_S}{h_S}\Big)^q,
+		  Q_{s,t} = \sum_{p<s, q<t} c_{p,q} \Big(\frac{x - x_\mathcal{S}}{h_\mathcal{S}}\Big)^p 
+		  \Big(\frac{y - y_\mathcal{S}}{h_\mathcal{S}}\Big)^q,
 \end{equation}
-where $(x_S,y_S)$ is the center point of the stencil 
-$\Omega_S = \cup_{E\in S} \subset \mathbb{R}^2$, and $h_S = 
+where $(x_\mathcal{S},y_\mathcal{S})$ is the center point of the stencil 
+$\Omega_\mathcal{S} = \cup_{E\in \mathcal{S}} \subset \mathbb{R}^2$, and $h_\mathcal{S} = 
 \sqrt{\sum_{k}E_k/k}$ is the diameter of 
-average cell size. Let $\xi = (x-x_S)/h_S$ and $\eta = (y-y_S)/h_s$ be the 
+average cell size. Let $\xi = (x-x_\mathcal{S})/h_\mathcal{S}$ and $\eta = (y-y_\mathcal{S})/h_\mathcal{S}$ be the 
 normalized varaibles, we can rewrite it into normalized version:
 \begin{equation}\label{eq:stencilpolynomialscaled}
 		  \hat{Q}_{s,t} = \sum_{p<s, q<t} c_{p,q} \xi^p \eta^q.
@@ -37,27 +37,32 @@ We can calculate coefficents $c_{p,q}$ by imposing a constraint that cell averag
 value \eqref{eq:cellaveraged} is preserved through integral with stencil polynomial
 \begin{equation}\label{eq:stencilpolycoefficent}
 		  \frac{1}{|E_k|} \int_{E_k} Q(\mathbf{x}) d\mathbf{x} = \overline{u}_{E_k}, \quad 
-		  \forall E_k \in S.
+		  \forall E_k \in \mathcal{S}.
 \end{equation}
-I will replace $\overline{u}_{E_k}$ with $\overline{u}_k$ in the following
+We will replace $\overline{u}_{E_k}$ with $\overline{u}_k$ in the following
 discussion for simplicity.
 
 We can represent stencil polynomial with basis polynomials 
 $Q_{s,t} = \sum_{k} \overline{u}_{k} \phi^k_{s,t}$,
-where basis polynomials can be calcualted as
+where basis polynomials can be calculated as
 \begin{equation}\label{eq:basispoly}
-		  \frac{1}{|E_{k'}|} \int_{E_{k'}} \phi^k_{s,t} (\mathbf{x}) d\mathbf{x} = \left \{
+		  \frac{1}{\lvert E_{k'}\rvert } \int_{E_{k'}} \phi^k_{s,t} (\mathbf{x}) d\mathbf{x} = 
+		  \frac{1}{\lvert \hat{E}_{k'}\rvert} \iint_{\hat{E}_{k'}}\hat{\phi}^k_{s,t}(\xi, \eta) d\xi d\eta = \left \{
 					 \begin{aligned}
 								&1 \quad  k' = k\\
 								&0 \quad  k' \neq k
 					 \end{aligned}
-					 \right. \quad \forall (E_{k'}, E_k) \in S,
+					 \right. \quad \forall (E_{k'}, E_k) \in \mathcal{S},
 \end{equation}
 which would lead to a $(s \times t) \times (s \times t)$ non-singular linear system. 
-We can define a linear projection operator $\pi_S$ and let $\pi_S u_S = Q$ be a linear 
-projection onto polynomila space $W_p$ such that $\mathbb{Q}_{s,t} \subset W_p$.
+We can now represent stencil polynomial with normalized basis polynomials as:
+\begin{equation}\label{eq:normalizedstencilpoly}
+\hat{Q}_{s,t}(\xi, \eta) = \sum_k \overline{u}_k \hat{\phi}_{s,t}^k(\xi, \eta).
+\end{equation}
 
-We can estimate interpolation error with the Bramble-Hilbert Lemma~\cite{PolynomialApproximation} 
+We define a linear projection operator $\pi_\mathcal{S}$ and let $\pi_\mathcal{S} u_\mathcal{S} = Q$ be a linear 
+projection onto polynomial space $W_p$ such that $\mathbb{Q}_{s,t} \subset W_p$.
+We estimate interpolation error with the Bramble-Hilbert Lemma~\cite{PolynomialApproximation} 
 and~\cite{EstimationofLinearFunctionals} in $H_r(\Omega)$ space, where $r = s$ in x direction and 
 $r=t$ in y-direction.
 %We use $\alpha$ for a two dimensional multi-index.
@@ -73,7 +78,7 @@ $r=t$ in y-direction.
 %Let $\Omega_S$ be the domain covered by stencil $S$ in $\mathbb{R}^2$ and let $\pi_S u = Q$ be a linear projection onto 
 %polynomial space $W_p$ such that $\mathbb{Q}_{s,t} \subset W_p$, where $W_p$ is a subspace of $H^1(\Omega_S)$, 
 %then there exists a constant $C > 0$, such that
-Let $\Omega_S$ be the domain covered by stencil $S$ in $\mathbb{R}^2$ and let $u\in H^r(\Omega_S)$. We have: 
+Let $\Omega_S$ be the domain covered by stencil $\mathcal{S}$ in $\mathbb{R}^2$ and let $u\in H^r(\Omega_\mathcal{S})$. We have: 
 \begin{equation}
 \norm{u-\pi_Su}^2 \leq h^{2(r-1)} |u|^2_{H^r(\Omega_S)}.
 \end{equation}
@@ -86,9 +91,9 @@ Let $\Omega_S$ be the domain covered by stencil $S$ in $\mathbb{R}^2$ and let $u
 \end{proof}
 
 \subsection{Stencil polynomial smoothness indicators}
-We can define a smoothness indicator $\sigma$ as a measurement of 
+We define a smoothness indicator $\sigma$ as a measurement of 
 smoothness of $u(\mathbf{x})$ on the stencil $S$. 
-The classic method from~\cite{JSSmoothness} is defined by Sobolev seminorm:
+The classic method from~\cite{JSSmoothness} is defined by Sobolev seminorm as:
 \begin{equation}
 		  \sigma_P = \sum_{1\leq \lvert\alpha\rvert \leq m} 
 		  \int\int_{E_0} \lvert E_0 \rvert^{\lvert\alpha\rvert -1} 
@@ -99,34 +104,72 @@ and $\mathcal{D}$ is the derivative operator $\mathcal{D}^\alpha = \partial^{\lv
 The Jiang-Shu smoothness indicator can be reformed with basis polynomials:
 \begin{equation}\label{eq:JSsmoothenssIC}
 \begin{aligned}
-		  \sigma_P &= \sum_{1\leq \lvert \alpha \rvert \leq m} \lvert E_0 \rvert^{\lvert \alpha \rvert -1}\int \int_{E_0} (\mathcal{D}^\alpha Q(x,y))^2 dx dy\\
-					  &= \sum_{1\leq \lvert \alpha \rvert \leq m} \int \int_{E_0} (\mathcal{D}^\alpha\hat{Q}(\xi, \eta))^2 dx dy
+		  \sigma_P &= \sum_{1\leq \lvert \alpha \rvert \leq m} \lvert E_0 \rvert^{\lvert \alpha \rvert -1} \iint_{E_0} (\mathcal{D}^\alpha Q(x,y))^2 dx dy\\
+					  &= \sum_{1\leq \lvert \alpha \rvert \leq m} \iint_{\hat{E}_0} (\mathcal{D}^\alpha\hat{Q}(\xi, \eta))^2 d\xi d\eta \\
+					  &= \sum_{1\leq \lvert \alpha \rvert \leq m} \iint_{\hat{E}_0} \big( \sum_{ij} \overline{u}_{ij} \mathcal{D}^\alpha \hat{\phi}_{i,j}(\xi, \eta) \big)^2 d\xi d\eta \\
+					  &= \sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'.j'} \sum_{1\leq \lvert \alpha \rvert \leq m} 
+					  \iint_{\hat{E}_{ij}} \mathcal{D}^\alpha \hat{\phi}_{ij}(\xi, \eta) 
+					  \mathcal{D}^\alpha \hat{\phi}_{i'j'}(\xi, \eta) d\xi d\eta \\
+					  &= \sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'j'} \sigma^{i'j'}_{ij},
 \end{aligned}
 \end{equation}
+where $\sigma^{i'j'}_{ij}$ can be precomputed.
 
-We proposed two alternative ways of defining smoothness indicator
-\cite{WENOAOSimplifiedSmoothness}.
-The smoothness indicator should exhibit following convergence property that
-there exists some value $C > 0$ such that $h \rightarrow 0^+$,
+We proposed an alternative way of defining smoothness indicator in~\cite{WENOAOSimplifiedSmoothness}.
+\begin{equation}\label{eq:simpsmoothnessIC}
+\sigma_{\text{simp}} = \frac{1}{N_\mathcal{S} -1 } \sum_k (\overline{u}_k - \overline{u}_0)^2,
+\end{equation}
+where $\overline{u}_0$ is the cell averaged solution in target cell. 
+We define this simple smoothness indicator in order to reduce the compuational cost and to deal with
+distorted stencil on unstructured mesh. However, this simple smoothness indicator is not as robust
+as the classic Jiang-Shu smoothness indicator. Hence, we stick to the classic definition in the following
+discussion.
+
+We observe that the smoothness indicator exhibit following convergence property that
+there exists some value $C > 0$ such that when $h \rightarrow 0^+$,
 \begin{equation}\label{eq:smoothconvergence}
 		  \sigma = \begin{cases}
 					 Ch^2 + \mathcal{O} (h^3) \quad &\text{Smooth}, \\
-					 \Theta (h)  &\text{Not Smooth}.
+					 \Theta (h)  &\text{Not Smooth},
 		  \end{cases}
 \end{equation}
-
+where stencils are defined on quasi uniform mesh. This observation comes directly from the scaling property of 
+Sobolev seminorm.
 
 \subsection{ML-WENO weighting}
-Given a target cell $E_{i,j} \in \mathbb{\tau}_h$, we can create a nonempty set of stencils $S_l \ni E_{i,j}, l = 0,1, \dots, L$.
-Each stencil will 
+Given a target cell $E_{i,j}$, we can create a nonempty set of stencils $\mathcal{S}_l \ni E_{i,j}, l = 0,1, \dots, L$.
+The reconstruction of u on target cell $E{i,j}$ is a convex combination of stencil polynomials~\eqref{eq:normalizedstencilpoly}
+\begin{equation}\label{eq:reconstruction}
+R(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q^l(\mathbf{x}), \quad \mathbf{x} \in E_{i,j},
+\end{equation}
+where $\sum_l \tilde{\omega}_l = 1$ is normalized nonlinear weights associated with stencils accordingly.
 \begin{figure}[ht]
 \centering
 \input chapters/mlstencil.tex
 \caption{An example of (3,2,1) multi-level stencils combination on logically rectangular 
 quadrilateral mesh.\label{fig:quadmesh}}
 \end{figure}
-
+We begin by arbitrarily chosing a set of linear weights $\{\omega_l\}$ and scale with stencil smoothness indicator as
+\begin{equation}\label{eq:nonlinearwgts}
+\hat{\omega}_l = \frac{\omega_l}{(\sigma_l + \epsilon h_0^2)^{ar_l + n_l}},
+\end{equation}
+where $r_l = \max\{s,t\}$, $\epsilon = 1e-4$ and $a > 0.5$ are picked as constants. The biasing factor $n_l = n(r_l)$ 
+is used to biasing away further from constant level, whose smoothness indicator is always zero, when the solution is 
+smooth. We pick 
+\begin{equation}\label{eq:biasingfctor}
+n(r_l) = n_l = \begin{cases}
+1, \quad &\text{if} \quad r_l = 1,\\
+3, \quad &\text{if} \quad r_l = 2,\\
+4, \quad &\text{if} \quad r_l \geq 3.
+\end{cases}
+\end{equation}
+We then renormalize scaled weights
+\begin{equation}\label{eq:normalizednonlinearwgts}
+\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}}.
+\end{equation}
 
 \subsection{Boundary Treatment}
+
+\subsection{Finite Volume Formulation with ML-WENO}
 
 \subsection{Time Stepping}
