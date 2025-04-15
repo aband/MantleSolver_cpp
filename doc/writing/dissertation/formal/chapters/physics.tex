@@ -79,17 +79,19 @@ I can write momentum balances for each individual phase as:
 \end{equation}
 where $\mathbf{I}_l + \mathbf{I}_s = 0$ is the interphase force between solid and liquid phases.
 We ignore deviatoric stress in liquid and keep isotropic stress only. 
-We balance the remaining stress with drag force and we can reach the following equation aligning with Darcy's Law:
+We balance the remaining stress with viscous drag force and equilibrium term.
+We can reach the following equation aligning with Darcy's Law:
 \begin{equation}\label{eq:darcylaw}
 		  \phi_l (\mathbf{v}_l - \mathbf{v}_s)
 		  + \frac{k_{\phi_l}}{\mu_l}(\nabla p_l - \rho_f\mathbf{g})
 	    = 0.
 \end{equation}
-We need an additional relation connecting liquid and solid pressure,
+We have an additional yet unique equation relating liquid and solid pressure 
+in mantle dynamics,
 \begin{equation}\label{eq:compaction}
 		  \mu_s\nabla \cdot \mathbf{v}_s - \phi_l(p_l - p_s) =0, 
 \end{equation}
-which need more details on compaction =====.
+which discribes compaction phenomenon.
 Combining equations~\eqref{eq:continuousfunction},~\eqref{eq:staticmomentumconservation},~\eqref{eq:darcylaw} 
 and~\eqref{eq:compaction},
 I finally arive with the full flow mechanical system,

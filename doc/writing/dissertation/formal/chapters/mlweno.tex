@@ -22,7 +22,12 @@ We scale our stencil polynomial individually as
 where $(x_S,y_S)$ is the center point of the stencil 
 $\Omega_S = \cup_{E\in S} \subset \mathbb{R}^2$, and $h_S = 
 \sqrt{\sum_{k}E_k/k}$ is the diameter of 
-average cell size.
+average cell size. Let $\xi = (x-x_S)/h_S$ and $\eta = (y-y_S)/h_s$ be the 
+normalized varaibles, we can rewrite it into normalized version:
+\begin{equation}\label{eq:stencilpolynomialscaled}
+		  \hat{Q}_{s,t} = \sum_{p<s, q<t} c_{p,q} \xi^p \eta^q.
+\end{equation}
+
 In finite volume scenerio, we are dealing with cell averaged value of the
 scalar transport variable
 \begin{equation}\label{eq:cellaveraged}
@@ -92,9 +97,11 @@ The classic method from~\cite{JSSmoothness} is defined by Sobolev seminorm:
 where $\alpha = (\alpha_1, \alpha_2)$ is a multi-index, $\lvert \alpha \rvert = \alpha_1 + \alpha_2$, 
 and $\mathcal{D}$ is the derivative operator $\mathcal{D}^\alpha = \partial^{\lvert \alpha \rvert} / \partial x^{\alpha_1} \partial y^{\alpha_2}$.
 The Jiang-Shu smoothness indicator can be reformed with basis polynomials:
-\begin{equation}
-
-
+\begin{equation}\label{eq:JSsmoothenssIC}
+\begin{aligned}
+		  \sigma_P &= \sum_{1\leq \lvert \alpha \rvert \leq m} \lvert E_0 \rvert^{\lvert \alpha \rvert -1}\int \int_{E_0} (\mathcal{D}^\alpha Q(x,y))^2 dx dy\\
+					  &= \sum_{1\leq \lvert \alpha \rvert \leq m} \int \int_{E_0} (\mathcal{D}^\alpha\hat{Q}(\xi, \eta))^2 dx dy
+\end{aligned}
 \end{equation}
 
 We proposed two alternative ways of defining smoothness indicator

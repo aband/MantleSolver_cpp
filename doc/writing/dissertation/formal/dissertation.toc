@@ -17,8 +17,8 @@
 \contentsline {subsection}{\numberline {2.1.4}Degenerate Saddle Point Problem}{24}{subsection.2.1.4}%
 \contentsline {section}{\numberline {2.2}The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}{25}{section.2.2}%
 \contentsline {subsection}{\numberline {2.2.1}Stencil Polynomial}{25}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}Stencil polynomial smoothness indicators}{26}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.2}Stencil polynomial smoothness indicators}{27}{subsection.2.2.2}%
 \contentsline {subsection}{\numberline {2.2.3}ML-WENO weighting}{27}{subsection.2.2.3}%
 \contentsline {subsection}{\numberline {2.2.4}Boundary Treatment}{27}{subsection.2.2.4}%
 \contentsline {subsection}{\numberline {2.2.5}Time Stepping}{27}{subsection.2.2.5}%
-\contentsline {chapter}{Works Cited}{28}{appendix*.8}%
+\contentsline {chapter}{Works Cited}{29}{appendix*.8}%
