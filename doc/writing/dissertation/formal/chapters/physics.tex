@@ -86,12 +86,36 @@ We can reach the following equation aligning with Darcy's Law:
 		  + \frac{k_{\phi_l}}{\mu_l}(\nabla p_l - \rho_f\mathbf{g})
 	    = 0.
 \end{equation}
-We have an additional yet unique equation relating liquid and solid pressure 
-in mantle dynamics,
+
+\subsection{Compaction}
+We have an additional yet unique relationship regulating melt migration in mantle
+dynamics. We now revisit the continuous equation~\eqref{eq:continuousfunction}, 
+with the two phases considered separately taking melting into consideration
+\begin{equation}\label{eq:continuousequationPhase}
+		  \begin{aligned}
+					 \frac{\partial \phi_l }{\partial t} + \nabla \cdot (\phi_l 
+					 \mathbf{v}_l) &= \Gamma, \\
+					 \frac{\partial (1-\phi_l) }{\partial t} + \nabla \cdot ((1-\phi_l)
+					 \mathbf{v}_s) &= -\Gamma,
+		  \end{aligned}
+\end{equation}
+where $\Gamma$ is the unknown melting rate. We now focus on the solid phase 
+equation
+\begin{equation}\label{eq:solidmelting}
+		  \frac{\partial \phi_l}{\partial t} + \mathbf{v}_s \cdot \nabla \phi_l = 
+		  \Gamma + (1-\phi_l) \nabla \cdot \mathbf{v}_s,
+\end{equation}
+where the divergence term $\nabla \cdot \mathbf{v}_s$ is often referred to as the 
+compaction rate.
+
+===========
 \begin{equation}\label{eq:compaction}
 		  \mu_s\nabla \cdot \mathbf{v}_s - \phi_l(p_l - p_s) =0, 
 \end{equation}
 which discribes compaction phenomenon.
+=====
+
+\subsection{Full System}
 Combining equations~\eqref{eq:continuousfunction},~\eqref{eq:staticmomentumconservation},~\eqref{eq:darcylaw} 
 and~\eqref{eq:compaction},
 We finally arive with the full flow mechanical system,
