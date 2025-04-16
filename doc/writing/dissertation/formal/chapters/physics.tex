@@ -100,24 +100,33 @@ with the two phases considered separately taking melting into consideration
 		  \end{aligned}
 \end{equation}
 where $\Gamma$ is the unknown melting rate. We now focus on the solid phase 
-equation
+equation to get the evolving compaction relationship as
 \begin{equation}\label{eq:solidmelting}
 		  \frac{\partial \phi_l}{\partial t} + \mathbf{v}_s \cdot \nabla \phi_l = 
 		  \Gamma + (1-\phi_l) \nabla \cdot \mathbf{v}_s,
 \end{equation}
 where the divergence term $\nabla \cdot \mathbf{v}_s$ is often referred to as the 
 compaction rate.
-
-===========
-\begin{equation}\label{eq:compaction}
-		  \mu_s\nabla \cdot \mathbf{v}_s - \phi_l(p_l - p_s) =0, 
+We can now approximate the static compaction relation as~\cite{MagmaDynamicsEnthalpyMethod}
+\begin{equation}\label{eq:compactionviscosity}
+		  \xi_{\phi}\nabla \cdot \mathbf{v}_s  =p_l - p_s, 
 \end{equation}
-which discribes compaction phenomenon.
-=====
+where $\xi_{\phi}$ is often referred to as bulk viscosity or compaction viscosity. 
+The form of compaction viscosity $\xi_{\phi}$
+has been discussed extensively. \cite{MagmaPhysics} first introduced the concept of
+compaction viscosity and relating the term with stress balance.
+\cite{TwoPhaseModelCompaction} included surface tension into the 
+force balance along with stress term. \cite{Compactioninamantlewithaverysmallmelt} discussed compaction
+with the porosity being infinitesimal small. We approximate $\xi_\phi$ with a simple relationship as
+\begin{equation}\label{eq:bulkviscosity}
+\xi_\phi = \frac{\mu_s}{\phi},
+\end{equation}
+which highlighting the fact that increased melting facilitates the compaction of the solid phase, while in the absence of melting, 
+compaction is entirely eliminated.
 
 \subsection{Full System}
 Combining equations~\eqref{eq:continuousfunction},~\eqref{eq:staticmomentumconservation},~\eqref{eq:darcylaw} 
-and~\eqref{eq:compaction},
+and~\eqref{eq:compactionviscosity},
 We finally arive with the full flow mechanical system,
 \begin{alignat}{2}
     \label{eq:darcy}
@@ -312,7 +321,9 @@ melting behavior at certain location.
 The binary eutectic phase behavior describes the chemical behavior of 
 two immiscible crystals from a completely miscible solution.
 On a typical eutectic phase behavior diagram, we can locate any phase situation
-using transported enthalpy and concentration. Binary eutectic melting has
+using transported enthalpy and concentration. 
+Eutectic melting in mantle was being described in work by~\cite{GenerationCompositionPartialMelts}.
+Binary eutectic melting has also
 been applied to water-salt-brine system in glacier~\cite{DownwardOxidantTransport}. 
 
 \subsection{Eutectic Phase Parameters}

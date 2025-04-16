@@ -1,48 +1,48 @@
-This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
+This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: dissertation.aux
 A level-1 auxiliary file: chapters/physics.aux
 A level-1 auxiliary file: chapters/numerics.aux
 The style file: plainnat.bst
 Database file #1: references.bib
-You've used 18 entries,
+You've used 21 entries,
             2773 wiz_defined-function locations,
-            739 strings with 8384 characters,
-and the built_in function-call counts, 7754 in all, are:
-= -- 710
-> -- 357
-< -- 16
-+ -- 123
-- -- 105
-* -- 579
-:= -- 1194
-add.period$ -- 57
-call.type$ -- 18
-change.case$ -- 89
-chr.to.int$ -- 18
-cite$ -- 36
-duplicate$ -- 373
-empty$ -- 686
-format.name$ -- 139
-if$ -- 1649
+            761 strings with 9062 characters,
+and the built_in function-call counts, 9130 in all, are:
+= -- 833
+> -- 427
+< -- 17
++ -- 147
+- -- 126
+* -- 694
+:= -- 1406
+add.period$ -- 66
+call.type$ -- 21
+change.case$ -- 105
+chr.to.int$ -- 21
+cite$ -- 42
+duplicate$ -- 435
+empty$ -- 807
+format.name$ -- 163
+if$ -- 1940
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 19
-newline$ -- 101
-num.names$ -- 72
-pop$ -- 156
+missing$ -- 22
+newline$ -- 116
+num.names$ -- 84
+pop$ -- 183
 preamble$ -- 1
-purify$ -- 71
+purify$ -- 84
 quote$ -- 0
-skip$ -- 283
+skip$ -- 326
 stack$ -- 0
-substring$ -- 357
-swap$ -- 30
+substring$ -- 432
+swap$ -- 33
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 193
+type$ -- 226
 warning$ -- 0
-while$ -- 72
+while$ -- 84
 width$ -- 0
-write$ -- 246
+write$ -- 285
