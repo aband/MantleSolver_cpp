@@ -21,66 +21,86 @@ loops = numel(fstruct1)
 
 h = figure;
 
-set(gcf, 'Position',[100 100 1210 693])
+set(gcf, 'Position',[100 100 2010 1200])
+
+mid = floor(M/2) + 1;
 
 for kk=1:numel(fstruct1)
 
-k = kk + start
+k = kk + start;
 
-fileID = fopen(strcat('build/',fcell1{k}), 'r');
-stokesq = fscanf(fileID, '%f', [1,Inf]);
+filename = strcat('build/qf', string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+data = fscanf(fileID, '%f', [1,Inf]);
+data = reshape(data, M, N);
 
-fileID = fopen(strcat('build/',fcell2{k}), 'r');
-darcyq = fscanf(fileID, '%f', [1,Inf]);
+subplot(2,4,1)
+surf(pX, pY, data);
+title(filename)
 
-fileID = fopen(strcat('build/',fcell3{k}), 'r');
-stokesp = fscanf(fileID, '%f', [1,Inf]);
-
-fileID = fopen(strcat('build/',fcell4{k}), 'r');
-darcyp = fscanf(fileID, '%f', [1,Inf]);
-
-stokesq = reshape(stokesq, M, N);
-darcyq = reshape(darcyq, M, N);
-stokesp = reshape(stokesp, M, N);
-darcyp = reshape(darcyp, M, N);
-
-figure
-subplot(2,2,1)
-surf(pX, pY, stokesq);
-title(["Stokes Pressure Potential",num2str(k)])
-
-subplot(2,2,2)
-surf(pX, pY, darcyq);
-title(["Darcy Pressure Potential",num2str(k)])
-
-subplot(2,2,3)
-surf(pX, pY, stokesp);
-title(["Stokes Pressure",num2str(k)])
-
-subplot(2,2,4)
-surf(pX, pY, darcyp);
-title(["Darcy Pressure",num2str(k)])
-
-figure
-subplot(2,2,1)
-plot(stokesq(1,:),pY(2,:));
-title(["Stokes Pressure Potential",num2str(k)])
+subplot(2,4,1+4)
+plot(data(mid,:),pY(mid,:));
+ylim([-1*L,0.0])
+title(filename);
 ylabel("Depth");
+xlabel("qf");
 
-subplot(2,2,2)
-plot(darcyq(1,:),pY(2,:));
-title(["Darcy Pressure Potential",num2str(k)])
-ylabel("Depth")
+filename = strcat('build/qs', string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+data = fscanf(fileID, '%f', [1,Inf]);
+data = reshape(data, M, N);
 
-subplot(2,2,3)
-plot(stokesp(1,:), pY(2,:));
-title(["Stokes Pressure",num2str(k)])
-ylabel("Depth")
+subplot(2,4,2)
+surf(pX, pY, data);
+title(filename)
 
-subplot(2,2,4)
-plot(darcyp(1,:),pY(2,:));
-title(["Darcy Pressure",num2str(k)])
-ylabel("Depth")
+subplot(2,4,2+4)
+plot(data(mid,:),pY(mid,:));
+ylim([-1*L,0.0])
+title(filename);
+ylabel("Depth");
+xlabel("qs");
+
+filename = strcat('build/rawstokesq', string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+data = fscanf(fileID, '%f', [1,Inf]);
+data = reshape(data, M, N);
+
+subplot(2,4,3)
+surf(pX, pY, data);
+title(filename)
+
+subplot(2,4,3+4)
+plot(data(mid,:),pY(mid,:));
+ylim([-1*L,0.0])
+title(filename);
+ylabel("Depth");
+xlabel("rawstokesq");
+
+filename = strcat('build/rawdarcyq', string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+data = fscanf(fileID, '%f', [1,Inf]);
+data = reshape(data, M, N);
+
+subplot(2,4,4)
+surf(pX, pY, data);
+title(filename)
+
+subplot(2,4,4+4)
+plot(data(mid,:),pY(mid,:));
+ylim([-1*L,0.0])
+title(filename);
+ylabel("Depth");
+xlabel("rawdarcyq");
+
+pause
+F= getframe(gcf);
+
+writeVideo(v,F);
 
 end
 
