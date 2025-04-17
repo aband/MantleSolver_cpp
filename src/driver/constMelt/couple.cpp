@@ -564,7 +564,7 @@ int Driver::AssignLocMatCouple_case(const indice& gcell,
         // =================================================================
 
         phi_s = AssignPorosity(phi_f);
-
+//phi_s = 1.0;
         k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * br_->Pressure() * 
                                                hdiv_->Pressure();
     }
