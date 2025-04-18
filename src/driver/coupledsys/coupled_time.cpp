@@ -55,15 +55,7 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
             cout << "Darcy-Stokes system solved at : " << t*dt << endl;
             SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
             CreateScatterVec();
- 
-        //if (t % 50 == 0){
-            printCellAve(mark, &globalHD, mi, "HD");
-            printCellAve(mark, &globalCD, mi, "CD");
-            PrintFlowEvent(mark);
-            PrintPhaseEvent(mark);
-            PrintPressureSerialApprox(mark);
-            mark ++;
-        //}
+       //}
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
@@ -76,9 +68,15 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         DMRestoreLocalVector(dmu, &localHD);
         DMRestoreLocalVector(dmu, &localCD);
 
+        printCellAve(mark, &globalHD, mi, "HD");
+        printCellAve(mark, &globalCD, mi, "CD");
+        PrintFlowEvent(mark);
+        PrintPhaseEvent(mark);
+        PrintPressureSerialApprox(mark);
+        mark ++;
+
         VecAXPY(globalHD, -1*dt, fluxHD);
         VecAXPY(globalCD, -1*dt, fluxCD);
-
    }
 
     //printCellAve(mark, &globalHD, mi, "HD");
