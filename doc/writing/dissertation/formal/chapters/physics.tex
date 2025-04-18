@@ -1,28 +1,31 @@
 \chapter[Governing Equations]{Governing Equations in Mantle Dynamics}
 \label{equations}
-\section{Mechanics of Mantle Dynamics}
-Fluid dynamics of the mixture of two phase flow has been extensively discussed.
-We will disscuss the three governing equations of mass and momentum referring
-to the similar discussion in \cite{AveragedEquationsTwoPhase}, 
+\section{Mechanics of Two-phase Flow}
+Extensive studies have been conducted on fluid dynamics of a two-phase mixture.
+We briefly disscuss the three governing equations of mass and momentum, drawing on a
+similar discussion presented by \cite{AveragedEquationsTwoPhase}, 
 \cite{MagmaPhysics} and \cite{DynamicsPartiallyMoltenRock}.
-Considering a conservation equation for given volumetric variable $\gamma$ in 
+
+We start by considering the conservation equation for a single-phase system. 
+For a given volumetric quantity $\gamma$ defined within 
 a representative volume element $V$,
+we can write a corresponding conservation equation as:
 \begin{equation}\label{eq:generalconservationlaw}
 		  \frac{d}{dt} \int_{V} \gamma d\mathbf{v} = 
 		  - \int_{\partial V} \mathbf{f} \cdot d\sigma + \int_{V} S d\mathbf{v},
 \end{equation}
 where $\mathbf{f}$ represents flux travelling across the boundary of a representative 
 volume element $V$. The minus sign indicates that the positive direction aligns with
-normal unit vector pointing outwards. $S$, source/sink term, represents the volumetric
-production rate of $\gamma$.
-We can apply Gauss's theorem to obtain differential form,
+normal unit vector pointing outwards. $S$, which is source/sink term, represents the volumetric
+production rate of the volumetric quantity $\gamma$.
+We apply Gauss's theorem to obtain differential form,
 \begin{equation}\label{eq:conservationlawpde}
 \frac{\partial \gamma}{\partial t} + \nabla \cdot \mathbf{f} = S.
 \end{equation}
-We also define the quantity of phase fraction rigorously with the help of an 
-indicator function admitting that multiple phase cannot coexist at the same
-spatial point, which are regarded as immiscible phases.
-We define indicator function,
+We also define the phase fraction using an indicator function, 
+under the assumption that multiple phases cannot coexist at the same spatial location. 
+Accordingly, the phases are considered immiscible.
+The indicator function is defined as
 \begin{equation}\label{eq:indicatorfunction}
 		  i(\mathbf{x}) = \left \{ 
 		  \begin{aligned}
@@ -31,18 +34,30 @@ We define indicator function,
 		  \end{aligned}
 		  \right.
 \end{equation}
-We then define macroscopic phase fraction function with the help of \eqref{eq:indicatorfunction},
+We then define the macroscopic phase fraction function of phase $i$ within a representative volume
+element $V$ as
 \begin{equation}\label{eq:porosityfunction}
-		  \phi_i = \frac{1}{\delta \mathbf{v}} 
-		  \int_{\delta \mathbf{v}} i(\mathbf{x}) d\mathbf{v}.
+		  \phi_i = \frac{1}{V} 
+		  \int_{V} i(\mathbf{x}) d\mathbf{v},
 \end{equation}
-In the beginning of my discussion, we will discuss two immiscible phases liquid magma 
-and solid mantle. Phase fraction of liquid magam is labelled as $\phi_l$ and phase
-fraction of solid mantle is labelled as $\phi_s$, where $\phi_l + \phi_s = 1$ is
-always attained. Phase fraction can also be regarded as volume fraction in macroscopic sense.
+where $\sum_{i} \phi_i = 1$.
+
+We model the partially molten mantle as a two-phase mixture consisting of liquid magma
+and solid mantle. The phase fraction of liquid magam is denoted by $\phi_l$ and phase
+fraction of solid mantle is labelled as $\phi_s$, such that the relation $\phi_l + \phi_s = 1$ is
+always attained. The phase fraction may be equivalently 
+regarded as the volume fraction occupied by each phase within a representative elementary volume,
+reflecting the proportion of space occupied by each phase at the macroscopic scale.
+
+We now write conservation
+We define phase averaged quantity (bulk quantity) as
+\begin{equation}\label{eq:phaseaveraged}
+\overline{\gamma} = \sum_{i} \phi_i \gamma_i.
+\end{equation}
 Substituting bulk density $\overline{\rho} = \phi_l \rho_l + \phi_s \rho_s$ for generalized 
 volumetric variable $\gamma$ in equation \eqref{eq:generalconservationlaw}, we can obtain
 conservation law for bulk mass,
+We now rewrite conservation law with the bulk density $\overline{\rho} = \phi_l \rho_l + \phi_s \rho_s$ 
 \begin{equation}\label{eq:massconservation}
 \frac{\partial \overline{\rho}}{\partial t} + \nabla \cdot \overline{\rho \mathbf{v}} = 0,
 \end{equation}
@@ -65,6 +80,8 @@ Ignoring change of inertia term due to near zero Reynolds number in magma and ma
 \overline{\rho}\mathbf{g} + \nabla \cdot \overline{\mathbf{\tau}} - \nabla \overline{p} = 0,
 \end{equation}
 which represents the bulk conservation of momentum. 
+
+\subsection{Darcy's Law}
 This buld equation cannot determine two different velocities at the same time, hence, we need additional relationship
 governing the behavior of liquid through a porous media.
 We now take a closer look at the interphase force between solid and liquid phases.

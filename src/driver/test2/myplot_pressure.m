@@ -11,7 +11,7 @@ pY = reshape(pY, M, N);
 
 mid = floor(M/2) + 1;
 
-v = VideoWriter('phase.avi','Motion JPEG AVI');
+v = VideoWriter('pressure.avi','Motion JPEG AVI');
 open(v);
 
 fstruct1 = dir('build/*porosity*.dat');
