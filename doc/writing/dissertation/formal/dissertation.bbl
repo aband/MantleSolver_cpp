@@ -1,4 +1,4 @@
-\begin{thebibliography}{21}
+\begin{thebibliography}{16}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -13,12 +13,6 @@ T.~Arbogast, M.~A. Hesse, and A.~L. Taicher.
   2017.
 \newblock {DOI} 10.1137/16M1091095.
 
-\bibitem[Arbogast et~al.(2024)Arbogast, Huang, and Tian]{MultiLevelWeno}
-Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian.
-\newblock A finite volume multilevel weno scheme for multidimensional scalar
-  conservation laws.
-\newblock \emph{Comput. Methods Appl. Mech. Engrg.}, 421, 2024.
-
 \bibitem[Bercovici et~al.(2001)Bercovici, Ricard, and
   Schubert]{TwoPhaseModelCompaction}
 David Bercovici, Yanick Ricard, and Gerald Schubert.
@@ -31,29 +25,10 @@ Ray Bowen.
 \newblock Incompressible porous media models by use of the theory of mixtures.
 \newblock \emph{Int. J. Engng Sci.}, 18:\penalty0 1129--1148, 1980.
 
-\bibitem[Bramble and Hilbert(1970)]{EstimationofLinearFunctionals}
-J.H. Bramble and S.~R. Hilbert.
-\newblock Estimation of linear functionals on sobolev spaces with application
-  to fourier transform and spline interpolation.
-\newblock \emph{SIAM J. Numer. Anal.}, 7\penalty0 (1):\penalty0 112--124, 1970.
-\newblock \doi{10.1137/0707006}.
-
 \bibitem[Drew and Segel(1971)]{AveragedEquationsTwoPhase}
 Donald Drew and Lee Segel.
 \newblock Averaged equations for two-phase flows.
 \newblock \emph{Studies in Applied Mathematics}, page~3, 1971.
-
-\bibitem[Dupont and Scott(1980)]{PolynomialApproximation}
-Todd Dupont and Ridgway Scott.
-\newblock Polynomial approximation of functions in sobolev spaces.
-\newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
-  441--463, 1980.
-
-\bibitem[Elman and Golub(1994)]{InexactUzawa_Elam_Golub}
-Howard~C. Elman and Gene~H. Golub.
-\newblock Inexact and preconditioned uzawa algorithms for saddle point
-  problems.
-\newblock \emph{SIAM. J. Numer. Anal.}, 31:\penalty0 1645--1661, 1994.
 
 \bibitem[Hesse et~al.(2022)Hesse, Jordan, Vance, and
   Oza]{DownwardOxidantTransport}
@@ -67,23 +42,6 @@ I.J Hewitt and A.C Fowler.
 \newblock Partial melting in an upwelling mantle column.
 \newblock \emph{Proc. R. Soc. A}, 464:\penalty0 2467--2491, 2008.
 
-\bibitem[Huang et~al.(2023)Huang, Arbogast, and
-  Tian]{WENOAOSimplifiedSmoothness}
-Chieh-Sen Huang, Todd Arbogast, and Chenyu Tian.
-\newblock Multidimensional weno-ao reconstructions using a simplified
-  smoothness indicator and applications to conservation laws.
-\newblock \emph{J. Sci. Comput.}, 97, 2023.
-
-\bibitem[James H.~Bramble(1997)]{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}
-Apostol T.~Vassilev James H.~Bramble, Joseph E.~Pasciak.
-\newblock Analysis of the inexact uzawa algorithm for saddle point problems.
-\newblock \emph{SIAM. J. Numer. Anal.}, 34:\penalty0 1072--1092, 1997.
-
-\bibitem[Jiang and Shu(1996)]{JSSmoothness}
-Guang-Shan Jiang and Chi-Wang Shu.
-\newblock Efficient implementation of weighted eno schemes.
-\newblock \emph{J. Comput. Phys.}, 126:\penalty0 202--228, 1996.
-
 \bibitem[Katz(2008)]{MagmaDynamicsEnthalpyMethod}
 Richard~F. Katz.
 \newblock Magma dynamics with the enthalpy method: Benchmark solutions and
@@ -95,6 +53,12 @@ Richard~F. Katz.
 \newblock \emph{The Dynamics of Partially Molten Rock}.
 \newblock Princeton University Press, 1st edition, 2022.
 \newblock ISBN 9780691232645.
+
+\bibitem[Lupis(1983)]{Chemistry}
+C.~H.~P. Lupis.
+\newblock \emph{Chemical Thermodynamics of Materials}.
+\newblock Prentice Hall, 1983.
+\newblock ISBN 0130502383.
 
 \bibitem[Mckenzie(1984)]{MagmaPhysics}
 Dan Mckenzie.
@@ -135,5 +99,11 @@ Marc Spiegelman and Tim Elliott.
   young lavas.
 \newblock \emph{Earth and Planetary Science Letters}, 118:\penalty0 1--20,
   1993.
+
+\bibitem[Wheeler et~al.(1996)Wheeler, McFadden, and
+  Boettinger]{eutecticsolidification}
+A.~A. Wheeler, G.~B. McFadden, and W.~J. Boettinger.
+\newblock Phase-field model for solidification of a eutectic alloy.
+\newblock 452:\penalty0 495--525, 1996.
 
 \end{thebibliography}
