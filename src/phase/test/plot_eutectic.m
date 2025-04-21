@@ -14,6 +14,9 @@ T1 = (T1-Te)/(Tm-Te);
 T2 = (T2-Te)/(Tm-Te);
 Te = (Te-Te)/(Tm-Te);
 
+fontSize = 14;
+
+%{
 % Weight fraction Temperature plot
 figure
 plot([0 Xe]*100, [T1, Te], 'k-'), hold on
@@ -33,8 +36,8 @@ text(Xe*100, Te,'III','fontsize',12,'color','b')
 hold off
 
 axis square
-xlabel 'opx [wt%]'
-ylabel 'Dimensionless Temperature'
+xlabel ('opx [wt%]', 'FontSize', fontSize)
+ylabel ('Dimensionless Temperature', 'FontSize', fontSize)
 
 % bulk composition Temperature plot switch to left side of eutectic
 figure
@@ -63,32 +66,37 @@ text(0.171, 0.28, 'c', 'fontsize', 12, 'color', 'r')
 hold off
 
 axis square
-xlabel 'Bulk composition'
-ylabel 'Dimensionless Temperature'
+xlabel ('Bulk composition', 'FontSize', fontSize)
+ylabel ('Dimensionless Temperature', 'FontSize', fontSize)
+%}
 
-%{
 % H-X plot 
 %L = 0.6;
 L = 5*10^5 / 1200 / (2000-1480)
 
-figure
+%figure
 plot([0,Xe],[T1+L,Te+L],'k-'), hold on
 plot([0,Xe],[Te,Te+L],'k-')
-plot([0,Xe], [-0.2, -0.2], 'k-')
+plot([0,Xe], [-0.5, -0.5], 'k-')
 plot([0,Xe],[Te,Te],'k-')
-text(0.5*Xe,-0.1,'II','fontsize',12,'color','b');
+text(0.5*Xe,-0.25,'II','fontsize',12,'color','b');
 text(0.3*Xe,L,'IV','fontsize',12,'color','b');
 text(0.8*Xe,0.3,'III','fontsize',12,'color','b');
-text(L,1.3,'VI','fontsize',12,'color','b');
-text(0.5*Xe,0.0,'a','fontsize',12,'color','#A2142F');
-text(0.5*Xe,0.3,'b','fontsize',12,'color','#A2142F');
-text(0.5*Xe,1.1,'c','fontsize',12,'color','#A2142F');
+text(0.01*Xe,-0.25,'I','fontsize',12,'color','b');
+text(0.01*Xe, Te+0.05,'1','fontsize',12,'color','r')
+text(0.01*Xe, T1+L+0.05,'2','fontsize',12,'color','r')
+text(Xe - 0.03*Xe, Te+0.05,'3','fontsize',12,'color','r')
+text(Xe - 0.03*Xe, Te+L+0.05,'4','fontsize',12,'color','r')
+plot([0 0 Xe Xe], [Te T1+L Te Te+L], 'o', 'markerfacecolor', 'w', 'markeredgecolor', 'r')
+%text(L,1.3,'VI','fontsize',12,'color','b');
+%text(0.5*Xe,0.0,'a','fontsize',12,'color','r');%'#A2142F');
+%text(0.5*Xe,0.3,'b','fontsize',12,'color','r');%'#A2142F');
+%text(0.5*Xe,1.2,'c','fontsize',12,'color','r');%'#A2142F');
 hold off
 
 axis square
-xlabel 'Bulk composition'
-ylabel 'Dimensionless enthalpy'
-%}
+xlabel ('Bulk composition', 'FontSize', fontSize)
+ylabel ('Bulk enthalpy', 'FontSize', fontSize)
 
 %{
 % H-C plot

@@ -203,7 +203,7 @@ the solid and liquid phases to a given porosity distribution,
 thereby laying the foundation for subsequent computations.
 
 \subsection{Scaled Formulation}
-The Darcy equation will mathematically degenerate in the regions where 
+The Darcy equation mathematically degenerates in the regions where 
 the porosity is zero.
 To handle this issue, we use the formulation developed 
 previously by~\citet{DegenerateDarcy}. We first define pressure potentials as
@@ -343,7 +343,7 @@ enthalpy. We formulate the energy balance equation by neglecting
 external heating/cooling term $\mathcal{Q}$ and dissipative heating 
 following the discussion presented by \citet{MagmaDynamicsEnthalpyMethod},
 \begin{equation}\label{eq:energyconservationenthalpy}
-\frac{\partial \overline{\rho h}}{\partial t} + \rho c_p \nabla \cdot \overline{\mathbf{v}} T = 
+\frac{\partial \overline{\rho h}}{\partial t} + \rho c_p \nabla \cdot (\overline{\mathbf{v}} T) = 
 \rho L \nabla \cdot \phi_s \mathbf{v}_s + \overline{K} \nabla^2 T + \rho \alpha_\rho T \overline{\mathbf{v}} \cdot \mathbf{g},
 \end{equation}
 where the specific heat capacity $c_p$ is used for both 
@@ -353,7 +353,7 @@ to as adiabatic cooling or decompression cooling by
 \citet{ExtensionofLithosphere}.
 We divide $\rho c_p$ on both sides of the equation 
 \begin{equation}\label{eq:normalizedenthalpy}
-		  \frac{\partial H}{\partial t} + \nabla \cdot \overline{\mathbf{v}} T = 
+		  \frac{\partial H}{\partial t} + \nabla \cdot (\overline{\mathbf{v}} T) = 
 		  \frac{L}{c_p} \nabla \cdot \phi_s \mathbf{v}_s + \kappa \nabla^2 T + 
 		  \frac{\alpha_\rho}{c_p} T \overline{\mathbf{v}} \cdot \mathbf{g},
 \end{equation}
@@ -491,15 +491,15 @@ According to equaions~\eqref{eq:calusiusclapeyron}, the difference between
 melting point and eutectic point, defined as
 $\Delta T = T_m - T_e = T_{m0} - T_{e0}$, which remains constant regardless of
 pressure change. At any given pressure,
-we proceed by subtracting $T_e$ from both side of the equation, and dividing 
-this $\Delta T$ get a renormalized dimensionless formulation as
+we proceed by dividing 
+this $\Delta T$ to get a dimensionless formulation as
 \begin{equation}\label{eq:enthalpydimensionless}
-		  \frac{H-T_m}{\Delta T} = \frac{T-T_m}{\Delta T} + 
+		  \frac{H}{\Delta T} = \frac{T}{\Delta T} + 
 		  \frac{\phi_l L}{c_p \Delta T}.
 \end{equation}
-Let $\check{L} \coloneq \frac{L}{c_p \Delta T}$, 
-$\check{H} \coloneq \frac{H-T_m}{\Delta T}$ 
-and $\check{T} \coloneq \frac{T-T_m}{\Delta T}$. We rewrite the enthalpy 
+Let $\check{L} \coloneqq \frac{L}{c_p \Delta T}$, 
+$\check{H} \coloneqq \frac{H}{\Delta T}$ 
+and $\check{T} \coloneqq \frac{T}{\Delta T}$. We rewrite the enthalpy 
 temperature relationship as
 \begin{equation}\label{eq:enthalpydimensionlessrenormalized}
 		  \check{H} = \check{T} + \phi_l\check{L}. 
@@ -512,103 +512,163 @@ eutectic diagram that can be analytically evaluated.
 We implement a linear eutectic phase boundary to distinguish between different
 phase regions within the diagram.
 
-We begin with a brief description of eutectic melting illustrated in Figure~\ref{fig:Phase}.
+We begin with a brief description of eutectic phase diagram illustrated in Figures~\ref{fig:Phase_all}.
+The eutectic composition is set as $C_e \approx 0.25$. For illustration only, we plot bulk 
+composition against a renormalized dimensionless temperature $\check{T} - T_e/\Delta T$, 
+where $\check{T}_m - T_e/\Delta T = 1$ and $\check{T}_e - T_e/\Delta T = 0$.
 \begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
 \centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/eutectic.png}
+\caption{}
+\label{fig:phase}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/zoom_eutectic.png}
-		  \caption{Eutectic Phase Diagram. 1) Full phase diagram of olivine-opx system.
-		  2) Phase diagram when composition of opx smaller than eutectic compositon.\label{fig:Phase}}
+\caption{}
+\label{fig:phase_zoom}
+\end{subfigure}
+		  \caption{Eutectic Phase Diagram. (a) Full phase diagram of olivine-opx system.
+		  (b) Phase diagram when composition of opx smaller than eutectic compositon.\label{fig:Phase_all}}
 \end{figure}
-We split phase diagram into six regions.
+
+We identify the following $6$ regions with different phase assemblages:
 \begin{enumerate}[I]
-\item Single-phase sub-solidus    : Olivine
-\item Two-phase sub-solidus       : Olivine + Orthopyroxene
-\item Three-phase eutectic        : Olivine + Orthopyroxene + melt
-\item Two-phase super-eutectic    : Olivine + melt
-\item Two-phase super-eutectic    : Orthopyroxene + melt
+\item Single-phase sub-solidus    \hspace{0.55cm}: Olivine
+\item Two-phase sub-solidus       \hspace{0.85cm}: Olivine + Orthopyroxene
+\item Three-phase eutectic        \hspace{1.15cm}: Olivine + Orthopyroxene + melt
+\item Two-phase super-eutectic    \hspace{0.3cm}: Olivine + melt
+\item Two-phase super-eutectic    \hspace{0.3cm}: Orthopyroxene + melt
 \item Single-phase super-liquidus : melt
 \end{enumerate}
+In partial melting system, 
+we assume the bulk composition of orthopyroxene (opx) remains below the eutectic composition.
+Consequently, we focus in the part of phase diagram~\ref{fig:phase}, where bulk composition is
+less than eutectic composition, which is illustrated in Figure~\ref{fig:phase_zoom}.
 
-\subsection{Phase Split}
-Region I. Pure component $1$. There is no eutectic phase behavior in this region.
-The conditions to be in region I are
+The melting in eutectic system is illustrated with the green line in Figure~\ref{fig:phase_zoom}.
+Now imagining a system containing $17\%$ opx starts melting. Starting with all solid phase marked as
+point $a$, the 
+system temperature increase linearly in response to the enthalpy rise. When the temperature reaches the 
+eutectic temperature, marked as point $b$, both components of the system starts melting 
+with a fixed ratio of $25\%$ opx and $75\%$ olivine, which is the eutectic composition.
+Once all opx is gone, the system leaves the eutectic points and climbs up along the line from point $3$
+to point $c$. After all solid exhausted, the temperature of the system will continuous to rise linearly
+in response to enthalpy input. It is worth noting that we can reverse the process to obtain a path 
+of equilibrium crystallization.
+
+\subsection{Phase Split Calculation}
+A detailed description of the phase-splitting calculations is provided for Regions I, II, III, and IV
+in this chapter.
+We draw a Enthalpy-Composition diagram including the effect of latent heat in Figure~\ref{fig:HC}.
+Again, we plot against the renormalized enthalpy $\check{H} - T_e/\Delta T$ for simplicity.
+The individual concentration and temperature are determined using equations~\eqref{eq:bulkmassfraction} 
+and~\eqref{eq:enthalpydimensionlessrenormalized}. We denote the volume fraction of olivine as $\phi_1$ and
+the volume fraction of orthopyroxene as $\phi_2$, such that $\phi_1 + \phi_2 = \phi_s$.
+\begin{figure}[ht]
+\centering \small
+\includegraphics[width=5.5cm,height=4cm]{chapters/pics/HC.png}
+\caption{Enthalpy-Composition Diagram}
+\label{fig:HC}
+\end{figure}
+
+Region I. Pure olivine in solid phase. The melting of pure olivine does not follow eutectic
+melting path. The conditions to be in region I are
 \begin{equation}
-		  C = 0 \quad \check{H} \leq \check{T}_m,
+		  C = 0,  \quad \check{H} \leq \check{T}_m,
 \end{equation}
-and we can determine phase fraction, mass composition and current temperature,
+and we can determine phase fractions and temperature as
 \begin{equation}
 \phi_{1} = 1, \quad \phi_{2} = \phi_l = 0 \quad \text{and} 
 		  \quad \check{T} = \check{H}.
+\end{equation}
+We can determine partial derivatives of temperature with respect to bulk enthalpy and bulk composition as
+\begin{equation}
+\frac{\partial\check{T}}{\partial\check{H}} = 1 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
 \end{equation}
 Region II. Sub-solidus: two components coexist as solid phase.
 In this phase region, temperature hasn't reached eutectic melting temperature.
 The conditions to be in region II are
 \begin{equation}
-		  C \neq 0 \quad \check{H} \leq \check{T}_e.
+		  C \neq 0, \quad \check{H} \leq \check{T}_e,
 \end{equation}
-We can determine phase fraction, mass composition and current temperature,
+and we can determine phase fractions and temperature as
 \begin{equation}
-\phi_{2} = C \quad \phi_1 = 1-\phi_2 
+\phi_{2} = C, \quad \phi_1 = 1-\phi_2,
 		  \quad \phi_l = 0 \quad \text{and} \quad 
 		  \check{T} = \check{H} .
 \end{equation}
-Region III. Two-phase eutectic: The system starts melting at eutectic temperature.
-Both solid component $1$ and component $2$ and melt coexist at the same time.
-Temperature fixs until component $2$ exhausts leaving eutectic melting.
-Mass composition of component $2$ in the melt is also fixed as $\mathcal{X}_e$.
-The conditions to be in region III are
-%\begin{equation}
-%		  C \leq \mathcal{X}_e \quad 
-%		  \check{H} \leq \check{T}_e + \mathcal{X}_e \check{L}
-%\end{equation}
-We can determine phase fraction, mass composition and current temperature,
+We can determine partial derivatives of temperature with respect to bulk enthalpy and bulk composition as
 \begin{equation}
-		  \phi_l = \frac{\check{H} - \check{T}_e}{\check{L}} \quad
-		  \phi_2 = C - \phi_l \mathcal{X}_e \quad
+\frac{\partial\check{T}}{\partial\check{H}} = 1 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
+\end{equation}
+Region III. Two-phase eutectic: The system starts melting at eutectic temperature
+with a fixed composition ratio.
+Both olivine and orthopyroxene in solid state and melt coexist at the same time.
+Temperature remaines eutectic point until opx exhausts. 
+Concentration of opx in the melt is also fixed equal to eutectic composition.
+The conditions to be in region III are
+\begin{equation}
+		  C \leq C_e, \quad 
+		  \check{T}_e < \check{H} \leq \text{line}_{1-4},
+\end{equation}
+where $\text{line}_{1-4}$ is defined as $\check{H}(C) = \check{T}_e + \check{L} C/C_e$,
+and we can determine phase fractions and current temperature,
+\begin{equation}
+		  \phi_l = \frac{\check{H} - \check{T}_e}{\check{L}}, \quad
+		  \phi_2 = C - \phi_l C_e, \quad
 		  \phi_1 = 1- \phi_l - \phi_2 \quad
 		  \text{and} \quad \check{T} = \check{T}_e.
 \end{equation}
-Region IV. Super-eutectic two phase region. All component $2$ in solid has
-been exhausted. The mass composition of component $2$ 
-in liquid $c_{f}$ is now approximated with
-a relation between mass fraction and temperature.
-Subscript indicating component $2$ has been dropped since only one component 
-is being tracked.
-%The conditions to be in region IV are
-%\begin{equation}
-%		  C \leq \mathcal{X}_e \quad
-%		  \check{H} \leq \check{T}_e + \check{L}
-%\end{equation}
-We can determine phase fraction first,
+We can determine partial derivatives of temperature with respect to bulk enthalpy and bulk composition as
 \begin{equation}
-    \phi_2 = 0 \quad \phi_l = \frac{C}{c_l(\check{T})}.
+\frac{\partial\check{T}}{\partial\check{H}} = 0 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
 \end{equation}
-The corresponding temperature should be determined by solving the following equation.
+Region IV. Super-eutectic two phase region. All solid phase opx has
+been exhausted. The concentration of opx
+in liquid $c_{l}$ is now approximated with
+a linear function.
+The conditions to be in region IV are
+\begin{equation}
+		  C \leq C_e, \quad
+		  \text{line}_{1-4} < \check{H} \leq \text{line}_{2-4},
+\end{equation}
+where $\text{line}_{2-4}$ is defined as $\check{H}(C) = \check{H}_m - c_l/C_e$,
+and we can determine phase fractions as 
+\begin{equation}
+    \phi_2 = 0, \quad \phi_l = \frac{C}{c_l(\check{T})} \quad \text{and} \quad \phi_1 = 1- \phi_l.
+\end{equation}
+The corresponding temperature can be determined by solving the following equation
 \begin{equation}
 F(\check{T}) = \check{H} - \check{T} - 
 		  \frac{C}{c_l(\check{T})} \check{L} = 0. 
 \end{equation}
-We can solve this nonlinear function with Newton iteration. However, we are 
-approximating with a linear relationship 
-$c_l = \mathcal{X}_e (\check{T}_m - \check{T}))$
-where $c_l > C$ is imposed for the fact that there is component $1$ remaining as 
-solid. Now we can solve a simple quadratic equation,
+Let $c_l = C_e (\check{T}_m - \check{T})$,   
+we can obtain a quadratic equation about temperature as
 \begin{equation}
 		  \check{T}^2 - (\check{H} + \check{T}_m)\check{T} + 
-		  \check{T}_m \check{H} - C L/\mathcal{X}_e = 0.
+		  \check{T}_m \check{H} - C L/C_e = 0,
 \end{equation}
-Omitting the root that exceeding melting temperature,
+which can be solved with standard quadratic root finding formula.
+We omit one of the roots that exceeding melting temperature,
 \begin{equation}
 		  \begin{aligned}
 		  \check{T} &= \frac{\check{H} + \check{T}_m - 
 		  \sqrt{ (\check{H} + \check{T}_m)^2 - 
-		  4(\check{T}_m \check{H} - C L/\mathcal{X}_e)} }{2} \\
+		  4(\check{T}_m \check{H} - C \check{L}/C_e)} }{2} \\
 					  &= 
 		  \frac{\check{H} + \check{T}_m - 
 		  \sqrt{ (\check{H} - \check{T}_m)^2 + 
-		  4C L/\mathcal{X}_e} }{2} 
+		  4C \check{L}/C_e} }{2}. 
 		  \end{aligned}
+\end{equation}
+We can determine partial derivatives of temperature with respect to bulk enthalpy and bulk composition as
+\begin{equation}
+\begin{aligned}
+\frac{\partial\check{T}}{\partial\check{H}} &= \frac{1}{2}\Bigg(1- \frac{\check{H} - \check{T}_m}{\sqrt{(\check{H} - \check{T}_m)^2 + 4C\check{L}/C_e}}\Bigg) \\
+\frac{\partial\check{T}}{\partial C} &= -\frac{\check{L}/C_e}{\sqrt{(\check{H} - \check{T}_m)^2 + 4C\check{L}/C_e}}.
+\end{aligned}
 \end{equation}
 
 \section{Nondimensionalization}
@@ -618,8 +678,15 @@ compaction length and scaled characteristic Darcy speed of the melt,
 \begin{equation}\label{eq:physcalscales}
 l_0 = \big( \frac{k_0 \mu_s}{\mu_l} \big)^{1/2} \quad\text{and}\quad u_0 = \frac{k_0 \rho_r g}{\mu_l}.
 \end{equation}
-We can derive corresponding characteristic time scale as $t_0 = l_0/u_0$, now we can write full set of
-dimensionless equations. We represent dimensionless variables with a $ \check{}$ mark,
+We define corresponding characteristic time scale as $t_0 = l_0/u_0$, and characeristic pressure scale
+as $p_0 = \rho g l_0$. Now we can write a full set of
+dimensionless equations.
+A set of nondimensional variables are defined as
+\begin{equation}
+\check{\mathbf{v}}_r = \frac{\mathbf{v}_r}{u_0}, \quad \check{\mathbf{v}}_s = \frac{\mathbf{v}_s}{u_0}, \quad 
+\check{q} = \frac{q}{p_0}, \quad \check{q_l} = \frac{q_l}{p_0}.
+\end{equation}
+The resulting dimensionless mechanics and transport equations are
 \begin{alignat}{2}
 \label{eq:dimensionlessdarcy_flow_sc}
 		  &\check{\mathbf{v}}_r
@@ -635,13 +702,14 @@ dimensionless equations. We represent dimensionless variables with a $ \check{}$
         - \frac{\phi^{1/2}}{1-\phi}(\check{q}_l - \phi^{1/2}\check{q}) &&=0,
 \end{alignat}
 where dimensionless deviatoric stress of the solid phase is 
-$\check{\tau} = 2(1-\phi)(\mathcal{D} \check{\mathbf{v}}_s - 1/3\nabla \cdot \check{\mathbf{v}}_s \mathbf{I})$ and 
-$\mathbf{n}$ is the unit direction vector pointing downwards. Now we align transport equations with dimensionless 
-variables defined in mechanic system,
+$\check{\tau} = 2(1-\phi)(\frac{1}{2} (\nabla \check{\mathbf{v}}_s + \nabla \check{\mathbf{v}}_s^T) - 
+1/3\nabla \cdot \check{\mathbf{v}}_s \mathbf{I})$, which maintains the same form as~\eqref{eq:deviatoricstress}. 
+$\mathbf{n}$ is the unit direction vector pointing downwards. Now we rewrite transport equations with dimensionless 
+variables as
 \begin{equation}\label{dimensionlesstransport}
 		  \begin{aligned}
 					 \frac{\partial C}{\partial \check{t}} + \nabla \cdot (\check{\mathbf{v}}_{\text{eff}} C - \frac{\phi \mathcal{D}_l}{u_0l_0} \nabla c_l) &= 0,\\
-					 \frac{\partial \check{H}}{\partial \check{t}} + \nabla \cdot \check{\overline{\mathbf{v}}} T - 
+					 \frac{\partial \check{H}}{\partial \check{t}} + \nabla \cdot (\check{\overline{\mathbf{v}}} \check{T}) - 
 					 \check{L} \nabla \cdot \phi_s \check{\mathbf{v}}_s - \frac{\kappa}{u_0l_0} \nabla^2 \check{T} -  
 					 \frac{\alpha_\rho l_0}{c_p} \check{T} \check{\overline{\mathbf{v}}} \cdot \mathbf{g} &= 0.
 		  \end{aligned}
