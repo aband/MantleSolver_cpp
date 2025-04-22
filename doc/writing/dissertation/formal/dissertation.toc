@@ -16,4 +16,17 @@
 \contentsline {subsection}{\numberline {1.3.3}Phase Diagram}{15}{subsection.1.3.3}%
 \contentsline {subsection}{\numberline {1.3.4}Phase Split Calculation}{16}{subsection.1.3.4}%
 \contentsline {section}{\numberline {1.4}Nondimensionalization}{19}{section.1.4}%
-\contentsline {chapter}{Works Cited}{21}{appendix*.8}%
+\contentsline {chapter}{Chapter 2:\hspace *{1em}Numerical Methods}{21}{chapter.2}%
+\contentsline {section}{\numberline {2.1}The Mixed Finite Element Method}{21}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Stokes Problem}{21}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Darcy Problem}{21}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Coupled Degenerate System}{22}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}Degenerate Saddle Point Problem}{22}{subsection.2.1.4}%
+\contentsline {section}{\numberline {2.2}ML-WENO}{23}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Stencil Polynomial}{23}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Stencil polynomial smoothness indicators}{25}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}ML-WENO weighting}{26}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Boundary Treatment}{27}{subsection.2.2.4}%
+\contentsline {subsection}{\numberline {2.2.5}Finite Volume Formulation with ML-WENO}{27}{subsection.2.2.5}%
+\contentsline {subsection}{\numberline {2.2.6}Time Stepping}{27}{subsection.2.2.6}%
+\contentsline {chapter}{Works Cited}{28}{appendix*.9}%
