@@ -2,7 +2,7 @@
 \label{equations}
 \section{Mechanics in Mantle Dynamics}
 Extensive studies have been conducted on fluid dynamics of a two-phase mixture.
-We briefly disscuss the four governing equations of mechanics, 
+We briefly discuss the four governing equations of mechanics, 
 drawing on a
 similar discussion presented by \citet{AveragedEquationsTwoPhase}, 
 \citet{MagmaPhysics} and \citet{DynamicsPartiallyMoltenRock}.
@@ -13,10 +13,10 @@ under the assumption that multiple phases cannot coexist at the same spatial loc
 Accordingly, the phases are considered immiscible.
 The indicator function is defined as
 \begin{equation}\label{eq:indicatorfunction}
-		  i(\mathbf{x}) = \left \{ 
+		  \chi_i(\mathbf{x}) = \left \{ 
 		  \begin{aligned}
-					 &1 \quad \text{phase}_i,\\
-					 &0 \quad \text{not phase}_i.
+					 &1 \quad \text{phase} i,\\
+					 &0 \quad \text{not phase} i.
 		  \end{aligned}
 		  \right.
 \end{equation}
@@ -24,15 +24,15 @@ We then define the macroscopic phase fraction function of phase $i$ within a rep
 element $V$ as
 \begin{equation}\label{eq:porosityfunction}
 		  \phi_i = \frac{1}{V} 
-		  \int_{V} i(\mathbf{x}) d\mathbf{v},
+		  \int_{V} \chi_i(\mathbf{x}) d\mathbf{v},
 \end{equation}
-where $\sum_{i} \phi_i = 1$. In imcompressible setting, 
+where $\sum_{i} \phi_i = 1$. In the incompressible setting, 
 the phase fraction may be equivalently 
 regarded as the volume fraction occupied by each phase within a 
 representative elementary volume, reflecting the proportion of space 
 occupied by each phase at the macroscopic scale. 
 Phase-averaged (or volume-averaged) quantities, 
-also referred to as bulk quantities, are defined as follows
+also referred to as bulk quantities, are defined as 
 \begin{equation}\label{eq:bulkquantity}
 		  \overline{\gamma}  = \sum_{i} \phi_i \gamma_i,
 \end{equation}
