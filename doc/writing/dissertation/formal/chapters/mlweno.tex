@@ -1,7 +1,4 @@
-\definecolor{myBlue}{RGB}{190,203,211}
-\definecolor{myRed}{RGB}{244,186,175}
-\definecolor{myGreen}{RGB}{114,138,122}
-\definecolor{myYellow}{RGB}{241,208,157}
+\section{Finite Volume Scheme}
 
 \section[ML-WENO]{The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}
 We develop a accurate, versatile, robust and efficient finite volume 
@@ -145,7 +142,7 @@ R(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q^l(\mathbf{x}), \quad \mathbf{x} \in 
 where $\sum_l \tilde{\omega}_l = 1$ is normalized nonlinear weights associated with stencils accordingly.
 \begin{figure}[ht]
 \centering
-\input chapters/mlstencil.tex
+\input chapters/tikz/mlstencil.tex
 \caption{An example of (3,2,1) multi-level stencils combination on logically rectangular 
 quadrilateral mesh.\label{fig:quadmesh}}
 \end{figure}
@@ -170,6 +167,4 @@ We then renormalize scaled weights
 
 \subsection{Boundary Treatment}
 
-\subsection{Finite Volume Formulation with ML-WENO}
-
-\subsection{Time Stepping}
+\section{Time Stepping}

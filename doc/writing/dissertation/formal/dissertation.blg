@@ -1,49 +1,50 @@
-This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: dissertation.aux
 A level-1 auxiliary file: chapters/physics.aux
+A level-1 auxiliary file: chapters/numerics.aux
 The style file: plainnat.bst
 Database file #1: references.bib
 Warning--empty journal in eutecticsolidification
-You've used 16 entries,
+You've used 23 entries,
             2773 wiz_defined-function locations,
-            724 strings with 7964 characters,
-and the built_in function-call counts, 6871 in all, are:
-= -- 618
-> -- 313
-< -- 13
-+ -- 109
-- -- 93
-* -- 513
-:= -- 1061
-add.period$ -- 51
-call.type$ -- 16
-change.case$ -- 78
-chr.to.int$ -- 16
-cite$ -- 33
-duplicate$ -- 336
-empty$ -- 616
-format.name$ -- 117
-if$ -- 1462
+            773 strings with 9298 characters,
+and the built_in function-call counts, 9925 in all, are:
+= -- 900
+> -- 467
+< -- 18
++ -- 161
+- -- 138
+* -- 754
+:= -- 1532
+add.period$ -- 73
+call.type$ -- 23
+change.case$ -- 114
+chr.to.int$ -- 23
+cite$ -- 47
+duplicate$ -- 476
+empty$ -- 879
+format.name$ -- 177
+if$ -- 2106
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 18
-newline$ -- 91
-num.names$ -- 64
-pop$ -- 148
+missing$ -- 25
+newline$ -- 127
+num.names$ -- 92
+pop$ -- 206
 preamble$ -- 1
-purify$ -- 63
+purify$ -- 92
 quote$ -- 0
-skip$ -- 244
+skip$ -- 353
 stack$ -- 0
-substring$ -- 318
-swap$ -- 27
+substring$ -- 457
+swap$ -- 34
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 166
+type$ -- 243
 warning$ -- 1
-while$ -- 63
+while$ -- 91
 width$ -- 0
-write$ -- 218
+write$ -- 311
 (There was 1 warning)

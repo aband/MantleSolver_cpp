@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.4.11)  21 APR 2025 18:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.4.11)  22 APR 2025 16:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -929,6 +929,26 @@ File: pgflibraryarrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
 zlibrarypositioning.code.tex
 File: tikzlibrarypositioning.code.tex 2023-01-15 v3.1.10 (3.1.10)
 )
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.
+code.tex
+File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfarrowinset=\dimen298
+\pgfarrowlength=\dimen299
+\pgfarrowwidth=\dimen300
+\pgfarrowlinewidth=\dimen301
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryautomata.code.tex
+File: tikzlibraryautomata.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryquotes.code.tex
+File: tikzlibraryquotes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
 (/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
 Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
 
@@ -937,14 +957,14 @@ Package: caption 2023/08/05 v3.6o Customizing captions (AR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
 Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
-\caption@tempdima=\dimen298
-\captionmargin=\dimen299
-\caption@leftmargin=\dimen300
-\caption@rightmargin=\dimen301
-\caption@width=\dimen302
-\caption@indent=\dimen303
-\caption@parindent=\dimen304
-\caption@hangindent=\dimen305
+\caption@tempdima=\dimen302
+\captionmargin=\dimen303
+\caption@leftmargin=\dimen304
+\caption@rightmargin=\dimen305
+\caption@width=\dimen306
+\caption@indent=\dimen307
+\caption@parindent=\dimen308
+\caption@hangindent=\dimen309
 Package caption Info: Standard document class detected.
 )
 \c@caption@flags=\count356
@@ -968,7 +988,7 @@ Package caption Info: New subtype `subtable' on input line 238.
 * This is a dissertation *
 * *
 * *
-(./dissertation.aux (./chapters/physics.aux))
+(./dissertation.aux (./chapters/physics.aux) (./chapters/numerics.aux))
 \openout1 = `dissertation.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
@@ -993,13 +1013,13 @@ LaTeX Font Info:    ... okay on input line 33.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count364
-\scratchdimen=\dimen306
+\scratchdimen=\dimen310
 \scratchbox=\box91
 \nofMPsegments=\count365
 \nofMParguments=\count366
 \everyMPshowfont=\toks57
 \MPscratchCnt=\count367
-\MPscratchDim=\dimen307
+\MPscratchDim=\dimen311
 \MPnumerator=\count368
 \makeMPintoPDFobject=\count369
 \everyMPtoPDFconversion=\toks58
@@ -1070,12 +1090,12 @@ Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
 d on input line 383.
 
 [12] [13] [14{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
-<chapters/pics/eutectic.png, id=308, 421.07727pt x 315.95728pt>
+<chapters/pics/eutectic.png, id=388, 421.07727pt x 315.95728pt>
 File: chapters/pics/eutectic.png Graphic file (type png)
 <use chapters/pics/eutectic.png>
 Package pdftex.def Info: chapters/pics/eutectic.png  used on input line 522.
 (pdftex.def)             Requested size: 156.49007pt x 113.81203pt.
-<chapters/pics/zoom_eutectic.png, id=309, 421.07727pt x 315.95728pt>
+<chapters/pics/zoom_eutectic.png, id=389, 421.07727pt x 315.95728pt>
 File: chapters/pics/zoom_eutectic.png Graphic file (type png)
 <use chapters/pics/zoom_eutectic.png>
 Package pdftex.def Info: chapters/pics/zoom_eutectic.png  used on input line 52
@@ -1088,7 +1108,7 @@ Overfull \hbox (2.61108pt too wide) in paragraph at lines 520--533
 
 [15 <./chapters/pics/eutectic.png (PNG copy)> <./chapters/pics/zoom_eutectic.pn
 g (PNG copy)>]
-<chapters/pics/HC.png, id=324, 421.07727pt x 315.95728pt>
+<chapters/pics/HC.png, id=404, 421.07727pt x 315.95728pt>
 File: chapters/pics/HC.png Graphic file (type png)
 <use chapters/pics/HC.png>
 Package pdftex.def Info: chapters/pics/HC.png  used on input line 571.
@@ -1099,130 +1119,93 @@ Package pdftex.def Info: chapters/pics/HC.png  used on input line 571.
 
  (./chapters/numerics.tex
 Chapter 2:
-(./chapters/mfem.tex [21
+(./chapters/mesh.tex (./chapters/tikz/quadmesh.tex)) (./chapters/mfem.tex
+[21
 
 
 
 
 ]
-Overfull \hbox (22.98314pt too wide) detected at line 140
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 33.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `superscript' on input line 33.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 33.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 57.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 57.
+
+[22]
+Overfull \hbox (22.98314pt too wide) detected at line 143
 [][][]\OT1/cmr/bx/n/12 A \OT1/cmr/m/n/12 = [] \OML/cmm/m/it/12 ;  \OT1/cmr/bx/n
 /12 B \OT1/cmr/m/n/12 = [] \OML/cmm/m/it/12 ;  \OT1/cmr/bx/n/12 C \OT1/cmr/m/n/
 12 = [] \OML/cmm/m/it/12 ;  \OT1/cmr/bx/n/12 F \OT1/cmr/m/n/12 = [] \OML/cmm/m/
 it/12 ;  \OT1/cmr/bx/n/12 G \OT1/cmr/m/n/12 = [] \OML/cmm/m/it/12 ;
  []
 
-[22]
-
-Package natbib Warning: Citation `InexactUzawa_Elam_Golub' on page 23 undefined
- on input line 157.
-
-
-Package natbib Warning: Citation `AnalysisInexactUzawa_Bramble_Pasciak_Vassilev
-' on page 23 undefined on input line 157.
-
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 159.
-) (./chapters/mlweno.tex
-Overfull \hbox (16.74948pt too wide) in paragraph at lines 6--6
+put line 162.
+[23]) (./chapters/mlweno.tex
+Overfull \hbox (16.74948pt too wide) in paragraph at lines 3--3
 []\OT1/cmr/bx/n/14.4 The Multi-level Weighted Es-sen-tially Non-Oscillatory (ML
 -
  []
 
-
-Package natbib Warning: Citation `MultiLevelWeno' on page 23 undefined on input
- line 9.
-
-[23]
-
-LaTeX Warning: Reference `eq:cellaveraged' on page 24 undefined on input line 3
-7.
-
-
-Package natbib Warning: Citation `PolynomialApproximation' on page 24 undefined
- on input line 65.
-
-
-Package natbib Warning: Citation `EstimationofLinearFunctionals' on page 24 und
-efined on input line 66.
-
-[24]
-
-Package natbib Warning: Citation `JSSmoothness' on page 25 undefined on input l
-ine 96.
-
-
-Package natbib Warning: Citation `WENOAOSimplifiedSmoothness' on page 25 undefi
-ned on input line 118.
-
-[25]
-
-LaTeX Warning: Reference `eq:normalizedstencilpoly' on page 26 undefined on inp
-ut line 141.
-
-(./chapters/mlstencil.tex) [26])) [27] (./dissertation.bbl [28
+[24] [25] [26] (./chapters/tikz/mlstencil.tex) [27])) [28] (./dissertation.bbl
+[29
 
 
 
-]))
-
-Package natbib Warning: There were undefined citations.
-
-[29] (./dissertation.aux (./chapters/physics.aux) (./chapters/numerics.aux))
+] [30])) [31] (./dissertation.aux (./chapters/physics.aux)
+(./chapters/numerics.aux))
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `dissertation.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `dissertation.out':
-(rerunfilecheck)             Before: 2DD275CA20FFEFF1F809B27C4A853815;2993
-(rerunfilecheck)             After:  7EBD39B8341F8CC07D55B527ABF53255;5307.
+Package rerunfilecheck Info: File `dissertation.out' has not changed.
+(rerunfilecheck)             Checksum: 18978EFDBE184C2484BAFB7D2076EBB1;5545.
  ) 
 Here is how much of TeX's memory you used:
- 29323 strings out of 476106
- 604679 string characters out of 5793933
- 1944975 words of memory out of 5000000
- 50592 multiletter control sequences out of 15000+600000
+ 29929 strings out of 476106
+ 620877 string characters out of 5793933
+ 1948975 words of memory out of 5000000
+ 51165 multiletter control sequences out of 15000+600000
  569347 words of font info for 79 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 94i,13n,98p,549b,760s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{appendix*.8} has been referenced but does not exist
-, replaced by a fixed one
-
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share/t
-exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf
--dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/euler/eusm10.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/pub
-lic/cm-super/sfrm1200.pfb>
-Output written on dissertation.pdf (29 pages, 367178 bytes).
+ 94i,13n,98p,549b,799s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+r6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/euler/eusm10.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/p
+ublic/cm-super/sfrm1200.pfb>
+Output written on dissertation.pdf (31 pages, 377243 bytes).
 PDF statistics:
- 588 PDF objects out of 1000 (max. 8388607)
- 510 compressed objects within 6 object streams
- 192 named destinations out of 1000 (max. 500000)
- 180 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 690 PDF objects out of 1000 (max. 8388607)
+ 609 compressed objects within 7 object streams
+ 203 named destinations out of 1000 (max. 500000)
+ 300 words of extra memory for PDF output out of 10000 (max. 10000000)
 

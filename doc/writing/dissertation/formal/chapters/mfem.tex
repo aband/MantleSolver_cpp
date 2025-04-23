@@ -1,6 +1,4 @@
-\section{The Mixed Finite Element Method}
-
-\subsection{Stokes Problem}
+\section{Stokes Problem}
 We briefly describe solving static Stokes equation with mixed finite element scheme.
 We begin with strong form of the Stokes problem,
 \begin{equation}\label{eq:strongStokes}
@@ -32,7 +30,11 @@ We can separate normal and tangent part of stress on the boundary easily when ph
 In the situation when a rectangular computational domain is used, we can mix stress and dirichlet boundary condition
 even further. 
 
-\subsection{Darcy Problem}
+\subsection{$H^1$ conforming discretization}
+
+
+
+\section{Darcy Problem}
 \begin{equation}
 \begin{aligned}
 \bold{u} + \nabla p & = \bold{g}\\
@@ -52,7 +54,9 @@ weak form
 
 Test space $\{\bold{v} \in H(\text{div},\Omega): v_n =0$ on $\Gamma_u\}$.
 
-\subsection{Coupled Degenerate System}
+\subsection{$H(\text{div})$ Conforming discretization}
+
+\section{Coupled Degenerate System}
 
 scaled nondimensionalized weak form
 let $\check{\sigma} = \mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bold{\text{I}}$
@@ -66,7 +70,6 @@ let $\check{\sigma} = \mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bo
 					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0
 		  \end{aligned}
 \end{equation}
-
 
 
 \subsection{Degenerate Saddle Point Problem}
@@ -165,7 +168,6 @@ Inexact Uzawa algorithm has been introduced in the previous literature
 					 \STATE Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
 \end{algorithmic}
 \end{algorithm}
-
 
 
 

@@ -22,6 +22,8 @@ int main(int argc, char **argv){
     FILE *gridHD = fopen("gridHD.dat", "w");
     FILE *TD     = fopen("TD.dat", "w");
     FILE *Vf   = fopen("Vf.dat", "w");
+    FILE *dTdH = fopen("dTdH.dat", "w");
+    FILE *dTdC = fopen("dTdC.dat", "w");
 
     int seed = 100;
 
@@ -49,10 +51,16 @@ int main(int argc, char **argv){
 
             fprintf(TD, "%f ", pPtr->pc.TDp - pPtr->TDe0);
             fprintf(Vf, "%f ", pPtr->pc.phil);
+
+            fprintf(dTdC, "%f ", pPtr->pc.dTD_dCD);
+            fprintf(dTdH, "%f ", pPtr->pc.dTD_dHD);
+
         }
         fprintf(gridCD, "\n");
         fprintf(gridHD, "\n");
         fprintf(TD, "\n");
+        fprintf(dTdC, "\n");
+        fprintf(dTdH, "\n");
     }
 
     // Depth plot
@@ -61,6 +69,8 @@ int main(int argc, char **argv){
     fclose(gridHD);
     fclose(TD);
     fclose(Vf);
- 
+    fclose(dTdH);
+    fclose(dTdC);
+
     return 0;
 }
