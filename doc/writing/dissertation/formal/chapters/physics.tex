@@ -260,7 +260,8 @@ we are able to
 evolve our system forward in time.
 In our system, chemical species and energy are being moved along
 with both the solid and the liquid phase.
-\subsection{Conservation of Chemical Species}
+
+\subsection{Transport of Chemical Species}
 The realistic chemical compositions of mantle and magma are highly
 complicated and very hard to trace at the same time. 
 Therefore, we present a simple two-species two-phase model. 
@@ -321,7 +322,7 @@ we obtain an advection-diffusion equation as
 \begin{equation} \label{eq:specietransport}
 		  \frac{\partial \overline{\rho c_{i}}}{\partial t} + \nabla \cdot \big( \overline{\rho c_{i} \mathbf{v}} - \phi_l \rho_l \mathcal{D}_{i,l} \nabla c_{i,l} \big) = 0,
 \end{equation}
-where the phase averaged quantities are defined as 
+where the phase averaged quantities are 
 $\overline{\rho c_i} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j}$ 
 and $\overline{\rho c_i \mathbf{v}} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j} \mathbf{v}_j$.
 The subscript $i$ will be omitted, as only one chemical species needs to be
@@ -338,7 +339,7 @@ species transport equation can be simplified to the form
 The concept of effective velocity has long been employed in chemistry, 
 particularly in the context of particle transport. In mantle dynamics, 
 \citet{GeochemicalConsequence} applied effective velocity for equilibrium 
-transport of concentration within the liquid phase. We define a 
+transport of concentration within the liquid phases. We define a 
 corresponding effective velocity for the transport of bulk composition.
 To begin, we define the partition coefficient as $D_i = c_{i,s}/c_{i,f}$. 
 The concentration of species $i$ in the liquid and solid phase 
@@ -358,89 +359,142 @@ we can rewrite the bulk velocity as
 		  \bigg( \frac{\phi_l \bold{v}_l + D\phi_s \bold{v}_s}{\phi_l + \phi_s D} \bigg) \overline{c}_i.
 \end{equation}
 We get the proper expression for the effective velocity, denoted as 
-$\bold{v}_{\text{eff}} = \frac{\phi_l \bold{v}_l + D_i\phi_s \bold{v}_s}{\phi_l + \phi_s D_i}$, 
-which is the appropriate velocity bulk composition should advecting.
-In the absence of melting, where $\phi_l = 0$, we reterive 
+\begin{equation}\label{eq:definitioneffvel}
+\bold{v}_{\text{eff}} = \frac{\phi_l \bold{v}_l + D_i\phi_s \bold{v}_s}{\phi_l + \phi_s D_i},
+\end{equation}
+which is the appropriate velocity at which the bulk composition should advect.
+In the absence of melting, where $\phi_l = 0$, we retrieve 
 $\mathbf{v}_{\text{eff}} = \mathbf{v}_s$.
-Conversly, in the case of complete melting, where $\phi_l = 1$, we obtain
+Conversely, in the case of complete melting, where $\phi_l = 1$, we obtain
 $\mathbf{v}_{\text{eff}} = \mathbf{v}_l$.
-Therefore, the definition of effective velocity is well defined at those two boundary scenerios. 
-We rewrite the transport equation of species with effective velocity~\eqref{eq:effectivevel} and rewrite $\overline{c}$ with $C$ for simplicity as
+Therefore, the definition of effective velocity is well defined in those two limiting scenarios. 
+We rewrite the transport equation~\eqref{eq:specietransportsimplified} with effective velocity~\eqref{eq:definitioneffvel} as
 \begin{equation}\label{eq:effectivetransportspecie}
 		  \frac{\partial C}{\partial t} = 
 		  \nabla \cdot (\mathbf{v}_{\text{eff}} C - \phi_l \mathcal{D}_l \nabla c_l)
-		  = 0.
+		  = 0,
 \end{equation}
+where $C = \overline{c}$ for simplicity.
 
-\subsection{Conservation of Energy}
-We write the energy balance equation in the phase-averaged internal 
-energy form first as
+\subsection{Transport of Energy}
+According to the first law of thermodynamics,
+we write the energy balance equation in the phase-averaged internal 
+energy form as
 \begin{equation}\label{eq:energybalanceinternalenergy}
-\frac{\partial \overline{\rho u}}{\partial t} + \nabla \cdot \overline{\rho u \mathbf{v}} - \nabla \cdot \overline{K} \nabla T = 
-		  \overline{\rho \mathcal{Q}} + \nabla \cdot \overline{\pmb{\sigma} \cdot \mathbf{v}} + \overline{\rho \mathbf{v}} \cdot \mathbf{g}.
+\frac{\partial \overline{\rho u}}{\partial t} + \nabla \cdot \overline{\rho u \mathbf{v}} = 
+		  \overline{\rho \mathcal{Q}} + \nabla \cdot \overline{K} \nabla T + \nabla \cdot \overline{\pmb{\sigma} \cdot \mathbf{v}} +
+		  \overline{\rho \mathbf{v}} \cdot \mathbf{g},
 \end{equation}
-On the left-hand side, the equation contains the time-dependent rate of change 
-of internal energy, along with advection and diffusion terms.
-On the right-hand side, it includes the heat source term $\mathcal{Q}$, mechanical work done by stress, and work against gravity. 
-In a thermochemical equilibrium scenerio, we replace internal energy with 
-enthalpy. We formulate the energy balance equation by neglecting 
+where $\overline{K} = \phi_l K_l + \phi_s K_s$ is the phase averaged thermal conductivity.
+On the left-hand side, the equation represents the time-dependent rate of change 
+of internal energy of a two-phase mixture as it moves with the flow.
+On the right-hand side, it includes the heat source term $\mathcal{Q}$, 
+conductive heat transfer following Fourier's law,
+mechanical work done by mixture stress, and work against gravity respectively.
+
+In a thermochemical equilibrium scenario, we replace internal energy $u$ with 
+enthalpy $h$. The specific enthalpy is defined as
+\begin{equation}\label{eq:specificenthalpy}
+h = u + PV/\rho,
+\end{equation}
+We formulate the enthalpy equation by neglecting the
 external heating/cooling term $\mathcal{Q}$ and dissipative heating 
 following the discussion presented by \citet{MagmaDynamicsEnthalpyMethod},
+\begin{equation}\label{eq:enthalpyequation}
+\frac{\partial \overline{\rho h}}{\partial t} + \nabla \cdot \overline{\rho h \mathbf{v}}
+= \frac{\partial P}{ \partial t} + \overline{v} \cdot \nabla P + 
+\nabla \cdot \overline{K}\nabla T.
+\end{equation}
+
+\subsection{Temperature Formulation}
+The specific relates to temperature directly with specific heat capacity as
+\begin{equation}\label{eq:specifienthalpyspecificheat}
+h-h0=c_p (T-T_0),
+\end{equation}
+where the reference values $h_0$ and $T_0$ are set as zero for simplicity.
+Another important physical attribute in the context of melting is latent
+heat $L$. We write specific enthalpy in the solid and the liquid phase
+separately as
+\begin{equation}\label{eq:specificenthalpylatentheat}
+\begin{aligned}
+h_s &= c_p T, \\
+h_l &= c_p T + L.
+\end{aligned}
+\end{equation}
+We rewrite the enthalpy equation with latent heat and temperature as
 \begin{equation}\label{eq:energyconservationenthalpy}
 \frac{\partial \overline{\rho h}}{\partial t} + \rho c_p \nabla \cdot (\overline{\mathbf{v}} T) = 
-\rho L \nabla \cdot \phi_s \mathbf{v}_s + \overline{K} \nabla^2 T + \rho \alpha_\rho T \overline{\mathbf{v}} \cdot \mathbf{g},
+\rho L \nabla \cdot (\phi_s \mathbf{v}_s) + \overline{K} \nabla^2 T + \rho \alpha_\rho T \overline{\mathbf{v}} \cdot \mathbf{g},
 \end{equation}
-where the specific heat capacity $c_p$ is used for both 
+where one specific heat capacity $c_p$ is used for both 
 components in solid and liquid phase.
 The last term including gravitational acceleration has previously been referred 
 to as adiabatic cooling or decompression cooling by 
 \citet{ExtensionofLithosphere}.
-We divide $\rho c_p$ on both sides of the equation 
+Assuming no density difference between the solid and the liquid phase,
+we divide $\rho c_p$ on both sides of the equation to obtain a normalized form as
 \begin{equation}\label{eq:normalizedenthalpy}
-		  \frac{\partial H}{\partial t} + \nabla \cdot (\overline{\mathbf{v}} T) = 
-		  \frac{L}{c_p} \nabla \cdot \phi_s \mathbf{v}_s + \kappa \nabla^2 T + 
+		  \frac{\partial \overline{H}}{\partial t} + \nabla \cdot (\overline{\mathbf{v}} T) = 
+		  \frac{L}{c_p} \nabla \cdot (\phi_s \mathbf{v}_s) + \kappa \nabla^2 T + 
 		  \frac{\alpha_\rho}{c_p} T \overline{\mathbf{v}} \cdot \mathbf{g},
 \end{equation}
-where $H = \overline{h}/c_p$ is the bulk specific enthalpy and $\kappa = 
-\overline{K}/\rho c_p$ is the heat diffusivity.
+where $\overline{H} = \overline{h}/c_p$ is the bulk specific enthalpy and $\kappa = 
+\overline{K}/\rho c_p$ is the bulk heat diffusivity.
 
 \section{Eutectic Phase Behavior}
 With the transport equations defined, we can now proceed to redistribute 
 chemical species and energy within the system. The next step is to determine 
 the thermodynamic state of the system, assuming thermodynamic equilibrium is 
 attained at each time step. 
-Recognizing that mid-ocean ridge forms in regions where temperature 
+Recognizing that mid-ocean ridges form in regions where temperatures
 are generally lower, eutectic melting, where the presence of a secondary species 
 significantly lowers the melting temperature, provides a suitable model for 
 describing the melting behavior in these areas.
 
 The binary eutectic system has been widely applied in studies involving
 chemical equilibrium, with detailed
-description can be found in textbook such as book by~\citet{Chemistry}.
+description can be found in textbooks such as~\citet{Chemistry}.
 In the context of mantle dynamics, eutectic melting was being incorporated 
-in work by~\citet{GenerationCompositionPartialMelts}.
+by~\citet{GenerationCompositionPartialMelts}.
 Moreover, eutectic phase behavior has been applied to solidification of 
 alloys by~\citet{eutecticsolidification}.
 More recently, binary eutectic melting has also
-been applied to water-salt-brine system in glacier, as shown 
-by~\citet{DownwardOxidantTransport}. 
+been applied to water-salt-brine systems in glaciers 
+~\citet{DownwardOxidantTransport}. 
 
-We assume the two primary components in our partially molten system are olivine and orthopyroxene, 
+We assume the two primary components in our partially molten system are olivine and orthopyroxene(opx), 
 which are highly miscible in the liquid phase, but immiscible in the solid phase.
 Olivine is considered the dominant component, while orthopyroxene represents the 
 minor component.
 Assuming thermodynamic equilibrium is attained at each time step, 
-we can determine phase fraction of liquid, volume fraction of each solid
-components and temperature on a binary eutectic phase diagram with
+we can determine the phase fraction of liquid, the volume fraction of each solid
+components and the temperature using a binary eutectic phase diagram with
 transported enthalpy and bulk composition.
 
-\subsection{Clausis-Clapeyron Relation}
+A typical eutectic phase diagram is shown in Figure~\ref{fig:fullphasediagram}.
+\begin{figure}[ht]
+\centering\small
+\includegraphics[width=5.5cm,height=4cm]{chapters/pics/eutectic.png}
+\caption{Eutectic Phase Diagram of a Olivine-Orthopyroxene system.}
+\label{fig:fullphasediagram}
+\end{figure}
+There are two key concepts about the point $3$ on the diagram:
+\begin{itemize}
+\item Eutectic melting point or eutectic temperature $T_e$, is the lowest temperature
+a eutectic system starts melting. The melting happens at eutectic temperature is called
+eutectic melting. The temperature of the system is fixed as eutectic temperature when 
+eutectic melting happens.
+\item Eutectic composition $C_e$ is a fixed opx-olivine concentration ratio of the liquid
+produced by eutectic melting.
+\end{itemize}
+
+\subsection{Clausius-Clapeyron Relation}
 In geological contexts, pressure can undergo significant variations during 
 dynamic events such as mantle upwelling. As a result, the influence of 
 pressure on the melting point cannot be neglected.
-To account for this, we approximate both the solidus and eutectic temperatures 
+To account for this, we approximate the solidus melting temperature $T_m$
 at a given pressure using the approximated Clausius–Clapeyron relationship.
-We assume a simple relation between as 
+We also extend such approximation to eutectic temperature $T_e$ as 
 \begin{equation}\label{eq:calusiusclapeyron}
 \begin{aligned}
 		  T_m &= T_{m0} + \nu^{-1} (P-P_0), \\
@@ -454,15 +508,10 @@ refer to their respective values at standard atmospheric pressure.
 
 \subsection{Some Assumptions}
 In a eutectic system, the current thermodynamic state of the material can be identified using the bulk mass fraction of opx (orthopyroxene) 
-and bulk enthalpy of the system. 
-Let $\mathcal{X}_i$ represents the bulk mass fraction of species $i$ 
-and $\mathcal{X}_{i,e}$ denotes mass fraction of species $i$ in liquid at 
-the eutectic point, which is a constant.
-The subscript $i$ will be omitted in the later context, as we consider a binary
-system involving only two components.
-
+and bulk enthalpy of the system. Our bulk mass fraction will refer to orthopryxene(opx) as we
+consider a binary system involving only two components.
 We begin by introducing some assumptions regarding densities and other material 
-proterties.
+properties.
 %\begin{itemize}
 %\item Assuming thermodynamic equilibrium is achieved at every time step that phase state can be calculated
 %		  with phase diagram.
@@ -473,42 +522,42 @@ proterties.
 %\item Assuming constant thermal expansion and specific heat capacity.
 %\end{itemize}
 \begin{itemize}
-		  \item We assume no density difference between solid phase olivine and opx
-					 i.e. 
+		  \item We assume no density difference between solid phase olivine and opx,
+					 i.e., 
 					 $\rho_{\text{opx}} = \rho_{\text{olivine}}$.
 		  \item We assume no density change during phase transition 
-					 (extended Boussinessq approximation) i.e. 
+					 (extended Boussinessq approximation), i.e., 
 					 $\rho_l = \rho_s$.
 		  \item We assume constant and uniform material thermodynamics properties 
 					 like
-					 specific heat capacity and thermal expansion coefficient.
+					 specific heat capacity $c_p$ and thermal expansion coefficient $\alpha_p$.
 \end{itemize}
-Following the assumptions, we express the bulk composition according to its 
-definition as follows
+Following the assumptions, we relate the bulk composition with previously defined
+phase averaged concentration~\eqref{eq:effectivetransportspecie} as
 \begin{equation}\label{eq:bulkmassfraction}
-		  \mathcal{X} = \frac{\phi_l \rho_l c_{l} + \phi_s \rho_s c_s}{\phi_l \rho_l + \phi_s \rho_s} 
-		  = \phi_l c_{l} + \phi_s c_{s} = C = \phi_2 + \phi_l c_l.
+		  \frac{\phi_l \rho_l c_{l} + \phi_s \rho_s c_s}{\phi_l \rho_l + \phi_s \rho_s} 
+		  = \phi_l c_{l} + \phi_s c_{s} = \phi_2 + \phi_l c_l = C.
 \end{equation}
 We also express bulk specific enthalpy with temperature and latent heat 
 \begin{equation}\label{eq:enthalpy}
-		  H = T + \phi_l L/c_p.
+		  \overline{H} = \phi_l h_l/c_p + \phi_s h_s/c_p + \phi_l L/c_p = \phi_l T + \phi_s T + \phi_l L/c_p = T + \phi_l L/c_p.
 \end{equation}
-According to equaions~\eqref{eq:calusiusclapeyron}, the difference between
+According to equations~\eqref{eq:calusiusclapeyron}, the difference between
 melting point and eutectic point, defined as
 $\Delta T = T_m - T_e = T_{m0} - T_{e0}$, which remains constant regardless of
 pressure change. At any given pressure,
 we proceed by dividing 
 this $\Delta T$ to get a dimensionless formulation as
 \begin{equation}\label{eq:enthalpydimensionless}
-		  \frac{H}{\Delta T} = \frac{T}{\Delta T} + 
+		  \frac{\overline{H}}{\Delta T} = \frac{T}{\Delta T} + 
 		  \frac{\phi_l L}{c_p \Delta T}.
 \end{equation}
 Let $\check{L} \coloneqq \frac{L}{c_p \Delta T}$, 
-$\check{H} \coloneqq \frac{H}{\Delta T}$ 
+$H \coloneqq \frac{\overline{H}}{\Delta T}$ 
 and $\check{T} \coloneqq \frac{T}{\Delta T}$. We rewrite the enthalpy 
 temperature relationship as
 \begin{equation}\label{eq:enthalpydimensionlessrenormalized}
-		  \check{H} = \check{T} + \phi_l\check{L}. 
+		  H = \check{T} + \phi_l\check{L}. 
 \end{equation}
 
 \subsection{Phase Diagram}
@@ -518,25 +567,17 @@ eutectic diagram that can be analytically evaluated.
 We implement a linear eutectic phase boundary to distinguish between different
 phase regions within the diagram.
 
-We begin with a brief description of eutectic phase diagram illustrated in Figures~\ref{fig:Phase_all}.
+We begin with a brief description of eutectic phase diagram illustrated in Figures~\ref{fig:fullphasediagram}.
 The eutectic composition is set as $C_e \approx 0.25$. For illustration only, we plot bulk 
 composition against a renormalized dimensionless temperature $\check{T} - T_e/\Delta T$, 
 where $\check{T}_m - T_e/\Delta T = 1$ and $\check{T}_e - T_e/\Delta T = 0$.
 \begin{figure}[ht]
-\begin{subfigure}{.5\textwidth}
-\centering\small
-\includegraphics[width=5.5cm,height=4cm]{chapters/pics/eutectic.png}
-\caption{}
-\label{fig:phase}
-\end{subfigure}
-\begin{subfigure}{.5\textwidth}
 \centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/zoom_eutectic.png}
 \caption{}
 \label{fig:phase_zoom}
-\end{subfigure}
-		  \caption{Eutectic Phase Diagram. (a) Full phase diagram of olivine-opx system.
-		  (b) Phase diagram when composition of opx smaller than eutectic compositon.\label{fig:Phase_all}}
+\caption{
+Phase diagram when composition of opx smaller than eutectic compositon.}
 \end{figure}
 
 We identify the following $6$ regions with different phase assemblages:
@@ -550,7 +591,7 @@ We identify the following $6$ regions with different phase assemblages:
 \end{enumerate}
 In partial melting system, 
 we assume the bulk composition of orthopyroxene (opx) remains below the eutectic composition.
-Consequently, we focus in the part of phase diagram~\ref{fig:phase}, where bulk composition is
+Consequently, we focus in the part of phase diagram~\ref{fig:fullphasediagram}, where bulk composition is
 less than eutectic composition, which is illustrated in Figure~\ref{fig:phase_zoom}.
 
 The melting in eutectic system is illustrated with the green line in Figure~\ref{fig:phase_zoom}.
@@ -568,7 +609,7 @@ of equilibrium crystallization.
 A detailed description of the phase-splitting calculations is provided for Regions I, II, III, and IV
 in this chapter.
 We draw a Enthalpy-Composition diagram including the effect of latent heat in Figure~\ref{fig:HC}.
-Again, we plot against the renormalized enthalpy $\check{H} - T_e/\Delta T$ for simplicity.
+Again, we plot against the renormalized enthalpy $H - T_e/\Delta T$ for simplicity.
 The individual concentration and temperature are determined using equations~\eqref{eq:bulkmassfraction} 
 and~\eqref{eq:enthalpydimensionlessrenormalized}. We denote the volume fraction of olivine as $\phi_1$ and
 the volume fraction of orthopyroxene as $\phi_2$, such that $\phi_1 + \phi_2 = \phi_s$.
@@ -582,54 +623,54 @@ the volume fraction of orthopyroxene as $\phi_2$, such that $\phi_1 + \phi_2 = \
 Region I. Pure olivine in solid phase. The melting of pure olivine does not follow eutectic
 melting path. The conditions to be in region I are
 \begin{equation}
-		  C = 0,  \quad \check{H} \leq \check{T}_m,
+		  C = 0,  \quad H \leq \check{T}_m,
 \end{equation}
 and we can determine phase fractions and temperature as
 \begin{equation}
 \phi_{1} = 1, \quad \phi_{2} = \phi_l = 0 \quad \text{and} 
-		  \quad \check{T} = \check{H}.
+		  \quad \check{T} = H.
 \end{equation}
 We can determine partial derivatives of temperature with respect to bulk enthalpy and bulk composition as
 \begin{equation}
-\frac{\partial\check{T}}{\partial\check{H}} = 1 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
+\frac{\partial\check{T}}{\partial H} = 1 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
 \end{equation}
 Region II. Sub-solidus: two components coexist as solid phase.
 In this phase region, temperature hasn't reached eutectic melting temperature.
 The conditions to be in region II are
 \begin{equation}
-		  C \neq 0, \quad \check{H} \leq \check{T}_e,
+		  C \neq 0, \quad H \leq \check{T}_e,
 \end{equation}
 and we can determine phase fractions and temperature as
 \begin{equation}
 \phi_{2} = C, \quad \phi_1 = 1-\phi_2,
 		  \quad \phi_l = 0 \quad \text{and} \quad 
-		  \check{T} = \check{H} .
+		  \check{T} = H .
 \end{equation}
 We can determine partial derivatives of temperature with respect to bulk enthalpy and bulk composition as
 \begin{equation}
-\frac{\partial\check{T}}{\partial\check{H}} = 1 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
+\frac{\partial\check{T}}{\partial H} = 1 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
 \end{equation}
 Region III. Two-phase eutectic: The system starts melting at eutectic temperature
 with a fixed composition ratio.
 Both olivine and orthopyroxene in solid state and melt coexist at the same time.
-Temperature remaines eutectic point until opx exhausts. 
+Temperature remains eutectic point until opx exhausts. 
 Concentration of opx in the melt is also fixed equal to eutectic composition.
 The conditions to be in region III are
 \begin{equation}
 		  C \leq C_e, \quad 
-		  \check{T}_e < \check{H} \leq \text{line}_{1-4},
+		  \check{T}_e < H \leq \text{line}_{1-4},
 \end{equation}
-where $\text{line}_{1-4}$ is defined as $\check{H}(C) = \check{T}_e + \check{L} C/C_e$,
+where $\text{line}_{1-4}$ is defined as $H(C) = \check{T}_e + \check{L} C/C_e$,
 and we can determine phase fractions and current temperature,
 \begin{equation}
-		  \phi_l = \frac{\check{H} - \check{T}_e}{\check{L}}, \quad
+		  \phi_l = \frac{H - \check{T}_e}{\check{L}}, \quad
 		  \phi_2 = C - \phi_l C_e, \quad
 		  \phi_1 = 1- \phi_l - \phi_2 \quad
 		  \text{and} \quad \check{T} = \check{T}_e.
 \end{equation}
 We can determine partial derivatives of temperature with respect to bulk enthalpy and bulk composition as
 \begin{equation}
-\frac{\partial\check{T}}{\partial\check{H}} = 0 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
+\frac{\partial\check{T}}{\partial H} = 0 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
 \end{equation}
 Region IV. Super-eutectic two phase region. All solid phase opx has
 been exhausted. The concentration of opx
@@ -638,42 +679,42 @@ a linear function.
 The conditions to be in region IV are
 \begin{equation}
 		  C \leq C_e, \quad
-		  \text{line}_{1-4} < \check{H} \leq \text{line}_{2-4},
+		  \text{line}_{1-4} < H \leq \text{line}_{2-4},
 \end{equation}
-where $\text{line}_{2-4}$ is defined as $\check{H}(C) = \check{H}_m - c_l/C_e$,
+where $\text{line}_{2-4}$ is defined as $H(C) = H_m - c_l/C_e$,
 and we can determine phase fractions as 
 \begin{equation}
     \phi_2 = 0, \quad \phi_l = \frac{C}{c_l(\check{T})} \quad \text{and} \quad \phi_1 = 1- \phi_l.
 \end{equation}
 The corresponding temperature can be determined by solving the following equation
 \begin{equation}
-F(\check{T}) = \check{H} - \check{T} - 
+F(\check{T}) = H - \check{T} - 
 		  \frac{C}{c_l(\check{T})} \check{L} = 0. 
 \end{equation}
 Let $c_l = C_e (\check{T}_m - \check{T})$,   
 we can obtain a quadratic equation about temperature as
 \begin{equation}
-		  \check{T}^2 - (\check{H} + \check{T}_m)\check{T} + 
-		  \check{T}_m \check{H} - C L/C_e = 0,
+		  \check{T}^2 - (H + \check{T}_m)\check{T} + 
+		  \check{T}_m H - C L/C_e = 0,
 \end{equation}
 which can be solved with standard quadratic root finding formula.
 We omit one of the roots that exceeding melting temperature,
 \begin{equation}
 		  \begin{aligned}
-		  \check{T} &= \frac{\check{H} + \check{T}_m - 
-		  \sqrt{ (\check{H} + \check{T}_m)^2 - 
-		  4(\check{T}_m \check{H} - C \check{L}/C_e)} }{2} \\
+		  \check{T} &= \frac{H + \check{T}_m - 
+		  \sqrt{ (H + \check{T}_m)^2 - 
+		  4(\check{T}_m H - C \check{L}/C_e)} }{2} \\
 					  &= 
-		  \frac{\check{H} + \check{T}_m - 
-		  \sqrt{ (\check{H} - \check{T}_m)^2 + 
+		  \frac{H + \check{T}_m - 
+		  \sqrt{ (H - \check{T}_m)^2 + 
 		  4C \check{L}/C_e} }{2}. 
 		  \end{aligned}
 \end{equation}
 We can determine partial derivatives of temperature with respect to bulk enthalpy and bulk composition as
 \begin{equation}
 \begin{aligned}
-\frac{\partial\check{T}}{\partial\check{H}} &= \frac{1}{2}\Bigg(1- \frac{\check{H} - \check{T}_m}{\sqrt{(\check{H} - \check{T}_m)^2 + 4C\check{L}/C_e}}\Bigg) \\
-\frac{\partial\check{T}}{\partial C} &= -\frac{\check{L}/C_e}{\sqrt{(\check{H} - \check{T}_m)^2 + 4C\check{L}/C_e}}.
+\frac{\partial\check{T}}{\partial H} &= \frac{1}{2}\Bigg(1- \frac{H - \check{T}_m}{\sqrt{(H - \check{T}_m)^2 + 4C\check{L}/C_e}}\Bigg) \\
+\frac{\partial\check{T}}{\partial C} &= -\frac{\check{L}/C_e}{\sqrt{(H - \check{T}_m)^2 + 4C\check{L}/C_e}}.
 \end{aligned}
 \end{equation}
 
@@ -715,7 +756,7 @@ variables as
 \begin{equation}\label{dimensionlesstransport}
 		  \begin{aligned}
 					 \frac{\partial C}{\partial \check{t}} + \nabla \cdot (\check{\mathbf{v}}_{\text{eff}} C - \frac{\phi \mathcal{D}_l}{u_0l_0} \nabla c_l) &= 0,\\
-					 \frac{\partial \check{H}}{\partial \check{t}} + \nabla \cdot (\check{\overline{\mathbf{v}}} \check{T}) - 
+					 \frac{\partial H}{\partial \check{t}} + \nabla \cdot (\check{\overline{\mathbf{v}}} \check{T}) - 
 					 \check{L} \nabla \cdot \phi_s \check{\mathbf{v}}_s - \frac{\kappa}{u_0l_0} \nabla^2 \check{T} -  
 					 \frac{\alpha_\rho l_0}{c_p} \check{T} \check{\overline{\mathbf{v}}} \cdot \mathbf{g} &= 0.
 		  \end{aligned}

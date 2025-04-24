@@ -198,6 +198,7 @@ int multilevel::getsol(Tensor<double>& stencilsol, double ** localsol,
         localcellindexx = stencilindex[0] + i;
         localcellindexy = stencilindex[1] + j;
         stencilsol({i,j}) = localsol[localcellindexy][localcellindexx];
+		  cout << stencilsol({i,j}) << endl;
     }}
 
     return 1;
