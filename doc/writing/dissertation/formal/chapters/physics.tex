@@ -15,8 +15,8 @@ The indicator function is defined as
 \begin{equation}\label{eq:indicatorfunction}
 		  \chi_i(\mathbf{x}) = \left \{ 
 		  \begin{aligned}
-					 &1 \quad \text{phase} i,\\
-					 &0 \quad \text{not phase} i.
+					 &1 \quad \text{phase}\hspace{0.2cm} i,\\
+					 &0 \quad \text{not phase}\hspace{0.2cm} i.
 		  \end{aligned}
 		  \right.
 \end{equation}
@@ -49,20 +49,19 @@ we can write a corresponding conservation equation as:
 \end{equation}
 where $\mathbf{f}$ represents flux travelling across the boundary of a representative 
 volume element $V$. The minus sign indicates that the positive direction aligns with
-normal unit vector pointing outwards. $S$, which is source/sink term, represents the volumetric
+normal unit vector pointing outwards. The source/sink term $S$, represents the volumetric
 production rate of the volumetric quantity $\gamma$.
-We apply Gauss's theorem to obtain differential form,
+We apply Gauss's theorem to obtain the differential form
 \begin{equation}\label{eq:conservationlawpde}
 \frac{\partial \gamma}{\partial t} + \nabla \cdot \mathbf{f} = S.
 \end{equation}
 We model the partially molten mantle as a two-phase mixture consisting of liquid magma
-and solid mantle. The phase fraction of liquid magam is denoted by $\phi_l$ and phase
+and solid mantle. The phase fraction of liquid magma is denoted by $\phi_l$ and phase
 fraction of solid mantle is labelled as $\phi_s$, such that the relation $\phi_l + \phi_s = 1$ is
-always attained.
+always obtained.
 
-We now rewrite the single-phase conservation law~\eqref{eq:conservationlawpde} 
-with the bulk density defined 
-in~\eqref{eq:bulkquantity} as
+We rewrite the single-phase conservation law~\eqref{eq:conservationlawpde} 
+with the bulk density as
 \begin{equation}\label{eq:massconservation}
 \frac{\partial \overline{\rho}}{\partial t} + \nabla \cdot \overline{\rho \mathbf{v}} = 0,
 \end{equation}
@@ -71,20 +70,20 @@ Under the Boussinesq approximation, we neglect the compressibility of each
 individual phase. Furthermore, we extend the Boussinesq approximation 
 by disregarding 
 the density difference between the two phases, except in the body force term. 
-Accordingly, the continuity equation for the two-phase mixture can be written as:
+Accordingly, the continuity equation for the two-phase mixture can be written as
 \begin{equation}\label{eq:continuousfunction}
 \nabla \cdot \overline{\mathbf{v}} = 0.
 \end{equation}
 
 Similarly, the conservation equation for the phase-averaged momentum takes 
-the form of
+the form 
 \begin{equation}\label{eq:momentumconservation}
 \frac{\partial \overline{\rho \mathbf{v}}}{\partial t} + \nabla \cdot \overline{\rho \mathbf{v} \otimes \mathbf{v}}  = 
 \overline{\rho}\mathbf{g} + \nabla \cdot \overline{\pmb{\tau}} - \nabla \overline{p},
 \end{equation}
-where $\pmb{\tau}$ represents deviatoric stress.
+where $\pmb{\tau}$ represents the deviatoric stress.
 By neglecting inertial effects, justified by the low Reynolds number of magma 
-and mantle, the static force balance equation reduces to:
+and mantle, the static force balance equation reduces to
 \begin{equation}\label{eq:staticmomentumconservation}
 \overline{\rho}\mathbf{g} + \nabla \cdot \overline{\pmb{\sigma}}= 0,
 \end{equation}
@@ -98,7 +97,7 @@ and~\eqref{eq:staticmomentumconservation} alone are insufficient to simultaneous
 determine the two distinct velocities and pressures. Therefore, an additional 
 constitutive relationship is required to describe the behavior of the liquid 
 phase within the porous medium.
-We now examine more closely the interphase forces between the solid and liquid 
+We examine more closely the interphase forces between the solid and liquid 
 phases. A brief overview of the derivation of the individual governing equations 
 for each phase is provided here, while more detailed and rigorous treatments can 
 be found in the mixture theory literature, such as~\citet{mixturetheory}.
@@ -128,9 +127,10 @@ form as $k_{\phi_l} = k_0 \phi_l^2$.
 
 \subsection{Compaction}
 In the context of mantle dynamics, an additional yet unique and essential
-relationship regulating melt migration. 
-We now revisit the continuous equation~\eqref{eq:continuousfunction},
-considering the two phases separately and incorporating the effects of melting
+relationship regulates melt migration. 
+We now revisit the continuous equation~\eqref{eq:massconservation}, and
+consider the two phases separately with the effects of melting
+incorporated, i.e. ,
 \begin{equation}\label{eq:continuousequationPhase}
 		  \begin{aligned}
 					 \frac{\partial \phi_l }{\partial t} + \nabla \cdot (\phi_l 
@@ -139,7 +139,7 @@ considering the two phases separately and incorporating the effects of melting
 					 \mathbf{v}_s) &= -\Gamma,
 		  \end{aligned}
 \end{equation}
-where $\Gamma$ is the unknown melting rate. We now focus on the solid phase 
+where $\Gamma$ is the unknown melting rate. We focus on the solid phase 
 equation to get the evolving compaction relationship as
 \begin{equation}\label{eq:solidmelting}
 		  \frac{\partial \phi_l}{\partial t} + \mathbf{v}_s \cdot \nabla \phi_l = 
@@ -155,7 +155,7 @@ where $\xi_{\phi_l}$ is often referred to as bulk viscosity or
 compaction viscosity.
 The form of the compaction viscosity $\xi_{\phi_l}$ has been the subject of extensive discussion. 
 \citet{MagmaPhysics} popularized the concept of
-compaction viscosity and relating the term to the stress balance in partially
+compaction viscosity and relating the term to the stress balance in a partially
 molten system.
 \citet{TwoPhaseModelCompaction} extended this formulation by incorporating 
 surface tension effects. 
@@ -163,19 +163,19 @@ surface tension effects.
 in the limit of infinitesimally small porosity. 
 Following the approaches of~\citet{PartialMeltinginUpwellingMantleColumn} 
 and~\citet{MagmaDynamicsEnthalpyMethod}, we approximate the compaction
-viscosity $\xi_\phi$ 
+viscosity $\xi_{\phi_l}$ 
 using a simplified constitutive relationship,
 \begin{equation}\label{eq:bulkviscosity}
-\xi_\phi = \frac{\mu_s}{\phi},
+		  \xi_{\phi_l} = \frac{\mu_s}{\phi_l},
 \end{equation}
 which highlights the fact that increased melting facilitates the compaction of the
-solid phase, while in the limit of no melting, 
+solid phase, while in the limit of no melting ($\phi_l = 0$), 
 compaction is entirely eliminated.
 
 \subsection{Full Static System}
 By combining equations~\eqref{eq:continuousfunction},~\eqref{eq:staticmomentumconservation},~\eqref{eq:darcylaw} 
 and~\eqref{eq:compactionviscosity},
-We finally arive with the full static flow mechanical system,
+We finally arive at the full static flow mechanical system,
 \begin{alignat}{2}
     \label{eq:darcy}
 		  &\phi_l (\mathbf{v}_l - \mathbf{v}_s)
@@ -195,9 +195,9 @@ where the deviatoric stress of the solid is
 \end{equation}
 and $\mathcal{D} \mathbf{v}_s=\frac{1}{2}(\nabla\mathbf{v}_s + \nabla\mathbf{v}_s^T)$ is the symmetric gradient.
 Moreover, we adjust the relative permeability 
-$k_{\phi_l} = k_0 \phi_l^{2+2\Theta}$ with as constant 
-$\Theta \in [0,1/2]$ . $\mu_s$ 
-and $\mu_l$ are dynamic viscosities for solid and liquid correspondingly.
+$k_{\phi_l} = k_0 \phi_l^{2+2\Theta}$ with constant 
+$\Theta \in [0,1/2]$ . Here $\mu_s$ 
+and $\mu_l$ are dynamic viscosities for solid and liquid respectively.
 This complete static mechanical system relates the velocities and pressures of 
 the solid and liquid phases to a given porosity distribution, 
 thereby laying the foundation for subsequent computations.
@@ -221,15 +221,15 @@ In the mechanical system, the subscript on
 $\phi_l$ will be omitted.
 and we will simply write it as $\phi$.
 Accordingly, the solid phase fraction will be expressed as $1 - \phi$, 
-emphasizing the constraint that the two phase fractions sum to unit,
+emphasizing the constraint that the two phase fractions sum to one. Thus
 \begin{alignat}{2}
 		  &\phi\mathbf{v}_r + \frac{k_0\phi^{2+2\Theta}}{\mu_l}\nabla q_l &&= 0,\\
 		  &\mu_s\nabla \cdot (\phi\mathbf{v}_r) + \frac{\phi}{1-\phi}(q_l-q) &&=0,\\
   		  &\nabla q - \nabla \cdot \tau(\mathbf{v}_s) &&= -(1-\phi)\rho_r\mathbf{g},\\
 		  &\mu_s\nabla \cdot \mathbf{v}_s - \frac{\phi}{1-\phi}(q_l-q) &&=0,
 \end{alignat}
-where relative velocity $\mathbf{v}_r = \mathbf{v}_l - \mathbf{v}_s$ and 
-density difference 
+where the relative velocity $\mathbf{v}_r = \mathbf{v}_l - \mathbf{v}_s$ and 
+the density difference 
 $\rho_r = \rho_s - \rho_l$. 
 Scaled variables are also defined,
 \begin{equation}\label{eq:scaledVariables}
@@ -252,25 +252,28 @@ and the problem is reformulated as
 		  &\mu_s\nabla \cdot \mathbf{v}_s
         - \frac{\phi^{1/2}}{1-\phi}(\tilde{q}_l - \phi^{1/2}q) &&=0,
 \end{alignat}
-where the new scaled relative velocity maintain numerical stability in zero prosority region.
+where the new scaled relative velocity maintains numerical stability in the zero prosority regions.
 
 \section{Transport of Chemical Species and Energy}
 With the velocities of solid and liquid phases determined, 
 we are able to
 evolve our system forward in time.
-However, the realistic chemical compositions of mantle and magma is highly
+In our system, chemical species and energy are being moved along
+with both the solid and the liquid phase.
+\subsection{Conservation of Chemical Species}
+The realistic chemical compositions of mantle and magma are highly
 complicated and very hard to trace at the same time. 
 Therefore, we present a simple two-species two-phase model. 
-In this framework, we also negelect detailed description of chemical reaction 
-process and excluding the effect of the change of Gibbs free energies. 
-Similar discussion can be found in extensive literatures like 
+In this framework, we also negelect detailed description of the chemical reaction 
+process and exclude the effect of the change of Gibbs free energies. 
+Similar discussion can be found in the literature like 
 \citet{ConsequencesMeltTransport}, \citet{PartialMeltinginUpwellingMantleColumn}, \citet{MagmaDynamicsEnthalpyMethod} 
 and \citet{DownwardOxidantTransport}.
 Both species can exist in either the solid or liquid phase. They are assumed to 
 be immiscible in the solid state but fully miscible in the liquid phase.
 By again extending the Boussinesq approximation, we consider a homogenous density
 $\rho$ for both solid phase and liquid phase. Figure~\ref{fig:RVE} illustrates 
-the coexistence of species and phases in an representative volume element.
+the coexistence of species and phases in representative volume element.
 \begin{figure}[ht]
 \centering\small
 \begin{tikzpicture}[scale=0.4]
@@ -297,23 +300,24 @@ the coexistence of species and phases in an representative volume element.
 \end{tikzpicture}
 \caption{Phases and species in an representative volume element (RVE).\label{fig:RVE}}
 \end{figure}
-Within the representative volume element $V$, $\gamma_{i,j}$ represents one quantity of the species $i$ presenting in
+Within the representative volume element $V$, $\gamma_{i,j}$ represents one quantity of the species $i$ present in
 phase $j$, where $i \in {1,2}$ and $j \in \{s,l\}$.   
 The mass fraction $c_{i,j}$ of a given species $i$ in phase $j$ is also regarded 
-as concentration.
-We can write transport equations for a individual species $i$ assuming a pseudo melting term $\Gamma$ representing the transition between solid phase 
-and liquid phase,
+as a concentration.
+We can write transport equations for an individual species $i$, assuming a pseudo melting term $\Gamma$ representing the transition between solid phase 
+and liquid phase as
 \begin{alignat}{1}
 \label{eq:conservationliquidindividual}
 \frac{\partial}{\partial t}\big( \phi_l \rho_l c_{i,l} \big)  + \nabla \cdot \big(\phi_l \rho_l c_{i,l} \mathbf{v}_l - \phi_l \rho_l \mathcal{D}_{i,l} \nabla c_{i,l} \big) &= \Gamma ,\\
 \label{eq:conservationsolidindividual}
 \frac{\partial}{\partial t}\big( \phi_s \rho_s c_{i,s} \big)  + \nabla \cdot \big(\phi_s \rho_l c_{i,s} \mathbf{v}_s - \phi_s \rho_s \mathcal{D}_{i,s} \nabla c_{i,s} \big) &= -\Gamma ,
 \end{alignat}
-where the diffusion term is dropped in solid phase.
-By summing up equation~\eqref{eq:conservationliquidindividual} and 
-equation~\eqref{eq:conservationsolidindividual},
-we obtain an advection-diffusion equation expressed in terms of the 
-phase-averaged volumetric bulk variable
+where $\mathcal{D}_{i,l}$ and $\mathcal{D}_{i,s}$ are the diffusion coefficients
+of component $i$ in the liquid and the solid phase respectively. 
+The diffusion term will be dropped in the solid phase.
+By summing up equations~\eqref{eq:conservationliquidindividual} 
+and~\eqref{eq:conservationsolidindividual},
+we obtain an advection-diffusion equation as
 \begin{equation} \label{eq:specietransport}
 		  \frac{\partial \overline{\rho c_{i}}}{\partial t} + \nabla \cdot \big( \overline{\rho c_{i} \mathbf{v}} - \phi_l \rho_l \mathcal{D}_{i,l} \nabla c_{i,l} \big) = 0,
 \end{equation}
@@ -325,40 +329,10 @@ explicitly computed
 in this two-species system.
 By extending the Boussinessq approximation such that 
 $\rho_l = \rho_s = \overline{\rho}$, the 
-species transport equation can be simplified for the following form
+species transport equation can be simplified to the form
 \begin{equation}\label{eq:specietransportsimplified}
 \frac{\partial \overline{c}}{\partial t} + \nabla \cdot \big( \overline{ c \mathbf{v}} - \phi_l \mathcal{D}_{l} \nabla c_l \big) = 0.
 \end{equation}
-
-We write energy balance equation in the phase-averaged internal energy form first,
-\begin{equation}\label{eq:energybalanceinternalenergy}
-\frac{\partial \overline{\rho u}}{\partial t} + \nabla \cdot \overline{\rho u \mathbf{v}} - \nabla \cdot \overline{K} \nabla T = 
-		  \overline{\rho \mathcal{Q}} + \nabla \cdot \overline{\pmb{\sigma} \cdot \mathbf{v}} + \overline{\rho \mathbf{v}} \cdot \mathbf{g}.
-\end{equation}
-On the left-hand side, the equation contains the time-dependent rate of change 
-of internal energy, along with advection and diffusion terms.
-On the right-hand side, it includes the heat source term $\mathcal{Q}$, mechanical work done by stress, and work against gravity. 
-In a thermochemical equilibrium scenerio, we replace internal energy with 
-enthalpy. We formulate the energy balance equation by neglecting 
-external heating/cooling term $\mathcal{Q}$ and dissipative heating 
-following the discussion presented by \citet{MagmaDynamicsEnthalpyMethod},
-\begin{equation}\label{eq:energyconservationenthalpy}
-\frac{\partial \overline{\rho h}}{\partial t} + \rho c_p \nabla \cdot (\overline{\mathbf{v}} T) = 
-\rho L \nabla \cdot \phi_s \mathbf{v}_s + \overline{K} \nabla^2 T + \rho \alpha_\rho T \overline{\mathbf{v}} \cdot \mathbf{g},
-\end{equation}
-where the specific heat capacity $c_p$ is used for both 
-components in solid and liquid phase.
-The last term including gravitational acceleration has previously been referred 
-to as adiabatic cooling or decompression cooling by 
-\citet{ExtensionofLithosphere}.
-We divide $\rho c_p$ on both sides of the equation 
-\begin{equation}\label{eq:normalizedenthalpy}
-		  \frac{\partial H}{\partial t} + \nabla \cdot (\overline{\mathbf{v}} T) = 
-		  \frac{L}{c_p} \nabla \cdot \phi_s \mathbf{v}_s + \kappa \nabla^2 T + 
-		  \frac{\alpha_\rho}{c_p} T \overline{\mathbf{v}} \cdot \mathbf{g},
-\end{equation}
-where $H = \overline{h}/c_p$ is the bulk specific enthalpy and $\kappa = 
-\overline{K}/\rho c_p$ is the heat diffusivity.
 
 \subsection{Effective Velocity}
 The concept of effective velocity has long been employed in chemistry, 
@@ -397,6 +371,38 @@ We rewrite the transport equation of species with effective velocity~\eqref{eq:e
 		  \nabla \cdot (\mathbf{v}_{\text{eff}} C - \phi_l \mathcal{D}_l \nabla c_l)
 		  = 0.
 \end{equation}
+
+\subsection{Conservation of Energy}
+We write the energy balance equation in the phase-averaged internal 
+energy form first as
+\begin{equation}\label{eq:energybalanceinternalenergy}
+\frac{\partial \overline{\rho u}}{\partial t} + \nabla \cdot \overline{\rho u \mathbf{v}} - \nabla \cdot \overline{K} \nabla T = 
+		  \overline{\rho \mathcal{Q}} + \nabla \cdot \overline{\pmb{\sigma} \cdot \mathbf{v}} + \overline{\rho \mathbf{v}} \cdot \mathbf{g}.
+\end{equation}
+On the left-hand side, the equation contains the time-dependent rate of change 
+of internal energy, along with advection and diffusion terms.
+On the right-hand side, it includes the heat source term $\mathcal{Q}$, mechanical work done by stress, and work against gravity. 
+In a thermochemical equilibrium scenerio, we replace internal energy with 
+enthalpy. We formulate the energy balance equation by neglecting 
+external heating/cooling term $\mathcal{Q}$ and dissipative heating 
+following the discussion presented by \citet{MagmaDynamicsEnthalpyMethod},
+\begin{equation}\label{eq:energyconservationenthalpy}
+\frac{\partial \overline{\rho h}}{\partial t} + \rho c_p \nabla \cdot (\overline{\mathbf{v}} T) = 
+\rho L \nabla \cdot \phi_s \mathbf{v}_s + \overline{K} \nabla^2 T + \rho \alpha_\rho T \overline{\mathbf{v}} \cdot \mathbf{g},
+\end{equation}
+where the specific heat capacity $c_p$ is used for both 
+components in solid and liquid phase.
+The last term including gravitational acceleration has previously been referred 
+to as adiabatic cooling or decompression cooling by 
+\citet{ExtensionofLithosphere}.
+We divide $\rho c_p$ on both sides of the equation 
+\begin{equation}\label{eq:normalizedenthalpy}
+		  \frac{\partial H}{\partial t} + \nabla \cdot (\overline{\mathbf{v}} T) = 
+		  \frac{L}{c_p} \nabla \cdot \phi_s \mathbf{v}_s + \kappa \nabla^2 T + 
+		  \frac{\alpha_\rho}{c_p} T \overline{\mathbf{v}} \cdot \mathbf{g},
+\end{equation}
+where $H = \overline{h}/c_p$ is the bulk specific enthalpy and $\kappa = 
+\overline{K}/\rho c_p$ is the heat diffusivity.
 
 \section{Eutectic Phase Behavior}
 With the transport equations defined, we can now proceed to redistribute 
@@ -450,7 +456,7 @@ refer to their respective values at standard atmospheric pressure.
 In a eutectic system, the current thermodynamic state of the material can be identified using the bulk mass fraction of opx (orthopyroxene) 
 and bulk enthalpy of the system. 
 Let $\mathcal{X}_i$ represents the bulk mass fraction of species $i$ 
-and $\mathcal{X}_{i,e}$ denotes mass fraction of specie $i$ in liquid at 
+and $\mathcal{X}_{i,e}$ denotes mass fraction of species $i$ in liquid at 
 the eutectic point, which is a constant.
 The subscript $i$ will be omitted in the later context, as we consider a binary
 system involving only two components.
