@@ -142,8 +142,26 @@ int main(int argc, char ** argv){
     Tensor<double> stencilsol11 = Tensor<double>(2); // This function is also fine
     stencilsol11.setSize({1,1});
 
-    ml.getsol(stencilsol33, locvals, {0,0}, "(3,3)");
+    ml.getsol(stencilsol33, locvals, {0,0}, "(3,3)"); cout << endl;
     ml.getsol(stencilsol11, locvals, {1,1}, "const");
+
+    ml.updatesigma(locvals);
+
+    //ml.printsigma("const");
+
+    unordered_map<std::string, vector<double>> testwgts;
+    unordered_map<std::string, vector<indice>> method;
+
+    method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    method.insert(std::make_pair<std::string, vector<indice>>("const", { {0,0} }));
+
+    indice target {1,1};
+
+    use.setmethod("all",method);
+    use.setbias("all");
+
+    use.computeWgts("all",ml, target, h0, testwgts);
+    use.printWgts(testwgts);
 
 
     // =================================================================
