@@ -5,12 +5,16 @@
 
 \chapter[Numerical Methods]{Numerical Methods}
 \label{numerics}
-We introduce a locally mass conserving numerical framework, 
-which includes two mixed finite elements and finite volume
-method equipped with novel reconstruciton scheme.
+We introduce a locally mass conserving numerical framework.
+We solve the static mechanics system with mixed finite element method,
+which is adjusted to be locally mass conservative. 
+We solve the transport system with finite volume scheme, which is 
+a mass conservative scheme.
 
 \input chapters/mesh.tex
 
 \input chapters/mfem.tex
 
 \input chapters/mlweno.tex
+
+\input chapters/couple.tex

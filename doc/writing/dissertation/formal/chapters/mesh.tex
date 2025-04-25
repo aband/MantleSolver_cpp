@@ -1,18 +1,25 @@
 \section{Quadrilateral Mesh}
-A conforming mesh of quadrilaterals will be used in both
-finite element and finite volume computations.
-Discretization on a quadrilateral mesh require fewer elements than 
-discretization on a triangular mesh. Each quadrilateral element is
+We consider a bounded computational domain $\Omega \subset \mathbb{R}^2$. 
+Here, $\partial \Omega$ denotes the 
+Lipschitz-continuous boundary of the domain.
+Let $\mathcal{T}_h$ be a conforming mesh of quadrilaterals covering $\Omega$.
+The quadrilateral $E \in \mathcal{T}_h$ is referred as element in finite element context, while
+referred as cell in finite volume context.
+Each quadrilateral $E$ is
 assumed to be strictly convex, not degenerate into a triangle, line
-or point. We use a logically rectangular mesh for the ease of
-implementation, which can be counted with 
-cartesian index $\{i,j\}$. We show a square element, which is a special
-case of quadrilateral mesh, and a general quadrilateral mesh in 
+or point. For ease of implementation, we use a logically rectangular mesh, 
+where each element(cell) is indexed using 
+Cartesian coordinates $\{i,j\}$. We show a general quadrilateral element(cell) in 
 Figure~\ref{fig:meshexample}.
+%There exists a bijective and smooth map $\mathbf{F}_{\hat{Q}}: \hat{Q} \rightarrow Q$.
+The edges of element are denoted by $e_i$, $i\in\{0,1,2,3\}$ in the counterclockwise direction. 
+The vertices are represented as $v_i = e_i \cap e_{i+1}$ 
+in the sense of modulo.
+Here, $\pmb{\nu}_i$ and $\pmb{\tau}_i$ are used to represent the unit normal and the unit tangent
+vector respectively.
 \begin{figure}[ht]
 \centering
 \input chapters/tikz/quadmesh.tex
-\caption{An exhibition of a square and a general quadrilateral mesh.}
+\caption{An exhibition of a general non-degenerate quadrilateral element(cell).}
 \label{fig:meshexample}
 \end{figure}
-There exists a bijective and smooth map $\mathbf{F}_{\hat{Q}}: \hat{Q} \rightarrow Q$.
