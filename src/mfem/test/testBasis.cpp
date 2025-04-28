@@ -18,6 +18,16 @@ extern "C"{
 
 using namespace std;
 
+vertex bilinearMap(const vertexSet& corners, const vertex& ref){
+
+    vertex target {0,0};
+
+    target[0] = (1-ref[0])*(1-ref[1])*corners.at(0)[0] + ref[0]*(1-ref[1])*corners.at(1)[0] + ref[0]*ref[1]*corners.at(2)[0] + (1-ref[0])*ref[1]*corners.at(3)[0];
+    target[1] = (1-ref[0])*(1-ref[1])*corners.at(0)[1] + ref[0]*(1-ref[1])*corners.at(1)[1] + ref[0]*ref[1]*corners.at(2)[1] + (1-ref[0])*ref[1]*corners.at(3)[1];
+
+    return target;
+}
+
 int main(int argc, char ** argv){
 
     // Initializing petsc function
@@ -80,7 +90,7 @@ int main(int argc, char ** argv){
     mp.H = H;
 
     // Uniform or distorted mesh
-    int meshtype=0;
+    int meshtype=1;
     ierr = PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshtype,NULL);CHKERRQ(ierr);
     switch(meshtype){
         case 0: CreateFullMesh(dm, &fullmesh, &mp); break;
@@ -162,17 +172,33 @@ int main(int argc, char ** argv){
 
     int seed = 11;
     double h = 1.0/(double) (seed-1) ;
+
+    // Define a mapping from reference [1 0, 0 1] to a quad
+    vertex v0 {0.1,-0.2};
+    vertex v1 {0.8,0.1};
+    vertex v2 {1.2,0.95};
+    vertex v3 {-0.05, 1.03};
+
+    vertexSet corners = {v0,v1,v2,v3};
+
     // reference element
     basis_->GetCorners(mi, {0,0});
 
+    //basis_->GetCorners(corners);
     for (int j=0; j<seed; j++){
     for (int i=0; i<seed; i++){
         vertex sample {i*h, j*h};
+//        vertex target ;
         std::array<vertex, 8>  values = hdiv->ComputeHdivmixed(*basis_, sample);
         std::vector<vertex> newvalues = hdiv->EvaluateAll(*basis_, sample);
 
-        fprintf(fx, "%f ", i*h);
-        fprintf(fy, "%f ", j*h);
+//        target = bilinearMap(corners, sample);
+//        std::array<vertex, 8>  values = hdiv->ComputeHdivmixed(*basis_, target);
+//        std::vector<vertex> newvalues = hdiv->EvaluateAll(*basis_, target);
+        
+
+        fprintf(fx, "%f ", sample[0]);
+        fprintf(fy, "%f ", sample[1]);
         fprintf(vx, "%f ", values[dof][0]);
         fprintf(vy, "%f ", values[dof][1]);
     }}
@@ -183,7 +209,7 @@ int main(int argc, char ** argv){
     fclose(vy);
 
     // ========================================================================
-
+/*
     std::cout << "boundary dof for BDM element  " << std::endl;
     for (int hdivdof =0; hdivdof<hdiv->getDOF(); hdivdof++){
         std::vector<int> dof = hdiv->GlobalToLocalMapBndry(mi, hdivdof);
@@ -205,7 +231,7 @@ int main(int argc, char ** argv){
         }
         std::cout << std::endl;
     }
-
+*/
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);
     DMRestoreLocalVector(dmu, &localu); 

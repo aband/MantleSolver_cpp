@@ -3,10 +3,15 @@
 \definecolor{myGreen}{RGB}{114,138,122}
 \definecolor{myYellow}{RGB}{241,208,157}
 
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+
 \chapter[Numerical Methods]{Numerical Methods}
 \label{numerics}
 We introduce a locally mass conserving numerical framework.
-We solve the static mechanics system with mixed finite element method,
+We solve the static mechanics system with 
+conforming mixed finite element method,
 which is adjusted to be locally mass conservative. 
 We solve the transport system with finite volume scheme, which is 
 a mass conservative scheme.
@@ -15,6 +20,6 @@ a mass conservative scheme.
 
 \input chapters/mfem.tex
 
-\input chapters/mlweno.tex
+%\input chapters/mlweno.tex
 
-\input chapters/couple.tex
+%\input chapters/couple.tex

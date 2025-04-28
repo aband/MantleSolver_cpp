@@ -71,6 +71,19 @@ class Hdivmixed{
         std::string name;
 
         int elemDOF;
+
+        double phie(const basis& basis_,
+                    const int& e,
+                    const vertex& point) const{
+        return phie_(basis_,e,point);
+		  }
+        double phiv(const basis& basis_,
+                    const int& e,
+                    const vertex& point) const{
+        return phiv_(basis_,e,point);
+		  }
+
+
     private:
        
         vertex curlLambda_(const basis& basis_,
