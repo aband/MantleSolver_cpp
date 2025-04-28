@@ -109,7 +109,6 @@ int mluse::computeWgts(const std::string& pos, const multilevel& ml,
     double sum = 0.0; 
     int rl = 0;
     int nl = 0;
-
     for (const auto& it: bias.at(pos)){
         // Pick reconstruction levels
 
@@ -412,9 +411,9 @@ int mluse::computeWgts(const multilevel& ml,
     } else {
         convertj = mi.cellGhostLayerSize-1;;
     }
-
     for (int j=0; j<top-bottom; j++){
         for (int i=0; i<right-left; i++){
+
             weights wgts;
             // convert index
             indice stencilindex {i + converti, 

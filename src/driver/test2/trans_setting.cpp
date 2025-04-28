@@ -55,13 +55,25 @@ bool corner(const indice& globalCell,
    }
 }
 
+bool top(const indice& globalCell,
+         const MeshInfo& mi){
+
+
+    if (globalCell[1] == mi.MPIglobalCellSize[1]-1){
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
 // Boundary categary
 
 std::string location(const MeshInfo& mi,
                      const indice& globalCell){
 
     std::string loc = "wrong";
-
+/*
     if (interior(globalCell, mi)){
 
        loc = "interior";
@@ -75,9 +87,15 @@ std::string location(const MeshInfo& mi,
        loc = "corner";
 
     }
+*/
 
-    //return loc;
-    return "all";
+    if (top(globalCell, mi)){
+       loc = "top";
+    } else {
+       loc = "all";
+    }
+    return loc;
+    //return "all";
 }
 
 // Initialize dimensionless composition and enthalpy

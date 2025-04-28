@@ -112,8 +112,12 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     // Initialization of multi level weno and corresponding usage
     ml = multilevel(); 
 
-    ml.addLevel("(3,3)", {3,3}, mi);
-    ml.addLevel("(2,2)", {2,2}, mi);
+//    ml.addLevel("(3,3)", {3,3}, mi);
+//    ml.addLevel("(2,2)", {2,2}, mi);
+
+    ml.addLevel("(1,3)", {1,3}, mi);
+    ml.addLevel("(1,2)", {1,2}, mi);
+    ml.addLevel("const", {1,1}, mi);
 
     // Area scale
     h0 = sqrt((L_*H_)/
@@ -122,15 +126,15 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     advection = mluse();
 
     // Test for nonlinear weighting
-    unordered_map<std::string, vector<indice>> method;
-    method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
-    method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+//    unordered_map<std::string, vector<indice>> method;
+//    method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+//    method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
 
-    advection.setmethod("all", method);
-    advection.setbias("all");
+//    advection.setmethod("all", method);
+//    advection.setbias("all");
 
     // ========================================================================================================
-
+/*
     unordered_map<std::string, vector<indice>> interior;
     interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
     interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
@@ -155,6 +159,22 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
 
     advection.setmethod("corner", corner);
     advection.setbias("corner"); 
+*/
+
+    unordered_map<std::string, vector<indice>> method;
+    method.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-1} }));
+    method.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1} , {0,0} }));
+
+    advection.setmethod("all", method);
+    advection.setbias("all");
+
+    // Additional treatment on the top boundary
+    unordered_map<std::string, vector<indice>> top;
+    //method.insert(std::make_pair<std::string, vector<indice>>("const", { {0,0} }));
+    top.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-2} }));
+    //top.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1} }));
+    advection.setmethod("top", top);
+    advection.setbias("top");
 
     // Compute bottom fixed value
     HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});
@@ -184,6 +204,7 @@ int Driver::PrepareTransport(const std::vector<double>& restartHD,
 
     ml.addLevel("(1,3)", {1,3}, mi);
     ml.addLevel("(1,2)", {1,2}, mi);
+    ml.addLevel("const", {1,1}, mi);
 
     // Area scale
     h0 = sqrt((L_*H_)/
@@ -234,6 +255,14 @@ int Driver::PrepareTransport(const std::vector<double>& restartHD,
 
     advection.setmethod("all", method);
     advection.setbias("all");
+
+    // Additional treatment on the top boundary
+    unordered_map<std::string, vector<indice>> top;
+    //method.insert(std::make_pair<std::string, vector<indice>>("const", { {0,0} }));
+    top.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-2} }));
+    //top.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1} }));
+    advection.setmethod("top", top);
+    advection.setbias("top");
 
     // Compute bottom fixed value
     HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});

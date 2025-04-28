@@ -35,8 +35,8 @@ int main(int argc, char ** argv){
     Hdivmixed * hdiv = new Hdivmixed();
     BRMixed * br     = new BRMixed();
 
-    int dof=0;
-    PetscOptionsGetInt(NULL,NULL,"-dof",&dof,NULL);
+    //int dof=0;
+    //PetscOptionsGetInt(NULL,NULL,"-dof",&dof,NULL);
 
     int seed = 21;
     double h = 1.0/(double) (seed-1) ;
@@ -50,8 +50,6 @@ int main(int argc, char ** argv){
     vertexSet corners = {v0,v1,v2,v3};
 
     // reference element
-    //basis_->GetCorners(mi, {0,0});
-
     basis_->GetCorners(corners);
  
     FILE *fx = fopen("gridX.dat","w");
@@ -60,6 +58,8 @@ int main(int argc, char ** argv){
     FILE *val2 = fopen("R.dat","w");
     FILE *val3 = fopen("phie.dat","w");
     FILE *val4 = fopen("phiv.dat","w");
+    FILE *val5 = fopen("Rds1.dat","w");
+    FILE *val6 = fopen("phivds1.dat","w");
 
     for (int j=0; j<seed; j++){
     for (int i=0; i<seed; i++){
@@ -72,6 +72,8 @@ int main(int argc, char ** argv){
         fprintf(val2, "%f ", basis_->R(0,target));
         fprintf(val3, "%f ", hdiv->phie(*basis_,0,target)/hdiv->phie(*basis_,0,(v3+v0)/2));
 		  fprintf(val4, "%f ", hdiv->phiv(*basis_,0,target)/hdiv->phiv(*basis_,0,(v0)));
+        fprintf(val5, "%f ", br->R(*basis_,target));
+        fprintf(val6, "%f ", br->phiv(*basis_,0,target));
     }}
 
     fclose(fx);
@@ -79,5 +81,8 @@ int main(int argc, char ** argv){
     fclose(val1);
     fclose(val2);
     fclose(val3);
+    fclose(val4);
+    fclose(val5);
+	 fclose(val6);
 	 return 0;
 }

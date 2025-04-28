@@ -79,6 +79,12 @@ class BRMixed {
 
         int elemDOF;
 
+        double R(const basis& basis_,
+                  const vertex& point) const{
+        return R_(basis_, point);
+        }
+
+
     private:
 
         double phie_(const basis& basis_,

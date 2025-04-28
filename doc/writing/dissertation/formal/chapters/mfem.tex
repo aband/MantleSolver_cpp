@@ -1,141 +1,21 @@
-\section{Direct Serendipity Space}
-The classical serendipity space suffer from poor approximation
-on quadrilaterals. We define local shape functions directly
-on quadrilaterals according to~\cite{directSerendipity}.
-$H^1$ and $H(\text{div})$ conforming direct mixed finite elemenent space
-are constructed with the direct serendipity suplemental function space.
+\section{Mixed Formulation and Conforming Element}
+We use mixed finite element method (MFEM) for both Darcy and Stokes flow. 
+We write mixed variational form for Darcy and Stokes flow separately and define 
+conforming element with direct serendipity space.
 
-To begin with, we introduce some notations and distance auxilliary functions. 
-Let $\mathbb{P}_r(\omega)$ denote the space of polynomials of degree up to $r$
-on $\omega \subset \mathbb{R}^d$. The dimension of $\mathbb{P}_r$ can be
-calculated as
-\begin{equation}\label{eq:dimpolynomial}
-		  \text{dim}\mathbb{P}_r(\mathbb{R}^d) = \begin{pmatrix}
-r+2 \\
-2
-		  \end{pmatrix} = \frac{(r+d)!}{r!d!}.
-\end{equation}
-We define the linear polynomial $\lambda_i(\mathbf{x})$ giving the
-distance of $\mathbf{x}\in \mathbb{R}^2$ to edge $e_i$ as
-\begin{equation}\label{eq:distancelambda}
-		  \lambda_i(\mathbf{x}) = -(\mathbf{x}-\mathbf{x}^*_i)\cdot \pmb{\nu}_i, \quad i = 0,1,2,3,
-\end{equation}
-where $\mathbf{x}^*_i \in e_i$  is any point on the edge $e_i$. The value of
-distance function $\lambda_i$ keeps positive as long as $\pmb{x}$ is in the
-interior of the quadrilateral. We define two additional distance functions giving 
-the distance of $\mathbf{x} \in \mathbb{R}^2$ to diagonal line $d_{i}$ 
-joining $v_i$ with $v_{i+2}$, $i\in{0,1}$.
-Let $\mathbf{\nu}_{d,i}$ be the unit normal vector to the diagonal line 
-$d_{i}$. The direction of the $\mathbf{\nu}_{d,i}$ is defined by 
-counterclockwise rotating of the vector pointing from $v_i$ to $v_{i+2}$.
-The resulting diagonal distance function is defined as
-\begin{equation}\label{eq:distancelambdad}
-		  \lambda_{d,i}(\mathbf{x}) = -(\mathbf{x} - \mathbf{x}^*_{d,i}) \cdot \pmb{\nu}_{d,i}, 
-		  \quad i=1,2,
-\end{equation}
-where $\mathbf{x}^*_{d,i}$ is any point on the diagonal line $d_{i}$. For
-simplicity, we use corner $v_i$ in later computation.
-
-Now we present set of nodal basis functions in first and second
-order direct serendipity space $\mathcal{DS}_1$ and $\mathcal{DS}_2$
-defined by ~\cite{directSerendipity}.
-
-\subsection{Direct Serendipity Space $\mathcal{DS}_2$}
-We supplement polynomial space $\mathbb{P}_r(E), r\geq 2$ 
-with two linearly independent
-functions, $\phi_{s,1}(\mathbf{x})$ and $\phi_{s,2}(\mathbf{x})$. We denote
-the supplemental function space as $\mathbb{S}_r^{\mathcal{DS}}(E) = 
-\text{span}\{\phi_{s,1},\phi_{s,2}\}$. We present the second order 
-direct serendipity
-space as
-\begin{equation}\label{eq:definitionds2}
-		  \mathcal{DS}_r(E) = \mathbb{P}_r(E) \oplus \mathbb{S}_r^{\mathcal{DS}}(E).
-\end{equation}
-The supplemental functions are defined as
-\begin{equation}\label{eq:defsuppfunc}
-		  \phi_{s,i} = \lambda_{i+1} \lambda_{i+2} R_{i,i+2}, \quad i\in\{1,2\},
-\end{equation}
-where $i$ is in the sense of modulo. We use a simple definition for rational
-function $R_{i,i+2}$ as
-\begin{equation}\label{eq:defR}
-		  R_{i,i+2} = \frac{\lambda_{i} - \lambda_{i+2}}{\lambda_i + \lambda_{i+2}},
-\end{equation}
-which satisfies the conditions as
-\begin{equation}\label{eq:Rproperty}
-		  R_{i,i+2}|_{e_i} = -1, \quad R_{i,i+2}|_{e_{i+2}} = 1.
-\end{equation}
-We continue to define
-\begin{equation}\label{eq:def}
-		  R_i = \frac{1}{2} \Big(1 - (-1)^{\floor*{i/2}} R_{i, i+2}\Big) 
-		  = \frac{\lambda_{i+2}}{\lambda_i + \lambda_{i+2}},
-\end{equation}
-where $i$ is understood $\Mod{2}$. Here, $R_i|_{e_i} = 1$, and
-$R_i|_{e_{i+2}} = 0$ by definition. In Figure~\ref{fig:R0}, we
-draw $R_0$ on a general quadrilateral, which evaluates $1$ 
-on the edge $e_0$, and evaluates $0$ on the opposite edge $e_2$.
-\begin{figure}[ht]
-\centering\small
-\includegraphics[width=5.5cm,height=4cm]{chapters/pics/R0_1.png}
-\includegraphics[width=5.5cm,height=4cm]{chapters/pics/R0_2.png}
-		  \caption{Rational function $R_0$.}
-		  \label{fig:R0}
-\end{figure}
-
-The edge nodal basis functions for $\mathcal{DS}_2$ are constructed as
-\begin{equation}\label{eq:edgebasisds2}
-		  \varphi_{e,i} = \frac{\lambda_{i+1}\lambda_{i+3}R_i}
-		  {\lambda_{i+1}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})R_i(\mathbf{x}_{e,i})},
-\end{equation}
-where $\mathbf{x}_{e,i}$ is the middle point of the edge $e_i$, the $i$ index is
-understood in the sense of modulo of $4$. In Figure~\ref{fig:phie0}, we present
-$\varphi_{e,0}$ on a general quadrilateral.
-\begin{figure}[ht]
-\centering\small
-\includegraphics[width=5.5cm,height=4cm]{chapters/pics/phie0_2.png}
-\includegraphics[width=5.5cm,height=4cm]{chapters/pics/phie0_1.png}
-		  \caption{Edge nodal basis function $\varphi_{e,0}$ is $\mathcal{DS}_2$.}
-		  \label{fig:phie0}
-\end{figure}
-
-The vertex nodal basis functions for $\mathcal{DS}_2$ are constructed as
-\begin{equation}\label{eq:vertexbasisds2}
-		  \varphi_{v,i} = \frac{\lambda_{i+2} \lambda_{i+3} - 
-		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi_{e,i}}
-		  {\lambda_{i+2}(\mathbf{x}_{v,i}) \lambda_{i+3}(\mathbf{x}_{v,i}) - 
-		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi_{e,i}(\mathbf{x}_{v,i})},
-\end{equation}
-where $\mathbf{x}_{v,i}$ is the coordinates of the vertex node $v_i$. The $i$ index
-is understood in the sence of module of $4$ as well. In Figure~\ref{fig:phiv0}, we 
-show $\varphi_{v,0}$ on a general quadrilateral.
-\begin{figure}[ht]
-\centering\small
-\includegraphics[width=5.5cm,height=4cm]{chapters/pics/phiv0_1.png}
-\includegraphics[width=5.5cm,height=4cm]{chapters/pics/phiv0_2.png}
-		  \caption{Vertex nodal basis function $\varphi_{v,0}$ is $\mathcal{DS}_2$.}
-		  \label{fig:phiv0}
-\end{figure}
-
-We conclude that unisolvence follows directly from the constructed nodal basis functions.
-
-\subsection{Direct Serendipity Space $\mathcal{DS}_1$}
-The supplemental space for $\mathcal{DS}_1$ differs from 
-that for $\mathcal{DS}_2$. We present the first order serendipity
-as
-\begin{equation}\label{eq:definitionds1}
-		  \mathcal{DS}_1(E) = \mathbb{P}_1(E) \oplus \text{span}\{R\},
-\end{equation}
-where $R(\mathbf{x}_{v,0}) = R(\mathbf{x}_{v,2}) = 
--R(\mathbf{x}_{v,1}) = -R(\mathbf{x}_{v,3}) = 1$.
-
-\section{Weak Form}
 \subsection{Stokes Problem}
-We briefly describe solving static Stokes equation with mixed finite element scheme.
-We begin with strong form of the Stokes problem,
+We begin with the strong form of the static Stokes problem as 
 \begin{equation}\label{eq:strongStokes}
 \begin{aligned}
--\Delta \bold{u} + \nabla p &= \bold{f}, \\
-\nabla \cdot \bold{u} &= 0.
+-\nabla \cdot \pmb{\tau}(\mathbf{u}) + \nabla p &= \bold{f}, \\
+\nabla \cdot \bold{u} &= 0,
 \end{aligned}
+\end{equation}
+where $\pmb{\tau}$ is the deviatoric stress similar to~\eqref{eq:deriatoricstress} as 
+$\pmb{\tau}(\mathbf{u}) = 2\big(\mathcal{D} \mathbf{u} - \tfrac{1}{3}\nabla \cdot \mathbf{u} \mathbf{I}\big) $.
+Let test function space
+\begin{equation}\label{eq:testspace}
+V = \{ \bold{v} \in (H^1(\Omega))^2 : \bold{v} = 0 \quad \text{on} \quad \Gamma_u \}
 \end{equation}
 We derive weak form 
 \begin{equation}\label{eq:weakStokes}
@@ -147,8 +27,8 @@ We derive weak form
 \end{aligned}
 \end{equation}
 Let stress $\bold{s}\cdot \tau = \tau^T \nabla \bold{u} \nu $ and  $\bold{s} \cdot \nu =  \nu^T \nabla \bold{u} \nu - p_0$, 
-we have traction boundary condition term defined on $\Gamma_i$ which is $<\bold{s},\bold{v}>_{\Gamma_i}$.
-We employ a test space $\{ \bold{v} \in H^1(\Omega) : \bold{v} = 0$ on $\Gamma_u \}$ here,
+we have stress boundary condition term defined on $\Gamma_i$ which is $<\bold{s},\bold{v}>_{\Gamma_i}$.
+We employ a test space 
 \begin{equation}\label{eq:weakStokes2}
 \begin{aligned}
 (\nabla \bold{u}_h , \nabla \bold{v}_h)_{\Omega_h} - (p_h,\nabla \cdot \bold{v}_h)_{\Omega_h} &= (\bold{f},\bold{v}_h)_{\Omega_h} + 
@@ -159,6 +39,8 @@ We employ a test space $\{ \bold{v} \in H^1(\Omega) : \bold{v} = 0$ on $\Gamma_u
 We can separate normal and tangent part of stress on the boundary easily when physical boundary align with x-y axis.
 In the situation when a rectangular computational domain is used, we can mix stress and dirichlet boundary condition
 even further. 
+
+\subsection{$H^1$ Conforming Element}
 
 \subsection{Darcy Problem}
 \begin{equation}
@@ -180,6 +62,8 @@ weak form
 
 Test space $\{\bold{v} \in H(\text{div},\Omega): v_n =0$ on $\Gamma_u\}$.
 
+\subsection{$H(\text{div})$ Conforming Element}
+
 \subsection{Coupled Degenerage System}
 scaled nondimensionalized weak form
 let $\check{\sigma} = \mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bold{\text{I}}$
@@ -193,112 +77,6 @@ let $\check{\sigma} = \mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bo
 					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0
 		  \end{aligned}
 \end{equation}
-
-\section{Conforming MFEM}
-\subsection{$H(\text{div})$ Conforming discretization}
-
-\subsection{$H^1$ conforming discretization}
-
-\section{Linear System}
-
-\subsection{Saddle Point Problem}
-
-\subsection{Degenerate Saddle Point Problem}
-The linear system corresponding to (insert eqcite) has the form
-\begin{equation}
-\begin{bmatrix}
-\bold{A}_s   & -\bold{B}_s & \bold{0}     &  \bold{0}   \\
-\bold{B}_s^T &  \bold{C}_s & \bold{0}     &  \bold{K}   \\
-\bold{0}     &  \bold{0}   & \bold{A}_d   & -\bold{B}_d \\
-\bold{0}     &  \bold{K}   & \bold{B}_d^T &  \bold{C}_d
-\end{bmatrix} \begin{bmatrix}
-\bold{x}_s\\
-\bold{y}_s\\
-\bold{x}_d\\
-\bold{y}_d
-\end{bmatrix}= 
-\begin{bmatrix}
-\bold{f}_s\\
-\bold{g}_s\\
-\bold{f}_d\\
-\bold{g}_d
-\end{bmatrix},
-\end{equation}
-wherein the solution represents the degrees of freem of primary variables with respect to the bases of the finite element spaces.
-(Insert details of calculation of each blocked matrix).
-We form a double saddle point system by symmetrically permutate original linear system,
-\begin{equation}
-\begin{bmatrix}
-\bold{A}_s   & \bold{0}     & -\bold{B}_s &  \bold{0}   \\
-\bold{0}     & \bold{A}_d   &  \bold{0}   & -\bold{B}_d \\
-\bold{B}_s^T & \bold{0}     &  \bold{C}_s &  \bold{K}   \\
-\bold{0}     & \bold{B}_d^T &  \bold{K}   &  \bold{C}_d
-\end{bmatrix} \begin{bmatrix}
-\bold{x}_s\\
-\bold{x}_d\\
-\bold{y}_s\\
-\bold{y}_d
-\end{bmatrix}= 
-\begin{bmatrix}
-\bold{f}_s\\
-\bold{f}_d\\
-\bold{g}_s\\
-\bold{g}_d
-\end{bmatrix}.
-\end{equation}
-We group these block matrix to form a concise version,
-\begin{equation}
-\bold{A} = \begin{bmatrix}
-\bold{A}_s   & \bold{0}    \\
-\bold{0}     & \bold{A}_d  
-\end{bmatrix},
-\quad
-\bold{B} = \begin{bmatrix}
--\bold{B}_s & \bold{0}   \\
-\bold{0}   & -\bold{B}_d
-\end{bmatrix},
-\quad
-\bold{C} = \begin{bmatrix}
-- \bold{C}_s &  -\bold{K}   \\
-- \bold{K}   &  -\bold{C}_d
-\end{bmatrix},
-\quad \bold{F} = \begin{bmatrix}
-\bold{f}_s \\
-\bold{f}_d
-\end{bmatrix},
-\quad
-\bold{G} = \begin{bmatrix}
--\bold{g}_s \\
--\bold{g}_d
-\end{bmatrix},
-\end{equation}
-\begin{equation}
-\begin{bmatrix}
-		  \bold{A}   & \bold{B} \\
-		  \bold{B}^T & \bold{C}
-\end{bmatrix} \begin{bmatrix}
-\bold{x} \\ \bold{y}
-\end{bmatrix} = \begin{bmatrix}
-		  \bold{F} \\
-		  \bold{G}
-\end{bmatrix},
-\end{equation}
-where $\bold{A}$ is a positive definite matrix. However,
-$\bold{B}$ is usually a singular matrix when no melting region presents.
-We will present a modified Uzawa iteration algorithm to deal with this
-coupled degenerate singular system.
-Inexact Uzawa algorithm has been introduced in the previous literature 
-\cite{InexactUzawa_Elam_Golub} and \cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev},
-\begin{algorithm}
-\caption{Preconditioned Inexact Uzawa Iteration}
-		  \begin{algorithmic}[1]
-					 \STATE Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
-					 \STATE Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
-					 \STATE Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$
-					 \STATE Obtain $\tilde{\bold{y}} =\text{argmin}_{\bold{x}\in V} ||(\bold{B}^T\bold{A}^{-1}\bold{B} - \bold{C})^{-1}\tilde{\bold{y}}-\bold{r} ||$
-					 \STATE Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
-\end{algorithmic}
-\end{algorithm}
 
 
 
