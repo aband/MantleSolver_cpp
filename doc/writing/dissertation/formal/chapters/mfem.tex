@@ -5,12 +5,24 @@ and test with simple stokes and darcy problems respectively.
 
 \subsection{$H(\text{div})$ Conforming Element}
 We have some choice for $H(\text{div})$ confirming space. 
-For example, we can choose the famous Ravier-Thomas element $\mathcal{RT}$ 
+For example, we can choose the famous Ravier-Thomas element 
 by~\cite{10.1007/BFb0064470}. The serendipity space is
 the precursor of the Brezzi-Douglas-Marini element by~\cite{BDM}.
+We recover Arbogast-Correa element by~\cite{doi:10.1137/15M1013705} if we 
+use mapped direct serendipity space.
+We generated a reduced $H(\text{div})$ approximation, that $\nabla \cdot \mathbf{u}$
+is approximated one less order than approximation of $\mathbf{u}$.
+
+We write the rotated 2D exact sequence for energy space as
+\begin{alignat}{3}\label{eq:exactsequence}
+&H^1 \xrightarrow[]{\text{curl}} H&&(\text{div}) \xrightarrow[]{\text{div}} &&L^2 \\
+&\cup                            &&\cup                                     &&\cup\\
+&\mathcal{DS}_2  \xrightarrow[]{\text{curl}} &&\mathbf{V}_r^{r-1} \xrightarrow[]{\text{div}} &&\mathbb{P}_{r-1}.
+\end{alignat}
+
 
 \subsection{Test Darcy Problem}
-We test our BDM element on a simple darcy problem as
+We test our $H(\text{div})$ conforming element on a simple darcy problem as
 \begin{equation}
 \begin{aligned}
 \bold{u} + \nabla p & = \bold{g}\\
@@ -38,11 +50,9 @@ We begin with the strong form of the static Stokes problem as
 \begin{equation}\label{eq:strongStokes}
 \begin{aligned}
 -\Delta \mathbf{u} + \nabla p &= \mathbf{f}, \\
-\nabla \cdot \bold{u} &= 0,
+\nabla \cdot \bold{u} &= 0.
 \end{aligned}
 \end{equation}
-where $\pmb{\tau}$ is the deviatoric stress similar to~\eqref{eq:deriatoricstress} as 
-$\pmb{\tau}(\mathbf{u}) = 2\big(\mathcal{D} \mathbf{u} - \tfrac{1}{3}\nabla \cdot \mathbf{u} \mathbf{I}\big) $.
 Let test function space
 \begin{equation}\label{eq:testspace}
 		  V = \{ \mathbf{v} \in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \quad \text{on} \quad \Gamma_u \}

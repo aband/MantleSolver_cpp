@@ -18,12 +18,17 @@ void basis::GetCorners(const vertexSet& corners){
     }
 
     //! Create unit normal and unit tangent vectors for each edges
+    unitNormals_.clear();
+    unitTangents_.clear();
+
     for (int c=0; c<4; c++){
         vertexSet edge {corners_.at((c+3)%4), 
                         corners_.at(c)};
         unitNormals_.push_back(UnitNormal(edge, length(edge)));
         unitTangents_.push_back(unitTangent(edge, length(edge)));
     }
+
+    unitNormals_d_.clear();
 
     vertexSet diag {corners_.at(0),corners_.at(2)};
 

@@ -128,9 +128,9 @@ target_include_directories(phase_lib
 #        myfunc4.cpp
 #)
 #
-#add_executable(testBasis
-#        testBasis.cpp
-#)
+add_executable(testBasis
+        testBasis.cpp
+)
 
 add_executable(plotbasis
 		  plotbasis.cpp
@@ -163,12 +163,12 @@ add_executable(plotbasis
 #    PkgConfig::CGNS
 #)
 
-#target_link_libraries(testBasis
-#    mfem_lib
-#    io_lib
-#    PkgConfig::LAPACKE 
-#    PkgConfig::CGNS
-#)
+target_link_libraries(testBasis
+    mfem_lib
+    io_lib
+    PkgConfig::LAPACKE 
+    #PkgConfig::CGNS
+)
 
 target_link_libraries(plotbasis
     mfem_lib

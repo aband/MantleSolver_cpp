@@ -1,9 +1,18 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Arbogast and Correa(2016)]{doi:10.1137/15M1013705}
+Todd Arbogast and Maicon~R. Correa.
+\newblock Two families of \$h\$(div) mixed finite elements on quadrilaterals of
+  minimal dimension.
+\newblock \emph{SIAM Journal on Numerical Analysis}, 54\penalty0 (6):\penalty0
+  3332--3356, 2016.
+\newblock \doi{10.1137/15M1013705}.
+\newblock URL \url{https://doi.org/10.1137/15M1013705}.
 
 \bibitem[Arbogast et~al.(2022)Arbogast, Tao, and Wang]{directSerendipity}
 Todd Arbogast, Zhen Tao, and Chuning Wang.

@@ -162,10 +162,24 @@ int main(int argc, char ** argv){
     br->ComputeTotalDOF(mi);
     hdiv->ComputeTotalDOF(mi);
 
-    FILE *fx = fopen("referenceX.dat","w");
-    FILE *fy = fopen("referenceY.dat","w");
-    FILE *vx = fopen("valx.dat","w");
-    FILE *vy = fopen("valy.dat","w");
+    FILE *fx1 = fopen("gridX1.dat","w");
+    FILE *fy1 = fopen("gridY1.dat","w");
+    FILE *vx1 = fopen("valx1.dat","w");
+    FILE *vy1 = fopen("valy1.dat","w");
+    FILE *ux1 = fopen("ualx1.dat","w");
+    FILE *uy1 = fopen("ualy1.dat","w");
+    FILE *sc1 = fopen("sc1.dat", "w");
+    FILE *scc1 = fopen("scc1.dat", "w");
+
+    FILE *fx2 = fopen("gridX2.dat","w");
+    FILE *fy2 = fopen("gridY2.dat","w");
+    FILE *vx2 = fopen("valx2.dat","w");
+    FILE *vy2 = fopen("valy2.dat","w");
+    FILE *ux2 = fopen("ualx2.dat","w");
+    FILE *uy2 = fopen("ualy2.dat","w");
+    FILE *sc2 = fopen("sc2.dat", "w");
+    FILE *scc2 = fopen("scc2.dat", "w");
+
 
     int dof=0;
     ierr = PetscOptionsGetInt(NULL,NULL,"-dof",&dof,NULL);CHKERRQ(ierr);
@@ -179,34 +193,75 @@ int main(int argc, char ** argv){
     vertex v2 {1.2,0.95};
     vertex v3 {-0.05, 1.03};
 
-    vertexSet corners = {v0,v1,v2,v3};
+    vertexSet corners1 = {v0,v1,v2,v3};
+
+    vertex vv0 {0.8,0.1};
+    vertex vv1 {1.65,0.02};
+    vertex vv2 {1.7,1.0};
+    vertex vv3 {1.2,0.95};
+
+    vertexSet corners2 = {vv0,vv1,vv2,vv3};
 
     // reference element
-    basis_->GetCorners(mi, {0,0});
+    //basis_->GetCorners(mi, {0,0});
+        vertexSet edge {v1,v2};
+        vertex unitNormal = UnitNormal(edge, length(edge));
 
     //basis_->GetCorners(corners);
     for (int j=0; j<seed; j++){
     for (int i=0; i<seed; i++){
         vertex sample {i*h, j*h};
 //        vertex target ;
-        std::array<vertex, 8>  values = hdiv->ComputeHdivmixed(*basis_, sample);
-        std::vector<vertex> newvalues = hdiv->EvaluateAll(*basis_, sample);
+//        std::array<vertex, 8>  values = hdiv->ComputeHdivmixed(*basis_, sample);
+//        std::vector<vertex> newvalues = hdiv->EvaluateAll(*basis_, sample);
 
-//        target = bilinearMap(corners, sample);
-//        std::array<vertex, 8>  values = hdiv->ComputeHdivmixed(*basis_, target);
-//        std::vector<vertex> newvalues = hdiv->EvaluateAll(*basis_, target);
-        
+        basis_->GetCorners(corners1);
+        vertex target1 = bilinearMap(corners1, sample);
+        std::array<vertex, 8>  values1 = hdiv->ComputeHdivmixed(*basis_, target1);
+        //std::vector<vertex> newvalues1 = hdiv->EvaluateAll(*basis_, target);
+     
+        basis_->GetCorners(corners2);
+        vertex target2 = bilinearMap(corners2, sample);
+        std::array<vertex, 8>  values2 = hdiv->ComputeHdivmixed(*basis_, target2);
+ 
+        fprintf(fx1, "%f ", target1[0]);
+        fprintf(fy1, "%f ", target1[1]);
+        fprintf(fx2, "%f ", target2[0]);
+        fprintf(fy2, "%f ", target2[1]);
 
-        fprintf(fx, "%f ", sample[0]);
-        fprintf(fy, "%f ", sample[1]);
-        fprintf(vx, "%f ", values[dof][0]);
-        fprintf(vy, "%f ", values[dof][1]);
+        fprintf(vx1, "%f ", values1[2][0]);
+        fprintf(vy1, "%f ", values1[2][1]);
+        fprintf(vx2, "%f ", values2[0][0]);
+        fprintf(vy2, "%f ", values2[0][1]);
+
+        fprintf(ux1, "%f ", values1[2+4][0]);
+        fprintf(uy1, "%f ", values1[2+4][1]);
+        fprintf(ux2, "%f ", values2[0+4][0]);
+        fprintf(uy2, "%f ", values2[0+4][1]);
+
+        fprintf(sc1, "%f ", values1[2][0]*unitNormal[0] + values1[2][1]*unitNormal[1]);
+        fprintf(sc2, "%f ", values2[0][0]*unitNormal[0] + values2[0][1]*unitNormal[1]);
+        fprintf(scc1, "%f ", values1[2+4][0]*unitNormal[0] + values1[2+4][1]*unitNormal[1]);
+        fprintf(scc2, "%f ", values2[0+4][0]*unitNormal[0] + values2[0+4][1]*unitNormal[1]);
+
     }}
 
-    fclose(fx);
-    fclose(fy);
-    fclose(vx);
-    fclose(vy);
+    fclose(fx1);
+    fclose(fy1);
+    fclose(vx1);
+    fclose(vy1);
+    fclose(ux1);
+    fclose(uy1);
+    fclose(fx2);
+    fclose(fy2);
+    fclose(vx2);
+    fclose(vy2);
+    fclose(ux2);
+    fclose(uy2);
+    fclose(sc1);
+	 fclose(sc2);
+    fclose(scc1);
+	 fclose(scc2);
 
     // ========================================================================
 /*
