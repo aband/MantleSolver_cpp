@@ -1,13 +1,43 @@
-\section{Mixed Formulation and Conforming Element}
-We use mixed finite element method (MFEM) for both Darcy and Stokes flow. 
-We write mixed variational form for Darcy and Stokes flow separately and define 
-conforming element with direct serendipity space.
+\section{Mixed Finite Element}
+We define $H^1$ and $H(\text{div})$ 
+conforming mixed element space with the direct serendipity space,
+and test with simple stokes and darcy problems respectively.
 
-\subsection{Stokes Problem}
+\subsection{$H(\text{div})$ Conforming Element}
+We have some choice for $H(\text{div})$ confirming space. 
+For example, we can choose the famous Ravier-Thomas element $\mathcal{RT}$ 
+by~\cite{10.1007/BFb0064470}. The serendipity space is
+the precursor of the Brezzi-Douglas-Marini element by~\cite{BDM}.
+
+\subsection{Test Darcy Problem}
+We test our BDM element on a simple darcy problem as
+\begin{equation}
+\begin{aligned}
+\bold{u} + \nabla p & = \bold{g}\\
+\nabla \cdot \bold{u} & = 0
+\end{aligned}
+\end{equation}
+
+weak form
+
+\begin{equation}
+\begin{aligned}
+(\bold{u}, \bold{v})_{\Omega} - (p, \nabla \cdot \bold{v})_{\Omega} &= (\bold{g},\bold{v})_{\Omega} 
+- \langle p_0, v_n\rangle_{\Gamma_i} - \langle\bold{u}_0, \bold{v}\rangle_{\Gamma_u}\\
+(\nabla \cdot \bold{u}, \omega) &= 0
+\end{aligned}
+\end{equation}
+
+Test space $\{\bold{v} \in H(\text{div},\Omega): v_n =0$ on $\Gamma_u\}$.
+
+\subsection{$H^1$ Conforming Element}
+
+\subsection{Test Stokes Problem}
+We test our modified BR element on a test Stokes problem. 
 We begin with the strong form of the static Stokes problem as 
 \begin{equation}\label{eq:strongStokes}
 \begin{aligned}
--\nabla \cdot \pmb{\tau}(\mathbf{u}) + \nabla p &= \bold{f}, \\
+-\Delta \mathbf{u} + \nabla p &= \mathbf{f}, \\
 \nabla \cdot \bold{u} &= 0,
 \end{aligned}
 \end{equation}
@@ -15,7 +45,7 @@ where $\pmb{\tau}$ is the deviatoric stress similar to~\eqref{eq:deriatoricstres
 $\pmb{\tau}(\mathbf{u}) = 2\big(\mathcal{D} \mathbf{u} - \tfrac{1}{3}\nabla \cdot \mathbf{u} \mathbf{I}\big) $.
 Let test function space
 \begin{equation}\label{eq:testspace}
-V = \{ \bold{v} \in (H^1(\Omega))^2 : \bold{v} = 0 \quad \text{on} \quad \Gamma_u \}
+		  V = \{ \mathbf{v} \in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \quad \text{on} \quad \Gamma_u \}
 \end{equation}
 We derive weak form 
 \begin{equation}\label{eq:weakStokes}
@@ -40,29 +70,6 @@ We can separate normal and tangent part of stress on the boundary easily when ph
 In the situation when a rectangular computational domain is used, we can mix stress and dirichlet boundary condition
 even further. 
 
-\subsection{$H^1$ Conforming Element}
-
-\subsection{Darcy Problem}
-\begin{equation}
-\begin{aligned}
-\bold{u} + \nabla p & = \bold{g}\\
-\nabla \cdot \bold{u} & = 0
-\end{aligned}
-\end{equation}
-
-weak form
-
-\begin{equation}
-\begin{aligned}
-(\bold{u}, \bold{v})_{\Omega} - (p, \nabla \cdot \bold{v})_{\Omega} &= (\bold{g},\bold{v})_{\Omega} 
-- \langle p_0, v_n\rangle_{\Gamma_i} - \langle\bold{u}_0, \bold{v}\rangle_{\Gamma_u}\\
-(\nabla \cdot \bold{u}, \omega) &= 0
-\end{aligned}
-\end{equation}
-
-Test space $\{\bold{v} \in H(\text{div},\Omega): v_n =0$ on $\Gamma_u\}$.
-
-\subsection{$H(\text{div})$ Conforming Element}
 
 \subsection{Coupled Degenerage System}
 scaled nondimensionalized weak form
@@ -77,6 +84,3 @@ let $\check{\sigma} = \mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bo
 					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0
 		  \end{aligned}
 \end{equation}
-
-
-

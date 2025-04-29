@@ -1,4 +1,4 @@
-\begin{thebibliography}{3}
+\begin{thebibliography}{5}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -17,10 +17,24 @@ James~H. Bramble, Joseph~E. Pasciak, Apostol T, and Vassilev.
 \newblock Analysis of the inexact uzawa algorithm for saddle point problems.
 \newblock \emph{SIAM. J. Numer. Anal.}, 34:\penalty0 1072--1092, 1997.
 
+\bibitem[Brezzi et~al.(1985)Brezzi, Jr., and Marini]{BDM}
+Franco Brezzi, Jim~Douglas Jr., and L.~D. Marini.
+\newblock Two families of mixed finite element for second order elliptic
+  problems.
+\newblock \emph{Numerische Mathematik}, 47:\penalty0 217--235, 1985.
+
 \bibitem[Elman and Golub(1994)]{InexactUzawa_Elam_Golub}
 Howard~C. Elman and Gene~H. Golub.
 \newblock Inexact and preconditioned uzawa algorithms for saddle point
   problems.
 \newblock \emph{SIAM. J. Numer. Anal.}, 31:\penalty0 1645--1661, 1994.
+
+\bibitem[Raviart and Thomas(1977)]{10.1007/BFb0064470}
+P.~A. Raviart and J.~M. Thomas.
+\newblock A mixed finite element method for 2-nd order elliptic problems.
+\newblock In Ilio Galligani and Enrico Magenes, editors, \emph{Mathematical
+  Aspects of Finite Element Methods}, pages 292--315, Berlin, Heidelberg, 1977.
+  Springer Berlin Heidelberg.
+\newblock ISBN 978-3-540-37158-8.
 
 \end{thebibliography}
