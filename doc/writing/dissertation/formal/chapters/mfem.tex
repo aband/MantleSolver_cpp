@@ -19,7 +19,28 @@ We write the rotated 2D exact sequence for energy space as
 &\cup                            &&\cup                                     &&\cup\\
 &\mathcal{DS}_2  \xrightarrow[]{\text{curl}} &&\mathbf{V}_r^{r-1} \xrightarrow[]{\text{div}} &&\mathbb{P}_{r-1}.
 \end{alignat}
+We define the first order reduced $H(\text{div})$ conforming space with $\mathcal{DS}_2$ as
+\begin{equation}\label{eq:defhdiv}
+		  \mathbf{V}_1^0 = \mathbb{P}_1^2 \oplus \text{curl}\mathbb{S}_2^{\mathcal{DS}}.
+\end{equation}
+Two vector basis functions $\pmb{\varphi}_{l}$ and $\pmb{\varphi}_{c}$.
+\begin{figure}[ht]
+\centering\small
+\includegraphics[width=5.5cm,height=4cm]{chapters/pics/linear1.png}
+\includegraphics[width=5.5cm,height=4cm]{chapters/pics/linear2.png}
+		  \caption{Linear basis function $\pmb{\varphi}_l$.}
+		  \label{fig:varphil}
+\end{figure}
 
+\begin{figure}[ht]
+\centering\small
+\includegraphics[width=5.5cm,height=4cm]{chapters/pics/const1.png}
+\includegraphics[width=5.5cm,height=4cm]{chapters/pics/const2.png}
+		  \caption{Constant basis function $\pmb{\varphi}_c$.}
+		  \label{fig:varphic}
+\end{figure}
+
+Analysis of elemetn, $\Pi$ operator defined by Ravier-Thomas.
 
 \subsection{Test Darcy Problem}
 We test our $H(\text{div})$ conforming element on a simple darcy problem as
@@ -29,9 +50,7 @@ We test our $H(\text{div})$ conforming element on a simple darcy problem as
 \nabla \cdot \bold{u} & = 0
 \end{aligned}
 \end{equation}
-
 weak form
-
 \begin{equation}
 \begin{aligned}
 (\bold{u}, \bold{v})_{\Omega} - (p, \nabla \cdot \bold{v})_{\Omega} &= (\bold{g},\bold{v})_{\Omega} 
@@ -39,10 +58,13 @@ weak form
 (\nabla \cdot \bold{u}, \omega) &= 0
 \end{aligned}
 \end{equation}
-
 Test space $\{\bold{v} \in H(\text{div},\Omega): v_n =0$ on $\Gamma_u\}$.
 
 \subsection{$H^1$ Conforming Element}
+Vertex basis mapping to sobolev space difficulty.
+Need Cl\'ement interpolation.
+Define $\Pi$ operator two parts.
+
 
 \subsection{Test Stokes Problem}
 We test our modified BR element on a test Stokes problem. 
