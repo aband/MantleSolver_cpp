@@ -59,7 +59,7 @@ bool top(const indice& globalCell,
          const MeshInfo& mi){
 
 
-    if (globalCell[1] == mi.MPIglobalCellSize[1]-1){
+    if (globalCell[1] > mi.MPIglobalCellSize[1]-1 - 4){
         return true;
     } else {
         return false;

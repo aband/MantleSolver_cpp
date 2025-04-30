@@ -6,6 +6,36 @@
  * Transporting phi with customized melting rate directly
  */
 
+int printExactPorosity(int mark, const MeshInfo& mi, const char * fieldname, PhysProperty * pp){
+
+    char * filename = (char *)malloc(strlen(fieldname)+10+4);
+
+    char n_char[10];
+    std::sprintf(n_char,"%d",mark);
+    strcpy(filename, fieldname);
+    strcat(filename, n_char);
+    strcat(filename, ".dat");
+
+    FILE * sol = fopen(filename,"w");
+
+    for(int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for(int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        vertex local {0.0, 0.0};
+
+        vector<vertex> corners = extractCorners(mi, {i,j});
+
+        vertex global = GaussMapPointsFace(local, corners);
+
+        fprintf(sol, "%.16f ", AssignPorosity(global,pp));
+
+    }fprintf(sol, "\n");}
+
+    fclose(sol);
+
+    return 1;
+}
+
 // Two sided
 int Driver::computeEffVel_case(const vector<vertex>& gaussp,
                                const vertexSet& edgep,
@@ -272,7 +302,7 @@ if (phif<1e-16){phif = 0.0;}
 //cout << phif << "  " ;
         // Test =================================================
 
-        //phif = AssignPorosity(mapped, myPhase->pp); 
+        phif = AssignPorosity(mapped, myPhase->pp); 
 //cout << phif << endl;
         // ======================================================
 
@@ -327,7 +357,7 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
 //cout << phi_f << "  ";
         // Test ==================================================================
 
-        //phi_f = AssignPorosity(mapped, myPhase->pp);
+        phi_f = AssignPorosity(mapped, myPhase->pp);
 //cout << phi_f << endl;
         // =======================================================================
 
@@ -423,7 +453,7 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
 //cout << phi_f << "  " ;
         // Test ==================================================================
 
-        //phi_f = AssignPorosity(mapped, myPhase->pp);
+        phi_f = AssignPorosity(mapped, myPhase->pp);
 //cout << phi_f << endl;
 		  // =======================================================================
 
@@ -483,7 +513,7 @@ if (phi_f_e < 1e-16) {phi_f_e = 0.0;}
                              allwgts({cellout[0], cellout[1]}), cellout, lphi)); 
 					 if (in < 1e-16){in = 0.0;}
 					 if (out< 1e-16){out = 0.0;}
-cout<< endl << in << "  " << out << endl;
+//cout<< endl << in << "  " << out << endl;
         if (in < 1e-16 && out <1e-16){
             phi_f_e = 0.0;
         } else {
@@ -493,11 +523,17 @@ cout<< endl << in << "  " << out << endl;
             }
 
             // Reconstruction of point wise value of HD and CD
-cout << gcell[0] << "  " << gcell[1] << "  " << phi_f_e << "  ";
+//cout << gcell[0] << "  " << gcell[1] << "  " << phi_f_e << "  ";
             // Testing =================================================
 
-            //phi_f_e = AssignPorosity(mapped, myPhase->pp);
-cout << phi_f_e << endl;
+            phi_f_e = AssignPorosity(mapped, myPhase->pp);
+				if (gcell[1]==35 && e==1){
+            phi_f_e = 2.0/(1.0/0.1 + 1.0/0.05);
+            phi_f_e = (0.1+0.05)/2;
+            } 
+cout << gcell[0] << "  " << gcell[1] << "  " << e << "  " <<  phi_f_e << "  " << endl;
+ 
+//cout << phi_f_e << endl;
             // =========================================================
 
             for (int j=0; j<8; j++){
@@ -539,7 +575,7 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
 //cout << phi_f << "  ";
         // Test ============================================================
 
-        //phi_f = AssignPorosity(mapped, myPhase->pp);
+        phi_f = AssignPorosity(mapped, myPhase->pp);
 //cout << phi_f << endl;
         // =================================================================
 
@@ -614,7 +650,9 @@ int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
         SolveFlow_case(maxIter, tolUzawa, allwgts, lphi);
         CreateScatterVec();
 
-        printCellAve(mark, &globalCD, mi, "porosity");
+        //printCellAve(mark, &globalCD, mi, "porosity");
+        printExactPorosity(mark, mi, "porosity", myPhase->pp);
+
         PrintFlowEvent(mark);
         mark ++;
 

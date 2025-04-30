@@ -303,7 +303,7 @@ int Driver::AssignLocMatDarcy(const indice& gcell,
                 }
             }
 //if (e==1 || e == 3){
-//cout << g << ":  " << phi_f_e;}
+//cout << g << ":  " << phi_f_e << "  " ;//}
             // Testing =================================================
 
             //phi_f_e = AssignPorosity(mapped, myPhase->pp);

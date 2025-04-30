@@ -94,14 +94,16 @@ double InitCD(const valarray<double>& point,
 //        return 0.0;
 //    }
 
-    if (point[1] > -0.100){
-        return 0.05*pow(point[1]+0.1,1) + 0.005*0.4;
-    }else if (point[1] > -0.5){
-        return 0.005*pow(point[1]+0.5,1);
-    } else {
-        return 0.0;
-    }
-
+    //if (point[1] > -0.05){
+    //    return 0.2*pow(point[1]+0.1,1) + 0.1*0.35 + 0.05*0.1;
+    //}else if (point[1] > -0.15){
+    //    return 0.1*pow(point[1]+0.15,1)+ 0.01*0.35;
+    //}else if (point[1] > -0.25){
+    //    return 0.01*pow(point[1]+0.5,1);
+    //} else {
+    //    return 0.0;
+    //}
+return 0;
 }
 
 double InitHD(const valarray<double>& point,
