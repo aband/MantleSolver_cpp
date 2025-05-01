@@ -16,17 +16,21 @@ Te = (Te-Te)/(Tm-Te);
 
 fontSize = 14;
 
-%{
 % Weight fraction Temperature plot
 figure
 plot([0 Xe]*100, [T1, Te], 'k-'), hold on
 plot([Xe 1]*100, [Te, T2], 'k-')
 plot([0  1]*100, [Te, Te], 'k-')
 plot([0  Xe]*100, [-0.2, -0.2], 'k-')
-plot([0 0 Xe 1 1]*100, [Te T1 Te T2 Te], 'o', 'markerfacecolor', 'w', 'markeredgecolor', 'r')
+plot([0 0 Xe 1 1, Xe]*100, [Te T1 Te T2 Te,  -0.2], 'o', 'markerfacecolor', 'w', 'markeredgecolor', 'r')
 text(.9, Te+0.04,'1','fontsize',12,'color','r')
+text(0.03*Xe, Te-0.05,'$T_e$','fontsize',12,'color','r', 'interpreter','latex')
 text(Xe*100+0.2, Te+0.05,'3','fontsize',12,'color','r')
+
+text(Xe*100, -0.2+0.05,'$C_e$','fontsize',12,'color','r','interpreter','latex')
+
 text(3, T1-0.04,'2','fontsize',12,'color','r')
+
 text(0,-0.1,'I','fontsize',12,'color','b');
 text(50,-0.1,'II','fontsize',12,'color','b');
 text(3,0.5,'IV','fontsize',12,'color','b');
@@ -39,6 +43,7 @@ axis square
 xlabel ('opx [wt%]', 'FontSize', fontSize)
 ylabel ('Dimensionless Temperature', 'FontSize', fontSize)
 
+%{
 % bulk composition Temperature plot switch to left side of eutectic
 figure
 plot([0 Xe], [T1, Te], 'k-'), hold on
@@ -74,7 +79,8 @@ ylabel ('Dimensionless Temperature', 'FontSize', fontSize)
 %L = 0.6;
 L = 5*10^5 / 1200 / (2000-1480)
 
-%figure
+%{
+figure
 plot([0,Xe],[T1+L,Te+L],'k-'), hold on
 plot([0,Xe],[Te,Te+L],'k-')
 plot([0,Xe], [-0.5, -0.5], 'k-')
@@ -97,6 +103,7 @@ hold off
 axis square
 xlabel ('Bulk composition', 'FontSize', fontSize)
 ylabel ('Bulk enthalpy', 'FontSize', fontSize)
+%}
 
 %{
 % H-C plot
