@@ -485,7 +485,10 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
     // Define B matrix for the Darcy part
     // Compute with divergence theorem
     phi_f_hat = (phi_f_hat == 0.0 ? 1.0 : phi_f_hat);
-
+    if (gcell[1] == 34 || gcell[1] == 35){
+phi_f_hat = 2.0/30.0;
+    }
+cout << phi_f_hat << endl;
     vertexSet corners = basis_->corners();
 
     for (int e =0; e<4; e++){
@@ -502,7 +505,7 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
             indice cellout = gcell + mi.faceNormal[((e-1)+4)%4];
 
             double phi_f_e = 0.0;
-
+/*
             if (outside(mi, cellout)){
                 phi_f_e = abs(advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
 if (phi_f_e < 1e-16) {phi_f_e = 0.0;}
@@ -521,15 +524,15 @@ if (phi_f_e < 1e-16) {phi_f_e = 0.0;}
         }
 
             }
+*/
 
             // Reconstruction of point wise value of HD and CD
 //cout << gcell[0] << "  " << gcell[1] << "  " << phi_f_e << "  ";
             // Testing =================================================
 
             phi_f_e = AssignPorosity(mapped, myPhase->pp);
-				if (gcell[1]==35 && e==1){
+				if ((gcell[1]==35 && e==1) ||(gcell[1]==34 && e==3)){
             phi_f_e = 2.0/(1.0/0.1 + 1.0/0.05);
-            phi_f_e = (0.1+0.05)/2;
             } 
 cout << gcell[0] << "  " << gcell[1] << "  " << e << "  " <<  phi_f_e << "  " << endl;
  

@@ -295,9 +295,9 @@ the coexistence of species and phases in representative volume element.
     \draw [thick, <->] (4.5,7.5) -- (5.75,6.5);
     %\draw [thick, <->] (7.8,3.8) -- (7.8,5.2);
     
-    \draw (2,6) node {phase s};
-    \draw (3,3) node {phase s};
-    \draw (8,5) node {phase l};
+		  \draw (2,6) node {phase \textit{s}};
+		  \draw (3,3) node {phase \textit{s}};
+		  \draw (8,5) node {phase \textit{l}};
 \end{tikzpicture}
 \caption{Phases and species in an representative volume element (RVE).\label{fig:RVE}}
 \end{figure}
@@ -342,8 +342,8 @@ particularly in the context of particle transport. In mantle dynamics,
 transport of concentration within the liquid phases. We define a 
 corresponding effective velocity for the transport of bulk concentration.
 To begin, we define the partition coefficient as $D_i = c_{i,s}/c_{i,f}$. 
-The concentration of species $i$ in the liquid and solid phase 
-can be expressed in terms of the bulk concentration as follows:
+The concentration of species $i$ in the liquid and solid phases 
+can be expressed in terms of the bulk concentration as 
 \begin{alignat}{1}
 		  \label{eq:effectiveliquidcon}
 		  (\phi_l + \phi_s D_i) c_{i,l} &= \overline{c}_i, \\
@@ -378,8 +378,8 @@ where $C = \overline{c}$ for simplicity.
 
 \subsection{Transport of Energy}
 According to the first law of thermodynamics,
-we write the energy balance equation in the phase-averaged internal 
-energy form as
+we write the energy balance equation for the specfic internal 
+energy $u_i$ in the phase-averaged form as
 \begin{equation}\label{eq:energybalanceinternalenergy}
 \frac{\partial \overline{\rho u}}{\partial t} + \nabla \cdot \overline{\rho u \mathbf{v}} = 
 		  \overline{\rho \mathcal{Q}} + \nabla \cdot \overline{K} \nabla T + \nabla \cdot \overline{\pmb{\sigma} \cdot \mathbf{v}} +
@@ -390,16 +390,18 @@ On the left-hand side, the equation represents the time-dependent rate of change
 of internal energy of a two-phase mixture as it moves with the flow.
 On the right-hand side, it includes the heat source term $\mathcal{Q}$, 
 conductive heat transfer following Fourier's law,
-mechanical work done by mixture stress, and work against gravity respectively.
+mechanical work done by mixture stress, and work against gravity, respectively.
 
-In a thermochemical equilibrium scenario, we replace internal energy $u$ with 
-enthalpy $h$. The specific enthalpy is defined as
+In a thermochemical equilibrium scenario, we replace internal energy $u_i$ with 
+enthalpy $h_i$, and use a uniform pressure $P$. 
+The specific enthalpy is defined as
 \begin{equation}\label{eq:specificenthalpy}
-h = u + PV/\rho,
+h_i = u_i + P/\rho_i.
 \end{equation}
 We formulate the enthalpy equation by neglecting the
-external heating/cooling term $\mathcal{Q}$ and dissipative heating 
-following the discussion presented by \citet{MagmaDynamicsEnthalpyMethod},
+external heating/cooling term $\mathcal{Q}$, mechanical work done by mixture
+stress and work against gravity.
+following the discussion presented by \citet{MagmaDynamicsEnthalpyMethod}, so
 \begin{equation}\label{eq:enthalpyequation}
 \frac{\partial \overline{\rho h}}{\partial t} + \nabla \cdot \overline{\rho h \mathbf{v}}
 = \frac{\partial P}{ \partial t} + \overline{v} \cdot \nabla P + 
