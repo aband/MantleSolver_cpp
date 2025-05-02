@@ -20,7 +20,10 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
 
-    double xstart = -0.5*L, ystart = -1.0001*H;
+    double addy = 0.0;
+    PetscCall(PetscOptionsGetReal(NULL,NULL,"-addy",&addy,NULL));
+
+    double xstart = -0.5*L, ystart = -1.0001*H - addy;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-ystart", &ystart, NULL));
 
@@ -92,8 +95,8 @@ int main(int argc, char **argv){
      */
     double h0 = sqrt((L*H)/(double)(M*N));
 
-    driver->RK(dt, Tmax, maxIter, tolUzawa);
-    //driver->SSP2RK(dt, Tmax, maxIter, tolUzawa, interval);
+    //driver->RK(dt, Tmax, maxIter, tolUzawa);
+    driver->SSP2RK(dt, Tmax, maxIter, tolUzawa, interval);
 
     VecDestroy(&driver->globalmesh);
     VecDestroy(&driver->globalHD);
