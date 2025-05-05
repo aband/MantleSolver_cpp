@@ -207,16 +207,16 @@ Now we define the function spaces
 where $\Gamma_{d,u} \in \partial \Omega$ and $\Gamma_{s,u} \in \partial \Omega$ 
 are boundary assigned with essential boundary condition with nonzero measure.
 
-scaled nondimensionalized weak form
+Scaled nondimensionalized weak form.
 Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_r + \check{\mathbf{g}}_{r}$,
 $\check{q}_l \in \mathbb{W}_d$, $\check{\mathbf{v}}_s \in \mathbb{V}_s + \mathbf{g}_s$, and $q\in \mathbb{W}_s$ such that
 \begin{equation}\label{eq:weakformulation}
 		  \begin{aligned}
-					 (2\phi_s\check{\sigma}(\bold{v}_{s,h}),\nabla \Psi_s) - (\check{q}_h, \nabla \cdot \Psi_s) &= -(\phi_s\check{\bold{f}}, \Psi_s), \\
-					 (\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  + \Big(\frac{\hat{\phi}_f}{\phi_s} \check{q}_h, \omega\Big) - 
-					\Big(\frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_{f,h},\omega \Big) &= 0,\\
-					 (\bold{\check{v}}_{r,h},\Psi_r)  - (\check{q}_{f,h},\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r)) &= 0,\\
-					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0.
+					 (\check{\pmb{\tau}}(\bold{v}_{s}),\nabla \pmb{\psi}_s) - (\check{q}, \nabla \cdot \pmb{\psi}_s) &= -((1-\phi)\bold{n}, \pmb{\psi}_s), \\
+					 (\nabla \cdot \check{\bold{v}}_{s}, \omega)  + \Big(\frac{\hat{\phi}}{1-\phi} \check{q}, \omega\Big) - 
+					\Big(\frac{\hat{\phi}^{1/2}}{1-\phi} \check{q}_{l},\omega \Big) &= 0,\\
+					 (\bold{\check{v}}_{r},\pmb{\psi}_r)  - (\check{q}_{f},\hat{\phi}^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r)) &= 0,\\
+					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0.
 		  \end{aligned}
 \end{equation}
 The Existence and uniquense of the solution has been proved by~\cite{DegenerateDarcy}. We will not repeat the proof here.
@@ -236,7 +236,8 @@ We write the function spaces out as
 \end{equation}
 We can impose essential boundary conditions
 
-Scaled mixed finite element method.
+Scaled mixed finite element method. Find $\check{\mathbf{v}}_{r,h} \in \mathbb{V}_1^0 + \hat{\mathbf{g}}_r$, $\check{q})_{r,h} \in \mathbb{W}_D$, 
+$\mathbf{v}_{s,h} \in \mathbf{V}_S + \hat{\mathbf{g}}_s$ and $\check{q}_h \in \mathbb{W}_S$ such that
 \begin{equation}\label{eq:weakformulation}
 		  \begin{aligned}
 					 (2\phi_s\check{\sigma}(\bold{v}_{s,h}),\nabla \Psi_s) - (\check{q}_h, \nabla \cdot \Psi_s) &= -(\phi_s\check{\bold{f}}, \Psi_s), \\

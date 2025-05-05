@@ -1,9 +1,11 @@
 \section{Direct Serendipity Space}
-The classical serendipity space suffer from poor approximation
+Serendipity element have the same accuracy of approximation with 
+classical tensor product element while use smaller number of degrees of freedom.
+However, the classical serendipity space suffer from poor approximation
 on quadrilaterals. We define local shape functions directly
 on quadrilaterals according to~\cite{directSerendipity}.
 $H^1$ and $H(\text{div})$ conforming direct mixed finite elemenent space
-are constructed with the direct serendipity suplemental function space.
+are constructed with the direct serendipity function space.
 
 To begin with, we introduce some notations and distance auxilliary functions. 
 Let $\mathbb{P}_r(\omega)$ denote the space of polynomials of degree up to $r$
@@ -163,7 +165,6 @@ general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vert
 		  \label{fig:vertexbasisds1}
 \end{figure}
 
-We need the following lemmas proceed our discussion:
 \begin{lem}\label{lem:interpolationop}
 		  There exists a bounded interpolation operator $\mathcal{p}_h:W_p^l(E) \rightarrow \mathcal{DS}_r$ by
 		  \begin{equation}\label{eq:interpolationop}

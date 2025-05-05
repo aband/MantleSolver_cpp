@@ -59,8 +59,6 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
-//        PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
-
         DMDAVecRestoreArray(dmu, fluxHD, &lfHD);
         DMDAVecRestoreArray(dmu, fluxCD, &lfCD);
         DMDAVecRestoreArray(dmu, localHD, &lHD);
@@ -73,6 +71,8 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         PrintFlowEvent(mark);
         PrintPhaseEvent(mark);
         PrintPressureSerialApprox(mark);
+//        PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
+
         mark ++;
 
         VecAXPY(globalHD, -1*dt, fluxHD);

@@ -36,6 +36,81 @@ int printExactPorosity(int mark, const MeshInfo& mi, const char * fieldname, Phy
     return 1;
 }
 
+/**
+ * Print velocity on edge gauss points
+ */
+int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
+
+    FILE * dvx = fopen(GetFilename("darcyvelx", mark),"w");
+    FILE * dvy = fopen(GetFilename("darcyvely", mark),"w");
+
+    FILE * svx = fopen(GetFilename("stokesvelx", mark),"w");
+    FILE * svy = fopen(GetFilename("stokesvely", mark),"w");
+
+    FILE * gaussgridx = fopen("gaussgridx.dat", "w");
+    FILE * gaussgridy = fopen("gaussgridy.dat", "w");
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    std::vector<vertex> gaussp;
+    gaussp.resize(gpe.size());
+
+    vertexSet edge;
+
+    vector<vertex> darcyvel;  darcyvel.resize(gaussp.size());
+    vector<vertex> stokesvel; stokesvel.resize(gaussp.size());
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice gcell {i,j};
+        indice gcellout;
+        vertexSet corners = extractCorners(mi, gcell);
+
+        darcyvel.clear(); darcyvel.resize(gaussp.size());
+        stokesvel.clear(); stokesvel.resize(gaussp.size());
+        
+        vector<vertex> vel_relative = 
+        ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
+                    refArrayDarcyEssen_,mi,
+                    gaussp, gcell,*hdiv_,*basis_,{1});
+    
+        vector<vertex> vel_stokes = 
+        ExtractVelocity(&sresult_->vel_stokes, &sresult_->g_stokes,
+                    refArrayStokesEssen_,mi,
+                    gaussp, gcell,*br_,*basis_,{1});
+
+        // Horizontal edges only
+        edge = {corners.at(0), corners.at(1)};
+
+        for (int g=0; g<gpe.size(); g++){
+
+            gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, edge);
+
+            darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
+            stokesvel.at(g) = vel_stokes.at(g);
+
+            fprintf(dvx, "%e ", darcyvel.at(g)[0]);
+            fprintf(dvy, "%e ", darcyvel.at(g)[1]);
+
+            fprintf(svx, "%e ", stokesvel.at(g)[0]);
+            fprintf(svy, "%e ", stokesvel.at(g)[1]);
+
+            fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
+            fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
+        }
+
+     }fprintf(dvx, "\n ");
+      fprintf(dvy, "\n ");
+      fprintf(svx, "\n ");
+      fprintf(svy, "\n ");
+      fprintf(gaussgridx, "\n ");
+      fprintf(gaussgridy, "\n ");}
+
+    return 1;
+}
+
 // Two sided
 int Driver::computeEffVel_case(const vector<vertex>& gaussp,
                                const vertexSet& edgep,

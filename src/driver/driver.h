@@ -226,6 +226,8 @@ class Driver {
        int SolveFlow_case(int maxIter, double tolUzawa, 
                           const Tensor<weights>& allwgts, double ** lphi);
 
+       int printVelEdgeGauss_case(int mark, PhysProperty * pp);
+
     private:
 
         /**!
