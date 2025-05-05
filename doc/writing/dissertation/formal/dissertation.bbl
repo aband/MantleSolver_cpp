@@ -1,4 +1,4 @@
-\begin{thebibliography}{8}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -13,6 +13,15 @@ Todd Arbogast and Maicon~R. Correa.
   3332--3356, 2016.
 \newblock \doi{10.1137/15M1013705}.
 \newblock URL \url{https://doi.org/10.1137/15M1013705}.
+
+\bibitem[Arbogast and Wheeler(2005)]{doi:10.1137/S0036142903435247}
+Todd Arbogast and Mary~F. Wheeler.
+\newblock A family of rectangular mixed elements with a continuous flux for
+  second order elliptic problems.
+\newblock \emph{SIAM Journal on Numerical Analysis}, 42\penalty0 (5):\penalty0
+  1914--1931, 2005.
+\newblock \doi{10.1137/S0036142903435247}.
+\newblock URL \url{https://doi.org/10.1137/S0036142903435247}.
 
 \bibitem[Arbogast et~al.(2022)Arbogast, Tao, and Wang]{directSerendipity}
 Todd Arbogast, Zhen Tao, and Chuning Wang.

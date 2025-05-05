@@ -45,20 +45,20 @@ We supplement polynomial space $\mathbb{P}_r(E), r\geq 2$
 with two linearly independent
 functions, $\phi_{s,1}(\mathbf{x})$ and $\phi_{s,2}(\mathbf{x})$. We denote
 the supplemental function space as $\mathbb{S}_r^{\mathcal{DS}}(E) = 
-\text{span}\{\phi_{s,1},\phi_{s,2}\}$. We present the second order 
+\text{span}\{\phi_{s,1},\phi_{s,2}\}, \quad r\geq 2$. We present the second order 
 direct serendipity
 space as
 \begin{equation}\label{eq:definitionds2}
-		  \mathcal{DS}_r(E) = \mathbb{P}_r(E) \oplus \mathbb{S}_r^{\mathcal{DS}}(E).
+		  \mathcal{DS}_2(E) = \mathbb{P}_2(E) \oplus \mathbb{S}_2^{\mathcal{DS}}(E).
 \end{equation}
 The supplemental functions are defined as
 \begin{equation}\label{eq:defsuppfunc}
-		  \phi_{s,i} = \lambda_{i+1} \lambda_{i+2} R_{i,i+2}, \quad i\in\{1,2\},
+		  \phi_{s,i}(\mathbf{x}) = \lambda_{i+1}(\mathbf{x}) \lambda_{i+2}(\mathbf{x}) R_{i,i+2}(\mathbf{x}), \quad i\in\{1,2\},
 \end{equation}
 where $i$ is in the sense of modulo. We use a simple definition for rational
 function $R_{i,i+2}$ as
 \begin{equation}\label{eq:defR}
-		  R_{i,i+2} = \frac{\lambda_{i} - \lambda_{i+2}}{\lambda_i + \lambda_{i+2}},
+		  R_{i,i+2}(\mathbf{x}) = \frac{\lambda_{i}(\mathbf{x}) - \lambda_{i+2}(\mathbf{x})}{\lambda_i(\mathbf{x}) + \lambda_{i+2}(\mathbf{x})},
 \end{equation}
 which satisfies the conditions as
 \begin{equation}\label{eq:Rproperty}
@@ -66,8 +66,8 @@ which satisfies the conditions as
 \end{equation}
 We continue to define
 \begin{equation}\label{eq:def}
-		  R_i = \frac{1}{2} \Big(1 - (-1)^{\floor*{i/2}} R_{i, i+2}\Big) 
-		  = \frac{\lambda_{i+2}}{\lambda_i + \lambda_{i+2}},
+		  R_i(\mathbf{x}) = \frac{1}{2} \Big(1 - (-1)^{\floor*{i/2}} R_{i, i+2}(\mathbf{x})\Big) 
+		  = \frac{\lambda_{i+2}(\mathbf{x})}{\lambda_i(\mathbf{x}) + \lambda_{i+2}(\mathbf{x})},
 \end{equation}
 where $i$ is understood $\Mod{2}$. Here, $R_i|_{e_i} = 1$, and
 $R_i|_{e_{i+2}} = 0$ by definition. In Figure~\ref{fig:R0}, we
@@ -83,7 +83,7 @@ on the edge $e_0$, and evaluates $0$ on the opposite edge $e_2$.
 
 The edge nodal basis functions for $\mathcal{DS}_2$ are constructed as
 \begin{equation}\label{eq:edgebasisds2}
-		  \varphi_{e,i} = \frac{\lambda_{i+1}\lambda_{i+3}R_i}
+		  \varphi_{e,i}(\mathbf{x}) = \frac{\lambda_{i+1}(\mathbf{x})\lambda_{i+3}(\mathbf{x})R_i(\mathbf{x})}
 		  {\lambda_{i+1}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})R_i(\mathbf{x}_{e,i})},
 \end{equation}
 where $\mathbf{x}_{e,i}$ is the middle point of the edge $e_i$, the $i$ index is
@@ -99,8 +99,8 @@ $\varphi_{e,0}$ on a general quadrilateral.
 
 The vertex nodal basis functions for $\mathcal{DS}_2$ are constructed as
 \begin{equation}\label{eq:vertexbasisds2}
-		  \varphi_{v,i} = \frac{\lambda_{i+2} \lambda_{i+3} - 
-		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi_{e,i}}
+		  \varphi_{v,i}(\mathbf{x}) = \frac{\lambda_{i+2}(\mathbf{x}) \lambda_{i+3}(\mathbf{x}) - 
+		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi_{e,i}(\mathbf{x})}
 		  {\lambda_{i+2}(\mathbf{x}_{v,i}) \lambda_{i+3}(\mathbf{x}_{v,i}) - 
 		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi_{e,i}(\mathbf{x}_{v,i})},
 \end{equation}
@@ -149,7 +149,7 @@ In Figure~\ref{fig:rationalds1}, we plot the rational function on a general quad
 
 We define vertex nodal basis function accordingly as
 \begin{equation}\label{eq:vertexbasisds1}
-\varphi_{v,i}(\mathbf{x}) = \frac{\lambda_{d,m}(\mathbf{x}) - \frac{1}{2}\lambda_{d,m}(\mathbf{x}_{v,i+2})(1+ (-1)^i R(\mathbf{x}))}
+\psi_{v,i}(\mathbf{x}) = \frac{\lambda_{d,m}(\mathbf{x}) - \frac{1}{2}\lambda_{d,m}(\mathbf{x}_{v,i+2})(1+ (-1)^i R(\mathbf{x}))}
 {\lambda_{d,m}(\mathbf{x}_{v,i}) - \lambda_{d,m}(\mathbf{x}_{v,i+2})},
 \end{equation}
 where $m\equiv i+1 \Mod{2}$, and index $i$ is understood in the sence of modulo of $4$.
@@ -163,4 +163,21 @@ general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vert
 		  \label{fig:vertexbasisds1}
 \end{figure}
 
+We need the following lemmas proceed our discussion:
+\begin{lem}\label{lem:interpolationop}
+		  There exists a bounded interpolation operator $\mathcal{p}_h:W_p^l(E) \rightarrow \mathcal{DS}_r$ by
+		  \begin{equation}\label{eq:interpolationop}
+					 \mathcal{I}_h^rv(\mathbf{x}) \sum_{i=1}^{N_r} 
+		  \end{equation}
+\end{lem}
 
+\begin{lem}\label{lem:approximation}
+		  Under the asumptions of~\ref{lem:interpolationop}, there exists a 
+		  constant $C = C(r, \sigma_*) > 0$ such that for all functions 
+		  $v \in W_{l,p}(E^*)$, with $1\leq p \leq \infty$ and $l>1/p$ or 
+		  ($l\geq 1$ if $p=1$),
+		  \begin{equation}\label{eq:brambleHilbertDS}
+					 \norm{v-\mathcal{I}_h^r}_{W_{m,p}} \leq C h_E^{l-m}
+					 \lvert v \rvert_{W_{l,p}(E^*)}, \quad 0 \leq m \leq \text{min}(l,r+1).
+		  \end{equation}
+\end{lem}

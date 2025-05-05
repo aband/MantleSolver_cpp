@@ -69,7 +69,56 @@ Vertex basis mapping to sobolev space difficulty.
 Need Cl\'ement interpolation.
 Define $\Pi$ operator two parts.
 
-We define the 
+We consider the following space for each element $E \in \mathcal{T}_h$ as
+\begin{equation}\label{eq:br}
+		  V_1^{\mathcal{BR}}(E) = (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3\},
+\end{equation}
+where $\mathbf{b}_i$ is a quadratic bubble function defined on each edge $e_i$.
+We pick previously defined function $\varphi_{e,i} \in \mathcal{DS}_2$ as
+\begin{equation}\label{eq:bubble}
+		  \mathbf{b}_i = \varphi_{e,i}(\mathbf{x})\mathbf{n}_i
+\end{equation}
+which is quadratic when restricted to edge $e_i$. \begin{lem}\label{lem:unisolvence}
+		  For a element $E\in \mathcal{T}_h$, $\mathbf{u}_h$ is uniquely defined
+		  by the following degrees of freedom:
+
+		  \text{(i)} for corner point $v_i$ and Cartesian direction unitnormal vectors $\{\mathbf{i},\mathbf{j}\}$,
+		  \begin{equation*}
+					 DOF^{\text{(i)}}_{(v_i,\mathbf{i})}(\mathbf{u}_h) = \mathbf{u}_h(v_i)\cdot \mathbf{i}, 
+					 \quad DOF^{\text{(i)}}_{(v_i,\mathbf{j})}(\mathbf{u}_h) = \mathbf{u}_h(v_i)\cdot \mathbf{j};
+		  \end{equation*}
+
+		 \text{(ii)} for edge $e_i$,
+		  \begin{equation*}
+					 DOF^{(ii)}_{e_i} = \langle \mathbf{u}_h \cdot \pmb{\nu}_i, 1 \rangle,
+		  \end{equation*}
+\end{lem}
+\begin{proof}
+We prove the lemma by construction. 
+We pick nodal badis on vertex $v_i$ in two Cartesian direction as
+		  \begin{equation}
+					 N_{v_i,x} = \begin{bmatrix}
+								\psi_{v,i}(\mathbf{x})\\
+								0
+					 \end{bmatrix}, \quad  N_{v_i,y} = \begin{bmatrix}
+								0\\
+								\psi_{v,i}(\mathbf{x})
+					 \end{bmatrix}
+		  \end{equation}
+We pick edge basis on edge $e_i$ as
+\begin{equation}
+		  N_{e} = \varphi_{e,i}\pmb{\nu}_i
+\end{equation}
+Note that bubble functions are quadratic when restricted to edge $e_i$, while
+nodal basis functions are linear when restricted to edge $e_i$, therefore bubble
+functions cannot be in the same space as nodal basis function.
+We conclude
+that this element is well-defined, i.e., the degrees of freedom uniquely 
+determine the function.
+\end{proof}
+
+We need a $\pi$ operator, which mappes $(H^1(E))^2$ onto $V_1^{\mathcal{BR}}$ 
+for our spaces. We 
 
 \subsection{Test Stokes Problem}
 We test our modified BR element on a test Stokes problem. 
@@ -107,17 +156,98 @@ We can separate normal and tangent part of stress on the boundary easily when ph
 In the situation when a rectangular computational domain is used, we can mix stress and dirichlet boundary condition
 even further. 
 
+\subsection{Coupled Degenerate System}
+We defined scaled formulation~\eqref{eq:dimensionlessdarcy_flow_sc},
+~\eqref{eq:dimensionlessconsMass_flow_sc},~\eqref{eq:dimensionlessstokes_flow_sc},
+and~\eqref{eq:dimensionlesscompaction_flow_sc} in~\ref{chap:equations}.
+We follow the procedure by~\cite{DegenerateDarcy} to discretize the strong form.
+\begin{alignat}{2}
+\label{eq:dimensionlessdarcy_flow_sc}
+		  &\check{\mathbf{v}}_r
+		  + \phi^{1+\Theta}\nabla(\phi^{-1/2}\check{q}_l)
+        &&= 0,\\
+\label{eq:dimensionlessconsMass_flow_sc}
+		  &\phi^{-1/2}\nabla \cdot(\phi^{1+\Theta}\check{\mathbf{v}}_r)
+        + \frac{1}{1-\phi}(\check{q}_l - \phi^{1/2}\check{q}) &&=0,\\
+\label{eq:dimensionlessstokes_flow_sc}
+		  &\nabla \check{q} - \nabla \cdot \check{\tau}(\check{\mathbf{v}}_s) &&= -(1-\phi)\mathbf{n},\\
+\label{eq:dimensionlesscompaction_flow_sc}
+		  &\nabla \cdot \check{\mathbf{v}}_s
+        - \frac{\phi^{1/2}}{1-\phi}(\check{q}_l - \phi^{1/2}\check{q}) &&=0,
+\end{alignat}
 
-\subsection{Coupled Degenerage System}
-scaled nondimensionalized weak form
-let $\check{\sigma} = \mathcal{D}\bold{v} - \frac{1}{3}\nabla \cdot \bold{v} \bold{\text{I}}$
+To begin weith, a new Hilbert space is defined for this 
+specific scaled formulation, where
+the scaled velocity $\check{\mathbf{v}}_r$ should lie in, so
+\begin{equation}\label{eq:scaledHspace}
+		  \mathbb{V}^{\phi}_d = H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
+		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Phi} \mathbf{v})
+		  \in L^2(\Omega) \Big\},
+\end{equation}
+which equipped with the inner product as
+\begin{equation}\label{eq:scaledinnerp}
+		  (\mathbf{u}_{\phi}, \mathbf{v}_{\phi})_{\mathbb{V}^{\phi}_r} = 
+		  (\mathbf{u}_{\phi}, \mathbf{v}_{\phi}) + 
+		  (\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{u}_\phi), \phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{v}_\phi)).
+\end{equation}
+The normal trace on $\partial \Omega$ is well-defined as well as
+\begin{equation}\label{eq:tracescaled}
+		  \norm{\phi^{1/2+\Theta}\mathbf{v}_\phi\cdot \nu}_{-1/2, \partial \Omega} < C_{\Omega} \Big\{ \norm{\mathbf{v}_\phi} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}_\phi)} \Big\}.
+\end{equation}
 
-\begin{equation}
+Now we define the function spaces
+\begin{equation}\label{eq:spaces}
 		  \begin{aligned}
-					 (2\phi_s\check{\sigma}(\bold{v}_{s,h}),\nabla \Psi_s) - (\check{q}_h, \nabla \cdot \Psi_s) &= -(\phi_s\check{\bold{f}}, \Psi_s) \\
-					 (\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  + \Big(\frac{\hat{\phi}_f}{\phi_s} \check{q}_h, \omega\Big) - 
-					\Big(\frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_{f,h},\omega \Big) &= 0\\
-					 (\bold{\check{v}}_{r,h},\Psi_r)  - (\check{q}_{f,h},\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r)) &= 0\\
-					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0
+					 \mathbb{V}^\phi_d &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = 0 \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{d,u}  \Big\},\\
+					 \mathbb{W}_d      &= L^2(\Omega),\\
+					 \mathbb{V}_s &= \Big\{\mathbf{v}\in (H^1(\Omega))^2 : \mathbf{v} \hspace{0.15cm} \text{on}\hspace{0.15cm}  \Gamma_{s,u} \Big\},\\
+		  \mathbb{W}_s &= L^2(\Omega),
 		  \end{aligned}
 \end{equation}
+where $\Gamma_{d,u} \in \partial \Omega$ and $\Gamma_{s,u} \in \partial \Omega$ 
+are boundary assigned with essential boundary condition with nonzero measure.
+
+scaled nondimensionalized weak form
+Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_r + \check{\mathbf{g}}_{r}$,
+$\check{q}_l \in \mathbb{W}_d$, $\check{\mathbf{v}}_s \in \mathbb{V}_s + \mathbf{g}_s$, and $q\in \mathbb{W}_s$ such that
+\begin{equation}\label{eq:weakformulation}
+		  \begin{aligned}
+					 (2\phi_s\check{\sigma}(\bold{v}_{s,h}),\nabla \Psi_s) - (\check{q}_h, \nabla \cdot \Psi_s) &= -(\phi_s\check{\bold{f}}, \Psi_s), \\
+					 (\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  + \Big(\frac{\hat{\phi}_f}{\phi_s} \check{q}_h, \omega\Big) - 
+					\Big(\frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_{f,h},\omega \Big) &= 0,\\
+					 (\bold{\check{v}}_{r,h},\Psi_r)  - (\check{q}_{f,h},\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r)) &= 0,\\
+					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0.
+		  \end{aligned}
+\end{equation}
+The Existence and uniquense of the solution has been proved by~\cite{DegenerateDarcy}. We will not repeat the proof here.
+
+\subsection{MFEM discretization}
+We discretize the formed degenerate system with previously 
+defined $H(\text{div})$ and $H^1$ conforming space.
+We write the function spaces out as
+\begin{equation}\label{eq:femspaces}
+		  \begin{aligned}
+					 \mathbb{V}_1^0 &= (\mathbb{P}_1)^2 \oplus 
+		  \text{curl}\mathbb{S}_2^{\mathcal{DS}}\\
+					 \mathbb{W} &= \mathbb{P}_0 \\
+					 \mathbb{V}^{\mathcal{BR}}_1 &= \mathcal{DS}_1 \oplus \text{span}\{\mathbf{b}_0,\mathbf{b}_1,\mathbf{b}_2,\mathbf{b}_3 \} \\
+					 \mathbb{W}   &= \mathbb{P}_0.
+		  \end{aligned}
+\end{equation}
+We can impose essential boundary conditions
+
+Scaled mixed finite element method.
+\begin{equation}\label{eq:weakformulation}
+		  \begin{aligned}
+					 (2\phi_s\check{\sigma}(\bold{v}_{s,h}),\nabla \Psi_s) - (\check{q}_h, \nabla \cdot \Psi_s) &= -(\phi_s\check{\bold{f}}, \Psi_s), \\
+					 (\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  + \Big(\frac{\hat{\phi}_f}{\phi_s} \check{q}_h, \omega\Big) - 
+					\Big(\frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_{f,h},\omega \Big) &= 0,\\
+					 (\bold{\check{v}}_{r,h},\Psi_r)  - (\check{q}_{f,h},\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r)) &= 0,\\
+					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0.
+		  \end{aligned}
+\end{equation}
+
+\subsection{Local Mass Conservation}
+
+
+\subsection{Test Run}
