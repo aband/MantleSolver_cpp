@@ -21,9 +21,53 @@ We write the rotated 2D exact sequence for energy space as
 \end{alignat}
 We define the first order reduced $H(\text{div})$ conforming space with $\mathcal{DS}_2$ as
 \begin{equation}\label{eq:defhdiv}
-		  \mathbf{V}_1^0 = \mathbb{P}_1^2 \oplus \text{curl}\mathbb{S}_2^{\mathcal{DS}}.
+		  \mathbb{V}_1^0 = \mathbb{P}_1^2 \oplus \text{curl}\mathbb{S}_2^{\mathcal{DS}}.
 \end{equation}
-Two vector basis functions $\pmb{\varphi}_{l}$ and $\pmb{\varphi}_{c}$.
+The reduced space $\mathbb{V}_1^0$ can be given a global basis with the normal
+components of the shape functions merged continuously on the shared edge of
+two elements.
+First, we write curl of the auxiliary rational function $R_i$~\eqref{eq:defR} as
+\begin{equation}\label{eq:curlauxiliary}
+		 \text{curl}R_i(\mathbf{x}) = 
+					 \frac{\pmb{\tau}_{i+2}(\mathbf{x}) \lambda_i(\mathbf{x}) - \pmb{\tau}_{i}(\mathbf{x}) \lambda_{i+2}(\mathbf{x})}{(\lambda_i(\mathbf{x}) + \lambda_{i+2}(\mathbf{x}))^2},
+\end{equation}
+where the index $i$ is understood in with modulo of 4. 
+On each edge, we define two independent basis functions.
+$\pmb{\varphi_{l,i}}$ and $\pmb{\varphi_{c,i}}$, such that
+\begin{equation}\label{eq:linearbasishdiv_show}
+		  \pmb{\varphi}_{l,i}\cdot \pmb{\nu}_j \rvert_{e_j} = \left \{
+					\begin{aligned}
+							  &0, \hspace{0.8cm} j \neq i, \\
+							  &l_i(\mathbf{x}),\hspace{0.2cm} j=i,
+					\end{aligned}
+					\right.
+\end{equation}
+$\pmb{\varphi_{l,i}}$ and $\pmb{\varphi_{c,i}}$, such that
+\begin{equation}\label{eq:constbasishdiv_show}
+		  \pmb{\varphi}_{c,i}\cdot \pmb{\nu}_j \rvert_{e_j} = \left \{
+					\begin{aligned}
+							  &0, \hspace{0.8cm} j \neq i, \\
+							  &1, \hspace{0.8cm} j=i,
+					\end{aligned}
+					\right.
+\end{equation}
+where $l_i$ is a non vanishing linear polynomial defined on edge $e_i$ 
+orthogonal to one, i.e., $\int_{e_i}l_i ds = 0$.
+We present a construction of these two basis functions.
+\begin{equation}\label{eq:linearbasis_raw}
+		  \tilde{\pmb{\varphi}}_{l,i} = \text{curl}(\lambda_{i+1}\lambda_{i+3}R_i)
+		  =(\pmb{\tau}_{i+1}\lambda_{i+3} + \lambda_{i+1}\pmb{\tau}_{i+3})R_i + 
+		  \lambda_{i+1} \lambda_{i+3}\text{curl}R_i.
+\end{equation}
+We then normalize it as
+\begin{equation}\label{eq:linearbasis}
+		  \pmb{\varphi}_{l,i} = \frac{\tilde{\pmb{\varphi}}_{l,i}(\mathbf{x})
+		  \lvert\mathbf{x}_{i} - \mathbf{x}_{i+3} \rvert}{4\lambda_{i+1}(\mathbf{x_{e,i}}) \lambda_{i+3}(\mathbf{x}_{e,i})R_i(\mathbf{x_{e,i}})},
+\end{equation}
+where index is understood in the sense of modulo 4. In Figure~\ref{fig:varphil},
+we draw $\pmb{\varphi}_{l,i}$ on two element sharing a edge.
+The construction of a the constant basis function is a bit more complicated.
+
 \begin{figure}[ht]
 \centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/linear1.png}
@@ -39,8 +83,6 @@ Two vector basis functions $\pmb{\varphi}_{l}$ and $\pmb{\varphi}_{c}$.
 		  \caption{Constant basis function $\pmb{\varphi}_c$.}
 		  \label{fig:varphic}
 \end{figure}
-
-Analysis of elemetn, $\Pi$ operator defined by Ravier-Thomas.
 
 \subsection{Test Darcy Problem}
 We test our $H(\text{div})$ conforming element on a simple darcy problem as
@@ -249,6 +291,14 @@ $\mathbf{v}_{s,h} \in \mathbf{V}_S + \hat{\mathbf{g}}_s$ and $\check{q}_h \in \m
 \end{equation}
 
 \subsection{Local Mass Conservation}
+Before we continue the discussion, we need to make sure the formulation is 
+well-defined by not dividing by zero.
+The term $\phi^{-1/2}$ in equation causes trouble when there is no melting, i.e., $\phi = 0$.
+In order to deal with it, we first define a new element-averaged value as
+\begin{equation}
+		  \phi_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x}) d\mathbf{x}.
+\end{equation}
+We replace the 
 
 
 \subsection{Test Run}

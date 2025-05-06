@@ -1,3 +1,4 @@
+%\externaldocument{mesh}
 \section{Direct Serendipity Space}
 Serendipity element have the same accuracy of approximation with 
 classical tensor product element while use smaller number of degrees of freedom.
@@ -166,10 +167,17 @@ general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vert
 \end{figure}
 
 \begin{lem}\label{lem:interpolationop}
-		  There exists a bounded interpolation operator $\mathcal{p}_h:W_p^l(E) \rightarrow \mathcal{DS}_r$ by
+		  Let $\mathcal{T}_h$ be uniformly shape regular~\eqref{eq:regularityineq}
+		  with shape regularity parameter $\sigma_*$.
+		  For each element $E \in \mathcal{T}_h$, 
+		  There exists a bounded interpolation operator $\mathcal{I}_h:W_p^l(E) \rightarrow \mathcal{DS}_r$. For $r\geq 1$, $E \in \mathcal{T}_h$, 
+		  $1\leq q \leq \infty$, and any nonnegative integer m,
 		  \begin{equation}\label{eq:interpolationop}
-					 \mathcal{I}_h^rv(\mathbf{x}) \sum_{i=1}^{N_r} 
+		 \norm{\mathcal{I}_h^r v}_{W_q^m} \leq C(\sigma_*, m, q) \sum_{k=0}^l
+					 h_E^{k-m+\frac{2}{q}-\frac{2}{p}} \lvert v\rvert_{W^k_p(E^*)},
 		  \end{equation}
+		  where $E^* = \cup_{F \in \mathcal{T}_h, F \cap E \neq \emptyset}$ and
+		  $\lvert\hspace{0.1cm} \cdot\hspace{0.1cm} \rvert_{W_p^k}$ is the seminorm of k-th order derivatives.
 \end{lem}
 
 \begin{lem}\label{lem:approximation}
@@ -179,6 +187,8 @@ general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vert
 		  ($l\geq 1$ if $p=1$),
 		  \begin{equation}\label{eq:brambleHilbertDS}
 					 \norm{v-\mathcal{I}_h^r}_{W_{m,p}} \leq C h_E^{l-m}
-					 \lvert v \rvert_{W_{l,p}(E^*)}, \quad 0 \leq m \leq \text{min}(l,r+1).
+					 \lvert v \rvert_{W_{l,p}(E^*)}, \quad 0 \leq m \leq \min(l,r+1).
 		  \end{equation}
 \end{lem}
+The proof of lemma~\ref{lem:interpolationop} and lemma~\ref{lem:approximation} 
+can be found in~\cite{directSerendipity}.
