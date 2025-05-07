@@ -1,9 +1,37 @@
-\section{Linear System}
+\section{Saddle Point System}
+Saddle point system is widely spread in technical and science scenarios, such as
+constrained optimization problem and has been widely researched.
+In our case, saddle point system is formed along with Mixed Finite Element discretization.
+In this section, we give a brief overview of characteristics of a saddle point system and
+some common way to solve such system.
+A saddle point system is formed as
+\begin{equation}\label{eq:saddle}
+		  \begin{bmatrix}
+					 \bold{A} & \bold{B} \\
+					 \bold{B}^T &\bold{C}
+		  \end{bmatrix}\begin{bmatrix}
+					 \bold{x}\\
+					 \bold{y}
+		  \end{bmatrix} = \begin{bmatrix}
+					 \bold{f}\\
+					 \bold{g}
+		  \end{bmatrix}.
+\end{equation}
+We made the following assumptions
+\begin{itemize}
+		  \item $\bold{A}$ is symmetric: $\bold{A} = \bold{A}^T$;
+		  \item $\bold{A}$ is nonsingular: $\bold{A}^{-1}$ exists;
+		  \item $\bold{C}$ is symmetric and positive semidefinite;
+		  \item $\bold{B}$ is rank deficient.
+\end{itemize}
+The null space of $\bold{B}$ matrix $\text{ker}(\bold{B})$ in our darcy problem 
+is not fixed due to evloution of melting (change of porosity $\phi$).
+Considering the need of parallel, a proper iterative method is discussed.
 
-\subsection{Saddle Point Problem}
-
-\subsection{Degenerate Coupled Saddle Point Problem}
-The linear system corresponding to (insert eqcite) has the form
+\subsection{Degenerate Coupled Saddle Point Problem and Uzawa Iteration}
+		  The linear system formed from the equations~\eqref{eq:weak_stokes_mass}, 
+		  ~\eqref{eq:weak_compaction_mass}, ~\eqref{eq:weak_darcy_mass} 
+		  and~\eqref{eq:weak_continuous_mass} is
 \begin{equation}
 \begin{bmatrix}
 \bold{A}_s   & -\bold{B}_s & \bold{0}     &  \bold{0}   \\
@@ -86,10 +114,11 @@ where $\bold{A}$ is a positive definite matrix. However,
 $\bold{B}$ is usually a singular matrix when no melting region presents.
 We will present a modified Uzawa iteration algorithm to deal with this
 coupled degenerate singular system.
-Inexact Uzawa algorithm has been introduced in the previous literature 
+Uzawa algorithm applied to the case of discretizing Stokes problem with 
+Mixed Finite Element has beed discussed by 
 \cite{InexactUzawa_Elam_Golub} and \cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev},
 \begin{algorithm}
-\caption{Preconditioned Inexact Uzawa Iteration}
+\caption{Coupled Uzawa Iteration}
 		  \begin{algorithmic}[1]
 					 \STATE Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
 					 \STATE Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$

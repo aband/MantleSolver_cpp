@@ -120,8 +120,9 @@ We pick previously defined function $\varphi_{e,i} \in \mathcal{DS}_2$ as
 \begin{equation}\label{eq:bubble}
 		  \mathbf{b}_i = \varphi_{e,i}(\mathbf{x})\mathbf{n}_i
 \end{equation}
-which is quadratic when restricted to edge $e_i$. \begin{lem}\label{lem:unisolvence}
-		  For a element $E\in \mathcal{T}_h$, $\mathbf{u}_h$ is uniquely defined
+which is quadratic when restricted to edge $e_i$. 
+\begin{lem}\label{lem:unisolvence}
+		  For an element $E\in \mathcal{T}_h$, $\mathbf{u}_h$ is uniquely defined
 		  by the following degrees of freedom:
 
 		  \text{(i)} for corner point $v_i$ and Cartesian direction unitnormal vectors $\{\mathbf{i},\mathbf{j}\}$,
@@ -160,7 +161,15 @@ determine the function.
 \end{proof}
 
 We need a $\pi$ operator, which mappes $(H^1(E))^2$ onto $V_1^{\mathcal{BR}}$ 
-for our spaces. We 
+for our spaces. For $\mathbf{v} \in (H^1(\Omega))^2$, 
+let $\pi \mathbf{v} \in \mathbb{V}_1^{\mathcal{BR}}$ be defined as the 
+interpolant of the degrees of freedom from~\ref{lem:unisolvence}. For each $F$,
+we require the following as
+
+(i) For each corner point $v \in \partial F$
+\begin{equation}
+		  \pi \mathbf{v}(\mathbf{x}_v) \cdot \pmb{i} = \mathcal{I}\mathbf{v}(\mathbf{x}_v) \cdot \pmb{j}
+\end{equation}
 
 \subsection{Test Stokes Problem}
 We test our modified BR element on a test Stokes problem. 
@@ -252,15 +261,15 @@ are boundary assigned with essential boundary condition with nonzero measure.
 Scaled nondimensionalized weak form.
 Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_r + \check{\mathbf{g}}_{r}$,
 $\check{q}_l \in \mathbb{W}_d$, $\check{\mathbf{v}}_s \in \mathbb{V}_s + \mathbf{g}_s$, and $q\in \mathbb{W}_s$ such that
-\begin{equation}\label{eq:weakformulation}
-		  \begin{aligned}
-					 (\check{\pmb{\tau}}(\bold{v}_{s}),\nabla \pmb{\psi}_s) - (\check{q}, \nabla \cdot \pmb{\psi}_s) &= -((1-\phi)\bold{n}, \pmb{\psi}_s), \\
-					 (\nabla \cdot \check{\bold{v}}_{s}, \omega)  + \Big(\frac{\hat{\phi}}{1-\phi} \check{q}, \omega\Big) - 
-					\Big(\frac{\hat{\phi}^{1/2}}{1-\phi} \check{q}_{l},\omega \Big) &= 0,\\
-					 (\bold{\check{v}}_{r},\pmb{\psi}_r)  - (\check{q}_{f},\hat{\phi}^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r)) &= 0,\\
-					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0.
-		  \end{aligned}
-\end{equation}
+\begin{alignat}{2}
+		  &(\check{\pmb{\tau}}(\bold{v}_{s}),\nabla \pmb{\psi}_s) - (\check{q}, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_s,\\
+					 &(\nabla \cdot \check{\bold{v}}_{s}, \omega)  + \Big(\frac{\phi^{1/2}}{1-\phi} (\check{q}_l - \phi^{1/2}\check{q}), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_s,\\
+					 &(\bold{\check{v}}_{r},\pmb{\psi}_r)  - (\check{q}_{l},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r)) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_r^\phi,\\
+					 \nonumber
+					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{1-\phi}(\check{q}_{l} - \phi^{1/2}\check{q}),\omega_f \Big) &&= 0 \\
+		  &					 &&\forall \omega_f \in 
+		  \mathbb{W}_d.
+\end{alignat}
 The Existence and uniquense of the solution has been proved by~\cite{DegenerateDarcy}. We will not repeat the proof here.
 
 \subsection{MFEM discretization}
@@ -280,25 +289,86 @@ We can impose essential boundary conditions
 
 Scaled mixed finite element method. Find $\check{\mathbf{v}}_{r,h} \in \mathbb{V}_1^0 + \hat{\mathbf{g}}_r$, $\check{q})_{r,h} \in \mathbb{W}_D$, 
 $\mathbf{v}_{s,h} \in \mathbf{V}_S + \hat{\mathbf{g}}_s$ and $\check{q}_h \in \mathbb{W}_S$ such that
-\begin{equation}\label{eq:weakformulation}
-		  \begin{aligned}
-					 (2\phi_s\check{\sigma}(\bold{v}_{s,h}),\nabla \Psi_s) - (\check{q}_h, \nabla \cdot \Psi_s) &= -(\phi_s\check{\bold{f}}, \Psi_s), \\
-					 (\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  + \Big(\frac{\hat{\phi}_f}{\phi_s} \check{q}_h, \omega\Big) - 
-					\Big(\frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_{f,h},\omega \Big) &= 0,\\
-					 (\bold{\check{v}}_{r,h},\Psi_r)  - (\check{q}_{f,h},\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r)) &= 0,\\
-					 (\hat{\phi}_f^{-1/2} \nabla \cdot (\phi_f^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{\phi_s}\check{q}_{f,h},\omega_f \Big) - \Big( \frac{\hat{\phi}_f^{1/2}}{\phi_s} \check{q}_h, \omega_f \Big) &= 0.
-		  \end{aligned}
-\end{equation}
+\begin{alignat}{2}
+		  \label{eq:weak_stokes}
+		  &(\check{\pmb{\tau}}(\bold{v}_{s,h}),\nabla \pmb{\psi}_s) - (\check{q}_h, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_1^{\mathcal{BR}},\\
+		  \label{eq:weak_compaction}
+		  &(\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  - \Big(\frac{\phi^{1/2}}{1-\phi} (\check{q}_{l,h} - \phi^{1/2}\check{q}_h), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_0^{\mathcal{BR}},\\
+					\label{eq:weak_darcy}
+					 &(\bold{\check{v}}_{r,h},\pmb{\psi}_r)  - (\check{q}_{l,h},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_{r,h})) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_1^0,\\
+					 \nonumber
+					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_{r,h}),\omega_f) + \Big(\frac{1}{1-\phi}(\check{q}_{l,h} - \phi^{1/2}\check{q}_h),\omega_f \Big) &&= 0 \\
+					 \label{eq:weak_continuous}
+		  &					 &&\forall \omega_f \in 
+		  \mathbb{W}_{0}.
+\end{alignat}
 
 \subsection{Local Mass Conservation}
 Before we continue the discussion, we need to make sure the formulation is 
 well-defined by not dividing by zero.
-The term $\phi^{-1/2}$ in equation causes trouble when there is no melting, i.e., $\phi = 0$.
-In order to deal with it, we first define a new element-averaged value as
-\begin{equation}
-		  \phi_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x}) d\mathbf{x}.
+The term $\phi^{-1/2}$ in the symmetric equations~\eqref{eq:weak_darcy} 
+and~\eqref{eq:weak_continuous} causes trouble 
+when there is no melting, i.e., $\phi = 0$.
+In order to deal with it, we first define a element-averaged $\overline{\phi}_E$ 
+as
+\begin{equation}\label{eq:averaged_phi}
+		  \overline{\phi}_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x}) d\mathbf{x},
 \end{equation}
-We replace the 
-
+where $\lvert E \rvert$ is the area of element $E$.
+Let
+\begin{equation}\label{eq:newvariable_phi}
+		  \phi_E = \left\{
+					 \begin{aligned}
+								&\overline{\phi}_E  \hspace{0.2cm} \text{if}\hspace{0.2cm} \overline{\phi}_E \neq 0,\\
+								&0 \hspace{0.5cm} \text{if} \hspace{0.2cm} \overline{\phi}_E = 0.
+					 \end{aligned}
+					 \right.
+\end{equation}
+We now replace the $\phi^{-1/2}$ with $\phi_E^{-1/2}$. Then we expand the integral
+with divergence theorem as
+\begin{equation}\label{eq:divtheorem}
+		  \begin{aligned}
+					 \int_E \phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta} \pmb{\psi}_{r,h})\omega_l &=\int_{\partial E} \phi_E^{-1/2} \phi^{1+\Theta} \pmb{\psi}_{r,h}\cdot \pmb{\nu} \omega_f ds \\
+					 &-\int_{E}\phi_E^{-1/2}\phi^{1+\Theta}\pmb{\psi}_{r,h} \cdot \nabla \omega_l d\mathbf{x}.
+		  \end{aligned}
+\end{equation}
+The second term vanishes when $\omega_l$ is constant on element $E$.
+We define an auxiliary auxiliary space $\omega_E$ begin 1 on $E$ and 0 elsewhere.
+We sum equations~\eqref{eq:weak_compaction} and~\eqref{eq:weak_continuous} 
+together 
+assuming that $\omega = \omega_E \in \mathbb{W}_{S}$ and $\omega_l = \phi_E^{-1/2} \omega_E \in \mathbb{W}_{D}$. We can achieve local mass conservation of the
+phase averaged mixture if we
+replace the term $\phi^{1/2}$ in equation~\eqref{eq:weak_compaction} with
+$\phi_E^{1/2}$ as
+\begin{equation}
+		  \int_{E}\nabla \cdot (\phi^{1+\Theta}\check{\mathbf{v}}_r + \check{\mathbf{v}}_s) d\mathbf{x} = 0.
+\end{equation}
+We now propose our local mass conserved version as
+\begin{alignat}{2}
+		  \label{eq:weak_stokes_mass}
+		  &(\check{\pmb{\tau}}(\bold{v}_{s,h}),\nabla \pmb{\psi}_s) - (\check{q}_h, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_1^{\mathcal{BR}},\\
+		  \label{eq:weak_compaction_mass}
+		  &(\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  - \Big(\frac{\phi_E^{1/2}}{1-\phi} (\check{q}_{l,h} - \phi^{1/2}\check{q}_h), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_0^{\mathcal{BR}},\\
+					\label{eq:weak_darcy_mass}
+					 &(\bold{\check{v}}_{r,h},\pmb{\psi}_r)  - (\check{q}_{l,h},\phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_{r,h})) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_1^0,\\
+					 \nonumber
+					 &(\phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_{r,h}),\omega_f) + \Big(\frac{1}{1-\phi}(\check{q}_{l,h} - \phi^{1/2}\check{q}_h),\omega_f \Big) &&= 0 \\
+					 \label{eq:weak_continuous_mass}
+		  &					 &&\forall \omega_f \in 
+		  \mathbb{W}_{0}.
+\end{alignat}
 
 \subsection{Test Run}
+We test our MFEM setup with two problems.
+First, we test with a manufactured solution. Second, we test a
+more complex yet a more realistic problem.
+
+Problem setup 1. 
+\begin{equation}\label{eq:test1}
+		  \mathbf{v}_s = 
+\end{equation}
+
+Problem setup 2.
+\begin{equation}\label{eq:test2}
+		  \mathbf{v}_s = 
+\end{equation}

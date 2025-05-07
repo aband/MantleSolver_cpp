@@ -393,11 +393,12 @@ conductive heat transfer following Fourier's law,
 mechanical work done by mixture stress, and work against gravity, respectively.
 
 In a thermochemical equilibrium scenario, we replace internal energy $u_i$ with 
-enthalpy $h_i$, and use lithostatic $P$ as a uniform pressure. 
+enthalpy $h_i$, and use hydrostatic $P$ as a uniform pressure, i.e., $P = \rho_l g(z-z_0)$.
 The specific enthalpy is defined as
 \begin{equation}\label{eq:specificenthalpy}
-h_i = u_i + p_iv_i = u_i + P/\rho_i.
+		  h_i = u_i + p_i\tilde{V}_i = u_i + P/\rho_i,
 \end{equation}
+where $\tilde{V}_i = 1/\rho_i$ is the specific volume.
 We formulate the enthalpy equation by neglecting the
 external heating/cooling term $\mathcal{Q}$, mechanical work done by mixture
 stress and work against gravity,
@@ -405,14 +406,20 @@ following the discussion presented by \citet{MagmaDynamicsEnthalpyMethod}, so
 \begin{equation}\label{eq:enthalpyequation}
 \frac{\partial \overline{\rho h}}{\partial t} + \nabla \cdot \overline{\rho h \mathbf{v}}
 = \frac{\partial P}{ \partial t} + \overline{\mathbf{v}} \cdot \nabla P + 
-\nabla \cdot \overline{K}\nabla T.
+\nabla \cdot \overline{K}\nabla T,
 \end{equation}
+using~\eqref{eq:continuous}.
 
 \subsection{Temperature Formulation}
-We now connect enthalpy and temperature with thermodynamics relationships. To begin with, 
-we write differential form of enthalpy as
+We now connect enthalpy and temperature with thermodynamics relationships. 
+To begin with, 
+we write differential form of internal energy as
+\begin{equation}\label{eq:internalenergy}
+		  du_i = Tds_i - p_id\tilde{V}_i.
+\end{equation}
+We use~\eqref{eq:internalenergy} in the differential form of enthalpy as
 \begin{equation}\label{eq:defenthalpy}
-dh_i = du_i + p_idv_i + v_idp_i = Tds_i -p_idv_i + p_idv_i + v_idp_i = Tds_i + \frac{dp_i}{\rho_i},
+		  dh_i = du_i + p_id\tilde{V}_i + \tilde{V}_idp_i = Tds_i -p_id\tilde{V}_i + p_id\tilde{V}_i + \tilde{V}_idp_i = Tds_i + \frac{dp_i}{\rho_i},
 \end{equation}
 and entropy as
 \begin{equation}\label{eq:defentropy}
@@ -420,11 +427,11 @@ ds_i = c_p \frac{dT}{T} + \Big(\frac{\partial s_i}{\partial p_i}\Big)_T dp_i,
 \end{equation}
 where $c_p$ is the uniform specific heat capacity used for both phases. 
 We replace $\big(\frac{\partial s}{\partial p}\big)_T$ 
-with $-\big(\frac{\partial v}{\partial T}\big)_p$
-according to Maxwell's fourth relation.
+with $-\big(\frac{\partial \tilde{V}_i}{\partial T}\big)_p$
+according to Maxwell's fourth relation~\cite{doi:10.1021/ja01547a094}.
 We assume a simple linear relationship between temperature and volume as
 \begin{equation}\label{eq:thermoexpansion}
-\frac{\partial v}{\partial T} = \alpha_{\rho} T/ \rho_i,
+		  \frac{\partial \tilde{V}_i}{\partial T} = \alpha_{\rho} / \rho_i,
 \end{equation}
 where $\alpha_{\rho}$ is the thermal expansion coefficient used uniformly for both the liquid and
 the solid phases. We substitute the entropy equation~\eqref{eq:defentropy}
@@ -808,14 +815,18 @@ variables as
 		  \begin{aligned}
 					 \frac{\partial C}{\partial \check{t}} + \nabla \cdot (\check{\mathbf{v}}_{\text{eff}} C - \frac{\phi \mathcal{D}_l}{u_0l_0} \nabla c_l) &= 0,\\
 					 \frac{\partial H}{\partial \check{t}} + \nabla \cdot (\check{\overline{\mathbf{v}}} \check{T}) - 
-					 \check{L} \nabla \cdot (\phi_s \check{\mathbf{v}}_s) - \frac{\kappa}{u_0l_0} \nabla^2 \check{T} -  
+					 \check{L} \nabla \cdot ((1-\phi) \check{\mathbf{v}}_s) - \frac{\kappa}{u_0l_0} \nabla^2 \check{T} -  
 					 \frac{\alpha_\rho l_0}{c_p} \check{T} \check{\overline{\mathbf{v}}} \cdot \mathbf{g} &= 0.
 		  \end{aligned}
 \end{equation}
 Parameters used in the flow mechanics and thermodynamic computations are listed in Table \ref{tab:parameters}. 
 The characteristic values are calculated as
 \begin{equation}\label{eq:characteristic}
-l_0 = 3.16\times10^5 \text{m}, \quad u_0 = 5.88\times10^{-5} \text{m/s}, \quad t_0 = 5.38\times10^6 \text{s}, \quad \text{and} \quad p_0 = 9.30\times10^9 \text{Pascal}.
+l_0 = 3.16\times10^5 \text{m}, \quad u_0 = 5.88\times10^{-5} \text{m/s}, \quad t_0 = 5.38\times10^6 \text{s}, \quad \text{and} \quad p_0 = 9.30\times10^9 \text{Pascal},
+\end{equation}
+which are 
+\begin{equation}\label{eq:characteristic_geounit}
+		  l_0 = 316\text{km}, \quad u_0 = 1.86 \text{km/yr}, \quad t_0 = 0.1705 \text{yrs}.
 \end{equation}
 \begin{table}[t]
 \centering\small

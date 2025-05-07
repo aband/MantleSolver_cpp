@@ -167,6 +167,8 @@ general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vert
 \end{figure}
 
 \begin{lem}\label{lem:interpolationop}
+		  (Boundedness of the interpolation operator~\cite{directSerendipity})
+
 		  Let $\mathcal{T}_h$ be uniformly shape regular~\eqref{eq:regularityineq}
 		  with shape regularity parameter $\sigma_*$.
 		  For each element $E \in \mathcal{T}_h$, 
@@ -181,14 +183,20 @@ general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vert
 \end{lem}
 
 \begin{lem}\label{lem:approximation}
-		  Under the asumptions of~\ref{lem:interpolationop}, there exists a 
+		  (Approximability of the interpolation operator~\cite{directSerendipity})
+
+		  Under the assumptions of~\ref{lem:interpolationop}, there exists a 
 		  constant $C = C(r, \sigma_*) > 0$ such that for all functions 
 		  $v \in W_{l,p}(E^*)$, with $1\leq p \leq \infty$ and $l>1/p$ or 
 		  ($l\geq 1$ if $p=1$),
 		  \begin{equation}\label{eq:brambleHilbertDS}
-					 \norm{v-\mathcal{I}_h^r}_{W_{m,p}} \leq C h_E^{l-m}
-					 \lvert v \rvert_{W_{l,p}(E^*)}, \quad 0 \leq m \leq \min(l,r+1).
+					 \norm{v-\mathcal{I}_h^r v}_{W^m_p} \leq C h_E^{l-m}
+					 \lvert v \rvert_{W^l_p(E^*)}, \quad 0 \leq m \leq \min(l,r+1).
+		  \end{equation}
+		  Morevoer, there exists a constant $C = C(r,\sigma_*) > 0$, independent
+		  of $h = \max_{E \in \mathcal{T}}$, such that for all functions 
+		  $v \in W_p^l(\Omega)$,
+		  \begin{equation}
+					 (\sum_{E\in\mathcal{T}_h} \norm{v - \mathcal{I}_h^r v}^p_{W_p^m})^{1/p} \leq C h^{l-m} \lvert v \rvert_{W_p^l(\Omega)}, 0 \leq m \leq \min(l, r+1).
 		  \end{equation}
 \end{lem}
-The proof of lemma~\ref{lem:interpolationop} and lemma~\ref{lem:approximation} 
-can be found in~\cite{directSerendipity}.

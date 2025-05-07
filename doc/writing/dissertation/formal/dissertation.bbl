@@ -1,9 +1,17 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{10}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Arbogast et~al.(2017)Arbogast, Hesse, and Taicher]{DegenerateDarcy}
+T.~Arbogast, M.~A. Hesse, and A.~L. Taicher.
+\newblock Mixed methods for two-phase {D}arcy-{S}tokes mixtures of partially
+  melted materials with regions of zero porosity.
+\newblock \emph{SIAM J. Sci. Comput.}, 39\penalty0 (2):\penalty0 B375--B402,
+  2017.
+\newblock {DOI} 10.1137/16M1091095.
 
 \bibitem[Arbogast and Correa(2016)]{doi:10.1137/15M1013705}
 Todd Arbogast and Maicon~R. Correa.
