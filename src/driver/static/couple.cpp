@@ -71,6 +71,13 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
         darcyvel.clear(); darcyvel.resize(gaussp.size());
         stokesvel.clear(); stokesvel.resize(gaussp.size());
         
+        // Horizontal edges only
+        edge = {corners.at(0), corners.at(1)};
+
+        for (int g=0; g<gpe.size(); g++){
+
+            gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, edge);
+
         vector<vertex> vel_relative = 
         ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
                     refArrayDarcyEssen_,mi,
@@ -81,12 +88,7 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
                     refArrayStokesEssen_,mi,
                     gaussp, gcell,*br_,*basis_,{1});
 
-        // Horizontal edges only
-        edge = {corners.at(0), corners.at(1)};
 
-        for (int g=0; g<gpe.size(); g++){
-
-            gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, edge);
 
             darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
             stokesvel.at(g) = vel_stokes.at(g);
@@ -420,6 +422,8 @@ int Driver::AssignLocMatStokes_case(const indice& gcell,
     std::fill(loc->f.begin(), loc->f.end(), 0.0);
     loc->C = 0.0;
 
+    //phi_f_hat = (phi_f_hat == 0.0 ? 1.0 : phi_f_hat);
+
     for (unsigned int g=0; g<gwf.size(); g++){
         // Calculate mapped gauss points and jacobian
         vertex mapped = GaussMapPointsFace(gpf[g],basis_->corners());
@@ -475,7 +479,8 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
         // Non dimensionalized version
         loc->C += gw*jac*phi_f_hat/phi_s*
                   br_->Pressure()*br_->Pressure();
-
+//        loc->C += gw*jac*phi_f/phi_s*
+//                  br_->Pressure()*br_->Pressure();
     }
 
     return 1;
@@ -516,6 +521,10 @@ int Driver::AssignLocMatDarcy_case(const indice& gcell,
     std::fill(loc->f.begin(), loc->f.end(), 0.0);
     loc->C = 0.0;
 
+    // Define B matrix for the Darcy part
+    // Compute with divergence theorem
+    phi_f_hat = (phi_f_hat == 0.0 ? 1.0 : phi_f_hat);
+
     for (unsigned int g=0; g<gwf.size(); g++){
         // Calculate mapped gauss points and jacobian
         vertex mapped = GaussMapPointsFace(gpf[g],basis_->corners());
@@ -555,15 +564,17 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
         loc->C += gw*jac*1.0/phi_s*
                   hdiv_->Pressure()*hdiv_->Pressure();
 
+        //loc->C += gw*jac*(phi_f/phi_f_hat)/phi_s*
+        //          hdiv_->Pressure()*hdiv_->Pressure();
+
     }
 
-    // Define B matrix for the Darcy part
-    // Compute with divergence theorem
-    phi_f_hat = (phi_f_hat == 0.0 ? 1.0 : phi_f_hat);
+/*
     if (gcell[1] == 34 || gcell[1] == 35){
 phi_f_hat = 2.0/30.0;
     }
 cout << phi_f_hat << endl;
+*/
     vertexSet corners = basis_->corners();
 
     for (int e =0; e<4; e++){
@@ -606,11 +617,13 @@ if (phi_f_e < 1e-16) {phi_f_e = 0.0;}
             // Testing =================================================
 
             phi_f_e = AssignPorosity(mapped, myPhase->pp);
+
+/*
 				if ((gcell[1]==35 && e==1) ||(gcell[1]==34 && e==3)){
             phi_f_e = 2.0/(1.0/0.1 + 1.0/0.05);
             } 
 cout << gcell[0] << "  " << gcell[1] << "  " << e << "  " <<  phi_f_e << "  " << endl;
- 
+*/ 
 //cout << phi_f_e << endl;
             // =========================================================
 
@@ -641,6 +654,12 @@ int Driver::AssignLocMatCouple_case(const indice& gcell,
     double phi_f = 0.0;
     double phi_s = 0.0;
 
+    double invphi_hat = 1.0; 
+
+    if (phi_f_hat >0.0){
+        invphi_hat = 1.0/sqrt(phi_f_hat);
+    }
+
     for (unsigned int g=0; g<gwf.size(); g++){
         // Calculate mapped gauss points and jacobian
         vertex mapped = GaussMapPointsFace(gpf[g],basis_->corners());
@@ -661,6 +680,10 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
 
         k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * br_->Pressure() * 
                                                hdiv_->Pressure();
+
+        //k -= gw*jac*phi_f*invphi_hat/phi_s * br_->Pressure() * 
+        //                                     hdiv_->Pressure();
+
     }
 
     return 1;
@@ -728,17 +751,19 @@ int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
         SolveFlow_case(maxIter, tolUzawa, allwgts, lphi);
         CreateScatterVec();
 
-        //printCellAve(mark, &globalCD, mi, "porosity");
-        printExactPorosity(mark, mi, "porosity", myPhase->pp);
-
-        PrintFlowEvent(mark);
-        mark ++;
-
         getflux_case(allwgts, lphi, lfphi);
 
         DMDAVecRestoreArray(dmu, fluxphi, &lfphi);
         DMDAVecRestoreArray(dmu, localphi, &lphi);
         DMRestoreLocalVector(dmu, &localphi);
+
+        //printCellAve(mark, &globalCD, mi, "porosity");
+        printExactPorosity(mark, mi, "porosity", myPhase->pp);
+        printVelEdgeGauss_case(mark, myPhase->pp);
+
+        PrintFlowEvent(mark);
+        mark ++;
+
 //VecView(fluxphi, PETSC_VIEWER_STDOUT_WORLD);
         VecAXPY(globalCD, -1*dt, fluxphi);
     }
