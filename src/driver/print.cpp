@@ -276,7 +276,7 @@ int Driver::PrintEffVel(int mark, int side,
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
         }
 
- fprintf(effvx, "\n ");
+      fprintf(effvx, "\n ");
       fprintf(effvy, "\n ");
       fprintf(phasevx, "\n ");
       fprintf(phasevy, "\n ");

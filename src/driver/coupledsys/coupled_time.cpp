@@ -59,6 +59,8 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
+        PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
+
         DMDAVecRestoreArray(dmu, fluxHD, &lfHD);
         DMDAVecRestoreArray(dmu, fluxCD, &lfCD);
         DMDAVecRestoreArray(dmu, localHD, &lHD);
@@ -68,10 +70,9 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
         printCellAve(mark, &globalHD, mi, "HD");
         printCellAve(mark, &globalCD, mi, "CD");
-        PrintFlowEvent(mark);
+        //PrintFlowEvent(mark);
         PrintPhaseEvent(mark);
         PrintPressureSerialApprox(mark);
-//        PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
 
         mark ++;
 

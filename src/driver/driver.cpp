@@ -171,9 +171,9 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     // Additional treatment on the top boundary
     unordered_map<std::string, vector<indice>> top;
     //method.insert(std::make_pair<std::string, vector<indice>>("const", { {0,0} }));
-    top.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-2} }));
-    //top.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1} }));
-    advection.setmethod("top", top);
+    top.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-1} }));
+    top.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1}, {0,0} }));
+    advection.setmethod("top", method);
     advection.setbias("top");
 
     // Compute bottom fixed value
@@ -260,8 +260,8 @@ int Driver::PrepareTransport(const std::vector<double>& restartHD,
     unordered_map<std::string, vector<indice>> top;
     //method.insert(std::make_pair<std::string, vector<indice>>("const", { {0,0} }));
     top.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-1} }));
-    top.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1} }));
-    advection.setmethod("top", top);
+    top.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1}, {0,0} }));
+    advection.setmethod("top", method);
     advection.setbias("top");
 
     // Compute bottom fixed value

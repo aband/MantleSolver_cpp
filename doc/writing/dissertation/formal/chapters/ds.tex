@@ -87,35 +87,35 @@ on the edge $e_0$, and evaluates $0$ on the opposite edge $e_2$.
 
 The edge nodal basis functions for $\mathcal{DS}_2$ are constructed as
 \begin{equation}\label{eq:edgebasisds2}
-		  \varphi_{e,i}(\mathbf{x}) = \frac{\lambda_{i+1}(\mathbf{x})\lambda_{i+3}(\mathbf{x})R_i(\mathbf{x})}
+		  \varphi^2_{e,i}(\mathbf{x}) = \frac{\lambda_{i+1}(\mathbf{x})\lambda_{i+3}(\mathbf{x})R_i(\mathbf{x})}
 		  {\lambda_{i+1}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})R_i(\mathbf{x}_{e,i})},
 \end{equation}
 where $\mathbf{x}_{e,i}$ is the middle point of the edge $e_i$, the $i$ index is
 understood in the sense of modulo of $4$. In Figure~\ref{fig:phie0}, we present
-$\varphi_{e,0}$ on a general quadrilateral.
+$\varphi^2_{e,0}$ on a general quadrilateral.
 \begin{figure}[ht]
 \centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/phie0_1.png}
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/phie0_2.png}
-		  \caption{Edge nodal basis function $\varphi_{e,0}$ in $\mathcal{DS}_2$.}
+		  \caption{Edge nodal basis function $\varphi^2_{e,0}$ in $\mathcal{DS}_2$.}
 		  \label{fig:phie0}
 \end{figure}
 
 The vertex nodal basis functions for $\mathcal{DS}_2$ are constructed as
 \begin{equation}\label{eq:vertexbasisds2}
-		  \varphi_{v,i}(\mathbf{x}) = \frac{\lambda_{i+2}(\mathbf{x}) \lambda_{i+3}(\mathbf{x}) - 
-		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi_{e,i}(\mathbf{x})}
+		  \varphi^2_{v,i}(\mathbf{x}) = \frac{\lambda_{i+2}(\mathbf{x}) \lambda_{i+3}(\mathbf{x}) - 
+		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi^2_{e,i}(\mathbf{x})}
 		  {\lambda_{i+2}(\mathbf{x}_{v,i}) \lambda_{i+3}(\mathbf{x}_{v,i}) - 
-		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi_{e,i}(\mathbf{x}_{v,i})},
+		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi^2_{e,i}(\mathbf{x}_{v,i})},
 \end{equation}
 where $\mathbf{x}_{v,i}$ is the coordinates of the vertex node $v_i$. The $i$ index
 is understood in the sence of module of $4$ as well. In Figure~\ref{fig:phiv0}, we 
-show $\varphi_{v,0}$ on a general quadrilateral.
+show $\varphi^2_{v,0}$ on a general quadrilateral.
 \begin{figure}[ht]
 \centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/phiv0_1.png}
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/phiv0_2.png}
-		  \caption{Vertex nodal basis function $\varphi_{v,0}$ in $\mathcal{DS}_2$.}
+		  \caption{Vertex nodal basis function $\varphi^2_{v,0}$ in $\mathcal{DS}_2$.}
 		  \label{fig:phiv0}
 \end{figure}
 
@@ -133,7 +133,7 @@ where $R(\mathbf{x}_{v,0}) = R(\mathbf{x}_{v,2}) =
 of rational funcion R is not unique. We present one way to construct
 $R(\mathbf{x})$ with edge nodal basis function~\eqref{eq:edgebasisds2} in $\mathcal{DS}_2$ as
 \begin{equation}\label{eq:rationalfunctionds1}
-R(\mathbf{x}) = r(\mathbf{x}) - \sum_{i=0}^3r(\mathbf{x}_{e,i}) \varphi_{e,i}(\mathbf{x}),
+R(\mathbf{x}) = r(\mathbf{x}) - \sum_{i=0}^3r(\mathbf{x}_{e,i}) \varphi^2_{e,i}(\mathbf{x}),
 \end{equation}
 where auxiliary function $r(\mathbf{x})$ is defined as
 \begin{equation}\label{eq:auxiliaryrationalfunction}
@@ -153,11 +153,11 @@ In Figure~\ref{fig:rationalds1}, we plot the rational function on a general quad
 
 We define vertex nodal basis function accordingly as
 \begin{equation}\label{eq:vertexbasisds1}
-\psi_{v,i}(\mathbf{x}) = \frac{\lambda_{d,m}(\mathbf{x}) - \frac{1}{2}\lambda_{d,m}(\mathbf{x}_{v,i+2})(1+ (-1)^i R(\mathbf{x}))}
+\varphi^1_{v,i}(\mathbf{x}) = \frac{\lambda_{d,m}(\mathbf{x}) - \frac{1}{2}\lambda_{d,m}(\mathbf{x}_{v,i+2})(1+ (-1)^i R(\mathbf{x}))}
 {\lambda_{d,m}(\mathbf{x}_{v,i}) - \lambda_{d,m}(\mathbf{x}_{v,i+2})},
 \end{equation}
 where $m\equiv i+1 \Mod{2}$, and index $i$ is understood in the sence of modulo of $4$.
-In Figure~\ref{fig:vertexbasisds1}, we show the vertex nodal basis function $\varphi_{v,0}$ in $\mathcal{DS}_1$ on a 
+In Figure~\ref{fig:vertexbasisds1}, we show the vertex nodal basis function $\varphi^1_{v,0}$ in $\mathcal{DS}_1$ on a 
 general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vertex.
 \begin{figure}[ht]
 \centering\small
@@ -167,15 +167,38 @@ general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vert
 		  \label{fig:vertexbasisds1}
 \end{figure}
 
+We first define an interpolation operator of function $v \in L^2(\Omega)$ 
+onto $\mathcal{DS}_r(K_i)$, $r=1,2$. Here, $K_i$ has different meanings
+with different types of basis functions. For each basis functions associated
+with edge node, we set $K_i = e_i$. For each basis functions associated with
+vertex node, we set $K_i$ being a set of edges sharing the vertex $v_i$.
+Following the work by~\cite{directSerendipity}, we define a interpolation
+operator $\mathcal{I}^r_h:W_p^l(E) \rightarrow \mathcal{DS}_r$ as
+\begin{equation}\label{eq:interpolation}
+					 \mathcal{I}^r_h v(\mathbf{x}) = \sum_{i=1}^{N_r} \varphi_i(\mathbf{x})\int_{K_i} \psi_i(\mathbf{y}) v(\mathbf{y}) d\mathbf{y} \in \mathcal{DS}_r,
+\end{equation}
+where $1\leq p \leq \infty$ and $l > 1/p$ (but $l\geq 1$ if $p=1$),
+and $\psi(\mathbf{x})$ is the dual nodal basis such that
+\begin{equation}
+		  \int_{K_i} \psi_{i}(\mathbf{x}) \varphi_j(\mathbf{x}) d\mathbf{x} = \delta_{i,j}, \quad i,j \in \{0,1,2,\dots, N_r \},
+\end{equation}
+where $N_r$ is the number of nodal basis defined on $K_i$.
+We present the following two lemmas regarding the constructed interpolation
+operator for future reference.
+
 \begin{lem}\label{lem:interpolationop}
 		  (Boundedness of the interpolation operator~\cite{directSerendipity})
 
 		  Let $\mathcal{T}_h$ be uniformly shape regular~\eqref{eq:regularityineq}
 		  with shape regularity parameter $\sigma_*$.
 		  For each element $E \in \mathcal{T}_h$, 
-		  There exists a bounded interpolation operator $\mathcal{I}_h:W_p^l(E) \rightarrow \mathcal{DS}_r$. For $r\geq 1$, $E \in \mathcal{T}_h$, 
+		  There exists a bounded interpolation operator~\eqref{eq:interpolation}.
+		  For every $E \in \mathcal{T}_h$, suppose that the basis functions of $\mathcal{DS}_r(E)$ are constructed using
+		  $\lambda_{24}$ and $\lambda_{13}$ such that the zero set $\mathcal{Z}_{i,i+2}$ intersects $e_{i+3}$ and $e_{i+1}$.
+		  Moreover, assume that $R_{i,i+2}$ is uniformly differentiable functions of the vertices of $E$ up to order m.
+		  Then for $r\geq 1$, $E \in \mathcal{T}_h$, 
 		  $1\leq q \leq \infty$, and any nonnegative integer m,
-		  \begin{equation}\label{eq:interpolationop}
+		  \begin{equation}\label{eq:interpolationopbound}
 		 \norm{\mathcal{I}_h^r v}_{W_q^m} \leq C(\sigma_*, m, q) \sum_{k=0}^l
 					 h_E^{k-m+\frac{2}{q}-\frac{2}{p}} \lvert v\rvert_{W^k_p(E^*)},
 		  \end{equation}

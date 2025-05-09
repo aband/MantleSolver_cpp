@@ -138,7 +138,8 @@ int Driver::computeEffVel(const vector<vertex>& gaussp,
         if (clin.at(g) == 0.0 && clout.at(g) == 0.0){
             cl_mean = 0.0;
         } else {
-            cl_mean  = harmonic_mean(clin.at(g) ,clout.at(g));
+            //cl_mean  = harmonic_mean(clin.at(g) ,clout.at(g));
+            cl_mean = (clin.at(g) + clout.at(g))/2;
         }
 
         double phi_mean = 0.0;
@@ -149,11 +150,12 @@ int Driver::computeEffVel(const vector<vertex>& gaussp,
         }
 
         double cs_mean  = harmonic_mean(csin.at(g) ,csout.at(g));
+        cs_mean  = harmonic_mean(csin.at(g) ,csout.at(g));
 
         effvel.at(g) = cl_mean*phi_mean*(vel_relative.at(g) + vel_stokes.at(g)) + 
                        cs_mean*(1-phi_mean)*vel_stokes.at(g);
         effvel.at(g) /= cl_mean*phi_mean + cs_mean*(1-phi_mean);
-
+cout << effvel.at(g) << endl;
         phasevel.at(g) = phi_mean*vel_relative.at(g) + vel_stokes.at(g);
 
         solidvel.at(g) = (1-phi_mean) * vel_stokes.at(g);

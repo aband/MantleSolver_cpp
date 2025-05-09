@@ -26,14 +26,23 @@ We define the first order reduced $H(\text{div})$ conforming space with $\mathca
 The reduced space $\mathbb{V}_1^0$ can be given a global basis with the normal
 components of the shape functions merged continuously on the shared edge of
 two elements.
-First, we write curl of the auxiliary rational function $R_i$~\eqref{eq:defR} as
-\begin{equation}\label{eq:curlauxiliary}
-		 \text{curl}R_i(\mathbf{x}) = 
-					 \frac{\pmb{\tau}_{i+2}(\mathbf{x}) \lambda_i(\mathbf{x}) - \pmb{\tau}_{i}(\mathbf{x}) \lambda_{i+2}(\mathbf{x})}{(\lambda_i(\mathbf{x}) + \lambda_{i+2}(\mathbf{x}))^2},
+The dimension of the derived space is 
+\begin{equation}\label{eq:hdivdim}
+		  \text{dim}(\mathbb{V}_1^0) = 2\times 3 + 2 = 8.
 \end{equation}
-where the index $i$ is understood in with modulo of 4. 
+We need two independent basis functions on each edge of a quadrilateral $E$,
+one of which has a vanishing average flux on the edge and the other one has a non-vanishing 
+average flux on the edge.
 On each edge, we define two independent basis functions.
 $\pmb{\varphi}_{l,i}$ and $\pmb{\varphi}_{c,i}$, such that
+\begin{equation}\label{eq:constbasishdiv_show}
+\pmb{\varphi}_{c,i}\cdot \pmb{\nu}_j \rvert_{e_j} = \left \{
+		 \begin{aligned}
+					&0, \hspace{0.8cm} j \neq i, \\
+					&1, \hspace{0.8cm} j=i.
+		 \end{aligned}
+		 \right.
+\end{equation}
 \begin{equation}\label{eq:linearbasishdiv_show}
 		  \pmb{\varphi}_{l,i}\cdot \pmb{\nu}_j \rvert_{e_j} = \left \{
 					\begin{aligned}
@@ -42,32 +51,32 @@ $\pmb{\varphi}_{l,i}$ and $\pmb{\varphi}_{c,i}$, such that
 					\end{aligned}
 					\right.
 \end{equation}
-$\pmb{\varphi}_{l,i}$ and $\pmb{\varphi}_{c,i}$, such that
-\begin{equation}\label{eq:constbasishdiv_show}
-		  \pmb{\varphi}_{c,i}\cdot \pmb{\nu}_j \rvert_{e_j} = \left \{
-					\begin{aligned}
-							  &0, \hspace{0.8cm} j \neq i, \\
-							  &1, \hspace{0.8cm} j=i,
-					\end{aligned}
-					\right.
-\end{equation}
 where $l_i$ is a non vanishing linear polynomial defined on edge $e_i$ 
 orthogonal to one, i.e., $\int_{e_i}l_i ds = 0$.
-We present a construction of these two basis functions.
+
+To begin with, we write curl of the auxiliary rational function $R_i$~\eqref{eq:defR} as
+\begin{equation}\label{eq:curlauxiliary}
+		 \text{curl}R_i(\mathbf{x}) = 
+					 \frac{\pmb{\tau}_{i+2}(\mathbf{x}) \lambda_i(\mathbf{x}) - \pmb{\tau}_{i}(\mathbf{x}) \lambda_{i+2}(\mathbf{x})}{(\lambda_i(\mathbf{x}) + \lambda_{i+2}(\mathbf{x}))^2},
+\end{equation}
+where the index $i$ is understood with modulo of 4. 
+We first present a construction of basis function $\pmb{\varphi}_{l,i}$ as
 \begin{equation}\label{eq:linearbasis_raw}
 		  \tilde{\pmb{\varphi}}_{l,i} = \text{curl}(\lambda_{i+1}\lambda_{i+3}R_i)
 		  =(\pmb{\tau}_{i+1}\lambda_{i+3} + \lambda_{i+1}\pmb{\tau}_{i+3})R_i + 
 		  \lambda_{i+1} \lambda_{i+3}\text{curl}R_i.
 \end{equation}
-We then normalize it as
+We then normalize it such that $l_i$ varying from $-1$ to $1$ as
 \begin{equation}\label{eq:linearbasis}
 		  \pmb{\varphi}_{l,i} = \frac{\tilde{\pmb{\varphi}}_{l,i}(\mathbf{x})
-		  \lvert\mathbf{x}_{v,i} - \mathbf{x}_{v,i+3} \rvert}{4\lambda_{i+1}(\mathbf{x}_{e,i}) \lambda_{i+3}(\mathbf{x}_{e,i})R_i(\mathbf{x}_{e,i})},
+		  \lvert e_i \rvert}{4\lambda_{i+1}(\mathbf{x}_{e,i}) \lambda_{i+3}(\mathbf{x}_{e,i})R_i(\mathbf{x}_{e,i})},
 \end{equation}
-where index is understood in the sense of modulo 4. In Figure~\ref{fig:varphil},
-we draw $\pmb{\varphi}_{l,i}$ on two element sharing a edge.
-The construction of a the constant basis function is a bit more complicated.
-
+where the index $i$ is understood in the sense of modulo 4, and 
+edge length $\lvert e_i \rvert = \lvert \mathbf{x}_{v,i} - \mathbf{x}_{v,i+3} \rvert$. In Figure~\ref{fig:varphil},
+we draw $\pmb{\varphi}_{l,2}$ on the left element and $\pmb{\varphi}_{l,0}$ on
+the right element sharing a edge,
+and show normal flux
+joining continuously as a linear function on the shared edge.
 \begin{figure}[ht]
 \centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/linear1.png}
@@ -76,6 +85,35 @@ The construction of a the constant basis function is a bit more complicated.
 		  \label{fig:varphil}
 \end{figure}
 
+The construction of a the constant basis function is a bit more complicated.
+We follow the process by~\cite{directSerendipity}.
+We start by defining a linear nodal function $\phi^*_{v,i} \in \mathcal{DS}_{2}(E)$
+such that $\phi^*_{v,i}(\mathbf{x}_{v,k}) = \delta_{ik}$. Its restriction to 
+each edge of $E$ is a linear function as
+\begin{equation}\label{eq:phi*}
+		  \phi^*_{v,i}(\mathbf{x}) = \varphi^2_{v,i}(\mathbf{x}) + \big[\frac{1}{2}\varphi^2_{e,i} + \frac{1}{2}\varphi^2_{e,i+1} \big],
+\end{equation}
+where the index $i$ is understood in modulo of 4. Then define $\pmb{\varphi}^*_{v,i}(\mathbf{x}) = \text{curl} \phi^*_{v,i}$ so that
+\begin{equation}
+		  \pmb{\varphi}^*_{v,i}\cdot \pmb{\nu}_j \rvert_{e,j} = \left \{
+					 \begin{aligned}
+								&1/\lvert e_i \rvert, \hspace{0.8cm} j=i,\\
+								&-1/\lvert e_i \rvert, \hspace{0.3cm} j=i+1,\\
+								&0,                 \hspace{1.6cm}   j=i+2,i+3.
+					 \end{aligned}
+					 \right.
+\end{equation}
+We then define the "constant" basis function defined on the edge as
+\begin{equation}\label{eq:constbasis}
+		  \pmb{\varphi}_{e,i}= \frac{(\mathbf{x}_{v,i} - \mathbf{x}_{v,i+2}) \cdot \pmb{\nu}_{i+1} \lvert e_{i+1} \rvert\pmb{\varphi}^*_{v,i} + \mathbf{x} - \mathbf{x}_{v,i+2}}
+		  {(\mathbf{x}_{v,i} - \mathbf{x}_{v,i+2}) \cdot \pmb{\nu}_{i+1} \lvert e_{i+1} \rvert / \lvert e_i \rvert + (\mathbf{x}_{v,i} - \mathbf{x}_{v,i+2})\cdot \pmb{\nu}_i},
+\end{equation}
+where the index $i$ is again understood in the sense of modulo of 4. The defined basis function $\pmb{\varphi}_{e,i}$ has flux of constant value $1$ on $e_i$ and $0$ 
+on all the other edges. In Figure~\ref{fig:varphic},
+we draw $\pmb{\varphi}_{c,2}$ on the left element and $\pmb{\varphi}_{c,0}$ on
+the right element sharing a edge,
+and show normal flux
+joining continuously as a constant $1$ on the shared edge.
 \begin{figure}[ht]
 \centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/const1.png}
@@ -83,7 +121,17 @@ The construction of a the constant basis function is a bit more complicated.
 		  \caption{Constant basis function $\pmb{\varphi}_c$.}
 		  \label{fig:varphic}
 \end{figure}
+\begin{lem}\label{lem:theoryhdiv}
+		  Stability and approximation properties~\cite{directSerendipity}.
 
+		  Under the assumption of~\ref{lem:interpolationop}, there exists a 
+		  constant $C>0$, independent of $\mathcal{T}_h$ and $h>0$, such that
+		  \begin{equation}
+					 \begin{aligned}
+								\norm{\mathbf{v}-\pi\mathbf{v}}_{0,\Omega} \leq C\norm{\mathbf{v}}_{k,\Omega}
+					 \end{aligned}
+		  \end{equation}
+\end{lem}
 \subsection{Test Darcy Problem}
 We test our $H(\text{div})$ conforming element on a simple darcy problem as
 \begin{equation}
@@ -168,8 +216,23 @@ we require the following as
 
 (i) For each corner point $v \in \partial F$
 \begin{equation}
-		  \pi \mathbf{v}(\mathbf{x}_v) \cdot \pmb{i} = \mathcal{I}\mathbf{v}(\mathbf{x}_v) \cdot \pmb{j}
+		  \pi \mathbf{v}(\mathbf{x}_v) \cdot \pmb{i} = \mathcal{I}_{\mathcal{DS}_1}\mathbf{v}(\mathbf{x}_v) \cdot \pmb{j}.
 \end{equation}
+
+(ii) On each edge $e \subset \partial E$,
+\begin{equation}
+		  \langle \pi \mathbf{u} \cdot \pmb{\nu}, \lambda_0 \rangle = \langle \mathbf{u} \cdot \pmb{\nu}, \lambda_0 \rangle_e \hspace{0.2cm} \forall \lambda_0 \in P_0(e).
+\end{equation}
+
+The interpolation operator $I_{\mathcal{DS}_1}$ has been defined in~\ref{eq:interpolation}.
+We claim that we can represent for $\mathbf{u} \in (H^1(\Omega))^2$,
+\begin{equation}
+		  \pi \mathbf{u} = \mathbf{I}_{\mathcal{DS}_1} \mathbf{u} + 
+		  \sum_{i=0}^3 \alpha_i \mathbf{b}_i,
+\end{equation}
+where the coefficient $\alpha_i = \Big( \int_{e_i} (\mathbf{u} - \mathcal{I}_{\mathcal{DS}_1} \mathbf{u})\cdot \pmb{\nu}_i d\sigma \Big) / \int_{e_i} \mathbf{b}_i \cdot 
+\pmb{\nu}_i d\sigma$. It is obvious that $\pi \mathbf{u} \in \mathbb{V}_1^{\mathcal{BR}}$.
+We now prove the approximability and stability of our projection operator and eventually derive the $\inf-\sup$ condition.
 
 \subsection{Test Stokes Problem}
 We test our modified BR element on a test Stokes problem. 
@@ -205,28 +268,46 @@ We employ a test space
 \end{equation}
 We can separate normal and tangent part of stress on the boundary easily when physical boundary align with x-y axis.
 In the situation when a rectangular computational domain is used, we can mix stress and dirichlet boundary condition
-even further. 
+even further. For simplicity, we test our modified first order Bernardi-Raugel element on a full Dirichlet problem, 
+i.e., $\Gamma_u = \partial \Omega$.
 
-\subsection{Coupled Degenerate System}
-We defined scaled formulation~\eqref{eq:dimensionlessdarcy_flow_sc},
-~\eqref{eq:dimensionlessconsMass_flow_sc},~\eqref{eq:dimensionlessstokes_flow_sc},
-and~\eqref{eq:dimensionlesscompaction_flow_sc} in~\ref{chap:equations}.
-We follow the procedure by~\cite{DegenerateDarcy} to discretize the strong form.
+We compare our numerical solution with the closed form as
+\begin{equation}\label{eq:closedteststokes}
+		  \mathbf{u} = 
+\end{equation}
+
+
+\section{Coupled Degenerate System}
+Consider a degenerate scaled darcy-stokes coupled boundary-value problem,
 \begin{alignat}{2}
-\label{eq:dimensionlessdarcy_flow_sc}
+\label{eq:dimensionlessdarcy_flow_sc_bv}
 		  &\check{\mathbf{v}}_r
 		  + \phi^{1+\Theta}\nabla(\phi^{-1/2}\check{q}_l)
         &&= 0,\\
-\label{eq:dimensionlessconsMass_flow_sc}
+\label{eq:dimensionlessconsMass_flow_sc_bv}
 		  &\phi^{-1/2}\nabla \cdot(\phi^{1+\Theta}\check{\mathbf{v}}_r)
         + \frac{1}{1-\phi}(\check{q}_l - \phi^{1/2}\check{q}) &&=0,\\
-\label{eq:dimensionlessstokes_flow_sc}
+\label{eq:dimensionlessstokes_flow_sc_bv}
 		  &\nabla \check{q} - \nabla \cdot \check{\tau}(\check{\mathbf{v}}_s) &&= -(1-\phi)\mathbf{n},\\
-\label{eq:dimensionlesscompaction_flow_sc}
+\label{eq:dimensionlesscompaction_flow_sc_bv}
 		  &\nabla \cdot \check{\mathbf{v}}_s
         - \frac{\phi^{1/2}}{1-\phi}(\check{q}_l - \phi^{1/2}\check{q}) &&=0,
 \end{alignat}
+and
+\begin{equation}\label{eq:bv}
+		  \begin{aligned}
+					 \check{\mathbf{v}}_r &= \check{\mathbf{v}}_{r,0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
+					 \check{\mathbf{v}}_s &= \check{\mathbf{v}}_{s,0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \Gamma_{u,S}, \\
+					 p &= p_0 \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{i,D}, \\
+					 \pmb{\tau}\cdot \pmb{\nu} - p &= \pmb{t}_0 \hspace{0.56cm} \text{on} \hspace{0.2cm} \Gamma_{i,S},
+		  \end{aligned}
+\end{equation}
+where $\Gamma_{u,D}$ and $\Gamma_{u,S}$ denote the part of boundary we assign essential boundary conditions for 
+Darcy and Stokes problem respectively, 
+and $\Gamma_{i,D}$ and $\Gamma_{i,S}$ represent the part of boundary we assign natural boundary conditions 
+respectively.
 
+We follow the procedure by~\cite{DegenerateDarcy} to discretize this boundary value problem.
 To begin weith, a new Hilbert space is defined for this 
 specific scaled formulation, where
 the scaled velocity $\check{\mathbf{v}}_r$ should lie in, so
@@ -246,17 +327,23 @@ The normal trace on $\partial \Omega$ is well-defined as well as
 		  \norm{\phi^{1/2+\Theta}\mathbf{v}_\phi\cdot \nu}_{-1/2, \partial \Omega} < C_{\Omega} \Big\{ \norm{\mathbf{v}_\phi} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}_\phi)} \Big\}.
 \end{equation}
 
+\subsection{The weak formulation}
 Now we define the function spaces
 \begin{equation}\label{eq:spaces}
 		  \begin{aligned}
-					 \mathbb{V}^\phi_d &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = 0 \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{d,u}  \Big\},\\
-					 \mathbb{W}_d      &= L^2(\Omega),\\
-					 \mathbb{V}_s &= \Big\{\mathbf{v}\in (H^1(\Omega))^2 : \mathbf{v} \hspace{0.15cm} \text{on}\hspace{0.15cm}  \Gamma_{s,u} \Big\},\\
-		  \mathbb{W}_s &= L^2(\Omega),
+					 \mathbb{V}^\phi_D &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = 0 \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\},\\
+					 \mathbb{W}_D      &= L^2(\Omega),\\
+					 \mathbb{V}_S &= \Big\{\mathbf{v}\in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \hspace{0.15cm} \text{on}\hspace{0.15cm}  \Gamma_{u,S} \Big\},\\
+		  \mathbb{W}_S &= L^2(\Omega),
 		  \end{aligned}
 \end{equation}
-where $\Gamma_{d,u} \in \partial \Omega$ and $\Gamma_{s,u} \in \partial \Omega$ 
-are boundary assigned with essential boundary condition with nonzero measure.
+where each space is equipped with their natural norm.
+To empose essential boundary conditoins, we assume that a function $\mathbf{g}_s = \check{\mathbf{v}}_{s,0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \Gamma_{u,S}$ 
+and $\mathbf{g}_s = \mathbf{0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \partial \Omega / \Gamma_{u,S}$.
+Then $\mathbf{g}_s \in (H^{1/2}(\partial \Omega))^2$ and
+extended it continuously from the boundary to the domain, so that
+the extension $\mathbf{g}_{s} \in (H^1(\Gamma_{u,S}))^2$ and $\norm{\mathbf{g}_{s,0}}_1 \leq C \norm{\mathbf{v}_{s,0}}_{1/2,\Gamma_{u,S}}$. 
+Similarly, we can define a bounded extension of $\check{\mathbf{v}}_r \in \mathbb{V}_D^\phi$ such that                                                                                                                                                 
 
 Scaled nondimensionalized weak form.
 Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_r + \check{\mathbf{g}}_{r}$,
@@ -363,12 +450,17 @@ We test our MFEM setup with two problems.
 First, we test with a manufactured solution. Second, we test a
 more complex yet a more realistic problem.
 
-Problem setup 1. 
+Problem setup 1:
+
+We solve a manufactured system of equations of the rectangular domain $-1< x < 1$, 
 \begin{equation}\label{eq:test1}
 		  \mathbf{v}_s = 
 \end{equation}
 
-Problem setup 2.
+Problem setup 2:
+
+We solve the full system of equations on the rectangular domain $-160\text{km} < x < 160\text{km}$,
+$0, x, 160\text{km}$. The boundary conditions are define by imposing  
 \begin{equation}\label{eq:test2}
 		  \mathbf{v}_s = 
 \end{equation}
