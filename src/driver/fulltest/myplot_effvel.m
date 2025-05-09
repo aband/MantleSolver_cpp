@@ -17,6 +17,13 @@ fcell = struct2cell(fstruct);
 
 loops = numel(fstruct);
 
+v = VideoWriter('edgevel.avi','Motion JPEG AVI');
+open(v);
+
+h = figure;
+
+set(gcf, 'Position',[100 100 1210 693])
+
 for k = 1:loops
 
 filename = strcat('build/effvelx',string(k));
@@ -56,6 +63,7 @@ title(["Phase averaged velocity", num2str(k)])
 
 subplot(2,3,5)
 plot(vy(4,:), pY(4,:));
+xlim([-1,1])
 
 filename = strcat('build/solidvely',string(k));
 filename = strcat(filename,'.dat');
@@ -73,5 +81,7 @@ plot(vy(4,:), pY(4,:));
 %set(gcf, 'Position',[50 50 1800 700]);
 pause
 G = getframe(gcf);
+
+writeVideo(v,G);
 
 end

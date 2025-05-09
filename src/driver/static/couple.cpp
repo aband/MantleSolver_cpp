@@ -113,6 +113,23 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
     return 1;
 }
 
+int Driver::projectVel(int mark, PhysProperty * pp){
+
+    FILE * dvx = fopen(GetFilename("darcyprox", mark),"w");
+    FILE * dvy = fopen(GetFilename("darcyproy", mark),"w");
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice gcell {i,j};
+        indice gcellout;
+        vertexSet corners = extractCorners(mi, gcell);
+
+    }}
+
+    return 1;
+}
+
 // Two sided
 int Driver::computeEffVel_case(const vector<vertex>& gaussp,
                                const vertexSet& edgep,
