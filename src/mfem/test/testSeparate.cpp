@@ -7,6 +7,7 @@
 #include "Hdivmixed.h"
 #include "brmixed.h"
 #include "assemble.h"
+#include "passemble.h"
 #include "util.h"
 #include "myFunc.h"
 #include "bndry.h"

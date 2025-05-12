@@ -61,7 +61,7 @@ int main(int argc, char **argv){
 
     driver->withUnit = withUnit;
     driver->CreatePhase();
-    driver->ShowPhase();
+    //driver->ShowPhase();
     driver->CreateMesh(M, N, L, H, xstart, ystart, 
                        stencilWidthMesh, stencilWidthU,
                        physicsScale, meshType);
@@ -89,6 +89,7 @@ int main(int argc, char **argv){
     driver->start = 0;
 
     // Solve stokes problem and compute norm
+    driver->solveStokes(maxIter, tolUzawa);
 
 
     VecDestroy(&driver->globalmesh);

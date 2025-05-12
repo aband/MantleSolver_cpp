@@ -44,14 +44,6 @@ const vertex darcyPressureGrad(const vertex& point, PhysProperty * pp){
      return {-1.0,1.0};
 }
 
-const vertex stokesPressureGrad(const vertex& point, PhysProperty * pp){
-
-    // Test case 1:
-    // Balanced pressure (divergence free)
-    // return {-1.0/pow(pp->phi0,0.5),1.0/pow(pp->phi0,0.5)};
-    return {-1.0, 1.0};
-}
-
 const vertex divdivVel(const vertex& point, PhysProperty * pp){
 
     return {2*point[1], -2*point[0]};
@@ -65,8 +57,19 @@ const vertex stress(const vertex& point, PhysProperty * pp){
 
     // Test case 1:
     // Balanced pressure
-     return { point[1],
-             -point[0]};
+    // return { point[1],
+    //         -point[0]};
+
+    return { 3*point[0]*point[1]*point[1] + point[0]*point[0]*point[0],
+            -3*point[1]*point[0]*point[0] - point[1]*point[1]*point[1]};
+}
+
+const vertex stokesPressureGrad(const vertex& point, PhysProperty * pp){
+
+    // Test case 1:
+    // Balanced pressure (divergence free)
+    // return {-1.0/pow(pp->phi0,0.5),1.0/pow(pp->phi0,0.5)};
+    return {-1.0, 1.0};
 }
 
 // Boundary values

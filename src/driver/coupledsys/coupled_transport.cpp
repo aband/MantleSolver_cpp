@@ -174,6 +174,126 @@ int Driver::computeEffVel(const vector<vertex>& gaussp,
     return 1;
 }
 
+// Effective velocity considering values on both sides of the edge.
+// Interior edges
+// Compute phase averaged velocity as well
+int Driver::computeEffVel_Nonlinear(const vector<vertex>& gaussp,
+                                    const vertexSet& edgep,
+                                    const indice& gcellin, const indice& gcellout,
+                                    const Tensor<weights>& allwgtsHD, double ** lHD,
+                                    const Tensor<weights>& allwgtsCD, double ** lCD,
+                                    vector<vertex>& effvel,
+                                    vector<vertex>& phasevel,
+                                    vector<vertex>& solidvel,
+                                    vector<double>& TDin,
+                                    vector<double>& TDout,
+                                    vector<double>& dTdHin,
+                                    vector<double>& dTdHout,
+			          					   vector<double>& CDin,
+						          		   vector<double>& CDout,
+          								   vector<double>& HDin,
+			          					   vector<double>& HDout,
+											   vector<double>& nonlinuin,
+											   vector<double>& nonlinuout,
+											   vector<double>& nonlinfin,
+											   vector<double>& nonlinfout,
+											   vector<double>& nonlindfduin,
+												vector<double>& nonlindfduout,
+												vector<vertex>& nonlinvel){
+
+
+    // Extract porosity on both sides of the edges
+    vector<double> phiin ; phiin.resize(gaussp.size());
+    vector<double> phiout; phiout.resize(gaussp.size());
+  
+    // Extract concentration of solid and liquid on both sides of the edges
+    vector<double> csout; csout.resize(gaussp.size());
+    vector<double> clout; clout.resize(gaussp.size());
+    vector<double> csin; csin.resize(gaussp.size());
+    vector<double> clin; clin.resize(gaussp.size());
+
+    // Extract velocity on these given gauss points
+    vector<vertex> vel_relative = 
+    ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
+                    refArrayDarcyEssen_,mi,
+                    gaussp, gcellin,*hdiv_,*basis_,{1});
+    
+    vector<vertex> vel_stokes = 
+    ExtractVelocity(&sresult_->vel_stokes, &sresult_->g_stokes,
+                    refArrayStokesEssen_,mi,
+                    gaussp, gcellin,*br_,*basis_,{1});
+
+    // Compute phase on both sides of the edge
+    computephase(gaussp, edgep, gcellin, allwgtsHD, lHD, allwgtsCD, lCD,
+                 csin, clin, phiin, TDin, dTdHin, CDin, HDin);
+
+    computephase(gaussp, edgep, gcellout, allwgtsHD, lHD, allwgtsCD, lCD,
+                 csout, clout, phiout, TDout, dTdHout, CDout, HDout);
+
+    for (int g=0; g<gaussp.size(); g++){
+        // Compute harmonic mean of physicalm values with respect to both sides 
+        // of the edge 
+        double cl_mean = 0.0;
+        if (clin.at(g) == 0.0 && clout.at(g) == 0.0){
+            cl_mean = 0.0;
+        } else {
+            //cl_mean  = harmonic_mean(clin.at(g) ,clout.at(g));
+            cl_mean = (clin.at(g) + clout.at(g))/2.0;
+        }
+
+        double phi_mean = 0.0;
+        if (phiin.at(g) == 0.0 && phiout.at(g) == 0.0){
+            phi_mean = 0.0;
+        } else {
+            phi_mean  = harmonic_mean(phiin.at(g) ,phiout.at(g));
+        }
+
+        double cs_mean  = harmonic_mean(csin.at(g) ,csout.at(g));
+        cs_mean  = (csin.at(g) +csout.at(g))/2.0;
+
+        effvel.at(g) = cl_mean*phi_mean*(vel_relative.at(g) + vel_stokes.at(g)) + 
+                       cs_mean*(1-phi_mean)*vel_stokes.at(g);
+        effvel.at(g) /= cl_mean*phi_mean + cs_mean*(1-phi_mean);
+//cout << effvel.at(g)[0] << "  " << effvel.at(g)[1] << endl;
+        phasevel.at(g) = phi_mean*vel_relative.at(g) + vel_stokes.at(g);
+
+        solidvel.at(g) = (1-phi_mean) * vel_stokes.at(g);
+
+//        printf("vr %e, vs %e , phi %e , cl %e , cs %e , effvel %e , phasevel %e , solidvel %e\n", 
+//              vel_relative.at(g)[1], vel_stokes.at(g)[1], phi_mean, cl_mean, 
+//				  cs_mean, effvel.at(g)[1], phasevel.at(g)[1], solidvel.at(g)[1]);
+
+        // Testing 
+        //effvel.at(g)   = 1e-5;
+
+        //phasevel.at(g) = 1e-5;
+        //solidvel.at(g) = 1e-5;
+
+        // ================= Get nonlinear flux at the same time
+        vertex tmp = clin.at(g)*phi_mean*(vel_relative.at(g) + vel_stokes.at(g))  + 
+                     csin.at(g)*(1-phi_mean)*vel_stokes.at(g);
+        tmp /= clin.at(g)*phi_mean + csin.at(g)*(1-phi_mean);
+
+        nonlinuin.at(g) = CDin.at(g);
+        nonlinfin.at(g) = tmp[1]*CDin.at(g);
+   
+        nonlindfduin.at(g) = tmp[1] + 1e-5;
+  
+        tmp = clout.at(g)*phi_mean*(vel_relative.at(g) + vel_stokes.at(g))  + 
+              csout.at(g)*(1-phi_mean)*vel_stokes.at(g);
+        tmp /= clout.at(g)*phi_mean + csout.at(g)*(1-phi_mean);
+
+        nonlinuout.at(g) = CDout.at(g);
+        nonlinfout.at(g) = tmp[1]*CDout.at(g);
+
+        nonlindfduout.at(g) = tmp[1] + 1e-5;        
+
+        nonlinvel.at(g) = {0,1};
+    }
+
+    return 1;
+}
+
 // One sided effective velocity
 // Used on the boundary
 int Driver::computeEffVel(const vector<vertex>& gaussp,
@@ -263,7 +383,15 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
     vector<double> CDout; CDout.resize(gaussp.size());
     vector<double> HDin; HDin.resize(gaussp.size());
     vector<double> HDout; HDout.resize(gaussp.size());
- 
+
+    vector<double> nonlinuin; nonlinuin.resize(gaussp.size());
+    vector<double> nonlinuout; nonlinuout.resize(gaussp.size());
+    vector<double> nonlinfin; nonlinfin.resize(gaussp.size());
+    vector<double> nonlinfout; nonlinfout.resize(gaussp.size());
+    vector<double> nonlindfduin; nonlindfduin.resize(gaussp.size());
+    vector<double> nonlindfduout; nonlindfduout.resize(gaussp.size());
+    vector<vertex> nonlinvel; nonlinvel.resize(gaussp.size());
+
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
@@ -302,16 +430,24 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
         } else {
             // Use both sides velocity
             cellout = gcell + mi.faceNormal[0];
-            computeEffVel(gaussp, hori, gcell, cellout, allwgtsHD, lHD, allwgtsCD, 
+//            computeEffVel(gaussp, hori, gcell, cellout, allwgtsHD, lHD, allwgtsCD, 
+//                          lCD, effvel, phasevel, solidvel, 
+//                          TDin, TDout, dTdHin, dTdHout, CDin, CDout, HDin, HDout);
+
+            computeEffVel_Nonlinear(gaussp, hori, gcell, cellout, allwgtsHD, lHD, allwgtsCD, 
                           lCD, effvel, phasevel, solidvel, 
-                          TDin, TDout, dTdHin, dTdHout, CDin, CDout, HDin, HDout);
+                          TDin, TDout, dTdHin, dTdHout, CDin, CDout, HDin, HDout,
+								  nonlinuin, nonlinuout, nonlinfin, nonlinfout, nonlindfduin, nonlindfduout, nonlinvel);
 
 //for (int g=0; g<gaussp.size(); g++){
 //cout << effvel.at(g)[1] << "   ";
 //}cout << endl;
-            fluxCD = edgefluxintegral(mi, gcell, cellout, hori, allwgtsCD, 
-                                      effvel, ml, advection, lCD);
+            // Linear transport method
+            //fluxCD = edgefluxintegral(mi, gcell, cellout, hori, allwgtsCD, 
+            //                          effvel, ml, advection, lCD);
 //printf("%.16f, \n", fluxCD);
+            // Nonlinear transport method
+            fluxCD = edgefluxintegral(hori, nonlinuin, nonlinuout, nonlinfin, nonlinfout, nonlindfduin, nonlindfduout, nonlinvel);
             // =========================================================
             fluxHD = edgefluxintegral(hori, HDin, HDout, TDin, TDout, 
                                       dTdHin, dTdHout, phasevel);
@@ -497,12 +633,8 @@ int Driver::updateEdgeFlux(const Tensor<vertexSet>& phasevel_vert,
 //for (int g=0; g<gaussp.size(); g++){
 //cout << effvel_hori({i,j}).at(g)[1] << "   ";
 //}cout << endl;
-            // Linear transport method
             fluxCD = edgefluxintegral(mi, gcell, cellout, hori, allwgtsCD, 
                                       effvel_hori({i,j}), ml, advection, lCD);
-
-            // Nonlinear transport method
-            fluxCD = edgefluxintegral(hori, );
 
 //printf("%.16f, \n", fluxCD);
             // =========================================================

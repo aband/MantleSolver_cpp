@@ -207,6 +207,7 @@ add_executable(restart
 
 add_executable(stokes
 		  stokes.cpp
+		  solvestokes.cpp
 		  stokesflow_setting.cpp
 		  trans_setting.cpp
 )

@@ -228,6 +228,8 @@ class Driver {
 
        int printVelEdgeGauss_case(int mark, PhysProperty * pp);
 
+       int solveStokes(int maxIter, double tolUzawa);
+
     private:
 
         /**!
@@ -356,6 +358,30 @@ class Driver {
 								 vector<double>& CDout,
 								 vector<double>& HDin,
 								 vector<double>& HDout);
+
+       int computeEffVel_Nonlinear(const vector<vertex>& gaussp,
+                                   const vertexSet& edgep,
+                                   const indice& gcellin, const indice& gcellout,
+                                   const Tensor<weights>& allwgtsHD, double ** lHD,
+                                   const Tensor<weights>& allwgtsCD, double ** lCD,
+                                   vector<vertex>& effvel,
+                                   vector<vertex>& phasevel,
+                                   vector<vertex>& solidvel,
+                                   vector<double>& TDin,
+                                   vector<double>& TDout,
+                                   vector<double>& dTdHin,
+                                   vector<double>& dTdHout,
+                   					  vector<double>& CDin,
+						          		  vector<double>& CDout,
+          								  vector<double>& HDin,
+			          					  vector<double>& HDout,
+											  vector<double>& nonlinuin,
+											  vector<double>& nonlinuout,
+											  vector<double>& nonlinfin,
+											  vector<double>& nonlinfout,
+											  vector<double>& nonlindfduin,
+											  vector<double>& nonlindfduout,
+											  vector<vertex>& nonlinvel);
 
        // Function used on the boundary
        int computeEffVel(const vector<vertex>& gaussp,

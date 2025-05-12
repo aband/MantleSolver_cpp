@@ -285,8 +285,8 @@ We compare our numerical solution with the closed form as
 		  \mathbf{u} = 
 \end{equation}
 \fi
-We test our modified Bernardi-Raugel elements with the simple Dirichlet 
-incompressible isotropic elasticity problem:
+We test our modified Bernardi-Raugel elements on the 
+incompressible isotropic elasticity problem with Dirichlet boundary condition:
 
 Find the displacement $\mathbf{u}$ and pressure $p$ such that
 \begin{equation}\label{eq:testbr}
@@ -300,17 +300,20 @@ where $f \in L^2(\Omega)$, and
 $\pmb{\tau}(\mathbf{u}) = 2(\mathcal{D} \mathbf{u} - 1/3 \nabla \cdot \mathbf{u}
 \mathbf{I})$. The symmetrical gradient 
 $\mathcal{D} \mathbf{u} = 1/2(\nabla \mathbf{u} + \nabla \mathbf{u}^T)$.
-The problem can be written in the mixed form as:
 
 Define a simple choice of energy space
 \begin{equation}
 		  \begin{aligned}
-					 \mathbb{V} &= \{\mathbf{u} \in (H^1{\Omega})^2 : \mathbf{u} = \mathbf{0} \}, \\
+					 \mathbb{V} &= \{\mathbf{v} \in (H^1{\Omega})^2 : \mathbf{v} = \mathbf{0} \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\}, \\
 					 \mathbb{U} &= \{\mathbf{u} \in (H^1{\Omega})^2 : \mathbf{u} = \mathbf{g} 
 					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \tilde{\mathbf{g}} +\mathbb{V},
 		  \end{aligned}
 \end{equation}
 where $\tilde{\mathbf{g}}$ is a finite energy lift.
+We assume that $\mathbf{g} \in (H^{1/2}(\Omega))^d$ and understand
+as a continuous extension $\tilde{\mathbf{g}} \in (H^1(\Omega))^d$ from the boundary into the domain.
+We write the problem in weak form as:
+
 Find $\mathbf{u} \in \mathbb{U}$  
 and $p \in L^2(\Omega)$ such that
 \begin{equation}\label{eq:testbrweak}
@@ -327,6 +330,9 @@ The source term can be calculated as
 		  \mathbf{f} = -2\begin{bmatrix}
 3xy^2 + x^3 \\
 -3x^2y-y^3
+		  \end{bmatrix} + \begin{bmatrix}
+-1\\
+1
 		  \end{bmatrix}.
 \end{equation}
 Solution are computed on rectangular and quadrilateral meshes.
@@ -334,7 +340,10 @@ The convergence rate versus the number of elements will be
 presented.
 
 \section{Coupled Degenerate System}
-Consider a degenerate scaled darcy-stokes coupled boundary-value problem,
+Consider a degenerate scaled darcy-stokes coupled boundary-value problem:
+
+Find velocity-pressure potential pair $(\check{\mathbf{v}}_r, \check{q}_l)$ and 
+$(\check{\mathbf{v}}_s, \check{q})$ such that 
 \begin{alignat}{2}
 \label{eq:dimensionlessdarcy_flow_sc_bv}
 		  &\check{\mathbf{v}}_r
@@ -352,8 +361,8 @@ Consider a degenerate scaled darcy-stokes coupled boundary-value problem,
 and
 \begin{equation}\label{eq:bv}
 		  \begin{aligned}
-					 \check{\mathbf{v}}_r &= \check{\mathbf{v}}_{r,0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
-					 \check{\mathbf{v}}_s &= \check{\mathbf{v}}_{s,0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \Gamma_{u,S}, \\
+					 \check{\mathbf{v}}_r &= \mathbf{g}_{r} \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
+					 \check{\mathbf{v}}_s &= \mathbf{g}_{s} \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{u,S}, \\
 					 p &= p_0 \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{i,D}, \\
 					 \pmb{\tau}\cdot \pmb{\nu} - p &= \pmb{t}_0 \hspace{0.56cm} \text{on} \hspace{0.2cm} \Gamma_{i,S},
 		  \end{aligned}
@@ -361,7 +370,7 @@ and
 where $\Gamma_{u,D}$ and $\Gamma_{u,S}$ denote the part of boundary we assign essential boundary conditions for 
 Darcy and Stokes problem respectively, 
 and $\Gamma_{i,D}$ and $\Gamma_{i,S}$ represent the part of boundary we assign natural boundary conditions 
-respectively.
+respectively. We have $\Gamma_{u,D} \cup \Gamma_{i,D} = \partial \Omega$ and $\Gamma_{u,S} \cup \Gamma_{i,S} = \partial \Omega$.
 
 We follow the procedure by~\cite{DegenerateDarcy} to discretize this boundary value problem.
 To begin weith, a new Hilbert space is defined for this 
@@ -384,7 +393,7 @@ The normal trace on $\partial \Omega$ is well-defined as well as
 \end{equation}
 
 \subsection{The weak formulation}
-Now we define the function spaces
+We define the following function spaces
 \begin{equation}\label{eq:spaces}
 		  \begin{aligned}
 					 \mathbb{V}^\phi_D &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = 0 \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\},\\
@@ -402,16 +411,16 @@ the extension $\mathbf{g}_{s} \in (H^1(\Gamma_{u,S}))^2$ and $\norm{\mathbf{g}_{
 Similarly, we can define a bounded extension of $\check{\mathbf{v}}_r \in \mathbb{V}_D^\phi$ such that                                                                                                                                                 
 
 Scaled nondimensionalized weak form.
-Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_r + \check{\mathbf{g}}_{r}$,
-$\check{q}_l \in \mathbb{W}_d$, $\check{\mathbf{v}}_s \in \mathbb{V}_s + \mathbf{g}_s$, and $q\in \mathbb{W}_s$ such that
+Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_D + \tilde{\mathbf{g}}_{r}$,
+$\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{V}_S + \tilde{\mathbf{g}}_S$, and $\check{q}\in \mathbb{W}_S$ such that
 \begin{alignat}{2}
-		  &(\check{\pmb{\tau}}(\bold{v}_{s}),\nabla \pmb{\psi}_s) - (\check{q}, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_s,\\
-					 &(\nabla \cdot \check{\bold{v}}_{s}, \omega)  + \Big(\frac{\phi^{1/2}}{1-\phi} (\check{q}_l - \phi^{1/2}\check{q}), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_s,\\
-					 &(\bold{\check{v}}_{r},\pmb{\psi}_r)  - (\check{q}_{l},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r)) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_r^\phi,\\
+		  &(\check{\pmb{\tau}}(\bold{v}_{s}),\nabla \pmb{\psi}_s) - (\check{q}, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_S,\\
+					 &(\nabla \cdot \check{\bold{v}}_{s}, \omega)  + \Big(\frac{\phi^{1/2}}{1-\phi} (\check{q}_l - \phi^{1/2}\check{q}), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_S,\\
+					 &(\bold{\check{v}}_{r},\pmb{\psi}_r)  - (\check{q}_{l},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r)) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_D^\phi,\\
 					 \nonumber
 					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{1-\phi}(\check{q}_{l} - \phi^{1/2}\check{q}),\omega_f \Big) &&= 0 \\
 		  &					 &&\forall \omega_f \in 
-		  \mathbb{W}_d.
+		  \mathbb{W}_D.
 \end{alignat}
 The Existence and uniquense of the solution has been proved by~\cite{DegenerateDarcy}. We will not repeat the proof here.
 
