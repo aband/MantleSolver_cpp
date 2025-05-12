@@ -234,7 +234,16 @@ where the coefficient $\alpha_i = \Big( \int_{e_i} (\mathbf{u} - \mathcal{I}_{\m
 \pmb{\nu}_i d\sigma$. It is obvious that $\pi \mathbf{u} \in \mathbb{V}_1^{\mathcal{BR}}$.
 We now prove the approximability and stability of our projection operator and eventually derive the $\inf-\sup$ condition.
 
+\begin{lem}\label{lem:inf-sup-br}
+		  Assuming that $u\in (H1(\Omega))^2$.
+
+		  (i) there exists a bounded linear operator $\pi$
+
+		  (ii) $\forall \mathbf{v} \in (H^1(\Omega))^2$
+\end{lem}
+
 \subsection{Test Stokes Problem}
+\iffalse
 We test our modified BR element on a test Stokes problem. 
 We begin with the strong form of the static Stokes problem as 
 \begin{equation}\label{eq:strongStokes}
@@ -275,7 +284,54 @@ We compare our numerical solution with the closed form as
 \begin{equation}\label{eq:closedteststokes}
 		  \mathbf{u} = 
 \end{equation}
+\fi
+We test our modified Bernardi-Raugel elements with the simple Dirichlet 
+incompressible isotropic elasticity problem:
 
+Find the displacement $\mathbf{u}$ and pressure $p$ such that
+\begin{equation}\label{eq:testbr}
+		  \begin{aligned}
+					 -\nabla \cdot \pmb{\tau}(\mathbf{u}) + \nabla q &= \mathbf{f} \hspace{0.3cm} \text{in} \hspace{0.2cm} \Omega, \\
+					 \nabla \cdot \mathbf{u}  &= 0 \hspace{0.3cm} \text{in} \hspace{0.2cm} \Omega,\\
+					 \mathbf{u} &= \mathbf{g} \hspace{0.25cm} \text{on} \hspace{0.2cm} \partial \Omega,
+		  \end{aligned}
+\end{equation}
+where $f \in L^2(\Omega)$, and 
+$\pmb{\tau}(\mathbf{u}) = 2(\mathcal{D} \mathbf{u} - 1/3 \nabla \cdot \mathbf{u}
+\mathbf{I})$. The symmetrical gradient 
+$\mathcal{D} \mathbf{u} = 1/2(\nabla \mathbf{u} + \nabla \mathbf{u}^T)$.
+The problem can be written in the mixed form as:
+
+Define a simple choice of energy space
+\begin{equation}
+		  \begin{aligned}
+					 \mathbb{V} &= \{\mathbf{u} \in (H^1{\Omega})^2 : \mathbf{u} = \mathbf{0} \}, \\
+					 \mathbb{U} &= \{\mathbf{u} \in (H^1{\Omega})^2 : \mathbf{u} = \mathbf{g} 
+					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \tilde{\mathbf{g}} +\mathbb{V},
+		  \end{aligned}
+\end{equation}
+where $\tilde{\mathbf{g}}$ is a finite energy lift.
+Find $\mathbf{u} \in \mathbb{U}$  
+and $p \in L^2(\Omega)$ such that
+\begin{equation}\label{eq:testbrweak}
+		  \begin{aligned}
+					 (\pmb{\tau}, \nabla\mathbf{v}) - (p, \nabla \cdot \mathbf{v}) &= (\mathbf{f},\mathbf{v}), \hspace{0.2cm} \forall \mathbf{v} \in \mathbb{V},\\
+					 (\nabla \cdot \mathbf{u}, \omega) &= 0 \hspace{1cm} \forall \omega \in L^2(\Omega).
+		  \end{aligned}
+\end{equation}
+We consider the test problem~\eqref{eq:testbrweak} defined on a square region
+$\Omega = [-1,1]^2$. We manufacture a displacement 
+solution $\mathbf{u} = [x^3y^2, -x^2y^3]$ and pressure $p = y-x$.
+The source term can be calculated as
+\begin{equation}
+		  \mathbf{f} = -2\begin{bmatrix}
+3xy^2 + x^3 \\
+-3x^2y-y^3
+		  \end{bmatrix}.
+\end{equation}
+Solution are computed on rectangular and quadrilateral meshes.
+The convergence rate versus the number of elements will be
+presented.
 
 \section{Coupled Degenerate System}
 Consider a degenerate scaled darcy-stokes coupled boundary-value problem,

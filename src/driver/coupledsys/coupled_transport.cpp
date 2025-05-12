@@ -401,6 +401,14 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
     return 1;
 }
 
+double nonlinearflux(){
+
+    double work = 0.0;
+
+
+    return work;
+}
+
 int Driver::updateEdgeFlux(const Tensor<vertexSet>& phasevel_vert, 
                            const Tensor<vertexSet>& phasevel_hori, 
                            const Tensor<vertexSet>& effvel_vert, 
@@ -489,8 +497,13 @@ int Driver::updateEdgeFlux(const Tensor<vertexSet>& phasevel_vert,
 //for (int g=0; g<gaussp.size(); g++){
 //cout << effvel_hori({i,j}).at(g)[1] << "   ";
 //}cout << endl;
+            // Linear transport method
             fluxCD = edgefluxintegral(mi, gcell, cellout, hori, allwgtsCD, 
                                       effvel_hori({i,j}), ml, advection, lCD);
+
+            // Nonlinear transport method
+            fluxCD = edgefluxintegral(hori, );
+
 //printf("%.16f, \n", fluxCD);
             // =========================================================
             fluxHD = edgefluxintegral(hori, HDin, HDout, TDin, TDout, 
@@ -505,6 +518,7 @@ int Driver::updateEdgeFlux(const Tensor<vertexSet>& phasevel_vert,
         horiedgeHD({i,j}) = fluxHD - fluxL;
 
         // Cheating a little bit here
+        // Not computing any flux through vertical edge
 
         vertedgeCD({i,j}) = 0.0;//fluxCD;
         vertedgeHD({i,j}) = 0.0;//fluxHD - fluxL;

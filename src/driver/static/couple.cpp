@@ -113,6 +113,7 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
     return 1;
 }
 
+/*
 int Driver::projectVel(int mark, PhysProperty * pp){
 
     FILE * dvx = fopen(GetFilename("darcyprox", mark),"w");
@@ -129,6 +130,7 @@ int Driver::projectVel(int mark, PhysProperty * pp){
 
     return 1;
 }
+*/
 
 // Two sided
 int Driver::computeEffVel_case(const vector<vertex>& gaussp,

@@ -1,0 +1,84 @@
+\section{Geometry}
+The mesh in the code is defined inspired by the classical 
+viewpoint of Boundary Representation (BREP)~\cite{10.1145/1499949.1500071}.
+In two-dimension case,
+the element is bounded by a set of edges,
+and the edges are bounded by a set of vertex.
+The first and most important aspect of creating a fem or fvm code
+is numbering the geometric objects.
+Assuming the the following representation of global geometric object.
+\begin{equation}\label{eq:globalgeometricOBJ}
+		  \begin{aligned}
+					 V_i, &\quad i\in ID_v,\\
+					 E_i, &\quad i\in ID_e,\\
+					 C_i, &\quad i\in ID_c,
+		  \end{aligned}
+\end{equation}
+where $ID_v$, $ID_e$ and $ID_c$ are countable 
+set containing all the non repeating global index for vertices, edges and faces 
+respectively.
+At the same time, assuming the following representation 
+of local geometric object.
+\begin{equation}\label{eq:localgeometricOBJ}
+		  \begin{aligned}
+					 v_i, &\quad i\in id_v,\\
+					 e_i, &\quad i\in id_e,\\
+					 c_i, &\quad i\in id_c,
+		  \end{aligned}
+\end{equation}
+where $id_v$, $id_e$ and $id_c$ are countable set 
+containing all the non repearing global index for vertices, edges and faces
+corresponding to a given target element.
+In implementation, we usually don't have to actually have a separate
+local index set for each element. Consider an array(vector) containing
+global index, the array index is a natural representation for 
+local index set.
+
+\subsection{General Unstructured Mesh}
+We start with a brief analysis of a general unstructed mesh consists of 
+polygons.
+A general unstructured mesh expressed in BREP consists 
+of a set of quadrilaterals as base elements.
+Each element $i$ should have the following link to other geometric
+objects as
+\begin{itemize}
+		  \item Adjacent polygons connected by edges, $ID^{c,e}_{c,i} \subset ID_c$;
+		  \item Additional adjacent polygons connected with vertices, 
+					 but not sharing an edge, $ID^{c,v}_{c,i} \subset ID_c$;
+		  \item Indicident vertices, $ID^{c}_{v,i} \subset ID_v$;
+		  \item Edges that bounds this element $ID^{c}_{e,i} \subset ID_e$.
+\end{itemize}
+Within the local set, we can relate edges and vertices directly.
+For convinence, 
+each edge $j$ should has links to:
+\begin{itemize}
+		  \item Two polygons that sharing this edge $ID^e_{e,j} \subset ID_c$;
+		  \item Two vertices that bounds this edge $ID^v_{e,j} \subset ID_v$.
+\end{itemize}
+
+For each element, we define the direction pointing 
+outwards the element as the positive direction.
+We install counterclockwise direction in our local edge and vertex set 
+$ID^{c,e}_{c,i}$, $ID^{c,v}_{c,i}$.
+The normal direction is meaningless without the context of element.
+With the counterclockwise direction installed in the local set of
+we can compute the normal direction use cross referenced vertex 
+directly.
+
+\subsection{Logically Rectangular Simplification}
+Since, mesh generation is not the focus of this project.
+We adopt a much simpler way of implementing quadrilateral mesh,
+the logically rectangular way.
+We generate the quadrialteral mesh by randomly distorting each 
+interior vertex coordinates.
+There is no affine mapping between reference grids and generated
+mesh.
+
+In our case, all the indices are connected with cartesian coordinates.
+We can define the links with linear functions.
+We can setup global to local mapping of geometric objects 
+for vertex and edges as
+\begin{equation}\label{eq:gtolocal}
+id
+\end{equation}
+

@@ -1,0 +1,21 @@
+\chapter[Code Implementation]{Code Implementation}
+\label{code}
+
+In this project, all numerical experiments and simulations are 
+written in C++/C with the support of basic iterative solver and 
+simple parallel data management provided by PETSc.
+We perform numerical experiments in quasi-uniform mesh as
+defined in ...
+We talk about implementation of a coupled FEM-FVM code 
+without losing generality and flexibility of optimization in the future.
+
+It structures as follows that a general implementation of
+unstructured mesh will be given, and a more specific example of application 
+regarding our logically rectangular mesh will be discussed in details.
+All application are expressed in two dimension scenario.
+
+\input chapters/geometry.tex
+
+\input chapters/dof.tex
+
+\input chapters/parallelism.tex

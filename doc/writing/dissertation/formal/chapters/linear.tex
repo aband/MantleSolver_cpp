@@ -28,6 +28,23 @@ The null space of $\bold{B}$ matrix $\text{ker}(\bold{B})$ in our darcy problem
 is not fixed due to evloution of melting (change of porosity $\phi$).
 Considering the need of parallel, a proper iterative method is discussed.
 
+\subsection{SPS Induced by MFEM}
+Now we discuss the saddle point system (SPS) induced by MFEM method in details
+including the boundary conditions.
+To begin with, we regroup dofs according to the boundary condition.
+\begin{equation}\label{eq:full_system}
+		  \mathbf{A} = 
+		  \begin{bmatrix}
+					 \mathbf{A}_K  & \mathbf{A}_M \\
+					 \mathbf{A}_M^T & \mathbf{M}  \\
+		  \end{bmatrix},
+\end{equation}
+where $\mathbf{A}_K$ consists of interaction within interior dofs and 
+natural boundary condition dofs, and $\mathbf{A}_M$ consists of 
+iteraction between interior dofs, natural boundary dofs and 
+essential boundary dofs.
+
+
 \subsection{Degenerate Coupled Saddle Point Problem and Uzawa Iteration}
 		  The linear system formed from the equations~\eqref{eq:weak_stokes_mass}, 
 		  ~\eqref{eq:weak_compaction_mass}, ~\eqref{eq:weak_darcy_mass} 

@@ -190,7 +190,10 @@ int main(int argc, char **argv){
     bndryVal bndryDarcyDiri;
     bndryVal bndryDarcyNeum;
 
-    MarkBndryDOFStokes(bndryStokesDiri, bndryStokesNeum, mi, *testBasis, *br, physproperty);
+    vector<double> parameter;
+	 parameter.push_back(0.0);
+
+    MarkBndryDOFStokes(bndryStokesDiri, bndryStokesNeum, mi, *testBasis, *br, physproperty,parameter);
     MarkBndryDOFDarcy(bndryDarcyDiri, bndryDarcyNeum, mi, *testBasis, *hdiv, physproperty); 
 
     // Create reduced system

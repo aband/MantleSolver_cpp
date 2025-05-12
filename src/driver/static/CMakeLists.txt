@@ -205,11 +205,11 @@ add_executable(restart
 		  trans_setting.cpp
 )
 
-#add_executable(readtest
-#        readtest.cpp
-#		  flow_setting.cpp
-#		  trans_setting_test.cpp
-#)
+add_executable(stokes
+		  stokes.cpp
+		  stokesflow_setting.cpp
+		  trans_setting.cpp
+)
 
 target_include_directories(test
 		  PUBLIC ${SRC}/coupledSys
@@ -219,9 +219,9 @@ target_include_directories(restart
 		  PUBLIC ${SRC}/coupledSys
 		  )
 
-#target_include_directories(readtest
-#		  PUBLIC ${SRC}/coupledSys
-#		  )
+target_include_directories(stokes
+		  PUBLIC ${SRC}/coupledSys
+		  )
 #
 target_link_libraries(test
 		  io_lib
@@ -245,6 +245,17 @@ target_link_libraries(restart
 		  PkgConfig::LAPACKE
 		  phase_lib
 #        PkgConfig::CGNS
+)
+
+target_link_libraries(stokes
+		  io_lib
+		  phase_lib
+		  mfem_lib
+		  mlweno_lib
+		  driver_lib
+		  transport_lib
+		  PkgConfig::LAPACKE
+		  phase_lib
 )
 
 #target_link_libraries(readtest
