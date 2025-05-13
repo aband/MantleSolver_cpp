@@ -53,15 +53,13 @@ const vertex divdivVel(const vertex& point, PhysProperty * pp){
 const vertex stress(const vertex& point, PhysProperty * pp){
 
     // Calculate deviatoric stress
-    double coef = 4*pow(pp->phi0,0.5)/(3*(1-pp->phi0));
-
     // Test case 1:
     // Balanced pressure
-    // return { point[1],
-    //         -point[0]};
+     return { point[1],
+             -point[0]};
 
-    return { 3*point[0]*point[1]*point[1] + point[0]*point[0]*point[0],
-            -3*point[1]*point[0]*point[0] - point[1]*point[1]*point[1]};
+    //return { 3*point[0]*point[1]*point[1] + point[0]*point[0]*point[0],
+    //        -3*point[1]*point[0]*point[0] - point[1]*point[1]*point[1]};
 }
 
 const vertex stokesPressureGrad(const vertex& point, PhysProperty * pp){
@@ -81,8 +79,11 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
 	 // Test case 1:
 	 // ====== Test Balanced pressure ======
-	 work[0] = point[0]*point[0]*point[0]*point[1]*point[1];
-	 work[1] = -point[1]*point[1]*point[1]*point[0]*point[0];
+	 //work[0] = point[0]*point[0]*point[0]*point[1]*point[1];
+	 //work[1] = -point[1]*point[1]*point[1]*point[0]*point[0];
+
+    work[0] =  point[0]*point[0]*point[1];
+    work[1] = -point[1]*point[1]*point[0];
 
     return work;
 }
@@ -116,7 +117,6 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
     // return -1*divdivVel(point)+stokesPressureGrad(point);
     // return -1*2*(1-pp->phi0)*stress(point,pp) + stokesPressureGrad(point,pp);
     return -2*stress(point,pp) + stokesPressureGrad(point,pp);
-
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){

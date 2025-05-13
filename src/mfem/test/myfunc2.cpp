@@ -361,3 +361,20 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 
     return dirichlet;
 }
+
+
+
+const bndryType bndryTypeMarker(const MeshInfo& mi,
+                                const indice& global,
+                                const int& local,
+                                const std::vector<double>& parameter){
+
+    return dirichlet;
+}
+
+const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
+                                     const indice& global,
+                                     const int& edge){
+
+    return dirichlet;
+}

@@ -29,7 +29,6 @@ void AssignPhyProperties(PhysProperty * pp){
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
     return pp->phi0;
-
 }
 
 double AssignPorosity(double phi_f){
@@ -270,6 +269,22 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
     } else {
         type = dirichlet;
     }
+
+    return dirichlet;
+}
+
+
+const bndryType bndryTypeMarker(const MeshInfo& mi,
+                                const indice& global,
+                                const int& local,
+                                const std::vector<double>& parameter){
+
+    return dirichlet;
+}
+
+const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
+                                     const indice& global,
+                                     const int& edge){
 
     return dirichlet;
 }

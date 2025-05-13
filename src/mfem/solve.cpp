@@ -34,7 +34,7 @@ PetscErrorCode CreateLinearSys(linearSys * ls, ReducedSys * reducedsys){
     // Move boundary condition vectors to the right hand side of the 
     // rhs = g-dirichlet+neumann
 
-    VecView(g1, PETSC_VIEWER_STDOUT_WORLD);
+    //VecView(g1, PETSC_VIEWER_STDOUT_WORLD);
 
     PetscCall(VecAYPX(g1,-1,reducedsys->source));
 
@@ -697,6 +697,10 @@ PetscErrorCode ExactUzawa(linearSys * ls, double tol, int MaxIter){
     MatScale(ls->B, -1);
     MatScale(ls->C, -1);
     VecScale(ls->g, -1);
+
+//MatView(ls->B, PETSC_VIEWER_STDOUT_WORLD);
+//MatView(ls->C, PETSC_VIEWER_STDOUT_WORLD);
+//MatView(ls->B, PETSC_VIEWER_STDOUT_WORLD);
 
     KSP kspCG;
     PC  pcCG; 

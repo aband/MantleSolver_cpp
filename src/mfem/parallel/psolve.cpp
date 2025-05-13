@@ -245,7 +245,7 @@ int Uzawa(ReducedSys * redsys, double tol, int MaxIter){
     MatScale(redsys->B, -1);
     MatScale(redsys->C, -1);
     VecScale(redsys->G, -1);
-
+//MatView(redsys->C, PETSC_VIEWER_STDOUT_WORLD);
     MatZeroEntries(redsys->C);
 
     // ===========================================================

@@ -88,8 +88,28 @@ int main(int argc, char **argv){
 
     driver->start = 0;
 
+        Vec localphi;
+        PetscCall(DMGetLocalVector(driver->dmu, &localphi));
+
+        Vec fluxphi;
+        PetscCall(VecDuplicate(driver->globalCD, &fluxphi));
+ 
+        double ** lphi;
+        double ** lfphi;
+
+        PetscCall(DMGlobalToLocalBegin(driver->dmu, driver->globalCD, INSERT_VALUES, localphi));
+        PetscCall(DMGlobalToLocalEnd(driver->dmu, driver->globalCD, INSERT_VALUES, localphi));
+
+        PetscCall(DMDAVecGetArray(driver->dmu, localphi, &lphi););
+        PetscCall(DMDAVecGetArray(driver->dmu, fluxphi, &lfphi));
+
+        driver->ml.updatesigma(lphi);
+        Tensor<weights> allwgts;
+        driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgts, location);
+
     // Solve stokes problem and compute norm
-    driver->solveStokes(maxIter, tolUzawa);
+    driver->solveStokes(maxIter, tolUzawa, allwgts, lphi);
+    //CreateScatterVec();
 
 
     VecDestroy(&driver->globalmesh);

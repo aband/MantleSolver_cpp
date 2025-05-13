@@ -1,6 +1,7 @@
 #include "driver.h"
 
-int Driver::solveStokes(int maxIter, double tolUzawa){
+int Driver::solveStokes(int maxIter, double tolUzawa, 
+	         		  	   const Tensor<weights>& allwgts, double ** lphi){
 
     ParallelMatrixAssemble_case(allwgts, lphi);
 
@@ -9,7 +10,7 @@ int Driver::solveStokes(int maxIter, double tolUzawa){
     CreateLinearSys(reducedStokes_, nelem);
     CreateLinearSys(reducedDarcy_, nelem);
 
-    Uzawa(reducedStokes_,nelem); 
+    Uzawa(reducedStokes_, tolUzawa, maxIter); 
 
     return 1;
 }

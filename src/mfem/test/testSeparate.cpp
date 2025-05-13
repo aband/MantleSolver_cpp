@@ -174,15 +174,15 @@ int main(int argc, char **argv){
 
     SerialMatrixAssembleBlock(mi, *testBasis, *hdiv, *br, physproperty, system);
 
-    MatView(system->As, PETSC_VIEWER_STDOUT_WORLD);
-    MatView(system->Ad, PETSC_VIEWER_STDOUT_WORLD);
+    //MatView(system->As, PETSC_VIEWER_STDOUT_WORLD);
+    //MatView(system->Ad, PETSC_VIEWER_STDOUT_WORLD);
 
     int m, n;
     MatGetLocalSize(system->As, &m, &n);
-    cout << m << "  " << n << endl << endl;
+    //cout << m << "  " << n << endl << endl;
 
     MatGetLocalSize(system->Ad, &m, &n);
-    cout << m << "  " << n << endl << endl;
+    //cout << m << "  " << n << endl << endl;
 
 
     // Mark boundary condition
@@ -223,7 +223,7 @@ int main(int argc, char **argv){
 
     PetscCall(MatZeroEntries(lsDarcy->C));
     PetscCall(MatZeroEntries(lsStokes->C));
-
+/*
     const char *checkAd = "MatrixCheckAd.dat";
     // Write A matrix
     WriteMat(lsDarcy->A,checkAd);
@@ -254,12 +254,12 @@ int main(int argc, char **argv){
 
     const char *checkgs2 = "MatrixCheckgs2.dat";
     WriteVec(lsStokes->g, checkgs2);   
-
+*/
     // =======================================================================
-    int maxIterStokes = 1;
+    int maxIterStokes = 10;
     PetscOptionsGetInt(NULL, NULL, "-maxIterStokes", &maxIterStokes, NULL);
 
-    int maxIterDarcy = 1;
+    int maxIterDarcy = 20;
     PetscOptionsGetInt(NULL, NULL, "-maxIterDarcy", &maxIterDarcy, NULL);
 
     double tauUzawaStokes = 20;
@@ -320,9 +320,11 @@ int main(int argc, char **argv){
 
         // Stokes
         std::array<double, 12> sewStokes = ExtractWeights(fullSolStokes, br->LocalToGlobal(mi,{i,j})); 
-        errorSumuStokes += L2ErrorElem(sewStokes, {i,j}, bndryVs, physproperty, gwf, gpf, *testBasis, *br);
-
+        double tmp = L2ErrorElem(sewStokes, {i,j}, bndryVs, physproperty, gwf, gpf, *testBasis, *br);
+//cout << tmp << "  " ;
+        errorSumuStokes += tmp;
 }}
+//}cout << endl;}
 
     cout << "Stokes Only: ||u-u_h||_L2 : " <<  pow(errorSumuStokes,0.5) << endl;
 

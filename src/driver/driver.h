@@ -228,7 +228,7 @@ class Driver {
 
        int printVelEdgeGauss_case(int mark, PhysProperty * pp);
 
-       int solveStokes(int maxIter, double tolUzawa);
+       int solveStokes(int maxIter, double tolUzawa, const Tensor<weights>& allwgts, double ** lphi);
 
     private:
 

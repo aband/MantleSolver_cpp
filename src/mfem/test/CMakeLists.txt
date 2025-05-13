@@ -121,11 +121,11 @@ target_include_directories(phase_lib
 #        testCoupled.cpp 
 #		  myfunc.cpp
 		  #myfunc_mixedBndry.cpp
-#)
+		  #)
 
 add_executable(testSeparate
         testSeparate.cpp
-        myfunc4.cpp
+        myfunc2.cpp
 )
 #
 add_executable(testBasis
@@ -153,8 +153,8 @@ add_executable(plotbasis
 #    mfem_lib
 #    io_lib
 #    PkgConfig::LAPACKE 
-#	 PkgConfig::CGNS
-#)
+	 #	 PkgConfig::CGNS
+	 #)
 
 target_link_libraries(testSeparate
     mfem_lib
