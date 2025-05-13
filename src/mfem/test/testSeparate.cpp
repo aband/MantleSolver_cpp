@@ -64,8 +64,8 @@ int main(int argc, char **argv){
 //    double physscale = 1.0;
 //    double L = 2*physscale, H = 1*physscale;
 //    double xstart = -1*physscale, ystart = -1.00*physscale;
-    double L = 2, H = 2;
-    double xstart = -1, ystart = -1;
+    double L = M_PI, H = 2*M_PI;
+    double xstart = 0.0, ystart = 0.0;
 
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
@@ -268,10 +268,10 @@ int main(int argc, char **argv){
     double tauUzawaDarcy = 1;
     PetscOptionsGetReal(NULL, NULL, "-tauDarcy", &tauUzawaDarcy, NULL);
 
-    double tolUzawaStokes = 10e-7;
+    double tolUzawaStokes = 10e-15;
     PetscOptionsGetReal(NULL, NULL, "-tolStokes", &tolUzawaStokes, NULL);
 
-    double tolUzawaDarcy = 10e-7;
+    double tolUzawaDarcy = 10e-15;
     PetscOptionsGetReal(NULL, NULL, "-tolDarcy", &tolUzawaDarcy, NULL);
 
     int precondType = 0;

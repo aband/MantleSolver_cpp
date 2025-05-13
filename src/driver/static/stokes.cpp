@@ -35,7 +35,7 @@ int main(int argc, char **argv){
 
     int maxIter = 20; 
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL));        
-    double tolUzawa = 10e-17; 
+    double tolUzawa = 10e-14; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
 
     // For static test porblems, timestep and max time are dummy variables

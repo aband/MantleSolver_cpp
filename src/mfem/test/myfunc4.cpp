@@ -12,9 +12,10 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->gx    = 0.0;
     pp->gy    = -10.0;
     pp->invk0 = 1.0/(1e-8);
-    pp->phi0  = 0.4;
     pp->U0    = 1e-9;
     pp->L0    = 160*1000;
+
+    pp->phi0  = 1.0;
 
     // Non dimensionalization parameters
 
@@ -40,18 +41,19 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
     //    return 0.0;
     //}
 
-    if (point[0] > 0){
-        return 0.4*pow(point[0],4);
-    } else {
-        return 0.0; 
-    }
-
+//    if (point[0] > 0){
+//        return 0.4*pow(point[0],4);
+//    } else {
+//        return 0.0; 
+//    }
+return 1.0;
 }
 
 
 double AssignPorosity(double phi_f){
 
-    return 1.0 - phi_f;
+    //return 1.0 - phi_f;
+	 return 1.0;
 }
 
 // Stokes exact values
@@ -61,6 +63,12 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     work[0] =  point[0]*point[0]*point[1];
     work[1] = -point[1]*point[1]*point[0];
+
+    //work[0] =  point[0]*point[0]*point[0]*point[1]*point[1];
+    //work[1] = -point[1]*point[1]*point[1]*point[0]*point[0];
+
+    work[0] = cos(point[0]) * sin(point[1]);
+    work[1] = -1 * sin(point[0]) * cos(point[1]);
 
     return work;
 }  
@@ -83,8 +91,12 @@ const vertex darcyForce(const vertex& point, PhysProperty * pp){
 
 const vertex stokesForce(const vertex& point, PhysProperty * pp){
 
-    return {0.0,0.0};
+    //return {-2*point[1] -1,
+    //         2*point[0] +1};
+    //return {-2*(3*point[0]*point[1]*point[1] + pow(point[0],3)) ,
+    //         2*(3*point[0]*point[0]*point[1] + pow(point[1],3)) };
 
+    return {0.0,0.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * PP){
