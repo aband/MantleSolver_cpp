@@ -104,7 +104,7 @@ double L2ErrorElem(const std::array<double, 12>& weight,
                    BRMixed& br_){
 
     double elemError = 0.0;
-
+cout << "this " << endl;
     for (int g=0; g<gwf.size(); g++){
         // Loop through gauess quadrature points
         vertex mapped = GaussMapPointsFace(gpf[g], basis_.corners());
@@ -222,7 +222,6 @@ double L2ErrorElem(const std::array<double, 12>& weight,
                    BRMixed& br_){
 
     double elemError = 0.0;
-
     for (int g=0; g<gwf.size(); g++){
         // Loop through gauess quadrature points
         vertex mapped = GaussMapPointsFace(gpf[g], basis_.corners());

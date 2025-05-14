@@ -303,13 +303,13 @@ int main(int argc, char **argv){
     // Solve a coupled system ==========================================================
     // Couple two saddle point system
     // Control number of iterations and tolerance
-    int maxIter;
+    int maxIter = 20;
     PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL);
 
-    double tauUzawa;
+    double tauUzawa = 10;
     PetscOptionsGetReal(NULL, NULL, "-tau", &tauUzawa, NULL);
 
-    double tolUzawa;
+    double tolUzawa = 10e-15;
     PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL);
 
     // Assign correct C matrix to the target system
@@ -326,7 +326,7 @@ int main(int argc, char **argv){
 
     linearSys * lsResult = (linearSys *)malloc(sizeof(linearSys));
 
-    //CoupledSolver(lsStokes, ls, lsResult, &system->K, tolUzawa, maxIter, tauUzawa);
+    CoupledSolver(lsStokes, ls, lsResult, &system->K, tolUzawa, maxIter, tauUzawa);
 
     // Separate Dirichlet and Neumann boundary condition
     bndryVal bndryStokesDiri;
@@ -422,7 +422,7 @@ int main(int argc, char **argv){
     VecRestoreArray(testReduced, &arraytestreduced);
 */
 
-/*
+
     // Check computed error results
     int checkError = 0;
     PetscOptionsGetInt(NULL, NULL, "-checkError", &checkError, NULL);
@@ -551,7 +551,7 @@ int main(int argc, char **argv){
     }cout << endl;}
 
 
-*/
+
 // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);

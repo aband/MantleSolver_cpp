@@ -125,7 +125,7 @@ target_include_directories(phase_lib
 
 add_executable(testSeparate
         testSeparate.cpp
-        myfunc2.cpp
+        myfunc4.cpp
 )
 #
 add_executable(testBasis
