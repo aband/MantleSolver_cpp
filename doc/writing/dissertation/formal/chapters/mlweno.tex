@@ -32,8 +32,8 @@ and $\pmb{\nu}$ is the unit vector pointing from $E^+$ to $E^-$ orthogonal to th
 Here, $\alpha_{LF}$ is the Lax-Fredrich stabilizer factor. We have two different ways to compute $\alpha_{LF}$ depending on 
 the knowledge of solution.
 \begin{itemize}
-		  \item The global factor: $\alpha_{LF} = \max_{u}\lvert \partial \mathbf{f}\cdot \pmb{\nu} / \partial u \rvert $;
-		  \item The local factor: $\alpha_{LF} = \max(\lvert \partial \mathbf{f}^+ \cdot \pmb{\nu} / \partial u^+ \rvert,
+		  \item The global LF Stabilizer: $\alpha_{LF} = \max_{u}\lvert \partial \mathbf{f}\cdot \pmb{\nu} / \partial u \rvert $;
+		  \item The local LF Stabilizer: $\alpha_{LF} = \max(\lvert \partial \mathbf{f}^+ \cdot \pmb{\nu} / \partial u^+ \rvert,
 					 \lvert \partial \mathbf{f}^- \cdot \pmb{\nu} / \partial u^- \rvert)$.
 \end{itemize}
 The numerical flux $\mathbf{F}$~\eqref{eq:LFflux} is consistent and conservtive across the edge. 
@@ -153,7 +153,7 @@ The Jiang-Shu smoothness indicator can be reformed with basis polynomials:
 					  &= \sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'j'} \sigma^{i'j'}_{ij},
 \end{aligned}
 \end{equation}
-where $\sigma^{i'j'}_{ij}$ can be precomputed.
+where $\sigma^{i'j'}_{ij}$ can be precomputed after mesh is established after mesh is established.
 
 We proposed an alternative way of defining smoothness indicator in~\cite{WENOAOSimplifiedSmoothness}.
 \begin{equation}\label{eq:simpsmoothnessIC}
@@ -170,17 +170,17 @@ there exists some value $C > 0$ such that when $h \rightarrow 0^+$,
 \begin{equation}\label{eq:smoothconvergence}
 		  \sigma = \begin{cases}
 					 Ch^2 + \mathcal{O} (h^3) \quad &\text{Smooth}, \\
-					 \Theta (h)  &\text{Not Smooth},
+					 \Theta (1)  &\text{Not Smooth},
 		  \end{cases}
 \end{equation}
 where stencils are defined on quasi uniform mesh. This observation comes directly from the scaling property of 
 Sobolev seminorm.
 
 \subsection{ML-WENO weighting}
-Given a target cell $E_{i,j}$, we can create a nonempty set of stencils $\mathcal{S}_l \ni E_{i,j}, l = 0,1, \dots, L$.
+Given a target cell $E_{i,j}$, we can create a nonempty set of stencils $\{\mathcal{S}_l \ni E_{i,j}, l = 0,1, \dots, L, L \geq 0\}$.
 The reconstruction of u on target cell $E_{i,j}$ is a convex combination of stencil polynomials~\eqref{eq:normalizedstencilpoly}
 \begin{equation}\label{eq:reconstruction}
-R(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q^l(\mathbf{x}), \quad \mathbf{x} \in E_{i,j},
+\mathcal{R}(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q_l(\mathbf{x}), \quad \mathbf{x} \in E_{i,j},
 \end{equation}
 where $\sum_l \tilde{\omega}_l = 1$ is normalized nonlinear weights associated with stencils accordingly.
 \begin{figure}[ht]
@@ -209,7 +209,95 @@ We then renormalize scaled weights
 \end{equation}
 
 \subsection{The ML-WENO Reconstruction Error}
+In this section, we consider the accuracy of our multi-level weighting scheme.
+We group the set of 
+stencils $\{\mathcal{S}_l\}$ according to the order of reconstruction polynomials,
+i.e., the shape of individual stencil $\mathcal{S}_l$. We denote the set of 
+stencils have $s$ cells in x direction and $t$ cells in y direction as $\{\mathcal{S}_l\}_{s,t}$.
+We make the assumption that the mesh resolution is fine enough so that there exist 
+at least one stencil that is smooth if shock presents. We define two sets holding 
+stencils with or without jump as
+\begin{equation}\label{eq:groupstencil}
+\begin{aligned}
+\text{Smooth} &= \{\mathcal{S}_l:\hspace{0.2cm} \text{$u$ is smooth on $S_l$}, \}\\
+\text{Jump}   &= \{\mathcal{S}_l:\hspace{0.2cm} \text{$u$ has a jump on $S_l$}\}
+\end{aligned}
+\end{equation}
+where we assume $\text{Smooth} \cup \text{Jump} = \{\mathcal{S}_l\}$ and $\text{Smooth} \cap \text{Jump} = \emptyset$.
+We represent the set of stencils of shape $(s,t)$ that is smooth as $\{\mathcal{S}_l\}_{s,t} \cap \text{Smooth}$,
+and the set of stencils of shat $(s,t)$ that has a jump as $\{\mathcal{S}_l\}_{s,t} \cap \text{Jump}$.
+For convience, we assume square stencils, where $r=s=t$. 
+The accuracy result can be applied to $s\neq t$ situation directly.
+We show that the reconstruction is accurate with respect to the target cell $E_0$ to order
+\begin{equation}\label{eq:maxr}
+r_{\max} = \max\{r: \text{Smooth} \cap \{\mathcal{S_l}_{r,r} \} \neq \emptyset \}.
+\end{equation}
+In Figure~\ref{fig:stencilshock}, we illustrate a (3,2,1) combination of stencils with thow shock presents.
+Here, $\text{Smooth} \cap \{\mathcal{S}_l\}_{2,2} = \{\mathcal{S}_0, \mathcal{S}_1 \} $, which
+indicates that stencil $\mathcal{S}_0$ and $\mathcal{S}_1$ do not have jump present.
+In this case, we expect the accuracy of reconstruction is $r_{\max} = 2$.
+\begin{figure}[ht]
+\centering
+\input chapters/tikz/stencilsplit.tex
+\caption{An illustration of a (3,2,1) multi-level stencils combination on logically rectangular 
+quadrilateral mesh with two shock presents.\label{fig:stencilshock}}
+\end{figure}
 
-\subsection{Boundary Treatment}
+We state the estimation of reconstruction error show in~\cite{MultiLevelWeno}.
+We start by estimating the error of our nonlinear scaling~\eqref{eq:nonlinearwgts} 
+asscoiated to some stencil $\mathcal{S}_l$
+for some $m>0$.
+\begin{equation}
+\hat{\omega}_l = \frac{\omega_l}{(\sigma_l + \epsilon h_0^2)^m}.
+\end{equation}
+We estimate the reconstruction error for two situtaions.
+\begin{itemize}
+\item $\mathcal{S}_l \in \text{Smooth}$, the smoothness indicator $\sigma_l = Ch^2 + \mathcal{O}(h^3)$; 
+\item $\mathcal{S}_l \in \text{Jump}$, the smoothness indicator $\sigma_l = \Theta(1)$.
+\end{itemize}
+Use the asymptotic estimation result from~\cite{olver1997asymptotics}. Let $n\geq m$, 
+$a>0$, and $b>0$
+\begin{equation}\label{eq:asymptoticresult}
+\begin{aligned}
+\frac{a}{bh^m + \mathcal{O}(h^n)} &= \frac{ah^{-m}}{b} \big(1 + \mathcal{O}(h^{n-m})\big),\\
+\frac{a}{bh^{-n} + \mathcal{O}(h^{-m})} &= \frac{ah^{n}}{b} \big(1 + \mathcal{O}(h^{n-m})\big).
+\end{aligned}
+\end{equation}
+For the smooth stencil $\mathcal{S}_l \in \text{Smooth}$
+\begin{equation}
+\begin{aligned}
+\hat{\omega}_l = \frac{\omega_l}{(\sigma_l+ \epsilon h_0^2)^m} &= \frac{\omega_l}{((C+\epsilon)h^2_0 + \mathcal{O}(h^3))^m}\\
+               &= \omega_l \Big(\frac{h_0^{-2}}{C+\epsilon}(1+\mathcal{O}(h))  \Big)^m \\
+					&= \frac{\omega_l}{(D+\epsilon)^m}h_0^{-2m} (1+\mathcal{O}(h)) .
+\end{aligned}
+\end{equation}
+In conclusion, we estimate the nonlinear scaling as
+\begin{equation}\label{eq:estimatenonlinscale}
+\hat{\omega}_l = \left\{  
+\begin{aligned}
+&\frac{\omega_l}{(C+\epsilon)^m}h_0^{-2m} (1+\mathcal{O}(h)), \hspace{0.2cm} \text{if} \quad \mathcal{S}_l \in \text{Smooth},\\
+&\Theta (1), \hspace{3.83cm} \text{if} \quad \mathcal{S}_l \in \text{Jump}.
+\end{aligned}
+      \right.
+\end{equation}
+Then we estimate the error for the normalized nonlinear weighting~\eqref{eq:normalizednonlinearwgts}.
+We expand the sum of nonlinear scaling as
+\begin{equation}
+\sum_l \hat{\omega}_l = \sum_r \sum{}
+\end{equation}
+
+\subsection{Handling Boundary Conditions}
+It is usually difficult to manage boundary condition for higher order finite volume and finite difference method, which
+require wide stencils. Some deal with the difficulty use ghost cells or points outside the boundary, and maintain
+the same stencil as if they were in the interior of the domain. However, the extrapolation or estimation of the 
+manufactured values of ghost cells or ghost points are not straightforward.
+A notable method, the inverse
+Lax-Wendroff procedure, substitute the normal derivative
+of the solution with tangential and time derivatives using the PDE relation in an iteratvie way to impose more precise values
+for the ghost cells or points.
+
+
 
 \section{Time Stepping}
+
+\section{Discretize Enthalpy and Composition transport with FVM}

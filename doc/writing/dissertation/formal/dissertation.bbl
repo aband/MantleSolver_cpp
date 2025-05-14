@@ -1,4 +1,4 @@
-\begin{thebibliography}{15}
+\begin{thebibliography}{16}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -97,6 +97,11 @@ Chieh-Sen Huang, Todd Arbogast, and Chenyu Tian.
 Guang-Shan Jiang and Chi-Wang Shu.
 \newblock Efficient implementation of weighted eno schemes.
 \newblock \emph{J. Comput. Phys.}, 126:\penalty0 202--228, 1996.
+
+\bibitem[Olver(1997)]{olver1997asymptotics}
+Frank Olver.
+\newblock \emph{Asymptotics and special functions}.
+\newblock AK Peters/CRC Press, 1997.
 
 \bibitem[Raviart and Thomas(1977)]{10.1007/BFb0064470}
 P.~A. Raviart and J.~M. Thomas.
