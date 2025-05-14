@@ -121,15 +121,34 @@ joining continuously as a constant $1$ on the shared edge.
 		  \caption{Constant basis function $\pmb{\varphi}_c$.}
 		  \label{fig:varphic}
 \end{figure}
+
+We state the classic Ravier-Thomas global projection operator for completeness.
+\begin{equation}\label{eq:RT}
+		  \pi_{\mathcal{RT}} : H(\text{div}; \Omega) \cap (L^{2+\epsilon}(\Omega))^2
+		  \rightarrow \mathbb{V}_1^{0},
+\end{equation}
+where $\epsilon >0$.
+We then write the approximation properties as well.
 \begin{lem}\label{lem:theoryhdiv}
 		  Stability and approximation properties~\cite{directSerendipity}.
 
 		  Under the assumption of~\ref{lem:interpolationop}, there exists a 
 		  constant $C>0$, independent of $\mathcal{T}_h$ and $h>0$, such that
 		  \begin{equation}
-					 \begin{aligned}
-								\norm{\mathbf{v}-\pi\mathbf{v}}_{0,\Omega} \leq C\norm{\mathbf{v}}_{k,\Omega}
-					 \end{aligned}
+		\norm{p-p_h}_{m,\Omega} \leq C h^{l+1-m} \lvert p \rvert_{l+1,\Omega}, 
+					 \quad l=0,1,2,\dots, r,
+		  \end{equation}
+		  where $p_h \in \mathcal{DS}_2$. We have
+		  \begin{equation}
+		 \begin{aligned}
+					\norm{\mathbf{u} - \pi \mathbf{u}}_{0,\Omega} &\leq C \norm{\mathbf{u}}_{k,\Omega}h^k, \hspace{0.8cm} k=1,\dots, 2 \\
+					\norm{\nabla\cdot(\mathbf{u} - \pi \mathbf{u})}_{0,\Omega} &\leq C \norm{\nabla \mathbf{u}}_{k,\Omega}h^k, \hspace{0.5cm} k=0,\dots, 1\\
+					\norm{p - \mathcal{P}_{W_s} p }_{0,\Omega} &\leq C \norm{p}_{k,\Omega}h^k, \hspace{0.9cm} k=0,\dots, 1 
+		 \end{aligned}
+		  \end{equation}
+		  Moreover, the discrete inf-sup condition holds
+		  \begin{equation}
+\sup
 		  \end{equation}
 \end{lem}
 \subsection{Test Darcy Problem}

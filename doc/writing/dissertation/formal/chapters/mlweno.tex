@@ -1,9 +1,52 @@
-\section{Finite Volume Scheme}
+\section{Finite Volume Method}
+The finite volume method (FVM) is a discretization method widely used in
+various scenarios that conservation laws are involved.
+The finite volume is a robust algorithm that can be applied to 
+arbitriary complex geometry. 
+The most important aspect of FVM that benefits this simulation is
+that the local mass conservation is achieved naturally.
+To begin with, we consider a general conservation law 
+retarding a scalar variable $u$ as
+\begin{equation}\label{eq:conservationlaw}
+		  \left \{
+		  \begin{aligned}
+					 &\frac{\partial u(\mathbf{x},t)}{\partial t} + \nabla \cdot \mathbf{f}(u; \mathbf{x},t) = 0, \hspace{0.2cm} t>0, \mathbf{x} \in \Omega, \\ 
+					 &u(\mathbf{x},0) = u_0(\mathbf{x}), \hspace{2.5cm} \mathbf{x} \in \Omega,
+		  \end{aligned}
+		  \right .
+\end{equation}
+where we assume the domain $\Omega \subset \mathbb{R}^2$. The term $\mathbf{f}$ is 
+a flux transporting scalar variable $u$.
+We write the basic semi-discretized form of basic finite volume method as
+\begin{equation}
+		  \frac{\partial \overline{u}}{\partial t} + \frac{1}{\lvert E \rvert}\int_{\partial E} \mathbf{F}(\mathbf{x},t) \cdot \pmb{\nu} d\mathbf{x} = 0,
+\end{equation}
+where we use the cell-averaged value $\overline{u} = \frac{1}{\lvert E \rvert} \int_{E} u(\mathbf{x}, t) d\mathbf{x}$, 
+and $F(\mathbf{x},t)$ is the approximated numerical flux. 
+We use the Lax-Friedrichs numerical flux
+\begin{equation}\label{eq:LFflux}
+		  \mathbf{F}(u^+, u^-) = \frac{1}{2}[(\mathbf{f}(u^+)+\mathbf{f}(u^-))\cdot \pmb{\nu} - \alpha_{LF}(u^+-u^-)],
+\end{equation}
+where $u^+$ and $u^-$ represent values approximated from element $E^+ \in \mathcal{T}_h$ and $E^- \in \mathcal{T}_h$ respectively,
+and $\pmb{\nu}$ is the unit vector pointing from $E^+$ to $E^-$ orthogonal to the edge.
+Here, $\alpha_{LF}$ is the Lax-Fredrich stabilizer factor. We have two different ways to compute $\alpha_{LF}$ depending on 
+the knowledge of solution.
+\begin{itemize}
+		  \item The global factor: $\alpha_{LF} = \max_{u}\lvert \partial \mathbf{f}\cdot \pmb{\nu} / \partial u \rvert $;
+		  \item The local factor: $\alpha_{LF} = \max(\lvert \partial \mathbf{f}^+ \cdot \pmb{\nu} / \partial u^+ \rvert,
+					 \lvert \partial \mathbf{f}^- \cdot \pmb{\nu} / \partial u^- \rvert)$.
+\end{itemize}
+The numerical flux $\mathbf{F}$~\eqref{eq:LFflux} is consistent and conservtive across the edge. 
+We now replace the $u^+$ and $u^-$ with reconstructed values and rewrite the numerical flux as
+\begin{equation}\label{eq:reconstructionflux}
+		  \mathbf{F}(\mathcal{R}^+, \mathcal{R}-) = \frac{1}{2}[(\mathbf{f}(\mathcal{R}^+)+\mathbf{f}(\mathcal{R}^-)\cdot \pmb{\nu} - \alpha_{LF}(\mathcal{R}^+-\mathcal{R}^-)],
+\end{equation}
+where $\mathcal{R}$ is a higher order reconstruction value.
 
 \section[ML-WENO]{The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}
 We develop a accurate, versatile, robust and efficient finite volume 
-weighted essentially non oscillatory (WENO) techniques for solving energy and composition 
-conservation laws in~\cite{MultiLevelWeno}. 
+weighted essentially non oscillatory (WENO) techniques for reconstruction of
+values on both sides of the edge in~\cite{MultiLevelWeno}. 
 
 \subsection{Stencil Polynomial}
 Given a stencil $\mathcal{S} = \{E_0, E_2, \dots, E_k\}$ of the quasiuniform logically rectangular mesh. We can define
@@ -135,7 +178,7 @@ Sobolev seminorm.
 
 \subsection{ML-WENO weighting}
 Given a target cell $E_{i,j}$, we can create a nonempty set of stencils $\mathcal{S}_l \ni E_{i,j}, l = 0,1, \dots, L$.
-The reconstruction of u on target cell $E{i,j}$ is a convex combination of stencil polynomials~\eqref{eq:normalizedstencilpoly}
+The reconstruction of u on target cell $E_{i,j}$ is a convex combination of stencil polynomials~\eqref{eq:normalizedstencilpoly}
 \begin{equation}\label{eq:reconstruction}
 R(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q^l(\mathbf{x}), \quad \mathbf{x} \in E_{i,j},
 \end{equation}
@@ -164,6 +207,8 @@ We then renormalize scaled weights
 \begin{equation}\label{eq:normalizednonlinearwgts}
 \tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}}.
 \end{equation}
+
+\subsection{The ML-WENO Reconstruction Error}
 
 \subsection{Boundary Treatment}
 
