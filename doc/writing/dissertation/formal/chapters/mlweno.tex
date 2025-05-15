@@ -302,15 +302,25 @@ Assume $h<1$, we keep the largest $ar+\eta(r)$ number as our estimator
 		  \end{aligned}
 \end{equation}
 The overall accuracy estimation of nonlinear weighting~\eqref{eq:normalizednonlinearwgts} would be
-\begin{equation}
+\begin{equation}\label{eq:scalliingestimate}
 		  %\begin{aligned}
 		  %\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}} =\frac{\hat{\omega}_l}{\sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r_{\max},r_{\max}}}}
 		%			 \frac{\omega_l}{(C+\epsilon)^{ar_{\max} + \eta(r_{\max})}}} 
 		  %\end{aligned}
 	   	\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}} = 
-			\tilde{C} h_0^{2(ar_{\max}+\eta(r_{\max}))}(1+\mathcal{O}).
+			\tilde{C} h_0^{2(ar_{\max}+\eta(r_{\max}))}(1+\mathcal{O}(h)).
 \end{equation}
-Combining everything above and~\eqref{reconstruction}, we arrive at 
+Now we can estimate the reconstruction error as
+\begin{equation}
+\begin{aligned}
+\lvert u(\mathbf{x}) - \mathcal{R}(\mathbf{x}) \rvert &= \lvert \sum_{l}\tilde{\omega}_l (u(\mathbf{x} - Q_l(\mathbf{x})))  \rvert\\
+&\leq \sum_{l \in \text{Smooth}} \tilde{\omega}_l \lvert u(\mathbf{x}) - Q_l(\mathbf{x}) \rvert + \sum_{l \in \text{Jump}} \tilde{\omega}_l \lvert u(\mathbf{x}) - Q_l(\mathbf{x}) \rvert \\
+&\leq \sum_r \sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r,r}}} \Theta(h^{2[a(r_{\max} - r) + (\eta(r_{\max}) - \eta(r))]}) \mathcal{O}(h^r) \\
+&\quad \qquad + \sum_{l\in \text{Jump}} \Theta (h^{2(ar_{\max}+\eta(r_{\max}))}) \mathcal{O}(1) \\
+&= \mathcal{O}(h^{r_{\max}})
+\end{aligned}
+\end{equation}
+Combining everything above and~\eqref{eq:reconstruction}, we arrive at 
 the formal error estimate of the reconstruction.
 \begin{lem}
 		  Let $\mathcal{R}(\mathbf{x})$ be the reconstruction. Assuming a 
@@ -342,6 +352,31 @@ We can understand it as prescribing the inflow flux or fixing the boundary
 value $u_B$ as an equivelent to Dirichlet boundary in the context of Finite
 Element.
 
+The key to the above strategy is to have accurate and stable reconstruction near the boundary.
+ML-WENO gives the flexibility to add stenncils of the desired size that span back into the domain.
+
 \section{Time Stepping}
 
-\section{Discretize Enthalpy and Composition transport with FVM}
+\section{Numerical Test}
+For completeness, we test our ML-WENO algorithm with simple Riemann shock and rarefraction.
+Let $\mathbf{f}(u) = (u^2/2, u^2/2)$ be the Burgers flux function. In this example,
+we take the initial condition $u_0(x,y) = 1$, and the computational domain $\Omega = [0,3] \times [0,1]$.
+The true solution is 
+\begin{equation}\label{eq:truesolutionrarefaction}
+u(x,y,t) = \left \{ 
+\begin{aligned}
+&0, \hspace{2.2cm} x<0.5, x\geq 0.5t+1.5,\\
+&(x-0.5)/t,\hspace{0.5cm} 0.5\leq x <t+0.5,\\
+&1, \hspace{2.2cm} t+0.5 \leq x < 0.5t+1.5.
+\end{aligned}
+		  \right.
+\end{equation}
+We forward martching to the time = $2.0$, when trailing rarefaction reaches the leading shock.
+
+\section{Application to Mantle Simulation}
+Now we discretize equations~\eqref{eq:transport}, with Finite volume scheme.
+
+\subsection{Discretization of Enthalpy Transport Equation}
+
+
+\subsection{Discretization of Composition Transport Equation}
