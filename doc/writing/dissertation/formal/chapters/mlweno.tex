@@ -211,31 +211,31 @@ We then renormalize scaled weights
 \subsection{The ML-WENO Reconstruction Error}
 In this section, we consider the accuracy of our multi-level weighting scheme.
 We group the set of 
-stencils $\{\mathcal{S}_l\}$ according to the order of reconstruction polynomials,
-i.e., the shape of individual stencil $\mathcal{S}_l$. We denote the set of 
-stencils have $s$ cells in x direction and $t$ cells in y direction as $\{\mathcal{S}_l\}_{s,t}$.
+indices $l \in \mathcal{L} = \{0,1,2,\dots L\}$ according to the order of reconstruction polynomials,
+i.e., the shape of individual stencil. We denote the set of indices of
+stencils have $s$ cells in x direction and $t$ cells in y direction as $\mathcal{L}_{s,t}$.
 We make the assumption that the mesh resolution is fine enough so that there exist 
 at least one stencil that is smooth if shock presents. We define two sets holding 
-stencils with or without jump as
+indices of stencils with or without jump as
 \begin{equation}\label{eq:groupstencil}
 \begin{aligned}
-\text{Smooth} &= \{\mathcal{S}_l:\hspace{0.2cm} \text{$u$ is smooth on $S_l$}, \}\\
-\text{Jump}   &= \{\mathcal{S}_l:\hspace{0.2cm} \text{$u$ has a jump on $S_l$}\}
+		  \text{Smooth} &= \{l:\hspace{0.2cm} \text{$u$ is smooth on $\mathcal{S}_l$}, \}\\
+		  \text{Jump}   &= \{l:\hspace{0.2cm} \text{$u$ has a jump on $\mathcal{S}_l$}\}
 \end{aligned}
 \end{equation}
-where we assume $\text{Smooth} \cup \text{Jump} = \{\mathcal{S}_l\}$ and $\text{Smooth} \cap \text{Jump} = \emptyset$.
-We represent the set of stencils of shape $(s,t)$ that is smooth as $\{\mathcal{S}_l\}_{s,t} \cap \text{Smooth}$,
-and the set of stencils of shat $(s,t)$ that has a jump as $\{\mathcal{S}_l\}_{s,t} \cap \text{Jump}$.
+where we assume $\text{Smooth} \cup \text{Jump} = \mathcal{L}$ and $\text{Smooth} \cap \text{Jump} = \emptyset$.
+We represent the set of indices of stencils of shape $(s,t)$ that is smooth as $\mathcal{L}_{s,t} \cap \text{Smooth}$,
+and the set of stencils of shat $(s,t)$ that has a jump as $\mathcal{L}_{s,t} \cap \text{Jump}$.
 For convience, we assume square stencils, where $r=s=t$. 
-The accuracy result can be applied to $s\neq t$ situation directly.
+The accuracy result can be applied to $s\neq t$ situation directly in the selected direction.
 We show that the reconstruction is accurate with respect to the target cell $E_0$ to order
 \begin{equation}\label{eq:maxr}
-r_{\max} = \max\{r: \text{Smooth} \cap \{\mathcal{S_l}_{r,r} \} \neq \emptyset \}.
+r_{\max} = \max\{r: \text{Smooth} \cap \mathcal{L}_{r,r}  \neq \emptyset \}.
 \end{equation}
 In Figure~\ref{fig:stencilshock}, we illustrate a (3,2,1) combination of stencils with thow shock presents.
-Here, $\text{Smooth} \cap \{\mathcal{S}_l\}_{2,2} = \{\mathcal{S}_0, \mathcal{S}_1 \} $, which
+Here, $\text{Smooth} = \{0, 1 \} $, which
 indicates that stencil $\mathcal{S}_0$ and $\mathcal{S}_1$ do not have jump present.
-In this case, we expect the accuracy of reconstruction is $r_{\max} = 2$.
+In this case, we expect the accuracy of reconstruction is $r_{\max} = \text{Smooth} \cap \mathcal{L}_{2,2} = 2$.
 \begin{figure}[ht]
 \centering
 \input chapters/tikz/stencilsplit.tex
@@ -252,8 +252,8 @@ for some $m>0$.
 \end{equation}
 We estimate the reconstruction error for two situtaions.
 \begin{itemize}
-\item $\mathcal{S}_l \in \text{Smooth}$, the smoothness indicator $\sigma_l = Ch^2 + \mathcal{O}(h^3)$; 
-\item $\mathcal{S}_l \in \text{Jump}$, the smoothness indicator $\sigma_l = \Theta(1)$.
+\item $l \in \text{Smooth}$, the smoothness indicator $\sigma_l = Ch^2 + \mathcal{O}(h^3)$; 
+\item $l \in \text{Jump}$, the smoothness indicator $\sigma_l = \Theta(1)$.
 \end{itemize}
 Use the asymptotic estimation result from~\cite{olver1997asymptotics}. Let $n\geq m$, 
 $a>0$, and $b>0$
@@ -275,16 +275,52 @@ In conclusion, we estimate the nonlinear scaling as
 \begin{equation}\label{eq:estimatenonlinscale}
 \hat{\omega}_l = \left\{  
 \begin{aligned}
-&\frac{\omega_l}{(C+\epsilon)^m}h_0^{-2m} (1+\mathcal{O}(h)), \hspace{0.2cm} \text{if} \quad \mathcal{S}_l \in \text{Smooth},\\
-&\Theta (1), \hspace{3.83cm} \text{if} \quad \mathcal{S}_l \in \text{Jump}.
+&\frac{\omega_l}{(C+\epsilon)^m}h_0^{-2m} (1+\mathcal{O}(h)), \hspace{0.2cm} \text{if} \quad l \in \text{Smooth},\\
+&\Theta (1), \hspace{3.83cm} \text{if} \quad l \in \text{Jump}.
 \end{aligned}
       \right.
 \end{equation}
 Then we estimate the error for the normalized nonlinear weighting~\eqref{eq:normalizednonlinearwgts}.
 We expand the sum of nonlinear scaling as
 \begin{equation}
-\sum_l \hat{\omega}_l = \sum_r \sum{}
+		  \sum_l \hat{\omega}_l = \sum_r \sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r,r}}} \hat{\omega}_l + \sum_{l\in \text{Jump}} \hat{\omega}_l.
 \end{equation}
+We estimate the smooth part of the nonlinear weighting as
+\begin{equation}
+\sum_r \sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r,r}}} \hat{\omega}_l = \sum_r \sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r,r}}} 
+		  \frac{\omega_l}{(C+\epsilon)^m}h_0^{-2(ar+\eta)} (1+\mathcal{O}(h)).
+\end{equation}
+Assume $h<1$, we keep the largest $ar+\eta(r)$ number as our estimator
+\begin{equation}
+		  \begin{aligned}
+					 \sum_r \sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r,r}}} \hat{\omega}_l = \sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r_{\max},r_{\max}}}} 
+					 \frac{\omega_l}{(C+\epsilon)^{ar_{\max} + \eta(r_{\max})}}&h_0^{-2(ar_{\max}+\eta(r_{\max}))} (1+\mathcal{O}(h)) \\
+					 &+ \Theta(h^{-2(ar+\eta(r))})\\
+					 = \sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r_{\max},r_{\max}}}}
+					 \frac{\omega_l}{(C+\epsilon)^{ar_{\max} + \eta(r_{\max})}}&h_0^{-2(ar_{\max}+\eta(r_{\max}))} \\
+					 &+ \mathcal{O}(h^{1-2(ar_{\max}+\eta(r_{\max}))}).
+		  \end{aligned}
+\end{equation}
+The overall accuracy estimation of nonlinear weighting~\eqref{eq:normalizednonlinearwgts} would be
+\begin{equation}
+		  %\begin{aligned}
+		  %\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}} =\frac{\hat{\omega}_l}{\sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r_{\max},r_{\max}}}}
+		%			 \frac{\omega_l}{(C+\epsilon)^{ar_{\max} + \eta(r_{\max})}}} 
+		  %\end{aligned}
+	   	\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}} = 
+			\tilde{C} h_0^{2(ar_{\max}+\eta(r_{\max}))}(1+\mathcal{O}).
+\end{equation}
+Combining everything above and~\eqref{reconstruction}, we arrive at 
+the formal error estimate of the reconstruction.
+\begin{lem}
+		  Let $\mathcal{R}(\mathbf{x})$ be the reconstruction. Assuming a 
+		  qusi-uniform mesh, $h_0 = \Theta(h)$, there exists a constant $C>0$
+		  such that for any $\mathbf{x} \in E_0$, 
+		  \begin{equation}\label{eq:errorestimate}
+					 \lvert u(\mathbf{x}) - \mathcal{R}(\mathbf{x}) \rvert \leq C h^{r_{\max}},
+		  \end{equation}
+		  where $r_{\max}$ is defined by~\eqref{eq:maxr}.
+\end{lem}
 
 \subsection{Handling Boundary Conditions}
 It is usually difficult to manage boundary condition for higher order finite volume and finite difference method, which
@@ -296,7 +332,15 @@ Lax-Wendroff procedure, substitute the normal derivative
 of the solution with tangential and time derivatives using the PDE relation in an iteratvie way to impose more precise values
 for the ghost cells or points.
 
-
+For assigning boundary condition to a FVM discretization, we should determine
+whether the flow is inflow or outflow first.
+If $\mathbf{f}(u_B)\cdot \pmb{\nu} >0$, we recognize that it is a outflow 
+boundary, therefore, no boundary condition should be assigned. We use
+"free outflow" boundary that the numerical flux is simply $\mathbf{f}(u_B) \cdot 
+\pmb{\nu}$. The inflow boundary can be understood in different ways.
+We can understand it as prescribing the inflow flux or fixing the boundary
+value $u_B$ as an equivelent to Dirichlet boundary in the context of Finite
+Element.
 
 \section{Time Stepping}
 
