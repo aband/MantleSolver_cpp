@@ -1,5 +1,61 @@
 #include "temp.h"
 
+double ReconError(const MeshInfo& mi, multilevel& ml, mluse& use, 
+                  Vec * now, DM dmu, DM dmmesh, const double& h0,
+                  int norm){
+
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussPointsFace;
+
+    Vec n = *now;
+
+    Vec localu;
+
+    DMGetLocalVector(dmu, &localu);
+
+    DMGlobalToLocalBegin(dmu, n, INSERT_VALUES, localu);
+    DMGlobalToLocalEnd(dmu, n, INSERT_VALUES, localu); 
+
+    double ** lu;
+    DMDAVecGetArray(dmu, localu, &lu);
+
+    ml.updatesigma(lu);
+
+    Tensor<weights> allwgts;
+    //double h0 = sqrt((mi.L*mi.H)/(double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
+
+    use.computeWgts(ml, mi, h0, allwgts);
+
+    // We will print reconstructed values on gauss points
+
+    double error = 0.0;
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+        for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+            vertexSet corners = extractCorners(mi, {i,j});
+
+            double singlecellerror = 0.0;
+            for (unsigned int g=0; g<gwf.size(); g++){
+
+                vertex mapped = GaussMapPointsFace(gpf[g],corners);
+                double jac = abs(GaussJacobian(gpf[g],corners));
+                double gw = gwf[g];
+ 
+                singlecellerror += gw*jac*pow(abs(use.eval(mapped, ml, location(mi, {i,j}), allwgts({i,j}), {i,j}, lu) -
+                                   func(mapped, {0})) ,norm);
+            }
+
+            error += singlecellerror;
+        }
+    }
+
+    DMDAVecRestoreArray(dmu, localu, &lu);
+    DMRestoreLocalVector(dmu, &localu);
+
+    return error;
+}
+
 int printSol(int mark, Vec * global, const MeshInfo& mi){
 
     Vec temp = *global;

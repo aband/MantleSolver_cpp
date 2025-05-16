@@ -34,13 +34,8 @@ int getall(const MeshInfo& mi, multilevel& ml, mluse& use,
 
 // Output reconstructed values for plotting.
 // Compute error at the same time.
-int plotRecon(){
-
-
-    return 1;
-}
-
-
+double ReconError(const MeshInfo& mi, multilevel& ml, mluse& use,
+                  Vec * now, DM dmu, DM dmmesh, const double& h0, int norm);
 
 typedef struct{
 
