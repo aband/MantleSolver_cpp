@@ -46,7 +46,12 @@ where $\mathcal{R}$ is a higher order reconstruction value.
 \section[ML-WENO]{The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}
 We develop a accurate, versatile, robust and efficient finite volume 
 weighted essentially non oscillatory (WENO) techniques for reconstruction of
-values on both sides of the edge in~\cite{MultiLevelWeno}. 
+discontinuous values with cell averaged values in~\cite{MultiLevelWeno}.
+The ML-WENO reconstruction will be primarily used in reconstruction of 
+values on both sided of the edge for numerical flux computation 
+appears in FVM discretization. It can also be applied to general 
+reconstruction of discontinuous variables, e.g., discontinuos darcy pressure 
+appears on the zero-nonzero porosity interface.
 
 \subsection{Stencil Polynomial}
 Given a stencil $\mathcal{S} = \{E_0, E_2, \dots, E_k\}$ of the quasiuniform logically rectangular mesh. We can define
@@ -103,17 +108,8 @@ We can now represent stencil polynomial with normalized basis polynomials as:
 We define a linear projection operator $\pi_\mathcal{S}$ and let $\pi_\mathcal{S} u_\mathcal{S} = Q$ be a linear 
 projection onto polynomial space $W_p$ such that $\mathbb{Q}_{s,t} \subset W_p$.
 We estimate interpolation error with the Bramble-Hilbert Lemma~\cite{PolynomialApproximation} 
-and~\cite{EstimationofLinearFunctionals} in $H_r(\Omega)$ space, where $r = s$ in x direction and 
-$r=t$ in y-direction.
-%We use $\alpha$ for a two dimensional multi-index.
-%\begin{lem}\label{lem:poincare}
-%There exists a constant $C > 0$ such that
-%\begin{equation}\label{eq:poincare}
-%\norm{u}_{H^r_{\Omega}}^2 \leq C \Bigg\{\sum_{|\alpha| \leq r-1}\Big|\int_{\Omega} D^{\alpha}u \Big|^2 + |u|^2_{H^r(\Omega)} \Bigg\}
-%\end{equation}
-%\end{lem}
-%We can derive this lemma with poincar\'e lemma and mathematical induction \cite{FETheory}.
-
+and~\cite{EstimationofLinearFunctionals} in $H_r(\Omega)$ space. For simplicity,
+we assume $r=s=t$. 
 \begin{lem}\label{lem:interpolation}
 %Let $\Omega_S$ be the domain covered by stencil $S$ in $\mathbb{R}^2$ and let $\pi_S u = Q$ be a linear projection onto 
 %polynomial space $W_p$ such that $\mathbb{Q}_{s,t} \subset W_p$, where $W_p$ is a subspace of $H^1(\Omega_S)$, 
@@ -129,6 +125,13 @@ Let $\Omega_S$ be the domain covered by stencil $\mathcal{S}$ in $\mathbb{R}^2$ 
 \norm{u-\pi_S u} = 
 \end{equation}
 \end{proof}
+In a general 2D situtation when $s \neq t$, the execessive order will be "wasted",
+since the order or accuracy will be $\min(s,t)$. However, in some cases, where
+we aquire the prior knowledge of the solution being qusi-1D, e.g.,
+the transport velocity is fixed in one direction. We can have uneven stencils
+that has $\max(s,t)$ order of accuracy but in the desired direction.
+In other cases when derivative is involved, we also need an stretched 
+stencil to compensate for the order loss when approximates derivative.
 
 \subsection{Stencil polynomial smoothness indicators}
 We define a smoothness indicator $\sigma$ as a measurement of 
@@ -301,15 +304,25 @@ Assume $h<1$, we keep the largest $ar+\eta(r)$ number as our estimator
 					 &+ \mathcal{O}(h^{1-2(ar_{\max}+\eta(r_{\max}))}).
 		  \end{aligned}
 \end{equation}
-The overall accuracy estimation of nonlinear weighting~\eqref{eq:normalizednonlinearwgts} would be
+later, we denote the set $\text{Smooth}\cap \mathcal{L}_{r}$ as $\text{Smooth}_r$ for 
+simplicity.
+The overall accuracy estimation of the nonlinear weighting~\eqref{eq:normalizednonlinearwgts} is presented as
+\begin{itemize}
+\item $l \in \text{Smooth}$
 \begin{equation}\label{eq:scalliingestimate}
-		  %\begin{aligned}
-		  %\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}} =\frac{\hat{\omega}_l}{\sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r_{\max},r_{\max}}}}
-		%			 \frac{\omega_l}{(C+\epsilon)^{ar_{\max} + \eta(r_{\max})}}} 
-		  %\end{aligned}
-	   	\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}} = 
-			\tilde{C} h_0^{2(ar_{\max}+\eta(r_{\max}))}(1+\mathcal{O}(h)).
+					 \tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}} =
+					 \frac{\omega_l}{\sum_{l' \in \text{Smooth}_r}\omega_{l'}} 
+					 h^{2[a(r_{\max} - r) + \eta(r_{\max}) - \eta(r)]} (1 + \mathcal{O}(h));
 \end{equation}
+
+\item $l \in \text{Jump}$
+\begin{equation}\label{eq:scalliingestimate}
+					 \tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}} =
+					 \Theta
+					 (h^{2[a(r_{\max}) + \eta(r_{\max})]}).
+\end{equation}
+
+\end{itemize}
 Now we can estimate the reconstruction error as
 \begin{equation}
 \begin{aligned}
@@ -333,7 +346,9 @@ the formal error estimate of the reconstruction.
 \end{lem}
 
 \subsection{Handling Boundary Conditions}
-It is usually difficult to manage boundary condition for higher order finite volume and finite difference method, which
+In our simulation, we couple FEM and FVM solver on a single mesh. Therefore, 
+accurate and compatible boundary condition should be assigned accordingly.
+However, it is usually difficult to manage boundary condition for higher order finite volume and finite difference method, which
 require wide stencils. Some deal with the difficulty use ghost cells or points outside the boundary, and maintain
 the same stencil as if they were in the interior of the domain. However, the extrapolation or estimation of the 
 manufactured values of ghost cells or ghost points are not straightforward.
@@ -341,23 +356,34 @@ A notable method, the inverse
 Lax-Wendroff procedure, substitute the normal derivative
 of the solution with tangential and time derivatives using the PDE relation in an iteratvie way to impose more precise values
 for the ghost cells or points.
-
-For assigning boundary condition to a FVM discretization, we should determine
-whether the flow is inflow or outflow first.
-If $\mathbf{f}(u_B)\cdot \pmb{\nu} >0$, we recognize that it is a outflow 
-boundary, therefore, no boundary condition should be assigned. We use
-"free outflow" boundary that the numerical flux is simply $\mathbf{f}(u_B) \cdot 
-\pmb{\nu}$. The inflow boundary can be understood in different ways.
-We can understand it as prescribing the inflow flux or fixing the boundary
-value $u_B$ as an equivelent to Dirichlet boundary in the context of Finite
-Element.
-
 The key to the above strategy is to have accurate and stable reconstruction near the boundary.
 ML-WENO gives the flexibility to add stenncils of the desired size that span back into the domain.
 
-\section{Time Stepping}
+In order to assign proper boundary condition to a FVM discretization, 
+we should determine
+whether the flow is inflow or outflow first.
+If $\mathbf{f}(u_B)\cdot \pmb{\nu} >0$, we recognize that it is a outflow 
+boundary, therefore, no fixed boundary condition should be assigned. We use
+"free outflow" boundary that the numerical flux is simply $\mathbf{f}(u_B) \cdot 
+\pmb{\nu}$.
 
-\section{Numerical Test}
+The inflow boundary can be understood in various ways.
+We can understand it as prescribing the inflow flux $\mathbf{f}_B$ 
+or fixing the boundary
+value $u_B$ as an equivelent to Dirichlet boundary in the context of Finite
+Element. In the special case when a zero flux is prescribed, we would
+call it noflow boundary.
+In the inflow case, there may be a discontinuous inflow shock wave. 
+We require a swift response inside the domain to align with the specified
+Dirichlet value. We therefore add an extra constant stencil polynomial 
+to the inflow boundary to accommodate the potential discontinuity.
+
+There are some other special cases that require special treatment on the 
+boundary, e.g., when symmetry should be enforced.
+
+We now present two examples 
+
+\subsection{Numerical Test}
 For completeness, we test our ML-WENO algorithm with simple Riemann shock and rarefraction.
 Let $\mathbf{f}(u) = (u^2/2, u^2/2)$ be the Burgers flux function. In this example,
 we take the initial condition $u_0(x,y) = 1$, and the computational domain $\Omega = [0,3] \times [0,1]$.
@@ -371,12 +397,5 @@ u(x,y,t) = \left \{
 \end{aligned}
 		  \right.
 \end{equation}
-We forward martching to the time = $2.0$, when trailing rarefaction reaches the leading shock.
-
-\section{Application to Mantle Simulation}
-Now we discretize equations~\eqref{eq:transport}, with Finite volume scheme.
-
-\subsection{Discretization of Enthalpy Transport Equation}
-
-
-\subsection{Discretization of Composition Transport Equation}
+We forward martching to the time = $2.0$, when trailing rarefaction reaches the 
+leading shock. We use SSP2RK time stepping scheme.
