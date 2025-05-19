@@ -99,14 +99,12 @@ where $\mathbf{x}_{e,i}$ is the coordinates of the middle point of the
 edge $e_i$. 
 Here, $i \equiv i \Mod{4}$.
 We can restrict the edge basis function to edges as
-\begin{equation}
+\begin{equation}\label{eq:edgerestriction}
 		  \varphi^{(2)}_{e,i}|_{e,j} = \left \{
 					 \begin{aligned}
-								&\frac{\big( (\mathbf{x} - \mathbf{x}_{v_{i+1}}) \cdot \pmb{\nu_i} \big)
-								\big( (\mathbf{x} - \mathbf{x}_{v_{i+3}}) \cdot \pmb{\nu_i} \big)}%{\big( (\mathbf{x}_{e,i} - \mathbf{x}_{v_i}) \cdot \pmb{\nu_i} \big)
-			%					\big( (\mathbf{x}_{e,i} - \mathbf{x}_{v_{i+3}}) \cdot \pmb{\nu_i} \big)}, \hspace{0.2cm} i=j\\
-								{\lvert e_i \rvert^2/ 4}, \hspace{0.2cm} i=j \\
-								& 0, \hspace{5.6cm} i\neq j
+								&\frac{\lambda_{i+1}(\mathbf{x})\lambda_{i+3}(\mathbf{x})}
+								{\lambda_{i+1}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})}, \hspace{0.2cm} i=j \\
+								& 0, \hspace{3.4cm} i\neq j
 					 \end{aligned}
 		  \right .
 \end{equation}
@@ -253,10 +251,7 @@ operator for future reference.
 		  See~\cite{directSerendipity}.
 \end{proof}
 
-\section{Mixed Finite Element}
-We introduce a $H^1$ and a $H(\text{div})$ 
-conforming mixed element space constructed with the pre-defined direct serendipity space.
-
+\section{Mixed Finite Element Discretization}
 Recall Ciarlet's definition~\cite{doi:10.1137/1.9780898719208} 
 of a finite element.
 \begin{defn}\label{def:ciarletFEM}
@@ -266,7 +261,7 @@ of a finite element.
 					 \item Space of shape function $X(E)$, and a set of 
 								shape function $\varphi_i \in X(E)$. The dimension of
 								the shape function space $\text{dim}(X(E)) = n$;
-					 \item A set of continuous and linear functionals $\varphi_j$
+					 \item A set of continuous and linear functionals $\phi_j$
 								\begin{equation}
 										  \phi_j : X(E) \supset \mathcal{X}(E) \rightarrow \mathbb{R},
 								\end{equation}
@@ -281,7 +276,47 @@ using first and second order direct serendipity space and corresponding
 degrees of freedom.
 We also provide explicit construction of shape functions.
 
-\subsection{$H(\text{div})$ Conforming Element}
+We introduce a $H^1$ and a $H(\text{div})$ 
+conforming mixed element space constructed with the pre-defined direct serendipity space
+for Darcy and Stokes problems.
+
+\subsection{A Darcy Model Problem}
+Consider a model problem for Darcy equation as
+\begin{equation}
+\begin{aligned}
+\bold{u} + \nabla p & = \bold{f}, \hspace{0.2cm} \text{in} \hspace{0.2cm} \Omega\\
+\nabla \cdot \bold{u} & = 0, \hspace{0.25cm} \text{in} \hspace{0.2cm} \Omega \\
+\mathbf{u} &= \mathbf{0}, \hspace{0.2cm} \text{on} \hspace{0.2cm} \partial \Omega
+\end{aligned}
+\end{equation}
+We seek solution in the following energy space as
+\begin{equation}
+		  \begin{aligned}
+					 \mathbb{V} &= \{\mathbf{v} \in (H(\text{div};\Omega))^2 : \mathbf{v}\cdot\pmb{\nu} = 0 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\}, \\
+					 \mathbb{U} &= \{\mathbf{u} \in (H(\text{div};\Omega))^2 : \mathbf{u}\cdot\pmb{\nu} = \mathbf{0} 
+					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \mathbb{V}, \\
+					 \mathbb{W} &= \{p \in L^2(\Omega) : \int_\Omega p d\mathbf{x} = 0\} = L^2(\Omega)/\mathbb{R}.
+		  \end{aligned}
+\end{equation}
+We write weak form with these energy space, and consider the standard variational form : find $\mathbf{u} \in \mathbb{U}$  
+and $p \in L^2(\Omega)$ such that
+\begin{equation}\label{eq:hdivweakmodel}
+		  \begin{aligned}
+					 (\mathbf{u}, \mathbf{v}) - (p, \nabla \cdot \mathbf{v}) &= (\mathbf{f},\mathbf{v}), \hspace{0.2cm} \forall \mathbf{v} \in \mathbb{V},\\
+					 (\nabla \cdot \mathbf{u}, \omega) &= 0, \hspace{1cm} \forall \omega \in \mathbb{W}.
+		  \end{aligned}
+\end{equation}
+We introduce two finite-dimensional subspace $\mathbb{V}_h \subset \mathbb{V}$ and $\mathbb{W}_h \subset \mathbb{W}$, and consider
+the discretized problem: find $(\mathbf{u}_h,p_h) \in \mathbb{V}_h \times \mathbb{W}_h$ such that
+\begin{equation}\label{eq:hdivwekamodel_dis}
+		  \begin{aligned}
+					 (\mathbf{u}_h, \mathbf{v}_h) - (p_h, \nabla \cdot \mathbf{v}_h) &= (\mathbf{f},\mathbf{v}_h), \hspace{0.2cm} \forall \mathbf{v}_h \in \mathbb{V}_h,\\
+					 (\nabla \cdot \mathbf{u}_h, \omega_h) &= 0, \hspace{1.15cm} \forall \omega_h \in \mathbb{W}_h.
+		  \end{aligned}
+\end{equation}
+Now we construct a pair of discretized space $\mathbb{V}_h \times \mathbb{W}_h$ in the following section.
+
+\subsection{A reduced $H(\text{div})$ conforming space $\mathbb{V}_1^{0}$}
 We have some choice for $H(\text{div})$ confirming space. 
 For example, we can choose the famous Ravier-Thomas element 
 by~\cite{10.1007/BFb0064470}. The serendipity space is
@@ -389,10 +424,10 @@ where the index $i$ is understood in modulo of 4. Then define $\pmb{\varphi}^*_{
 \end{equation}
 We then define the "constant" basis function defined on the edge as
 \begin{equation}\label{eq:constbasis}
-		  \pmb{\varphi}_{e,i}= \frac{(\mathbf{x}_{v,i} - \mathbf{x}_{v,i+2}) \cdot \pmb{\nu}_{i+1} \lvert e_{i+1} \rvert\pmb{\varphi}^*_{v,i} + \mathbf{x} - \mathbf{x}_{v,i+2}}
+		  \pmb{\varphi}_{c,i}= \frac{(\mathbf{x}_{v,i} - \mathbf{x}_{v,i+2}) \cdot \pmb{\nu}_{i+1} \lvert e_{i+1} \rvert\pmb{\varphi}^*_{v,i} + \mathbf{x} - \mathbf{x}_{v,i+2}}
 		  {(\mathbf{x}_{v,i} - \mathbf{x}_{v,i+2}) \cdot \pmb{\nu}_{i+1} \lvert e_{i+1} \rvert / \lvert e_i \rvert + (\mathbf{x}_{v,i} - \mathbf{x}_{v,i+2})\cdot \pmb{\nu}_i},
 \end{equation}
-where the index $i$ is again understood in the sense of modulo of 4. The defined basis function $\pmb{\varphi}_{e,i}$ has flux of constant value $1$ on $e_i$ and $0$ 
+where the index $i$ is again understood in the sense of modulo of 4. The defined basis function $\pmb{\varphi}_{c,i}$ has flux of constant value $1$ on $e_i$ and $0$ 
 on all the other edges. In Figure~\ref{fig:varphic},
 we draw $\pmb{\varphi}_{c,2}$ on the left element and $\pmb{\varphi}_{c,0}$ on
 the right element sharing a edge,
@@ -405,6 +440,8 @@ joining continuously as a constant $1$ on the shared edge.
 		  \caption{Constant basis function $\pmb{\varphi}_c$.}
 		  \label{fig:varphic}
 \end{figure}
+
+\subsection{Stability and Approximation Properties for $\mathbb{V}_1^0$}
 
 The accuracy and stability of such element has been well studied and 
 tested in the work by~\cite{directSerendipity}.
@@ -450,26 +487,67 @@ $W_s = \nabla \cdot \mathbb{V}_1^0$, which is a constant value in our case.
 		  See~\cite{directSerendipity}.
 \end{proof}
 
-\subsection{$H^1$ Conforming Element}
+\subsection{A Stokes Model Problem}
+Consider a model problem for Stokes equation as
+Find the displacement $\mathbf{u}$ and pressure $p$ such that
+\begin{equation}\label{eq:stokesmodel}
+		  \begin{aligned}
+					 -\Delta \mathbf{u} + \nabla p &= \mathbf{f} \hspace{0.3cm} \text{in} \hspace{0.2cm} \Omega, \\
+					 \nabla \cdot \mathbf{u}  &= 0 \hspace{0.3cm} \text{in} \hspace{0.2cm} \Omega,\\
+					 \mathbf{u} &= \mathbf{0} \hspace{0.25cm} \text{on} \hspace{0.2cm} \partial \Omega.
+		  \end{aligned}
+\end{equation}
+%where $f \in L^2(\Omega)$, and 
+%$\pmb{\tau}(\mathbf{u}) = 2(\mathcal{D} \mathbf{u} - 1/3 \nabla \cdot \mathbf{u}
+%\mathbf{I})$. The symmetrical gradient 
+%$\mathcal{D} \mathbf{u} = 1/2(\nabla \mathbf{u} + \nabla \mathbf{u}^T)$.
+We define a simple choice of energy space
+\begin{equation}
+		  \begin{aligned}
+					 \mathbb{V} &= \{\mathbf{v} \in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = (H^1_0(\Omega))^2, \\
+					 \mathbb{U} &= \{\mathbf{u} \in (H^1(\Omega))^2 : \mathbf{u} = \mathbf{0} 
+					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \mathbb{V}, \\
+					 \mathbb{W} &= \{p \in L^2(\Omega) : \int_{\Omega}p d\mathbf{x} = 0\} = L^2(\Omega)/\mathbb{R},
+		  \end{aligned}
+\end{equation}
+We write weak form with these energy space, and consider the standard variational form : find $\mathbf{u} \in \mathbb{U}$  
+and $p \in L^2(\Omega)$ such that
+\begin{equation}\label{eq:stokesweakmodel}
+		  \begin{aligned}
+					 (\nabla \mathbf{u}, \nabla\mathbf{v}) - (p, \nabla \cdot \mathbf{v}) &= (\mathbf{f},\mathbf{v}), \hspace{0.2cm} \forall \mathbf{v} \in \mathbb{V},\\
+					 (\nabla \cdot \mathbf{u}, \omega) &= 0, \hspace{1cm} \forall \omega \in \mathbb{W}.
+		  \end{aligned}
+\end{equation}
+We introduce two finite-dimensional subspace $\mathbb{V}_h \subset \mathbb{V}$ and $\mathbb{W}_h \subset \mathbb{W}$, and consider
+the discretized problem: find $(\mathbf{u}_h,p_h) \in \mathbb{V}_h \times \mathbb{W}_h$ such that
+\begin{equation}\label{eq:stokesweakmodel_dis}
+		  \begin{aligned}
+					 (\nabla \mathbf{u}_h, \nabla \mathbf{v}_h) - (p_h, \nabla \cdot \mathbf{v}_h) &= (\mathbf{f},\mathbf{v}_h), \hspace{0.2cm} \forall \mathbf{v}_h \in \mathbb{V}_h,\\
+					 (\nabla \cdot \mathbf{u}_h, \omega_h) &= 0, \hspace{1.15cm} \forall \omega_h \in \mathbb{W}_h.
+		  \end{aligned}
+\end{equation}
+Now we construct a pair of discretized space $\mathbb{V}_h \times \mathbb{W}_h$ in the following section.
+
+\subsection{Modified Bernardi-Raugel Element}
 Stable mixed finite element pair for Stokes problem has been widely researched.
 We are referring to the element discussed by~\cite{BRelement} and by~\cite{Fortin1981OldAN}.
-A more general type of element was discussed by~\cite{doi:10.1137/S0036142903435247}.
+A similar type of element was discussed by~\cite{doi:10.1137/S0036142903435247}.
 
-Vertex basis mapping to sobolev space difficulty.
-Need Cl\'ement interpolation.
-Define $\Pi$ operator two parts.
-
-We consider the following space for each element $E \in \mathcal{T}_h$ as
+Inspired by the work in direct serendipity space,
+we consider the following modified space for each element $E \in \mathcal{T}_h$ as
 \begin{equation}\label{eq:br}
 		  V_1^{\mathcal{BR}}(E) = (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3\},
 \end{equation}
 where $\mathbf{b}_i$ is a quadratic bubble function defined on each edge $e_i$.
-We pick previously defined function $\varphi_{e,i} \in \mathcal{DS}_2$ as
+One natural pick is the previously defined function $\varphi^{(2)}_{e,i} \in \mathcal{DS}_2$ as
 \begin{equation}\label{eq:bubble}
-		  \mathbf{b}_i = \varphi_{e,i}(\mathbf{x})\mathbf{n}_i
+		  \mathbf{b}_i = \varphi^{(2)}_{e,i}(\mathbf{x})\mathbf{n}_i, 
 \end{equation}
-which is quadratic when restricted to edge $e_i$. 
-\begin{lem}\label{lem:unisolvence}
+which is quadratic when restricted to edge $e_i$ according to equation~\eqref{eq:edgerestriction}. 
+The quadratic bubble is guaranteed to be conforming since it evaluates zeros on two vertex and $1$ at 
+the middle point of the edge due to normalization. The integral of this quadratic bubble can be
+accurately computed by a three points gaussian quadrature rule.
+\begin{defn}\label{lem:unisolvence}
 		  For an element $E\in \mathcal{T}_h$, $\mathbf{u}_h$ is uniquely defined
 		  by the following degrees of freedom:
 
@@ -483,10 +561,9 @@ which is quadratic when restricted to edge $e_i$.
 		  \begin{equation*}
 					 DOF^{(ii)}_{e_i} = \langle \mathbf{u}_h \cdot \pmb{\nu}_i, 1 \rangle,
 		  \end{equation*}
-\end{lem}
-\begin{proof}
-We prove the lemma by construction. 
-We pick nodal badis on vertex $v_i$ in two Cartesian direction as
+\end{defn}
+We give an explicit construction of basis functions using driect serendipity space. 
+We pick nodal basis on vertex $v_i$ in two Cartesian direction as
 		  \begin{equation}
 					 N_{v_i,x} = \begin{bmatrix}
 								\psi_{v,i}(\mathbf{x})\\
@@ -506,17 +583,17 @@ functions cannot be in the same space as nodal basis function.
 We conclude
 that this element is well-defined, i.e., the degrees of freedom uniquely 
 determine the function.
-\end{proof}
 
+\subsection{Stability and Approximation Properties for $\mathbb{V}_1^{\mathcal{BR}}$}
 We need a $\pi$ operator, which mappes $(H^1(E))^2$ onto $V_1^{\mathcal{BR}}$ 
 for our spaces. For $\mathbf{v} \in (H^1(\Omega))^2$, 
 let $\pi \mathbf{v} \in \mathbb{V}_1^{\mathcal{BR}}$ be defined as the 
-interpolant of the degrees of freedom from~\ref{lem:unisolvence}. For each $F$,
+interpolant of the degrees of freedom from~\ref{lem:unisolvence}. For each element $E$,
 we require the following as
 
-(i) For each corner point $v \in \partial F$
+(i) For each corner point $v \in \partial E$
 \begin{equation}
-		  \pi \mathbf{v}(\mathbf{x}_v) \cdot \pmb{i} = \mathcal{I}_{\mathcal{DS}_1}\mathbf{v}(\mathbf{x}_v) \cdot \pmb{j}.
+		  \pi \mathbf{v}(\mathbf{x}_v) = \mathcal{I}_{\mathcal{DS}_1}\mathbf{v}(\mathbf{x}_v).
 \end{equation}
 
 (ii) On each edge $e \subset \partial E$,
@@ -542,7 +619,7 @@ We now prove the approximability and stability of our projection operator and ev
 		  (ii) $\forall \mathbf{v} \in (H^1(\Omega))^2$
 \end{lem}
 
-\subsection{Test Stokes Problem}
+\subsection{Test Modified Bernardi-Raugel Element}
 \iffalse
 We test our modified BR element on a test Stokes problem. 
 We begin with the strong form of the static Stokes problem as 
@@ -586,7 +663,7 @@ We compare our numerical solution with the closed form as
 \end{equation}
 \fi
 We test our modified Bernardi-Raugel elements on the 
-incompressible isotropic elasticity problem with a simple homogenous Dirichlet boundary condition:
+incompressible isotropic elasticity problem but with a non-homogenous Dirichlet boundary condition:
 
 Find the displacement $\mathbf{u}$ and pressure $p$ such that
 \begin{equation}\label{eq:testbr}
@@ -603,8 +680,8 @@ Find the displacement $\mathbf{u}$ and pressure $p$ such that
 We define a simple choice of energy space
 \begin{equation}
 		  \begin{aligned}
-					 \mathbb{V} &= \{\mathbf{v} \in (H^1{\Omega})^2 : \mathbf{v} = \mathbf{0} \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\}, \\
-					 \mathbb{U} &= \{\mathbf{u} \in (H^1{\Omega})^2 : \mathbf{u} = \mathbf{g} 
+					 \mathbb{V} &= \{\mathbf{v} \in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\}, \\
+					 \mathbb{U} &= \{\mathbf{u} \in (H^1(\Omega))^2 : \mathbf{u} = \mathbf{g} 
 					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \tilde{\mathbf{g}} +\mathbb{V}, \\
 					 \mathbb{W} &= \{p \in L^2(\Omega)/\mathbb{R}\},
 		  \end{aligned}
@@ -619,7 +696,7 @@ and $p \in L^2(\Omega)$ such that
 \begin{equation}\label{eq:testbrweak}
 		  \begin{aligned}
 					 (\nabla \mathbf{u}, \nabla\mathbf{v}) - (p, \nabla \cdot \mathbf{v}) &= (\mathbf{f},\mathbf{v}), \hspace{0.2cm} \forall \mathbf{v} \in \mathbb{V},\\
-					 (\nabla \cdot \mathbf{u}, \omega) &= 0, \hspace{1cm} \forall \omega \in L^2(\Omega).
+					 (\nabla \cdot \mathbf{u}, \omega) &= 0, \hspace{1cm} \forall \omega \in \mathbb{W}.
 		  \end{aligned}
 \end{equation}
 We consider the true solution of test problem~\eqref{eq:testbrweak} defined on a square region
@@ -633,12 +710,10 @@ as
 		  \mathbf{u} = \begin{bmatrix}
 					 &\cos(x)\sin(y) \\
 					 -&\sin(x)\cos(y)
-		  \end{bmatrix}, \quad \nabla p = \begin{bmatrix}
-					 \cos(x)\sin(y) \\
-					 \sin(x)\cos(y)
-		  \end{bmatrix},
+		  \end{bmatrix}, \quad  p =
+					 \sin(x)\sin(y),
 \end{equation}
-which has a $0$ normal flux on the boundary.
+which has $0$ normal flux on the boundary.
 We deal with the constant kernal by enforcing a condition that
 $\int_{\Omega} p d\mathbf{x}= 0$ and solve the linear system directly.
 The numerical results are computed on rectangular~\ref{fig:brtest1} 
