@@ -1,4 +1,4 @@
-\begin{tikzpicture}[scale = 2.5, declare function = {len(\x, \y) = sqrt(\x*\x+\y*\y);
+\begin{tikzpicture}[scale = 2, declare function = {len(\x, \y) = sqrt(\x*\x+\y*\y);
                                                      tangx(\x, \y) = \x/sqrt(\x*\x+\y*\y);
 																	  tangy(\x, \y) = \y/sqrt(\x*\x+\y*\y);}
                    ]
@@ -20,7 +20,24 @@
 \draw (a) -- (b) -- (c) -- (d) -- cycle;
 
 \draw (0.5,0.5) node (A) {$\hat{E}$};
-\draw (0.5+3.1, 0.5) node (B) {$E$};
+\draw (0.5+3.1, 0.5) node (B) {$\tilde{E}$};
+\draw (0.5+6.2, 0.5) node (B) {$E$};
+
+\draw [->] (1.8+3.1, 0.55) -- (2.3+3.1, 0.55);
+\draw (2.05+3.1, 0.5) node[above = 1mm] {$H$};
+\draw [<-] (1.8+3.1, 0.45) -- (2.3+3.1, 0.45);
+		  \draw (2.05+3.1, 0.5) node[below = 1mm] {$H^{-1}$};
+
+\coordinate (a) at (-0.1  + 6.2, -0.05);
+\coordinate (b) at ( 1.15 + 6.2,  0.08);
+\coordinate (c) at ( 0.85 + 6.2,  1.07);
+\coordinate (d) at ( 0.02 + 6.2,  0.82);
+
+%\draw (-0.1 + 3.1, -0.05) -- (1.15 + 3.1, 0.08) -- ( 0.85 + 3.1, 1.07) -- 
+%      (0.02 + 3.1, 0.82) -- cycle;
+
+\draw (a) -- (b) -- (c) -- (d) -- cycle;
+
 
 \fill[black] (0.0,0.0) circle(0.5pt);
 \draw [node font=\scriptsize] (0.0,0.0) node[below left=1mm] {$\hat{v}_0$};
@@ -64,60 +81,60 @@
 
 % =============================================================================
 
-\fill[black] (-0.1+3.1,-0.05) circle(0.5pt);
-\draw [node font=\scriptsize] (-0.1+3.1,-0.05) node[below left=1mm] {$v_0$};
+\fill[black] (-0.1+6.2,-0.05) circle(0.5pt);
+\draw [node font=\scriptsize] (-0.1+6.2,-0.05) node[below left=1mm] {$v_0$};
 
-\fill[black] (1.15+3.1,0.08) circle(0.5pt);
-\draw [node font=\scriptsize] (1.15+3.1,0.08) node[below right=1mm] {$v_1$};
+\fill[black] (1.15+6.2,0.08) circle(0.5pt);
+\draw [node font=\scriptsize] (1.15+6.2,0.08) node[below right=1mm] {$v_1$};
 
-\fill[black] (0.85+3.1,1.07) circle(0.5pt);
-\draw [node font=\scriptsize] (0.85+3.1,1.07) node[above right=1mm] {$v_2$};
+\fill[black] (0.85+6.2,1.07) circle(0.5pt);
+\draw [node font=\scriptsize] (0.85+6.2,1.07) node[above right=1mm] {$v_2$};
 
-\fill[black] (0.02+3.1,0.82) circle(0.5pt);
-\draw [node font=\scriptsize] (0.02+3.1,0.82) node[above left=1mm] {$v_3$};
+\fill[black] (0.02+6.2,0.82) circle(0.5pt);
+\draw [node font=\scriptsize] (0.02+6.2,0.82) node[above left=1mm] {$v_3$};
 
-\fill[black] (1.14/2+3.1,0.015) circle(0.5pt);
-\draw [-{Latex[length=1.5mm]}] (1.14/2+3.1,0.015) -- ({1.14/2+3.1 + 0.2*1.16/sqrt(1.16*1.16+0.13*0.13)}, 
+\fill[black] (1.14/2+6.2,0.015) circle(0.5pt);
+\draw [-{Latex[length=1.5mm]}] (1.14/2+6.2,0.015) -- ({1.14/2+6.2 + 0.2*1.16/sqrt(1.16*1.16+0.13*0.13)}, 
                                                       {0.015 + 0.2*0.13/sqrt(1.16*1.16+0.13*0.13)});
-\draw [-{Latex[length=1.5mm]}] (1.14/2+3.1,0.015) -- ({1.14/2+3.1 + 0.2*0.13/sqrt(1.16*1.16+0.13*0.13)}, 
+\draw [-{Latex[length=1.5mm]}] (1.14/2+6.2,0.015) -- ({1.14/2+6.2 + 0.2*0.13/sqrt(1.16*1.16+0.13*0.13)}, 
                                                       {0.015 - 0.2*1.16/sqrt(1.16*1.16+0.13*0.13)});
-\draw [node font=\scriptsize] ({1.14/2+3.1 + 0.2*0.13/sqrt(1.16*1.16+0.13*0.13)},
+\draw [node font=\scriptsize] ({1.14/2+6.2 + 0.2*0.13/sqrt(1.16*1.16+0.13*0.13)},
 {0.015 - 0.2*1.16/sqrt(1.16*1.16+0.13*0.13)} ) node[below right] {$\hat{\pmb{\nu}}_1$};
-\draw [node font=\scriptsize] ({1.14/2+3.1 + 0.2*1.16/sqrt(1.16*1.16+0.13*0.13)},
+\draw [node font=\scriptsize] ({1.14/2+6.2 + 0.2*1.16/sqrt(1.16*1.16+0.13*0.13)},
 {0.015 + 0.2*0.13/sqrt(1.16*1.16+0.13*0.13)}) node[below right] {$\hat{\pmb{\tau}}_1$};
-\draw [node font=\scriptsize] (1.14/2+3.1, 0.015) node[above] {$e_1$};
+\draw [node font=\scriptsize] (1.14/2+6.2, 0.015) node[above] {$e_1$};
 
-\fill[black] (1.0+3.1,1.15/2) circle(0.5pt);
-\draw [-{Latex[length=1.5mm]}] (1.0+3.1,1.15/2) -- ({1.0+3.1 + 0.2*-0.3/sqrt(0.3*0.3+0.99*0.99)}, 
+\fill[black] (1.0+6.2,1.15/2) circle(0.5pt);
+\draw [-{Latex[length=1.5mm]}] (1.0+6.2,1.15/2) -- ({1.0+6.2 + 0.2*-0.3/sqrt(0.3*0.3+0.99*0.99)}, 
                                                     {1.15/2 + 0.2*0.99/sqrt(0.3*0.3+0.99*0.99)});
-\draw [-{Latex[length=1.5mm]}] (1.0+3.1,1.15/2) -- ({1.0+3.1 + 0.2*0.99/sqrt(0.3*0.3+0.99*0.99)}, 
+\draw [-{Latex[length=1.5mm]}] (1.0+6.2,1.15/2) -- ({1.0+6.2 + 0.2*0.99/sqrt(0.3*0.3+0.99*0.99)}, 
                                                     {1.15/2 - 0.2*-0.3/sqrt(0.3*0.3+0.99*0.99)});
-\draw [node font=\scriptsize] ({1.0+3.1 + 0.2*-0.3/sqrt(0.3*0.3+0.99*0.99)}, 
+\draw [node font=\scriptsize] ({1.0+6.2 + 0.2*-0.3/sqrt(0.3*0.3+0.99*0.99)}, 
 {1.15/2 + 0.2*0.99/sqrt(0.3*0.3+0.99*0.99)}) node[above right] {$\pmb{\nu}_2$};
-\draw [node font=\scriptsize] ({1.0+3.1 + 0.2*0.99/sqrt(0.3*0.3+0.99*0.99)}, 
+\draw [node font=\scriptsize] ({1.0+6.2 + 0.2*0.99/sqrt(0.3*0.3+0.99*0.99)}, 
 {1.15/2 - 0.2*-0.3/sqrt(0.3*0.3+0.99*0.99)}) node[above right] {$\pmb{\tau}_2$};
-\draw [node font=\scriptsize] (1.0+3.1,  1.15/2) node[left] {$e_2$};
+\draw [node font=\scriptsize] (1.0+6.2,  1.15/2) node[left] {$e_2$};
 
-\fill[black] (0.87/2+3.1, 1.89/2) circle(0.5pt);
-\draw [-{Latex[length=1.5mm]}] (0.87/2 +3.1, 1.89/2) -- ({0.87/2 +3.1 + 0.2*-0.83/sqrt(0.83*0.83+0.25*0.25)}, 
+\fill[black] (0.87/2+6.2, 1.89/2) circle(0.5pt);
+\draw [-{Latex[length=1.5mm]}] (0.87/2 +6.2, 1.89/2) -- ({0.87/2 +6.2 + 0.2*-0.83/sqrt(0.83*0.83+0.25*0.25)}, 
 {1.89/2 + 0.2*-0.25/sqrt(0.83*0.83+0.25*0.25)});
-\draw [-{Latex[length=1.5mm]}] (0.87/2 +3.1 , 1.89/2) -- ({0.87/2 +3.1 + 0.2*-0.25/sqrt(0.83*0.83+0.25*0.25)}, 
+\draw [-{Latex[length=1.5mm]}] (0.87/2 +6.2 , 1.89/2) -- ({0.87/2 +6.2 + 0.2*-0.25/sqrt(0.83*0.83+0.25*0.25)}, 
 {1.89/2 - 0.2*-0.83/sqrt(0.83*0.83+0.25*0.25)});
-\draw [node font=\scriptsize] ({0.87/2 +3.1 + 0.2*-0.25/sqrt(0.83*0.83+0.25*0.25)},
+\draw [node font=\scriptsize] ({0.87/2 +6.2 + 0.2*-0.25/sqrt(0.83*0.83+0.25*0.25)},
 {1.89/2 - 0.2*-0.83/sqrt(0.83*0.83+0.25*0.25)}) node[above left] {$\pmb{\nu}_3$};
-\draw [node font=\scriptsize] ({0.87/2 +3.1 + 0.2*-0.83/sqrt(0.83*0.83+0.25*0.25)},
+\draw [node font=\scriptsize] ({0.87/2 +6.2 + 0.2*-0.83/sqrt(0.83*0.83+0.25*0.25)},
 {1.89/2 + 0.2*-0.25/sqrt(0.83*0.83+0.25*0.25)}) node[above left] {$\pmb{\tau}_3$};
-\draw [node font=\scriptsize] (0.87/2+3.1, 1.89/2) node[below] {$e_3$};
+\draw [node font=\scriptsize] (0.87/2+6.2, 1.89/2) node[below] {$e_3$};
 
-\fill[black] (-0.04 + 3.1,0.77/2) circle(0.5pt);
-\draw [-{Latex[length=1.5mm]}] (-0.04+3.1,0.77/2) -- ({-0.04+3.1 + 0.2*-0.12/sqrt(0.12*0.12+0.87*0.87)},  
+\fill[black] (-0.04 + 6.2,0.77/2) circle(0.5pt);
+\draw [-{Latex[length=1.5mm]}] (-0.04+6.2,0.77/2) -- ({-0.04+6.2 + 0.2*-0.12/sqrt(0.12*0.12+0.87*0.87)},  
 {0.77/2 + 0.2*-0.87/sqrt(0.12*0.12+0.87*0.87)});
-\draw [-{Latex[length=1.5mm]}] (-0.04+3.1,0.77/2) -- ({-0.04+3.1 + 0.2*-0.87/sqrt(0.12*0.12+0.87*0.87)},
+\draw [-{Latex[length=1.5mm]}] (-0.04+6.2,0.77/2) -- ({-0.04+6.2 + 0.2*-0.87/sqrt(0.12*0.12+0.87*0.87)},
 {0.77/2 - 0.2*-0.12/sqrt(0.12*0.12+0.87*0.87)});
-\draw [node font=\scriptsize] ({-0.04+3.1 + 0.2*-0.87/sqrt(0.12*0.12+0.87*0.87)},
+\draw [node font=\scriptsize] ({-0.04+6.2 + 0.2*-0.87/sqrt(0.12*0.12+0.87*0.87)},
 {0.77/2 - 0.2*-0.12/sqrt(0.12*0.12+0.87*0.87)}) node[below left] {$\pmb{\nu}_0$};
-\draw [node font=\scriptsize] ({-0.04+3.1 + 0.2*-0.12/sqrt(0.12*0.12+0.87*0.87)},
+\draw [node font=\scriptsize] ({-0.04+6.2 + 0.2*-0.12/sqrt(0.12*0.12+0.87*0.87)},
 {0.77/2 + 0.2*-0.87/sqrt(0.12*0.12+0.87*0.87)}) node[below left] {$\pmb{\tau}_0$};
-\draw [node font=\scriptsize] (-0.04+3.1,0.77/2) node[right] {$e_0$};
+\draw [node font=\scriptsize] (-0.04+6.2,0.77/2) node[right] {$e_0$};
 
 \end{tikzpicture}

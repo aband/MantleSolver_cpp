@@ -184,7 +184,7 @@ int main(int argc, char ** argv){
     int dof=0;
     ierr = PetscOptionsGetInt(NULL,NULL,"-dof",&dof,NULL);CHKERRQ(ierr);
 
-    int seed = 11;
+    int seed = 101;
     double h = 1.0/(double) (seed-1) ;
 
     // Define a mapping from reference [1 0, 0 1] to a quad
@@ -219,16 +219,18 @@ int main(int argc, char ** argv){
         vertex target1 = bilinearMap(corners1, sample);
         std::array<vertex, 8>  values1 = hdiv->ComputeHdivmixed(*basis_, target1);
         //std::vector<vertex> newvalues1 = hdiv->EvaluateAll(*basis_, target);
+	     std::array<vertex, 12> brvalues1 = br->ComputeBRmixed(*basis_, target1);
      
         basis_->GetCorners(corners2);
         vertex target2 = bilinearMap(corners2, sample);
         std::array<vertex, 8>  values2 = hdiv->ComputeHdivmixed(*basis_, target2);
+ 	     std::array<vertex, 12> brvalues2 = br->ComputeBRmixed(*basis_, target2);
  
         fprintf(fx1, "%f ", target1[0]);
         fprintf(fy1, "%f ", target1[1]);
         fprintf(fx2, "%f ", target2[0]);
         fprintf(fy2, "%f ", target2[1]);
-
+/*
         fprintf(vx1, "%f ", values1[2][0]);
         fprintf(vy1, "%f ", values1[2][1]);
         fprintf(vx2, "%f ", values2[0][0]);
@@ -238,9 +240,23 @@ int main(int argc, char ** argv){
         fprintf(uy1, "%f ", values1[2+4][1]);
         fprintf(ux2, "%f ", values2[0+4][0]);
         fprintf(uy2, "%f ", values2[0+4][1]);
+*/
+        fprintf(vx1, "%f ", brvalues1[8+2][0]);
+        fprintf(vy1, "%f ", brvalues1[8+2][1]);
+        fprintf(vx2, "%f ", brvalues2[8+0][0]);
+        fprintf(vy2, "%f ", brvalues2[8+0][1]);
 
+        fprintf(ux1, "%f ", brvalues1[2+4][0]);
+        fprintf(uy1, "%f ", brvalues1[2+4][1]);
+        fprintf(ux2, "%f ", brvalues2[0+4][0]);
+        fprintf(uy2, "%f ", brvalues2[0+4][1]);
+/*
         fprintf(sc1, "%f ", values1[2][0]*unitNormal[0] + values1[2][1]*unitNormal[1]);
         fprintf(sc2, "%f ", values2[0][0]*unitNormal[0] + values2[0][1]*unitNormal[1]);
+		  */
+        fprintf(sc1, "%f ", brvalues1[8+2][0]*unitNormal[0] + brvalues1[8+2][1]*unitNormal[1]-1);
+        fprintf(sc2, "%f ", brvalues2[8+0][0]*unitNormal[0] + brvalues2[8+0][1]*unitNormal[1]-1);
+
         fprintf(scc1, "%f ", values1[2+4][0]*unitNormal[0] + values1[2+4][1]*unitNormal[1]);
         fprintf(scc2, "%f ", values2[0+4][0]*unitNormal[0] + values2[0+4][1]*unitNormal[1]);
 

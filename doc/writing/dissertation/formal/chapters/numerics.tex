@@ -11,19 +11,23 @@
 \label{numerics}
 We introduce a locally mass conserving numerical framework.
 We solve the static mechanics system with 
-conforming mixed finite element method,
-which is adjusted to be locally mass conservative. 
-We solve the transport system with finite volume scheme, which is 
-a mass conservative scheme.
-
+conforming mixed finite element method (MFEM),
+where the normal flux are captured at the edges of element by the 
+MFEM scheme.
+The weak form is adjusted to be locally mass conservative. 
+We solve the transport system with finite volume method (FVM), which is 
+naturally a locally mass conservative scheme.
+We discuss MFEM and FVM separately and give error estimation.
+We provide a detailed coupling strategy combining MFEM, FVM and eutectic phase
+package in the end of this chapter.
 \input chapters/mesh.tex
 
 \input chapters/ds.tex
 
-\input chapters/mfem.tex
+%\input chapters/mfem.tex
 
-\input chapters/linear.tex
+%\input chapters/linear.tex
 
-\input chapters/mlweno.tex
+%\input chapters/mlweno.tex
 
 %\input chapters/couple.tex
