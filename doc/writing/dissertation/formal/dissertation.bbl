@@ -1,4 +1,4 @@
-\begin{thebibliography}{8}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -53,6 +53,13 @@ Michel Fortin.
 \newblock \emph{International Journal for Numerical Methods in Fluids},
   1:\penalty0 347--364, 1981.
 \newblock URL \url{https://api.semanticscholar.org/CorpusID:122770101}.
+
+\bibitem[Girault and Raviart(2011)]{FinElemMethNavierStokes}
+Vivette Girault and Pierre-Arnaud Raviart.
+\newblock \emph{Finite Element Methods for Navier-Stokes Equations: Theory and
+  Algorithms}.
+\newblock Springer Publishing Company, Incorporated, 1st edition, 2011.
+\newblock ISBN 3642648886.
 
 \bibitem[Raviart and Thomas(1977)]{10.1007/BFb0064470}
 P.~A. Raviart and J.~M. Thomas.

@@ -292,29 +292,29 @@ Consider a model problem for Darcy equation as
 We seek solution in the following energy space as
 \begin{equation}
 		  \begin{aligned}
-					 \mathbb{V} &= \{\mathbf{v} \in (H(\text{div};\Omega))^2 : \mathbf{v}\cdot\pmb{\nu} = 0 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\}, \\
-					 \mathbb{U} &= \{\mathbf{u} \in (H(\text{div};\Omega))^2 : \mathbf{u}\cdot\pmb{\nu} = \mathbf{0} 
-					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \mathbb{V}, \\
-					 \mathbb{W} &= \{p \in L^2(\Omega) : \int_\Omega p d\mathbf{x} = 0\} = L^2(\Omega)/\mathbb{R}.
+					 \mathbb{V}_D &= \{\mathbf{v} \in (H(\text{div};\Omega))^2 : \mathbf{v}\cdot\pmb{\nu} = 0 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\}, \\
+					 \mathbb{U}_D &= \{\mathbf{u} \in (H(\text{div};\Omega))^2 : \mathbf{u}\cdot\pmb{\nu} = \mathbf{0} 
+					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \mathbb{V}_D, \\
+					 \mathbb{W}_D &= \{p \in L^2(\Omega) : \int_\Omega p d\mathbf{x} = 0\} = L^2(\Omega)/\mathbb{R}.
 		  \end{aligned}
 \end{equation}
-We write weak form with these energy space, and consider the standard variational form : find $\mathbf{u} \in \mathbb{U}$  
+We write weak form with these energy space, and consider the standard variational form : find $\mathbf{u} \in \mathbb{U}_D$  
 and $p \in L^2(\Omega)$ such that
 \begin{equation}\label{eq:hdivweakmodel}
 		  \begin{aligned}
-					 (\mathbf{u}, \mathbf{v}) - (p, \nabla \cdot \mathbf{v}) &= (\mathbf{f},\mathbf{v}), \hspace{0.2cm} \forall \mathbf{v} \in \mathbb{V},\\
-					 (\nabla \cdot \mathbf{u}, \omega) &= 0, \hspace{1cm} \forall \omega \in \mathbb{W}.
+					 (\mathbf{u}, \mathbf{v}) - (p, \nabla \cdot \mathbf{v}) &= (\mathbf{f},\mathbf{v}), \hspace{0.2cm} \forall \mathbf{v} \in \mathbb{V}_D,\\
+					 (\nabla \cdot \mathbf{u}, \omega) &= 0, \hspace{1cm} \forall \omega \in \mathbb{W}_D.
 		  \end{aligned}
 \end{equation}
-We introduce two finite-dimensional subspace $\mathbb{V}_h \subset \mathbb{V}$ and $\mathbb{W}_h \subset \mathbb{W}$, and consider
-the discretized problem: find $(\mathbf{u}_h,p_h) \in \mathbb{V}_h \times \mathbb{W}_h$ such that
+We introduce two finite-dimensional subspace $\mathbb{V}_{D,h} \subset \mathbb{V}$ and $\mathbb{W}_{D,h} \subset \mathbb{W}$, and consider
+the discretized problem: find $(\mathbf{u}_h,p_h) \in \mathbb{V}_{D,h} \times \mathbb{W}_{D,h}$ such that
 \begin{equation}\label{eq:hdivwekamodel_dis}
 		  \begin{aligned}
-					 (\mathbf{u}_h, \mathbf{v}_h) - (p_h, \nabla \cdot \mathbf{v}_h) &= (\mathbf{f},\mathbf{v}_h), \hspace{0.2cm} \forall \mathbf{v}_h \in \mathbb{V}_h,\\
-					 (\nabla \cdot \mathbf{u}_h, \omega_h) &= 0, \hspace{1.15cm} \forall \omega_h \in \mathbb{W}_h.
+					 (\mathbf{u}_h, \mathbf{v}_h) - (p_h, \nabla \cdot \mathbf{v}_h) &= (\mathbf{f},\mathbf{v}_h), \hspace{0.2cm} \forall \mathbf{v}_h \in \mathbb{V}_{D,h},\\
+					 (\nabla \cdot \mathbf{u}_h, \omega_h) &= 0, \hspace{1.15cm} \forall \omega_h \in \mathbb{W}_{D,h}.
 		  \end{aligned}
 \end{equation}
-Now we construct a pair of discretized space $\mathbb{V}_h \times \mathbb{W}_h$ in the following section.
+Now we construct a pair of discretized space $\mathbb{V}_{D,h} \times \mathbb{W}_{D,h}$ for this Darcy model problem in the next section.
 
 \subsection{A reduced $H(\text{div})$ conforming space $\mathbb{V}_1^{0}$}
 We have some choice for $H(\text{div})$ confirming space. 
@@ -442,7 +442,6 @@ joining continuously as a constant $1$ on the shared edge.
 \end{figure}
 
 \subsection{Stability and Approximation Properties for $\mathbb{V}_1^0$}
-
 The accuracy and stability of such element has been well studied and 
 tested in the work by~\cite{directSerendipity}.
 We state the result directly for completeness.
@@ -504,29 +503,29 @@ Find the displacement $\mathbf{u}$ and pressure $p$ such that
 We define a simple choice of energy space
 \begin{equation}
 		  \begin{aligned}
-					 \mathbb{V} &= \{\mathbf{v} \in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = (H^1_0(\Omega))^2, \\
-					 \mathbb{U} &= \{\mathbf{u} \in (H^1(\Omega))^2 : \mathbf{u} = \mathbf{0} 
-					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \mathbb{V}, \\
-					 \mathbb{W} &= \{p \in L^2(\Omega) : \int_{\Omega}p d\mathbf{x} = 0\} = L^2(\Omega)/\mathbb{R},
+					 \mathbb{V}_S &= \{\mathbf{v} \in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = (H^1_0(\Omega))^2, \\
+					 \mathbb{U}_S &= \{\mathbf{u} \in (H^1(\Omega))^2 : \mathbf{u} = \mathbf{0} 
+					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \mathbb{V}_S, \\
+					 \mathbb{W}_S &= \{p \in L^2(\Omega) : \int_{\Omega}p d\mathbf{x} = 0\} = L^2(\Omega)/\mathbb{R},
 		  \end{aligned}
 \end{equation}
-We write weak form with these energy space, and consider the standard variational form : find $\mathbf{u} \in \mathbb{U}$  
-and $p \in L^2(\Omega)$ such that
+We write weak form with these energy space, and consider the standard variational form : find $\mathbf{u} \in \mathbb{U}_S$  
+and $p \in \mathbb{W}_S$ such that
 \begin{equation}\label{eq:stokesweakmodel}
 		  \begin{aligned}
-					 (\nabla \mathbf{u}, \nabla\mathbf{v}) - (p, \nabla \cdot \mathbf{v}) &= (\mathbf{f},\mathbf{v}), \hspace{0.2cm} \forall \mathbf{v} \in \mathbb{V},\\
-					 (\nabla \cdot \mathbf{u}, \omega) &= 0, \hspace{1cm} \forall \omega \in \mathbb{W}.
+					 (\nabla \mathbf{u}, \nabla\mathbf{v}) - (p, \nabla \cdot \mathbf{v}) &= (\mathbf{f},\mathbf{v}), \hspace{0.2cm} \forall \mathbf{v} \in \mathbb{V}_S,\\
+					 (\nabla \cdot \mathbf{u}, \omega) &= 0, \hspace{1cm} \forall \omega \in \mathbb{W}_S.
 		  \end{aligned}
 \end{equation}
-We introduce two finite-dimensional subspace $\mathbb{V}_h \subset \mathbb{V}$ and $\mathbb{W}_h \subset \mathbb{W}$, and consider
-the discretized problem: find $(\mathbf{u}_h,p_h) \in \mathbb{V}_h \times \mathbb{W}_h$ such that
+We introduce two finite-dimensional subspace $\mathbb{V}_{S,h} \subset \mathbb{V}$ and $\mathbb{W}_{S,h} \subset \mathbb{W}$, and consider
+the discretized problem: find $(\mathbf{u}_h,p_h) \in \mathbb{V}_{S,h} \times \mathbb{W}_{S,h}$ such that
 \begin{equation}\label{eq:stokesweakmodel_dis}
 		  \begin{aligned}
-					 (\nabla \mathbf{u}_h, \nabla \mathbf{v}_h) - (p_h, \nabla \cdot \mathbf{v}_h) &= (\mathbf{f},\mathbf{v}_h), \hspace{0.2cm} \forall \mathbf{v}_h \in \mathbb{V}_h,\\
-					 (\nabla \cdot \mathbf{u}_h, \omega_h) &= 0, \hspace{1.15cm} \forall \omega_h \in \mathbb{W}_h.
+					 (\nabla \mathbf{u}_h, \nabla \mathbf{v}_h) - (p_h, \nabla \cdot \mathbf{v}_h) &= (\mathbf{f},\mathbf{v}_h), \hspace{0.2cm} \forall \mathbf{v}_h \in \mathbb{V}_{S,h},\\
+					 (\nabla \cdot \mathbf{u}_h, \omega_h) &= 0, \hspace{1.15cm} \forall \omega_h \in \mathbb{W}_{S,h}.
 		  \end{aligned}
 \end{equation}
-Now we construct a pair of discretized space $\mathbb{V}_h \times \mathbb{W}_h$ in the following section.
+Now we construct a pair of discretized space $\mathbb{V}_{S,h} \times \mathbb{W}_{S,h}$ for this Stokes model problem in the next section.
 
 \subsection{Modified Bernardi-Raugel Element}
 Stable mixed finite element pair for Stokes problem has been widely researched.
@@ -575,7 +574,7 @@ We pick nodal basis on vertex $v_i$ in two Cartesian direction as
 		  \end{equation}
 We pick edge basis on edge $e_i$ as
 \begin{equation}
-		  N_{e} = \varphi_{e,i}\pmb{\nu}_i
+		  N_{e} = \varphi^{(2)}_{e,i}\pmb{\nu}_i
 \end{equation}
 Note that bubble functions are quadratic when restricted to edge $e_i$, while
 nodal basis functions are linear when restricted to edge $e_i$, therefore bubble
@@ -584,40 +583,96 @@ We conclude
 that this element is well-defined, i.e., the degrees of freedom uniquely 
 determine the function.
 
-\subsection{Stability and Approximation Properties for $\mathbb{V}_1^{\mathcal{BR}}$}
-We need a $\pi$ operator, which mappes $(H^1(E))^2$ onto $V_1^{\mathcal{BR}}$ 
-for our spaces. For $\mathbf{v} \in (H^1(\Omega))^2$, 
-let $\pi \mathbf{v} \in \mathbb{V}_1^{\mathcal{BR}}$ be defined as the 
-interpolant of the degrees of freedom from~\ref{lem:unisolvence}. For each element $E$,
-we require the following as
+We define the corresponding discrete pressure sapce as
+\begin{equation}
+\mathbb{W}_0 = \{\omega \in L^2{\Omega}; \omega|_E \in P_0 \} \cap L^2(\Omega)/\mathbb{R},
+\end{equation}
+which holds piece wise constant values for each element $E$.
+We provide stability and approximation analysis for this space pair $\mathbb{V}_1^{\mathcal{BR}} \times \mathbb{W}_0$
+in the next section.
+
+\subsection{Stability and Approximation Properties for $\mathbb{V}_1^{\mathcal{BR}}\times\mathbb{W}_0$}
+Before analyze the stability and approximation properties for the 
+modified, we state some useful lemma.
+\begin{lem}\label{lem:intestimate}
+Let $K$ be a nondengenate convex quadrilateral.
+Assuming we have shape regularity~\ref{def:shaperegularity}.
+For each integer $m\geq 0$
+and real number $p \in [1,\infty]$ there exist positive constants $C_1$,
+and $C_2$ independent of the geometry of $E$ such that the following
+upper bound hold for all $v \in W_p^m(E)$:
+\begin{equation}
+\left \{  \begin{aligned}
+&\lvert v \rvert_{W^0_p(K)} \leq C_1 h_E^{2/p}\lvert \tilde{v} \rvert_{W^0_p(\tilde{K})},\\
+&\lvert v \rvert_{W^1_p(K)} \leq C_2(\sigma^*,p) \lvert \tilde{v} \rvert_{W^1_p(\tilde{K})},
+\end{aligned}
+\right.
+\end{equation}
+where $\tilde{K}$ represents quadrilateral before scaling illustrated in Figure~\ref{fig:meshexample}, and
+$\tilde{v}$ is function defined on $\tilde{K}$ before scaling.
+\end{lem}
+\begin{proof}
+See~\cite{FinElemMethNavierStokes}. 
+\end{proof}
+
+With the interpolation operator $\mathcal{I}_{\mathcal{DS}_1}$ defined in~\ref{eq:interpolation},
+we define the projection operator $\pi_h \in (H^1_0(\Omega))^2 \rightarrow \mathbb{V}_1^{BR} \cap (H^1_0(\Omega))^2$ by:
 
 (i) For each corner point $v \in \partial E$
-\begin{equation}
-		  \pi \mathbf{v}(\mathbf{x}_v) = \mathcal{I}_{\mathcal{DS}_1}\mathbf{v}(\mathbf{x}_v).
+\begin{equation}\label{eq:nodaldof}
+		  \pi_h \mathbf{v}(\mathbf{x}_v) = \mathcal{I}_{\mathcal{DS}_1}\mathbf{v}(\mathbf{x}_v).
 \end{equation}
 
 (ii) On each edge $e \subset \partial E$,
-\begin{equation}
-		  \langle \pi \mathbf{u} \cdot \pmb{\nu}, \lambda_0 \rangle = \langle \mathbf{u} \cdot \pmb{\nu}, \lambda_0 \rangle_e \hspace{0.2cm} \forall \lambda_0 \in P_0(e).
+\begin{equation}\label{eq:edgedof}
+\int_{e} (\pi_h \mathbf{v} - \mathbf{v})\cdot \pmb{\nu} ds = 0.
 \end{equation}
 
-The interpolation operator $I_{\mathcal{DS}_1}$ has been defined in~\ref{eq:interpolation}.
-We claim that we can represent for $\mathbf{u} \in (H^1(\Omega))^2$,
+\begin{lem}\label{lem:approximibility}
+For all $\mathbf{v} \in (H^k(\Omega))^2,\quad k=1,2$. 
+The operator $\pi_h$ defined by~\eqref{eq:nodaldof} and ~\eqref{eq:edgedof} satisfies:
 \begin{equation}
-		  \pi \mathbf{u} = \mathbf{I}_{\mathcal{DS}_1} \mathbf{u} + 
+(p_h, \nabla \cdot (\mathbf{v} - \pi_h \mathbf{v})) = 0, \quad \forall p_h \in \mathbb{W}_0
+\end{equation}
+Assuming shape regularity defined in~\ref{def:shaperegularity}, $\pi_h$ should have the 
+error bound as
+\begin{equation}
+\norm{\mathbf{v} - \pi_h \mathbf{v}}_{1,\Omega} \leq Ch^m\norm{\mathbf{v}}_{m+1,\Omega}, \quad m=0,1.
+\end{equation}
+\end{lem}
+
+\begin{proof}
+From the definition of degree of freedom~\eqref{eq:nodaldof} and~\eqref{eq:edgedof}, we decompose the projection
+operator $\pi_h$ as
+\begin{equation}
+		  \pi_h \mathbf{v} = \mathcal{I}_{\mathcal{DS}_1} \mathbf{v} + 
 		  \sum_{i=0}^3 \alpha_i \mathbf{b}_i,
 \end{equation}
-where the coefficient $\alpha_i = \Big( \int_{e_i} (\mathbf{u} - \mathcal{I}_{\mathcal{DS}_1} \mathbf{u})\cdot \pmb{\nu}_i d\sigma \Big) / \int_{e_i} \mathbf{b}_i \cdot 
-\pmb{\nu}_i d\sigma$. It is obvious that $\pi \mathbf{u} \in \mathbb{V}_1^{\mathcal{BR}}$.
-We now prove the approximability and stability of our projection operator and eventually derive the $\inf-\sup$ condition.
+where the coefficient 
+\begin{equation}
+\alpha_i = \Big( \int_{e_i} (\mathbf{v} - \mathcal{I}_{\mathcal{DS}_1} \mathbf{v})\cdot \pmb{\nu}_i d\sigma \Big) / \int_{e_i} \mathbf{b}_i \cdot 
+\pmb{\nu}_i d\sigma.
+\end{equation}
+We use the approximation property of interpolation operator in direct derendipity space in Lemma~\ref{lem:approximation},
+\begin{equation}
+\norm{\mathbf{v} - \mathcal{I}_{\mathcal{DS}_1}\mathbf{v}}_{m,\Omega} \leq h_E^{2-m} \lvert \mathbf{v} \rvert_{2,E^*}, \quad m= 0,1,
+\end{equation}
+where $E^* = \Cup_{F\in \mathcal{T}_h, F\cap E \neq \empty}$ defined in Lemma~\ref{lem:interpolationop}.
 
-\begin{lem}\label{lem:inf-sup-br}
-		  Assuming that $u\in (H^1(\Omega))^2$.
+Lemma~\ref{lem:intestimate} indicates :
+\begin{equation}
+\lvert\mathbf{b}_i\rvert_{m,E} \leq C(\sigma^*)h_E^{1-m}\lvert \tilde{\mathbf{b}}_i \rvert_{1,\tilde{E}} 
+\leq C(\sigma^*)h_E^{1-m}, \quad m = 0,1.
+\end{equation}
+We continue to estimate $\lvert \alpha_i \rvert$ as
+\begin{equation}
+\begin{aligned}
+\int_{e,i} \varphi^{(2)}_{e,i} ds = \lvert e_i \rvert \int_{\tilde{e}_i} \tilde{\varphi}^{(2)}_{e,i} d\tilde{s},\\
+\int_{e,i} (\mathbf{v} - \mathcal{I} \mathbf{v})
+\end{aligned}
+\end{equation}
 
-		  (i) there exists a bounded linear operator $\pi$
-
-		  (ii) $\forall \mathbf{v} \in (H^1(\Omega))^2$
-\end{lem}
+\end{proof}
 
 \subsection{Test Modified Bernardi-Raugel Element}
 \iffalse

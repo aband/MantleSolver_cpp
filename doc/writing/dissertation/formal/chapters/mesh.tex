@@ -48,6 +48,7 @@ Note that vertex on the boundary $\partial \Omega$ remain untouched.
 \subsection{Shape Regularity}
 We give an official definition of uniform shape regularity of a 
 quadrilateral mesh.
+\begin{defn}\label{def:shaperegularity}
 For any quadrilateral $E \in \mathcal{T}_h$, we can get a set of four triangles
 $T_{i}, \quad i \in \{0,1,2,3\}$. We form the triangle $T_i$ by excluding 
 vertex $v_i$ from the quadrilaterl $E$, and use the remaining three vertex.
@@ -66,3 +67,4 @@ such that the ratio
 \rho_E/h_E \geq \sigma_* >0,
 \end{equation}
 for all quadrilaterals $E \in \mathcal{T}_h$.
+		  \end{defn}
