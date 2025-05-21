@@ -32,16 +32,25 @@ and $\pmb{\nu}$ is the unit vector pointing from $E^+$ to $E^-$ orthogonal to th
 Here, $\alpha_{LF}$ is the Lax-Fredrich stabilizer factor. We have two different ways to compute $\alpha_{LF}$ depending on 
 the knowledge of solution.
 \begin{itemize}
-		  \item The global LF Stabilizer: $\alpha_{LF} = \max_{u}\lvert \partial \mathbf{f}\cdot \pmb{\nu} / \partial u \rvert $;
-		  \item The local LF Stabilizer: $\alpha_{LF} = \max(\lvert \partial \mathbf{f}^+ \cdot \pmb{\nu} / \partial u^+ \rvert,
-					 \lvert \partial \mathbf{f}^- \cdot \pmb{\nu} / \partial u^- \rvert)$.
+		  \item The global LF Stabilizer: $\alpha_{LF} = \max_{u}\lvert \partial (\mathbf{f}\cdot \pmb{\nu}) / \partial u \rvert $;
+		  \item The local LF Stabilizer: $\alpha_{LF} = \max(\lvert \partial (\mathbf{f}^+ \cdot \pmb{\nu}) / \partial u^+ \rvert,
+					 \lvert \partial (\mathbf{f}^- \cdot \pmb{\nu}) / \partial u^- \rvert)$.
 \end{itemize}
 The numerical flux $\mathbf{F}$~\eqref{eq:LFflux} is consistent and conservtive across the edge. 
 We now replace the $u^+$ and $u^-$ with reconstructed values and rewrite the numerical flux as
 \begin{equation}\label{eq:reconstructionflux}
 		  \mathbf{F}(\mathcal{R}^+, \mathcal{R}-) = \frac{1}{2}[(\mathbf{f}(\mathcal{R}^+)+\mathbf{f}(\mathcal{R}^-)\cdot \pmb{\nu} - \alpha_{LF}(\mathcal{R}^+-\mathcal{R}^-)],
 \end{equation}
-where $\mathcal{R}$ is a higher order reconstruction value.
+where $\mathcal{R}$ is a higher order reconstruction value. We evaluate the
+integrals over each edge $e_i \in \partial E$ with a quadrature rule. 
+We represent length of edge $e_i$ and area of cell $E$ with 
+$\lvert e_i \rvert$ and $\lvert E \rvert$ respectively.
+Assuming a quadrature rule with $G$ points on each edge, we have
+\begin{equation}
+		  \overline{u}_t + \sum_{i=0}^4\frac{\lvert e_i \rvert}{\lvert E \rvert}
+		  \sum_{g} \omega_{i,g} \mathbf{F}(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-) = 0,
+\end{equation}
+where $\omega_{i,g}$ represents $g$th quadrature points on edge $e_i$.
 
 \section[ML-WENO]{The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}
 We develop a accurate, versatile, robust and efficient finite volume 

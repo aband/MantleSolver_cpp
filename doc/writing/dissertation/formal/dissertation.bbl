@@ -1,72 +1,44 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Arbogast and Correa(2016)]{doi:10.1137/15M1013705}
-Todd Arbogast and Maicon~R. Correa.
-\newblock Two families of h(div) mixed finite elements on quadrilaterals of
-  minimal dimension.
-\newblock \emph{SIAM Journal on Numerical Analysis}, 54\penalty0 (6):\penalty0
-  3332--3356, 2016.
-\newblock \doi{10.1137/15M1013705}.
-\newblock URL \url{https://doi.org/10.1137/15M1013705}.
+\bibitem[Arbogast et~al.(2024)Arbogast, Huang, and Tian]{MultiLevelWeno}
+Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian.
+\newblock A finite volume multilevel weno scheme for multidimensional scalar
+  conservation laws.
+\newblock \emph{Comput. Methods Appl. Mech. Engrg.}, 421, 2024.
 
-\bibitem[Arbogast and Wheeler(2005)]{doi:10.1137/S0036142903435247}
-Todd Arbogast and Mary~F. Wheeler.
-\newblock A family of rectangular mixed elements with a continuous flux for
-  second order elliptic problems.
-\newblock \emph{SIAM Journal on Numerical Analysis}, 42\penalty0 (5):\penalty0
-  1914--1931, 2005.
-\newblock \doi{10.1137/S0036142903435247}.
-\newblock URL \url{https://doi.org/10.1137/S0036142903435247}.
+\bibitem[Bramble and Hilbert(1970)]{EstimationofLinearFunctionals}
+J.H. Bramble and S.~R. Hilbert.
+\newblock Estimation of linear functionals on sobolev spaces with application
+  to fourier transform and spline interpolation.
+\newblock \emph{SIAM J. Numer. Anal.}, 7\penalty0 (1):\penalty0 112--124, 1970.
+\newblock \doi{10.1137/0707006}.
 
-\bibitem[Arbogast et~al.(2022)Arbogast, Tao, and Wang]{directSerendipity}
-Todd Arbogast, Zhen Tao, and Chuning Wang.
-\newblock Direct serendipity and mixed finite elements on convex
-  quadrilaterals.
-\newblock \emph{Numerische Mathematik}, 150:\penalty0 929--974, 2022.
+\bibitem[Dupont and Scott(1980)]{PolynomialApproximation}
+Todd Dupont and Ridgway Scott.
+\newblock Polynomial approximation of functions in sobolev spaces.
+\newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
+  441--463, 1980.
 
-\bibitem[Brezzi et~al.(1985)Brezzi, Jr., and Marini]{BDM}
-Franco Brezzi, Jim~Douglas Jr., and L.~D. Marini.
-\newblock Two families of mixed finite element for second order elliptic
-  problems.
-\newblock \emph{Numerische Mathematik}, 47:\penalty0 217--235, 1985.
+\bibitem[Huang et~al.(2023)Huang, Arbogast, and
+  Tian]{WENOAOSimplifiedSmoothness}
+Chieh-Sen Huang, Todd Arbogast, and Chenyu Tian.
+\newblock Multidimensional weno-ao reconstructions using a simplified
+  smoothness indicator and applications to conservation laws.
+\newblock \emph{J. Sci. Comput.}, 97, 2023.
 
-\bibitem[Christine~Bernardi(1985)]{BRelement}
-Genevieve~Raugel Christine~Bernardi.
-\newblock Analysis of some finite elements for the stokes problem.
-\newblock \emph{Math. of Comput.}, 44:\penalty0 71--79, 1985.
+\bibitem[Jiang and Shu(1996)]{JSSmoothness}
+Guang-Shan Jiang and Chi-Wang Shu.
+\newblock Efficient implementation of weighted eno schemes.
+\newblock \emph{J. Comput. Phys.}, 126:\penalty0 202--228, 1996.
 
-\bibitem[Ciarlet(2002)]{doi:10.1137/1.9780898719208}
-Philippe~G. Ciarlet.
-\newblock \emph{The Finite Element Method for Elliptic Problems}.
-\newblock Society for Industrial and Applied Mathematics, 2002.
-\newblock \doi{10.1137/1.9780898719208}.
-\newblock URL \url{https://epubs.siam.org/doi/abs/10.1137/1.9780898719208}.
-
-\bibitem[Fortin(1981)]{Fortin1981OldAN}
-Michel Fortin.
-\newblock Old and new finite elements for incompressible flows.
-\newblock \emph{International Journal for Numerical Methods in Fluids},
-  1:\penalty0 347--364, 1981.
-\newblock URL \url{https://api.semanticscholar.org/CorpusID:122770101}.
-
-\bibitem[Girault and Raviart(2011)]{FinElemMethNavierStokes}
-Vivette Girault and Pierre-Arnaud Raviart.
-\newblock \emph{Finite Element Methods for Navier-Stokes Equations: Theory and
-  Algorithms}.
-\newblock Springer Publishing Company, Incorporated, 1st edition, 2011.
-\newblock ISBN 3642648886.
-
-\bibitem[Raviart and Thomas(1977)]{10.1007/BFb0064470}
-P.~A. Raviart and J.~M. Thomas.
-\newblock A mixed finite element method for 2-nd order elliptic problems.
-\newblock In Ilio Galligani and Enrico Magenes, editors, \emph{Mathematical
-  Aspects of Finite Element Methods}, pages 292--315, Berlin, Heidelberg, 1977.
-  Springer Berlin Heidelberg.
-\newblock ISBN 978-3-540-37158-8.
+\bibitem[Olver(1997)]{olver1997asymptotics}
+Frank Olver.
+\newblock \emph{Asymptotics and special functions}.
+\newblock AK Peters/CRC Press, 1997.
 
 \end{thebibliography}

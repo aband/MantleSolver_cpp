@@ -1,1 +1,52 @@
-\section{Boundary Condition Compatibility}
+\section{Coupling Computation}
+Now we couple locally mass conserved MFEM and FVM method together in this section.
+The remaining uncertainty of porosity $\phi$ will be fulfilled by phase package
+evaluation. Before we throw ourselves into the fully coupled problem.
+We test another porosity evolution scenerio with prescribed melting.
+Then we will show an example combining MFEM, FVM and eutectic phase package
+alltogether.
+
+\subsection{Coupled Algorithm}
+Let $U^n=(C^n, H^n)$ be the solution to the transport system at time $t^n$. 
+Let $V^n=(\check{\mathbf{v}}_{h,r}^n,\check{\mathbf{v}}_{h,s}^n,\check{q}_{h,l}^n,\check{q}_h^n)$ 
+denote the solution to the Darcy-Stokes system at the same time. Moreover, let $W^n=(\phi^n, \check{T}^n, c_{s}^n, c_{l}^n, \phi_1^n)$ 
+denote the output of the phase calculation at $t^n$. We formulate an overall solution methods.
+\begin{algorithm}[htb]
+\caption{Coupled Solver\label{alg:coupled}}
+%\SetAlgoLined
+ Let $U^0$ be given as initial data.
+
+\begin{algorithmic} [1]
+ \For{\rm Time level $n=0,1,\ldots,n_{\max}-1$}
+\State Given $U^n$, compute $W^n$ by the eutectic phase package.
+\State Given $\phi_f^0$ in $W^0$, solve the Darcy-Stokes system 
+\eqref{eq:dimensionlessdarcy_flow_sc}--\eqref{eq:dimensionlesscompaction_flow_sc} for $V^{0}$.
+\State Given $W^n$ and $V^n$, compute effective velocity~\eqref{eq:definitioneffvel} and phase averaged velocity as
+\begin{equation*}
+\bold{v}_{\text{eff}} = \frac{\phi_l \bold{v}_l + D_i\phi_s \bold{v}_s}{\phi_l + \phi_s D_i}, \quad \overline{\bold{v}} = \phi \mathbf{v}_r + \mathbf{v}_s.
+\end{equation*}
+        and then solve the transport system \eqref{eq:transportFV} for $U^{n+1}$.
+%     \State Given $U^{n+1}$, compute $W^{n+1}$ by the eutecetic phase package.
+%     \State Given $\phi_f^{n+1}$ in $W^{n+1}$, solve the Darcy-Stokes system \eqref{eq:darcy_flow_sc_fem}--\eqref{eq:compaction_flow_sc_fem} for $V^{n+1}$.
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+The coupled solver is initialized from the initial condition on the transport
+variables $U^0$ specifying the total initial mass and energy. The eutectic 
+phase package gives $W^0$. Once we know $W^0$, we have phase related variables
+porosity and individual concentrations.
+
+\subsection{Prescribed Melting Problem}
+In this section, we illustrate a simpler model coupling case coupling MFEM and FVM
+solver. We prescribe the melting rate or the change of porosity as a 
+fixed function distributed in space as
+\begin{equation}
+\phi(t) = \Gamma(\mathbf{x}).
+\end{equation}
+In this case, we transport porosity directly considering full advection as
+\begin{equation}
+\frac{\partial \phi}{\partial t} + \nabla \cdot \overline{\mathbf{v}} = 0.
+\end{equation}
+
+
+\subsection{Fully coupled Computation}

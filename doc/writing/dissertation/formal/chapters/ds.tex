@@ -666,13 +666,36 @@ Lemma~\ref{lem:intestimate} indicates :
 \end{equation}
 We continue to estimate $\lvert \alpha_i \rvert$ as
 \begin{equation}
-\begin{aligned}
-\int_{e,i} \varphi^{(2)}_{e,i} ds = \lvert e_i \rvert \int_{\tilde{e}_i} \tilde{\varphi}^{(2)}_{e,i} d\tilde{s},\\
-\int_{e,i} (\mathbf{v} - \mathcal{I} \mathbf{v})
-\end{aligned}
+\int_{e,i} \varphi^{(2)}_{e,i} ds = \lvert e_i \rvert \int_{\tilde{e}_i} \tilde{\varphi}^{(2)}_{e,i} d\tilde{s}.
+\end{equation}
+Then
+\begin{equation}
+\lvert \alpha_i \rvert \leq C \int_{\tilde{e},i} \lvert\tilde{\mathbf{v}} - \tilde{\mathcal{I}}_{\mathcal{DS}_1} \tilde{\mathbf{v}}\rvert ds
 \end{equation}
 
+Trace theorem $\dots$
+
+The final estimate is then
+\begin{equation}
+		  \lvert\alpha_i \rvert \lvert \mathbf{b}_i \rvert_{m,E} \leq C h^{k-m} \vert \mathbf{v} \rvert_{k,E^*}.
+\end{equation}
 \end{proof}
+
+Our space $\mathbb{V}_1^{\mathcal{BR}} \times \mathbb{W}_0$ form a 
+$\int$-$\sup$ stable pair.
+\begin{thm}
+For a convex domain $\Omega$, there exists a constant $\gamma > 0$ such that
+		  \begin{equation}
+					 \inf_{\omega \in \mathbb{W}_0} \sup_{\mathbf{v} \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}, \omega)}{\norm{\mathbf{v}}_1\norm{\omega}_0} \geq \gamma >0.
+		  \end{equation}
+\end{thm}
+\begin{proof}
+		  \begin{equation}
+					 \sup_{\mathbf{v} \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}, \omega)}{\norm{\mathbf{v}}_1\norm{\omega}_0} \geq \frac{(\nabla \cdot \pi_h\mathbf{\varphi}, \omega)}{\norm{\pi_h\mathbf{\varphi}}_1 \norm{\omega}_0} \geq \frac{\norm{\omega}_0}{C \norm{\mathbf{\varphi}_1}} \geq \gamma > 0,
+		  \end{equation}
+\end{proof}
+where $\pi$ is a bounded projection operator.
+
 
 \subsection{Test Modified Bernardi-Raugel Element}
 \iffalse
