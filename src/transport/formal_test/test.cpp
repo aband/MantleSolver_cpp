@@ -1,11 +1,8 @@
-// Symmetry formulation of stencils to eliminate bulge
-
-// change it with test.cpp
-
 #include "stencilpolynomial.h"
 #include "reconstruction.h"
 #include "petsc.h"
 #include "input.h"
+#include "error.h"
 
 extern "C"{
 #include "mesh.h"
@@ -27,7 +24,7 @@ int main(int argc, char ** argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    int M = 15, N = 3;
+    int M = 30, N = 10;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
@@ -47,10 +44,10 @@ int main(int argc, char ** argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    double dt = 0.02;
+    double dt = 0.01;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-dt", &dt, NULL));
 
-    int Nt = 100;
+    int Nt = 200;
     ierr = PetscOptionsGetInt(NULL,NULL,"-Nt",&Nt,NULL);CHKERRQ(ierr);
 
     // Create dmMesh
@@ -98,69 +95,50 @@ int main(int argc, char ** argv){
 
     multilevel ml = multilevel();
 
+    ml.addLevel("(5,5)", {5,5}, mi);
     ml.addLevel("(3,3)", {3,3}, mi);
     ml.addLevel("(2,2)", {2,2}, mi);
 
+    double h0 = sqrt((L*H)/(double)(M*N));
+
+    // Define a usage for this multilevel weno
+    mluse use = mluse();
+
+    // Test for nonlinear weighting
+    unordered_map<std::string, vector<indice>> interior;
+//    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+//    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+
+//    use.setmethod("interior", interior);
+//    use.setbias("interior");
+
+    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} }));
+
+    use.setmethod("interior", interior);
+    use.setbias("interior");
+
+    // add biased (3,3) stencil to side cells
+    unordered_map<std::string, vector<indice>> side;
+    side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-1}, {0,-1} }));
+    side.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+
+    use.setmethod("side", side);
+    use.setbias("side");
+
     // =================================================================
-    Vec globalvec, localvec;
-    double ** locvals;
+    Vec globalvec;
 
     PetscCall(DMCreateGlobalVector(dmu, &globalvec));
 
     SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {0.0,0.0}, func);
 
-    // Distribute local part to local vectors.
-    PetscCall(DMGetLocalVector(dmu, &localvec)); 
-
-    PetscCall(DMGlobalToLocalBegin(dmu, globalvec, INSERT_VALUES, localvec));
-    PetscCall(DMGlobalToLocalEnd(dmu, globalvec, INSERT_VALUES, localvec));
-
-    PetscCall(DMDAVecGetArray(dmu, localvec, &locvals));
-
     // =================================================================
 
-    mluse use = mluse();
-
-    // Test for nonlinear weighting
-    unordered_map<std::string, vector<indice>> interior;
-    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
-    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
-
-    use.setmethod("interior", interior);
-    use.setbias("interior");
-
-    unordered_map<std::string, vector<indice>> side;
-    side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", {{-2,-1}, {0,-1}}));
-    side.insert(std::makr_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
-
-    use.setmethod("side", side);
-    use.setbias("side"):
-
-    double h0 = sqrt((L*H)/(double)(M*N));
-
-   //use.setbias("all", "(3,3)", 0);
-
-    printGrid(mi);
-
-    int timestepping = 1;
-    ierr = PetscOptionsGetInt(NULL,NULL,"-step",&timestepping,NULL);CHKERRQ(ierr);
-
-    int maxiter = 10;
-    ierr = PetscOptionsGetInt(NULL,NULL,"-maxiter",&maxiter,NULL);CHKERRQ(ierr);
-
-    if (timestepping == 1){
-        cout << "Explicit time stepping: " << endl;
-        RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-    } else {
-        cout << "Implicit time stepping: " << endl;
-        iRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh, maxiter);
-    }
-    //iRK2(dt, Nt, &globalvec, &mi, &ml, &use, dmu, dmMesh);
+    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
 
     // =================================================================
-
-    DMDAVecRestoreArray(dmu,localvec,&locvals);
-    DMRestoreLocalVector(dmu, &localvec); 
 
     PetscCall(VecDestroy(&globalvec));
  

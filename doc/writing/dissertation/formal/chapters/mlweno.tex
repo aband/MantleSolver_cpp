@@ -390,7 +390,27 @@ to the inflow boundary to accommodate the potential discontinuity.
 There are some other special cases that require special treatment on the 
 boundary, e.g., when symmetry should be enforced.
 
-We now present two examples 
+\subsection{Time stepping}
+In match with the higher order reconstruction scheme, we briefly talk 
+about available time integration technique. 
+While forward Eular is sufficient in stability analysis,
+it only provides first order accuracy. Therefore, we use strong-stability 
+preservation (SSP) scheme proposed by~\cite{doi:10.1137/S003614450036757X},
+which is a higher order time stepping scheme while preserving 
+the stability properties of forward Euler.
+We start with first order forward Euler as
+\begin{equation}
+u^{n+1} = u^n + \Delta t \tilde{\mathbf{F}}(u^n),
+\end{equation}
+where $\tilde{\mathbf{F}}(u^n)$ represents a spatial discretization.
+We then state second and third order SSP Runge-Kutta  method as
+\begin{equation}\label{eq:2ndSSP}
+u^{n+1} = u^n + \Delta t \tilde{\mathbf{F}},
+\end{equation}
+and
+\begin{equation}\label{eq:3rdSSP}
+u^{n+1} = u^n + \Delta t \tilde{\mathbf{F}}.
+\end{equation}
 
 \subsection{Numerical Test}
 For completeness, we test our ML-WENO algorithm with simple Riemann shock and rarefraction.

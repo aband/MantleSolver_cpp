@@ -1,4 +1,4 @@
-\begin{thebibliography}{6}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -23,6 +23,14 @@ Todd Dupont and Ridgway Scott.
 \newblock Polynomial approximation of functions in sobolev spaces.
 \newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
   441--463, 1980.
+
+\bibitem[Gottlieb et~al.(2001)Gottlieb, Shu, and
+  Tadmor]{doi:10.1137/S003614450036757X}
+Sigal Gottlieb, Chi-Wang Shu, and Eitan Tadmor.
+\newblock Strong stability-preserving high-order time discretization methods.
+\newblock \emph{SIAM Review}, 43\penalty0 (1):\penalty0 89--112, 2001.
+\newblock \doi{10.1137/S003614450036757X}.
+\newblock URL \url{https://doi.org/10.1137/S003614450036757X}.
 
 \bibitem[Huang et~al.(2023)Huang, Arbogast, and
   Tian]{WENOAOSimplifiedSmoothness}
