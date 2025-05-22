@@ -12,22 +12,28 @@ Let $V^n=(\check{\mathbf{v}}_{h,r}^n,\check{\mathbf{v}}_{h,s}^n,\check{q}_{h,l}^
 denote the solution to the Darcy-Stokes system at the same time. Moreover, let $W^n=(\phi^n, \check{T}^n, c_{s}^n, c_{l}^n, \phi_1^n)$ 
 denote the output of the phase calculation at $t^n$. We formulate an overall solution methods.
 \begin{algorithm}[htb]
-\caption{Coupled Solver\label{alg:coupled}}
+\caption{Sequential Coupled Solver\label{alg:coupled}}
 %\SetAlgoLined
  Let $U^0$ be given as initial data.
 
 \begin{algorithmic} [1]
  \For{\rm Time level $n=0,1,\ldots,n_{\max}-1$}
+		  \vspace{0.3cm}
 \State Given $U^n$, compute $W^n$ by the eutectic phase package.
-\State Given $\phi_f^0$ in $W^0$, solve the Darcy-Stokes system 
-\eqref{eq:dimensionlessdarcy_flow_sc}--\eqref{eq:dimensionlesscompaction_flow_sc} for $V^{0}$.
-\State Given $W^n$ and $V^n$, compute effective velocity~\eqref{eq:definitioneffvel} and phase averaged velocity as
+		  \vspace{0.2cm}
+\State Given $\phi_f^n \in W^n$, solve the Darcy-Stokes system 
+		  \eqref{eq:dimensionlessdarcy_flow_sc}--\eqref{eq:dimensionlesscompaction_flow_sc} for $V^{n+1}$.
+		  \vspace{0.2cm}
+		  \State Given $W^n$ and $V^{n+1}$, compute effective 
+		  velocity~\eqref{eq:definitioneffvel} and phase averaged velocity as
 \begin{equation*}
 \bold{v}_{\text{eff}} = \frac{\phi_l \bold{v}_l + D_i\phi_s \bold{v}_s}{\phi_l + \phi_s D_i}, \quad \overline{\bold{v}} = \phi \mathbf{v}_r + \mathbf{v}_s.
 \end{equation*}
-        and then solve the transport system \eqref{eq:transportFV} for $U^{n+1}$.
+		  \vspace{0.2cm}
+        \State Time stepping the transport system~\eqref{eq:transportFV} to next time $n+1$ for $U^{n+1}$.
 %     \State Given $U^{n+1}$, compute $W^{n+1}$ by the eutecetic phase package.
 %     \State Given $\phi_f^{n+1}$ in $W^{n+1}$, solve the Darcy-Stokes system \eqref{eq:darcy_flow_sc_fem}--\eqref{eq:compaction_flow_sc_fem} for $V^{n+1}$.
+		  \vspace{0.3cm}
 \EndFor
 \end{algorithmic}
 \end{algorithm}
@@ -36,17 +42,92 @@ variables $U^0$ specifying the total initial mass and energy. The eutectic
 phase package gives $W^0$. Once we know $W^0$, we have phase related variables
 porosity and individual concentrations.
 
-\subsection{Prescribed Melting Problem}
-In this section, we illustrate a simpler model coupling case coupling MFEM and FVM
-solver. We prescribe the melting rate or the change of porosity as a 
-fixed function distributed in space as
+In Algorithm~\ref{alg:coupled}, $U^{n+1}$ is computed using fixed in time values for the effective velocities $\mathbf{v}_{\text{eff}}$ and phase 
+averaged velocity $\overline{\mathbf{v}}$, 
+ pre-calculated from the Darcy-Stokes part, and the partition functions $\kappa$ and $\lambda$. 
+ These quantities are only updated before commencing the next time step.
+
+\subsection{Time stepping}
+In this section, we briefly talk 
+about suitable time integration technique. 
+We will focus on explicit scheme for two reasons
+\begin{itemize}
+		  \item Phase package cannot be
+evaluated with long time intervals.
+\item Jacobian is hard to evaluate since a MFEM solver is involved.
+\end{itemize}
+While forward Eular is sufficient in stability analysis,
+it only provides first order accuracy. Therefore, we use strong-stability 
+preservation (SSP) scheme proposed by~\cite{doi:10.1137/S003614450036757X},
+which is a higher order time stepping scheme while preserving 
+the stability properties of forward Euler.
+We start with first order forward Euler as
 \begin{equation}
-\phi(t) = \Gamma(\mathbf{x}).
+u^{n+1} = u^n + \Delta t \tilde{\mathbf{F}}(u^n),
 \end{equation}
-In this case, we transport porosity directly considering full advection as
+where $\tilde{\mathbf{F}}(u^n)$ represents a spatial discretization.
+
+We state a multi-stage SSP Runge-Kutta  method as
+\begin{equation}\label{eq:multistageSSP}
+\begin{aligned}
+		  u^{0} &= u^n ,\\
+		  u^{(i)}   &= \sum_{j=0}^{i-1} \alpha_{i,j}u^{(j)} + \Delta t \beta_{i,j} \tilde{\mathbf{F}}(u^{(j)}), \quad 1\leq i \leq m\\
+		  u^{n+1} &= u^m,
+\end{aligned}
+\end{equation}
+where $\sum_{j}^{i-1} \alpha_{i,j} = 1$ for consistency. 
+In our computation, we have second order accuracy in MFEM solver, and a MLWENO(3,2)
+reconstruction in FVM. Hence the highest order of time stepping accurcay is three.
+We write second and third order SSP Runge-Kutta explicit as
 \begin{equation}
-\frac{\partial \phi}{\partial t} + \nabla \cdot \overline{\mathbf{v}} = 0.
+\begin{aligned}
+		  u^{0}   &= u^n\\
+		  u^{(1)} &= u^{(0)} + \Delta t \tilde{\mathbf{F}}(u^{(0)})\\
+		  u^{n+1} &= u^{(0)} + \frac{1}{2} \Delta t \tilde{\mathbf{F}}(u^{(0)}) + \frac{1}{2} \Delta t \tilde{\mathbf{F}}(u^{(1)}),
+\end{aligned}
+\end{equation}
+and 
+\begin{equation}
+\begin{aligned}
+		  u^{0}   &= u^n ,\\
+		  u^{(1)} &= u^{(0)} + \Delta t \tilde{\mathbf{F}}(u^{(0)}),\\
+		  u^{(2)} &= \frac{3}{4} u^n + \frac{1}{4} u^{(1)} + \frac{1}{4} \Delta t \tilde{\mathbf{F}}(u^{(1)})\\
+		  u^{n+1} &= \frac{1}{3} u^{(0)}+\frac{2}{3}u^{(2)} + \frac{2}{3}\Delta t \tilde{\mathbf{F}}(u^{(2)}).
+\end{aligned}
 \end{equation}
 
+
+\subsection{Prescribed Melting Problem}
+Before fully coupled computation, 
+we illustrate a simpler model coupling case coupling MFEM and FVM
+solver. Instead of deciding porosity with phase package computation,
+we prescribe the melting rate or the change of porosity as a 
+fixed function distributed in space as
+\begin{equation}\label{eq:gamma}
+\phi(t) = \Gamma(\mathbf{x}).
+\end{equation}
+We write conservation of liquid mass with the prescribed 
+melting term $\Gamma$~\eqref{eq:gamma} as
+\begin{equation}
+		  \frac{\partial \phi}{\partial t} + \nabla \cdot (\phi \mathbf{v}_l) = \Gamma.
+\end{equation}
+
+We perform a column test for this problem.
+We assuming a rectangular physical domain $\Omega$.
+\begin{itemize}
+		  \item Bottom side.
+					 \begin{itemize}
+								\item MFEM. We prescirbe solid velocity at the bottom of the 
+physical domain, indicating supplying of mantle. We prescribe zero liquid velocity
+indicating no melting penetrating bottom of the computational domain.
+\item FVM. We prescribe a fixed inflow boundary condition, supplying composition 
+		  and enthalpy into system.
+					 \end{itemize}
+		  \item Left and right side.
+					 \begin{itemize}
+								\item MFEM. We prescribe natural boundary conditon giving zero
+										  traction to the Stokes equation.
+					 \end{itemize}
+\end{itemize}
 
 \subsection{Fully coupled Computation}
