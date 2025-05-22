@@ -2,6 +2,52 @@
 #include "trans_param.h"
 #include "temp.h"
 
+inline double tempLFflux(const double& uin, const double& uout, 
+                     const double& fin, const double& fout,
+                     const double& LF){
+
+    return 0.5*(fout + fin - LF*(uout - uin));
+}
+
+double edgefluxintegral_test(const MeshInfo& mi, 
+                             const indice& gcellin,
+                             const indice& gcellout,
+                             const vertexSet& edge,
+                             const Tensor<weights>& allwgts,
+                             const vector<vertex>& vel,
+                             multilevel& ml,
+                             mluse& use,
+                             double ** lu){
+
+    double work = 0.0;
+
+    //! Extract default gauess points and gauess weights.
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    // Get edge lendth and unit vector normal to the given edge
+    double len = length(edge);
+    vertex unitNormal = UnitNormal(edge,len);
+
+    for (int g=0; g<gpe.size(); g++){
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+        double uin  = use.eval(mapped, ml, location(mi,gcellin), 
+                      allwgts({gcellin[0],gcellin[1]}), gcellin, lu); 
+        double uout = use.eval(mapped, ml, location(mi,gcellout), 
+                      allwgts({gcellout[0],gcellout[1]}), gcellout, lu); 
+        //double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
+        double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
+        LF = find_max(abs(dfdu(uin)), abs(dfdu(uout))) * LF;
+        LF = 1.0;
+
+        work += gwe[g] * tempLFflux(uin, uout, 
+                                    advfunc(uin,vel.at(g),unitNormal),
+                                    advfunc(uout,vel.at(g),unitNormal),LF) * len/2.0; 
+    }
+
+    return work;
+}
+
 // Rarefraction case
 // Initial consition
 double func(const vertex& point,
@@ -89,7 +135,8 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         } else {
             cellout = globalcell + mi.faceNormal[0];
             flux    = edgefluxintegral(mi, globalcell, cellout, hori, allwgts, vel,
-                                       ml, use, lu); 
+                                       ml, use, lu);
+				flux = 0.0;
         }
 
         horiedge({i,j}) = flux;
@@ -102,8 +149,8 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
 
         } else {
             cellout = globalcell + mi.faceNormal[3];
-            flux    = edgefluxintegral(mi, globalcell, cellout, vert, allwgts, vel,
-                                       ml, use, lu);
+            flux    = edgefluxintegral_test(mi, globalcell, cellout, vert, allwgts, vel,
+                                            ml, use, lu);
         }
         vertedge({i,j}) = flux;
     }}

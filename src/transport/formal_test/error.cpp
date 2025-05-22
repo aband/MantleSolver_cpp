@@ -188,7 +188,7 @@ int simpleRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,
 
     Vec sol  = *insol;
     int event = 1;
-    printSol(event,&sol,mi);
+
     for (int t=0 ; t<Nt; t++){
 
         Vec flux;
@@ -197,19 +197,45 @@ int simpleRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,
         getflux(mi, ml, use, &sol, &flux, dmu, dmmesh);
 
         VecAXPY(sol, -1*dt, flux);
-
-        if (t%5 == 0){
-        event ++;
-        printSol(event,&sol,mi);
-        }
     }
-    printSol(event,&sol,mi);
 
     return 1;
 }
 
-int SSP3RK(){
+int simpleSSP3RK(){
 
+
+    return 1;
+}
+
+int simpleSSP2RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh){
+
+    Vec sol  = *insol;
+    int event = 1;
+
+    Vec temp;
+    VecDuplicate(sol, &temp);
+    VecCopy(sol, temp);
+
+    for (int t=0 ; t<Nt; t++){
+
+        Vec flux;
+        VecDuplicate(sol, &flux);
+
+        getflux(mi, ml, use, &sol, &flux, dmu, dmmesh);
+
+        VecAXPY(temp, -1*dt, flux);
+
+        Vec flux2;
+        VecDuplicate(sol, &flux2);
+
+        getflux(mi, ml, use, &temp, &flux2, dmu, dmmesh);
+
+        VecScale(sol, 0.5);
+        VecAXPY(sol, 0.5, temp);
+        VecAXPY(sol, -0.5*dt, flux2);
+
+    }
 
     return 1;
 }

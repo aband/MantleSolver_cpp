@@ -172,6 +172,7 @@ double melting(const MeshInfo& mi,
 
     double rate = 0.0;
 
+/*
     if (mapped[1] > -0.2){
 
 //        rate = 0.00005*pow(mapped[1]+0.2,5);
@@ -179,6 +180,25 @@ double melting(const MeshInfo& mi,
           rate = 0.05*pow(mapped[1]+0.2,5);
     } else {
         rate = 0.0;
+    }
+*/
+
+/*
+    if (mapped[1] >= -0.2){
+        return 0.001;
+    }else if (mapped[1] > -0.3 && mapped[1] < -0.2){
+        return 0.0005;
+    }else {
+        return 0.0;
+    }
+*/
+
+    if (mapped[1] >= -0.2){
+        return 0.000;
+    }else if (mapped[1] > -0.3 && mapped[1] < -0.2){
+        return 0.0005;
+    }else {
+        return 0.0;
     }
 
     return rate;
@@ -643,7 +663,7 @@ int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
         DMRestoreLocalVector(dmu, &localphi);
 //VecView(fluxphi, PETSC_VIEWER_STDOUT_WORLD);
         VecAXPY(globalCD, -1*dt, fluxphi);
-
+        printCellAve(mark, &fluxphi, mi, "flux");
         printCellAve(mark, &globalCD, mi, "porosity");
         PrintFlowEvent(mark);
         mark ++;

@@ -44,10 +44,10 @@ int main(int argc, char ** argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    double dt = 0.01;
+    double dt = 0.005;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-dt", &dt, NULL));
 
-    int Nt = 200;
+    int Nt = 400;
     ierr = PetscOptionsGetInt(NULL,NULL,"-Nt",&Nt,NULL);CHKERRQ(ierr);
 
     // Create dmMesh
@@ -135,6 +135,7 @@ int main(int argc, char ** argv){
 
     // =================================================================
 
+    //simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
 

@@ -34,6 +34,8 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
     }else {
         return 2.3e-40;
     }
+
+    return 0.0;
 }
 
 double AssignPorosity(double phi_f){

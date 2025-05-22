@@ -137,11 +137,15 @@ Mixed Finite Element has beed discussed by
 \begin{algorithm}
 \caption{Coupled Uzawa Iteration}
 		  \begin{algorithmic}[1]
-					 \STATE Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
-					 \STATE Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
-					 \STATE Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$
-					 \STATE Obtain $\tilde{\bold{y}} =\text{argmin}_{\bold{x}\in V} ||(\bold{B}^T\bold{A}^{-1}\bold{B} - \bold{C})^{-1}\tilde{\bold{y}}-\bold{r} ||$
-					 \STATE Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
+					 \State Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
+					 \vspace{0.2cm}
+					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
+					 \vspace{0.2cm}
+					 \State Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$
+					 \vspace{0.2cm}
+					 \State Obtain $\tilde{\bold{y}} =\text{argmin}_{\bold{x}\in V} ||(\bold{B}^T\bold{A}^{-1}\bold{B} - \bold{C})^{-1}\tilde{\bold{y}}-\bold{r} ||$
+					 \vspace{0.2cm}
+					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
 \end{algorithmic}
 \end{algorithm}
 
