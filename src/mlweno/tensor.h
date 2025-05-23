@@ -65,7 +65,7 @@ class Tensor{
 
         int flattern(const vector<int>& index) const{
             int in = 0;
-            double multiplier = 1;
+            int multiplier = 1;
             for (int i=0; i<rank; i++){
                 assert(index.at(i) < dim.at(i));
                 in += index.at(i) * multiplier;

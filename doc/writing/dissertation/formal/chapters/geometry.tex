@@ -4,81 +4,146 @@ viewpoint of Boundary Representation (BREP)~\cite{10.1145/1499949.1500071}.
 In two-dimension case,
 the element is bounded by a set of edges,
 and the edges are bounded by a set of vertex.
-The first and most important aspect of creating a fem or fvm code
-is numbering the geometric objects.
+The first and most important aspect of creating a FEM or FVM code
+is indexing the geometric objects.
 Assuming the the following representation of global geometric object.
 \begin{equation}\label{eq:globalgeometricOBJ}
 		  \begin{aligned}
-					 V_i, &\quad i\in ID_v,\\
-					 E_i, &\quad i\in ID_e,\\
-					 C_i, &\quad i\in ID_c,
+					 \text{Vertex} \quad &V_i, \quad i\in ID_V,\\
+					 \text{Edge} \quad &E_i, \quad i\in ID_E,\\
+					 \text{Cell}  \quad &C_i, \quad i\in ID_C,
 		  \end{aligned}
 \end{equation}
-where $ID_v$, $ID_e$ and $ID_c$ are countable 
+where $ID_V$, $ID_E$ and $ID_C$ are countable 
 set containing all the non repeating global index for vertices, edges and faces 
-respectively.
+respectively. We use superscript to label the subset of global index, e.g.,
+$ID^{E_i}_{V} \subset ID_{V}$ represents the global index of boundary 
+vertex associated with the edge $E_i$, which is a subset of global index set 
+of vertex.
+
 At the same time, assuming the following representation 
 of local geometric object.
 \begin{equation}\label{eq:localgeometricOBJ}
 		  \begin{aligned}
-					 v_i, &\quad i\in id_v,\\
-					 e_i, &\quad i\in id_e,\\
-					 c_i, &\quad i\in id_c,
+					 \text{Vertex} \quad &v_i, \quad i\in id_v,\\
+					 \text{Edge} \quad &e_i, \quad i\in id_e,\\
+					 \text{Cell} \quad &c_i, \quad i\in id_c
 		  \end{aligned}
 \end{equation}
 where $id_v$, $id_e$ and $id_c$ are countable set 
-containing all the non repearing global index for vertices, edges and faces
-corresponding to a given target element.
-In implementation, we usually don't have to actually have a separate
-local index set for each element. Consider an array(vector) containing
+containing local index for vertices, edges and faces
+corresponding to a given geometrical object.
+We use superscript to label the target geometrical object, e.g., 
+$id_v^{E_i} = \{0,1\}$ represents the local index of boundary vertex 
+associated with the edge $E_i$.
+
+We connect global index and local index with a one-to-one local to global 
+mapping as
+\begin{equation}
+		  f: id \rightarrow ID.
+\end{equation}
+In implementation, we usually don't have to actually define a local to
+global mapping explicitly.
+Consider an array(vector) containing
 global index, the array index is a natural representation for 
 local index set.
+With the help of array representation, we
+can reverse to a global to local mapping within each target geometrical
+objects.
 
 \subsection{General Unstructured Mesh}
-We start with a brief analysis of a general unstructed mesh consists of 
-polygons.
-A general unstructured mesh expressed in BREP consists 
-of a set of quadrilaterals as base elements.
-Each element $i$ should have the following link to other geometric
+We start with a brief analysis of what information should a target cell
+should see from its perspective.
+Each polygon cell $E_i$ should have the following links to other geometric
 objects as
 \begin{itemize}
-		  \item Adjacent polygons connected by edges, $ID^{c,e}_{c,i} \subset ID_c$;
+		  \item Adjacent polygons connected by edges;
 		  \item Additional adjacent polygons connected with vertices, 
-					 but not sharing an edge, $ID^{c,v}_{c,i} \subset ID_c$;
-		  \item Indicident vertices, $ID^{c}_{v,i} \subset ID_v$;
-		  \item Edges that bounds this element $ID^{c}_{e,i} \subset ID_e$.
+					 but not sharing an edge;
+		  \item Indicident vertices;
+		  \item Edges that bounds this element.
 \end{itemize}
 Within the local set, we can relate edges and vertices directly.
 For convinence, 
 each edge $j$ should has links to:
 \begin{itemize}
-		  \item Two polygons that sharing this edge $ID^e_{e,j} \subset ID_c$;
-		  \item Two vertices that bounds this edge $ID^v_{e,j} \subset ID_v$.
+		  \item Two polygons that sharing this edge;
+		  \item Two vertices that bounds this edge.
 \end{itemize}
 
-For each element, we define the direction pointing 
-outwards the element as the positive direction.
-We install counterclockwise direction in our local edge and vertex set 
-$ID^{c,e}_{c,i}$, $ID^{c,v}_{c,i}$.
-The normal direction is meaningless without the context of element.
-With the counterclockwise direction installed in the local set of
-we can compute the normal direction use cross referenced vertex 
-directly.
+In FEM and FVM computation, we work with a orientable mesh, where 
+"clockwise" and "countercolckwise" can be defined consistently.
+Hence, we can use half edge data structure to regulate direction
+in a unstructured polygon mesh.
+\begin{figure}[ht]
+\centering
+\input chapters/tikz/halfedge.tex
+		  \caption{An illustration of the half-edge data structure}
+		  \label{fig:halfedge}
+\end{figure}
+In figure~\ref{fig:halfedge}, we present an illustration of the half edge 
+data structure applied to a quadrilateral mesh. For each target cell $E_i$,
+it sees the vertex $V_i$ and the local link $l_i$ to the next vertex $V_i^+$.
+Hence the direction of the link $l_i:V_i \rightarrow V_i^+$ is determined from the perspective of the 
+target cell $C_i$.
 
-\subsection{Logically Rectangular Simplification}
-Since, mesh generation is not the focus of this project.
-We adopt a much simpler way of implementing quadrilateral mesh,
+\subsection{Reshape Cartesian Data}
+The natural of a 2D cartesian data is a pair of index $(i,j)$. However,
+we usually reshape the 2D data into a 1D array for a more natural 
+representation in computer. We give a more general reshape function
+that project N-dimensional data to a one-dimensional data. 
+\begin{algorithm}[htb]
+\caption{N dimensional reshape\label{alg:reshape}}
+		  Consider a N-dimensional array $\{n_0\times n_i\times \ldots n_{N-1}\}$.
+		  \vspace{0.3cm}
+
+Let $I=0$ be the result, and $a=0$ be the multiplier.
+		  \vspace{0.3cm}
+
+		  Consider an input N-dimensional index $\{i_0, i_1, \ldots, i_{N-1}\}$.
+		  \vspace{0.3cm}
+
+\begin{algorithmic} [1]
+		  \For{\rm rank $r= 0,1,\ldots, N-1$} 
+		  \vspace{0.3cm}
+		  \State $I = I + i_r * a$.
+		  \vspace{0.3cm}
+		  \State $a = a\times n_r$.
+		  \vspace{0.3cm}
+		  \EndFor
+\end{algorithmic}
+\end{algorithm}
+We can also reverse the process reshaping 1D data back into N-dimensional 
+data with modulo and integer division operation.
+
+\subsection{Logically Rectangular Mesh}
+Mesh generation is not the focus of this project, hence
+we adopt a much simpler way of implementing quadrilateral mesh,
 the logically rectangular way.
 We generate the quadrialteral mesh by randomly distorting each 
 interior vertex coordinates.
-There is no affine mapping between reference grids and generated
-mesh.
+There is no affine mapping between reference square mesh and generated
+mesh. The indexing of geometrical objects remain untouched through
+the vertex distortion.
 
-In our case, all the indices are connected with cartesian coordinates.
-We can define the links with linear functions.
-We can setup global to local mapping of geometric objects 
-for vertex and edges as
+In our case, all the indices are represented with cartesian coordinates.
+Therefore, we can setup local to global mapping of geometric objects 
+easily with liear functions.
+Consider a mesh with $M\times N$ cells, the totlal number of vertex
+is $(M+1)\times (N+1)$ and the total number of edges is 
+$M\times (N+1) + (M+1)\times N $. 
+We count horizontal edges first, hence the vertical edges are counted
+starting from $M\times (N+1)$.
+Let local vertex and edge number being counted in the same way 
+as indicated in the mesh~\ref{},
+we can define the local to global mapping with local index of vertex and
+global index of cell.
+Consider mapping the local index $i$ of vertex $v_i$ in the cell $C_I$ as
 \begin{equation}\label{eq:gtolocal}
-id
+		  ID_{V} \ni  = 
 \end{equation}
+and the edge local to global mapping as
 
+\section{Assembly and dofs}
+In FEM and FVM computation, we need to associate geometrical objects with
+degrees of freedom.

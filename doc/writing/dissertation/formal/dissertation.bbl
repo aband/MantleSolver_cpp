@@ -5,12 +5,14 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Gottlieb et~al.(2001)Gottlieb, Shu, and
-  Tadmor]{doi:10.1137/S003614450036757X}
-Sigal Gottlieb, Chi-Wang Shu, and Eitan Tadmor.
-\newblock Strong stability-preserving high-order time discretization methods.
-\newblock \emph{SIAM Review}, 43\penalty0 (1):\penalty0 89--112, 2001.
-\newblock \doi{10.1137/S003614450036757X}.
-\newblock URL \url{https://doi.org/10.1137/S003614450036757X}.
+\bibitem[Baumgart(1975)]{10.1145/1499949.1500071}
+Bruce~G. Baumgart.
+\newblock A polyhedron representation for computer vision.
+\newblock In \emph{Proceedings of the May 19-22, 1975, National Computer
+  Conference and Exposition}, AFIPS '75, page 589–596, New York, NY, USA,
+  1975. Association for Computing Machinery.
+\newblock ISBN 9781450379199.
+\newblock \doi{10.1145/1499949.1500071}.
+\newblock URL \url{https://doi.org/10.1145/1499949.1500071}.
 
 \end{thebibliography}
