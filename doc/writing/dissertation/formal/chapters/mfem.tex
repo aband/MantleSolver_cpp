@@ -173,6 +173,7 @@ We now propose our local mass conserved version as
 We derive a bound for the error by taking the difference
 of 
 
+\input chapters/linear.tex
 
 \subsection{Test Run}
 We test our MFEM setup with two problems.
@@ -181,10 +182,36 @@ more complex yet a more realistic problem.
 
 Problem setup 1:
 
-We solve a manufactured system of equations of the rectangular domain $-1< x < 1$, 
+We solve a manufactured system of equations on the rectangular domain 
+$(x,y) \in [-1,1]^2$. We assume a constant porosity acorss the domain as
+$\phi$. We compute the right hand side with prescribed functions as
+
 \begin{equation}\label{eq:test1}
-		  \mathbf{v}_s = 
+\check{q} = 0 \quad \quad \check{q}_f = 2(x+y) \quad \quad 
+\check{\bold{v}}_r = -\frac{\phi_f^{-1/2}}{1-\phi_f}\begin{pmatrix}x^2 \\ y^2 \end{pmatrix} 
+\quad \quad \check{\bold{v}}_s = \frac{\phi_f^{1/2}}{1-\phi_f} \begin{pmatrix}x^2 \\ y^2 \end{pmatrix}
 \end{equation}
+\begin{equation}
+\nabla \cdot \check{\bold{v}}_r = \frac{-2\phi_f^{-1/2}}{1-\phi_f}(x+y) 
+\end{equation}
+\begin{equation}
+\mathcal{D}\check{\bold{v}}_s = \frac{2\phi_f^{1/2}}{1-\phi_f}\begin{bmatrix} x & 0 \\ 0 & y \end{bmatrix}
+\quad \quad 
+(\nabla \cdot \check{\bold{v}}_s) \bold{\text{I}} = \frac{2\phi_f^{1/2}}{1-\phi_f} \begin{bmatrix} x+y & 0 \\ 0 & x+y \end{bmatrix}
+\end{equation}
+Substitute the compuated results into PDE
+\begin{equation}
+\begin{aligned}
+\tilde{\bold{v}}_r + \phi_f^{1/2}\nabla\check{q}_f &= 
+-\frac{\phi_f^{-1/2}}{1-\phi_f}\begin{pmatrix}x^2 \\ y^2 \end{pmatrix} + \phi_f^{1/2}\begin{pmatrix} 2 \\ 2 \end{pmatrix}\\
+\phi_f^{1/2}\nabla \cdot (\check{\bold{v}}_r) + \frac{1}{1-\phi_f}\check{q}_f  &= \frac{-2}{1-\phi_f}(x+y) + \frac{1}{1-\phi_f}2(x+y)=0\\
+\nabla \cdot \check{\bold{v}}_s - \frac{\phi_f^{1/2}}{1-\phi_f}\check{q}_f &= \frac{2\phi_f^{1/2}}{1-\phi_f}(x+y) - \frac{2\phi_f^{1/2}}{1-\phi_f}(x+y) = 0\\
+-2(1-\phi_f)\nabla \cdot \sigma(\check{\bold{v}}_s) &= -2(1-\phi_f)\nabla \cdot (\mathcal{D}\check{\bold{v}}_s - \frac{1}{3}(\nabla \cdot \check{\bold{v}}_s) \bold{\text{I}}) = 
+-\frac{8\phi_f^{1/2}}{3} \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+\end{aligned}
+\end{equation}
+
+
 
 Problem setup 2:
 

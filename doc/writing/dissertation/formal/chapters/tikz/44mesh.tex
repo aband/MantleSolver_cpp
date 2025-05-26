@@ -1,0 +1,24 @@
+\begin{tikzpicture}[scale=2]
+
+\coordinate (a) at (0.00, 0.00);
+\coordinate (b) at (1.00, 0.00);
+\coordinate (c) at (0.90, 1.08);
+\coordinate (d) at (0.00, 1.00);
+
+\coordinate (e) at (2.00, 0.00);
+\coordinate (f) at (2.00, 1.00);
+
+\coordinate (g) at (2.00, 2.00);
+\coordinate (h) at (1.00, 2.00);
+
+\coordinate (i) at (0.00, 2.00);
+
+\draw (a) -- (b) -- (c) -- (d) -- cycle;
+\draw (b) -- (e) -- (f) -- (c) -- cycle;
+\draw (c) -- (f) -- (g) -- (h) -- cycle;
+\draw (d) -- (c) -- (h) -- (i) -- cycle;
+
+
+
+
+\end{tikzpicture}

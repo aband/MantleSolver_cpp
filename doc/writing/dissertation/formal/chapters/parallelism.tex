@@ -1,2 +1,16 @@
 \section{Parallel Implementation}
-The parallel implementation of the MFEM and 
+In this section, we disscuss some ideas regarding parallel implementation
+of MFEM and FVM solvers, and present some preliminary timing results for each 
+solver.
+The parallel implementation of the MFEM and FVM need different treatments.
+For MFEM solver, edge dofs are shared across different processors.
+
+\begin{figure}[ht]
+\centering
+\input chapters/tikz/pmesh.tex
+		  \caption{An exhibition of ghost region in parallel implementation of 
+		  ML-WENO scheme.}
+\label{fig:meshexample}
+\end{figure}
+
+

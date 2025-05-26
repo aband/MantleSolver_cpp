@@ -87,11 +87,43 @@ it sees the vertex $V_i$ and the local link $l_i$ to the next vertex $V_i^+$.
 Hence the direction of the link $l_i:V_i \rightarrow V_i^+$ is determined from the perspective of the 
 target cell $C_i$.
 
-\subsection{Reshape Cartesian Data}
-The natural of a 2D cartesian data is a pair of index $(i,j)$. However,
+\section{Logically Rectangular Mesh}
+Mesh generation is not the main focus of this project, hence
+we adopt a much simpler way of implementing quadrilateral mesh,
+the logically rectangular way.
+We generate the quadrialteral mesh by randomly distorting each 
+interior vertex coordinates.
+There is no affine mapping between reference square mesh and generated
+mesh. The indexing of geometrical objects remain untouched through
+the vertex distortion.
+
+In our case, all the indices are represented with cartesian coordinates.
+Therefore, we can setup local to global mapping of geometric objects 
+easily with liear functions.
+Consider a mesh with $M\times N$ cells, the totlal number of vertex
+is $(M+1)\times (N+1)$ and the total number of edges is 
+$M\times (N+1) + (M+1)\times N $. 
+We count horizontal edges first, and the vertical edges are counted
+starting from $M\times (N+1)$.
+
+Before we dig into index convention of a this kind of mesh deeply, 
+we introduce a reshape function communicating N-dimensional data
+and One-dimensional data.
+
+\subsection{Reshape N-dimensional Data}
+The natural representation of a 2D cartesian data is a pair of index $(i,j)$. 
+However,
 we usually reshape the 2D data into a 1D array for a more natural 
-representation in computer. We give a more general reshape function
-that project N-dimensional data to a one-dimensional data. 
+representation in computation. We give a more general reshape function
+that projects N-dimensional data to a one-dimensional data. 
+This reshape function can also be used for tensor data, e.g., base smoothness
+indicator~\ref{}. 
+There exists a bijective mapping as
+\begin{equation}
+		  i \leftrightarrow (i_0, i_1 , \ldots, i_{N-1}).
+\end{equation}
+The algorithm~\ref{alg:reshape} illustrates the 
+simple implementation of this reshape function.
 \begin{algorithm}[htb]
 \caption{N dimensional reshape\label{alg:reshape}}
 		  Consider a N-dimensional array $\{n_0\times n_i\times \ldots n_{N-1}\}$.
@@ -115,35 +147,118 @@ Let $I=0$ be the result, and $a=0$ be the multiplier.
 \end{algorithm}
 We can also reverse the process reshaping 1D data back into N-dimensional 
 data with modulo and integer division operation.
-
-\subsection{Logically Rectangular Mesh}
-Mesh generation is not the focus of this project, hence
-we adopt a much simpler way of implementing quadrilateral mesh,
-the logically rectangular way.
-We generate the quadrialteral mesh by randomly distorting each 
-interior vertex coordinates.
-There is no affine mapping between reference square mesh and generated
-mesh. The indexing of geometrical objects remain untouched through
-the vertex distortion.
-
-In our case, all the indices are represented with cartesian coordinates.
-Therefore, we can setup local to global mapping of geometric objects 
-easily with liear functions.
-Consider a mesh with $M\times N$ cells, the totlal number of vertex
-is $(M+1)\times (N+1)$ and the total number of edges is 
-$M\times (N+1) + (M+1)\times N $. 
-We count horizontal edges first, hence the vertical edges are counted
-starting from $M\times (N+1)$.
-Let local vertex and edge number being counted in the same way 
-as indicated in the mesh~\ref{},
-we can define the local to global mapping with local index of vertex and
-global index of cell.
-Consider mapping the local index $i$ of vertex $v_i$ in the cell $C_I$ as
-\begin{equation}\label{eq:gtolocal}
-		  ID_{V} \ni  = 
+We use these two index interchangeablely.
+We introduce a new notation highlighting the relation between N-dimensional
+and one-dimensional data as
+\begin{equation}\label{eq:reshapenotation}
+		  i(i_0, i_1, \ldots, i_{N_1})_{n_0, n_1, \ldots, n_{N-1}},
 \end{equation}
-and the edge local to global mapping as
+where $i$ is the index in one-dimensional array, $(i_0, i_1, \ldots, i_{N-1})$ 
+is the N-dimensional index, and $n_0, n_1, \ldots, n_{N-1}$ represents
+the size of N-dimensional array. 
 
-\section{Assembly and dofs}
+\subsection{Local Vertex Index}
+We represent local vertex index with the new notation.
+For a given vertex with local index $i \in id_v$ 
+associated with a cell with global index $I \in ID_C$,
+we define an index convention as
+\begin{equation}
+		  a(a_0,a_1)_{2,2},
+\end{equation}
+where $a_0, a_1 \in \{0,1\}$. We found the next point simply by
+adding $1$ to the one-dimensional index as
+\begin{equation}
+		  b \equiv a+1 \Mod{4},
+\end{equation}
+where the direction is naturally defined by pointing from vertex $v_a$
+to $v_b$.
+
+\subsection{Local Global Index convention}
+Assuming local vertex and edge number being counted in the same way 
+as indicated in the mesh~\ref{}, where the counting starts from left
+bottom corner.
+We define the local to global mapping with the local index of vertex and
+global index of cell.
+Consider mapping the local index $i$ of vertex $v_i$ in the 
+cell $C_{K(I_0, I_1)_{M,N}}$ as
+\begin{equation}\label{eq:gtolocal}
+		  id_v \ni i(i_0, i_1)_{m,n} \rightarrow I(I_0, I_1)_{M+1,N+1} \in ID_V.
+\end{equation}
+We write the mapped global index with the reshape 
+notation~\eqref{eq:reshapenotation} as
+\begin{equation}
+		  ID_V \ni I(I_0+i_0, I_1+i_1)_{M+1,N+1}.
+\end{equation}
+Note that the bottom golbal index of left corner vertex share the 
+same N-dimensional index as the global index of the cell.
+We then discuss the local to global mapping for vertical and horizontal edges.
+Consider the starting vertex $id_v \ni i(i_0,i_1)$ of the edge $e_i$ such that
+\begin{itemize}
+		  \item Horizontal Edge;
+\begin{equation}
+		  ID_E \ni I(I_0,I_1+i_1)_{M,N+1}.
+\end{equation}
+		  \item Vertical Edge.
+\begin{equation}
+		  ID_E \ni I(I_0+i_0,I_1)_{M+1,N} + M\times (N+1).
+\end{equation}
+\end{itemize}
+
+\section{Dofs and MFEM assembly}
 In FEM and FVM computation, we need to associate geometrical objects with
-degrees of freedom.
+degrees of freedom. For FVM scheme, the dofs associated with
+edge flux are straightforward. However, the MFEM dofs require careful 
+treatment, especially for those dofs on the boundary. We follow the idea
+in~\cite{FEMHughes}, we need three data processing arrays: ID, IEN and LM
+arrays.
+We start with the introduction of these three arrays as
+\begin{itemize}
+		  \item IEN array.
+					 \begin{equation}
+								\text{IEN}(a,e) = A,
+					 \end{equation}
+					 where $a$ is the local dof index, $e$ is the global element
+					 number and $A$ is the global dof index.
+		  \item LD array.
+					 \begin{equation}
+								\text{ID}(A) = \left \{ 
+								\begin{aligned}
+										  &P, \quad A \in \text{Essen}, \\
+										  &0, \quad A \not\in \text{Essen},
+								\end{aligned}
+								\right.
+					 \end{equation}
+					 where $P$ is the position used in global matrix assembly, 
+					 and $\text{Essen}$ denotes the boundary assigned with 
+					 essential boundary condition.
+		  \item LM array.
+					 \begin{equation}
+								\text{LM} = \text{ID}(\text{IEN}(a,e)).
+					 \end{equation}
+\end{itemize}
+In actual code implementation, we create LM array by screening all dofs prior 
+to computation, while IEN and ID array are not actually stored.
+
+\subsection{Example Implementation}
+For $H(\text{div})$ element, the dofs are mainly associated with edge like
+FVM, which is easy to comprehend. Therefore, we chose to give a detailed
+description of how Modified Bernardi-Raugel is implemented with the concept
+of ID, IEN and LM arrays, where vertex dofs and edge dofs are mixed. 
+In Figure~\ref{fig:brelem}, we illustrate dofs in a bernardi regauel
+element, where two dofs are associated with vertex nodes and one 
+dofs associated with edge nodes.
+\begin{figure}[ht]
+\centering
+\input chapters/tikz/br.tex
+		  \caption{An exhibition of dofs associated with a modified Bernardi-Regual element.}
+\label{fig:brelem}
+\end{figure}
+In Figure~\ref{44mesh}, we show a simple $4\times 4$ mesh.
+Assuming normal flux on top edge are given natural boundary condition, while
+all other dofs are prescribed with essential boundary codition.
+\begin{figure}[ht]
+\centering
+\input chapters/tikz/44mesh.tex
+		  \caption{An exhibition of br dofs index with a $4 \times 4$ mesh.}
+\label{fig:44mesh}
+\end{figure}
