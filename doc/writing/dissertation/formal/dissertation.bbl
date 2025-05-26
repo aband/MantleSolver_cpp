@@ -1,4 +1,4 @@
-\begin{thebibliography}{20}
+\begin{thebibliography}{21}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -12,6 +12,11 @@ T.~Arbogast, M.~A. Hesse, and A.~L. Taicher.
 \newblock \emph{SIAM J. Sci. Comput.}, 39\penalty0 (2):\penalty0 B375--B402,
   2017.
 \newblock {DOI} 10.1137/16M1091095.
+
+\bibitem[Arbogast and Bona(2025)]{funcAna}
+Todd Arbogast and Jerry~L. Bona.
+\newblock \emph{Functional Analysis for the Applied Mathematician}.
+\newblock Chapman \& Hall, 2025.
 
 \bibitem[Arbogast and Correa(2016)]{doi:10.1137/15M1013705}
 Todd Arbogast and Maicon~R. Correa.

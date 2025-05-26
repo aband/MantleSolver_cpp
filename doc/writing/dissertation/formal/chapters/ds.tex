@@ -8,16 +8,7 @@ on quadrilaterals according to~\cite{directSerendipity}.
 $H^1$ and $H(\text{div})$ conforming direct mixed finite elemenent space
 are constructed with the direct serendipity function space.
 
-To begin with, we introduce some notations and distance auxilliary functions. 
-Let $\mathbb{P}_r(\omega)$ denote the space of polynomials of degree up to $r$
-on $\omega \subset \mathbb{R}^d$. The dimension of $\mathbb{P}_r$ can be
-calculated as
-\begin{equation}\label{eq:dimpolynomial}
-		  \text{dim}\mathbb{P}_r(\mathbb{R}^d) = \begin{pmatrix}
-r+2 \\
-2
-		  \end{pmatrix} = \frac{(r+2)!}{r!2!}.
-\end{equation}
+To begin with, we introduce some distance auxilliary functions. 
 We define the linear polynomial $\lambda_i(\mathbf{x})$ giving the
 distance of $\mathbf{x}\in \mathbb{R}^2$ to edge $e_i$ as
 \begin{equation}\label{eq:distancelambda}
@@ -128,8 +119,8 @@ The vertex nodal basis functions for $\mathcal{DS}_2$ are constructed as
 		  {\lambda_{i+2}(\mathbf{x}_{v,i}) \lambda_{i+3}(\mathbf{x}_{v,i}) - 
 		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi^2_{e,i}(\mathbf{x}_{v,i})},
 \end{equation}
-where $\mathbf{x}_{v,i}$ is the coordinates of the vertex node $v_i$. The $i$ index
-is understood in the sence of module of $4$ as well. In Figure~\ref{fig:phiv0}, we 
+where $\mathbf{x}_{v,i}$ is the coordinates of the vertex node $v_i$, and $i \equiv i \Mod{4}$ as well. 
+In Figure~\ref{fig:phiv0}, we 
 show $\varphi^2_{v,0}$ on a general quadrilateral.
 \begin{figure}[ht]
 \centering\small
@@ -176,8 +167,8 @@ We define vertex nodal basis function accordingly as
 \varphi^1_{v,i}(\mathbf{x}) = \frac{\lambda_{d,m}(\mathbf{x}) - \frac{1}{2}\lambda_{d,m}(\mathbf{x}_{v,i+2})(1+ (-1)^i R(\mathbf{x}))}
 {\lambda_{d,m}(\mathbf{x}_{v,i}) - \lambda_{d,m}(\mathbf{x}_{v,i+2})},
 \end{equation}
-where $m\equiv i+1 \Mod{2}$, and index $i$ is understood in the sence of modulo of $4$.
-In Figure~\ref{fig:vertexbasisds1}, we show the vertex nodal basis function $\varphi^1_{v,0}$ in $\mathcal{DS}_1$ on a 
+where $m\equiv i+1 \Mod{2}$, and index $i\equiv i \Mod{4}$.
+In Figure~\ref{fig:vertexbasisds1}, we show the vertex nodal basis function $\varphi^{(1)}_{v,0}$ in $\mathcal{DS}_1$ on a 
 general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vertex.
 \begin{figure}[ht]
 \centering\small
@@ -187,8 +178,9 @@ general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vert
 		  \label{fig:vertexbasisds1}
 \end{figure}
 
-We first define an interpolation operator of function $v \in L^2(\Omega)$ 
-onto $\mathcal{DS}_r(K_i)$, $r=1,2$. Here, $K_i$ has different meanings
+\subsection{An Interpolation Operator}
+We refer to an interpolation operator mapping
+onto $\mathcal{DS}_r(K_i)$, $r=1,2$ defined in~\cite{directSerendipity}. Here, $K_i$ has different meanings
 with different types of basis functions. For each basis functions associated
 with edge node, we set $K_i = e_i$. For each basis functions associated with
 vertex node, we set $K_i$ being a set of edges sharing the vertex $v_i$.
@@ -251,8 +243,9 @@ operator for future reference.
 		  See~\cite{directSerendipity}.
 \end{proof}
 
-\section{Mixed Finite Element Discretization}
-Recall Ciarlet's definition~\cite{doi:10.1137/1.9780898719208} 
+\section{Mixed Finite Elements}
+We then construct mixed finite elements from the introduced direct serendipity space.
+Now recall Ciarlet's definition~\cite{doi:10.1137/1.9780898719208} 
 of a finite element.
 \begin{defn}\label{def:ciarletFEM}
 		  A triple $(E, X(E), \varphi_j)$ defines a finite element.
@@ -673,7 +666,7 @@ Then
 \lvert \alpha_i \rvert \leq C \int_{\tilde{e},i} \lvert\tilde{\mathbf{v}} - \tilde{\mathcal{I}}_{\mathcal{DS}_1} \tilde{\mathbf{v}}\rvert ds
 \end{equation}
 
-Trace theorem $\dots$
+Trace theorem, poincare inequality $\dots$
 
 The final estimate is then
 \begin{equation}
