@@ -184,8 +184,8 @@ onto $\mathcal{DS}_r(K_i)$, $r=1,2$ defined in~\cite{directSerendipity}. Here, $
 with different types of basis functions. For each basis functions associated
 with edge node, we set $K_i = e_i$. For each basis functions associated with
 vertex node, we set $K_i$ being a set of edges sharing the vertex $v_i$.
-Following the work by~\cite{directSerendipity}, we define a interpolation
-operator $\mathcal{I}^r_h:W_p^l(E) \rightarrow \mathcal{DS}_r$ as
+An interpolation
+operator $\mathcal{I}^r_h:W_p^l(E) \rightarrow \mathcal{DS}_r$ is defined as
 \begin{equation}\label{eq:interpolation}
 					 \mathcal{I}^r_h v(\mathbf{x}) = \sum_{i=1}^{N_r} \varphi_i(\mathbf{x})\int_{K_i} \psi_i(\mathbf{y}) v(\mathbf{y}) d\mathbf{y} \in \mathcal{DS}_r,
 \end{equation}
@@ -214,13 +214,15 @@ operator for future reference.
 		 \norm{\mathcal{I}_h^r v}_{W_q^m} \leq C(\sigma_*, m, q) \sum_{k=0}^l
 					 h_E^{k-m+\frac{2}{q}-\frac{2}{p}} \lvert v\rvert_{W^k_p(E^*)},
 		  \end{equation}
-		  where $E^* = \cup_{F \in \mathcal{T}_h, F \cap E \neq \emptyset}$ and
-		  $\lvert\hspace{0.1cm} \cdot\hspace{0.1cm} \rvert_{W_p^k}$ is the seminorm of k-th order derivatives.
+		  where $E^* = \cup_{F \in \mathcal{T}_h, F \cap E \neq \emptyset} F$ and
+		  $\lvert\hspace{0.1cm} \cdot\hspace{0.1cm} \rvert_{W_p^k}$ is the seminorm of k-th order derivatives defined in Definition~\ref{def:sobolevnorm}.
 \end{lem}
 \begin{proof}
 		  See~\cite{directSerendipity}.
 \end{proof}
 
+Combining Lemma~\ref{lem:interpolationop} and Bramble-Hilbert lemma~\ref{lem:BHlemma}, we 
+give local and global error estimation.
 \begin{lem}\label{lem:approximation}
 		  (Approximability of the interpolation operator.)
 

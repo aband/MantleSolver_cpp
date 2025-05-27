@@ -1,4 +1,4 @@
-\begin{thebibliography}{21}
+\begin{thebibliography}{22}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -85,11 +85,20 @@ Philippe~G. Ciarlet.
 \newblock \doi{10.1137/1.9780898719208}.
 \newblock URL \url{https://epubs.siam.org/doi/abs/10.1137/1.9780898719208}.
 
-\bibitem[Dupont and Scott(1980)]{PolynomialApproximation}
+\bibitem[Dupont and Scott(1980{\natexlab{a}})]{PolynomialApproximation}
 Todd Dupont and Ridgway Scott.
 \newblock Polynomial approximation of functions in sobolev spaces.
 \newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
-  441--463, 1980.
+  441--463, 1980{\natexlab{a}}.
+
+\bibitem[Dupont and
+  Scott(1980{\natexlab{b}})]{ddd3654d-28ed-3763-8d70-a82ea44a3d31}
+Todd Dupont and Ridgway Scott.
+\newblock Polynomial approximation of functions in sobolev spaces.
+\newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
+  441--463, 1980{\natexlab{b}}.
+\newblock ISSN 00255718, 10886842.
+\newblock URL \url{http://www.jstor.org/stable/2006095}.
 
 \bibitem[Elman and Golub(1994)]{InexactUzawa_Elam_Golub}
 Howard~C. Elman and Gene~H. Golub.
