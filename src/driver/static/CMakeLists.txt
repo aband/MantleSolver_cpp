@@ -205,10 +205,10 @@ add_executable(restart
 		  trans_setting.cpp
 )
 
-add_executable(stokes
-		  stokes.cpp
+add_executable(convTest
+		  test.cpp
 		  solvestokes.cpp
-		  stokesflow_setting.cpp
+		  pseudo1d.cpp
 		  trans_setting.cpp
 )
 
@@ -220,7 +220,7 @@ target_include_directories(restart
 		  PUBLIC ${SRC}/coupledSys
 		  )
 
-target_include_directories(stokes
+target_include_directories(convTest
 		  PUBLIC ${SRC}/coupledSys
 		  )
 #
@@ -248,7 +248,7 @@ target_link_libraries(restart
 #        PkgConfig::CGNS
 )
 
-target_link_libraries(stokes
+target_link_libraries(convTest
 		  io_lib
 		  phase_lib
 		  mfem_lib

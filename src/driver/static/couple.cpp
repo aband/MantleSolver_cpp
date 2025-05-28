@@ -103,12 +103,113 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
         }
 
+        // Add top boundary
+        if (j == mi.MPIglobalCellSize[1]-1){
+
+        edge = {corners.at(2), corners.at(3)};
+
+        for (int g=0; g<gpe.size(); g++){
+
+            gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, edge);
+
+        vector<vertex> vel_relative = 
+        ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
+                    refArrayDarcyEssen_,mi,
+                    gaussp, gcell,*hdiv_,*basis_,{1});
+    
+        vector<vertex> vel_stokes = 
+        ExtractVelocity(&sresult_->vel_stokes, &sresult_->g_stokes,
+                    refArrayStokesEssen_,mi,
+                    gaussp, gcell,*br_,*basis_,{1});
+
+
+
+            darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
+            stokesvel.at(g) = vel_stokes.at(g);
+
+            fprintf(dvx, "%e ", darcyvel.at(g)[0]);
+            fprintf(dvy, "%e ", darcyvel.at(g)[1]);
+
+            fprintf(svx, "%e ", stokesvel.at(g)[0]);
+            fprintf(svy, "%e ", stokesvel.at(g)[1]);
+
+            fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
+            fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
+        }
+
+        }
+
+     }}
+/*
      }fprintf(dvx, "\n ");
       fprintf(dvy, "\n ");
       fprintf(svx, "\n ");
       fprintf(svy, "\n ");
       fprintf(gaussgridx, "\n ");
       fprintf(gaussgridy, "\n ");}
+*/
+      fclose(dvx);
+      fclose(dvy);
+      fclose(svx);
+      fclose(svy);
+      fclose(gaussgridx);
+      fclose(gaussgridy);
+
+    return 1;
+}
+
+int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
+
+    Vec vectildeqf;
+    Vec vecq;
+
+    PetscCall(VecNestGetSubVec(Result_->y, 0, &vecq));   
+    PetscCall(VecNestGetSubVec(Result_->y, 1, &vectildeqf));
+
+    FILE * fqs = fopen(GetFilename("qs", mark), "w");
+    FILE * fqf = fopen(GetFilename("qf", mark), "w");
+
+    FILE * fstokes = fopen(GetFilename("rawstokesq", mark), "w"); 
+    FILE * fdarcy  = fopen(GetFilename("rawdarcyq", mark), "w");
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice globalcell {i,j};
+        int nelem = FlatIndic(mi, globalcell);
+        double q, tildeqf;
+
+        PetscCall(VecGetValues(vectildeqf, 1, &nelem, &tildeqf));
+        PetscCall(VecGetValues(vecq, 1, &nelem, &q));
+
+        // Get Porosity
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi, globalcell);
+
+        vertex global = GaussMapPointsFace(local, basis_->corners());
+
+        double phif = AssignPorosity(global, pp);
+		  double coef = 0.0;
+        // Adjust phif
+        if (phif > 2e-16) {
+            coef = 1.0/sqrt(phif);
+        }
+
+        // Reterive original physical variables with physical units
+        double qf = tildeqf * coef; 
+        double qs = qf - 1.0/(1-phif)*(qf-q);
+
+        fprintf(fqs, "%e ", qs);
+        fprintf(fqf, "%e ", qf);
+        fprintf(fstokes, "%e ", q);
+        fprintf(fdarcy, "%e ", tildeqf);
+    }fprintf(fqs, "\n");
+     fprintf(fqf, "\n");
+     fprintf(fstokes, "\n");
+     fprintf(fdarcy, "\n");}
+
+
 
     return 1;
 }
@@ -780,7 +881,7 @@ int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
         printExactPorosity(mark, mi, "porosity", myPhase->pp);
         printVelEdgeGauss_case(mark, myPhase->pp);
 
-        PrintFlowEvent(mark);
+        printSimplePressure_case(mark, myPhase->pp);
         mark ++;
 
 //VecView(fluxphi, PETSC_VIEWER_STDOUT_WORLD);
