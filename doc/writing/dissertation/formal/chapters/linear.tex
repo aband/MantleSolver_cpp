@@ -112,13 +112,22 @@ Algorithm~\ref{alg:inexactuzawa}.
 \begin{algorithm}
 		  \caption{Inexact Uzawa Iteration\label{alg:inexactuzawa}}
 		  \begin{algorithmic}[1]
-					 \State Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
+					 \State Initialize $\bold{x}_0 = \bold{0}$, $\bold{y}_0 = \bold{0}$, tolence $\text{tol} = 1$ and residual $res = 0$.
 					 \vspace{0.3cm}
-					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \bold{Q}_A^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
+					 \While {res $>$ tol}
 					 \vspace{0.3cm}
-					 \State Obtain $\bold{r} = \mathbf{Q}_B^{-1}(\bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G})$
+					 \State Obtain $\tilde{\mathbf{x}} = \bold{Q}_A^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
 					 \vspace{0.3cm}
-					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \bold{r}$
+					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \tilde{\mathbf{x}}$
+					 \vspace{0.3cm}
+					 \State Obtain $\tilde{\bold{y}} = \mathbf{Q}_B^{-1}(\bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G})$
+					 \vspace{0.3cm}
+					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
+					 \vspace{0.3cm}
+					 \State Update $\text{res} = \norm{\tilde{\mathbf{x}}}_2 + 
+					 \norm{\tilde{\mathbf{y}}}_2$
+					 \vspace{0.3cm}
+					 \EndWhile
 		  \end{algorithmic}
 \end{algorithm}
 Some choose diagonal matrix $\alpha \mathbf{I}$ for precondictioner $\mathbf{Q}_A$. However, such simple matrix wouldn't generate a convergence result when applied
@@ -214,14 +223,24 @@ coupled degenerate singular system.
 \begin{algorithm}
 \caption{Modified Uzawa Iteration}
 		  \begin{algorithmic}[1]
-					 \State Initialize $\bold{x}_0 = \bold{0}$ and $\bold{y}_0 = \bold{0}$
+					 \State Initialize $\bold{x}_0 = \bold{0}$, $\bold{y}_0 = \bold{0}$, tolence $\text{tol} = 1$ and residual $res = 0$.
 					 \vspace{0.3cm}
-					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
+					 \While {res $>$ tol}
+					 \vspace{0.3cm}
+					 \State Obtain $\tilde{\mathbf{x}} = \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
+					 \vspace{0.3cm}
+					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \tilde{\mathbf{x}}$
 					 \vspace{0.3cm}
 					 \State Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$
 					 \vspace{0.3cm}
 					 \State Obtain $\tilde{\bold{y}} =\text{argmin}_{\bold{x}\in V} ||(\bold{B}^T\bold{A}^{-1}\bold{B} - \bold{C})^{-1}\tilde{\bold{y}}-\bold{r} ||$
 					 \vspace{0.3cm}
 					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
+					 \vspace{0.3cm}
+
+					 					 \State Update $\text{res} = \norm{\tilde{\mathbf{x}}}_2 + 
+					 \norm{\tilde{\mathbf{y}}}_2$
+	\vspace{0.3cm}
+					 \EndWhile
 \end{algorithmic}
 \end{algorithm}

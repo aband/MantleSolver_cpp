@@ -663,23 +663,41 @@ We continue to estimate $\lvert \alpha_i \rvert$ as
 \begin{equation}
 \int_{e,i} \varphi^{(2)}_{e,i} ds = \lvert e_i \rvert \int_{\tilde{e}_i} \tilde{\varphi}^{(2)}_{e,i} d\tilde{s}.
 \end{equation}
-Then
+		  According to Trace Theorem~\ref{thm:tracethm} the trace mapping is continuous, and Lemma~\ref{lem:intestimate}, we estimate the term $\lvert \alpha_i \rvert$ as
 \begin{equation}
-\lvert \alpha_i \rvert \leq C \int_{\tilde{e},i} \lvert\tilde{\mathbf{v}} - \tilde{\mathcal{I}}_{\mathcal{DS}_1} \tilde{\mathbf{v}}\rvert ds
+					 \lvert \alpha_i \rvert \leq C \int_{\tilde{e},i} \lvert\tilde{\mathbf{v}} - \tilde{\mathcal{I}}_{\mathcal{DS}_1} \tilde{\mathbf{v}}\rvert ds \leq C h_E^k h_E^{-1} \lvert \mathbf{v} \rvert_{k,E^*} .
 \end{equation}
-
-Trace theorem, poincare inequality $\dots$
-
-The final estimate is then
+The overall estimate is then
 \begin{equation}
 		  \lvert\alpha_i \rvert \lvert \mathbf{b}_i \rvert_{m,E} \leq C h^{k-m} \vert \mathbf{v} \rvert_{k,E^*}.
 \end{equation}
+Using the error estimation Lemma~\ref{lem:approximation}, and Bramble-Hilbert 
+Lemma~\ref{BHlemma}, we get a global error estimate as
+\begin{equation}
+		  \norm{\mathbf{v} - \pi \mathbf{v}}_{H^1(\Omega)} \leq C h \lvert \mathbf{v} \rvert_{H^2(\Omega)}.
+\end{equation}
 \end{proof}
-
-Our space $\mathbb{V}_1^{\mathcal{BR}} \times \mathbb{W}_0$ form a 
-$\int$-$\sup$ stable pair.
+In addition to the approximability lemma~\ref{lem:approximation}, we
+also need stability result.
+\begin{lem}\label{lem:brstability}
+		  For any $\mathbf{v} \in H^1_0(\Omega)$, there exists $\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}$ such that 
+		  \begin{equation}
+					 \norm{\mathbf{v}_h }_{H^1(\Omega)} \leq C\norm{\mathbf{v}}_{H^1(\Omega)}.
+		  \end{equation}
+\end{lem}
+\begin{proof}
+		  We express discrete solution $\mathbf{v}_h$ with the predefined
+		  projection operator $\mathbf{v}_h = \pi_h \mathbf{v}$, and denote
+		  the $\mathbf{w}_h = \mathcal{I} \mathbf{v}$, then we have the following
+		  inequality as
+		  \begin{equation}
+					 \norm{\mathbf{v}_h} \leq \norm{\mathbf{w}_h}_{H^1(\Omega)} + h_E^{-1} {\big\{}\norm{\mathbf{v}-\mathbf{w}_h}_{L^2(\Omega)} + h \lvert \mathbf{v} - \mathbf{w}_h \rvert_{H^1(\Omega)}  {\big\}} \leq C \norm{\mathbf{v}}_{H^1(\Omega)}.
+		  \end{equation}
+\end{proof}
 \begin{thm}
-For a convex domain $\Omega$, there exists a constant $\gamma > 0$ such that
+With the established approximability Lemma~\ref{lem:approximibility}, and 
+		  the stability Lemma~\ref{lem:brstability},
+for a convex domain $\Omega$, there exists a constant $\gamma > 0$ such that
 		  \begin{equation}
 					 \inf_{\omega \in \mathbb{W}_0} \sup_{\mathbf{v} \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}, \omega)}{\norm{\mathbf{v}}_1\norm{\omega}_0} \geq \gamma >0.
 		  \end{equation}
@@ -688,11 +706,12 @@ For a convex domain $\Omega$, there exists a constant $\gamma > 0$ such that
 		  \begin{equation}
 					 \sup_{\mathbf{v} \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}, \omega)}{\norm{\mathbf{v}}_1\norm{\omega}_0} \geq \frac{(\nabla \cdot \pi_h\mathbf{\varphi}, \omega)}{\norm{\pi_h\mathbf{\varphi}}_1 \norm{\omega}_0} \geq \frac{\norm{\omega}_0}{C \norm{\mathbf{\varphi}_1}} \geq \gamma > 0,
 		  \end{equation}
-\end{proof}
 where $\pi$ is a bounded projection operator.
+\end{proof}
+We conclude that our space $\mathbb{V}_1^{\mathcal{BR}} \times \mathbb{W}_0$ 
+form a $\inf$-$\sup$ stable pair with first order overall accuracy.
 
-
-\subsection{Test Modified Bernardi-Raugel Element}
+\subsection{Numerical Test}
 \iffalse
 We test our modified BR element on a test Stokes problem. 
 We begin with the strong form of the static Stokes problem as 

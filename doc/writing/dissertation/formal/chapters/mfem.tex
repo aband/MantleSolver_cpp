@@ -1,5 +1,5 @@
 \section{Coupled Degenerate Darcy-Stokes System}
-Consider a degenerate scaled darcy-stokes coupled boundary-value problem:
+Now we consider the scaled degenerate darcy-stokes coupled boundary-value problem:
 
 Find velocity-pressure potential pair $(\check{\mathbf{v}}_r, \check{q}_l)$ and 
 $(\check{\mathbf{v}}_s, \check{q})$ such that 
@@ -34,7 +34,8 @@ respectively. We have $\Gamma_{u,D} \cup \Gamma_{i,D} = \partial \Omega$ and $\G
 We follow the procedure by~\cite{DegenerateDarcy} to discretize this boundary value problem.
 To begin weith, a new Hilbert space is defined for this 
 specific scaled formulation, where
-the scaled velocity $\check{\mathbf{v}}_r$ should lie in, so
+the scaled velocity $\check{\mathbf{v}}_r$ should lie in.
+\begin{defn}
 \begin{equation}\label{eq:scaledHspace}
 		  \mathbb{V}^{\phi}_d = H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
 		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Phi} \mathbf{v})
@@ -50,7 +51,7 @@ The normal trace on $\partial \Omega$ is well-defined as well as
 \begin{equation}\label{eq:tracescaled}
 		  \norm{\phi^{1/2+\Theta}\mathbf{v}_\phi\cdot \nu}_{-1/2, \partial \Omega} < C_{\Omega} \Big\{ \norm{\mathbf{v}_\phi} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}_\phi)} \Big\}.
 \end{equation}
-
+\end{defn}
 \subsection{The weak formulation}
 We define the following function spaces
 \begin{equation}\label{eq:spaces}
@@ -147,14 +148,11 @@ The second term vanishes when $\omega_l$ is constant on element $E$.
 We define an auxiliary auxiliary space $\omega_E$ begin 1 on $E$ and 0 elsewhere.
 We sum equations~\eqref{eq:weak_compaction} and~\eqref{eq:weak_continuous} 
 together 
-assuming that $\omega = \omega_E \in \mathbb{W}_{S}$ and $\omega_l = \phi_E^{-1/2} \omega_E \in \mathbb{W}_{D}$. We can achieve local mass conservation of the
-phase averaged mixture if we
-replace the term $\phi^{1/2}$ in equation~\eqref{eq:weak_compaction} with
+assuming that $\omega = \omega_E \in \mathbb{W}_{S}$ and $\omega_l = \phi_E^{-1/2} \omega_E \in \mathbb{W}_{D}$. 
+We now propose our local mass conserved version by
+replacing the term $\phi^{1/2}$ in equation~\eqref{eq:weak_compaction} with
 $\phi_E^{1/2}$ as
-\begin{equation}
-		  \int_{E}\nabla \cdot (\phi^{1+\Theta}\check{\mathbf{v}}_r + \check{\mathbf{v}}_s) d\mathbf{x} = 0.
-\end{equation}
-We now propose our local mass conserved version as
+\iffalse
 \begin{alignat}{2}
 		  \label{eq:weak_stokes_mass}
 		  &(\check{\pmb{\tau}}(\bold{v}_{s,h}),\nabla \pmb{\psi}_s) - (\check{q}_h, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_1^{\mathcal{BR}},\\
@@ -168,10 +166,43 @@ We now propose our local mass conserved version as
 		  &					 &&\forall \omega_f \in 
 		  \mathbb{W}_{0}.
 \end{alignat}
+\fi
+\begin{alignat}{2}
+		  \label{eq:weak_stokes_mass}
+		  &(\check{\pmb{\tau}}(\bold{v}_{s,h}),\nabla \pmb{\psi}_s) - (\check{q}_h, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_1^{\mathcal{BR}},\\
+		  \label{eq:weak_compaction_mass}
+		  &(\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  - \Big(\frac{\phi\phi_E^{-1/2}}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_0^{\mathcal{BR}},\\
+					\label{eq:weak_darcy_mass}
+					 &(\bold{\check{v}}_{r,h},\pmb{\psi}_r)  - (\check{q}_{l,h},\phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_{r,h})) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_1^0,\\
+					 \nonumber
+					 &(\phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_{r,h}),\omega_f) + \Big(\frac{\phi\phi^{-1}_E}{1-\phi}(\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h),\omega_f \Big) &&= 0 \\
+					 \label{eq:weak_continuous_mass}
+		  &					 &&\forall \omega_f \in 
+		  \mathbb{W}_{0}.
+\end{alignat}
+To see local mass conservation of the fluid, let $E \in \mathcal{T}_h$ be any element. 
+The equation~\eqref{eq:weak_continuous_mass} gives
+\begin{equation}
+		  \int_E \nabla \cdot (\phi^{1+\Theta} \check{\mathbf{v}}_{r,h}) d\mathbf{x} + \int_E \frac{\phi}{1-\phi} (\check{q}_{l,h} - q_h) dx = 0,
+\end{equation}
+and the equation~\eqref{eq:weak_compaction_mass} gives
+\begin{equation}
+		  \int_E \nabla \cdot \mathbf{v}_{s,h} d\mathbf{x} - \int_E \frac{\phi}{1-\phi} (q_{l,h} - q_h) dx = 0.
+\end{equation}
+By summing the two individual equations above,
+we can achieve local mass conservation of the
+phase averaged mixture as
+\begin{equation}
+		  \int_{E}\nabla \cdot (\phi^{1+\Theta}\check{\mathbf{v}}_r + \check{\mathbf{v}}_s) d\mathbf{x} = 0.
+\end{equation}
 
 \subsection{Convergence Rate}
+The existence of a unique solution can be shown 
+
 We derive a bound for the error by taking the difference
 of 
+
+We use the projection operators defined in 
 
 \input chapters/linear.tex
 
@@ -211,12 +242,30 @@ Substitute the compuated results into PDE
 \end{aligned}
 \end{equation}
 
-
-
 Problem setup 2:
-
-We solve the full system of equations on the rectangular domain $-160\text{km} < x < 160\text{km}$,
-$0, x, 160\text{km}$. The boundary conditions are define by imposing  
+We now redo the Mid-Ocean ridge test case in~\cite{DegenerateDarcy}.
+We solve the full system of equations on the rectangular domain $-160\text{km} < x < 160\text{km}$, $0, x, 160\text{km}$. 
+The boundary conditions are imposed by
+the constant porosity corner flow solution of
+Stokes velocity as 
 \begin{equation}\label{eq:test2}
-		  \mathbf{v}_s = 
+		  \mathbf{v}_s = \frac{2U_0}{\pi(x^2+z^2)}\begin{pmatrix}
+					 \tan^{-1}(x/z)(x^2+z^2) - xz\\
+-z^2
+		  \end{pmatrix},
 \end{equation}
+where $U_0 = 10^{-9}\text{m/s} = 3.2\text{cm/yr}$ is the 
+constant upwelling velocity of mantle.
+According to mass conservation condition, we set no Darcy flux across the 
+boundary.
+We then set a no identically vanishing porosity by the formula
+\begin{equation}\label{eq:porositydistri}
+		  \phi(x,z) = \left \{ \begin{aligned}
+					 &0.05 (\frac{120\text{km} - z}{120 \text{km}})^2 (1 - \frac{\lvert x \rvert}{z + l}), \hspace{0.2cm} \text{if $x \leq 120\text{km}$ and $\lvert x \rvert \leq z + l$},\\
+					 &0, \hspace{5.2cm}\text{otherwise},
+		  \end{aligned}
+		  \right.
+\end{equation}
+where $l = 20\text{m}$ is the offset set to avoid singularity computation.
+at the center $x=0$ we translate the coordinates $x$ to $x-l$ if $x<0$, and 
+$x+l$ when $x>0$.
