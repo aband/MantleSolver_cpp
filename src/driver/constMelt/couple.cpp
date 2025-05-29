@@ -183,23 +183,22 @@ double melting(const MeshInfo& mi,
     }
 */
 
+    if (mapped[1] >= -0.25){
+        return 0.0001;
+    }else {
+        return 0.0;
+    }
+
+
 /*
     if (mapped[1] >= -0.2){
-        return 0.001;
+        return 0.0005;
     }else if (mapped[1] > -0.3 && mapped[1] < -0.2){
         return 0.0005;
     }else {
         return 0.0;
     }
 */
-
-    if (mapped[1] >= -0.2){
-        return 0.000;
-    }else if (mapped[1] > -0.3 && mapped[1] < -0.2){
-        return 0.0005;
-    }else {
-        return 0.0;
-    }
 
     return rate;
 }
@@ -402,8 +401,8 @@ int Driver::AssignLocMatStokes_case(const indice& gcell,
 
             // Non dimensionalized version
             // Attention, porosity has been multiplied to right hand side force term
-            loc->f[j] += gw*jac* phi_f*(stokesforce[0]*brval[j][0] + 
-                                        stokesforce[1]*brval[j][1]);
+            loc->f[j] += gw*jac* (1-phi_f)*(stokesforce[0]*brval[j][0] + 
+                                            stokesforce[1]*brval[j][1]);
 
         }
 

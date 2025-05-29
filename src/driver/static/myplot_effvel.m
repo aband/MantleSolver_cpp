@@ -77,8 +77,9 @@ fileID = fopen(filename, 'r');
 qs = fscanf(fileID, '%f', [1,Inf]);
 qs = reshape(qs, M/3, N-1);
 
-subplot(1,2,1)
+subplot(1,4,1)
 plot(qs(1,:), cY(1,:));
+title("qs")
 
 filename = strcat('build/qf',string(k));
 filename = strcat(filename,'.dat');
@@ -86,7 +87,28 @@ fileID = fopen(filename, 'r');
 qf = fscanf(fileID, '%f', [1,Inf]);
 qf = reshape(qf, M/3, N-1);
 
-subplot(1,2,2)
+subplot(1,4,2)
 plot(qf(1,:), cY(1,:));
+title("qf")
+
+filename = strcat('build/rawstokesq',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+rqs = fscanf(fileID, '%f', [1,Inf]);
+rqs = reshape(rqs, M/3, N-1);
+
+subplot(1,4,3)
+plot(rqs(1,:), cY(1,:));
+title("raw data qs")
+
+filename = strcat('build/rawdarcyq',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+rqf = fscanf(fileID, '%f', [1,Inf]);
+rqf = reshape(rqf, M/3, N-1);
+
+subplot(1,4,4)
+plot(rqf(1,:), cY(1,:));
+title("raw data qf")
 
 end

@@ -206,12 +206,16 @@ We use the projection operators defined in
 
 \input chapters/linear.tex
 
-\subsection{Test Run}
-We test our MFEM setup with two problems.
-First, we test with a manufactured solution. Second, we test a
-more complex yet a more realistic problem.
+\subsection{Numerical Test}
+We test our MFEM setup with three sets of problems.
+First, we test with a manufactured solution all prescribed
+with essential boundary condition, but the right hand side was modified.
+Second, we test a pseudo 1D problem with 2D elements with three different
+porosity scenarios.
+Third, we test a
+more complex yet a more realistic problem representing Mid Ocean Ridge.
 
-Problem setup 1:
+Problem Setup 1:
 
 We solve a manufactured system of equations on the rectangular domain 
 $(x,y) \in [-1,1]^2$. We assume a constant porosity acorss the domain as
@@ -242,7 +246,33 @@ Substitute the compuated results into PDE
 \end{aligned}
 \end{equation}
 
-Problem setup 2:
+Problem Setup 2:
+In this problemsetup, we perform convergence test on a 2D grid with a 1D problem.
+We study a compacting column in one direction. The column extends over $y \in [-L,L]$
+and has no flow through top and bottom boundaries. We prescribe the following boundary conditions
+\begin{itemize}
+		  \item Bottom Edge;
+					 \begin{itemize}
+								\item Stokes velocity $\check{\mathbf{v}}_s = \mathbf{0}$;
+								\item Darcy velocity $\check{\mathbf{v}}_l = \mathbf{0}$;
+							   \item Normal flux is also determined to be zero.
+					 \end{itemize}
+		  \item Left and Right side Edges;
+					 \begin{itemize}
+								\item y component of Stokes velocity is free, x component is kept as zero;
+								\item Darcy velocity, which is understood as flux is also kept zero;
+							   \item normal flux dof fixed with a zero flux.
+					 \end{itemize}
+		  \item Top Edge;
+					 \begin{itemize}
+								\item Stokes velocity $\check{\mathbf{v}}_s = \mathbf{0}$;
+								\item Darcy velocity $\check{\mathbf{v}}_l = \mathbf{0}$;
+							   \item Normal flux is also determined to be zero.
+					 \end{itemize}
+\end{itemize}
+We assume the solution takes the form of $\mathbf{v} = (0,v_y)$. We can rewrite the PDE as 1D with such assumption.
+
+Problem Setup 3:
 We now redo the Mid-Ocean ridge test case in~\cite{DegenerateDarcy}.
 We solve the full system of equations on the rectangular domain $-160\text{km} < x < 160\text{km}$, $0, x, 160\text{km}$. 
 The boundary conditions are imposed by

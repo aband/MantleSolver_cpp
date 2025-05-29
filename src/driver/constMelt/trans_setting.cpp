@@ -98,7 +98,7 @@ double InitCD(const valarray<double>& point,
 
 
     if (point[1] >= -0.2){
-        return 0.01;
+        return 0.00;
     }else if (point[1] > -0.3 && point[1] < -0.2){
         return 0.00;
     }else {

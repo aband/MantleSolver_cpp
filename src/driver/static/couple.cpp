@@ -192,7 +192,7 @@ int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
         double phif = AssignPorosity(global, pp);
 		  double coef = 0.0;
         // Adjust phif
-        if (phif > 2e-16) {
+        if (phif > 1e-16) {
             coef = 1.0/sqrt(phif);
         }
 
@@ -200,7 +200,7 @@ int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
         double qf = tildeqf * coef; 
         double qs = qf - 1.0/(1-phif)*(qf-q);
 
-        fprintf(fqs, "%e ", qs);
+        fprintf(fqs, "%e ", -1*qs);
         fprintf(fqf, "%e ", qf);
         fprintf(fstokes, "%e ", q);
         fprintf(fdarcy, "%e ", tildeqf);
@@ -591,7 +591,7 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
 
             // Non dimensionalized version
             // Attention, porosity has been multiplied to right hand side force term
-            loc->f[j] += gw*jac* phi_f*(stokesforce[0]*brval[j][0] + 
+            loc->f[j] += gw*jac* phi_s*(stokesforce[0]*brval[j][0] + 
                                         stokesforce[1]*brval[j][1]);
 
         }
