@@ -1,4 +1,4 @@
-\begin{tikzpicture}[scale=2]
+\begin{tikzpicture}[scale=3]
 
 \coordinate (a) at (0.00, 0.00);
 \coordinate (b) at (1.00, 0.00);
@@ -18,7 +18,32 @@
 \draw (c) -- (f) -- (g) -- (h) -- cycle;
 \draw (d) -- (c) -- (h) -- (i) -- cycle;
 
+		  \draw (a) node[below left] {$0$, $9$};
+		  \draw (b) node[below ] {$1$, $10$};
+		  \draw (e) node[below right] {$2$, $11$};
+		  \draw (d) node[left] {$3^*$, $12$};
+		  \draw (c) node[below left] {$4^*$, $13^*$};
+		  \draw (f) node[right] {$5^*$, $14$};
+		  \draw (i) node[above left] {$6$, $15^*$};
+		  \draw (h) node[above ] {$7$, $16^*$};
+		  \draw (g) node[above right] {$8$, $17^*$};
 
+		  \draw (0.5,0.0) node[above] {$18$};
+		  \draw (1.5,0.0) node[above] {$19$};
+
+		  \draw (0.45,1.04) node[above] {$20^*$};
+		  \draw (1.55,1.04) node[above] {$21^*$};
+
+		  \draw (0.5,2.0) node[above] {$22^*$};
+		  \draw (1.5,2.0) node[above] {$23^*$};
+
+		  \draw (0.0,0.5) node[left] {$24$};
+		  \draw (0.95,0.54) node[left] {$25^*$};
+		  \draw (2.0,0.5) node[left] {$26$};
+
+		  \draw (0.0,1.5) node[left] {$27$};
+		  \draw (0.95,1.54) node[left] {$28^*$};
+		  \draw (2.0,1.5) node[left] {$29$};
 
 
 \end{tikzpicture}

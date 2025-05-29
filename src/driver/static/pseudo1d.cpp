@@ -38,15 +38,15 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
     }
 */    
     // piece wise constant porosity
-	
+/*	
     if (point[1]<0){
         return 0.04;
     } else {
         return 0.0;
     }
-
+*/
     // constant
-//    return 0.04;
+    return 0.04;
 }
 
 double AssignPorosity(double phi_f){

@@ -75,7 +75,7 @@ filename = strcat('build/qs',string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 qs = fscanf(fileID, '%f', [1,Inf]);
-qs = reshape(qs, 2, 100);
+qs = reshape(qs, M/3, N-1);
 
 subplot(1,2,1)
 plot(qs(1,:), cY(1,:));
@@ -84,7 +84,7 @@ filename = strcat('build/qf',string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 qf = fscanf(fileID, '%f', [1,Inf]);
-qf = reshape(qf, 2, 100);
+qf = reshape(qf, M/3, N-1);
 
 subplot(1,2,2)
 plot(qf(1,:), cY(1,:));

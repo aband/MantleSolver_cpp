@@ -3,7 +3,6 @@ In this section, we disscuss some ideas regarding parallel implementation
 of MFEM and FVM solvers, and present some preliminary timing results for each 
 solver.
 The parallel implementation of the MFEM and FVM need different treatments.
-For MFEM solver, edge dofs are shared across different processors.
 
 \begin{figure}[ht]
 \centering
@@ -13,4 +12,57 @@ For MFEM solver, edge dofs are shared across different processors.
 \label{fig:meshexample}
 \end{figure}
 
+For FVM discretization, the high order stencils posed some difficiulties 
+on parallel implementation. We need to extend from one processor to
+the adjecent processor with the so-called ghost region, which results
+ in more communication during computation.
+Consider a ML-WENO(3,2) scheme, as shown in Figure~\ref{fig:meshexample}, 
+we show distributed ghost region with dashed lines.
+We need to determine the flux acorss the edge of the red cell.
+Therefore, a maximum $3\times 3$ stencil should be attached to the outside
+cell. Hence, in a ML-WENO(3,2) scheme, a two-cell ghost layer should be
+distributed and updated everytime computing flux. 
 
+For MFEM discretization, we encounter different problems.
+The MFEM discretization, unlike FVM scheme, forms a sparse matrix.
+The sparse matrix are splited across the processors. The dof in solution
+vector should be distributed accordingly. Therefore, everytime the solution 
+is being reconstructed, communication between processors will be induced.
+
+We provide strong scaling plot for our test parallel running.
+We run our MFEM and FVM code with 1,2,4,6 processors
+
+\subsection{Parallel Index Convention}
+Index convention in parallel computing requires another "local" index 
+kept within each processor.
+We can bypass such difficultity by using Hash table data structure
+that directly mapping to global index with out adding another "local"
+index. However, in the worst case Hash table suffers $O(n)$ time
+complexity in searching.
+
+\section{PETSc Implementation}
+PETSc, the Protable, Extensible Toolkit for Scientific Computation has been 
+gaining popularity in scientific applications modelled by partial 
+differential equations~\cite{petsc-web-page} and~\cite{petsc-user-ref}.
+We used three main features from PETSc package.
+\begin{itemize}
+		  \item Vector (Vec) and matrix (Mat) data structure.
+		  \item Data management object (DM).
+		  \item Standard linear solver (KSP).
+\end{itemize}
+
+We store global data in Vec and Mat data structure provided by
+PETSc. Vec and Mat objects in PETSc can complete simple
+add, dot operations without distinguish between sequential or parallel.
+
+Note that PETSc provides a built-in data management object DMStag.
+However, we use a more generic data management object DMDA for structured 
+mesh because we formed reduced linear system in MFEM computation.
+DMStag, on the other hand, does not provide a straightforward function
+that can create reduced system for us.
+
+We use the built in KSP solver, e.g., KSPMINRES and KSPCG solver for
+our application when we solve large sparse system. However, for small
+system such as $4\times 4$ system solved in ML-WENO stencil polynomial
+computation, we call lapack directly.
+We also use provided preconditioner.

@@ -219,12 +219,12 @@ We start with the introduction of these three arrays as
 					 \end{equation}
 					 where $a$ is the local dof index, $e$ is the global element
 					 number and $A$ is the global dof index.
-		  \item LD array.
+		  \item ID array.
 					 \begin{equation}
 								\text{ID}(A) = \left \{ 
 								\begin{aligned}
-										  &P, \quad A \in \text{Essen}, \\
-										  &0, \quad A \not\in \text{Essen},
+										  &P, \quad A \not\in \text{Essen}, \\
+										  &0, \quad A \in \text{Essen},
 								\end{aligned}
 								\right.
 					 \end{equation}
@@ -239,26 +239,71 @@ We start with the introduction of these three arrays as
 In actual code implementation, we create LM array by screening all dofs prior 
 to computation, while IEN and ID array are not actually stored.
 
-\subsection{Example Implementation}
+\subsection{Index Convention Example}
 For $H(\text{div})$ element, the dofs are mainly associated with edge like
-FVM, which is easy to comprehend. Therefore, we chose to give a detailed
+FVM, which is easy to comprehend and implement. Therefore, we chose to give a detailed
 description of how Modified Bernardi-Raugel is implemented with the concept
 of ID, IEN and LM arrays, where vertex dofs and edge dofs are mixed. 
 In Figure~\ref{fig:brelem}, we illustrate dofs in a bernardi regauel
-element, where two dofs are associated with vertex nodes and one 
-dofs associated with edge nodes.
+element, where two dofs (x dof and y dof) are associated with vertex nodes 
+and one dof (flux dof) associated with edge nodes. We count x dof first
+y dof second, flux acorss horizontal edges third and the flux
+across vertical edges.
 \begin{figure}[ht]
 \centering
 \input chapters/tikz/br.tex
 		  \caption{An exhibition of dofs associated with a modified Bernardi-Regual element.}
 \label{fig:brelem}
 \end{figure}
-In Figure~\ref{44mesh}, we show a simple $4\times 4$ mesh.
-Assuming normal flux on top edge are given natural boundary condition, while
-all other dofs are prescribed with essential boundary codition.
+
+In Figure~\ref{fig:44mesh}, we show a simple $4\times 4$ mesh with corresponding
+index associated with each dof marked.
+The total dof counts equal to $2\times(3\times3) + 2\times 3 + 3 \times 2 = 30$.
+For a column upwelling problem,
+We assume the following boundary condition is prescribed.
+\begin{itemize}
+		  \item Bottom Edge;
+					 \begin{itemize}
+								\item x dof fixed with zero;
+								\item y dof fixed with a constant upwelling speed;
+							   \item normal flux dof fixed with a constant influx.
+					 \end{itemize}
+		  \item Left and Right side Edges;
+					 \begin{itemize}
+								\item x dof fixed with zero;
+								\item y dof is free, given natural boundary condition (zero stress);
+							   \item normal flux dof fixed with a zero flux.
+					 \end{itemize}
+		  \item Top Edge;
+					 \begin{itemize}
+								\item x dof fixed with zero;
+								\item y dof is free, given natural boundary condition (zero stress);
+							   \item normal flux dof is free.
+					 \end{itemize}
+\end{itemize}
+
+We mark all the
+dof index that are not prescribed, i.e., will be determined by 
+solving a linear system with superscript a $*$.
+These "free" dofs consist of interior dofs and boundary dofs that are given
+natural boundary condition.
 \begin{figure}[ht]
 \centering
 \input chapters/tikz/44mesh.tex
 		  \caption{An exhibition of br dofs index with a $4 \times 4$ mesh.}
 \label{fig:44mesh}
 \end{figure}
+We can form a reduced ID array with the information in Figure~\ref{fig:44mesh} as
+\begin{table}[ht]
+\centering
+		  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+					 \hline
+					 P & 0 & 1 & 2 & 3  & 4  & 5  & 6  & 7  & 8  & 9  & 10 & 11\\
+					 \hline
+					 A & 3 & 4 & 4 & 13 & 14 & 16 & 20 & 21 & 22 & 23 & 25 & 28\\
+					 \hline
+		  \end{tabular}
+		  \caption[ID array]{Generated ID array relating to Figure~\ref{fig:44mesh}.}
+		  \label{tab:IDarray}
+\end{table}
+The reduced linear system excluding essential boundary dofs will be $12 \times 12$.
