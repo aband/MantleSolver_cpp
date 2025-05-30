@@ -37,6 +37,7 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
         return 0.0;
     }
 
+
     // piece wise constant porosity
 /*
     if (point[1]<0){
@@ -45,6 +46,7 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
         return 0.0;
     }
 */
+
     // constant
 //    return 0.04;
 }

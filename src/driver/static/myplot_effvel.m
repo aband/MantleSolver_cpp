@@ -27,6 +27,11 @@ fcell = struct2cell(fstruct);
 
 loops = numel(fstruct);
 
+filename = ('build/exactv.dat');
+fileID = fopen(filename,'r')
+exact = fscanf(fileID, '%f', [1,Inf]);
+exact = reshape(exact, M, N);
+
 %set(gcf, 'Position',[50 50 1800 700]);
 for k = 1:loops
 
@@ -49,7 +54,10 @@ quiver(pX, pY, vx, vy);
 title(["darcy velocity"])
 
 subplot(2,2,3)
+hold on
 plot(vy(4,:), pY(4,:));
+plot(-1*exact(4,:), pY(4,:),'+');
+hold off
 
 filename = strcat('build/stokesvelx',string(k));
 filename = strcat(filename,'.dat')
@@ -68,7 +76,10 @@ quiver(pX, pY, vx, vy);
 title(["stokes velocity"])
 
 subplot(2,2,4)
+hold on
 plot(vy(4,:), pY(4,:));
+plot(exact(4,:), pY(4,:), '+');
+hold off
 
 figure
 filename = strcat('build/qs',string(k));

@@ -6,6 +6,66 @@
  * Transporting phi with customized melting rate directly
  */
 
+inline double R(const double& phi){
+
+    double work = (3+phi-4*phi*phi)/3.0*phi;
+    work = 1.0/sqrt(work);
+
+    return work;
+}
+
+const double trueSoln(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
+
+    // Constant porosity
+    double work = 0.0;
+
+    double phi = AssignPorosity(point, pp);
+
+    work = -1.0*phi*phi*(1-phi)*(1-cosh(R(phi)*point[1])/cosh(R(phi)*L));
+
+    return work;
+}
+
+const double trueSoln_p(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
+
+    // Pievewise Constant porosity
+    double work = 0.0;
+
+    double phi = AssignPorosity(point, pp);
+
+    double z = point[1];
+
+    if (z<0){
+        double r= R(phi);
+        work = -1*phi*phi*(1-phi);
+
+        double a = -1;
+		  double b = (1-cosh(r*L))/sinh(r*L);
+
+        work *= (1+a*cosh(r*z) + b*sinh(r*z));
+    }
+
+    return work;
+}
+
+const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& glaobl, PhysProperty * pp, const double& L){
+
+    double work = 0.0;
+
+    double phi = AssignPorosity(point, pp);
+    phi = 0.001;
+
+    double z = point[1];
+
+    if (z<0){
+        double r1 = (3+sqrt(9+4/phi))/2;
+        double r2 = (3-sqrt(9+4/phi))/2;
+        work = phi*phi/(1-4*phi) * (pow(L,4-r1)*pow(-1*z,r1) - z*z*z*z);
+    }
+
+    return work;
+}
+
 int printExactPorosity(int mark, const MeshInfo& mi, const char * fieldname, PhysProperty * pp){
 
     char * filename = (char *)malloc(strlen(fieldname)+10+4);
@@ -49,6 +109,8 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
 
     FILE * gaussgridx = fopen("gaussgridx.dat", "w");
     FILE * gaussgridy = fopen("gaussgridy.dat", "w");
+
+    FILE * exactv = fopen("exactv.dat", "w");
 
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
@@ -101,6 +163,9 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
 
             fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
+
+            fprintf(exactv, "%e ", trueSoln_q(mi, gaussp.at(g), gcell, pp, 2));
+
         }
 
         // Add top boundary
@@ -135,6 +200,9 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
 
             fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
+
+            fprintf(exactv, "%e ", 0.0);
+
         }
 
         }
@@ -154,6 +222,7 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
       fclose(svy);
       fclose(gaussgridx);
       fclose(gaussgridy);
+      fclose(exactv);
 
     return 1;
 }
