@@ -279,12 +279,29 @@ and $v = \check{\mathbf{v}}_s \cdot \mathbf{j}$, where $\mathbf{j}$
 is the unit vector in y direction pointing upwards.
 \begin{equation}\label{eq:qdcolumncompaction}
 		  \begin{aligned}
-					 u + \phi^{2} q'_l &= 0 \\
-					 u' + \phi(q_l - q_s)&= 0 \\
-					 [q_s - \frac{1}{3}(1-4\phi)v']' &= 0\\
-					 v' - \phi(q_f - q_s) &=0
+					 u + \phi^{2} q'_l &= 0, \\
+					 u' + \phi(q_l - q_s)&= 0, \\
+					 [q_s - \frac{1}{3}(1-4\phi)v']' &= 0,\\
+					 v' - \phi(q_f - q_s) &=0,
 		  \end{aligned}
 \end{equation}
+When no melting presents $\phi = 0$, the equations reduce to 
+\begin{equation}
+		  u = -v = 0,\quad\text{and}\quad q'_s = 1, \quad\text{and}\quad q_l = 0.
+\end{equation}
+When melting presents $\phi > 0$, the equations can be reduced to
+\begin{equation}
+		  \phi^{2+2\Theta}\bigg(\frac{3+\phi - 4\phi^2}{3\phi}u' \bigg)' - u = \phi^{2+2\Theta}(1-\phi),
+\end{equation}
+where all other quantities can be determined according to $u$ as
+\begin{equation}
+		  v=-u, \quad \text{and}\quad  q'_l = -\phi^{-2-2\Theta}u, \quad \text{and}\quad qs = u'/\phi + q_l.
+\end{equation}
+When $\phi$ is constant, we define an auxiliary function $R$ as
+\begin{equation}
+		  R = \bigg( \phi^{2+2\Theta}\frac{3+\phi - 4\phi^2}{3\phi} \bigg)^{-1/2}.
+\end{equation}
+
 We test our MFEM code on three porosity settings,
 and use the closed form solutions derived in~\cite{DegenerateDarcy}.
 \begin{itemize}
@@ -312,11 +329,12 @@ and use the closed form solutions derived in~\cite{DegenerateDarcy}.
 					 \end{equation}
 					 Closed form solution:
 
-					 We conclude that $u=v=0$ when $z>0$.
+					 We conclude that $u=-v=0$ when $z>0$.
 					 \begin{equation}
 								\begin{aligned}
-										  u &= \phi_0^2(1-\phi_0) \bigg[1 - \cosh(Rz) + \frac{\cosh{(RL)} - 1}{\sinh{(RL)}\sinh(Rz)} \bigg]\\
-								 v &= -u 
+										  u &= \phi_0^2(1-\phi_0) \bigg[1 - \cosh(Rz) + \frac{1 - \cosh{(RL)}}{\sinh{(RL)}}\sinh{(Rz)} \bigg]\\
+								 v &= -u \\
+										  q_s &= z - \frac{1-\cosh{(RL)}}{\sinh(R)} 
 								\end{aligned}
 					 \end{equation}
 		  \item Quadratic porosity.
@@ -327,6 +345,21 @@ and use the closed form solutions derived in~\cite{DegenerateDarcy}.
 													 &\phi_0z^2 \hspace{0.3cm} \text{if}\hspace{0.2cm} z\leq 0,
 										  \end{aligned}
 										  \right.
+					 \end{equation}
+					 Closed form solution:
+
+					 We conclude that $u=-v=0$ when $z>0$.
+					 \begin{equation}
+								\begin{aligned}
+										  u &= \frac{\phi_0^2}{1-4\phi_0}\bigg(L^{4-r_1}z^{r_1} - z^4\bigg),\\
+										  v &= -v\\
+										  q_l&= \frac{1}{1-4\phi_0} \bigg(z - \frac{L^{4-r_1}z^{r_1-3}}{r_1-3} \bigg),\\
+										  q_s&= z,
+								\end{aligned}
+					 \end{equation}
+					 where 
+					 \begin{equation}
+								r_1 = \frac{3+\sqrt{9+4/\phi_0}}{2}.
 					 \end{equation}
 \end{itemize}
 
