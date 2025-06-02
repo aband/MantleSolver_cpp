@@ -15,6 +15,35 @@ fileID = fopen(filename, 'r');
 poro = fscanf(fileID, '%f', [1,Inf]);
 poro = reshape(poro, M, N);
 
+filename = 'build/exactql';
+fileID = fopen(filename, 'r');
+exactql = fscanf(fileID, '%f', [1,Inf]);
+exactql = reshape(exactql, M, N);
+
+filename = 'build/exactqs';
+fileID = fopen(filename, 'r');
+exactqs = fscanf(fileID, '%f', [1,Inf]);
+exactqs = reshape(exactqs, M, N);
+
+filename = strcat('build/qs1.dat');
+fileID = fopen(filename, 'r');
+qs = fscanf(fileID, '%f', [1,Inf]);
+qs = reshape(qs, M, N);
+
+filename = strcat('build/qf1.dat');
+fileID = fopen(filename, 'r');
+qf = fscanf(fileID, '%f', [1,Inf]);
+qf = reshape(qf, M, N);
+
+figure
+set(gcf, 'Position',[50 50 250 700]);
+hold on
+plot(exactql(2,:)+2, cY(2,:), '-k', 'LineWidth', 1);
+plot(exactqs(2,:)+2, cY(2,:), '-k', 'LineWidth', 1);
+plot(qs(1,:), cY(1,:),'--r','LineWidth',2);
+plot(-qf(1,:), cY(1,:),'--b','LineWidth',2);
+hold off
+
 figure
 set(gcf, 'Position',[50 50 250 700]);
 hold on

@@ -48,7 +48,7 @@ const double trueSoln_p(const MeshInfo& mi, const vertex& point, const indice& g
     return work;
 }
 
-const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& glaobl, PhysProperty * pp, const double& L){
+const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
 
     double work = 0.0;
 
@@ -66,6 +66,37 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
     return work;
 }
 
+// True solution for pressure potentials
+
+const std::array<double,2> trueSolnq(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
+
+    std::array<double,2> work {0.0,0.0};
+
+
+
+    return work;
+}
+
+const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
+
+    std::array<double,2> work {0.0,0.0};
+
+    double phi = 0.001;
+
+    double z = point[1];
+
+    if (z < 0){
+        double r1 = (3+sqrt(9+4/phi))/2;
+        double r2 = (3-sqrt(9+4/phi))/2;
+ 
+        work.at(0) = 1.0/(1-4*phi) * (z - pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
+    }
+
+    work.at(1) = point[1];
+
+    return work;
+}
+
 int printExactPorosity(int mark, const MeshInfo& mi, const char * fieldname, PhysProperty * pp){
 
     char * filename = (char *)malloc(strlen(fieldname)+10+4);
@@ -78,6 +109,9 @@ int printExactPorosity(int mark, const MeshInfo& mi, const char * fieldname, Phy
 
     FILE * sol = fopen(filename,"w");
 
+    FILE * exactql = fopen("exactql", "w");
+    FILE * exactqs = fopen("exactqs", "w");
+
     for(int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for(int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
@@ -89,9 +123,16 @@ int printExactPorosity(int mark, const MeshInfo& mi, const char * fieldname, Phy
 
         fprintf(sol, "%.16f ", AssignPorosity(global,pp));
 
+        std::array<double,2> exactvals = trueSolnq_q(mi, global, {i,j}, pp, 2);
+
+        fprintf(exactql, "%.16f ", -1.0*exactvals[0]);
+        fprintf(exactqs, "%.16f ", -1.0*exactvals[1]);
+
     }fprintf(sol, "\n");}
 
     fclose(sol);
+    fclose(exactql);
+    fclose(exactqs);
 
     return 1;
 }
@@ -181,7 +222,7 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
             fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
 
-            fprintf(exactv, "%e ", trueSoln_q(mi, gaussp.at(g), gcell, pp, 2));
+            fprintf(exactv, "%e ", trueSoln(mi, gaussp.at(g), gcell, pp, 2));
 
         }
 
@@ -286,7 +327,7 @@ double Driver::errorNorm(int mark, PhysProperty * pp, int norm){
             darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
             stokesvel.at(g) = vel_stokes.at(g);
 
-            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln_q(mi,gaussp.at(g),gcell,pp,2)),norm);
+            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln(mi,gaussp.at(g),gcell,pp,2)),norm);
 
         }
 
@@ -337,10 +378,10 @@ int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
         }
 
         // Reterive original physical variables with physical units
-        double qf = tildeqf * coef; 
+        double qf = tildeqf * coef;
         double qs = qf - 1.0/(1-phif)*(qf-q);
 
-        fprintf(fqs, "%e ", -1*qs);
+        fprintf(fqs, "%e ", qs);
         fprintf(fqf, "%e ", qf);
         fprintf(fstokes, "%e ", q);
         fprintf(fdarcy, "%e ", tildeqf);
@@ -348,8 +389,6 @@ int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
      fprintf(fqf, "\n");
      fprintf(fstokes, "\n");
      fprintf(fdarcy, "\n");}
-
-
 
     return 1;
 }
