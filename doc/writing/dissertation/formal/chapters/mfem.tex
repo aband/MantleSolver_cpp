@@ -318,6 +318,31 @@ and use the closed form solutions derived in~\cite{DegenerateDarcy}.
 										  q_s &= (1-\phi_0) \bigg[z - \frac{1-4\phi_0}{3+\phi_0-4\phi_0^2} \frac{\phi_0}{R}\frac{\sinh{(Rz)}}{\cosh{(RL)}} \bigg].
 								\end{aligned}
 					 \end{equation}
+
+					 \begin{figure}[ht]
+						\centering
+								\includegraphics[width=3cm,height=8cm]{chapters/pics/porosity_const.eps}
+\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_const.eps}
+\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quiver_const.eps}
+								\caption{Constant porosity compaction column test.}
+								\label{fig:constporocompactcolumn}
+					 \end{figure}
+
+					 \begin{table}[ht]
+\centering
+					\begin{tabular}{c || c | c || c | c || c | c || c | c }
+							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
+							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
+							  \hline
+							  $2\times20$ & 3.100e-05 & - & 3.100e-05 & - & fill & - & fill & -\\
+							  $2\times40$ & 8.047e-06 & 1.95 & 8.047e-06 & 1.95 & fill & - & fill & -\\
+							  $2\times80$ & 2.031e-06 & 1.99 & 2.031e-06 & 1.99 & fill & - & fill & -\\
+							  $2\times160$ & 5.091e-07 & 2.00 & 5.091e-07 & 2.00 & fill & - & fill & -
+					\end{tabular}
+								\caption{Constant porosity compaction column test.}
+								\label{tab:constporositycolumn}
+					 \end{table}
+
 		  \item Piece wise constant porosity;
 					 \begin{equation}
 								\phi_J(z) = \left \{
@@ -337,6 +362,30 @@ and use the closed form solutions derived in~\cite{DegenerateDarcy}.
 										  q_s &= z - \frac{1-\cosh{(RL)}}{\sinh(R)} 
 								\end{aligned}
 					 \end{equation}
+
+					 \begin{figure}[ht]
+						\centering
+								\includegraphics[width=3cm,height=8cm]{chapters/pics/porosity_piececonst.eps}
+\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_piececonst.eps}
+\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quiver_piececonst.eps}
+								\caption{Piecewise constant porosity compaction column test.}
+								\label{fig:piececonstporocompactcolumn}
+					 \end{figure}
+
+					 \begin{table}
+					\begin{tabular}{c || c | c || c | c || c | c || c | c }
+							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
+							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
+							  \hline
+							  $2\times20$ & 2.980e-05 & - & 2.980e-05 & - & fill & - & fill & -\\
+							  $2\times40$ & 7.681e-06 & 1.96 & 7.681e-06 & 1.96 & fill & - & fill & -\\
+							  $2\times80$ & 1.958e-06 & 1.97 & 1.958e-06 & 1.97 & fill & - & fill & -\\
+							  $2\times160$ & 4.974e-07 & 1.98& 4.974e-07 & 1.98 & fill & - & fill & -
+					\end{tabular}
+								\caption{Constant porosity compaction column test.}
+								\label{tab:constporositycolumn}
+					 \end{table}
+
 		  \item Quadratic porosity.
 					 \begin{equation}
 								\phi_2(z) = \left \{
@@ -361,6 +410,31 @@ and use the closed form solutions derived in~\cite{DegenerateDarcy}.
 					 \begin{equation}
 								r_1 = \frac{3+\sqrt{9+4/\phi_0}}{2}.
 					 \end{equation}
+
+					 \begin{figure}[ht]
+						\centering
+								\includegraphics[width=3cm,height=8cm]{chapters/pics/porosity_quad.eps}
+\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quad.eps}
+\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quiver_quad.eps}
+								\caption{Quadratic porosity compaction column test.}
+								\label{fig:quadraticporocompactcolumn}
+					 \end{figure}
+
+					 \begin{table}
+					\begin{tabular}{c || c | c || c | c || c | c || c | c }
+							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
+							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
+							  \hline
+							  $2\times20$ &  9.616e-07 & -& 9.616e-07 & - & fill & - & fill & -\\
+							  $2\times40$ &  3.212e-07 & 1.58 & 3.212e-07 & 1.58 & fill & - & fill & -\\
+							  $2\times80$ &  9.028e-08 & 1.83 & 9.028e-08 & 1.83 & fill & - & fill & -\\
+							  $2\times160$ & 2.746e-08 & 1.72 & 2.746e-08 & 1.72 & fill & - & fill & -
+					\end{tabular}
+								\caption{Constant porosity compaction column test.}
+								\label{tab:constporositycolumn}
+					 \end{table}
+
+
 \end{itemize}
 
 Problem Setup 3: Mid-Ocean Ridge.

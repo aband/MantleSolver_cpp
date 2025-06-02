@@ -230,6 +230,8 @@ class Driver {
 
        int printSimplePressure_case(int mark, PhysProperty * pp);
 
+       double errorNorm(int mark, PhysProperty * pp, int norm);
+
        int solveStokes(int maxIter, double tolUzawa, const Tensor<weights>& allwgts, double ** lphi);
 
     private:

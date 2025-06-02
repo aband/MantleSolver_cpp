@@ -136,9 +136,13 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
         // Horizontal edges only
         edge = {corners.at(0), corners.at(1)};
 
+
         for (int g=0; g<gpe.size(); g++){
 
             gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, edge);
+
+        }
+
 
         vector<vertex> vel_relative = 
         ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
@@ -150,7 +154,20 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
                     refArrayStokesEssen_,mi,
                     gaussp, gcell,*br_,*basis_,{1});
 
+        for (int g=0; g<gpe.size(); g++){
 
+//            gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, edge);
+/*
+        vector<vertex> vel_relative = 
+        ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
+                    refArrayDarcyEssen_,mi,
+                    gaussp, gcell,*hdiv_,*basis_,{1});
+    
+        vector<vertex> vel_stokes = 
+        ExtractVelocity(&sresult_->vel_stokes, &sresult_->g_stokes,
+                    refArrayStokesEssen_,mi,
+                    gaussp, gcell,*br_,*basis_,{1});
+*/
 
             darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
             stokesvel.at(g) = vel_stokes.at(g);
@@ -225,6 +242,60 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
       fclose(exactv);
 
     return 1;
+}
+
+double Driver::errorNorm(int mark, PhysProperty * pp, int norm){
+
+    // Compute error norm 
+    double totalerror = 0.0;
+
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussPointsFace;
+
+    std::vector<vertex> gaussp;
+    gaussp.resize(gpf.size());
+
+    vector<vertex> darcyvel;  darcyvel.resize(gaussp.size());
+    vector<vertex> stokesvel; stokesvel.resize(gaussp.size());
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+        indice gcell {i,j};
+
+        vertexSet corners = extractCorners(mi, gcell);
+
+        for (unsigned int g=0; g<gwf.size(); g++){
+            gaussp.at(g) = GaussMapPointsFace(gpf[g],corners);
+        }
+
+        vector<vertex> vel_relative = 
+        ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
+                    refArrayDarcyEssen_,mi,
+                    gaussp, gcell,*hdiv_,*basis_,{1});
+    
+        vector<vertex> vel_stokes = 
+        ExtractVelocity(&sresult_->vel_stokes, &sresult_->g_stokes,
+                    refArrayStokesEssen_,mi,
+                    gaussp, gcell,*br_,*basis_,{1});
+
+        double work = 0.0;
+        for (unsigned int g=0; g<gwf.size(); g++){
+            double jac = abs(GaussJacobian(gpf[g],corners));
+            double gw = gwf[g];
+
+            darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
+            stokesvel.at(g) = vel_stokes.at(g);
+
+            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln_q(mi,gaussp.at(g),gcell,pp,2)),norm);
+
+        }
+
+        double area = mi.cellArea.at(FlatIndic(mi,gcell));
+
+        totalerror += work;
+    }}
+
+    return sqrt(totalerror);
 }
 
 int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
@@ -952,6 +1023,7 @@ int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
 
         printSimplePressure_case(mark, myPhase->pp);
         mark ++;
+        cout << errorNorm(mark, myPhase->pp, 2) << endl;
 
 //VecView(fluxphi, PETSC_VIEWER_STDOUT_WORLD);
         VecAXPY(globalCD, -1*dt, fluxphi);

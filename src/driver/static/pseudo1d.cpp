@@ -48,7 +48,7 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
 */
 
     // constant
-//    return 0.04;
+    //return 0.04;
 }
 
 double AssignPorosity(double phi_f){

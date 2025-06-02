@@ -62,22 +62,22 @@ hold off
 filename = strcat('build/stokesvelx',string(k));
 filename = strcat(filename,'.dat')
 fileID = fopen(filename, 'r');
-vx = fscanf(fileID, '%f', [1,Inf]);
-vx = reshape(vx, M, N);
+ux = fscanf(fileID, '%f', [1,Inf]);
+ux = reshape(vx, M, N);
 
 filename = strcat('build/stokesvely',string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
-vy = fscanf(fileID, '%f', [1,Inf]);
-vy = reshape(vy, M, N);
+uy = fscanf(fileID, '%f', [1,Inf]);
+uy = reshape(uy, M, N);
 
 subplot(2,2,2)
-quiver(pX, pY, vx, vy);
+quiver(pX, pY, ux, uy);
 title(["stokes velocity"])
 
 subplot(2,2,4)
 hold on
-plot(vy(4,:), pY(4,:));
+plot(uy(4,:), pY(4,:));
 plot(exact(4,:), pY(4,:), '+');
 hold off
 
