@@ -17,7 +17,12 @@ fileID = fopen(filename, 'r');
 sol = fscanf(fileID, '%f', [1,Inf]);
 sol = reshape(sol, 3*M, 3*N);
 
-surf(pX, pY, sol)
+s = surf(pX, pY, sol)
+s.EdgeColor = 'none';
 title(filename)
 ylabel("y")
 xlabel("x")
+colormap(turbo)
+colorbar
+caxis([0,1])
+

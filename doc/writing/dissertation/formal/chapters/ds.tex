@@ -6,10 +6,10 @@ However, the classical serendipity space suffer from poor approximation
 on quadrilaterals. 
 To address this issue, we follow the approach of~\cite{directSerendipity}
 by defining local shape functions directly on quadrilateral elements, thereby recovering the desired accuracy.
-In the next sections, $H^1$ and $H(\text{div})$ conforming direct mixed finite elemenent space
+In the next sections, $H^1$ and $H(\text{div})$ conforming direct mixed finite element space
 are constructed with the direct serendipity function space.
 
-To begin with, we introduce some auxilliary distance functions. 
+To begin with, we introduce some auxiliary distance functions. 
 We define the linear polynomial $\lambda_i(\mathbf{x})$ giving the
 distance of a point at coordinate $\mathbf{x}\in \mathbb{R}^2$ to edge $e_i$ as
 \begin{equation}\label{eq:distancelambda}
@@ -115,7 +115,7 @@ We can restrict the edge basis function to edges as
 In Figure~\ref{fig:phie0}, we present
 edge basis function $\varphi^{(2)}_{e,0}$ on a general quadrilateral element, 
 where 
-$\varphi^{(2)}_{e_0}$ evalues $0$ on the edges $\{e_i, \quad i\neq 0\}$, and 
+$\varphi^{(2)}_{e_0}$ evaluates $0$ on the edges $\{e_i, \quad i\neq 0\}$, and 
 evaluates a quadratic function on the edge $e_0$.
 \begin{figure}[ht]
 \centering\small
@@ -165,7 +165,7 @@ as
 \end{equation}
 where $R(\mathbf{x}_{v,0}) = R(\mathbf{x}_{v,2}) = 
 -R(\mathbf{x}_{v,1}) = -R(\mathbf{x}_{v,3}) = 1$. The construction 
-of the rational funcion R is not unique. We present one way to construct
+of the rational function R is not unique. We present one way to construct
 $R(\mathbf{x})$ using edge nodal basis function~\eqref{eq:edgebasisds2} 
 in $\mathcal{DS}_2$ as
 \begin{equation}\label{eq:rationalfunctionds1}
@@ -204,13 +204,18 @@ general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vert
 \end{figure}
 
 \subsection{An Interpolation Operator}
-We refer to an interpolation operator mapping
-onto $\mathcal{DS}_r(K_i)$, $r=1,2$ defined in~\cite{directSerendipity}. Here, $K_i$ has different meanings
-with different types of basis functions. For each basis functions associated
-with edge node, we set $K_i = e_i$. For each basis functions associated with
-vertex node, we set $K_i$ being a set of edges sharing the vertex $v_i$.
+For completeness, 
+we construct an interpolation operator mapping
+onto $\mathcal{DS}_r(K_i)$, $r=1,2$ following~\cite{directSerendipity}. 
+For each node $a_i$, the associated $K_i$ has different meanings
+depending on the type of basis functions. If the basis function is associated
+with an edge node, we set $K_i = e_i$, where $e_i$ is the corresponding edge. 
+For the basis function associated with a
+vertex node, we set $K_i$ to be any edge $e$ containing node $a_i$,
+with the restriction that if $a_i \in \partial \Omega$, then $e \in \partial \Omega$.
+
 An interpolation
-operator $\mathcal{I}^r_h:W_p^l(E) \rightarrow \mathcal{DS}_r$ is defined as
+operator $\mathcal{I}^r_h:W_p^l(\Omega) \rightarrow \mathcal{DS}_r$ is defined as
 \begin{equation}\label{eq:interpolation}
 					 \mathcal{I}^r_h v(\mathbf{x}) = \sum_{i=1}^{N_r} \varphi_i(\mathbf{x})\int_{K_i} \psi_i(\mathbf{y}) v(\mathbf{y}) d\mathbf{y} \in \mathcal{DS}_r,
 \end{equation}
@@ -219,28 +224,28 @@ and $\psi(\mathbf{x})$ is the dual nodal basis such that
 \begin{equation}
 		  \int_{K_i} \psi_{i}(\mathbf{x}) \varphi_j(\mathbf{x}) d\mathbf{x} = \delta_{i,j}, \quad i,j \in \{0,1,2,\dots, N_r \},
 \end{equation}
-where $N_r$ is the number of nodal basis defined on $K_i$.
+where $N_r$ is the number of nodal basis functions.
 We present the following two lemmas regarding the constructed interpolation
 operator for future reference.
 
 \begin{lem}\label{lem:interpolationop}
 		  (Boundedness of the interpolation operator.)
 
-		  Let $\mathcal{T}_h$ be uniformly shape regular~\eqref{eq:regularityineq}
+		  Let $\mathcal{T}_h$ be uniformly shape regular according to Definition~\eqref{eq:regularityineq}
 		  with shape regularity parameter $\sigma_*$.
 		  For each element $E \in \mathcal{T}_h$, 
 		  There exists a bounded interpolation operator~\eqref{eq:interpolation}.
-		  For every $E \in \mathcal{T}_h$, suppose that the basis functions of $\mathcal{DS}_r(E)$ are constructed using
+		  Let $v \in W^l_p(\Omega)$, with $1\leq p \leq \infty$ and $l >q/p$. Suppose that the basis functions of $\mathcal{DS}_r(E)$ are constructed using
 		  $\lambda_{24}$ and $\lambda_{13}$ such that the zero set $\mathcal{Z}_{i,i+2}$ intersects $e_{i+3}$ and $e_{i+1}$.
 		  Moreover, assume that $R_{i,i+2}$ is uniformly differentiable functions of the vertices of $E$ up to order m.
 		  Then for $r\geq 1$, $E \in \mathcal{T}_h$, 
-		  $1\leq q \leq \infty$, and any nonnegative integer m,
+		  $1\leq q \leq \infty$, and any non negative integer m,
 		  \begin{equation}\label{eq:interpolationopbound}
-		 \norm{\mathcal{I}_h^r v}_{W_q^m} \leq C(\sigma_*, m, q) \sum_{k=0}^l
+		 \norm{\mathcal{I}_h^r v}_{W_q^m(E)} \leq C(\sigma_*, m, q) \sum_{k=0}^l
 					 h_E^{k-m+\frac{2}{q}-\frac{2}{p}} \lvert v\rvert_{W^k_p(E^*)},
 		  \end{equation}
 		  where $E^* = \cup_{F \in \mathcal{T}_h, F \cap E \neq \emptyset} F$ and
-		  $\lvert\hspace{0.1cm} \cdot\hspace{0.1cm} \rvert_{W_p^k}$ is the seminorm of k-th order derivatives defined in Definition~\ref{def:sobolevnorm}.
+		  $\lvert\hspace{0.1cm} \cdot\hspace{0.1cm} \rvert_{W_p^k}$ is the seminorm of k-th order derivatives.
 \end{lem}
 \begin{proof}
 		  See~\cite{directSerendipity}.
@@ -251,7 +256,7 @@ give local and global error estimation.
 \begin{lem}\label{lem:approximation}
 		  (Approximability of the interpolation operator.)
 
-		  Under the assumptions of~\ref{lem:interpolationop}, there exists a 
+		  Under the assumption of Lemma~\ref{lem:interpolationop}, there exists a 
 		  constant $C = C(r, \sigma_*) > 0$ such that for all functions 
 		  $v \in W_{l,p}(E^*)$, with $1\leq p \leq \infty$ and $l>1/p$ or 
 		  ($l\geq 1$ if $p=1$),
@@ -259,11 +264,11 @@ give local and global error estimation.
 					 \norm{v-\mathcal{I}_h^r v}_{W^m_p} \leq C h_E^{l-m}
 					 \lvert v \rvert_{W^l_p(E^*)}, \quad 0 \leq m \leq \min(l,r+1).
 		  \end{equation}
-		  Morevoer, there exists a constant $C = C(r,\sigma_*) > 0$, independent
+		  Moreover, there exists a constant $C = C(r,\sigma_*) > 0$, independent
 		  of $h = \max_{E \in \mathcal{T}}$, such that for all functions 
 		  $v \in W_p^l(\Omega)$,
 		  \begin{equation}
-					 (\sum_{E\in\mathcal{T}_h} \norm{v - \mathcal{I}_h^r v}^p_{W_p^m})^{1/p} \leq C h^{l-m} \lvert v \rvert_{W_p^l(\Omega)}, 0 \leq m \leq \min(l, r+1).
+					 (\sum_{E\in\mathcal{T}_h} \norm{v - \mathcal{I}_h^r v}^p_{W_p^m(E)})^{1/p} \leq C h^{l-m} \lvert v \rvert_{W_p^l(\Omega)}, \quad 0 \leq m \leq \min(l, r+1).
 		  \end{equation}
 \end{lem}
 \begin{proof}
