@@ -91,6 +91,7 @@ add_library(mfem_lib
 		  ${SRC}/mfem/parallel/locmat.cpp
 		  ${SRC}/mfem/parallel/psolve.cpp
 		  ${SRC}/mfem/parallel/preconst.cpp
+		  ${SRC}/mfem/parallel/gmres.cpp
 		  #		  ${SRC}/coupledSys/locmat_coupled.cpp
 		  #		  ${SRC}/coupledSys/passemble_coupled.cpp
 )

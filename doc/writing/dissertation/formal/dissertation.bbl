@@ -1,17 +1,9 @@
-\begin{thebibliography}{22}
+\begin{thebibliography}{12}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
-
-\bibitem[Arbogast et~al.(2017)Arbogast, Hesse, and Taicher]{DegenerateDarcy}
-T.~Arbogast, M.~A. Hesse, and A.~L. Taicher.
-\newblock Mixed methods for two-phase {D}arcy-{S}tokes mixtures of partially
-  melted materials with regions of zero porosity.
-\newblock \emph{SIAM J. Sci. Comput.}, 39\penalty0 (2):\penalty0 B375--B402,
-  2017.
-\newblock {DOI} 10.1137/16M1091095.
 
 \bibitem[Arbogast and Bona(2025)]{funcAna}
 Todd Arbogast and Jerry~L. Bona.
@@ -42,24 +34,6 @@ Todd Arbogast, Zhen Tao, and Chuning Wang.
   quadrilaterals.
 \newblock \emph{Numerische Mathematik}, 150:\penalty0 929--974, 2022.
 
-\bibitem[Arbogast et~al.(2024)Arbogast, Huang, and Tian]{MultiLevelWeno}
-Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian.
-\newblock A finite volume multilevel weno scheme for multidimensional scalar
-  conservation laws.
-\newblock \emph{Comput. Methods Appl. Mech. Engrg.}, 421, 2024.
-
-\bibitem[Benzi et~al.(2005)Benzi, Golub, and Liesen]{Benzi_Golub_Liesen_2005}
-Michele Benzi, Gene~H. Golub, and Jörg Liesen.
-\newblock Numerical solution of saddle point problems.
-\newblock \emph{Acta Numerica}, 14:\penalty0 1–137, 2005.
-\newblock \doi{10.1017/S0962492904000212}.
-
-\bibitem[Bramble et~al.(1997)Bramble, Pasciak, T, and
-  Vassilev]{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}
-James~H. Bramble, Joseph~E. Pasciak, Apostol T, and Vassilev.
-\newblock Analysis of the inexact uzawa algorithm for saddle point problems.
-\newblock \emph{SIAM. J. Numer. Anal.}, 34:\penalty0 1072--1092, 1997.
-
 \bibitem[Bramble and Hilbert(1970)]{EstimationofLinearFunctionals}
 J.H. Bramble and S.~R. Hilbert.
 \newblock Estimation of linear functionals on sobolev spaces with application
@@ -85,26 +59,13 @@ Philippe~G. Ciarlet.
 \newblock \doi{10.1137/1.9780898719208}.
 \newblock URL \url{https://epubs.siam.org/doi/abs/10.1137/1.9780898719208}.
 
-\bibitem[Dupont and Scott(1980{\natexlab{a}})]{PolynomialApproximation}
+\bibitem[Dupont and Scott(1980)]{ddd3654d-28ed-3763-8d70-a82ea44a3d31}
 Todd Dupont and Ridgway Scott.
 \newblock Polynomial approximation of functions in sobolev spaces.
 \newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
-  441--463, 1980{\natexlab{a}}.
-
-\bibitem[Dupont and
-  Scott(1980{\natexlab{b}})]{ddd3654d-28ed-3763-8d70-a82ea44a3d31}
-Todd Dupont and Ridgway Scott.
-\newblock Polynomial approximation of functions in sobolev spaces.
-\newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
-  441--463, 1980{\natexlab{b}}.
+  441--463, 1980.
 \newblock ISSN 00255718, 10886842.
 \newblock URL \url{http://www.jstor.org/stable/2006095}.
-
-\bibitem[Elman and Golub(1994)]{InexactUzawa_Elam_Golub}
-Howard~C. Elman and Gene~H. Golub.
-\newblock Inexact and preconditioned uzawa algorithms for saddle point
-  problems.
-\newblock \emph{SIAM. J. Numer. Anal.}, 31:\penalty0 1645--1661, 1994.
 
 \bibitem[Fortin(1981)]{Fortin1981OldAN}
 Michel Fortin.
@@ -119,29 +80,6 @@ Vivette Girault and Pierre-Arnaud Raviart.
   Algorithms}.
 \newblock Springer Publishing Company, Incorporated, 1st edition, 2011.
 \newblock ISBN 3642648886.
-
-\bibitem[Huang et~al.(2023)Huang, Arbogast, and
-  Tian]{WENOAOSimplifiedSmoothness}
-Chieh-Sen Huang, Todd Arbogast, and Chenyu Tian.
-\newblock Multidimensional weno-ao reconstructions using a simplified
-  smoothness indicator and applications to conservation laws.
-\newblock \emph{J. Sci. Comput.}, 97, 2023.
-
-\bibitem[Jiang and Shu(1996)]{JSSmoothness}
-Guang-Shan Jiang and Chi-Wang Shu.
-\newblock Efficient implementation of weighted eno schemes.
-\newblock \emph{J. Comput. Phys.}, 126:\penalty0 202--228, 1996.
-
-\bibitem[K.J.Arrow et~al.(1958)K.J.Arrow, Hurwicz, and
-  Uzawa]{uzawa_arrow_hurwicz}
-K.J.Arrow, L.~Hurwicz, and H.~Uzawa.
-\newblock \emph{Studies in Linear and Nonlinear Programming}.
-\newblock Standford University Press, 1958.
-
-\bibitem[Olver(1997)]{olver1997asymptotics}
-Frank Olver.
-\newblock \emph{Asymptotics and special functions}.
-\newblock AK Peters/CRC Press, 1997.
 
 \bibitem[Raviart and Thomas(1977)]{10.1007/BFb0064470}
 P.~A. Raviart and J.~M. Thomas.

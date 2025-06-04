@@ -16,4 +16,6 @@ int CoupledUzawa(ReducedSys * redsys, double tol, int MaxIter);
 
 int Uzawa(ReducedSys * redsys, double tol, int MaxIter);
 
+int SchurSolver(ReducedSys * redsys);
+
 #endif

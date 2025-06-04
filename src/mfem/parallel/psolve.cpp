@@ -118,7 +118,8 @@ int CoupledUzawa(ReducedSys * redsys, double tol, int MaxIter){
     PetscCall(KSPSetType(kspCG, KSPCG));
     PetscCall(KSPCGSetType(kspCG, KSP_CG_SYMMETRIC));
     PetscCall(KSPSetInitialGuessNonzero(kspCG, PETSC_FALSE));
- 
+    PetscCall(KSPSetTolerances(kspCG, 1e-25, 10e-20, 10, 2000));
+
     // Create B transpose
     Mat BT;
     PetscCall(MatCreateTranspose(redsys->B, &BT));
@@ -140,6 +141,7 @@ int CoupledUzawa(ReducedSys * redsys, double tol, int MaxIter){
     PetscCall(KSPSetType(kspSchurd, KSPCG));
     PetscCall(KSPCGSetType(kspSchurd, KSP_CG_SYMMETRIC));
     PetscCall(KSPSetInitialGuessNonzero(kspSchurd, PETSC_FALSE));
+    PetscCall(KSPSetTolerances(kspSchurd, 1e-25, 10e-20, 10, 2000));
 
     PetscCall(KSPSetOperators(kspMINRESd, Sd, Sd));
     PetscCall(KSPSetType(kspMINRESd, KSPMINRES)); 
@@ -159,6 +161,7 @@ int CoupledUzawa(ReducedSys * redsys, double tol, int MaxIter){
     PetscCall(KSPSetType(kspSchurs, KSPCG));
     PetscCall(KSPCGSetType(kspSchurs, KSP_CG_SYMMETRIC));
     PetscCall(KSPSetInitialGuessNonzero(kspSchurs, PETSC_FALSE));
+    PetscCall(KSPSetTolerances(kspSchurs, 1e-25, 10e-20, 10, 2000));
 
     PetscCall(KSPSetOperators(kspMINRESs, Ss, Ss));
     PetscCall(KSPSetType(kspMINRESs, KSPMINRES)); 

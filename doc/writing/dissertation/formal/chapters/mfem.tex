@@ -314,16 +314,17 @@ and use the closed form solutions derived in~\cite{DegenerateDarcy}.
 								\begin{aligned}
 										  u &= -\phi_0^2 (1-\phi_0) \bigg[1 - \frac{\cosh{(Rz)}}{\cosh{(RL)}} \bigg], \\
                                 v &= -u, \\
-										  q_l &= (1-\phi_0) \bigg[z - \frac{1}{R}\frac{\sinh{(Rz)}}{\cosh{(RL)}} \bigg],\\
-										  q_s &= (1-\phi_0) \bigg[z - \frac{1-4\phi_0}{3+\phi_0-4\phi_0^2} \frac{\phi_0}{R}\frac{\sinh{(Rz)}}{\cosh{(RL)}} \bigg].
+										  q_l &= (1-\phi_0) \bigg[z - \frac{1}{R}\frac{\sinh{(Rz)}}{\cosh{(RL)}} \bigg] + c,\\
+										  q_s &= (1-\phi_0) \bigg[z - \frac{1-4\phi_0}{3+\phi_0-4\phi_0^2} \frac{\phi_0}{R}\frac{\sinh{(Rz)}}{\cosh{(RL)}} \bigg] + c,
 								\end{aligned}
 					 \end{equation}
-
+where $c$ is a constant kernel.
 					 \begin{figure}[ht]
 						\centering
 								\includegraphics[width=3cm,height=8cm]{chapters/pics/porosity_const.eps}
 \includegraphics[width=3cm,height=8cm]{chapters/pics/vel_const.eps}
 \includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quiver_const.eps}
+								\includegraphics[width=3cm,height=8cm]{chapters/pics/q_const.eps}
 								\caption{Constant porosity compaction column test.}
 								\label{fig:constporocompactcolumn}
 					 \end{figure}
@@ -402,8 +403,8 @@ and use the closed form solutions derived in~\cite{DegenerateDarcy}.
 								\begin{aligned}
 										  u &= \frac{\phi_0^2}{1-4\phi_0}\bigg(L^{4-r_1}z^{r_1} - z^4\bigg),\\
 										  v &= -v\\
-										  q_l&= \frac{1}{1-4\phi_0} \bigg(z - \frac{L^{4-r_1}z^{r_1-3}}{r_1-3} \bigg),\\
-										  q_s&= z,
+										  q_l&= \frac{1}{1-4\phi_0} \bigg(z + \frac{L^{4-r_1}(-z)^{r_1-3}}{r_1-3} \bigg) + c,\\
+										  q_s&= z + c,
 								\end{aligned}
 					 \end{equation}
 					 where 
@@ -416,6 +417,7 @@ and use the closed form solutions derived in~\cite{DegenerateDarcy}.
 								\includegraphics[width=3cm,height=8cm]{chapters/pics/porosity_quad.eps}
 \includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quad.eps}
 \includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quiver_quad.eps}
+								\includegraphics[width=3cm,height=8cm]{chapters/pics/q_quad.eps}
 								\caption{Quadratic porosity compaction column test.}
 								\label{fig:quadraticporocompactcolumn}
 					 \end{figure}

@@ -9,26 +9,27 @@
 
 \chapter[Numerical Methods]{Numerical Methods}
 \label{numerics}
-We introduce a locally mass conserving numerical framework in this chapter.
+In this chapter, we introduce a locally mass conserving numerical framework.
 A conforming mixed finite element discretization (MFEM) is proposed to solve
 the static Darcy-Stokes coupled methcnics system.
-The normal flux are captured at the edges of element by the 
-MFEM scheme.
-The coupled weak form is also adjusted to be locally mass conservative. 
-We solve the transport system with finite volume method (FVM), which is 
-naturally a locally mass conservative scheme.
+The proposed conforming MFEM scheme captures the normal fluxes across element edges, 
+ensuring compatibility with local mass conservation modification.
+The transport system is solved using a finite volume method (FVM), 
+which inherently ensures local mass conservation.
 
-In this chapter, we first introduction the mesh used in our computation.
-We present two stable pair for Darcy and Stokes individually equipped 
-with the direct serendipity space.
-We then apply the defined discrete space to discretize the coupled system.
-After that, we discuss a noval nonlinear WENO weighting scheme for FVM.
-Error estimate will be given to MFEM and FVM scheme.
+We begin by introducing the mesh partition used for both the MFEM and the
+FVM schemes. Based on the mesh partition,  
+two stable element pairs are presented, one for Darcy flow and one for 
+Stokes flow, each equipped with the direct serendipity space.
+Subsequently, the entire coupled system is discretized with the 
+previously defined finite element pairs.
+We then present a noval nonlinear WENO weighting scheme for the FVM.
+Error estimatea are provided for both the MFEM and the FVM schemes.
 
 \input chapters/mesh.tex
 
 \input chapters/ds.tex
 
-\input chapters/mfem.tex
-
-\input chapters/mlweno.tex
+%\input chapters/mfem.tex
+%
+%\input chapters/mlweno.tex

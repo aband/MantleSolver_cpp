@@ -35,14 +35,25 @@ fileID = fopen(filename, 'r');
 qf = fscanf(fileID, '%f', [1,Inf]);
 qf = reshape(qf, M, N);
 
+%exactql(2,1:N/2) = exactql(2,1:N/2) + mean(qs(1,:)); 
+%exactql(2,N/2:N) = exactql(2,N/2:N) + mean(qs(1,:)); 
+exactql(2,:) = exactql(2,:) - mean(qf(1,:)); 
+exactqs(2,:) = exactqs(2,:) + mean(qs(1,:));
+area = 4/N * 0.2
+
 figure
 set(gcf, 'Position',[50 50 250 700]);
 hold on
-plot(exactql(2,:)+2, cY(2,:), '-k', 'LineWidth', 1);
-plot(exactqs(2,:)+2, cY(2,:), '-k', 'LineWidth', 1);
+plot(exactqs(2,:), cY(2,:), '-c', 'LineWidth', 1);
+plot(exactql(2,:), cY(2,:), '-k', 'LineWidth', 1);
 plot(qs(1,:), cY(1,:),'--r','LineWidth',2);
 plot(-qf(1,:), cY(1,:),'--b','LineWidth',2);
 hold off
+
+sqrt(sum((abs(exactqs(2,:) - qs(2,:))).^2))*area
+sqrt(sum((abs(exactql(2,:) + qf(2,:))).^2))*area
+
+legend("exact q_s", "exact q_l", "q_s", "q_l");
 
 figure
 set(gcf, 'Position',[50 50 250 700]);

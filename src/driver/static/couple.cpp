@@ -72,7 +72,12 @@ const std::array<double,2> trueSolnq(const MeshInfo& mi, const vertex& point, co
 
     std::array<double,2> work {0.0,0.0};
 
+    double phi = AssignPorosity(point, pp);
+    double r = R(phi);
+    double z = point[1];
 
+    work.at(0) = (1 - phi) * (z - 1.0/r * (sinh(r*z)/cosh(r*L)));
+    work.at(1) = (1 - phi) * (z - (1.4*phi)/(3+phi-4*phi*phi) * phi/r * (sinh(r*z)/cosh(r*L)));
 
     return work;
 }
@@ -85,13 +90,15 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 
     double z = point[1];
 
+    // ql
     if (z < 0){
         double r1 = (3+sqrt(9+4/phi))/2;
         double r2 = (3-sqrt(9+4/phi))/2;
  
-        work.at(0) = 1.0/(1-4*phi) * (z - pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
+        work.at(0) = 1.0/(1-4*phi) * (z + pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
     }
 
+    // qs
     work.at(1) = point[1];
 
     return work;
@@ -123,7 +130,7 @@ int printExactPorosity(int mark, const MeshInfo& mi, const char * fieldname, Phy
 
         fprintf(sol, "%.16f ", AssignPorosity(global,pp));
 
-        std::array<double,2> exactvals = trueSolnq_q(mi, global, {i,j}, pp, 2);
+        std::array<double,2> exactvals = trueSolnq(mi, global, {i,j}, pp, 2);
 
         fprintf(exactql, "%.16f ", -1.0*exactvals[0]);
         fprintf(exactqs, "%.16f ", -1.0*exactvals[1]);
@@ -245,8 +252,6 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
                     refArrayStokesEssen_,mi,
                     gaussp, gcell,*br_,*basis_,{1});
 
-
-
             darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
             stokesvel.at(g) = vel_stokes.at(g);
 
@@ -339,6 +344,37 @@ double Driver::errorNorm(int mark, PhysProperty * pp, int norm){
     return sqrt(totalerror);
 }
 
+double averagePhi(PhysProperty * pp, int i, int j, const MeshInfo& mi){
+
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>&   gpf = GaussPointsFace;
+
+    double work = 0.0;
+    double area = 0.0;
+
+    for (unsigned int g=0; g<gwf.size(); g++){
+        vector<vertex> corners = extractCorners(mi, {i,j});
+        vertex mapped = GaussMapPointsFace(gpf[g],corners);
+
+        // Get HD and CD from reconstruction at this gaussian point
+        double phif = 0.0;
+
+        phif = AssignPorosity(mapped, pp); 
+//cout << phif << endl;
+        // ======================================================
+
+        double jac = abs(GaussJacobian(gpf[g],corners));
+        double gw = gwf[g];
+        work += gw * jac * phif;
+        area += gw * jac; 
+    }
+
+    work /= area;
+
+    return work;
+}
+
+
 int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
 
     Vec vectildeqf;
@@ -371,20 +407,21 @@ int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
         vertex global = GaussMapPointsFace(local, basis_->corners());
 
         double phif = AssignPorosity(global, pp);
+		  double avephi = averagePhi(pp, i, j, mi);
 		  double coef = 0.0;
         // Adjust phif
-        if (phif > 1e-16) {
-            coef = 1.0/sqrt(phif);
+        if (avephi > 1e-16) {
+            coef = 1.0/sqrt(avephi);
         }
 
         // Reterive original physical variables with physical units
-        double qf = tildeqf * coef;
-        double qs = qf - 1.0/(1-phif)*(qf-q);
+        double qf = tildeqf *coef;
+        double qs = -qf - 1.0/(1-phif)*(-qf-q);
 
-        fprintf(fqs, "%e ", qs);
-        fprintf(fqf, "%e ", qf);
-        fprintf(fstokes, "%e ", q);
-        fprintf(fdarcy, "%e ", tildeqf);
+        fprintf(fqs, "%.16f ", qs);
+        fprintf(fqf, "%.16f ", qf);
+        fprintf(fstokes, "%.16f ", q);
+        fprintf(fdarcy, "%.16f ", tildeqf);
     }fprintf(fqs, "\n");
      fprintf(fqf, "\n");
      fprintf(fstokes, "\n");
@@ -776,10 +813,10 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
         }
 
         // Non dimensionalized version
-        loc->C += gw*jac*phi_f_hat/phi_s*
-                  br_->Pressure()*br_->Pressure();
-//        loc->C += gw*jac*phi_f/phi_s*
+//        loc->C += gw*jac*phi_f_hat/phi_s*
 //                  br_->Pressure()*br_->Pressure();
+        loc->C += gw*jac*phi_f/phi_s*
+                  br_->Pressure()*br_->Pressure();
     }
 
     return 1;
@@ -860,11 +897,16 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
         }
 
         // Compaction matrix
-        loc->C += gw*jac*1.0/phi_s*
-                  hdiv_->Pressure()*hdiv_->Pressure();
-
-        //loc->C += gw*jac*(phi_f/phi_f_hat)/phi_s*
+        //loc->C += gw*jac*1.0/phi_s*
         //          hdiv_->Pressure()*hdiv_->Pressure();
+
+        double scaletmp = 1.0;
+        if (phi_f_hat > 1e-16){
+            scaletmp = phi_f/phi_f_hat;
+        }
+
+        loc->C += gw*jac*scaletmp/phi_s*
+                  hdiv_->Pressure()*hdiv_->Pressure();
 
     }
 
@@ -953,12 +995,6 @@ int Driver::AssignLocMatCouple_case(const indice& gcell,
     double phi_f = 0.0;
     double phi_s = 0.0;
 
-    double invphi_hat = 1.0; 
-
-    if (phi_f_hat >0.0){
-        invphi_hat = 1.0/sqrt(phi_f_hat);
-    }
-
     for (unsigned int g=0; g<gwf.size(); g++){
         // Calculate mapped gauss points and jacobian
         vertex mapped = GaussMapPointsFace(gpf[g],basis_->corners());
@@ -977,11 +1013,16 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
 
         phi_s = AssignPorosity(phi_f);
 
-        k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * br_->Pressure() * 
-                                               hdiv_->Pressure();
+        //k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * br_->Pressure() * 
+        //                                       hdiv_->Pressure();
 
-        //k -= gw*jac*phi_f*invphi_hat/phi_s * br_->Pressure() * 
-        //                                     hdiv_->Pressure();
+        double scaletmp = 0.0;
+        if (phi_f_hat > 1e-16){
+            scaletmp = phi_f/sqrt(phi_f_hat);
+        }
+
+        k -= gw*jac*scaletmp/phi_s * br_->Pressure() * 
+                                             hdiv_->Pressure();
 
     }
 
