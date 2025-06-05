@@ -276,14 +276,19 @@ give local and global error estimation.
 \end{proof}
 
 \section{Mixed Finite Elements}
-We then construct mixed finite elements from the introduced direct serendipity space.
-Now recall Ciarlet's definition~\cite{doi:10.1137/1.9780898719208} 
+In this section, we prepare mixed finite element space for the scaled coupled system~\eqref{eq:dimensionlessdarcy_flow_sc} 
+to~\eqref{eq:dimensionlesscompaction_flow_sc}. 
+We begin by presenting the mixed variational formulations of the Stokes and Darcy model problems separately. 
+Subsequently, we introduce $H^1$- and $H(\text{div})$-conforming mixed finite element spaces.
+
+We then describe the construction of mixed finite elements from the introduced direct serendipity space.
+Recall Ciarlet's definition~\cite{doi:10.1137/1.9780898719208} 
 of a finite element.
 \begin{defn}\label{def:ciarletFEM}
 		  A triple $(E, X(E), \varphi_j)$ defines a finite element.
 		  \begin{itemize}
 					 \item Element $E \in \mathcal{T}_h$;
-					 \item Space of shape function $X(E)$, and a set of 
+					 \item Space of shape functions $X(E)$, and a set of 
 								shape function $\varphi_i \in X(E)$. The dimension of
 								the shape function space $\text{dim}(X(E)) = n$;
 					 \item A set of continuous and linear functionals $\phi_j$
@@ -296,50 +301,49 @@ of a finite element.
 								\end{equation}
 		  \end{itemize}
 \end{defn}
-In the following sections, we state our shape function space constructed
-using first and second order direct serendipity space and corresponding 
-degrees of freedom.
-We also provide explicit construction of shape functions.
-
-We introduce a $H^1$ and a $H(\text{div})$ 
-conforming mixed element space constructed with the pre-defined direct serendipity space
-for Darcy and Stokes problems.
+In latter subsections, we give explicit construction of nodal basis functions and degrees of freedom that is 
+associated to them, thereby completing the definition of the finite element.
 
 \subsection{A Darcy Model Problem}
-Consider a model problem for Darcy equation as
+Consider a model problem for Darcy flow equipped with homogeneous boundary condition as
 \begin{equation}
 \begin{aligned}
-\bold{u} + \nabla p & = \bold{f}, \hspace{0.2cm} \text{in} \hspace{0.2cm} \Omega\\
-\nabla \cdot \bold{u} & = 0, \hspace{0.25cm} \text{in} \hspace{0.2cm} \Omega \\
-\mathbf{u} &= \mathbf{0}, \hspace{0.2cm} \text{on} \hspace{0.2cm} \partial \Omega
+\bold{u} + \nabla p & = \bold{f}, \hspace{0.2cm} \text{in} \hspace{0.2cm} \Omega,\\
+\nabla \cdot \bold{u} & = 0, \hspace{0.25cm} \text{in} \hspace{0.2cm} \Omega, \\
+\mathbf{u} &= \mathbf{0}, \hspace{0.2cm} \text{on} \hspace{0.2cm} \partial \Omega.
 \end{aligned}
 \end{equation}
-We seek solution in the following energy space as
+We seek displacement pressure solution pair $(u,p)$ in identical test and trial spaces as
 \begin{equation}
 		  \begin{aligned}
-					 \mathbb{V}_D &= \{\mathbf{v} \in (H(\text{div};\Omega))^2 : \mathbf{v}\cdot\pmb{\nu} = 0 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\}, \\
+					 \mathbb{V}_D &= \{\mathbf{v} \in (H(\text{div};\Omega))^2 : \mathbf{v}\cdot\pmb{\nu} = \mathbf{0} \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\}, \\
 					 \mathbb{U}_D &= \{\mathbf{u} \in (H(\text{div};\Omega))^2 : \mathbf{u}\cdot\pmb{\nu} = \mathbf{0} 
 					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \mathbb{V}_D, \\
 					 \mathbb{W}_D &= \{p \in L^2(\Omega) : \int_\Omega p d\mathbf{x} = 0\} = L^2(\Omega)/\mathbb{R}.
 		  \end{aligned}
 \end{equation}
-We write weak form with these energy space, and consider the standard variational form : find $\mathbf{u} \in \mathbb{U}_D$  
-and $p \in L^2(\Omega)$ such that
+We write weak form with the defined energy spaces. The standard mixed weak form reads as follows: 
+
+Find $\mathbf{u} \in \mathbb{U}_D$  
+and $p \in \mathbb{W}_D$ such that
 \begin{equation}\label{eq:hdivweakmodel}
 		  \begin{aligned}
 					 (\mathbf{u}, \mathbf{v}) - (p, \nabla \cdot \mathbf{v}) &= (\mathbf{f},\mathbf{v}), \hspace{0.2cm} \forall \mathbf{v} \in \mathbb{V}_D,\\
 					 (\nabla \cdot \mathbf{u}, \omega) &= 0, \hspace{1cm} \forall \omega \in \mathbb{W}_D.
 		  \end{aligned}
 \end{equation}
-We introduce two finite-dimensional subspace $\mathbb{V}_{D,h} \subset \mathbb{V}$ and $\mathbb{W}_{D,h} \subset \mathbb{W}$, and consider
-the discretized problem: find $(\mathbf{u}_h,p_h) \in \mathbb{V}_{D,h} \times \mathbb{W}_{D,h}$ such that
+We introduce two finite-dimensional subspace $\mathbb{V}_{D,h} \subset \mathbb{V}_{D}$ and $\mathbb{W}_{D,h} \subset \mathbb{W}_{D}$, and consider
+the discretized problem: 
+
+Find $(\mathbf{u}_h,p_h) \in \mathbb{V}_{D,h} \times \mathbb{W}_{D,h}$ such that
 \begin{equation}\label{eq:hdivwekamodel_dis}
 		  \begin{aligned}
 					 (\mathbf{u}_h, \mathbf{v}_h) - (p_h, \nabla \cdot \mathbf{v}_h) &= (\mathbf{f},\mathbf{v}_h), \hspace{0.2cm} \forall \mathbf{v}_h \in \mathbb{V}_{D,h},\\
 					 (\nabla \cdot \mathbf{u}_h, \omega_h) &= 0, \hspace{1.15cm} \forall \omega_h \in \mathbb{W}_{D,h}.
 		  \end{aligned}
 \end{equation}
-Now we construct a pair of discretized space $\mathbb{V}_{D,h} \times \mathbb{W}_{D,h}$ for this Darcy model problem in the next section.
+Now we present a construction of discretized space pair $\mathbb{V}_{D,h} \times \mathbb{W}_{D,h}$ for this Darcy model problem 
+in the next subsection.
 
 \subsection{A reduced $H(\text{div})$ conforming space $\mathbb{V}_1^{0}$}
 We have some choice for $H(\text{div})$ confirming space. 
