@@ -32,25 +32,37 @@ int SchurSolver(ReducedSys * redsys){
     PetscCall(KSPSetInitialGuessNonzero(kspSchur, PETSC_FALSE));
     PetscCall(KSPSetTolerances(kspSchur, 1e-25, 1e-20, 10, 2000));
 
-    
     // Compute g-BTA^(-1)f
-    Vec tmp1, tmp2, tmp3;
+    Vec tmp1, tmp2;
     PetscCall(VecDuplicate(redsys->F, &tmp1));
-    PetscCall(VecDuplicate(redsys->F, &tmp2));
-    PetscCall(VecDuplicate(redsys->G, &tmp3));
-    PetscCall(VecCopy(redsys->G, tmp3));
- 
+    PetscCall(VecDuplicate(redsys->G, &tmp2));
+    PetscCall(VecDuplicate(redsys->G, &redsys->y));
+    PetscCall(VecCopy(redsys->G, redsys->y));
+
     PetscCall(KSPSolve(kspA, redsys->F, tmp1));
     PetscCall(MatMult(BT, tmp1, tmp2));
-    PetscCall(VecAXPY(tmp3, -1, tmp2));
+    PetscCall(VecAXPY(redsys->y, -1, tmp2));
 
     // Solver for y = S^(-1)
     KSP ksp2;
+	 PetscCall(KSPCreate(PETSC_COMM_WORLD, &ksp2));
     PetscCall(KSPSetOperators(ksp2, S, S));
     PetscCall(KSPSetType(ksp2, KSPMINRES));
+    PetscCall(KSPSetInitialGuessNonzero(ksp2, PETSC_FALSE));
+    PetscCall(KSPSetTolerances(ksp2, 1e-25, 1e-20, 10, 2000));
+      
+    PetscCall(KSPSolve(ksp2, redsys->y, redsys->y));
 
-    
+    // Compute x = A^{-1}(f-By)
+    Vec tmp3;
+    PetscCall(VecDuplicate(redsys->F, &redsys->x));
+    PetscCall(VecCopy(redsys->F, redsys->x));
 
+    PetscCall(VecDuplicate(redsys->F, &tmp3));
+
+    PetscCall(MatMult(redsys->B, redsys->y, tmp3)); 
+    PetscCall(VecAXPY(redsys->x, -1, tmp3));
+    PetscCall(KSPSolve(kspA, redsys->x, redsys->x));
 
     return 0;
 }

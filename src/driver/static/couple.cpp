@@ -1222,5 +1222,8 @@ int Driver::SolveFlow_case(int maxIter, double tolUzawa,
 
     CoupledUzawa(Result_, tolUzawa, maxIter);
 
+    // New exact solver
+    //SchurSolver(Result_);
+
     return 1;
 }

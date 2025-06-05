@@ -111,7 +111,7 @@ set(gcf, 'Position',[50 50 250 700]);
 hold on
 plot(exact(4,:), pY(4,:), '-k', 'LineWidth',1 );
 plot(-1*exact(4,:), pY(4,:),'-k' ,'LineWidth',1);
-plot(uy(4,:), pY(4,:),'--r','LineWidth',2);
+plot(-1*uy(4,:), pY(4,:),'--r','LineWidth',2);
 plot(vy(4,:), pY(4,:),'--b','LIneWidth',2);
 hold off
 
