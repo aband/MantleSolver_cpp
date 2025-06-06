@@ -83,7 +83,7 @@ the equation~\eqref{eq:defR}.
 Here, $R_i|_{e_i} = 1$, and
 $R_i|_{e_{i+2}} = 0$ by definition. In Figure~\ref{fig:R0}, we
 draw $R_0$ on a general quadrilateral element, which evaluates $1$ 
-on the edge $e_0$, and evaluates $0$ on the opposite edge $e_2$.
+on edge $e_0$, and evaluates $0$ on the opposite edge $e_2$.
 \begin{figure}[ht]
 \centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/R0_1.png}
@@ -115,8 +115,8 @@ We can restrict the edge basis function to edges as
 In Figure~\ref{fig:phie0}, we present
 edge basis function $\varphi^{(2)}_{e,0}$ on a general quadrilateral element, 
 where 
-$\varphi^{(2)}_{e_0}$ evaluates $0$ on the edges $\{e_i, \quad i\neq 0\}$, and 
-evaluates a quadratic function on the edge $e_0$.
+$\varphi^{(2)}_{e_0}$ evaluates $0$ on edges $\{e_i, \quad i\neq 0\}$, and 
+evaluates a quadratic function on edge $e_0$.
 \begin{figure}[ht]
 \centering\small
 \includegraphics[width=5.5cm,height=4cm]{chapters/pics/phie0_1.png}
@@ -383,12 +383,12 @@ The dimension of this reduced first-order $H(\text{div})$ conforming space is
 On each edge of a quadrilateral element $E$, two independent basis functions are defined: 
 one with vanishing average normal flux across the edge, and the other with non-vanishing average flux.
 
-We state the degree of freedom of element as normal flux on each edge as
+We state the degrees of freedom of element as normal flux on each edge as
 \begin{equation}
 %		  \int_{e_i} \mathbf{u}\cdot \pmb{\nu} \varphi_i d\mathbf{x}, \quad \varphi_i \in \mathbb{V}_1^0(E).
 		  DOF_{e_i} = \langle \mathbf{u}_h \cdot \pmb{\nu}_i, \lambda_1 \rangle, \quad \lambda_1 \in \mathbb{P}_1,
 \end{equation}
-where $\lambda_1$ is a linear function restricted to the edge $e_i$, and 
+where $\lambda_1$ is a linear function restricted to edge $e_i$, and 
 $\text{dim}(\lambda_1) = 2$.
 We then present a construction of two independent shape functions on each edge:
 $\pmb{\varphi}_{l,i}$ and $\pmb{\varphi}_{c,i}$, such that
@@ -424,7 +424,7 @@ function $\pmb{\varphi}_{l,i}$  in two steps as
 		  =(\pmb{\tau}_{i+1}\lambda_{i+3} + \lambda_{i+1}\pmb{\tau}_{i+3})R_i + 
 		  \lambda_{i+1} \lambda_{i+3}\text{curl}R_i.
 \end{equation}
-We then normalize it such that $l_i$ varying from $-1$ to $1$ as
+We then normalize it such that $l_i$ varying from $-1$ to $1$ when restricted to edge $e_i$ as
 \begin{equation}\label{eq:linearbasis}
 		  \pmb{\varphi}_{l,i} = \frac{\tilde{\pmb{\varphi}}_{l,i}(\mathbf{x})
 		  \lvert e_i \rvert}{4\lambda_{i+1}(\mathbf{x}_{e,i}) \lambda_{i+3}(\mathbf{x}_{e,i})R_i(\mathbf{x}_{e,i})},
@@ -467,7 +467,7 @@ The "constant" basis function on the edge can now be defined as
 		  {(\mathbf{x}_{v,i} - \mathbf{x}_{v,i+2}) \cdot \pmb{\nu}_{i+1} \lvert e_{i+1} \rvert / \lvert e_i \rvert + (\mathbf{x}_{v,i} - \mathbf{x}_{v,i+2})\cdot \pmb{\nu}_i},
 \end{equation}
 where $i \equiv i \Mod{4}$. The "constant" shape function $\pmb{\varphi}_{c,i}$ 
-has a normal flux of a constant value $1$ on the edge $e_i$ and evaluates $0$ 
+has a normal flux of a constant value $1$ on edge $e_i$ and evaluates $0$ 
 normal flux on all the other edges. In Figure~\ref{fig:varphic},
 we draw $\pmb{\varphi}_{c,2}$ on the left element and $\pmb{\varphi}_{c,0}$ on
 the right element sharing a edge,
@@ -528,7 +528,7 @@ $W_0 = \nabla \cdot \mathbb{V}_1^0$, which is a space of constant values.
 \end{proof}
 
 \subsection{A Stokes Model Problem}
-Consider a model problem fo Stokes problem equipped with homogenous 
+Consider a model problem of an incompressible isotropic equation equipped with homogeneous 
 boundary condition as
 \begin{equation}\label{eq:stokesmodel}
 		  \begin{aligned}
@@ -571,32 +571,41 @@ Find $(\mathbf{u}_h,p_h) \in \mathbb{V}_{S,h} \times \mathbb{W}_{S,h}$ such that
 					 (\nabla \cdot \mathbf{u}_h, \omega_h) &= 0, \hspace{1.15cm} \forall \omega_h \in \mathbb{W}_{S,h}.
 		  \end{aligned}
 \end{equation}
-Now we construct a pair of discretized space $\mathbb{V}_{S,h} \times \mathbb{W}_{S,h}$ for this Stokes model problem in the next section.
+Now we construct a pair of discretized space $\mathbb{V}_{S,h} \times \mathbb{W}_{S,h}$ for this Stokes model problem in the next subsection.
 
 \subsection{Modified Bernardi-Raugel Element}
-Stable mixed finite element pair for Stokes problem has been widely researched.
-We are referring to the element discussed by~\cite{BRelement} and by~\cite{Fortin1981OldAN}.
-A similar type of element was discussed by~\cite{doi:10.1137/S0036142903435247}.
-
-Inspired by the work in direct serendipity space,
-we consider the following modified space for each element $E \in \mathcal{T}_h$ as
-\begin{equation}\label{eq:br}
-		  V_1^{\mathcal{BR}}(E) = (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3\},
+Stable mixed finite element pair for Stokes problem has been widely and thoroughly studied.
+One of a notable construction of element was discussed in~\cite{BRelement} and~\cite{Fortin1981OldAN},
+where polynomial spaces are supplemented with bubble functions.
+Consider the standard type of Bernardi-Raugel (BR) element as
+\begin{equation}
+(\mathbb{Q}_{1,1} (E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3 \} \subset (\mathbb{Q}_{2,2}(E))^2,
 \end{equation}
-where $\mathbf{b}_i$ is a quadratic bubble function defined on each edge $e_i$.
-One natural pick is the previously defined function $\varphi^{(2)}_{e,i} \in \mathcal{DS}_2$ as
+where $\mathbb{Q}_{m,n} = \mathbb{P}_m \times \mathbb{P}_n$ denotes the tensor product polynomial space,
+and $\mathbf{b}_i$ is a quadratic bubble function defined on each edge $e_i$.
+A similar but more general type of element was discussed by~\cite{doi:10.1137/S0036142903435247}.
+
+We now modify the original BR element with predefined direct serendipity space as 
+\begin{equation}\label{eq:br}
+		  \mathbb{V}_1^{\mathcal{BR}}(E) = (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3\} \subset (\mathcal{DS}_2(E))^2.
+\end{equation}
+One natural pick for the supplemental bubble function $\mathbf{b}_i$ is the previously defined 
+edge nodal basis function $\varphi^{(2)}_{e,i} \in \mathcal{DS}_2$ as
 \begin{equation}\label{eq:bubble}
-		  \mathbf{b}_i = \varphi^{(2)}_{e,i}(\mathbf{x})\mathbf{n}_i, 
+		  \mathbf{b}_i(\mathbf{x}) = \varphi^{(2)}_{e,i}(\mathbf{x})\pmb{\nu}_i, 
 \end{equation}
 which is quadratic when restricted to edge $e_i$ according to equation~\eqref{eq:edgerestriction}. 
 The quadratic bubble is guaranteed to be conforming since it evaluates zeros on two vertex and $1$ at 
-the middle point of the edge due to normalization. The integral of this quadratic bubble can be
-accurately computed by a three points gaussian quadrature rule.
+the middle point of the edge due to normalization, which is uniquely 
+determined by these three points. The integral of this quadratic bubble can be
+accurately computed by a three points Gaussian quadrature rule.
+
+We state the degrees of freedom of this type of element as
 \begin{defn}\label{lem:unisolvence}
 		  For an element $E\in \mathcal{T}_h$, $\mathbf{u}_h$ is uniquely defined
 		  by the following degrees of freedom:
 
-		  \text{(i)} for corner point $v_i$ and Cartesian direction unitnormal vectors $\{\mathbf{i},\mathbf{j}\}$,
+		  \text{(i)} for corner point $v_i$ and Cartesian direction unit normal vectors $\{\mathbf{i},\mathbf{j}\}$,
 		  \begin{equation*}
 					 DOF^{\text{(i)}}_{(v_i,\mathbf{i})}(\mathbf{u}_h) = \mathbf{u}_h(v_i)\cdot \mathbf{i}, 
 					 \quad DOF^{\text{(i)}}_{(v_i,\mathbf{j})}(\mathbf{u}_h) = \mathbf{u}_h(v_i)\cdot \mathbf{j};
@@ -607,7 +616,7 @@ accurately computed by a three points gaussian quadrature rule.
 					 DOF^{(ii)}_{e_i} = \langle \mathbf{u}_h \cdot \pmb{\nu}_i, 1 \rangle,
 		  \end{equation*}
 \end{defn}
-We give an explicit construction of basis functions using driect serendipity space. 
+We give an explicit construction of shape functions. 
 We pick nodal basis on vertex $v_i$ in two Cartesian direction as
 		  \begin{equation}
 					 N_{v_i,x} = \begin{bmatrix}
@@ -629,104 +638,109 @@ We conclude
 that this element is well-defined, i.e., the degrees of freedom uniquely 
 determine the function.
 
-We define the corresponding discrete pressure sapce as
+We pair it with a space as
 \begin{equation}
-\mathbb{W}_0 = \{\omega \in L^2{\Omega}; \omega|_E \in P_0 \} \cap L^2(\Omega)/\mathbb{R},
+\mathbb{W}_0 = \{\omega \in L^2(\Omega); \hspace{0.3cm} \omega|_E \in P_0 \} \cap L^2(\Omega)/\mathbb{R},
 \end{equation}
 which holds piece wise constant values for each element $E$.
 We provide stability and approximation analysis for this space pair $\mathbb{V}_1^{\mathcal{BR}} \times \mathbb{W}_0$
-in the next section.
+in the next subsection.
 
 \subsection{Stability and Approximation Properties for $\mathbb{V}_1^{\mathcal{BR}}\times\mathbb{W}_0$}
-Before analyze the stability and approximation properties for the 
-modified, we state some useful lemma.
+Before analyzing the stability and approximation properties for the 
+modified BR element, we state one useful lemma.
 \begin{lem}\label{lem:intestimate}
-Let $K$ be a nondengenate convex quadrilateral.
-Assuming we have shape regularity~\ref{def:shaperegularity}.
+Let $E$ be a nondengenate convex quadrilateral element.
+Assuming we have shape regularity definition~\ref{def:shaperegularity}.
 For each integer $m\geq 0$
 and real number $p \in [1,\infty]$ there exist positive constants $C_1$,
 and $C_2$ independent of the geometry of $E$ such that the following
 upper bound hold for all $v \in W_p^m(E)$:
 \begin{equation}
 \left \{  \begin{aligned}
-&\lvert v \rvert_{W^0_p(K)} \leq C_1 h_E^{2/p}\lvert \tilde{v} \rvert_{W^0_p(\tilde{K})},\\
-&\lvert v \rvert_{W^1_p(K)} \leq C_2(\sigma^*,p) \lvert \tilde{v} \rvert_{W^1_p(\tilde{K})},
+&\lvert v \rvert_{W^0_p(E)} \leq C_1 h_E^{2/p}\lvert \tilde{v} \rvert_{W^0_p(\tilde{E})},\\
+&\lvert v \rvert_{W^1_p(E)} \leq C_2(\sigma^*,p) \lvert \tilde{v} \rvert_{W^1_p(\tilde{E})},
 \end{aligned}
 \right.
 \end{equation}
-where $\tilde{K}$ represents quadrilateral before scaling illustrated in Figure~\ref{fig:meshexample}, and
-$\tilde{v}$ is function defined on $\tilde{K}$ before scaling.
+where $\tilde{E}$ represents local reference quadrilateral element $\tilde{E}$ illustrated in Figure~\ref{fig:meshexample}, and
+$\tilde{v}$ is function defined on local reference element $\tilde{E}$.
 \end{lem}
 \begin{proof}
 See~\cite{FinElemMethNavierStokes}. 
 \end{proof}
 
-With the interpolation operator $\mathcal{I}_{\mathcal{DS}_1}$ defined in~\ref{eq:interpolation},
-we define the projection operator $\pi_h \in (H^1_0(\Omega))^2 \rightarrow \mathbb{V}_1^{BR} \cap (H^1_0(\Omega))^2$ by:
+We reuse the interpolation operator $\mathcal{I}_{h}^1$ defined in equation~\ref{eq:interpolation}.
+The projection operator $\pi \in (H^1_0(\Omega))^2 \rightarrow \mathbb{V}_1^{BR} \cap (H^1_0(\Omega))^2$ is
+understood as a combination of local projection operator $\pi_E$ as
 
-(i) For each corner point $v \in \partial E$
+(i) For each vertex $v \in \partial E$
 \begin{equation}\label{eq:nodaldof}
-		  \pi_h \mathbf{v}(\mathbf{x}_v) = \mathcal{I}_{\mathcal{DS}_1}\mathbf{v}(\mathbf{x}_v).
+		  \pi_E \mathbf{v}(\mathbf{x}_v) = \mathcal{I}^1_{h}\mathbf{v}(\mathbf{x}_v).
 \end{equation}
 
-(ii) On each edge $e \subset \partial E$,
+(ii) For each edge $e \subset \partial E$,
 \begin{equation}\label{eq:edgedof}
 \int_{e} (\pi_h \mathbf{v} - \mathbf{v})\cdot \pmb{\nu} ds = 0.
 \end{equation}
 
 \begin{lem}\label{lem:approximibility}
-For all $\mathbf{v} \in (H^k(\Omega))^2,\quad k=1,2$. 
-The operator $\pi_h$ defined by~\eqref{eq:nodaldof} and ~\eqref{eq:edgedof} satisfies:
+For all $\mathbf{v} \in (H^k(\Omega))^2 \cap (H^1_0(\Omega))^2,\quad k=1,2$. 
+The operator $\pi_E$ defined by~\eqref{eq:nodaldof} and ~\eqref{eq:edgedof} satisfies:
 \begin{equation}
-(p_h, \nabla \cdot (\mathbf{v} - \pi_h \mathbf{v})) = 0, \quad \forall p_h \in \mathbb{W}_0
+(q_h, \nabla \cdot (\mathbf{v} - \pi_E \mathbf{v})) = 0, \quad \forall q_h \in \mathbb{W}_0
 \end{equation}
-Assuming shape regularity defined in~\ref{def:shaperegularity}, $\pi_h$ should have the 
+Assuming shape regularity defined in Definition~\ref{def:shaperegularity}, the 
+global projection operator $\pi$ should have the 
 error bound as
 \begin{equation}
-\norm{\mathbf{v} - \pi_h \mathbf{v}}_{1,\Omega} \leq Ch^m\norm{\mathbf{v}}_{m+1,\Omega}, \quad m=0,1.
+\norm{\mathbf{v} - \pi \mathbf{v}}_{H^1(\Omega)} \leq Ch^m\norm{\mathbf{v}}_{H^{m+1}(\Omega)}, \quad \forall \mathbf{v} 
+\in (H^{m+1}(\Omega))^2, \hspace{0.2cm} m=0,1.
 \end{equation}
 \end{lem}
 
 \begin{proof}
 From the definition of degree of freedom~\eqref{eq:nodaldof} and~\eqref{eq:edgedof}, we decompose the projection
-operator $\pi_h$ as
+operator $\pi_E$ as
 \begin{equation}
-		  \pi_h \mathbf{v} = \mathcal{I}_{\mathcal{DS}_1} \mathbf{v} + 
+		  \pi_E \mathbf{v} = \mathcal{I}^1_{h} \mathbf{v} + 
 		  \sum_{i=0}^3 \alpha_i \mathbf{b}_i,
 \end{equation}
 where the coefficient 
 \begin{equation}
-\alpha_i = \Big( \int_{e_i} (\mathbf{v} - \mathcal{I}_{\mathcal{DS}_1} \mathbf{v})\cdot \pmb{\nu}_i d\sigma \Big) / \int_{e_i} \mathbf{b}_i \cdot 
+\alpha_i = \Big( \int_{e_i} (\mathbf{v} - \mathcal{I}^1_{h} \mathbf{v})\cdot \pmb{\nu}_i d\sigma \Big) / \int_{e_i} \mathbf{b}_i \cdot 
 \pmb{\nu}_i d\sigma.
 \end{equation}
-We use the approximation property of interpolation operator in direct derendipity space in Lemma~\ref{lem:approximation},
-\begin{equation}
-\norm{\mathbf{v} - \mathcal{I}_{\mathcal{DS}_1}\mathbf{v}}_{m,\Omega} \leq h_E^{2-m} \lvert \mathbf{v} \rvert_{2,E^*}, \quad m= 0,1,
+The approximation property of the interpolation operator $\mathcal{I}_h^1$ has been discussed in Lemma~\ref{lem:approximation},
+\begin{equation}\label{eq:interpoapproxbr}
+\norm{\mathbf{v} - \mathcal{I}^1_{h}\mathbf{v}}_{H^m(E)} \leq h^{2-m} \lvert \mathbf{v} \rvert_{H^2(E^*)}, \quad m= 0,1,
 \end{equation}
-where $E^* = \Cup_{F\in \mathcal{T}_h, F\cap E \neq \empty}$ defined in Lemma~\ref{lem:interpolationop}.
+where $E^* = \cup_{F\in \mathcal{T}_h, F\cap E \neq \emptyset}$ defined in Lemma~\ref{lem:interpolationop}.
 
-Lemma~\ref{lem:intestimate} indicates :
+Lemma~\ref{lem:intestimate} indicates an estimation of the bubble function as:
 \begin{equation}
-\lvert\mathbf{b}_i\rvert_{m,E} \leq C(\sigma^*)h_E^{1-m}\lvert \tilde{\mathbf{b}}_i \rvert_{1,\tilde{E}} 
-\leq C(\sigma^*)h_E^{1-m}, \quad m = 0,1.
+\lvert\mathbf{b}_i\rvert_{H^m(E)} \leq C(\sigma^*)h^{1-m}\lvert \tilde{\mathbf{b}}_i \rvert_{H^1(\tilde{E})} 
+\leq C(\sigma^*)h^{1-m}, \quad m = 0,1.
 \end{equation}
 We continue to estimate $\lvert \alpha_i \rvert$ as
 \begin{equation}
 \int_{e,i} \varphi^{(2)}_{e,i} ds = \lvert e_i \rvert \int_{\tilde{e}_i} \tilde{\varphi}^{(2)}_{e,i} d\tilde{s}.
 \end{equation}
-		  According to Trace Theorem~\ref{thm:tracethm} the trace mapping is continuous, and Lemma~\ref{lem:intestimate}, we estimate the term $\lvert \alpha_i \rvert$ as
+		  According to Trace Theorem~\ref{thm:tracethm}, a continuous trace mapping can be constructed. 
+		  Combining with Lemma~\ref{lem:intestimate}, we estimate the term $\lvert \alpha_i \rvert$ as
 \begin{equation}
-					 \lvert \alpha_i \rvert \leq C \int_{\tilde{e},i} \lvert\tilde{\mathbf{v}} - \tilde{\mathcal{I}}_{\mathcal{DS}_1} \tilde{\mathbf{v}}\rvert ds \leq C h_E^k h_E^{-1} \lvert \mathbf{v} \rvert_{k,E^*} .
+					 \lvert \alpha_i \rvert \leq C \int_{\tilde{e},i} \lvert\tilde{\mathbf{v}} - \tilde{\mathcal{I}}^1_{h} \tilde{\mathbf{v}}\rvert ds \leq C h^k h^{-1} \lvert \mathbf{v} \rvert_{H^k(E^*)} , \quad k = 1,2.
 \end{equation}
 The overall estimate is then
 \begin{equation}
-		  \lvert\alpha_i \rvert \lvert \mathbf{b}_i \rvert_{m,E} \leq C h^{k-m} \vert \mathbf{v} \rvert_{k,E^*}.
+		  \lvert\alpha_i \rvert \lvert \mathbf{b}_i \rvert_{H^m(E)} \leq C h^{2-m} \vert \mathbf{v} \rvert_{H^k(E^*)}, \quad m=0,1. 
 \end{equation}
-Using the error estimation Lemma~\ref{lem:approximation}, and Bramble-Hilbert 
-Lemma~\ref{BHlemma}, we get a global error estimate as
+Combining with the interpolation error estimate result in equation~\eqref{eq:interpoapproxbr},
+we get a local error estimate as
 \begin{equation}
-		  \norm{\mathbf{v} - \pi \mathbf{v}}_{H^1(\Omega)} \leq C h \lvert \mathbf{v} \rvert_{H^2(\Omega)}.
+		  \norm{\mathbf{v} - \pi_E \mathbf{v}}_{H^1(E)} \leq C h \lvert \mathbf{v} \rvert_{H^2(E)}.
 \end{equation}
+The global error estimate is obtained by combining local results together.
 \end{proof}
 In addition to the approximability lemma~\ref{lem:approximation}, we
 also need stability result.
@@ -739,25 +753,35 @@ also need stability result.
 \begin{proof}
 		  We express discrete solution $\mathbf{v}_h$ with the predefined
 		  projection operator $\mathbf{v}_h = \pi_h \mathbf{v}$, and denote
-		  the $\mathbf{w}_h = \mathcal{I} \mathbf{v}$, then we have the following
+		  the $\mathbf{w}_h = \mathcal{I}_h^1 \mathbf{v}$, then we have the following local
 		  inequality as
 		  \begin{equation}
-					 \norm{\mathbf{v}_h} \leq \norm{\mathbf{w}_h}_{H^1(\Omega)} + h_E^{-1} {\big\{}\norm{\mathbf{v}-\mathbf{w}_h}_{L^2(\Omega)} + h \lvert \mathbf{v} - \mathbf{w}_h \rvert_{H^1(\Omega)}  {\big\}} \leq C \norm{\mathbf{v}}_{H^1(\Omega)}.
+					 \norm{\mathbf{v}_h} \leq \norm{\mathbf{w}_h}_{H^1(E)} + h^{-1} {\big\{}\norm{\mathbf{v}-\mathbf{w}_h}_{L^2(E)} + h \lvert \mathbf{v} - \mathbf{w}_h \rvert_{H^1(E)}  {\big\}} \leq C \norm{\mathbf{v}}_{H^1(E)}.
 		  \end{equation}
+		  The global stability result can be obtained by combining local results as well.
 \end{proof}
 \begin{thm}
-With the established approximability Lemma~\ref{lem:approximibility}, and 
-		  the stability Lemma~\ref{lem:brstability},
+With the established approximability result stated in Lemma~\ref{lem:approximibility}, and 
+		  the stability result stated in Lemma~\ref{lem:brstability},
 for a convex domain $\Omega$, there exists a constant $\gamma > 0$ such that
 		  \begin{equation}
-					 \inf_{\omega \in \mathbb{W}_0} \sup_{\mathbf{v} \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}, \omega)}{\norm{\mathbf{v}}_1\norm{\omega}_0} \geq \gamma >0.
+					 \inf_{q_h \in \mathbb{W}_0} \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}_h, q_h)}{\norm{\mathbf{v}_h}_{H^1(\Omega)}\norm{q_h}_{L^2(\Omega)}} \geq \gamma >0.
 		  \end{equation}
 \end{thm}
 \begin{proof}
 		  \begin{equation}
-					 \sup_{\mathbf{v} \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}, \omega)}{\norm{\mathbf{v}}_1\norm{\omega}_0} \geq \frac{(\nabla \cdot \pi_h\mathbf{\varphi}, \omega)}{\norm{\pi_h\mathbf{\varphi}}_1 \norm{\omega}_0} \geq \frac{\norm{\omega}_0}{C \norm{\mathbf{\varphi}_1}} \geq \gamma > 0,
+					 \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}_h, q_h)}{\norm{\mathbf{v}_h}_{H^1(\Omega)}\norm{\omega}_{L^2(\Omega)}} \geq \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}} } \frac{(\nabla \cdot \pi\mathbf{v}, q_h)}{\norm{\pi \mathbf{v}}_{H^1(\Omega)} \norm{q_h}_{L^2(\Omega)}}.
 		  \end{equation}
-where $\pi$ is a bounded projection operator.
+		  Recall that the $\inf-\sup$ condition holds for continuous space as
+		  \begin{equation}
+					 \inf_{q \in L^2(\Omega)} \sup_{\mathbf{v} \in (H^1(\Omega))^2} \frac{(\nabla \cdot \mathbf{v}, q)}{\norm{\mathbf{v}}_{H^1(\Omega)}\norm{q}_{L^2(\Omega)}} \geq \gamma >0,
+		  \end{equation}
+		  along with the condition $(q_h, \nabla \cdot (\mathbf{v} - \pi_E \mathbf{v})) = 0$ proved by Lemma~\eqref{lem:approximibility} 
+		  we have
+		  \begin{equation}
+ \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \pi\mathbf{v}, q_h)}{\norm{\pi \mathbf{v}}_{H^1(\Omega)} \norm{q_h}_{L^2(\Omega)}} = \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}, q_h)}{\norm{\pi \mathbf{v}}_{H^1(\Omega)} \norm{q_h}_{L^2(\Omega)}} \geq  \frac{\gamma}{C} > 0.
+		  \end{equation}
+
 \end{proof}
 We conclude that our space $\mathbb{V}_1^{\mathcal{BR}} \times \mathbb{W}_0$ 
 form a $\inf$-$\sup$ stable pair with first order overall accuracy.
