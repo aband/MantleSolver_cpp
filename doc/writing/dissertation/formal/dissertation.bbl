@@ -34,6 +34,11 @@ Todd Arbogast, Zhen Tao, and Chuning Wang.
   quadrilaterals.
 \newblock \emph{Numerische Mathematik}, 150:\penalty0 929--974, 2022.
 
+\bibitem[Bernardi and Raugel(1985)]{BRelement}
+Christine Bernardi and Genevieve Raugel.
+\newblock Analysis of some finite elements for the stokes problem.
+\newblock \emph{Math. of Comput.}, 44:\penalty0 71--79, 1985.
+
 \bibitem[Bramble and Hilbert(1970)]{EstimationofLinearFunctionals}
 J.H. Bramble and S.~R. Hilbert.
 \newblock Estimation of linear functionals on sobolev spaces with application
@@ -46,11 +51,6 @@ Franco Brezzi, Jim~Douglas Jr., and L.~D. Marini.
 \newblock Two families of mixed finite element for second order elliptic
   problems.
 \newblock \emph{Numerische Mathematik}, 47:\penalty0 217--235, 1985.
-
-\bibitem[Christine~Bernardi(1985)]{BRelement}
-Genevieve~Raugel Christine~Bernardi.
-\newblock Analysis of some finite elements for the stokes problem.
-\newblock \emph{Math. of Comput.}, 44:\penalty0 71--79, 1985.
 
 \bibitem[Ciarlet(2002)]{doi:10.1137/1.9780898719208}
 Philippe~G. Ciarlet.
