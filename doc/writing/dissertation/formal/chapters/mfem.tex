@@ -1,7 +1,7 @@
 \section{Coupled Degenerate Darcy-Stokes System}
-Now we consider the scaled degenerate darcy-stokes coupled boundary-value problem:
+Now we consider the nondimensionalized scaled degenerate Darcy-Stokes coupled boundary-value problem:
 
-Find velocity-pressure potential pair $(\check{\mathbf{v}}_r, \check{q}_l)$ and 
+Find two velocity-pressure potential pairs $(\check{\mathbf{v}}_r, \check{q}_l)$ and 
 $(\check{\mathbf{v}}_s, \check{q})$ such that 
 \begin{alignat}{2}
 \label{eq:dimensionlessdarcy_flow_sc_bv}
@@ -32,25 +32,27 @@ and $\Gamma_{i,D}$ and $\Gamma_{i,S}$ represent the part of boundary we assign n
 respectively. We have $\Gamma_{u,D} \cup \Gamma_{i,D} = \partial \Omega$ and $\Gamma_{u,S} \cup \Gamma_{i,S} = \partial \Omega$.
 
 We follow the procedure by~\cite{DegenerateDarcy} to discretize this boundary value problem.
-To begin weith, a new Hilbert space is defined for this 
+To begin with, a scaled Sobolev space is defined as follows for this 
 specific scaled formulation, where
 the scaled velocity $\check{\mathbf{v}}_r$ should lie in.
 \begin{defn}
+Consider a scaled space:
 \begin{equation}\label{eq:scaledHspace}
-		  \mathbb{V}^{\phi}_d = H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
+		  \mathbb{V}^{\phi}_D = H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
 		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Phi} \mathbf{v})
 		  \in L^2(\Omega) \Big\},
 \end{equation}
-which equipped with the inner product as
+which is a Hilbert space equipped with the inner product
 \begin{equation}\label{eq:scaledinnerp}
-		  (\mathbf{u}_{\phi}, \mathbf{v}_{\phi})_{\mathbb{V}^{\phi}_r} = 
-		  (\mathbf{u}_{\phi}, \mathbf{v}_{\phi}) + 
-		  (\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{u}_\phi), \phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{v}_\phi)).
+		  (\mathbf{u}, \mathbf{v})_{\mathbb{V}^{\phi}_D} = 
+		  (\mathbf{u}, \mathbf{v}) + 
+		  (\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{u}), \phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{v})).
 \end{equation}
-The normal trace on $\partial \Omega$ is well-defined as well as
+The normal trace on $\partial \Omega$ is well-defined as
 \begin{equation}\label{eq:tracescaled}
-		  \norm{\phi^{1/2+\Theta}\mathbf{v}_\phi\cdot \nu}_{-1/2, \partial \Omega} < C_{\Omega} \Big\{ \norm{\mathbf{v}_\phi} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}_\phi)} \Big\}.
+		  \norm{\phi^{1/2+\Theta}\mathbf{v}_\phi\cdot \nu}_{-1/2, \partial \Omega} < C_{\Omega} \Big\{ \norm{\mathbf{v}_\phi} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}_\phi)} \Big\}
 \end{equation}
+subsequently, we have the space $H_\phi^{-1/2}(\partial \Omega)$ understood as the image of this normal trace operator.
 \end{defn}
 \subsection{The weak formulation}
 We define the following function spaces

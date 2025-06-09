@@ -89,7 +89,7 @@ Therefore the schur complement
 \begin{equation*}
 		  \mathbf{S} = -(\mathbf{C} + \mathbf{BA}^{-1}\mathbf{B}^T),
 \end{equation*}
-is usually not invertable.
+is usually not invertable directly.
 On the other hand, in addition to the constant null space induced by gradient of
 pressure,
 the null space of $\bold{B}$ 
@@ -98,6 +98,28 @@ is not fixed due to evloution of melting (change of zero porosity region).
 
 Taking into consideration that the solver will be implemented in parallel, 
 a iterative solver is more suitable than direct solver.
+
+\subsection{Schur Complement}
+To begin with, we discuss a "direct" way to solve this derived saddle point system.
+Now consider a general saddle point system~\eqref{eq:saddle} with 
+symmetric positive-definite matrix $\mathbf{A}$ as
+\begin{equation}
+\begin{aligned}
+\mathbf{A} \mathbf{x} + \mathbf{B} \mathbf{y} &= \mathbf{f},\\
+\mathbf{B}^T \mathbf{x} -\mathbf{C}\mathbf{y} &= \mathbf{g}.
+\end{aligned}
+\end{equation}
+We represent the solution vector $\mathbf{x}$ as
+\begin{equation}
+\mathbf{x} = \mathbf{A}^{-1} (\mathbf{f} - \mathbf{B} \mathbf{y}),
+\end{equation}
+where $\mathbf{A}^{-1}$ is computed with conjugate gradient algorithm.
+We then eliminate $\mathbf{x}$ to represent $\mathbf{y}$ as
+\begin{equation}
+\mathbf{y} = \mathbf{S}^{-1}(\mathbf{g} - \mathbf{B}^T \mathbf{A}^{-1}\mathbf{f}),
+\end{equation}
+where $\mathbf{S}^{-1}$ is computed with Minimal Resigual algorithm~\cite{doi:10.1137/0712047} 
+due to the formed Schur complement being a symmtric indefinite system.
 
 \subsection{Uzawa Iteration}
 Uzawa algorithm was originally introduced by~\cite{uzawa_arrow_hurwicz},
