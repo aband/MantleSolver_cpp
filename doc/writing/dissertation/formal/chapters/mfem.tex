@@ -1,5 +1,5 @@
 \section{Coupled Degenerate Darcy-Stokes System}
-Now we consider the nondimensionalized scaled degenerate Darcy-Stokes coupled boundary-value problem:
+Now we consider a scaled nondimensionalized degenerate Darcy-Stokes coupled boundary-value problem:
 
 Find two velocity-pressure potential pairs $(\check{\mathbf{v}}_r, \check{q}_l)$ and 
 $(\check{\mathbf{v}}_s, \check{q})$ such that 
@@ -31,12 +31,26 @@ Darcy and Stokes problem respectively,
 and $\Gamma_{i,D}$ and $\Gamma_{i,S}$ represent the part of boundary we assign natural boundary conditions 
 respectively. We have $\Gamma_{u,D} \cup \Gamma_{i,D} = \partial \Omega$ and $\Gamma_{u,S} \cup \Gamma_{i,S} = \partial \Omega$.
 
-We follow the procedure by~\cite{DegenerateDarcy} to discretize this boundary value problem.
-To begin with, a scaled Sobolev space is defined as follows for this 
+We expand the gradient term in equation~\eqref{eq:dimensionlessdarcy_flow_sc_bv}
+and the divergence term in equation~\eqref{eq:dimensionlessconsMass_flow_sc_bv} as
+\begin{equation}
+		  \begin{aligned}
+					 \phi^{1+\Theta} \nabla (\phi^{-1/2} \check{q}_l) &= \phi^{1/2+\Theta} \nabla \check{q}_l +  \phi^{\Theta-1/2} \check{q}_l \nabla \phi, \\
+					 \phi^{-1/2} \nabla \cdot (\phi^{1+\Theta} \check{\mathbf{v}}_r) &=
+					 \phi^{1/2+\Theta} \nabla \cdot \check{\mathbf{v}}_r + 
+					 \phi^{\Theta - 1/2} \nabla \phi \cdot \check{\mathbf{v}}_r,
+		  \end{aligned}
+\end{equation}
+where they are well-defined provided that
+\begin{equation}\label{eq:phiboundness}
+		  \phi^{\Theta - 1/2} \nabla \phi \in (L^{\infty}(\Omega))^2.
+\end{equation}
+
+A scaled Hilbert space is defined as follows for this 
 specific scaled formulation, where
 the scaled velocity $\check{\mathbf{v}}_r$ should lie in.
 \begin{defn}
-Consider a scaled space:
+Consider a scaled Hilbert space:
 \begin{equation}\label{eq:scaledHspace}
 		  \mathbb{V}^{\phi}_D = H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
 		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Phi} \mathbf{v})
@@ -50,45 +64,88 @@ which is a Hilbert space equipped with the inner product
 \end{equation}
 The normal trace on $\partial \Omega$ is well-defined as
 \begin{equation}\label{eq:tracescaled}
-		  \norm{\phi^{1/2+\Theta}\mathbf{v}_\phi\cdot \nu}_{-1/2, \partial \Omega} < C_{\Omega} \Big\{ \norm{\mathbf{v}_\phi} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}_\phi)} \Big\}
+		  \norm{\phi^{1/2+\Theta}\mathbf{v}\cdot \pmb{\nu}}_{H^{-1/2}(\partial \Omega)} < C_{\Omega} \Big\{ \norm{\mathbf{v}}_{L^2(\Omega)} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v})}_{L^2(\Omega)} \Big\}
 \end{equation}
-subsequently, we have the space $H_\phi^{-1/2}(\partial \Omega)$ understood as the image of this normal trace operator.
+		  subsequently, we have the space $H_\phi^{-1/2}(\text{div};\partial \Omega)$ understood as the image of this normal trace operator.
 \end{defn}
 \subsection{The weak formulation}
-We define the following function spaces
+We define the following function spaces for Darcy and Stokes respectively as
 \begin{equation}\label{eq:spaces}
 		  \begin{aligned}
-					 \mathbb{V}^\phi_D &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = 0 \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\},\\
+					 \mathbb{V}^\phi_D &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = \mathbf{0} \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\},\\
+					 \mathbb{U}^\phi_D &= \Big\{\mathbf{u}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{u}\cdot \pmb{\nu} = \mathbf{g}_r \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\} = \tilde{\mathbf{g}}_r + \mathbb{V}^\phi_D,\\
 					 \mathbb{W}_D      &= L^2(\Omega),\\
 					 \mathbb{V}_S &= \Big\{\mathbf{v}\in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \hspace{0.15cm} \text{on}\hspace{0.15cm}  \Gamma_{u,S} \Big\},\\
+					 \mathbb{U}_S &= \Big\{\mathbf{u}\in (H^1(\Omega))^2 : \mathbf{u} = \mathbf{g}_s \hspace{0.15cm} \text{on}\hspace{0.15cm}  \Gamma_{u,S} \Big\} 
+					 = \tilde{\mathbf{g}}_s + \mathbb{V}_S,\\
 		  \mathbb{W}_S &= L^2(\Omega),
 		  \end{aligned}
 \end{equation}
-where each space is equipped with their natural norm.
-To empose essential boundary conditoins, we assume that a function $\mathbf{g}_s = \check{\mathbf{v}}_{s,0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \Gamma_{u,S}$ 
-and $\mathbf{g}_s = \mathbf{0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \partial \Omega / \Gamma_{u,S}$.
-Then $\mathbf{g}_s \in (H^{1/2}(\partial \Omega))^2$ and
-extended it continuously from the boundary to the domain, so that
-the extension $\mathbf{g}_{s} \in (H^1(\Gamma_{u,S}))^2$ and $\norm{\mathbf{g}_{s,0}}_1 \leq C \norm{\mathbf{v}_{s,0}}_{1/2,\Gamma_{u,S}}$. 
-Similarly, we can define a bounded extension of $\check{\mathbf{v}}_r \in \mathbb{V}_D^\phi$ such that                                                                                                                                                 
+where each space is equipped with their natural norms.
+Here, $\tilde{\mathbf{g}}_r$ and $\tilde{\mathbf{g}}_s$ are finite energy lift 
+of Dirichlet data $\mathbf{g}_r$ and $\mathbf{g}_s$ respectively. 
 
-Scaled nondimensionalized weak form.
-Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_D + \tilde{\mathbf{g}}_{r}$,
-$\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{V}_S + \tilde{\mathbf{g}}_S$, and $\check{q}\in \mathbb{W}_S$ such that
+We understand the boundary values in the sense of Trace Theorem~\ref{thm:tracethm}.
+We assume regularity for Dirichlet data 
+$\mathbf{g}_r \in (H^{1/2}_\phi(\text{div};\Gamma_{u,D}))^2$
+and $\mathbf{g}_s \in (H^{1/2}(\Gamma_{u,S}))^2$. 
+We understand $\tilde{\mathbf{g}}_r \in H_\phi(\text{div};\Omega)$
+and $\tilde{\mathbf{g}}_s \in (H^1(\Omega))^2$ as a continuous extension from the
+boundary into the domain.
+%To impose essential boundary conditoins, we assume that a function $\mathbf{g}_s = \check{\mathbf{v}}_{s,0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \Gamma_{u,S}$ 
+%and $\mathbf{g}_s = \mathbf{0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \partial \Omega / \Gamma_{u,S}$.
+%Then $\mathbf{g}_s \in (H^{1/2}(\partial \Omega))^2$ and
+%extended it continuously from the boundary to the domain, so that
+%the extension $\mathbf{g}_{s} \in (H^1(\Gamma_{u,S}))^2$ and $\norm{\mathbf{g}_{s,0}}_1 \leq C \norm{\mathbf{v}_{s,0}}_{1/2,\Gamma_{u,S}}$. 
+%Similarly, we can define a bounded extension of $\check{\mathbf{v}}_r \in \mathbb{V}_D^\phi$ such that      
+The standard mixed form for the proposed coupled system reads as follows:
+%Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_D + \tilde{\mathbf{g}}_{r}$,
+%$\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{V}_S + \tilde{\mathbf{g}}_S$, and $\check{q}\in \mathbb{W}_S$ such that
+
+Find $\check{\mathbf{v}}_r \in \mathbb{U}^{\phi}_D$,
+$\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{U}_S$, and $\check{q}\in \mathbb{W}_S$ such that
 \begin{alignat}{2}
+		  \label{eq:weak_coupled_1}
 		  &(\check{\pmb{\tau}}(\bold{v}_{s}),\nabla \pmb{\psi}_s) - (\check{q}, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_S,\\
+		  \label{eq:weak_coupled_2}
 					 &(\nabla \cdot \check{\bold{v}}_{s}, \omega)  + \Big(\frac{\phi^{1/2}}{1-\phi} (\check{q}_l - \phi^{1/2}\check{q}), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_S,\\
+					 \label{eq:weak_coupled_3}
 					 &(\bold{\check{v}}_{r},\pmb{\psi}_r)  - (\check{q}_{l},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r)) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_D^\phi,\\
 					 \nonumber
 					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{1-\phi}(\check{q}_{l} - \phi^{1/2}\check{q}),\omega_f \Big) &&= 0 \\
+					 \label{eq:weak_coupled_4}
 		  &					 &&\forall \omega_f \in 
 		  \mathbb{W}_D.
 \end{alignat}
-The Existence and uniquense of the solution has been proved by~\cite{DegenerateDarcy}. We will not repeat the proof here.
 
-\subsection{MFEM discretization}
-We discretize the formed degenerate system with previously 
-defined $H(\text{div})$ and $H^1$ conforming space.
+We state well posedness result of the scaled model as follows.
+\begin{lem}\label{lem:ExistenceUniqueness}
+		  (Existence and Uniqueness)
+
+		  Assume the condition~$\eqref{eq:phiboundness}$ holds,
+		  $0 \leq \phi \leq \phi^* <1$.
+		  There exists a unique 
+		  solution to the scaled formulation 
+		  ~\eqref{eq:weak_coupled_1}--\eqref{eq:weak_coupled_4}, and it satisfies 
+		  \begin{equation}
+					 \begin{aligned}
+					 \norm{\check{\mathbf{v}}_r}_{(L^2(\Omega))^2} + 
+					 \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\check{\mathbf{v}}_r)}_{(L^2(\Omega))^2} + 
+					 \norm{\check{q}_l}_{(L^2(\Omega))^2} + 
+					 \norm{\check{\mathbf{v}}_s}_{(H^1(\Omega))^2} + \norm{\check{q}}_{(L^2(\Omega))^2} \\
+					\leq	C\big\{\lvert\rho_r \rvert +
+								\norm{\tilde{\mathbf{g}}_r}_{(L^2(\Omega))^2} + 
+								\norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\tilde{\mathbf{g}}_r)}_{(L^2(\Omega))^2}		+ \norm{\tilde{\mathbf{g}}_s}_{H^1(\Omega)}\big\}.
+					 \end{aligned}
+		  \end{equation}
+\end{lem}
+\begin{proof}
+		  See~\cite{DegenerateDarcy}.
+\end{proof}
+
+\subsection{The scaled mixed finite element method}
+We discretize the scaled mixed formulation with aforementioned
+$H(\text{div})$ and $H^1$ conforming space.
 We write the function spaces out as
 \begin{equation}\label{eq:femspaces}
 		  \begin{aligned}
@@ -99,9 +156,13 @@ We write the function spaces out as
 					 \mathbb{W}   &= \mathbb{P}_0.
 		  \end{aligned}
 \end{equation}
-We can impose essential boundary conditions
+We can impose essential boundary conditions, by projecting
+the Dirichlet values $\mathbf{g}_r$ and $\mathbf{g}_s$  into
+the finite element spaces.
 
-Scaled mixed finite element method. Find $\check{\mathbf{v}}_{r,h} \in \mathbb{V}_1^0 + \hat{\mathbf{g}}_r$, $\check{q})_{r,h} \in \mathbb{W}_D$, 
+Scaled mixed finite element method. 
+
+Find $\check{\mathbf{v}}_{r,h} \in \mathbb{V}_1^0 + \hat{\mathbf{g}}_r$, $\check{q})_{r,h} \in \mathbb{W}_D$, 
 $\mathbf{v}_{s,h} \in \mathbf{V}_S + \hat{\mathbf{g}}_s$ and $\check{q}_h \in \mathbb{W}_S$ such that
 \begin{alignat}{2}
 		  \label{eq:weak_stokes}
