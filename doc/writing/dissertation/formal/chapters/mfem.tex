@@ -69,7 +69,7 @@ The normal trace on $\partial \Omega$ is well-defined as
 		  subsequently, we have the space $H_\phi^{-1/2}(\text{div};\partial \Omega)$ understood as the image of this normal trace operator.
 \end{defn}
 \subsection{The weak formulation}
-We define the following function spaces for Darcy and Stokes respectively as
+We define the following function spaces for the scaled Darcy-Stokes coupled system as
 \begin{equation}\label{eq:spaces}
 		  \begin{aligned}
 					 \mathbb{V}^\phi_D &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = \mathbf{0} \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\},\\
@@ -144,16 +144,25 @@ We state well posedness result of the scaled model as follows.
 \end{proof}
 
 \subsection{The scaled mixed finite element method}
-We discretize the scaled mixed formulation with aforementioned
-$H(\text{div})$ and $H^1$ conforming space.
-We write the function spaces out as
-\begin{equation}\label{eq:femspaces}
-		  \begin{aligned}
-					 \mathbb{V}_1^0 &= (\mathbb{P}_1)^2 \oplus 
-		  \text{curl}\mathbb{S}_2^{\mathcal{DS}}\\
-					 \mathbb{W} &= \mathbb{P}_0 \\
-					 \mathbb{V}^{\mathcal{BR}}_1 &= \mathcal{DS}_1 \oplus \text{span}\{\mathbf{b}_0,\mathbf{b}_1,\mathbf{b}_2,\mathbf{b}_3 \} \\
-					 \mathbb{W}   &= \mathbb{P}_0.
+We discretize the scaled mixed formulation with
+inf-sup stable mixed finite element pairs. 
+Recall the aforementioned stable pairs
+\begin{itemize}
+\item For the Darcy part of the system.
+\begin{equation}
+\begin{aligned}
+					 \mathbb{V}_{D,h} = \mathbb{V}_1^0 &= (\mathbb{P}_1)^2 \oplus 
+		  \text{curl}\,\mathbb{S}_2^{\mathcal{DS}}\\
+					 \mathbb{W}_{D,h} = \mathbb{W} &= \mathbb{P}_0 \\
+\end{aligned}
+\end{equation}
+
+\item For the Stokes part of the system.
+\end{itemize}
+\begin{equation}
+\begin{aligned}
+\mathbb{V}_{S,h} = \mathbb{V}^{\mathcal{BR}}_1 &= \mathcal{DS}_1 \oplus \text{span}\{\mathbf{b}_0,\mathbf{b}_1,\mathbf{b}_2,\mathbf{b}_3 \} \\
+\mathbb{W}_{S,h} = \mathbb{W}   &= \mathbb{P}_0.
 		  \end{aligned}
 \end{equation}
 We can impose essential boundary conditions, by projecting

@@ -37,7 +37,7 @@ qf = reshape(qf, M, N);
 
 %exactql(2,1:N/2) = exactql(2,1:N/2) + mean(qs(1,:)); 
 %exactql(2,N/2:N) = exactql(2,N/2:N) + mean(qs(1,:)); 
-exactql(2,:) = exactql(2,:) - mean(qf(1,:)); 
+exactql(2,:) = exactql(2,:) + mean(qs(1,:)); 
 exactqs(2,:) = exactqs(2,:) + mean(qs(1,:));
 area = 4/N * 0.2
 
@@ -111,7 +111,7 @@ set(gcf, 'Position',[50 50 250 700]);
 hold on
 plot(exact(4,:), pY(4,:), '-k', 'LineWidth',1 );
 plot(-1*exact(4,:), pY(4,:),'-k' ,'LineWidth',1);
-plot(-1*uy(4,:), pY(4,:),'--r','LineWidth',2);
+plot(uy(4,:), pY(4,:),'--r','LineWidth',2);
 plot(vy(4,:), pY(4,:),'--b','LIneWidth',2);
 hold off
 

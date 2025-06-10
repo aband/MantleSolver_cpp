@@ -344,6 +344,24 @@ double Driver::errorNorm(int mark, PhysProperty * pp, int norm){
     return sqrt(totalerror);
 }
 
+std::array<double,2> Driver::errorP(int mark, PhysProperty * pp, int norm){
+
+    std::array<double, 2> work {0.0,0.0};
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+        indice gcell {i,j};
+
+        vertexSet corners = extractCorners(mi, gcell);
+
+        double area = mi.cellArea.at(FlatIndic(mi,gcell));
+
+        totalerror += work;
+    }}
+
+    return work;
+}
+
 double averagePhi(PhysProperty * pp, int i, int j, const MeshInfo& mi){
 
     const valarray<double>& gwf = GaussWeightsFace;

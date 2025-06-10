@@ -232,6 +232,8 @@ class Driver {
 
        double errorNorm(int mark, PhysProperty * pp, int norm);
 
+       std::array<double,2> errorP(int mark, PhysProperty * pp, int norm);
+
        int solveStokes(int maxIter, double tolUzawa, const Tensor<weights>& allwgts, double ** lphi);
 
     private:
