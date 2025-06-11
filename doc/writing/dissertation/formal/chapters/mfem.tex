@@ -85,7 +85,8 @@ where each space is equipped with their natural norms.
 Here, $\tilde{\mathbf{g}}_r$ and $\tilde{\mathbf{g}}_s$ are finite energy lift 
 of Dirichlet data $\mathbf{g}_r$ and $\mathbf{g}_s$ respectively. 
 
-We understand the boundary values in the sense of Trace Theorem~\ref{thm:tracethm}.
+We understand the boundary values in the sense of Trace Theorem~\ref{thm:tracethm}
+and the scaled normal trace operator~\eqref{eq:tracescaled}.
 We assume regularity for Dirichlet data 
 $\mathbf{g}_r \in (H^{1/2}_\phi(\text{div};\Gamma_{u,D}))^2$
 and $\mathbf{g}_s \in (H^{1/2}(\Gamma_{u,S}))^2$. 
@@ -97,7 +98,17 @@ boundary into the domain.
 %Then $\mathbf{g}_s \in (H^{1/2}(\partial \Omega))^2$ and
 %extended it continuously from the boundary to the domain, so that
 %the extension $\mathbf{g}_{s} \in (H^1(\Gamma_{u,S}))^2$ and $\norm{\mathbf{g}_{s,0}}_1 \leq C \norm{\mathbf{v}_{s,0}}_{1/2,\Gamma_{u,S}}$. 
-%Similarly, we can define a bounded extension of $\check{\mathbf{v}}_r \in \mathbb{V}_D^\phi$ such that      
+%Similarly, we can define a bounded extension of $\check{\mathbf{v}}_r \in \mathbb{V}_D^\phi$ such that   
+
+A compatibility condition enforcing mass conservation on the entire domain
+is needed if essential boundary 
+condition is prescribed on
+the entire boundary $\partial \Omega$, i.e., 
+when $\Gamma_{u,D} = \Gamma_{u,S} = \partial \Omega$ the Dirichlet data 
+satisfies
+\begin{equation}
+		  \int_{\partial \Omega} (\mathbf{g}_r + \mathbf{g}_s) \cdot \pmb{\nu}\, ds = 0.
+\end{equation}
 The standard mixed form for the proposed coupled system reads as follows:
 %Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_D + \tilde{\mathbf{g}}_{r}$,
 %$\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{V}_S + \tilde{\mathbf{g}}_S$, and $\check{q}\in \mathbb{W}_S$ such that
@@ -118,7 +129,7 @@ $\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{U}_S$, and $\c
 		  \mathbb{W}_D.
 \end{alignat}
 
-We state well posedness result of the scaled model as follows.
+We state well-posedness result of the scaled model as follows.
 \begin{lem}\label{lem:ExistenceUniqueness}
 		  (Existence and Uniqueness)
 
@@ -145,15 +156,16 @@ We state well posedness result of the scaled model as follows.
 
 \subsection{The scaled mixed finite element method}
 We discretize the scaled mixed formulation with
-inf-sup stable mixed finite element pairs. 
-Recall the aforementioned stable pairs
+two space pairs $\mathbb{V}_{D,h} \times \mathbb{W}_{D,h} \subset H(\text{div}; \Omega) \times L^2(\Omega)$
+and $\mathbb{V}_{S,h} \times \mathbb{W}_{S,h} \subset (H^1(\Omega))^2 \times L^2(\Omega)$.
+Recall the aforementioned inf-sup stable mixed finite element space pairs:
 \begin{itemize}
 \item For the Darcy part of the system.
 \begin{equation}
 \begin{aligned}
-					 \mathbb{V}_{D,h} = \mathbb{V}_1^0 &= (\mathbb{P}_1)^2 \oplus 
-		  \text{curl}\,\mathbb{S}_2^{\mathcal{DS}}\\
-					 \mathbb{W}_{D,h} = \mathbb{W} &= \mathbb{P}_0 \\
+		  \mathbb{V}_{D,h}(E) = \mathbb{V}_1^0(E) &= (\mathbb{P}_1(E))^2 \oplus 
+		  \text{curl}\,\mathbb{S}_2^{\mathcal{DS}}(E) \\
+					 \mathbb{W}_{D,h}(E) = \mathbb{W}(E) &= \mathbb{P}_0(E)
 \end{aligned}
 \end{equation}
 
@@ -161,15 +173,15 @@ Recall the aforementioned stable pairs
 \end{itemize}
 \begin{equation}
 \begin{aligned}
-\mathbb{V}_{S,h} = \mathbb{V}^{\mathcal{BR}}_1 &= \mathcal{DS}_1 \oplus \text{span}\{\mathbf{b}_0,\mathbf{b}_1,\mathbf{b}_2,\mathbf{b}_3 \} \\
-\mathbb{W}_{S,h} = \mathbb{W}   &= \mathbb{P}_0.
+		  \mathbb{V}_{S,h}(E) = \mathbb{V}^{\mathcal{BR}}_1(E) &= (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0,\mathbf{b}_1,\mathbf{b}_2,\mathbf{b}_3 \} \\
+		  \mathbb{W}_{S,h}(E) = \mathbb{W}(E)   &= \mathbb{P}_0(E).
 		  \end{aligned}
 \end{equation}
-We can impose essential boundary conditions, by projecting
-the Dirichlet values $\mathbf{g}_r$ and $\mathbf{g}_s$  into
-the finite element spaces.
+We can impose essential boundary conditions, by projecting extensions
+$\tilde{\mathbf{g}}_r$ and $\tilde{\mathbf{g}}_s$ into
+the finite element spaces as $\hat{\mathbf{g}}_r \in \mathbb{V}_{D,h}$ and $\hat{\mathbf{g}}_s \in \mathbb{V}_{S,h}$.
 
-Scaled mixed finite element method. 
+We state the scaled mixed finite element method as:
 
 Find $\check{\mathbf{v}}_{r,h} \in \mathbb{V}_1^0 + \hat{\mathbf{g}}_r$, $\check{q})_{r,h} \in \mathbb{W}_D$, 
 $\mathbf{v}_{s,h} \in \mathbf{V}_S + \hat{\mathbf{g}}_s$ and $\check{q}_h \in \mathbb{W}_S$ such that
