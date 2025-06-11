@@ -360,10 +360,10 @@ use the mapped serendipity space.
 
 We write the rotated 2D exact sequence for the related energy spaces as
 \begin{equation}\label{eq:exactsequence}
-\begin{alignedat}{3}
-&H^1 \xrightarrow[]{\text{curl}} H&&(\text{div}) \xrightarrow[]{\text{div}} &&L^2 \\
-&\cup                            &&\cup                                     &&\cup\\
-&\mathcal{DS}_2  \xrightarrow[]{\text{curl}} &&\mathbf{V}_1^{0} \xrightarrow[]{\text{div}} &&\mathbb{P}_{0}.
+\begin{alignedat}{5}
+&\mathbb{R} \xhookrightarrow[]{\text{i}}\, &&H^1 \xrightarrow[]{\text{curl}} H&&(\text{div}) \xrightarrow[]{\text{div}} &&L^2 && \xrightarrow[]{0} 0\\
+&\quad &&\cup                            &&\cup                                     &&\cup &&\quad\\
+&\quad &&\mathcal{DS}_2  \xrightarrow[]{\text{curl}} &&\mathbf{V}_1^{0} \xrightarrow[]{\text{div}} &&\mathbb{P}_{0} && \quad.
 \end{alignedat}
 \end{equation}
 We define the reduced first-order $H(\text{div})$ conforming space as the first-order polynomial
@@ -684,7 +684,7 @@ understood as a combination of local projection operators $\pi_E$ as:
 
 (ii) For each edge $e \subset \partial E$,
 \begin{equation}\label{eq:edgedof}
-\int_{e} (\pi_h \mathbf{v} - \mathbf{v})\cdot \pmb{\nu} ds = 0.
+\int_{e} (\pi_E \mathbf{v} - \mathbf{v})\cdot \pmb{\nu} ds = 0.
 \end{equation}
 
 \begin{lem}\label{lem:approximibility}
@@ -693,7 +693,7 @@ The operator $\pi_E$ defined by~\eqref{eq:nodaldof}--\eqref{eq:edgedof} satisfie
 \begin{equation}
 (q_h, \nabla \cdot (\mathbf{v} - \pi_E \mathbf{v})) = 0, \quad \forall q_h \in \mathbb{W}_0
 \end{equation}
-Assuming shape regularity as defined in Definition~\ref{def:shaperegularity}, the 
+Assuming shape regularity as defined in Definition~$\ref{def:shaperegularity}$, the 
 global projection operator $\pi$ satisfies the 
 error bound
 \begin{equation}
@@ -703,9 +703,18 @@ error bound
 \end{lem}
 
 \begin{proof}
+According to the divergence theorem, we have
+\begin{equation}
+\int_{E} \text{div} \cdot (\mathbf{v} - \pi_E \mathbf{v})\, d\mathbf{x} = \sum_{i=0}^3 \int_{e_i} (\mathbf{v} - \pi_E \mathbf{v}) \cdot \pmb{\nu}\, ds = 0.
+\end{equation}
+Given that $q_h$ being piece wise constant on the element $E$, it is  clear that we have
+\begin{equation}
+(q_h, \nabla \cdot (\mathbf{v} - \pi_E \mathbf{v})) = 0, \quad \forall q_h \in \mathbb{W}_0.
+\end{equation}
+
 From the definition of the degree of freedom~\eqref{eq:nodaldof} and~\eqref{eq:edgedof}, we decompose the projection
 operator $\pi_E$ as
-\begin{equation}
+\begin{equation}\label{eq:decomposition}
 		  \pi_E \mathbf{v} = \mathcal{I}^1_{h} \mathbf{v} + 
 		  \sum_{i=0}^3 \alpha_i \mathbf{b}_i,
 \end{equation}
@@ -721,7 +730,7 @@ The approximation property of the interpolation operator $\mathcal{I}_h^1$ has b
 where $E^* = \cup_{F\in \mathcal{T}_h, F\cap E \neq \emptyset}$ defined in Lemma~\ref{lem:interpolationop}.
 
 Lemma~\ref{lem:intestimate} indicates an estimation of the bubble function as
-\begin{equation}
+\begin{equation}\label{eq:estimatebubble}
 \lvert\mathbf{b}_i\rvert_{H^m(E)} \leq C(\sigma^*)h^{1-m}\lvert \tilde{\mathbf{b}}_i \rvert_{H^1(\tilde{E})} 
 \leq C(\sigma^*)h^{1-m}, \quad m = 0,1.
 \end{equation}
@@ -731,12 +740,12 @@ We continue to estimate $\lvert \alpha_i \rvert$ as
 \end{equation}
 		  According to Trace Theorem~\ref{thm:tracethm}, a continuous trace mapping can be constructed. 
 		  Combining with Lemma~\ref{lem:intestimate}, we estimate the term $\lvert \alpha_i \rvert$ as
-\begin{equation}
+\begin{equation}\label{eq:estimatealpha}
 					 \lvert \alpha_i \rvert \leq C \int_{\tilde{e},i} \lvert\tilde{\mathbf{v}} - \tilde{\mathcal{I}}^1_{h} \tilde{\mathbf{v}}\rvert\, ds \leq C h^k h^{-1} \lvert \mathbf{v} \rvert_{H^k(E^*)} , \quad k = 1,2.
 \end{equation}
 The overall estimate is then
-\begin{equation}
-		  \lvert\alpha_i \rvert \lvert \mathbf{b}_i \rvert_{H^m(E)} \leq C h^{2-m} \vert \mathbf{v} \rvert_{H^k(E^*)}, \quad m=0,1. 
+\begin{equation}\label{eq:estimationalphav}
+		  \lvert\alpha_i \rvert \lvert \mathbf{b}_i \rvert_{H^m(E)} \leq C h^{k-m} \vert \mathbf{v} \rvert_{H^k(E^*)}, \quad m=0,1. 
 \end{equation}
 Combining with the interpolation error estimate result in equation~\eqref{eq:interpoapproxbr},
 we get a local error estimate as
@@ -748,43 +757,61 @@ The global error estimate is obtained by combining local results together.
 In addition to the approximability lemma~\ref{lem:approximation}, we
 also need stability result.
 \begin{lem}\label{lem:brstability}
-		  For any $\mathbf{v} \in H^1_0(\Omega)$, there exists $\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}$ such that 
-		  \begin{equation}
-					 \norm{\mathbf{v}_h }_{H^1(\Omega)} \leq C\norm{\mathbf{v}}_{H^1(\Omega)}.
+		  %For any $\mathbf{v} \in H^1_0(\Omega)$, there exists $\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}$ such that 
+		  Assuming that $\mathbf{v} \in (H^1(\Omega))^2$,
+		  the linear operator $\pi$ is bounded on $(H^1(\Omega))^2$ independnently of h.
+		  \begin{equation}\label{eq:mypiboundness}
+					 \norm{\pi \mathbf{v}}_{H^1(\Omega)} \leq C\norm{\mathbf{v}}_{H^1(\Omega)}.
 		  \end{equation}
 \end{lem}
 \begin{proof}
-		  We express discrete solution $\mathbf{v}_h$ with the predefined
-		  projection operator $\mathbf{v}_h = \pi_h \mathbf{v}$, and denote
-		  the $\mathbf{w}_h = \mathcal{I}_h^1 \mathbf{v}$, then we have the following local
-		  inequality as
-		  \begin{equation}
-					 \norm{\mathbf{v}_h} \leq \norm{\mathbf{w}_h}_{H^1(E)} + h^{-1} {\big\{}\norm{\mathbf{v}-\mathbf{w}_h}_{L^2(E)} + h \lvert \mathbf{v} - \mathbf{w}_h \rvert_{H^1(E)}  {\big\}} \leq C \norm{\mathbf{v}}_{H^1(E)}.
-		  \end{equation}
-		  The global stability result can be obtained by combining local results as well.
+		  %We express discrete solution $\mathbf{v}_h$ with the predefined
+		  %projection operator $\mathbf{v}_h = \pi_h \mathbf{v}$, and denote
+		  %the $\mathbf{w}_h = \mathcal{I}_h^1 \mathbf{v}$, then we have the following local
+		  %inequality as
+		  %\begin{equation}
+		%			 \norm{\mathbf{v}_h} \leq \norm{\mathbf{w}_h}_{H^1(E)} + h^{-1} {\big\{}\norm{\mathbf{v}-\mathbf{w}_h}_{L^2(E)} + h \lvert \mathbf{v} - \mathbf{w}_h \rvert_{H^1(E)}  {\big\}} \leq C \norm{\mathbf{v}}_{H^1(E)}.
+		%  \end{equation}
+		%  The global stability result can be obtained by combining local results as well.
+		We consider the local projection operator $\pi_E$, and use the decomposition~\eqref{eq:decomposition}, which implies
+		\begin{equation}
+\lvert \pi_E \mathbf{v} \rvert^2 \leq \lvert \mathcal{I}^1_h \mathbf{v} \rvert^2 + \sum_{i=0}^3 \lvert \alpha_i 
+ \mathbf{b}_i \rvert^2.
+		\end{equation}
+		Assuming similar expressions also hold for the gradient, we integrate the both sides of the
+		inequality and recall the estimation~\eqref{eq:estimationalphav}
+		\begin{equation}
+\norm{\pi_E \mathbf{v}}^2_{H^1(E)} \leq \norm{\mathcal{I}^1_h \mathbf{v}}^2_{H^1(E)} + h^{-1} {\big\{}\norm{\mathbf{v}-\mathcal{I}^1_h \mathbf{v}}_{L^2(E)} + h \lvert \mathbf{v} - \mathcal{I}^1_h \mathbf{v} \rvert_{H^1(E)}  {\big\}}, 
+		\end{equation}
+     which together with the boundedness result of $\mathcal{I}_h^1$ in Lemma~$\ref{lem:interpolationop}$ gives
+	  \begin{equation}
+					 \norm{\pi_E \mathbf{v}}_{H^1(E)} \leq C\norm{\mathbf{v}}_{H^1(E)}.
+	  \end{equation}
+	 The global stability result can be obtained by combining local results as well.
 \end{proof}
 \begin{thm}
-With the established approximability result stated in Lemma~\ref{lem:approximibility}, and 
-		  the stability result stated in Lemma~\ref{lem:brstability},
+With the established approximability result stated in $Lemma~\ref{lem:approximibility}$, and 
+		  the stability result stated in $Lemma~\ref{lem:brstability}$,
 for a convex domain $\Omega$, there exists a constant $\gamma > 0$ such that
 		  \begin{equation}
 					 \inf_{q_h \in \mathbb{W}_0} \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}_h, q_h)}{\norm{\mathbf{v}_h}_{H^1(\Omega)}\norm{q_h}_{L^2(\Omega)}} \geq \gamma >0.
 		  \end{equation}
 \end{thm}
 \begin{proof}
+Note that
 		  \begin{equation}
-					 \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}_h, q_h)}{\norm{\mathbf{v}_h}_{H^1(\Omega)}\norm{\omega}_{L^2(\Omega)}} \geq \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}} } \frac{(\nabla \cdot \pi\mathbf{v}, q_h)}{\norm{\pi \mathbf{v}}_{H^1(\Omega)} \norm{q_h}_{L^2(\Omega)}}.
+					 \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}_h, q_h)}{\norm{\mathbf{v}_h}_{H^1(\Omega)}\norm{q_h}_{L^2(\Omega)}} \geq \frac{(\nabla \cdot \pi\mathbf{v}, q_h)}{\norm{\pi \mathbf{v}}_{H^1(\Omega)} \norm{q_h}_{L^2(\Omega)}}.
 		  \end{equation}
-		  Recall that the $\inf-\sup$ condition holds for continuous space as
+		  Recall that the inf-sup condition holds for the continuous space as
 		  \begin{equation}
-					 \inf_{q \in L^2(\Omega)} \sup_{\mathbf{v} \in (H^1(\Omega))^2} \frac{(\nabla \cdot \mathbf{v}, q)}{\norm{\mathbf{v}}_{H^1(\Omega)}\norm{q}_{L^2(\Omega)}} \geq \gamma >0,
+					 \inf_{q \in L^2(\Omega)} \sup_{\mathbf{v} \in (H^1(\Omega))^2} \frac{(\nabla \cdot \mathbf{v}, q)}{\norm{\mathbf{v}}_{H^1(\Omega)}\norm{q}_{L^2(\Omega)}} \geq \gamma >0.
 		  \end{equation}
-		  along with the condition $(q_h, \nabla \cdot (\mathbf{v} - \pi_E \mathbf{v})) = 0$ proved by Lemma~\eqref{lem:approximibility} 
+		  With the condition $(q_h, \nabla \cdot (\mathbf{v} - \pi_E \mathbf{v})) = 0$ proved in Lemma~\ref{lem:approximibility} 
 		  we have
 		  \begin{equation}
- \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \pi\mathbf{v}, q_h)}{\norm{\pi \mathbf{v}}_{H^1(\Omega)} \norm{q_h}_{L^2(\Omega)}} = \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}, q_h)}{\norm{\pi \mathbf{v}}_{H^1(\Omega)} \norm{q_h}_{L^2(\Omega)}} \geq  \frac{\gamma}{C} > 0.
+ \frac{(\nabla \cdot \pi\mathbf{v}, q_h)}{\norm{\pi \mathbf{v}}_{H^1(\Omega)} \norm{q_h}_{L^2(\Omega)}} = \frac{(\nabla \cdot \mathbf{v}, q_h)}{\norm{\pi \mathbf{v}}_{H^1(\Omega)} \norm{q_h}_{L^2(\Omega)}} \geq  \frac{\gamma}{C} > 0,
 		  \end{equation}
-
+where $C$ here is the constant in~\eqref{eq:mypiboundness}.
 \end{proof}
 We conclude that our space $\mathbb{V}_1^{\mathcal{BR}} \times \mathbb{W}_0$ 
 forms a $\inf$-$\sup$ stable pair with first order overall accuracy.

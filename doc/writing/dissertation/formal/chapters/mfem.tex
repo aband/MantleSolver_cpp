@@ -158,7 +158,7 @@ We state well-posedness result of the scaled model as follows.
 We discretize the scaled mixed formulation with
 two space pairs $\mathbb{V}_{D,h} \times \mathbb{W}_{D,h} \subset H(\text{div}; \Omega) \times L^2(\Omega)$
 and $\mathbb{V}_{S,h} \times \mathbb{W}_{S,h} \subset (H^1(\Omega))^2 \times L^2(\Omega)$.
-Recall the aforementioned inf-sup stable mixed finite element space pairs:
+Recall the aforementioned inf-sup stable mixed finite element space pairs on $E \in \mathcal{T}_h$:
 \begin{itemize}
 \item For the Darcy part of the system.
 \begin{equation}
@@ -177,7 +177,7 @@ Recall the aforementioned inf-sup stable mixed finite element space pairs:
 		  \mathbb{W}_{S,h}(E) = \mathbb{W}(E)   &= \mathbb{P}_0(E).
 		  \end{aligned}
 \end{equation}
-We can impose essential boundary conditions, by projecting extensions
+We can impose essential boundary conditions by projecting extensions
 $\tilde{\mathbf{g}}_r$ and $\tilde{\mathbf{g}}_s$ into
 the finite element spaces as $\hat{\mathbf{g}}_r \in \mathbb{V}_{D,h}$ and $\hat{\mathbf{g}}_s \in \mathbb{V}_{S,h}$.
 
