@@ -6,6 +6,7 @@
 *.log
 *.aux
 *.blg
+*.bbl
 *.ill
 *.lot
 *.map

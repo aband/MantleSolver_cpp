@@ -199,9 +199,9 @@ $\check{\mathbf{v}}_{s,h} \in \mathbf{V}_{S,h,\mathbf{0}} + \hat{\mathbf{g}}_s$ 
 					\label{eq:weak_darcy}
 					 &(\bold{\check{v}}_{r,h},\pmb{\psi}_{r,h})  - (\check{q}_{l,h},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_{r,h})) = 0, &&\forall \pmb{\psi}_{r,h} \in \mathbb{V}_{D,h,0},\\
 					 \nonumber
-					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_{r,h}),\omega_{l,h}) + \Big(\frac{1}{1-\phi}(\check{q}_{l,h} - \phi^{1/2}\check{q}_h),\omega_l \Big) &&= 0, \\
+					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_{r,h}),\omega_{l,h}) + \Big(\frac{1}{1-\phi}(\check{q}_{l,h} - \phi^{1/2}\check{q}_h),\omega_{l,h} \Big) &&= 0, \\
 					 \label{eq:weak_continuous}
-		  &					 &&\forall \omega_f \in 
+		  &					 &&\forall \omega_{l,h} \in 
 		  \mathbb{W}_{D,h}.
 \end{alignat}
 
@@ -214,7 +214,7 @@ when there is no melting, i.e., $\phi = 0$.
 In order to deal with it, we first define an element-averaged variable $\overline{\phi}_E$ 
 as
 \begin{equation}\label{eq:averaged_phi}
-		  \overline{\phi}_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x}) d\mathbf{x},
+		  \overline{\phi}_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x})\, d\mathbf{x},
 \end{equation}
 where $\lvert E \rvert$ is the area of element $E$.
 Let
@@ -231,8 +231,8 @@ Then we expand the integral
 with divergence theorem as
 \begin{equation}\label{eq:divtheorem}
 		  \begin{aligned}
-					 \int_E \phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta} \pmb{\psi}_{r,h})\omega_l\, d\mathbf{x} &=\int_{\partial E} \phi_E^{-1/2} \phi^{1+\Theta} \pmb{\psi}_{r,h}\cdot \pmb{\nu} \omega_l\, ds \\
-					 &-\int_{E}\phi_E^{-1/2}\phi^{1+\Theta}\pmb{\psi}_{r,h} \cdot \nabla \omega_l\, d\mathbf{x}.
+					 \int_E \phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta} \pmb{\psi}_{r,h})\omega_{l,h}\, d\mathbf{x} &=\int_{\partial E} \phi_E^{-1/2} \phi^{1+\Theta} \pmb{\psi}_{r,h}\cdot \pmb{\nu} \omega_{l,h}\, ds \\
+					 &-\int_{E}\phi_E^{-1/2}\phi^{1+\Theta}\pmb{\psi}_{r,h} \cdot \nabla \omega_{l,h}\, d\mathbf{x}.
 		  \end{aligned}
 \end{equation}
 The second term vanishes when $\omega_l$ is constant on element $E$.
@@ -260,16 +260,16 @@ $\phi_E^{1/2}$ as
 \fi
 \begin{alignat}{2}
 		  \label{eq:weak_stokes_mass}
-		  &(\check{\pmb{\tau}}(\bold{v}_{s,h}),\nabla \pmb{\psi}_s) - (\check{q}_h, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_1^{\mathcal{BR}},\\
+		  &(\pmb{\tau}(\check{\bold{v}}_{s,h}),\nabla \pmb{\psi}_{s,h}) - (\check{q}_h, \nabla \cdot \pmb{\psi}_{s,h}) = -((1-\phi)\bold{n}, \pmb{\psi}_{s,h}) &&\forall\pmb{\psi}_{s,h}, \in \mathbb{V}_{S,h,\mathbf{0}},\\
 		  \label{eq:weak_compaction_mass}
-		  &(\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  - \Big(\frac{\phi\phi_E^{-1/2}}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_0^{\mathcal{BR}},\\
+		  &(\nabla \cdot \check{\bold{v}}_{s,h}, \omega_h)  - \Big(\frac{\phi\phi_E^{-1/2}}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h), \omega_h \Big) = 0, &&\forall \omega_h \in \mathbb{W}_{S,h},\\
 					\label{eq:weak_darcy_mass}
-					 &(\bold{\check{v}}_{r,h},\pmb{\psi}_r)  - (\check{q}_{l,h},\phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_{r,h})) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_1^0,\\
+					 &(\bold{\check{v}}_{r,h},\pmb{\psi}_{r,h})  - (\check{q}_{l,h},\phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_{r,h})) = 0, &&\forall \pmb{\psi}_{r,h} \in \mathbb{V}_{D,h,0},\\
 					 \nonumber
-					 &(\phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_{r,h}),\omega_f) + \Big(\frac{\phi\phi^{-1}_E}{1-\phi}(\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h),\omega_f \Big) &&= 0 \\
+					 &(\phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_{r,h}),\omega_{l,h}) + \Big(\frac{\phi\phi^{-1}_E}{1-\phi}(\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h),\omega_{l,h} \Big) &&= 0, \\
 					 \label{eq:weak_continuous_mass}
-		  &					 &&\forall \omega_f \in 
-		  \mathbb{W}_{0}.
+		  &					 &&\forall \omega_{l,h} \in 
+		  \mathbb{W}_{D,h}.
 \end{alignat}
 To see local mass conservation of the fluid, let $E \in \mathcal{T}_h$ be any element. 
 The equation~\eqref{eq:weak_continuous_mass} gives
