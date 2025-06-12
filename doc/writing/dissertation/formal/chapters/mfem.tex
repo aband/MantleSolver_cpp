@@ -181,22 +181,28 @@ We can impose essential boundary conditions by projecting extensions
 $\tilde{\mathbf{g}}_r$ and $\tilde{\mathbf{g}}_s$ into
 the finite element spaces as $\hat{\mathbf{g}}_r \in \mathbb{V}_{D,h}$ and $\hat{\mathbf{g}}_s \in \mathbb{V}_{S,h}$.
 
-We state the scaled mixed finite element method as:
+We also define 
+\begin{equation}
+		  \begin{aligned}
+					 \mathbb{V}_{D,h,0} &= \{\mathbf{v} \in \mathbb{V}_{D,h} : \mathbf{v}\cdot \pmb{\nu} = 0 \hspace{0.2cm} \text{on} \hspace{0.2cm} \Gamma_{u,D}\} \\
+					 \mathbb{V}_{S,h,\mathbf{0}} &= \{\mathbf{v} \in \mathbb{V}_{S,h} : \mathbf{v} = \mathbf{0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \Gamma_{u,S}\} 
+		  \end{aligned}
+\end{equation}
 
-Find $\check{\mathbf{v}}_{r,h} \in \mathbb{V}_1^0 + \hat{\mathbf{g}}_r$, $\check{q})_{r,h} \in \mathbb{W}_D$, 
-$\mathbf{v}_{s,h} \in \mathbf{V}_S + \hat{\mathbf{g}}_s$ and $\check{q}_h \in \mathbb{W}_S$ such that
+\textit{The scaled mixed finite element method:} Find $\check{\mathbf{v}}_{r,h} \in \mathbb{V}_{D,h,0} + \hat{\mathbf{g}}_r$, $\check{q}_{r,h} \in \mathbb{W}_{D,h}$, 
+$\check{\mathbf{v}}_{s,h} \in \mathbf{V}_{S,h,\mathbf{0}} + \hat{\mathbf{g}}_s$ and $\check{q}_h \in \mathbb{W}_{S,h}$ such that
 \begin{alignat}{2}
 		  \label{eq:weak_stokes}
-		  &(\check{\pmb{\tau}}(\bold{v}_{s,h}),\nabla \pmb{\psi}_s) - (\check{q}_h, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_1^{\mathcal{BR}},\\
+		  &(\pmb{\tau}(\check{\bold{v}}_{s,h}),\nabla \pmb{\psi}_{s,h}) - (\check{q}_h, \nabla \cdot \pmb{\psi}_{s,h}) = -((1-\phi)\bold{n}, \pmb{\psi}_{s,h}), &&\forall\pmb{\psi}_{s,h} \in \mathbb{V}_{S,h,\mathbf{0}},\\
 		  \label{eq:weak_compaction}
-		  &(\nabla \cdot \check{\bold{v}}_{s,h}, \omega)  - \Big(\frac{\phi^{1/2}}{1-\phi} (\check{q}_{l,h} - \phi^{1/2}\check{q}_h), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_0^{\mathcal{BR}},\\
+		  &(\nabla \cdot \check{\bold{v}}_{s,h}, \omega_h)  - \Big(\frac{\phi^{1/2}}{1-\phi} (\check{q}_{l,h} - \phi^{1/2}\check{q}_h), \omega_h \Big) = 0, &&\forall \omega_h \in \mathbb{W}_{S,h},\\
 					\label{eq:weak_darcy}
-					 &(\bold{\check{v}}_{r,h},\pmb{\psi}_r)  - (\check{q}_{l,h},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_{r,h})) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_1^0,\\
+					 &(\bold{\check{v}}_{r,h},\pmb{\psi}_{r,h})  - (\check{q}_{l,h},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_{r,h})) = 0, &&\forall \pmb{\psi}_{r,h} \in \mathbb{V}_{D,h,0},\\
 					 \nonumber
-					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_{r,h}),\omega_f) + \Big(\frac{1}{1-\phi}(\check{q}_{l,h} - \phi^{1/2}\check{q}_h),\omega_f \Big) &&= 0 \\
+					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_{r,h}),\omega_{l,h}) + \Big(\frac{1}{1-\phi}(\check{q}_{l,h} - \phi^{1/2}\check{q}_h),\omega_l \Big) &&= 0, \\
 					 \label{eq:weak_continuous}
 		  &					 &&\forall \omega_f \in 
-		  \mathbb{W}_{0}.
+		  \mathbb{W}_{D,h}.
 \end{alignat}
 
 \subsection{Local Mass Conservation}
@@ -205,7 +211,7 @@ well-defined by not dividing by zero.
 The term $\phi^{-1/2}$ in the symmetric equations~\eqref{eq:weak_darcy} 
 and~\eqref{eq:weak_continuous} causes trouble 
 when there is no melting, i.e., $\phi = 0$.
-In order to deal with it, we first define a element-averaged $\overline{\phi}_E$ 
+In order to deal with it, we first define an element-averaged variable $\overline{\phi}_E$ 
 as
 \begin{equation}\label{eq:averaged_phi}
 		  \overline{\phi}_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x}) d\mathbf{x},
@@ -220,12 +226,13 @@ Let
 					 \end{aligned}
 					 \right.
 \end{equation}
-We now replace the $\phi^{-1/2}$ with $\phi_E^{-1/2}$. Then we expand the integral
+We now replace the term $\phi^{-1/2}$ with $\phi_E^{-1/2}$. 
+Then we expand the integral
 with divergence theorem as
 \begin{equation}\label{eq:divtheorem}
 		  \begin{aligned}
-					 \int_E \phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta} \pmb{\psi}_{r,h})\omega_l &=\int_{\partial E} \phi_E^{-1/2} \phi^{1+\Theta} \pmb{\psi}_{r,h}\cdot \pmb{\nu} \omega_f ds \\
-					 &-\int_{E}\phi_E^{-1/2}\phi^{1+\Theta}\pmb{\psi}_{r,h} \cdot \nabla \omega_l d\mathbf{x}.
+					 \int_E \phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta} \pmb{\psi}_{r,h})\omega_l\, d\mathbf{x} &=\int_{\partial E} \phi_E^{-1/2} \phi^{1+\Theta} \pmb{\psi}_{r,h}\cdot \pmb{\nu} \omega_l\, ds \\
+					 &-\int_{E}\phi_E^{-1/2}\phi^{1+\Theta}\pmb{\psi}_{r,h} \cdot \nabla \omega_l\, d\mathbf{x}.
 		  \end{aligned}
 \end{equation}
 The second term vanishes when $\omega_l$ is constant on element $E$.
