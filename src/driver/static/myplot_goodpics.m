@@ -39,7 +39,7 @@ qf = reshape(qf, M, N);
 %exactql(2,N/2:N) = exactql(2,N/2:N) + mean(qs(1,:)); 
 exactql(2,:) = exactql(2,:) + mean(qs(1,:)); 
 exactqs(2,:) = exactqs(2,:) + mean(qs(1,:));
-area = 4/N * 0.2
+area = 4/N * 0.2/M
 
 figure
 set(gcf, 'Position',[50 50 250 700]);

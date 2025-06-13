@@ -434,7 +434,8 @@ int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
 
         // Reterive original physical variables with physical units
         double qf = tildeqf *coef;
-        double qs = -qf - 1.0/(1-phif)*(-qf-q);
+//        double qs = -qf - 1.0/(1-phif)*(-qf-q);
+        double qs = -qf - 1.0/(1-avephi)*(-qf-q);
 
         fprintf(fqs, "%.16f ", qs);
         fprintf(fqf, "%.16f ", qf);
