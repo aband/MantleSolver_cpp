@@ -30,13 +30,13 @@ void AssignPhyProperties(PhysProperty * pp){
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
     // Quadratic porosity
-/*
+
     if (point[1]<0){
         return 0.001*point[1]*point[1];
     } else {
         return 0.0;
     }
-*/
+
 
     // piece wise constant porosity
 /*
@@ -48,7 +48,7 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
 */
 
     // constant
-    return 0.04;
+    //return 0.04;
 }
 
 double AssignPorosity(double phi_f){

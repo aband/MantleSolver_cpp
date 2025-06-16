@@ -25,6 +25,16 @@ fileID = fopen(filename, 'r');
 exactqs = fscanf(fileID, '%f', [1,Inf]);
 exactqs = reshape(exactqs, M, N);
 
+filename = 'build/errorql';
+fileID = fopen(filename, 'r');
+errorql = fscanf(fileID, '%f', [1,Inf]);
+errorql = reshape(errorql, M, N);
+
+filename = 'build/errorqs';
+fileID = fopen(filename, 'r');
+errorqs = fscanf(fileID, '%f', [1,Inf]);
+errorqs = reshape(errorqs, M, N);
+
 filename = strcat('build/qs1.dat');
 fileID = fopen(filename, 'r');
 qs = fscanf(fileID, '%f', [1,Inf]);
@@ -37,8 +47,8 @@ qf = reshape(qf, M, N);
 
 %exactql(2,1:N/2) = exactql(2,1:N/2) + mean(qs(1,:)); 
 %exactql(2,N/2:N) = exactql(2,N/2:N) + mean(qs(1,:)); 
-exactql(2,:) = exactql(2,:) + mean(qs(1,:)); 
-exactqs(2,:) = exactqs(2,:) + mean(qs(1,:));
+%exactql(2,:) = exactql(2,:) + mean(qs(1,:)); 
+%exactqs(2,:) = exactqs(2,:) + mean(qs(1,:));
 area = 4/N * 0.2/M
 
 figure
@@ -47,13 +57,25 @@ hold on
 plot(exactqs(2,:), cY(2,:), '-c', 'LineWidth', 1);
 plot(exactql(2,:), cY(2,:), '-k', 'LineWidth', 1);
 plot(qs(1,:), cY(1,:),'--r','LineWidth',2);
-plot(-qf(1,:), cY(1,:),'--b','LineWidth',2);
+plot(qf(1,:), cY(1,:),'--b','LineWidth',2);
 hold off
 
-sqrt(sum((abs(exactqs(2,:) - qs(2,:))).^2))*area
-sqrt(sum((abs(exactql(2,:) + qf(2,:))).^2))*area
-
 legend("exact q_s", "exact q_l", "q_s", "q_l");
+
+figure
+set(gcf, 'Position',[50 50 250 700]);
+hold on
+plot(errorqs(2,:), cY(2,:), '-r', 'LineWidth', 1);
+plot(errorql(2,:), cY(2,:), '-b', 'LineWidth', 1);
+hold off
+legend("error q_s", "error q_l");
+
+%errorqs = sum(sum((exactqs - qs).^2))*area
+%errorql = sum(sum((exactql - qf).^2))*area
+
+%sqrt(errorqs)
+%sqrt(errorql)
+
 
 figure
 set(gcf, 'Position',[50 50 250 700]);

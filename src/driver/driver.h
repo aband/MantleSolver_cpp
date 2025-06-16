@@ -230,6 +230,8 @@ class Driver {
 
        int printSimplePressure_case(int mark, PhysProperty * pp);
 
+       int printShiftedPressure_case(int mark, PhysProperty * pp);
+
        double errorNorm(int mark, PhysProperty * pp, int norm);
 
        std::array<double,2> errorP(int mark, PhysProperty * pp, int norm);

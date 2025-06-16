@@ -227,6 +227,23 @@ int CoupledUzawa(ReducedSys * redsys, double tol, int MaxIter){
 
         iter++;
 
+/*
+    Vec tmpStokesq;
+    PetscCall(VecNestGetSubVec(redsys->y, 0, &tmpStokesq));
+    double mean = 0.0;
+    PetscCall(VecMean(tmpStokesq, &mean));
+    Vec add;
+    PetscCall(VecDuplicate(tmpStokesq, &add));
+
+    double * arraytmp; 
+    int size;
+    VecGetSize(tmpStokesq,&size);
+    PetscCall(VecGetArray(tmpStokesq, &arraytmp));
+    for (unsigned int k=0; k<size; k++){
+        arraytmp[k] -= mean;
+    }
+    PetscCall(VecRestoreArray(tmpStokesq, &arraytmp));
+*/
     }
 
     Vec tmpDarcy;

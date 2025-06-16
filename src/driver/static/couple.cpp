@@ -77,7 +77,34 @@ const std::array<double,2> trueSolnq(const MeshInfo& mi, const vertex& point, co
     double z = point[1];
 
     work.at(0) = (1 - phi) * (z - 1.0/r * (sinh(r*z)/cosh(r*L)));
-    work.at(1) = (1 - phi) * (z - (1.4*phi)/(3+phi-4*phi*phi) * phi/r * (sinh(r*z)/cosh(r*L)));
+    work.at(1) = (1 - phi) * (z - (1-4*phi)/(3+phi-4*phi*phi) * phi/r * (sinh(r*z)/cosh(r*L)));
+
+    return work;
+}
+
+const std::array<double,2> trueSolnq_p(const MeshInfo& mi, const vertex& point,
+const indice& global, PhysProperty * pp, const double& L){
+
+    std::array<double,2> work {0.0,0.0};
+
+    double phi = AssignPorosity(point, pp);
+    double r = R(phi);
+    double z = point[1];
+
+    double b= 0.0;
+    double c= 0.0;
+    if (z<0){
+        double r= R(phi);
+        double tmp = -1*phi*phi*(1-phi);
+
+        double a = -1;
+		  b = (1-cosh(r*L))/sinh(r*L);
+        c = -b * (1-phi)/r;
+
+        tmp *= (1+a*cosh(r*z) + b*sinh(r*z));
+    }
+    work[1] = z + c; 
+    work[0] = 0.0;
 
     return work;
 }
@@ -116,8 +143,8 @@ int printExactPorosity(int mark, const MeshInfo& mi, const char * fieldname, Phy
 
     FILE * sol = fopen(filename,"w");
 
-    FILE * exactql = fopen("exactql", "w");
-    FILE * exactqs = fopen("exactqs", "w");
+//    FILE * exactql = fopen("exactql", "w");
+//    FILE * exactqs = fopen("exactqs", "w");
 
     for(int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for(int i=0; i<mi.MPIglobalCellSize[0]; i++){
@@ -130,16 +157,16 @@ int printExactPorosity(int mark, const MeshInfo& mi, const char * fieldname, Phy
 
         fprintf(sol, "%.16f ", AssignPorosity(global,pp));
 
-        std::array<double,2> exactvals = trueSolnq(mi, global, {i,j}, pp, 2);
+//        std::array<double,2> exactvals = trueSolnq(mi, global, {i,j}, pp, 2);
 
-        fprintf(exactql, "%.16f ", -1.0*exactvals[0]);
-        fprintf(exactqs, "%.16f ", -1.0*exactvals[1]);
+//        fprintf(exactql, "%.16f ", -1.0*exactvals[0]);
+//        fprintf(exactqs, "%.16f ", -1.0*exactvals[1]);
 
     }fprintf(sol, "\n");}
 
     fclose(sol);
-    fclose(exactql);
-    fclose(exactqs);
+//    fclose(exactql);
+//    fclose(exactqs);
 
     return 1;
 }
@@ -184,7 +211,6 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
         // Horizontal edges only
         edge = {corners.at(0), corners.at(1)};
 
-
         for (int g=0; g<gpe.size(); g++){
 
             gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, edge);
@@ -218,6 +244,7 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
 */
 
             darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
+
             stokesvel.at(g) = vel_stokes.at(g);
 
             fprintf(dvx, "%e ", darcyvel.at(g)[0]);
@@ -229,7 +256,7 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
             fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
 
-            fprintf(exactv, "%e ", trueSoln(mi, gaussp.at(g), gcell, pp, 2));
+            fprintf(exactv, "%e ", trueSoln_q(mi, gaussp.at(g), gcell, pp, 2));
 
         }
 
@@ -290,6 +317,7 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
     return 1;
 }
 
+// Lp norm for velocity error
 double Driver::errorNorm(int mark, PhysProperty * pp, int norm){
 
     // Compute error norm 
@@ -332,7 +360,7 @@ double Driver::errorNorm(int mark, PhysProperty * pp, int norm){
             darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
             stokesvel.at(g) = vel_stokes.at(g);
 
-            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln(mi,gaussp.at(g),gcell,pp,2)),norm);
+            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln_q(mi,gaussp.at(g),gcell,pp,2)),norm);
 
         }
 
@@ -344,9 +372,15 @@ double Driver::errorNorm(int mark, PhysProperty * pp, int norm){
     return sqrt(totalerror);
 }
 
+// Lp norm for pressure error
+/*
 std::array<double,2> Driver::errorP(int mark, PhysProperty * pp, int norm){
 
-    std::array<double, 2> work {0.0,0.0};
+    double add1 = 0.0, add2 = 0.0;
+
+	 std::array<double, 2> work {0.0,0.0};
+
+    std::array<double, 2> truesol {0.0,0.0};
 
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
@@ -354,13 +388,23 @@ std::array<double,2> Driver::errorP(int mark, PhysProperty * pp, int norm){
 
         vertexSet corners = extractCorners(mi, gcell);
 
+        // Get middle point
+        vertex local {0.0,0.0};	
+        vertex mid = GaussMapPointsFace(local, corners);
+
         double area = mi.cellArea.at(FlatIndic(mi,gcell));
 
-        totalerror += work;
+        // Get true solution
+        truesol = trueSolnq(mi, mid, {i,j}, pp, 2);
+
+
+        work.at(0) += add1;
+        work.at(1) += add2;
     }}
 
     return work;
 }
+*/
 
 double averagePhi(PhysProperty * pp, int i, int j, const MeshInfo& mi){
 
@@ -434,8 +478,7 @@ int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
 
         // Reterive original physical variables with physical units
         double qf = tildeqf *coef;
-//        double qs = -qf - 1.0/(1-phif)*(-qf-q);
-        double qs = -qf - 1.0/(1-avephi)*(-qf-q);
+        double qs = -qf - 1.0/(1-phif)*(-qf-q);
 
         fprintf(fqs, "%.16f ", qs);
         fprintf(fqf, "%.16f ", qf);
@@ -445,6 +488,185 @@ int Driver::printSimplePressure_case(int mark, PhysProperty * pp){
      fprintf(fqf, "\n");
      fprintf(fstokes, "\n");
      fprintf(fdarcy, "\n");}
+
+    return 1;
+}
+
+// Print averaged-shifted pressure potential
+int Driver::printShiftedPressure_case(int mark, PhysProperty * pp){
+
+    Vec vectildeqf;
+    Vec vecq;
+
+    PetscCall(VecNestGetSubVec(Result_->y, 0, &vecq));   
+    PetscCall(VecNestGetSubVec(Result_->y, 1, &vectildeqf));
+
+    FILE * fqs = fopen(GetFilename("qs", mark), "w");
+    FILE * fqf = fopen(GetFilename("qf", mark), "w");
+
+    FILE * exactql = fopen("exactql", "w");
+    FILE * exactqs = fopen("exactqs", "w");
+
+    FILE * errorqs_all = fopen("errorqs", "w");
+    FILE * errorql_all = fopen("errorql", "w");
+
+    double sumqs = 0.0;
+
+    std::vector<double> qs_vec;
+	 std::vector<double> ql_vec;
+
+    std::vector<double> qs_exact;
+    std::vector<double> ql_exact;
+
+    std::vector<double> q_bar;
+    std::vector<double> q_vec;
+
+    std::vector<bool> mask;
+
+    qs_vec.resize(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]);
+    ql_vec.resize(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]);
+
+    qs_exact.resize(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]);
+    ql_exact.resize(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]);
+
+    mask.resize(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]);
+
+    q_vec.resize(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]);
+double sumexact = 0.0;
+double sumqs_plus = 0.0;
+double sumqs_minus = 0.0;
+
+//    int startj = mi.MPIglobalCellSize[1]/2;
+    int startj = mi.MPIglobalCellSize[1];
+
+    //for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int j=0; j<startj; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice globalcell {i,j};
+        int nelem = FlatIndic(mi, globalcell);
+        double q, tildeqf;
+
+        PetscCall(VecGetValues(vectildeqf, 1, &nelem, &tildeqf));
+        PetscCall(VecGetValues(vecq, 1, &nelem, &q));
+
+        // Get Porosity
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi, globalcell);
+
+        vertex global = GaussMapPointsFace(local, basis_->corners());
+
+        // Pointwise porosity evaluated at the middle point
+        double phif = AssignPorosity(global, pp);
+      
+        // Averaged porosity of the cell
+        double avephi = averagePhi(pp, i, j, mi);
+        double coef = 0.0;
+
+        mask.at(nelem) = false;
+        // Adjust phif
+        if (avephi > 1e-16) {
+            coef = 1.0/sqrt(avephi);
+				mask.at(nelem) = true;
+        }
+
+        double ql = tildeqf *coef;
+        double qs = -ql + 1.0/(1-avephi)*(ql+q);
+
+        ql_vec.at(nelem) = -ql;
+        qs_vec.at(nelem) = qs;
+        q_vec.at(nelem) = q;
+
+        std::array<double,2> exactval = trueSolnq_q(mi, global, {i,j}, pp, 2);
+
+        ql_exact.at(nelem) = -1.0*exactval[0];
+        qs_exact.at(nelem) = -1.0*exactval[1];
+
+        sumqs += qs;
+sumexact += -1.0*exactval[1];
+    }} 
+
+    // The average value used to shift pressure
+    sumqs /= (double)(mi.MPIglobalCellSize[1] * mi.MPIglobalCellSize[0]);
+
+    double errorqs = 0.0;
+    double errorql = 0.0;
+    double errorq  = 0.0;
+    double errordiff = 0.0;
+
+    // Shift pressure
+    //for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int j=0; j<startj; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice globalcell {i,j};
+        int nelem = FlatIndic(mi, globalcell);
+        double q, tildeqf;
+
+        fprintf(fqs, "%.16f ", qs_vec.at(nelem));
+        fprintf(fqf, "%.16f ", ql_vec.at(nelem));
+
+        qs_exact.at(nelem) += sumqs;
+
+        fprintf(exactqs, "%.16f ", qs_exact.at(nelem));
+
+        if (mask.at(nelem)){
+            ql_exact.at(nelem) = ql_exact.at(nelem) + sumqs;
+        }
+
+        fprintf(exactql, "%.16f ", ql_exact.at(nelem));
+
+        // Get Porosity
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi, globalcell);
+
+        vertex global = GaussMapPointsFace(local, basis_->corners());
+
+        // Pointwise porosity evaluated at the middle point
+        double phif = AssignPorosity(global, pp);
+      
+        // Averaged porosity of the cell
+        double avephi = averagePhi(pp, i, j, mi);
+
+        double tmpq_bar = ql_exact.at(nelem)*avephi + (1.0-avephi)*qs_exact.at(nelem);
+        // Accumulate mid-point rules
+        double area = mi.cellArea.at(nelem);
+
+        errorqs += pow(qs_vec.at(nelem) - qs_exact.at(nelem), 2)*area;
+        errorql += pow(ql_vec.at(nelem) - ql_exact.at(nelem), 2)*area;
+        errorq += pow(q_vec.at(nelem) - tmpq_bar, 2)*area;
+
+        if (j<startj){
+        double diff = abs(qs_vec.at(nelem) - ql_vec.at(nelem));
+        double diffexact = abs(qs_exact.at(nelem) - ql_exact.at(nelem));
+      
+        errordiff += pow(diff - diffexact,2)* area;}
+
+        fprintf(errorqs_all, "%.16f ", qs_vec.at(nelem) - qs_exact.at(nelem));
+        fprintf(errorql_all, "%.16f ", ql_vec.at(nelem) - ql_exact.at(nelem));
+
+    }} 
+
+    cout << "midpoint Error of qs : " << sqrt(errorqs) << endl;
+    cout << "midpoint Error of ql : " << sqrt(errorql) << endl;
+    cout << "midpoint Error of q : " << sqrt(errorq) << endl;
+    cout << "midpoint Error of difference : " << sqrt(errordiff) << endl;
+
+    errorqs = 0.0;
+    errorql = 0.0;
+
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>& gpf = GaussPointsFace;
+
+    fclose(exactql);
+    fclose(exactqs);
+    fclose(fqf);
+    fclose(fqs);
+
+    fclose(errorqs_all);
+    fclose(errorql_all);
 
     return 1;
 }
@@ -1041,7 +1263,7 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
         }
 
         k -= gw*jac*scaletmp/phi_s * br_->Pressure() * 
-                                             hdiv_->Pressure();
+                                     hdiv_->Pressure();
 
     }
 
@@ -1120,7 +1342,8 @@ int Driver::RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
         printExactPorosity(mark, mi, "porosity", myPhase->pp);
         printVelEdgeGauss_case(mark, myPhase->pp);
 
-        printSimplePressure_case(mark, myPhase->pp);
+        //printSimplePressure_case(mark, myPhase->pp);
+        printShiftedPressure_case(mark, myPhase->pp);
         mark ++;
         cout << errorNorm(mark, myPhase->pp, 2) << endl;
 
@@ -1239,10 +1462,10 @@ int Driver::SolveFlow_case(int maxIter, double tolUzawa,
 
     CreateCoupledSystem(reducedStokes_, reducedDarcy_, Result_, &K);
 
-    CoupledUzawa(Result_, tolUzawa, maxIter);
+    //CoupledUzawa(Result_, tolUzawa, maxIter);
 
     // New exact solver
-    //SchurSolver(Result_);
+    SchurSolver(Result_);
 
     return 1;
 }
