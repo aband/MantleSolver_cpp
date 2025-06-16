@@ -145,7 +145,8 @@ stencil to compensate for the order loss when approximates derivative.
 \subsection{Stencil polynomial smoothness indicators}
 We define a smoothness indicator $\sigma$ as a measurement of 
 smoothness of $u(\mathbf{x})$ on the stencil $S$. 
-The classic method from~\cite{JSSmoothness} is defined by Sobolev seminorm as:
+The classic method from~\cite{JSSmoothness} is defined in analogue to 
+a cell-averaged Sobolev seminorm as:
 \begin{equation}
 		  \sigma_P = \sum_{1\leq \lvert\alpha\rvert \leq m} 
 		  \int\int_{E_0} \lvert E_0 \rvert^{\lvert\alpha\rvert -1} 
@@ -167,17 +168,8 @@ The Jiang-Shu smoothness indicator can be reformed with basis polynomials:
 \end{equation}
 where $\sigma^{i'j'}_{ij}$ can be precomputed after mesh is established after mesh is established.
 
-\subsection{Two alternative smoothness indicator}
-We proposed two alternative ways of defining smoothness indicator in~\cite{WENOAOSimplifiedSmoothness}
-and~\cite{sigmaP}.
-\begin{equation}\label{eq:simpsmoothnessIC}
-\sigma_{\text{simp}} = \frac{1}{N_\mathcal{S} -1 } \sum_k (\overline{u}_k - \overline{u}_0)^2,
-\end{equation}
-where $\overline{u}_0$ is the cell averaged solution in target cell. 
-We define this simple smoothness indicator in order to reduce the compuational cost and to deal with
-distorted stencil on unstructured mesh. However, this simple smoothness indicator is not as robust
-as the classic Jiang-Shu smoothness indicator. Hence, we stick to the classic definition in the following
-discussion.
+Alternatively, we can expand the Jiang-Shu smoothness indicator according to polynomial coefficients,
+which paves the way for further simplification.
 
 We observe that the smoothness indicator exhibit following convergence property that
 there exists some value $C > 0$ such that when $h \rightarrow 0^+$,
@@ -189,6 +181,25 @@ there exists some value $C > 0$ such that when $h \rightarrow 0^+$,
 \end{equation}
 where stencils are defined on quasi uniform mesh. This observation comes directly from the scaling property of 
 Sobolev seminorm.
+
+\subsection{Two alternative smoothness indicator}
+We proposed two alternative ways of defining smoothness indicator in~\cite{WENOAOSimplifiedSmoothness}
+and~\cite{sigmaP}.
+
+\begin{itemize}
+\item \textit{Simple smoothness indicator}
+\begin{equation}\label{eq:simpsmoothnessIC}
+\sigma_{\text{simp}} = \frac{1}{N_\mathcal{S} -1 } \sum_k (\overline{u}_k - \overline{u}_0)^2,
+\end{equation}
+where $\overline{u}_0$ is the cell averaged solution in target cell. 
+We define this simple smoothness indicator in order to reduce the computational cost and to deal with
+distorted stencil on unstructured mesh. However, this simple smoothness indicator is not as robust
+as the classic Jiang-Shu smoothness indicator. Hence, we stick to the classic definition in the following
+discussion.
+
+\item \textit{Polynomial smoothness indicator}
+
+\end{itemize}
 
 \subsection{ML-WENO weighting}
 Given a target cell $E_{i,j}$, we can create a nonempty set of stencils $\{\mathcal{S}_l \ni E_{i,j}, l = 0,1, \dots, L, L \geq 0\}$.

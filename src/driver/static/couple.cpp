@@ -1204,9 +1204,8 @@ if (phi_f_e < 1e-16) {phi_f_e = 0.0;}
 				if ((gcell[1]==35 && e==1) ||(gcell[1]==34 && e==3)){
             phi_f_e = 2.0/(1.0/0.1 + 1.0/0.05);
             } 
-cout << gcell[0] << "  " << gcell[1] << "  " << e << "  " <<  phi_f_e << "  " << endl;
-*/ 
-//cout << phi_f_e << endl;
+*/
+//cout << gcell[0] << "  " << gcell[1] << "  " << e << "  " <<  phi_f_e << "  " << endl;
             // =========================================================
 
             for (int j=0; j<8; j++){
@@ -1462,10 +1461,10 @@ int Driver::SolveFlow_case(int maxIter, double tolUzawa,
 
     CreateCoupledSystem(reducedStokes_, reducedDarcy_, Result_, &K);
 
-    //CoupledUzawa(Result_, tolUzawa, maxIter);
+    CoupledUzawa(Result_, tolUzawa, maxIter);
 
     // New exact solver
-    SchurSolver(Result_);
+    //SchurSolver(Result_);
 
     return 1;
 }

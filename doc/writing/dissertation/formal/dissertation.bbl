@@ -1,4 +1,4 @@
-\begin{thebibliography}{18}
+\begin{thebibliography}{24}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -42,6 +42,16 @@ Todd Arbogast, Zhen Tao, and Chuning Wang.
   quadrilaterals.
 \newblock \emph{Numerische Mathematik}, 150:\penalty0 929--974, 2022.
 
+\bibitem[Arbogast et~al.(2024)Arbogast, Huang, and Tian]{MultiLevelWeno}
+Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian.
+\newblock A finite volume multilevel weno scheme for multidimensional scalar
+  conservation laws.
+\newblock \emph{Comput. Methods Appl. Mech. Engrg.}, 421, 2024.
+
+\bibitem[Arbogast et~al.(2025)Arbogast, Huang, Tian, and M.Gray]{sigmaP}
+Todd Arbogast, Chieh-Sen Huang, Chenyu Tian, and Gabirel M.Gray.
+\newblock \emph{In Preparation.}, 2025.
+
 \bibitem[Benzi et~al.(2005)Benzi, Golub, and Liesen]{Benzi_Golub_Liesen_2005}
 Michele Benzi, Gene~H. Golub, and Jörg Liesen.
 \newblock Numerical solution of saddle point problems.
@@ -79,11 +89,18 @@ Philippe~G. Ciarlet.
 \newblock \doi{10.1137/1.9780898719208}.
 \newblock URL \url{https://epubs.siam.org/doi/abs/10.1137/1.9780898719208}.
 
-\bibitem[Dupont and Scott(1980)]{ddd3654d-28ed-3763-8d70-a82ea44a3d31}
+\bibitem[Dupont and Scott(1980{\natexlab{a}})]{PolynomialApproximation}
 Todd Dupont and Ridgway Scott.
 \newblock Polynomial approximation of functions in sobolev spaces.
 \newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
-  441--463, 1980.
+  441--463, 1980{\natexlab{a}}.
+
+\bibitem[Dupont and
+  Scott(1980{\natexlab{b}})]{ddd3654d-28ed-3763-8d70-a82ea44a3d31}
+Todd Dupont and Ridgway Scott.
+\newblock Polynomial approximation of functions in sobolev spaces.
+\newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
+  441--463, 1980{\natexlab{b}}.
 \newblock ISSN 00255718, 10886842.
 \newblock URL \url{http://www.jstor.org/stable/2006095}.
 
@@ -107,11 +124,28 @@ Vivette Girault and Pierre-Arnaud Raviart.
 \newblock Springer Publishing Company, Incorporated, 1st edition, 2011.
 \newblock ISBN 3642648886.
 
+\bibitem[Huang et~al.(2023)Huang, Arbogast, and
+  Tian]{WENOAOSimplifiedSmoothness}
+Chieh-Sen Huang, Todd Arbogast, and Chenyu Tian.
+\newblock Multidimensional weno-ao reconstructions using a simplified
+  smoothness indicator and applications to conservation laws.
+\newblock \emph{J. Sci. Comput.}, 97, 2023.
+
+\bibitem[Jiang and Shu(1996)]{JSSmoothness}
+Guang-Shan Jiang and Chi-Wang Shu.
+\newblock Efficient implementation of weighted eno schemes.
+\newblock \emph{J. Comput. Phys.}, 126:\penalty0 202--228, 1996.
+
 \bibitem[K.J.Arrow et~al.(1958)K.J.Arrow, Hurwicz, and
   Uzawa]{uzawa_arrow_hurwicz}
 K.J.Arrow, L.~Hurwicz, and H.~Uzawa.
 \newblock \emph{Studies in Linear and Nonlinear Programming}.
 \newblock Standford University Press, 1958.
+
+\bibitem[Olver(1997)]{olver1997asymptotics}
+Frank Olver.
+\newblock \emph{Asymptotics and special functions}.
+\newblock AK Peters/CRC Press, 1997.
 
 \bibitem[Paige and Saunders(1975)]{doi:10.1137/0712047}
 C.~C. Paige and M.~A. Saunders.
