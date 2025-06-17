@@ -539,6 +539,8 @@ double sumqs_minus = 0.0;
 //    int startj = mi.MPIglobalCellSize[1]/2;
     int startj = mi.MPIglobalCellSize[1];
 
+    int halfsize = mi.MPIglobalCellSize[1]/2;
+
     //for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int j=0; j<startj; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
@@ -569,10 +571,12 @@ double sumqs_minus = 0.0;
         if (avephi > 1e-16) {
             coef = 1.0/sqrt(avephi);
 				mask.at(nelem) = true;
+
         }
 
         double ql = tildeqf *coef;
-        double qs = -ql + 1.0/(1-avephi)*(ql+q);
+//        double qs = -ql + 1.0/(1-avephi)*(ql+q);
+        double qs = -ql + 1.0/(1-phif)*(ql+q);
 
         ql_vec.at(nelem) = -ql;
         qs_vec.at(nelem) = qs;
@@ -586,6 +590,100 @@ double sumqs_minus = 0.0;
         sumqs += qs;
 sumexact += -1.0*exactval[1];
     }} 
+
+
+    // ====================================================================
+    // Separate with \phi=0 and \phi \neq 0
+    double sum_exactqs_half1 = 0.0;
+    double sum_exactqs_half2 = 0.0;
+
+    double sum_exactql_half1 = 0.0;
+    double sum_exactql_half2 = 0.0;
+
+    double sum_vecqs_half1 = 0.0;
+    double sum_vecqs_half2 = 0.0;
+
+    double sum_vecql_half1 = 0.0;
+    double sum_vecql_half2 = 0.0;
+
+    for (int j=0; j<halfsize; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        sum_exactqs_half1 += qs_exact.at(FlatIndic(mi,{i,j}));
+        sum_exactqs_half2 += qs_exact.at(FlatIndic(mi,{i,j+halfsize}));
+
+        sum_exactql_half1 += ql_exact.at(FlatIndic(mi,{i,j}));
+        sum_exactql_half2 += ql_exact.at(FlatIndic(mi,{i,j+halfsize}));
+
+        sum_vecqs_half1 += qs_vec.at(FlatIndic(mi,{i,j}));
+        sum_vecqs_half2 += qs_vec.at(FlatIndic(mi,{i,j+halfsize}));
+
+        sum_vecql_half1 += ql_vec.at(FlatIndic(mi,{i,j}));
+        sum_vecql_half2 += ql_vec.at(FlatIndic(mi,{i,j+halfsize}));
+    }}
+
+//    cout << halfsize << endl;
+
+    sum_exactqs_half1 /= (double)mi.MPIglobalCellSize[0]*halfsize; 
+    sum_exactqs_half2 /= (double)mi.MPIglobalCellSize[0]*halfsize; 
+
+    sum_exactql_half1 /= (double)mi.MPIglobalCellSize[0]*halfsize; 
+    sum_exactql_half2 /= (double)mi.MPIglobalCellSize[0]*halfsize; 
+
+    sum_vecqs_half1 /= (double)mi.MPIglobalCellSize[0]*halfsize; 
+    sum_vecqs_half2 /= (double)mi.MPIglobalCellSize[0]*halfsize; 
+
+    sum_vecql_half1 /= (double)mi.MPIglobalCellSize[0]*halfsize; 
+    sum_vecql_half2 /= (double)mi.MPIglobalCellSize[0]*halfsize; 
+
+//    cout << sum_exactqs_half1 - sum_vecqs_half1 << "  " << sum_exactqs_half2 - sum_vecqs_half2 << endl;
+//    cout << sum_vecqs_half1 << "  " << sum_vecqs_half2 << endl;
+
+    double errorqs_half1 = 0.0;
+    double errorql_half1 = 0.0;
+
+    double errorqs_half2 = 0.0;
+    double errorql_half2 = 0.0;
+
+    double sum_errorqs = 0.0;
+    double sum_errorql = 0.0;
+
+    // Renormalized error results
+    for (int j=0; j<halfsize; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        double area1 = mi.cellArea.at(FlatIndic(mi,{i,j}));
+        double area2 = mi.cellArea.at(FlatIndic(mi,{i,j+halfsize}));
+
+        double diff_half1 = qs_exact.at(FlatIndic(mi,{i,j})) - sum_exactqs_half1 - 
+                           (qs_vec.at(FlatIndic(mi,{i,j})) - sum_vecqs_half1);
+
+        double diff_half2 = qs_exact.at(FlatIndic(mi,{i,j+halfsize})) - sum_exactqs_half2 - 
+                           (qs_vec.at(FlatIndic(mi,{i,j+halfsize})) - sum_vecqs_half2);
+
+//cout << diff_half1 << "  " << diff_half2 << endl;
+
+        errorqs_half1 += pow(diff_half1,2)*area1; 
+        errorqs_half2 += pow(diff_half2,2)*area2; 
+
+        double diff_half1_ql = ql_exact.at(FlatIndic(mi,{i,j})) - sum_exactql_half1 - 
+                              (ql_vec.at(FlatIndic(mi,{i,j})) - sum_vecql_half1);
+
+        double diff_half2_ql = ql_exact.at(FlatIndic(mi,{i,j+halfsize})) - sum_exactql_half2 - 
+                              (ql_vec.at(FlatIndic(mi,{i,j+halfsize})) - sum_vecql_half2);
+
+        sum_errorqs += pow(diff_half1,2)*area1 + pow(diff_half2,2)*area2;
+
+        sum_errorql += pow(diff_half1_ql,2)*area1 + pow(diff_half2_ql,2)*area2;
+
+    }}
+
+    cout << "Phi separation eval : " << sqrt(sum_errorqs) << "  " << sqrt(sum_errorql) << endl;
+
+    // ========================================================================
+
+
+
 
     // The average value used to shift pressure
     sumqs /= (double)(mi.MPIglobalCellSize[1] * mi.MPIglobalCellSize[0]);
@@ -654,11 +752,6 @@ sumexact += -1.0*exactval[1];
     cout << "midpoint Error of q : " << sqrt(errorq) << endl;
     cout << "midpoint Error of difference : " << sqrt(errordiff) << endl;
 
-    errorqs = 0.0;
-    errorql = 0.0;
-
-    const valarray<double>& gwf = GaussWeightsFace;
-    const vector<vertex>& gpf = GaussPointsFace;
 
     fclose(exactql);
     fclose(exactqs);
