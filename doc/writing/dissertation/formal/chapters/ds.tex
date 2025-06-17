@@ -61,9 +61,9 @@ second-order direct serendipity space as
 \end{equation}
 The supplemental functions are defined as
 \begin{equation}\label{eq:defsuppfunc}
-		  \phi_{s,i}(\mathbf{x}) = \lambda_{i+1}(\mathbf{x}) \lambda_{i+2}(\mathbf{x}) R_{i,i+2}(\mathbf{x}), \quad i\in\{0,1\},
+		  \phi_{s,i}(\mathbf{x}) = \lambda_{i+1}(\mathbf{x}) \lambda_{i+2}(\mathbf{x}) R_{i,i+2}(\mathbf{x}), \quad i\in\{0,1\}.
 \end{equation}
-where $i \equiv i\Mod{4}$ . We use a simple definition for rational
+We use a simple definition for rational
 function $R_{i,i+2}$ as
 \begin{equation}\label{eq:defR}
 		  R_{i,i+2}(\mathbf{x}) = \frac{\lambda_{i}(\mathbf{x}) - \lambda_{i+2}(\mathbf{x})}{\lambda_i(\mathbf{x}) + \lambda_{i+2}(\mathbf{x})},
@@ -106,12 +106,11 @@ We can restrict the edge basis function to edges as
 		  \varphi^{(2)}_{e,i}|_{e,j} = \left \{
 					 \begin{aligned}
 								&\frac{\lambda_{i+1}(\mathbf{x})\lambda_{i+3}(\mathbf{x})}
-								{\lambda_{i+1}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})}, \hspace{0.2cm} i=j \\
-								& 0, \hspace{3.4cm} i\neq j
+								{\lambda_{i+1}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})}, \hspace{0.2cm} i=j, \\
+								& 0, \hspace{3.4cm} i\neq j.
 					 \end{aligned}
 		  \right .
 \end{equation}
-
 In Figure~\ref{fig:phie0}, we present
 edge basis function $\varphi^{(2)}_{e,0}$ on a general quadrilateral element, 
 where 
@@ -132,7 +131,15 @@ The vertex nodal basis functions for $\mathcal{DS}_2$ are constructed as
 		  {\lambda_{i+2}(\mathbf{x}_{v,i}) \lambda_{i+3}(\mathbf{x}_{v,i}) - 
 		  \sum_{k=i}^{i+1}\lambda_{i+2}(\mathbf{x}_{e,i})\lambda_{i+3}(\mathbf{x}_{e,i})\varphi^{(2)}_{e,i}(\mathbf{x}_{v,i})},
 \end{equation}
-where $\mathbf{x}_{v,i}$ is the coordinates of the vertex node $v_i$, and $i \equiv i \Mod{4}$ as well. 
+where $\mathbf{x}_{v,i}$ is the coordinates of the vertex node $v_i$, and $i \equiv i \Mod{4}$ as well. At the nodal points
+\begin{equation}
+		  \varphi^{(2)}_{v,i}(\mathbf{x}) = \left \{ 
+		  \begin{alignedat}{2}
+					 &1, \quad && \mathbf{x} = \mathbf{x}_{v,i}, \\
+					 &0, \quad && \mathbf{x} = \mathbf{x}_{v,j} \text{ or } \mathbf{x}_{e,k}, \quad j\neq i,\, \forall k.
+        \end{alignedat}
+        \right.
+\end{equation}
 In Figure~\ref{fig:phiv0}, we 
 show $\varphi^{(2)}_{v,0}$ on a general quadrilateral.
 \begin{figure}[ht]
@@ -147,7 +154,7 @@ We conclude that unisolvence follows directly from the constructed nodal basis f
 
 \subsection{First-order Space $\mathcal{DS}_1$}
 The dimension of the first-order polynomials in two dimension is also 
-calculated by equation~\ref{eq:dimpolynomial} as
+calculated by equation~\eqref{eq:dimpolynomial} as
 \begin{equation}
 		  \text{dim}\mathbb{P}_1(\mathbb{R}^2) = \begin{pmatrix}
 1+2 \\
@@ -206,7 +213,7 @@ general quadrilateral, which evaluates $1$ at vertex $v_0$ and $0$ at other vert
 \subsection{An Interpolation Operator}
 For completeness, 
 we describe an interpolation operator mapping
-onto $\mathcal{DS}_r(K_i)$, $r=1,2$ following~\cite{directSerendipity}. 
+onto $\mathcal{DS}_r(K_i)$, $r=1,2,$ following~\cite{directSerendipity}. 
 For each node $a_i$, the associated $K_i$ has different meanings
 depending on the type of the nodal basis functions. If the basis function is associated
 with an edge node, we set $K_i = e_i$, where $e_i$ is the corresponding edge. 
@@ -231,14 +238,14 @@ operator.
 \begin{lem}\label{lem:interpolationop}
 		  (Boundedness of the interpolation operator.)
 
-		  Let $\mathcal{T}_h$ be uniformly shape regular according to Definition~\ref{eq:regularityineq}
+		  Let $\mathcal{T}_h$ be uniformly shape regular according to Definition~$\ref{eq:regularityineq}$
 		  with shape regularity parameter $\sigma_*$.
 		  %For each element $E \in \mathcal{T}_h$, 
 		  %There exists a bounded interpolation operator~\eqref{eq:interpolation}.
-		  Let $v \in W^l_p(\Omega)$, with $1\leq p \leq \infty$ and $l >q/p$. Suppose that the basis functions of $\mathcal{DS}_r(E)$ are constructed using
-		  $\lambda_{24}$ and $\lambda_{13}$ such that the zero set $\mathcal{Z}_{i,i+2}$ intersects $e_{i+3}$ and $e_{i+1}$.
+		  Let $v \in W^l_p(\Omega)$, with $1\leq p \leq \infty$ and $l >q/p$. %Suppose that the basis functions of $\mathcal{DS}_r(E)$ are constructed using
+		  %$\lambda_{24}$ and $\lambda_{13}$ such that the zero set $\mathcal{Z}_{i,i+2}$ intersects $e_{i+3}$ and $e_{i+1}$.
 		  Moreover, assume that $R_{i,i+2}$ is a uniformly differentiable functions of the vertices of $E$ up to order m.
-		  Then for $r\geq 1$, $E \in \mathcal{T}_h$, 
+		  Then for $r= 1,2$, $E \in \mathcal{T}_h$, 
 		  $1\leq q \leq \infty$, and any non negative integer m,
 		  \begin{equation}\label{eq:interpolationopbound}
 		 \norm{\mathcal{I}_h^r v}_{W_q^m(E)} \leq C(\sigma_*, m, q) \sum_{k=0}^l
@@ -251,7 +258,7 @@ operator.
 		  See~\cite{directSerendipity}.
 \end{proof}
 
-Combining Lemma~\ref{lem:interpolationop} and Bramble-Hilbert lemma~\ref{lem:BHlemma}, we 
+Combining Lemma~\ref{lem:interpolationop} and the Bramble-Hilbert lemma~\ref{lem:BHlemma}, we 
 obtain local and global error estimation.
 \begin{lem}\label{lem:approximation}
 		  (Approximability of the interpolation operator.)
@@ -265,8 +272,8 @@ obtain local and global error estimation.
 					 \lvert v \rvert_{W^l_p(E^*)}, \quad 0 \leq m \leq \min(l,r+1).
 		  \end{equation}
 		  Moreover, there exists a constant $C = C(r,\sigma_*) > 0$, independent
-		  of $h = \max_{E \in \mathcal{T}}$, such that for all functions 
-		  $v \in W_p^l(\Omega)$,
+		  of $h = \max_{E \in \mathcal{T}} h_E$, such that for all functions 
+		  $v \in W_p^l(\Omega)$, $p<\infty$
 		  \begin{equation}
 					 \bigg(\sum_{E\in\mathcal{T}_h} \norm{v - \mathcal{I}_h^r v}^p_{W_p^m(E)}\bigg)^{1/p} \leq C h^{l-m} \lvert v \rvert_{W_p^l(\Omega)}, \quad 0 \leq m \leq \min(l, r+1).
 		  \end{equation}
@@ -284,14 +291,14 @@ We describe the construction of mixed finite elements from the aforementioned di
 Recall Ciarlet's definition~\cite{doi:10.1137/1.9780898719208} 
 of a finite element.
 \begin{defn}\label{def:ciarletFEM}
-		  A triple $(E, X(E), \{\phi_1,\ldots,\phi_n\})$ defines a \textit{finite element} if
+		  A triple $(E, X(E), \{\phi_1,\ldots,\phi_n\})$ defines a \textit{finite element}, where
 		  \begin{itemize}
 					 \item The element $E \in \mathcal{T}_h$;
-					 \item The space of shape functions $X(E)$ with
+					 \item The space of shape functions is $X(E)$ with
 								basis $\{\varphi_1,\ldots,\varphi_n\}$,where
 								the dimension of
 								the shape function space is $\text{dim}(X(E)) = n$;
-					 \item A set of continuous and linear functionals $\{\phi_1,\ldots,\phi_n \}$ defined on a subset $\mathcal{X}(E)$
+					 \item A set of continuous and linear functionals is $\{\phi_1,\ldots,\phi_n \}$, defined on a subset $\mathcal{X}(E)$
 								of the energy space containing the finite element space $X(E)$ as
 								\begin{equation}
 										  \phi_j : \mathcal{X}(E) \rightarrow \mathbb{R},
@@ -321,7 +328,7 @@ identical test and trial spaces
 					 \mathbb{V}_D &= \{\mathbf{v} \in (H(\text{div};\Omega))^2 : \mathbf{v}\cdot\pmb{\nu} = \mathbf{0} \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\}, \\
 					 \mathbb{U}_D &= \{\mathbf{u} \in (H(\text{div};\Omega))^2 : \mathbf{u}\cdot\pmb{\nu} = \mathbf{0} 
 					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \mathbb{V}_D, \\
-					 \mathbb{W}_D &= \{p \in L^2(\Omega) : \int_\Omega p\, d\mathbf{x} = 0\} = L^2(\Omega)/\mathbb{R}.
+					 \mathbb{W}_D &= \bigg\{p \in L^2(\Omega) : \int_\Omega p\, d\mathbf{x} = 0\bigg\} = L^2(\Omega)/\mathbb{R}.
 		  \end{aligned}
 \end{equation}
 The standard mixed weak form reads as follows: 
@@ -356,9 +363,9 @@ We generate a reduced first-order $H(\text{div})$ approximation from
 the direct serendipity space, where $\nabla \cdot \mathbf{u}$
 is approximated one less order than approximation of $\mathbf{u}$.
 We can also recover the Arbogast-Correa element~\cite{doi:10.1137/15M1013705} if we 
-use the mapped serendipity space.
+use the mapped serendipity space, as defined in that paper.
 
-We write the rotated 2D exact sequence for the related energy spaces as
+We write the de Rham exact sequence for the related energy spaces as
 \begin{equation}\label{eq:exactsequence}
 \begin{alignedat}{5}
 &\mathbb{R} \xhookrightarrow[]{\text{i}}\, &&H^1 \xrightarrow[]{\text{curl}} H&&(\text{div}) \xrightarrow[]{\text{div}} &&L^2 && \xrightarrow[]{0} 0\\
@@ -389,7 +396,7 @@ We state the degrees of freedom as normal fluxes on each edge as
 		  DOF_{e_i}(\lambda_1) = \langle \mathbf{u}_h \cdot \pmb{\nu}_i, \lambda_1 \rangle_{e_i}, \quad \lambda_1 \in \mathbb{P}_1,
 \end{equation}
 where $\lambda_1$ is a linear function restricted to edge $e_i$, and 
-$\text{dim}(\lambda_1) = 2$.
+$\text{dim}(\mathbb{P}_1) = 2$.
 We then present a construction of two independent shape functions on each edge:
 $\pmb{\varphi}_{l,i}$ and $\pmb{\varphi}_{c,i}$, such that
 \begin{equation}\label{eq:constbasishdiv_show}
@@ -424,7 +431,7 @@ function $\pmb{\varphi}_{l,i}$  in two steps as
 		  =(\pmb{\tau}_{i+1}\lambda_{i+3} + \lambda_{i+1}\pmb{\tau}_{i+3})R_i + 
 		  \lambda_{i+1} \lambda_{i+3}\text{curl}R_i.
 \end{equation}
-We then normalize it such that $l_i$ varys from $-1$ to $1$ when restricted to edge $e_i$ as
+We then normalize it such that $l_i$ varies from $-1$ to $1$ when restricted to edge $e_i$ as
 \begin{equation}\label{eq:linearbasis}
 		  \pmb{\varphi}_{l,i} = \frac{\tilde{\pmb{\varphi}}_{l,i}(\mathbf{x})
 		  \lvert e_i \rvert}{4\lambda_{i+1}(\mathbf{x}_{e,i}) \lambda_{i+3}(\mathbf{x}_{e,i})R_i(\mathbf{x}_{e,i})},
@@ -433,7 +440,7 @@ where the index $i \equiv i \Mod{4}$, and
 the length of edge $e_i$ is  $\lvert e_i \rvert = \lvert \mathbf{x}_{v,i} - \mathbf{x}_{v,i+3} \rvert$. In Figure~\ref{fig:varphil},
 we draw $\pmb{\varphi}_{l,2}$ on the left element and $\pmb{\varphi}_{l,0}$ on
 the right element sharing an edge,
-and show normal flux
+and show the normal flux, but not the tangential flux
 joining continuously as a linear function on the shared edge.
 \begin{figure}[ht]
 \centering\small
@@ -451,7 +458,7 @@ each edge of $E$ is a linear function as
 \begin{equation}\label{eq:phi*}
 		  \phi^*_{v,i}(\mathbf{x}) = \varphi^2_{v,i}(\mathbf{x}) + \frac{1}{2} \big[\varphi^2_{e,i} + \varphi^2_{e,i+1} \big],
 \end{equation}
-where $i \equiv i \Mod{4}$. We then define $\pmb{\varphi}^*_{v,i}(\mathbf{x}) = \text{curl} \phi^*_{v,i}$ so that
+where $i \equiv i \Mod{4}$. We then define $\pmb{\varphi}^*_{v,i}(\mathbf{x}) = \text{curl}\, \phi^*_{v,i}$ so that
 \begin{equation}
 		  \pmb{\varphi}^*_{v,i}\cdot \pmb{\nu}_j \rvert_{e,j} = \left \{
 					 \begin{aligned}
@@ -482,7 +489,7 @@ joins continuously as a constant $1$ on the shared edge.
 \end{figure}
 
 \subsection{Stability and Approximation Properties for $\mathbb{V}_1^0$}
-The accuracy and stability of such element has been well studied and 
+The accuracy and stability of $\mathbb{V}_1^0$ has been well studied and 
 tested in the work by~\cite{directSerendipity}.
 We state the result directly for completeness.
 They define a projection operatior $\pi$ that preserves element average 
@@ -513,11 +520,11 @@ constant values.
 %		  \end{equation}
 %		  where $p_h \in \mathcal{DS}_2$. We have
 		  \begin{equation}
-		 \begin{aligned}
-					\norm{\mathbf{u} - \pi_D \mathbf{u}}_{0,\Omega} &\leq C \norm{\mathbf{u}}_{k,\Omega}h^k, \hspace{0.8cm} k=1, 2 \\
-					\norm{\nabla\cdot(\mathbf{u} - \pi_D \mathbf{u})}_{0,\Omega} &\leq C \norm{\nabla \cdot \mathbf{u}}_{k,\Omega}h^k, \hspace{0.5cm} k=0, 1\\
-					\norm{p - \mathcal{P}_{W_s} p }_{0,\Omega} &\leq C \norm{p}_{k,\Omega}h^k, \hspace{0.9cm} k=0, 1 
-		 \end{aligned}
+					 \begin{alignedat}{2}
+								\norm{\mathbf{u} - \pi_D \mathbf{u}}_{0,\Omega} &\leq C \norm{\mathbf{u}}_{k,\Omega}h^k, \hspace{0.8cm} &&k=1, 2, \\
+								\norm{\nabla\cdot(\mathbf{u} - \pi_D \mathbf{u})}_{0,\Omega} &\leq C \norm{\nabla \cdot \mathbf{u}}_{k,\Omega}h^k, \hspace{0.5cm} &&k=0, 1,\\
+								\norm{p - \mathcal{P}_{W_s} p }_{0,\Omega} &\leq C \norm{p}_{k,\Omega}h^k, \hspace{0.9cm} &&k=0, 1. 
+		 \end{alignedat}
 		  \end{equation}
 		  Moreover, the discrete inf-sup condition holds
 		  \begin{equation}
@@ -550,7 +557,7 @@ the identical test and trial spaces as
 					 \mathbb{V}_S &= \{\mathbf{v} \in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = (H^1_0(\Omega))^2, \\
 					 \mathbb{U}_S &= \{\mathbf{u} \in (H^1(\Omega))^2 : \mathbf{u} = \mathbf{0} 
 					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \mathbb{V}_S, \\
-					 \mathbb{W}_S &= \{p \in L^2(\Omega) : \int_{\Omega}p\, d\mathbf{x} = 0\} = L^2(\Omega)/\mathbb{R},
+					 \mathbb{W}_S &= \bigg\{p \in L^2(\Omega) : \int_{\Omega}p\, d\mathbf{x} = 0\bigg\} = L^2(\Omega)/\mathbb{R}.
 		  \end{aligned}
 \end{equation}
 We consider the standard mixed variational form as
@@ -579,7 +586,7 @@ Now we construct a pair of discretized space $\mathbb{V}_{S,h} \times \mathbb{W}
 Stable mixed finite element pairs for the Stokes problem have been widely and thoroughly studied on triangles and rectangles.
 One notable construction on rectangles was discussed in~\cite{BRelement} and~\cite{Fortin1981OldAN},
 where polynomial spaces are supplemented with bubble functions.
-Consider the standard type of Bernardi-Raugel (BR) element using space of tensor product
+Consider the standard type of Bernardi-Raugel (BR) element using the space of tensor product
 polynomials
 \begin{equation}
 (\mathbb{Q}_{1,1} (E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3 \} \subset (\mathbb{Q}_{2,2}(E))^2,
@@ -587,17 +594,18 @@ polynomials
 where $\mathbf{b}_i$ is a quadratic bubble function defined for each edge $e_i$.
 A similar but more general type of element was discussed by~\cite{doi:10.1137/S0036142903435247}.
 
-We now modify the original BR element to extend it to quadrilaterals using the direct serendipity space as 
+We now modify the original BR element to extend it to a new finite element suited to quadrilaterals using the direct serendipity space as 
 \begin{equation}\label{eq:br}
-		  \mathbb{V}_1^{\mathcal{BR}}(E) = (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3\} \subset (\mathcal{DS}_2(E))^2.
+		  \mathbb{V}_1^{\mathcal{BR}}(E) = (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3\} \subset (\mathcal{DS}_2(E))^2,
 \end{equation}
+where $\text{dim} \mathbb{V}_1^{\mathcal{BR}}(E) = 12.$
 One natural choice for the supplemental bubble function $\mathbf{b}_i$ is the previously defined 
 edge nodal basis function $\varphi^{(2)}_{e,i} \in \mathcal{DS}_2$ times the unit normal, i.e., 
 \begin{equation}\label{eq:bubble}
 		  \mathbf{b}_i(\mathbf{x}) = \varphi^{(2)}_{e,i}(\mathbf{x})\pmb{\nu}_i, 
 \end{equation}
 which is quadratic when restricted to edge $e_i$ according to~\eqref{eq:edgerestriction}. 
-The quadratic bubble is guaranteed to be conforming since it evaluates zero on two vertices and $1$ at 
+The quadratic bubble is guaranteed to be conforming since it evaluates to $0$ on two vertices and $1$ at 
 the middle point of the edge due to normalization, which is uniquely 
 determined by these three points. The integral of this quadratic bubble can be
 accurately computed by a three-point Gaussian quadrature rule.
@@ -605,7 +613,7 @@ accurately computed by a three-point Gaussian quadrature rule.
 We state the degrees of freedom of this type of element as follows.
 \begin{defn}\label{lem:unisolvence}
 		  For an element $E\in \mathcal{T}_h$, $\mathbf{u}_h$ is uniquely defined
-		  by the following degrees of freedom:
+		  by the following 12 degrees of freedom:
 
 		  \text{(i)} for corner point $v_i$ and Cartesian direction unit normal vectors $\{\mathbf{i},\mathbf{j}\}$,
 		  \begin{equation*}
@@ -622,20 +630,22 @@ We give an explicit construction of the shape functions.
 We choose the nodal basis function on vertex $v_i$ in two Cartesian directions as
 		  \begin{equation}
 					 N_{v_i,x} = \begin{bmatrix}
-								\psi_{v,i}(\mathbf{x})\\
+								\varphi^{(1)}_{v,i}(\mathbf{x})\\
 								0
 					 \end{bmatrix}, \quad  N_{v_i,y} = \begin{bmatrix}
 								0\\
-								\psi_{v,i}(\mathbf{x})
-					 \end{bmatrix}
+								\varphi^{(1)}_{v,i}(\mathbf{x})
+					 \end{bmatrix},
 		  \end{equation}
-We choose the edge basis function on edge $e_i$ as
+where $\varphi^{(1)}_{v,i}$ is the vertex nodal shape function in $\mathcal{DS}_1(E)$.
+We choose the edge basis function on edge $e_i$ as~$\eqref{eq:bubble}$, i.e.,
 \begin{equation}
 		  N_{e} = \varphi^{(2)}_{e,i}\pmb{\nu}_i
 \end{equation}
 Note that bubble functions are quadratic when restricted to edge $e_i$, while
-nodal basis functions are linear when restricted to edge $e_i$, therefore bubble
-functions cannot be in the same space as nodal basis function.
+nodal basis functions are linear when restricted to edge $e_i$. Therefore 
+the bubble
+functions cannot be in the same space as the nodal basis functions.
 We conclude
 that this element is well-defined, i.e., the degrees of freedom uniquely 
 determine the function.
@@ -644,12 +654,12 @@ We pair it with the space
 \begin{equation}
 \mathbb{W}_0 = \{\omega \in L^2(\Omega); \hspace{0.3cm} \omega|_E \in P_0 \} /\mathbb{R},
 \end{equation}
-which has piece wise constant values for each element $E$.
+which has piecewise constant values for each element $E$.
 We provide stability and approximation analysis for this space pair $\mathbb{V}_1^{\mathcal{BR}} \times \mathbb{W}_0$
 in the next subsection.
 
 \subsection{Stability and Approximation Properties for $\mathbb{V}_1^{\mathcal{BR}}\times\mathbb{W}_0$}
-Before analyzing the stability and approximation properties for the 
+Before analyzing the stability and approximation properties for the new 
 modified BR element, we state one useful lemma.
 \begin{lem}\label{lem:intestimate}
 Let $E$ be a nondengenate convex quadrilateral element
@@ -662,11 +672,11 @@ upper bounds hold for all $v \in W_p^m(E)$:
 \begin{equation}
 \left \{  \begin{aligned}
 &\lvert v \rvert_{W^0_p(E)} \leq C_1 h_E^{2/p}\lvert \tilde{v} \rvert_{W^0_p(\tilde{E})},\\
-&\lvert v \rvert_{W^1_p(E)} \leq C_2(\sigma^*,p) \lvert \tilde{v} \rvert_{W^1_p(\tilde{E})},
+		  &\lvert v \rvert_{W^1_p(E)} \leq C_2(\sigma^*,p) h^{2/p-1} \lvert \tilde{v} \rvert_{W^1_p(\tilde{E})},
 \end{aligned}
 \right.
 \end{equation}
-where $\tilde{E}$ represents local reference quadrilateral element $\tilde{E}$ illustrated in Figure~\ref{fig:meshexample}, and
+where $\tilde{E}$ represents the local reference quadrilateral element $\tilde{E}$ illustrated in Figure~$\ref{fig:meshexample}$, and
 $\tilde{v}$ is the function defined on the local reference element $\tilde{E}$.
 \end{lem}
 \begin{proof}
@@ -674,8 +684,8 @@ See~\cite{FinElemMethNavierStokes}.
 \end{proof}
 
 We reuse the interpolation operator $\mathcal{I}_{h}^1$ defined in equation~\eqref{eq:interpolation}.
-The projection operator $\pi \in (H^1_0(\Omega))^2 \rightarrow \mathbb{V}_1^{BR} \cap (H^1_0(\Omega))^2$ is
-understood as a combination of local projection operators $\pi_E$ as:
+Define the projection operator $\pi \in (H^1_0(\Omega))^2 \rightarrow \mathbb{V}_1^{\mathcal{BR}} \cap (H^1_0(\Omega))^2$ 
+as a combination of local projection operators $\pi_E$ as:
 
 (i) For each vertex $v \in \partial E$
 \begin{equation}\label{eq:nodaldof}
@@ -684,12 +694,12 @@ understood as a combination of local projection operators $\pi_E$ as:
 
 (ii) For each edge $e \subset \partial E$,
 \begin{equation}\label{eq:edgedof}
-\int_{e} (\pi_E \mathbf{v} - \mathbf{v})\cdot \pmb{\nu} ds = 0.
+\int_{e} (\pi_E \mathbf{v} - \mathbf{v})\cdot \pmb{\nu}\, ds = 0.
 \end{equation}
 
 \begin{lem}\label{lem:approximibility}
-For all $\mathbf{v} \in (H^k(\Omega))^2 \cap (H^1_0(\Omega))^2,\quad k=1,2$. 
-The operator $\pi_E$ defined by~\eqref{eq:nodaldof}--\eqref{eq:edgedof} satisfies
+For all $\mathbf{v} \in (H^k(\Omega))^2 \cap (H^1_0(\Omega))^2,\quad k=1,2$,
+the operator $\pi_E$ defined by~\eqref{eq:nodaldof}--\eqref{eq:edgedof} satisfies
 \begin{equation}
 (q_h, \nabla \cdot (\mathbf{v} - \pi_E \mathbf{v})) = 0, \quad \forall q_h \in \mathbb{W}_0
 \end{equation}
@@ -705,14 +715,14 @@ error bound
 \begin{proof}
 According to the divergence theorem, we have
 \begin{equation}
-\int_{E} \text{div} \cdot (\mathbf{v} - \pi_E \mathbf{v})\, d\mathbf{x} = \sum_{i=0}^3 \int_{e_i} (\mathbf{v} - \pi_E \mathbf{v}) \cdot \pmb{\nu}\, ds = 0.
+\int_{E} \nabla \cdot (\mathbf{v} - \pi_E \mathbf{v})\, d\mathbf{x} = \sum_{i=0}^3 \int_{e_i} (\mathbf{v} - \pi_E \mathbf{v}) \cdot \pmb{\nu}\, ds = 0.
 \end{equation}
-Given that $q_h$ being piece wise constant on the element $E$, it is  clear that we have
+Given that $q_h$ is piecewise constant on the element $E$, it is  clear that we have
 \begin{equation}
 (q_h, \nabla \cdot (\mathbf{v} - \pi_E \mathbf{v})) = 0, \quad \forall q_h \in \mathbb{W}_0.
 \end{equation}
 
-From the definition of the degree of freedom~\eqref{eq:nodaldof} and~\eqref{eq:edgedof}, we decompose the projection
+From the definition of the degrees of freedom~\eqref{eq:nodaldof} and~\eqref{eq:edgedof}, we decompose the projection
 operator $\pi_E$ as
 \begin{equation}\label{eq:decomposition}
 		  \pi_E \mathbf{v} = \mathcal{I}^1_{h} \mathbf{v} + 
@@ -725,7 +735,7 @@ where the coefficient
 \end{equation}
 The approximation property of the interpolation operator $\mathcal{I}_h^1$ has been discussed in Lemma~\ref{lem:approximation},
 \begin{equation}\label{eq:interpoapproxbr}
-\norm{\mathbf{v} - \mathcal{I}^1_{h}\mathbf{v}}_{H^m(E)} \leq h^{2-m} \lvert \mathbf{v} \rvert_{H^2(E^*)}, \quad m= 0,1,
+\norm{\mathbf{v} - \mathcal{I}^1_{h}\mathbf{v}}_{H^m(E)} \leq h^{n-m} \lvert \mathbf{v} \rvert_{H^n(E^*)}, \quad m= 0,1, \quad n = 1,2.
 \end{equation}
 where $E^* = \cup_{F\in \mathcal{T}_h, F\cap E \neq \emptyset}$ defined in Lemma~\ref{lem:interpolationop}.
 
@@ -734,32 +744,58 @@ Lemma~\ref{lem:intestimate} indicates an estimation of the bubble function as
 \lvert\mathbf{b}_i\rvert_{H^m(E)} \leq C(\sigma^*)h^{1-m}\lvert \tilde{\mathbf{b}}_i \rvert_{H^1(\tilde{E})} 
 \leq C(\sigma^*)h^{1-m}, \quad m = 0,1.
 \end{equation}
-We continue to estimate $\lvert \alpha_i \rvert$ as
+We continue to estimate $\lvert \alpha_i \rvert$. Note
 \begin{equation}
-\int_{e,i} \varphi^{(2)}_{e,i} ds = \lvert e_i \rvert \int_{\tilde{e}_i} \tilde{\varphi}^{(2)}_{e,i}\, d\tilde{s}.
+		  \int_{e,i} \mathbf{b}_i\cdot \pmb{\nu}_i \, ds = 
+		  \int_{e,i} \varphi^{(2)}_{e,i} \, ds = 
+		  \lvert e_i \rvert \int_{\tilde{e}_i} \tilde{\varphi}^{(2)}_{e,i}\, d\tilde{s} = C_1 \lvert e_i \rvert.
 \end{equation}
-		  According to Trace Theorem~\ref{thm:tracethm}, a continuous trace mapping can be constructed. 
-		  Combining with Lemma~\ref{lem:intestimate}, we estimate the term $\lvert \alpha_i \rvert$ as
-\begin{equation}\label{eq:estimatealpha}
-					 \lvert \alpha_i \rvert \leq C \int_{\tilde{e},i} \lvert\tilde{\mathbf{v}} - \tilde{\mathcal{I}}^1_{h} \tilde{\mathbf{v}}\rvert\, ds \leq C h^k h^{-1} \lvert \mathbf{v} \rvert_{H^k(E^*)} , \quad k = 1,2.
-\end{equation}
+		  %According to Trace Theorem~\ref{thm:tracethm}, a continuous trace mapping can be constructed. 
+		  %Combining with Lemma~\ref{lem:intestimate}, we estimate the term $\lvert \alpha_i \rvert$ as
+%\begin{equation}\label{eq:estimatealpha}
+%					 \lvert \alpha_i \rvert \leq C \int_{\tilde{e},i} \lvert\tilde{\mathbf{v}} - \tilde{\mathcal{I}}^1_{h} \tilde{\mathbf{v}}\rvert\, ds \leq C h^k h^{-1} \lvert \mathbf{v} \rvert_{H^k(E^*)} , \quad k = 1,2.
+%\end{equation}
+Then
+		  \begin{equation}
+					 \begin{aligned}
+					 \lvert \alpha_i \rvert = \bigg\lvert \frac{ \int_{e_i} (\mathbf{v} - \mathcal{I}^1_{h} \mathbf{v})\cdot \pmb{\nu}_i\, ds}{\int_{e_i} \mathbf{b}_i \cdot 
+								\pmb{\nu}_i\, ds} \bigg\rvert &\leq C \int_{\tilde{e},i} \lvert\tilde{\mathbf{v}} - \tilde{\mathcal{I}}^1_{h} \tilde{\mathbf{v}}\rvert\, ds \\
+								&\leq C \norm{\tilde{\mathbf{v}} - 
+								\tilde{\mathcal{I}}_h^1\mathbf{v}}_{L^2(\tilde{e_i})}.
+					 \end{aligned}
+		  \end{equation}
+According to Trace Theorem~\ref{thm:tracethm},
+		  \begin{equation}
+					 \begin{aligned}
+								\lvert \alpha_i \rvert &\leq C \norm{\tilde{\mathbf{v}} - 
+								\tilde{\mathcal{I}}_h^1\mathbf{v}}_{H^1(\tilde{E})}\\
+								&\leq C \bigg( \norm{\tilde{\mathbf{v}} - 
+								\tilde{\mathcal{I}}_h^1\mathbf{v}}_{L^2(E)} + h^{-1} 
+								\Big\lvert \tilde{\mathbf{v}} - 
+								\tilde{\mathcal{I}}_h^1\mathbf{v}\Big\rvert_{H^1(E)}\bigg).
+					 \end{aligned}
+		  \end{equation}
+		  According to Lemma~$\ref{lem:approximation}$,
+		  \begin{equation}
+					 \lvert \alpha_i \rvert \leq C h^{k-1}\norm{\mathbf{v}}_{H^k(E^*)}, \quad k = 1,2. 
+		  \end{equation}
 The overall estimate is then
 \begin{equation}\label{eq:estimationalphav}
-		  \lvert\alpha_i \rvert \lvert \mathbf{b}_i \rvert_{H^m(E)} \leq C h^{k-m} \vert \mathbf{v} \rvert_{H^k(E^*)}, \quad m=0,1. 
+		  \lvert\alpha_i \rvert \lvert \mathbf{b}_i \rvert_{H^m(E)} \leq C h^{k-m} \norm{ \mathbf{v}}_{H^k(E^*)}, \quad m=0,1, \quad k=1,2. 
 \end{equation}
 Combining with the interpolation error estimate result in equation~\eqref{eq:interpoapproxbr},
 we get a local error estimate as
 \begin{equation}
-		  \norm{\mathbf{v} - \pi_E \mathbf{v}}_{H^1(E)} \leq C h \lvert \mathbf{v} \rvert_{H^2(E)}.
+		  \norm{\mathbf{v} - \pi_E \mathbf{v}}_{H^1(E)} \leq C h \norm{\mathbf{v}}_{H^2(E)}.
 \end{equation}
 The global error estimate is obtained by combining local results together.
 \end{proof}
 In addition to the approximability lemma~\ref{lem:approximation}, we
-also need stability result.
+also need a stability result.
 \begin{lem}\label{lem:brstability}
 		  %For any $\mathbf{v} \in H^1_0(\Omega)$, there exists $\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}$ such that 
 		  Assuming that $\mathbf{v} \in (H^1(\Omega))^2$,
-		  the linear operator $\pi$ is bounded on $(H^1(\Omega))^2$ independnently of h.
+		  the linear operator $\pi$ is bounded on $(H^1(\Omega))^2$ independnently of h, i.e., 
 		  \begin{equation}\label{eq:mypiboundness}
 					 \norm{\pi \mathbf{v}}_{H^1(\Omega)} \leq C\norm{\mathbf{v}}_{H^1(\Omega)}.
 		  \end{equation}
@@ -772,22 +808,29 @@ also need stability result.
 		  %\begin{equation}
 		%			 \norm{\mathbf{v}_h} \leq \norm{\mathbf{w}_h}_{H^1(E)} + h^{-1} {\big\{}\norm{\mathbf{v}-\mathbf{w}_h}_{L^2(E)} + h \lvert \mathbf{v} - \mathbf{w}_h \rvert_{H^1(E)}  {\big\}} \leq C \norm{\mathbf{v}}_{H^1(E)}.
 		%  \end{equation}
-		%  The global stability result can be obtained by combining local results as well.
-		We consider the local projection operator $\pi_E$, and use the decomposition~\eqref{eq:decomposition}, which implies
-		\begin{equation}
-\lvert \pi_E \mathbf{v} \rvert^2 \leq \lvert \mathcal{I}^1_h \mathbf{v} \rvert^2 + \sum_{i=0}^3 \lvert \alpha_i 
- \mathbf{b}_i \rvert^2.
-		\end{equation}
-		Assuming similar expressions also hold for the gradient, we integrate the both sides of the
-		inequality and recall the estimation~\eqref{eq:estimationalphav}
-		\begin{equation}
-\norm{\pi_E \mathbf{v}}^2_{H^1(E)} \leq \norm{\mathcal{I}^1_h \mathbf{v}}^2_{H^1(E)} + h^{-1} {\big\{}\norm{\mathbf{v}-\mathcal{I}^1_h \mathbf{v}}_{L^2(E)} + h \lvert \mathbf{v} - \mathcal{I}^1_h \mathbf{v} \rvert_{H^1(E)}  {\big\}}, 
-		\end{equation}
-     which together with the boundedness result of $\mathcal{I}_h^1$ in Lemma~$\ref{lem:interpolationop}$ gives
-	  \begin{equation}
-					 \norm{\pi_E \mathbf{v}}_{H^1(E)} \leq C\norm{\mathbf{v}}_{H^1(E)}.
-	  \end{equation}
-	 The global stability result can be obtained by combining local results as well.
+		  %  The global stability result can be obtained by combining local results as well.
+
+%		We consider the local projection operator $\pi_E$, and use the decomposition~\eqref{eq:decomposition}, which implies
+%		\begin{equation}
+%%\lvert \pi_E \mathbf{v} \rvert^2 \leq \lvert \mathcal{I}^1_h \mathbf{v} \rvert^2 + \sum_{i=0}^3 \lvert \alpha_i 
+% \mathbf{b}_i \rvert^2.
+%		\end{equation}
+%		Assuming similar expressions also hold for the gradient, we integrate the both sides of the
+%		inequality and recall the estimation~\eqref{eq:estimationalphav}
+%		\begin{equation}
+%\norm{\pi_E \mathbf{v}}^2_{H^1(E)} \leq \norm{\mathcal{I}^1_h \mathbf{v}}^2_{H^1(E)} + h^{-1} {\big\{}\norm{\mathbf{v}-\mathcal{I}^1_h \mathbf{v}}_{L^2(E)} + h \lvert \mathbf{v} - \mathcal{I}^1_h \mathbf{v} \rvert_{H^1(E)}  {\big\}}, 
+%		\end{equation}
+%     which together with the boundedness result of $\mathcal{I}_h^1$ in Lemma~$\ref{lem:interpolationop}$ gives
+%	  \begin{equation}
+%					 \norm{\pi_E \mathbf{v}}_{H^1(E)} \leq C\norm{\mathbf{v}}_{H^1(E)}.
+%	  \end{equation}
+		  We use a simple triangle inequality 
+		  \begin{equation}
+					 \norm{\pi_E \mathbf{v}}_{H^1(E)} \leq \norm{\mathbf{v}}_{H^1(E)} + 
+					 \norm{\mathbf{v} - \pi_E \mathbf{v}}_{H^1(E)} \leq (1+C) \norm{\mathbf{v}}_{H^1(E)},
+		  \end{equation}
+		  where $C$ comes from Lemma~$\ref{lem:approximibility}$.
+	 The global stability result can be obtained by combining local results.
 \end{proof}
 \begin{thm}
 With the established approximability result stated in $Lemma~\ref{lem:approximibility}$, and 
@@ -875,18 +918,17 @@ Find the displacement $\mathbf{u}$ and pressure $p$ such that
 %$\pmb{\tau}(\mathbf{u}) = 2(\mathcal{D} \mathbf{u} - 1/3 \nabla \cdot \mathbf{u}
 %\mathbf{I})$. The symmetrical gradient 
 %$\mathcal{D} \mathbf{u} = 1/2(\nabla \mathbf{u} + \nabla \mathbf{u}^T)$.
-We define a simple choice of energy space
+We assume that $\mathbf{g} \in (H^{1/2}(\partial\Omega))^2$ and understand $\tilde{\mathbf{g}} \in (H^1(\Omega))^2$
+as a continuous extension from the boundary into the domain.
+We define a simple choice of energy spaces
 \begin{equation}
 		  \begin{aligned}
 					 \mathbb{V} &= \{\mathbf{v} \in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\}, \\
 					 \mathbb{U} &= \{\mathbf{u} \in (H^1(\Omega))^2 : \mathbf{u} = \mathbf{g} 
 					 \hspace{0.3cm} \text{on} \hspace{0.2cm} \partial \Omega\} = \tilde{\mathbf{g}} +\mathbb{V}, \\
-					 \mathbb{W} &= \{p \in L^2(\Omega)\}/\mathbb{R},
+					 \mathbb{W} &= \{p \in L^2(\Omega)\}/\mathbb{R}.
 		  \end{aligned}
 \end{equation}
-where $\tilde{\mathbf{g}}$ is a finite energy lift.
-We assume that $\mathbf{g} \in (H^{1/2}(\partial\Omega))^2$ and understand $\tilde{\mathbf{g}} \in (H^1(\Omega))^2$
-as a continuous extension from the boundary into the domain.
 We write the problem in weak form as:
 
 Find $\mathbf{u} \in \mathbb{U}$  
@@ -912,12 +954,13 @@ as
 					 \sin(x)\sin(y),
 \end{equation}
 which has $0$ normal flux on the boundary.
-We deal with the constant kernal by enforcing a condition that
+We deal with the constant kernal by enforcing
 $\int_{\Omega} p\, d\mathbf{x}= 0$ and solve the linear system directly.
 The numerical results are computed on rectangular 
 and logically rectangular 
 quadrilateral meshes as depicted in Figures~\ref{fig:brtest1} and~\ref{fig:brtest2}, respectively.
 We calculate the $L^2$ norm of the residual (i.e., the difference) of the 
+true and approximate
 pressure, velocity, and derivative of velocity.
 \begin{figure}[ht]
 		  \begin{minipage}[t]{0.5\textwidth}
@@ -939,8 +982,11 @@ pressure, velocity, and derivative of velocity.
 In Table~\ref{tab:table2} and Table~\ref{tab:table3} we display the result of a 
 calculation of convergence on $n\times n$ rectangular and distorted grids, 
 respectively, for $n=8,16,32,64$. A second order convergence rate is achieved by 
-velocity and pressure due to mid point integration rule. A first order convergence rate 
-is achieved by derivative of velocity. Both meet our expectations for optimal convergence order.
+velocity. Pressure achieves oeom superconvergence due to the use of the mid 
+point integration rule. We see second order convergence on
+the rectangular grid, and some rate better than the first on distorted grid.
+A first order convergence rate 
+is achieved by derivative of velocity. These meet our expectations for optimal convergence order.
 \begin{table}[ht]
     \centering
      \begin{tabular}{c | c c c c}

@@ -105,7 +105,12 @@ D^\alpha = \frac{\partial^{\lvert \alpha \rvert} }{ \partial x_0^{\alpha_0} \ldo
 \end{equation*}
 For $f \in L^p(\Omega)$, the $L^p(\Omega)$ norm is
 \begin{equation}
-		  \norm{f}_{L^p(\Omega)} =\bigg( \int_{\Omega} \lvert f \rvert^p \bigg)^{1/p}.
+		  \norm{f}_{L^p(\Omega)} = \left \{ 
+		  \begin{alignedat}{2}
+					 &\bigg( \int_{\Omega} \lvert f \rvert^p \bigg)^{1/p},\quad &&p<\infty,\\
+					 &\esssup_{x\in\Omega} \lvert f(x) \rvert, && p=\infty.
+		  \end{alignedat}
+		  \right.
 \end{equation}
 \end{defn}
 
@@ -148,26 +153,28 @@ d
 		  \end{pmatrix} = \frac{(r+d)!}{r!d!}.
 \end{equation}
 
-Let $\mathbb{Q}_{r,s}(\omega) \coloneq \mathbb{P}_r(\omega) \otimes \mathbb{P}_s(\omega)$ 
+For simplicity, we momentarily restrict $d=2$. Let $\mathbb{Q}_{r,s}(\omega) \coloneq \mathbb{P}_r(\omega) \otimes \mathbb{P}_s(\omega)$ 
 denote the space of tensor product polynomials
-derived by polynomials of degree $r$ and $s$ on $\omega \subset \mathbb{R}^d$.
-The dimension of $\mathbb{Q}_{r,s}$ defined on $\mathbb{R}^d$ can be calculated as
+derived by polynomials of degree $r$ in $x$ and $s$ in $y$ 
+on $\omega \subset \mathbb{R}^2$.
+The dimension of $\mathbb{Q}_{r,s}$ is 
 \begin{equation}
-		  \text{dim}\mathbb{Q}_{r,s}(\mathbb{R}^d) = 
-		  \text{dim} \mathbb{P}_r(\mathbb{R}^d)\times 
-		  \text{dim}\mathbb{P}_s(\mathbb{R}^d).
+		  \text{dim}\mathbb{Q}_{r,s}(\mathbb{R}^2) = 
+		  \text{dim} \mathbb{P}_r(\mathbb{R})\times 
+		  \text{dim}\mathbb{P}_s(\mathbb{R}) = (r+1) \times (s+1).
 \end{equation}
 
-We refer to the Bramble-Hilbert lemma for basic interpolation error estimation for polynomials of degree r.
+We refer to the Bramble-Hilbert lemma for basic interpolation error estimation for polynomials of degree $r$.
 \begin{lem}\label{lem:BHlemma}
 (Bramble-Hilbert Lemma)
 
-Let $\Omega \in \mathbb{R}^d$ be a domain, and for function $f \in W^m_p(\Omega), \hspace{0.1cm} m \geq 0,\hspace{0.1cm}  1\leq p < \infty$. There exists a constant $C$
+		  Let $\Omega \in \mathbb{R}^d$ be a domain, and function $f \in W^{k+1}_p(\Omega), \hspace{0.1cm} k \geq 0,\hspace{0.1cm}  1\leq p < \infty$. There exists a constant $C$
 such that
 \begin{equation}
-\inf_{p\in \mathbb{P}_{k-1}(\Omega)} \norm{f-p}_{W^m_p(\Omega)} \leq C h^{k-m}\lvert f \rvert_{W^k_p(\Omega)}, \quad j=0,1,\ldots,k,
+		  \inf_{p\in \mathbb{P}_{k}(E)} \norm{f-p}_{W^m_p(E)} \leq C h^{k+1-m}\lvert f \rvert_{W^{k+1}_p(E)}, \quad m=0,1,
 \end{equation}
-where the constant $C$ has an upper bound due to the shape regularity assumption.
+where the constant $C$ has an upper bound over all 
+		  elements $E \in \mathcal{T}_h$ due to the shape regularity assumption.
 \end{lem}
 \begin{proof}
 		  See~\cite{EstimationofLinearFunctionals} and~\cite{ddd3654d-28ed-3763-8d70-a82ea44a3d31}.
