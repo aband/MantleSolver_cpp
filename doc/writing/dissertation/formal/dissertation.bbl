@@ -20,7 +20,7 @@ Todd Arbogast and Jerry~L. Bona.
 
 \bibitem[Arbogast and Correa(2016)]{doi:10.1137/15M1013705}
 Todd Arbogast and Maicon~R. Correa.
-\newblock Two families of h(div) mixed finite elements on quadrilaterals of
+\newblock Two families of {H}(div) mixed finite elements on quadrilaterals of
   minimal dimension.
 \newblock \emph{SIAM Journal on Numerical Analysis}, 54\penalty0 (6):\penalty0
   3332--3356, 2016.
@@ -50,6 +50,8 @@ Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian.
 
 \bibitem[Arbogast et~al.(2025)Arbogast, Huang, Tian, and M.Gray]{sigmaP}
 Todd Arbogast, Chieh-Sen Huang, Chenyu Tian, and Gabirel M.Gray.
+\newblock An efficient and accurate approximation to the classic polynomial
+  smoothness indicator.
 \newblock \emph{In Preparation.}, 2025.
 
 \bibitem[Benzi et~al.(2005)Benzi, Golub, and Liesen]{Benzi_Golub_Liesen_2005}
@@ -60,7 +62,7 @@ Michele Benzi, Gene~H. Golub, and Jörg Liesen.
 
 \bibitem[Bernardi and Raugel(1985)]{BRelement}
 Christine Bernardi and Genevieve Raugel.
-\newblock Analysis of some finite elements for the stokes problem.
+\newblock Analysis of some finite elements for the {S}tokes problem.
 \newblock \emph{Math. of Comput.}, 44:\penalty0 71--79, 1985.
 
 \bibitem[Bramble et~al.(1997)Bramble, Pasciak, T, and
@@ -71,8 +73,8 @@ James~H. Bramble, Joseph~E. Pasciak, Apostol T, and Vassilev.
 
 \bibitem[Bramble and Hilbert(1970)]{EstimationofLinearFunctionals}
 J.H. Bramble and S.~R. Hilbert.
-\newblock Estimation of linear functionals on sobolev spaces with application
-  to fourier transform and spline interpolation.
+\newblock Estimation of linear functionals on {S}obolev spaces with application
+  to {F}ourier transform and spline interpolation.
 \newblock \emph{SIAM J. Numer. Anal.}, 7\penalty0 (1):\penalty0 112--124, 1970.
 \newblock \doi{10.1137/0707006}.
 
@@ -91,14 +93,14 @@ Philippe~G. Ciarlet.
 
 \bibitem[Dupont and Scott(1980{\natexlab{a}})]{PolynomialApproximation}
 Todd Dupont and Ridgway Scott.
-\newblock Polynomial approximation of functions in sobolev spaces.
+\newblock Polynomial approximation of functions in {S}obolev spaces.
 \newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
   441--463, 1980{\natexlab{a}}.
 
 \bibitem[Dupont and
   Scott(1980{\natexlab{b}})]{ddd3654d-28ed-3763-8d70-a82ea44a3d31}
 Todd Dupont and Ridgway Scott.
-\newblock Polynomial approximation of functions in sobolev spaces.
+\newblock Polynomial approximation of functions in {S}obolev spaces.
 \newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
   441--463, 1980{\natexlab{b}}.
 \newblock ISSN 00255718, 10886842.

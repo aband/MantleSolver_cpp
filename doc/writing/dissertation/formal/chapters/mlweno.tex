@@ -98,7 +98,7 @@ discussion for simplicity.
 
 We can represent stencil polynomial with basis polynomials 
 $Q_{s,t} = \sum_{k} \overline{u}_{k} \phi^k_{s,t}$,
-where basis polynomials can be calculated as
+where basis polynomials $\phi^k_{s,t}$ can be calculated as
 \begin{equation}\label{eq:basispoly}
 		  \frac{1}{\lvert E_{k'}\rvert } \int_{E_{k'}} \phi^k_{s,t} (\mathbf{x}) d\mathbf{x} = 
 		  \frac{1}{\lvert \hat{E}_{k'}\rvert} \iint_{\hat{E}_{k'}}\hat{\phi}^k_{s,t}(\xi, \eta) d\xi d\eta = \left \{
@@ -106,7 +106,7 @@ where basis polynomials can be calculated as
 								&1 \quad  k' = k\\
 								&0 \quad  k' \neq k
 					 \end{aligned}
-					 \right. \quad \forall (E_{k'}, E_k) \in \mathcal{S},
+					 \right. \quad \forall E_{k'}, E_k \in \mathcal{S},
 \end{equation}
 which would lead to a $(s \times t) \times (s \times t)$ non-singular linear system. 
 We can now represent stencil polynomial with normalized basis polynomials as:
@@ -169,7 +169,11 @@ The Jiang-Shu smoothness indicator can be reformed with basis polynomials:
 where $\sigma^{i'j'}_{ij}$ can be precomputed after mesh is established after mesh is established.
 
 Alternatively, we can expand the Jiang-Shu smoothness indicator according to polynomial coefficients,
-which paves the way for further simplification.
+which paves the way for further simplification. 
+Recall the tensor product polynomial version~\eqref{eq:stencilpolynomialscaled},
+\begin{equation}
+\sigma_P = \sum_{}
+\end{equation}
 
 We observe that the smoothness indicator exhibit following convergence property that
 there exists some value $C > 0$ such that when $h \rightarrow 0^+$,

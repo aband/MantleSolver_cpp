@@ -127,17 +127,25 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 
     double z = point[1];
 
+    double r1 = (3+sqrt(9+4/phi))/2;
+    double r2 = (3-sqrt(9+4/phi))/2;
+
+    double up = phi*phi/(1-4*phi) * (r1*pow(L,4-r1)*pow(abs(z),r1-1) - 4*pow(abs(z),3));
+
+
     // ql
     if (z < 0){
-        double r1 = (3+sqrt(9+4/phi))/2;
-        double r2 = (3-sqrt(9+4/phi))/2;
- 
         work.at(0) = 1.0/(1-4*phi) * (z + pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
+
+        //work.at(1) = work.at(0) - up/phi/z/z;
+
+        work.at(1) = z - 1.0/3.0 * phi * pow(z,3) - up * (1-4*phi*z*z)/3.0;
+    } else {
+
+        work.at(1) = point[1];
+
+        work.at(0) = 0.0;
     }
-
-    // qs
-    work.at(1) = point[1];
-
     return work;
 }
 
@@ -266,7 +274,7 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
             fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
 
-            fprintf(exactv, "%e ", trueSoln_p(mi, gaussp.at(g), gcell, pp, 2));
+            fprintf(exactv, "%e ", trueSoln_q(mi, gaussp.at(g), gcell, pp, 2));
 
         }
 
@@ -370,7 +378,7 @@ double Driver::errorNorm(int mark, PhysProperty * pp, int norm){
             darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
             stokesvel.at(g) = vel_stokes.at(g);
 
-            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln_p(mi,gaussp.at(g),gcell,pp,2)),norm);
+            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln_q(mi,gaussp.at(g),gcell,pp,2)),norm);
 
         }
 
@@ -592,7 +600,7 @@ double sumqs_minus = 0.0;
         qs_vec.at(nelem) = qs;
         q_vec.at(nelem) = q;
 
-        std::array<double,2> exactval = trueSolnq_p(mi, global, {i,j}, pp, 2);
+        std::array<double,2> exactval = trueSolnq_q(mi, global, {i,j}, pp, 2);
 
         ql_exact.at(nelem) = -1.0*exactval[0];
         qs_exact.at(nelem) = -1.0*exactval[1];

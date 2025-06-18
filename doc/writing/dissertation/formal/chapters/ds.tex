@@ -764,7 +764,7 @@ Then
 								\tilde{\mathcal{I}}_h^1\mathbf{v}}_{L^2(\tilde{e_i})}.
 					 \end{aligned}
 		  \end{equation}
-According to Trace Theorem~\ref{thm:tracethm},
+As the trace mapping is contimuous from $H^1(\tilde{E})$ into $L^2(\tilde{e})$, according to the Trace Theorem~\ref{thm:tracethm},
 		  \begin{equation}
 					 \begin{aligned}
 								\lvert \alpha_i \rvert &\leq C \norm{\tilde{\mathbf{v}} - 
@@ -795,7 +795,7 @@ also need a stability result.
 \begin{lem}\label{lem:brstability}
 		  %For any $\mathbf{v} \in H^1_0(\Omega)$, there exists $\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}$ such that 
 		  Assuming that $\mathbf{v} \in (H^1(\Omega))^2$,
-		  the linear operator $\pi$ is bounded on $(H^1(\Omega))^2$ independnently of h, i.e., 
+		  the linear operator $\pi$ is bounded on $(H^1(\Omega))^2$ independently of h, i.e., 
 		  \begin{equation}\label{eq:mypiboundness}
 					 \norm{\pi \mathbf{v}}_{H^1(\Omega)} \leq C\norm{\mathbf{v}}_{H^1(\Omega)}.
 		  \end{equation}
@@ -824,7 +824,7 @@ also need a stability result.
 %	  \begin{equation}
 %					 \norm{\pi_E \mathbf{v}}_{H^1(E)} \leq C\norm{\mathbf{v}}_{H^1(E)}.
 %	  \end{equation}
-		  We use a simple triangle inequality 
+According to the triangle inequality,
 		  \begin{equation}
 					 \norm{\pi_E \mathbf{v}}_{H^1(E)} \leq \norm{\mathbf{v}}_{H^1(E)} + 
 					 \norm{\mathbf{v} - \pi_E \mathbf{v}}_{H^1(E)} \leq (1+C) \norm{\mathbf{v}}_{H^1(E)},
@@ -963,13 +963,15 @@ We calculate the $L^2$ norm of the residual (i.e., the difference) of the
 true and approximate
 pressure, velocity, and derivative of velocity.
 \begin{figure}[ht]
-		  \begin{minipage}[t]{0.5\textwidth}
+		  \begin{minipage}[t]{0.47\textwidth}
     \centering
     \includegraphics[width=7cm,height=5cm]{chapters/pics/ex2.eps}
 					 \subcaption{Rectangular Grids. Shown are pressure (color) and velocity (arrows).}
     \label{fig:brtest1}
 \end{minipage}%
-		  \begin{minipage}[t]{0.5\textwidth}
+\begin{minipage}[t]{0.06\textwidth}
+\end{minipage}
+		  \begin{minipage}[t]{0.47\textwidth}
     \centering
     \includegraphics[width=7cm,height=5cm]{chapters/pics/ex1.eps}
     \subcaption{Distorted Grids. Shown are pressure (color) and velocity (arrows).}
@@ -982,7 +984,7 @@ pressure, velocity, and derivative of velocity.
 In Table~\ref{tab:table2} and Table~\ref{tab:table3} we display the result of a 
 calculation of convergence on $n\times n$ rectangular and distorted grids, 
 respectively, for $n=8,16,32,64$. A second order convergence rate is achieved by 
-velocity. Pressure achieves oeom superconvergence due to the use of the mid 
+velocity. Pressure achieves some superconvergence due to the use of the mid 
 point integration rule. We see second order convergence on
 the rectangular grid, and some rate better than the first on distorted grid.
 A first order convergence rate 
