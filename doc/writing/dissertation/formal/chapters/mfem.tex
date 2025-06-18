@@ -449,7 +449,7 @@ where $c$ is a constant kernel.
 								\label{tab:constporositycolumn}
 					 \end{table}
 
-		  \item Piece wise constant porosity;
+		  \item Piecewise constant porosity;
 					 \begin{equation}
 								\phi_J(z) = \left \{
 										  \begin{aligned}
@@ -460,20 +460,24 @@ where $c$ is a constant kernel.
 					 \end{equation}
 					 Closed form solution:
 
-					 We conclude that $u=-v=0$ when $z>0$.
+					 We conclude that $u=-v=0$ when $z>0$, and $q_l = 0$, $q_s = z + c$.
+					 When $z<0$, $\phi_0 \neq 0$,
 					 \begin{equation}
 								\begin{aligned}
-										  u &= \phi_0^2(1-\phi_0) \bigg[1 - \cosh(Rz) + \frac{1 - \cosh{(RL)}}{\sinh{(RL)}}\sinh{(Rz)} \bigg]\\
-								 v &= -u \\
-										  q_s &= z - \frac{1-\cosh{(RL)}}{\sinh(R)} 
+										  u &= \phi_0^2(1-\phi_0) \bigg[1 - \cosh(Rz) + \frac{1 - \cosh{(RL)}}{\sinh{(RL)}}\sinh{(Rz)} \bigg],\\
+								 v &= -u, \\
+										  q_l &= -(1-\phi_0)\bigg[z - \frac{1}{R}\sinh(Rz) + \frac{1-\cosh(RL)}{R\sinh(RL)}\sinh(Rz)\bigg] + c,\\
+										  q_s &= q_l + \frac{u'}{\phi_0} + c,
 								\end{aligned}
 					 \end{equation}
+                where $c$ is a constant kernal shifting the pressure potential.
 
 					 \begin{figure}[ht]
 						\centering
 								\includegraphics[width=3cm,height=8cm]{chapters/pics/porosity_piececonst.eps}
 \includegraphics[width=3cm,height=8cm]{chapters/pics/vel_piececonst.eps}
 \includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quiver_piececonst.eps}
+\includegraphics[width=3cm,height=8cm]{chapters/pics/q_piececonst.eps}
 								\caption{Piecewise constant porosity compaction column test.}
 								\label{fig:piececonstporocompactcolumn}
 					 \end{figure}
@@ -483,10 +487,10 @@ where $c$ is a constant kernel.
 							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
 							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
 							  \hline
-							  $2\times20$ & 2.980e-05 & - & 2.980e-05 & - & \quad & \quad & \quad & \quad\\
-							  $2\times40$ & 7.681e-06 & 1.96 & 7.681e-06 & 1.96 & \quad & \quad & \quad & \quad\\
-							  $2\times80$ & 1.958e-06 & 1.97 & 1.958e-06 & 1.97 & \quad & \quad & \quad & \quad\\
-							  $2\times160$ & 4.974e-07 & 1.98& 4.974e-07 & 1.98 & \quad & \quad & \quad & \quad
+							  $2\times20$ & 2.980e-05 & - & 2.980e-05 & - & 3.794e-03 & - & 4.202e-05 & -\\
+							  $2\times40$ & 7.681e-06 & 1.96 & 7.681e-06 & 1.96 & 1.005e-03 & 1.92 & 1.114e-05 & 1.92\\
+							  $2\times80$ & 1.958e-06 & 1.97 & 1.958e-06 & 1.97 & 2.472e-04 & 2.02 & 2.738e-06 & 2.02\\
+							  $2\times160$ & 4.974e-07 & 1.98& 4.974e-07 & 1.98 & 5.972e-05 & 2.04 & 6.615e-07 & 2.05 
 					\end{tabular}
 								\caption{Constant porosity compaction column test.}
 								\label{tab:constporositycolumn}

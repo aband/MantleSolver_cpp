@@ -93,6 +93,7 @@ const indice& global, PhysProperty * pp, const double& L){
 
     double b= 0.0;
     double c= 0.0;
+
     if (z<0){
         double r= R(phi);
         double tmp = -1*phi*phi*(1-phi);
@@ -102,9 +103,18 @@ const indice& global, PhysProperty * pp, const double& L){
         c = -b * (1-phi)/r;
 
         tmp *= (1+a*cosh(r*z) + b*sinh(r*z));
-    }
-    work[1] = z + c; 
-    work[0] = 0.0;
+        work[1] = (1-phi)*z;
+
+
+        work.at(0) = (1 - phi)*(z - 1/r * sinh(r*z) +b/r * cosh(r*z));
+
+        //work.at(1) = (1 - phi) * (z - (1-4*phi)/(3+phi-4*phi*phi) * phi/r * (sinh(r*z)/cosh(r*2)));
+
+        work.at(1) = work.at(0) - phi*(1-phi)*(-1*r*sinh(r*z) + b*r*cosh(r*z));
+    }else {
+        work[1] = z ;
+		  work[0] = 0.0;
+	 } 
 
     return work;
 }
@@ -256,7 +266,7 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
             fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
 
-            fprintf(exactv, "%e ", trueSoln_q(mi, gaussp.at(g), gcell, pp, 2));
+            fprintf(exactv, "%e ", trueSoln_p(mi, gaussp.at(g), gcell, pp, 2));
 
         }
 
@@ -360,7 +370,7 @@ double Driver::errorNorm(int mark, PhysProperty * pp, int norm){
             darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
             stokesvel.at(g) = vel_stokes.at(g);
 
-            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln_q(mi,gaussp.at(g),gcell,pp,2)),norm);
+            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln_p(mi,gaussp.at(g),gcell,pp,2)),norm);
 
         }
 
@@ -582,7 +592,7 @@ double sumqs_minus = 0.0;
         qs_vec.at(nelem) = qs;
         q_vec.at(nelem) = q;
 
-        std::array<double,2> exactval = trueSolnq_q(mi, global, {i,j}, pp, 2);
+        std::array<double,2> exactval = trueSolnq_p(mi, global, {i,j}, pp, 2);
 
         ql_exact.at(nelem) = -1.0*exactval[0];
         qs_exact.at(nelem) = -1.0*exactval[1];
@@ -682,9 +692,6 @@ sumexact += -1.0*exactval[1];
 
     // ========================================================================
 
-
-
-
     // The average value used to shift pressure
     sumqs /= (double)(mi.MPIglobalCellSize[1] * mi.MPIglobalCellSize[0]);
 
@@ -705,12 +712,16 @@ sumexact += -1.0*exactval[1];
         fprintf(fqs, "%.16f ", qs_vec.at(nelem));
         fprintf(fqf, "%.16f ", ql_vec.at(nelem));
 
-        qs_exact.at(nelem) += sumqs;
+		  if (j < halfsize){
+        qs_exact.at(nelem) = qs_exact.at(nelem) - sum_exactqs_half1 +sum_vecqs_half1;
+        } else {
+       qs_exact.at(nelem) = qs_exact.at(nelem) - sum_exactqs_half2 +sum_vecqs_half2;
+		  }
 
         fprintf(exactqs, "%.16f ", qs_exact.at(nelem));
 
         if (mask.at(nelem)){
-            ql_exact.at(nelem) = ql_exact.at(nelem) + sumqs;
+            ql_exact.at(nelem) = ql_exact.at(nelem) -sum_exactqs_half2 + sum_vecqs_half2;
         }
 
         fprintf(exactql, "%.16f ", ql_exact.at(nelem));
