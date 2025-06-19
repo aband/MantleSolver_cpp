@@ -1,0 +1,53 @@
+%\chapter{Introduction}
+\iffalse
+First paragraph:
+
+Tian's thesis addresses three different aspects: 
+1. Development of a multiphysics model 
+describing a two-phase partial melting mantle. 
+2. Development and analysis of a local mass conservative
+numerical framework catering to this multiphysics problem. 
+3. Development of a code implementing the new numerical scheme.
+implement. He exhibits outstanding ability in understanding 
+a complex multiphysics system, developing and performing mathematical
+analysis of numerical schemes and implementing complex numerical scheme
+with an efficient code individually.
+
+Tian’s thesis addresses three key aspects: (1) the development of a multiphysics model describing a two-phase partially molten mantle; (2) the development and analysis of a locally mass-conservative numerical framework tailored to this multiphysics problem; and (3) the implementation of an efficient code realizing the new numerical scheme. He demonstrates outstanding ability to comprehend complex multiphysics systems, perform rigorous mathematical analysis of numerical methods, and independently develop efficient, robust computational implementations.
+
+\fi
+
+In this work, we present a physics model capturing three key aspects of a 
+two-phase partially molten mantle: (1) a degenerate Darcy–Stokes system 
+describing the static mechanical behavior, (2) a nonlinear  
+system governing the transport of chemical species and thermal energy, 
+and (3) a eutectic phase relation characterizing melting processes.
+We develop a local mass conservative numerical framework to address this 
+complicated multiphysics system. 
+
+For the static mechanics system, we introduce an $H(\text{div})$-and an $H^1$- 
+conforming mixed finite element spaces for Darcy and Stokes subproblems 
+respectively. The mixed finite element spaces are constructed using a noval 
+direct serendipity space tailored for quadrilateral mesh.  
+A modified Bernardi–Raugel element is developed and analyzed. 
+We provide detailed proofs of its stability and approximation properties.
+A new modified uzawa iterative method is implemented to solve the 
+singular saddle 
+point problem induced by this degenerate coupled system. 
+
+To address the nonlinear transport of chemical species and energy in the 
+presence of porous media, we study and modify the weighted essentially 
+non-oscillatory (WENO) method.
+We propose two simple alternatives to accelerate the evaluation of the 
+smoothness indicator. Additionally, we develop a new multilevel WENO weighting 
+scheme that is more versatile and flexible, allowing the combination of 
+arbitrary stencils of different orders.
+
+We advance the multiphysics system by incorporating a eutectic phase module that
+ couples compositional and thermal information with porosity, thereby capturing 
+the evolution of porosity and phase transitions.
+
+The code is implemented in C/C++ along with PETSc, 
+and is designed to be easily adapted 
+for large-scale parallel execution on supercomputers,
+ with the potential to support general unstructured meshes.
