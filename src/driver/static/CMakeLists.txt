@@ -213,6 +213,12 @@ add_executable(convTest
 		  trans_setting.cpp
 )
 
+add_executable(midRidge
+		test.cpp
+      mid_ocean_ridge.cpp 
+      trans_setting.cpp
+)
+
 target_include_directories(test
 		  PUBLIC ${SRC}/coupledSys
 		  )
@@ -224,6 +230,11 @@ target_include_directories(restart
 target_include_directories(convTest
 		  PUBLIC ${SRC}/coupledSys
 		  )
+
+target_include_directories(midRidge
+		  PUBLIC ${SRC}/coupledSys
+		  )
+
 #
 target_link_libraries(test
 		  io_lib
@@ -250,6 +261,17 @@ target_link_libraries(restart
 )
 
 target_link_libraries(convTest
+		  io_lib
+		  phase_lib
+		  mfem_lib
+		  mlweno_lib
+		  driver_lib
+		  transport_lib
+		  PkgConfig::LAPACKE
+		  phase_lib
+)
+
+target_link_libraries(midRidge
 		  io_lib
 		  phase_lib
 		  mfem_lib
