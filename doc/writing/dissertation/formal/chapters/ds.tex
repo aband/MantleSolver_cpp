@@ -640,7 +640,7 @@ We choose the nodal basis function on vertex $v_i$ in two Cartesian directions a
 where $\varphi^{(1)}_{v,i}$ is the vertex nodal shape function in $\mathcal{DS}_1(E)$.
 We choose the edge basis function on edge $e_i$ as~$\eqref{eq:bubble}$, i.e.,
 \begin{equation}
-		  N_{e} = \varphi^{(2)}_{e,i}\pmb{\nu}_i
+		  N_{e,i} = \mathbf{b}_i(\mathbf{x}) = \varphi^{(2)}_{e,i}\pmb{\nu}_i
 \end{equation}
 Note that bubble functions are quadratic when restricted to edge $e_i$, while
 nodal basis functions are linear when restricted to edge $e_i$. Therefore 
@@ -663,7 +663,7 @@ Before analyzing the stability and approximation properties for the new
 modified BR element, we state one useful lemma.
 \begin{lem}\label{lem:intestimate}
 Let $E$ be a nondengenate convex quadrilateral element
-that is shape regular as in definition~$\ref{def:shaperegularity}$.
+that is shape regular as in Definition~$\ref{def:shaperegularity}$.
 For each integer $m\geq 0$
 and real number $p \in [1,\infty]$ there exist positive constants $C_1$
 and $C_2$, possibly depending on $\sigma^*$ but otherwise independent of 
@@ -742,7 +742,17 @@ where $E^* = \cup_{F\in \mathcal{T}_h, F\cap E \neq \emptyset}$ defined in Lemma
 Lemma~\ref{lem:intestimate} indicates an estimation of the bubble function as
 \begin{equation}\label{eq:estimatebubble}
 \lvert\mathbf{b}_i\rvert_{H^m(E)} \leq C(\sigma^*)h^{1-m}\lvert \tilde{\mathbf{b}}_i \rvert_{H^1(\tilde{E})} 
-\leq C(\sigma^*)h^{1-m}, \quad m = 0,1.
+, \quad m = 0,1.
+\end{equation}
+Because of the shape regularity, the vertices of the local reference elements $\tilde{E}$ vary in a compact set.
+Moveover, as in~\cite{directSerendipity}, the definition of $\tilde{\mathbf{b}}_i$ depends only on the vertices
+in a $C^1$ manner. Thus the maximum over the elements is finite, and so
+\begin{equation}
+\lvert \tilde{\mathbf{b}}_i \rvert_{H^1(\tilde{E})} \leq C(\sigma^*), \quad \forall E \in \mathcal{T}_h.
+\end{equation}
+Therefore
+\begin{equation}
+\lvert \tilde{\mathbf{b}}_i \rvert_{H^m(E)} \leq C(\sigma^*) h^{1-m}, \quad m=0,1.
 \end{equation}
 We continue to estimate $\lvert \alpha_i \rvert$. Note
 \begin{equation}

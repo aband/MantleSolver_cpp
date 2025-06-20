@@ -57,10 +57,22 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
 
     double z = point[1];
 
+/*
     if (z<0){
         double r1 = (3+sqrt(9+4/phi))/2;
         double r2 = (3-sqrt(9+4/phi))/2;
         work = phi*phi/(1-4*phi) * (pow(L,4-r1)*pow(-1*z,r1) - z*z*z*z);
+    }
+*/
+
+    if (z<0){
+        double c0 = 1.0/(1-4*phi); 
+        double c2 = -1.0/(1-4*phi)/17.0;
+
+        double scale = phi*phi*z*z*z*z;
+
+        work = -1.0*scale * (c0 + c2*z*z);
+
     }
 
     return work;
