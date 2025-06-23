@@ -75,12 +75,24 @@ fileID = fopen(filename, 'r');
 ux = fscanf(fileID, '%f', [1,Inf]);
 ux = reshape(ux, vM, vN);
 
+filename = strcat('build/phasevy1.dat');
+fileID = fopen(filename, 'r');
+phasey = fscanf(fileID, '%f', [1,Inf]);
+phasey = reshape(phasey, vM, vN);
+
+filename = strcat('build/phasevx1.dat');
+fileID = fopen(filename, 'r');
+phasex = fscanf(fileID, '%f', [1,Inf]);
+phasex = reshape(phasex, vM, vN);
+
 pX  = pX(2:3:end, :);
 pY  = pY(2:3:end, :);
 vx  = vx(2:3:end, :);
 vy  = vy(2:3:end, :);
 ux  = ux(2:3:end, :);
 uy  = uy(2:3:end, :);
+phasex  = phasex(2:3:end, :);
+phasey  = phasey(2:3:end, :);
 
 figure
 set(gcf,'Position',[50 50 1000 500])
@@ -95,7 +107,6 @@ quiver(pX, pY, ux, uy);
 %[startx, starty] = meshgrid(-0.005,-0.08:0.004:-0.01)
 %verts = stream2(pX',pY',ux',uy',startx,starty);
 %streamline(verts)
-
 l = streamslice(pX',pY',ux',uy',1.2);
 
 set(l,'LineWidth',2);
@@ -106,6 +117,34 @@ colormap(turbo)
 view([0,90])
 colorbar
 title("Solid Pressure Potential and Velocity")
+xlabel('x')
+ylabel('y')
+xlim([-0.5,0.5])
+ylim([-0.5,0.0])
+
+figure
+set(gcf,'Position',[50 50 1000 500])
+surf(cX,cY,qs,'LineStyle','none');
+hold on
+quiver(pX, pY, phasex, phasey);
+
+%[startx, starty] = meshgrid( 0.005,-0.08:0.004:-0.01)
+%verts = stream2(pX',pY',ux',uy',startx,starty);
+%streamline(verts)
+%
+%[startx, starty] = meshgrid(-0.005,-0.08:0.004:-0.01)
+%verts = stream2(pX',pY',ux',uy',startx,starty);
+%streamline(verts)
+l = streamslice(pX',pY',phasex',phasey',1.2);
+
+set(l,'LineWidth',2);
+set(l,'Color','k')
+
+hold off
+colormap(turbo)
+view([0,90])
+colorbar
+title("Phase averaged velocity")
 xlabel('x')
 ylabel('y')
 xlim([-0.5,0.5])

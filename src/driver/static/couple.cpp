@@ -66,16 +66,18 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
 */
 
     if (z<0){
-        double c0 = 1.0/(1-4*phi); 
-        double c2 = -1.0*phi/(1-4*phi)/(18*phi - 1);
+        double c0 = -1.0/(1-4*phi); 
+        double c2 = -(phi+4*phi*phi*c0)/(18*phi - 1);
         double c4 = (80.0/3.0*phi*phi*phi*c0 - 10*phi*phi*c2)/(40*phi-1);
 
         double scale = phi*phi*z*z*z*z;
 
+        cout << c0 << "  "  <<c2 << "  " << c4  << endl;
+
         double r1 = (3+sqrt(9+4/phi))/2;
 
-        work = -1.0*scale * (c0) + 
-					 phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
+        work = -1.0*scale * (c2 * z*z);  
+					//+ phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
 
     }
 
@@ -151,11 +153,14 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 
     // ql
     if (z < 0){
-        work.at(0) = 1.0/(1-4*phi) * (z + pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
+        //work.at(0) = 1.0/(1-4*phi) * (z + pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
 
         //work.at(1) = work.at(0) - up/phi/z/z;
 
         work.at(1) = z - 1.0/3.0 * phi * pow(z,3) - up * (1-4*phi*z*z)/3.0;
+
+        work.at(0) = work.at(1) + up/phi/z/z;
+
     } else {
 
         work.at(1) = point[1];
@@ -215,6 +220,9 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
 
     FILE * svx = fopen(GetFilename("stokesvelx", mark),"w");
     FILE * svy = fopen(GetFilename("stokesvely", mark),"w");
+
+    FILE * phasevx = fopen(GetFilename("phasevx",mark),"w");
+    FILE * phasevy = fopen(GetFilename("phasevy",mark),"w");
 
     FILE * gaussgridx = fopen("gaussgridx.dat", "w");
     FILE * gaussgridy = fopen("gaussgridy.dat", "w");
@@ -290,8 +298,10 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
             fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
 
-            fprintf(exactv, "%e ", trueSoln_q(mi, gaussp.at(g), gcell, pp, 2));
+            fprintf(exactv, "%e ", trueSoln_q(mi, gaussp.at(g), gcell, pp, mi.H/2.0));
 
+            fprintf(phasevx, "%e ", stokesvel.at(g)[0] + darcyvel.at(g)[0]);
+            fprintf(phasevy, "%e ", stokesvel.at(g)[1] + darcyvel.at(g)[1]);
         }
 
      }}
@@ -334,6 +344,10 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
 
             fprintf(exactv, "%e ", 0.0);
+
+            fprintf(phasevx, "%e ", stokesvel.at(g)[0] + darcyvel.at(g)[0]);
+            fprintf(phasevy, "%e ", stokesvel.at(g)[1] + darcyvel.at(g)[1]);
+           
         }
 
      }
@@ -353,6 +367,8 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
       fclose(gaussgridx);
       fclose(gaussgridy);
       fclose(exactv);
+      fclose(phasevx);
+		fclose(phasevy);
 
     return 1;
 }
@@ -400,7 +416,7 @@ double Driver::errorNorm(int mark, PhysProperty * pp, int norm){
             darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
             stokesvel.at(g) = vel_stokes.at(g);
 
-            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln_q(mi,gaussp.at(g),gcell,pp,2)),norm);
+            work += jac * gw * pow(abs(stokesvel.at(g)[1])-abs(trueSoln_q(mi,gaussp.at(g),gcell,pp,mi.H/2.0)),norm);
 
         }
 
@@ -621,8 +637,8 @@ double sumqs_minus = 0.0;
         ql_vec.at(nelem) = -ql;
         qs_vec.at(nelem) = qs;
         q_vec.at(nelem) = q;
-
-        std::array<double,2> exactval = trueSolnq_q(mi, global, {i,j}, pp, 2);
+//cout << mi.H/2.0 << endl;
+        std::array<double,2> exactval = trueSolnq_q(mi, global, {i,j}, pp, mi.H/2.0);
 
         ql_exact.at(nelem) = -1.0*exactval[0];
         qs_exact.at(nelem) = -1.0*exactval[1];
@@ -731,8 +747,8 @@ sumexact += -1.0*exactval[1];
     double errordiff = 0.0;
 
     // Shift pressure
-    //for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
-    for (int j=0; j<startj; j++){
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    //for (int j=0; j<startj; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
         indice globalcell {i,j};

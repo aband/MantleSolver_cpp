@@ -20,7 +20,7 @@ $(\check{\mathbf{v}}_s, \check{q})$ such that
 and
 \begin{equation}\label{eq:bv}
 		  \begin{aligned}
-					 \check{\mathbf{v}}_r &= \mathbf{g}_{r} \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
+					 \check{\mathbf{v}}_r\cdot \pmb{\nu} &= g_{r} \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
 					 \check{\mathbf{v}}_s &= \mathbf{g}_{s} \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{u,S}, \\
 					 p &= p_0 \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{i,D}, \\
 					 \pmb{\tau}\cdot \pmb{\nu} - p &= \pmb{t}_0 \hspace{0.56cm} \text{on} \hspace{0.2cm} \Gamma_{i,S},
@@ -334,15 +334,14 @@ We use the projection operators defined in
 \input chapters/linear.tex
 
 \subsection{Numerical Test}
-We test our MFEM setup with three sets of problems.
-First, we test with a manufactured solution all prescribed
-with essential boundary condition, but the right hand side was modified.
-Second, we test a pseudo 1D problem with 2D elements with three different
+We test our MFEM setup with two different scenarios.
+First, we test a pseudo 1D problem but with 2D elements equipped with three different
 porosity scenarios.
-Third, we test a
+Second, we test a
 more complex yet a more realistic problem representing Mid Ocean Ridge where
 no true solution is presented.
 
+\iffalse
 Problem Setup 1: Manufactured Solution.
 
 We solve a manufactured system of equations on the rectangular domain 
@@ -373,8 +372,9 @@ Substitute the compuated results into PDE
 -\frac{8\phi_f^{1/2}}{3} \begin{pmatrix} 1 \\ 1 \end{pmatrix}
 \end{aligned}
 \end{equation}
+\fi
 
-Problem Setup 2: Column Compaction.
+Problem Setup 1: Column Compaction.
 
 In this problemsetup, we perform a convergence test on a 2D grid with a pseudo 1D problem.
 We study a compacting column in one direction. The column extends over $y \in [-L,L]$
@@ -499,7 +499,7 @@ where $c$ is a constant kernel.
 										  q_s &= q_l + \frac{u'}{\phi_0} + c,
 								\end{aligned}
 					 \end{equation}
-                where $c$ is a constant kernal shifting the pressure potential.
+                where $c$ is a constant kernel shifting the pressure potential.
 
 					 \begin{figure}[ht]
 						\centering
@@ -521,7 +521,7 @@ where $c$ is a constant kernel.
 							  $2\times80$ & 1.958e-06 & 1.97 & 1.958e-06 & 1.97 & 2.472e-04 & 2.02 & 2.738e-06 & 2.02\\
 							  $2\times160$ & 4.974e-07 & 1.98& 4.974e-07 & 1.98 & 5.972e-05 & 2.04 & 6.615e-07 & 2.05 
 					\end{tabular}
-								\caption{Constant porosity compaction column test.}
+								\caption{Piecewise Constant porosity compaction column test.}
 								\label{tab:constporositycolumn}
 					 \end{table}
 
@@ -570,14 +570,14 @@ where $c$ is a constant kernel.
 							  $2\times80$ &  9.028e-08 & 1.83 & 9.028e-08 & 1.83 & \quad & \quad & \quad & \quad\\
 							  $2\times160$ & 2.746e-08 & 1.72 & 2.746e-08 & 1.72 & \quad & \quad & \quad & \quad
 					\end{tabular}
-								\caption{Constant porosity compaction column test.}
+								\caption{Quadratic porosity compaction column test.}
 								\label{tab:constporositycolumn}
 					 \end{table}
 
 
 \end{itemize}
 
-Problem Setup 3: Mid-Ocean Ridge.
+Problem Setup 2: Mid-Ocean Ridge.
 
 We now reconsider the Mid-Ocean ridge test case in~\cite{DegenerateDarcy}.
 We solve the full system of equations on a dimensionless 
@@ -586,10 +586,10 @@ The boundary conditions are imposed by
 assigning classical corner flow solution of
 Stokes velocity in~\cite{SPIEGELMAN1987137}
 as essential boundary condition all around
-the computational doamin 
+the computational domain 
 \begin{equation}\label{eq:test2}
-		  \mathbf{v}_s = \frac{2U_0}{\pi(x^2+z^2)}\begin{pmatrix}
-					 \tan^{-1}(\frac{x}{-z})(x^2+z^2) + xz\\
+		  \mathbf{v}_s = \frac{2U_0}{\pi(x^2+y^2)}\begin{pmatrix}
+					 \tan^{-1}(\frac{x}{-y})(x^2+y^2) + xy\\
 z^2
 		  \end{pmatrix},
 \end{equation}
@@ -597,36 +597,48 @@ where $U_0 = 10^{-9}\text{m/s} \approx 3.2\text{cm/yr}$ is the
 constant upwelling velocity of mantle.
 According to mass conservation condition, we set no Darcy flux across the 
 boundary.
-We then set a no identically vanishing porosity by the formula
+We then set a not identically vanishing porosity by the formula
 \begin{equation}\label{eq:porositydistri}
 		  \phi(x,z) = \left \{ \begin{aligned}
-					 &0.05 (\frac{120\text{km} - z}{120 \text{km}})^2 (1 - \frac{\lvert x \rvert}{z + l}), \hspace{0.2cm} \text{if $x \leq 120\text{km}$ and $\lvert x \rvert \leq z + l$},\\
+					 &0.05 (\frac{0.375 + y}{0.375})^2 (1 - \frac{\lvert x \rvert}{\lvert y \rvert + l}), \hspace{0.2cm} \text{if $\lvert y \rvert \leq 0.375$ and $\lvert x \rvert \leq z + l$},\\
 					 &0, \hspace{5.2cm}\text{otherwise},
 		  \end{aligned}
 		  \right.
 \end{equation}
-where $l = 20\,\text{m}$ is the offset set to avoid singularity computation.
+where $l = 20\,\text{m}$ is the offset set to avoid singularity computation
 at the center $x=0$ we translate the coordinates $x$ to $x-l$ if $x<0$, and 
-$x+l$ when $x>0$. Unlike the previous test conducted in the quater plane 
+$x+l$ when $x>0$.
+In Figure~\ref{fig:MORporosity}, we show the porosity distribution in the
+computational domain.
+Unlike the previous test conducted in the quarter plane 
 where $x\in (0,0.5],\, y \in [-0.5,0.0]$.
-we perform the numerical test within the entire plane. 
+We perform the numerical test within the entire plane instead. 
 \begin{figure}[ht]
 		  \centering
-\includegraphics[width=12cm,height=6cm]{chapters/pics/mor_poro.eps}
+\includegraphics[width=16cm,height=8cm]{chapters/pics/mor_poro.eps}
 		  \caption{Porosity distribution.}
 		  \label{fig:MORporosity}
 \end{figure}
 
 \begin{figure}[ht]
 		  \centering
-\includegraphics[width=12cm,height=6cm]{chapters/pics/mor_l.eps}
+\includegraphics[width=16cm,height=8cm]{chapters/pics/mor_l.eps}
 		  \caption{Liquid pressure potential and velocity.}
 		  \label{fig:MORliquid}
 \end{figure}
-
 \begin{figure}[ht]
 		  \centering
-\includegraphics[width=12cm,height=6cm]{chapters/pics/mor_s.eps}
+\includegraphics[width=16cm,height=8cm]{chapters/pics/mor_s.eps}
 		  \caption{Solid pressure potential and velocity.}
 		  \label{fig:MORsolid}
 \end{figure}
+In Figure~\ref{fig:MORliquid} and Figure~\ref{fig:MORsolid}, we
+exhibit the nondimensional Stokes velocity $(\check{\mathbf{v}}_s,\check{q}_s)$ 
+and Darcy velocity $(\phi \check{\mathbf{v}}_r, \check{q}_l)$ respectively.
+We observe the molten magma rise to the surface and focus to the region where
+most porosity presents. The solid matrix upwell from the bottom of the domain. 
+We observe compaction at degree of melting (some porosity) where the buoyancy
+can no longer support the solid matrix on top of it due to density difference
+between solid and liquid.
+Despite of the presence of large no melting region, 
+the system is solved successfully with modified Uzawa iteration

@@ -8,7 +8,7 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->rho_f = 2800;
     pp->rho_s = 3300;
     pp->gx    = 0.0;
-    pp->gy    = -10.0;
+    pp->gy    = 10.0;
     pp->invk0 = 1.0/(1e-8);
     pp->phi0  = 0.4;
     pp->U0    = 1e-9;
