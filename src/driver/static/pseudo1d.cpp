@@ -63,8 +63,6 @@ double AssignPorosity(double phi_f){
 vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     // Stokes
-    double V0 = pp->V0 / pp->u0 * -1;
-
     return {0.0,0.0};
     //return {0.0, 1.0};
 }

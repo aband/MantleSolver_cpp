@@ -1,4 +1,5 @@
 #include "myFunc.h"
+
 void AssignPhyProperties(PhysProperty * pp){
 
     pp->theta = 0.0;
@@ -7,7 +8,7 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->rho_f = 2800;
     pp->rho_s = 3300;
     pp->gx    = 0.0;
-    pp->gy    = -10.0;
+    pp->gy    = 10.0;
     pp->invk0 = 1.0/(1e-8);
     pp->phi0  = 0.4;
     pp->U0    = 1e-9;
@@ -24,6 +25,7 @@ void AssignPhyProperties(PhysProperty * pp){
 
     pp->l = 20/pp->l0;
 }
+
 
 double AssignPorosity(const vertex& point, PhysProperty * pp){
 
@@ -69,9 +71,17 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     double coef = 2*pp->U0/(3.14159265358979323846*(x*x+z*z))/pp->u0;
     //coef = 2/(3.14159265358979323846*(x*x+z*z));
 
-    work =  {atan(x/z)*(x*x+z*z) - x*z, -z*z};
+    work =  {atan(x/(-1*z))*(x*x+z*z) + x*z, z*z};
 
     work *= coef;
+
+    if (z == 0){
+        if (point[0] < 0){
+            work[0] = -1*pp->U0/pp->u0;
+        } else {
+            work[0] = pp->U0/pp->u0;
+        }
+    }
 
     return work; 
 }

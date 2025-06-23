@@ -67,11 +67,15 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
 
     if (z<0){
         double c0 = 1.0/(1-4*phi); 
-        double c2 = -1.0/(1-4*phi)/17.0;
+        double c2 = -1.0*phi/(1-4*phi)/(18*phi - 1);
+        double c4 = (80.0/3.0*phi*phi*phi*c0 - 10*phi*phi*c2)/(40*phi-1);
 
         double scale = phi*phi*z*z*z*z;
 
-        work = -1.0*scale * (c0 + c2*z*z);
+        double r1 = (3+sqrt(9+4/phi))/2;
+
+        work = -1.0*scale * (c0) + 
+					 phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
 
     }
 
@@ -290,8 +294,16 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
 
         }
 
-        // Add top boundary
-        if (j == mi.MPIglobalCellSize[1]-1){
+     }}
+
+     // Add top boundary
+     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        int j= mi.MPIglobalCellSize[1]-1;
+
+        indice gcell {i,j};
+
+        vertexSet corners = extractCorners(mi, gcell);
 
         edge = {corners.at(2), corners.at(3)};
 
@@ -322,12 +334,10 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
             fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
 
             fprintf(exactv, "%e ", 0.0);
-
         }
 
-        }
+     }
 
-     }}
 /*
      }fprintf(dvx, "\n ");
       fprintf(dvy, "\n ");

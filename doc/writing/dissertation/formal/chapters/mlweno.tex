@@ -1,3 +1,6 @@
+\section{Hyperbolic Transport System}
+
+
 \section{Finite Volume Method}
 The finite volume method (FVM) is a discretization method widely used in
 various scenarios that conservation laws are involved.
@@ -148,7 +151,7 @@ smoothness of $u(\mathbf{x})$ on the stencil $S$.
 The classic method from~\cite{JSSmoothness} is defined in analogue to 
 a cell-averaged Sobolev seminorm as:
 \begin{equation}
-		  \sigma_P = \sum_{1\leq \lvert\alpha\rvert \leq m} 
+		  \sigma_{JS} = \sum_{1\leq \lvert\alpha\rvert \leq m} 
 		  \int\int_{E_0} \lvert E_0 \rvert^{\lvert\alpha\rvert -1} 
 		  (\mathcal{D}^\alpha Q(x,y))^2 dxdy,
 \end{equation}
@@ -157,7 +160,7 @@ and $\mathcal{D}$ is the derivative operator $\mathcal{D}^\alpha = \partial^{\lv
 The Jiang-Shu smoothness indicator can be reformed with basis polynomials:
 \begin{equation}\label{eq:JSsmoothenssIC}
 \begin{aligned}
-		  \sigma_P &= \sum_{1\leq \lvert \alpha \rvert \leq m} \lvert E_0 \rvert^{\lvert \alpha \rvert -1} \iint_{E_0} (\mathcal{D}^\alpha Q(x,y))^2 dx dy\\
+		  \sigma_{JS} &= \sum_{1\leq \lvert \alpha \rvert \leq m} \lvert E_0 \rvert^{\lvert \alpha \rvert -1} \iint_{E_0} (\mathcal{D}^\alpha Q(x,y))^2 dx dy\\
 					  &= \sum_{1\leq \lvert \alpha \rvert \leq m} \iint_{\hat{E}_0} (\mathcal{D}^\alpha\hat{Q}(\xi, \eta))^2 d\xi d\eta \\
 					  &= \sum_{1\leq \lvert \alpha \rvert \leq m} \iint_{\hat{E}_0} \big( \sum_{ij} \overline{u}_{ij} \mathcal{D}^\alpha \hat{\phi}_{i,j}(\xi, \eta) \big)^2 d\xi d\eta \\
 					  &= \sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'.j'} \sum_{1\leq \lvert \alpha \rvert \leq m} 
@@ -172,7 +175,10 @@ Alternatively, we can expand the Jiang-Shu smoothness indicator according to pol
 which paves the way for further simplification. 
 Recall the tensor product polynomial version~\eqref{eq:stencilpolynomialscaled},
 \begin{equation}
-\sigma_P = \sum_{}
+		  \begin{aligned}
+					 \sigma_{JS} &= \sum_{1\leq \lvert \alpha \rvert m} \\
+					 &= \sum \sum \eta_{i} c_i c_j
+		  \end{aligned}
 \end{equation}
 
 We observe that the smoothness indicator exhibit following convergence property that
@@ -202,7 +208,10 @@ as the classic Jiang-Shu smoothness indicator. Hence, we stick to the classic de
 discussion.
 
 \item \textit{Polynomial smoothness indicator}
-
+		  \begin{equation}
+					 \sigma_{P} = \sum \eta_i c_i^2
+		  \end{equation}
+We obtain this polynomial smoothness indicator by dropping all the cross terms. 
 \end{itemize}
 
 \subsection{ML-WENO weighting}

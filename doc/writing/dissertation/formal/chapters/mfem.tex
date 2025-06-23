@@ -270,11 +270,11 @@ $\phi_E^{1/2}$ as
 To see local mass conservation of the fluid, let $E \in \mathcal{T}_h$ be any element. 
 The equation~\eqref{eq:weak_continuous_mass} gives
 \begin{equation}
-		  \int_E \nabla \cdot (\phi^{1+\Theta} \check{\mathbf{v}}_{r,h}) d\mathbf{x} + \int_E \frac{\phi}{1-\phi} (\check{q}_{l,h} - q_h) dx = 0,
+		  \int_E \nabla \cdot (\phi^{1+\Theta} \check{\mathbf{v}}_{r,h}) d\mathbf{x} + \int_E \frac{\phi}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h) dx = 0,
 \end{equation}
 and the equation~\eqref{eq:weak_compaction_mass} gives
 \begin{equation}
-		  \int_E \nabla \cdot \mathbf{v}_{s,h} d\mathbf{x} - \int_E \frac{\phi}{1-\phi} (q_{l,h} - q_h) dx = 0.
+		  \int_E \nabla \cdot \mathbf{v}_{s,h} d\mathbf{x} - \int_E \frac{\phi}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h) dx = 0.
 \end{equation}
 We define an auxiliary space $\omega_E$ being 1 on $E$ and 0 elsewhere.
 We sum equations~\eqref{eq:weak_compaction_mass} and~\eqref{eq:weak_continuous_mass} 
@@ -285,7 +285,29 @@ The local mass conservation of the phase-averaged mixture is now retrieved as
 		  \int_{E}\nabla \cdot (\phi^{1+\Theta}\check{\mathbf{v}}_r + \check{\mathbf{v}}_s) d\mathbf{x} = 0.
 \end{equation}
 
-\subsection{Uniqueness and Convergence Properties}
+\subsection{Recovery of the unscaled Darcy variables}
+The unscaled Darcy potential is $\check{q}_f = \phi^{-1/2}\tilde{\check{q}}_l$, see~\eqref{eq:scaledVariables}. 
+We can reterive an approximate Darcy potential. We assume that $\check{q}_{f,h} \in \mathbb{W}_{D,h}$, so on
+an element $E$ we define
+\begin{equation}
+		  \check{q}_{l,h}\rvert_{E} = \left\{
+					 \begin{alignedat}{2}
+								&\phi_E^{-1/2} \tilde{\check{q}}_{l,h}\lvert_E \quad &&\text{if} \phi_E \neq 0,\\
+								&0                                                   &&\text{if} \phi_E = 0,
+					 \end{alignedat}
+					 \right.
+\end{equation}
+where the liquid pressure potential $\check{q}_l$ does not hold any physical 
+meanings when there is no melting presents ($\phi = 0$).
+
+The relative Darcy velocity is given by $\check{\mathbf{v}}_r = \phi^{\Theta} \tilde{\check{\mathbf{v}}}$, 
+see~\eqref{eq:scaledVariables} as well. To maintain local mass balance, we 
+enforce that on each edge $e_i \subset \partial E$
+\begin{equation}
+		  \int_{e_i} \phi^{1+\Theta} \tilde{\check{\mathbf{v}}}_r \cdot \pmb{\nu}_i\, ds = \int_{e_i} \phi \check{\mathbf{v}}_{r,h} \cdot \pmb{\nu} \, ds.
+\end{equation}
+
+\subsection{Uniqueness and Convergence properties}
 
 \begin{lem}
 		  Assuming~\eqref{eq:phiboundness} holds, there exists a unique solution
@@ -318,7 +340,8 @@ with essential boundary condition, but the right hand side was modified.
 Second, we test a pseudo 1D problem with 2D elements with three different
 porosity scenarios.
 Third, we test a
-more complex yet a more realistic problem representing Mid Ocean Ridge.
+more complex yet a more realistic problem representing Mid Ocean Ridge where
+no true solution is presented.
 
 Problem Setup 1: Manufactured Solution.
 
@@ -353,15 +376,21 @@ Substitute the compuated results into PDE
 
 Problem Setup 2: Column Compaction.
 
-In this problemsetup, we perform convergence test on a 2D grid with a 1D problem.
+In this problemsetup, we perform a convergence test on a 2D grid with a pseudo 1D problem.
 We study a compacting column in one direction. The column extends over $y \in [-L,L]$
 and has no flow through top and bottom boundaries. We prescribe the following boundary conditions
 \begin{itemize}
 		  \item Bottom Edge;
 					 \begin{itemize}
-								\item Stokes velocity $\check{\mathbf{v}}_s = \mathbf{0}$;
-								\item Darcy velocity $\check{\mathbf{v}}_l = \mathbf{0}$;
-							   \item Normal flux is also determined to be zero.
+								\item Essential boundary condition:
+										  \begin{equation*}
+										  \left\{
+													 \begin{aligned}
+																 \check{\mathbf{v}}_s &= \mathbf{0};\\
+																\mathbf{b} &= \mathbf{0};
+													 \end{aligned}\right.
+										  \end{equation*}
+								\item Essential boundary condition: Normal Darcy flux $\check{\mathbf{v}}_r\cdot \pmb{\nu}= 0$;
 					 \end{itemize}
 		  \item Left and Right side Edges;
 					 \begin{itemize}
@@ -550,18 +579,21 @@ where $c$ is a constant kernel.
 
 Problem Setup 3: Mid-Ocean Ridge.
 
-We now redo the Mid-Ocean ridge test case in~\cite{DegenerateDarcy}.
-We solve the full system of equations on the rectangular domain $-160\text{km} < x < 160\text{km}$, $0, x, 160\text{km}$. 
+We now reconsider the Mid-Ocean ridge test case in~\cite{DegenerateDarcy}.
+We solve the full system of equations on a dimensionless 
+rectangular domain $x \in [-0.5,0.5]$ and $z \in[-0.5, 0.0]$.
 The boundary conditions are imposed by
-the constant porosity corner flow solution of
-Stokes velocity as 
+assigning classical corner flow solution of
+Stokes velocity in~\cite{SPIEGELMAN1987137}
+as essential boundary condition all around
+the computational doamin 
 \begin{equation}\label{eq:test2}
 		  \mathbf{v}_s = \frac{2U_0}{\pi(x^2+z^2)}\begin{pmatrix}
-					 \tan^{-1}(x/z)(x^2+z^2) - xz\\
--z^2
+					 \tan^{-1}(\frac{x}{-z})(x^2+z^2) + xz\\
+z^2
 		  \end{pmatrix},
 \end{equation}
-where $U_0 = 10^{-9}\text{m/s} = 3.2\text{cm/yr}$ is the 
+where $U_0 = 10^{-9}\text{m/s} \approx 3.2\text{cm/yr}$ is the 
 constant upwelling velocity of mantle.
 According to mass conservation condition, we set no Darcy flux across the 
 boundary.
@@ -573,6 +605,28 @@ We then set a no identically vanishing porosity by the formula
 		  \end{aligned}
 		  \right.
 \end{equation}
-where $l = 20\text{m}$ is the offset set to avoid singularity computation.
+where $l = 20\,\text{m}$ is the offset set to avoid singularity computation.
 at the center $x=0$ we translate the coordinates $x$ to $x-l$ if $x<0$, and 
-$x+l$ when $x>0$.
+$x+l$ when $x>0$. Unlike the previous test conducted in the quater plane 
+where $x\in (0,0.5],\, y \in [-0.5,0.0]$.
+we perform the numerical test within the entire plane. 
+\begin{figure}[ht]
+		  \centering
+\includegraphics[width=12cm,height=6cm]{chapters/pics/mor_poro.eps}
+		  \caption{Porosity distribution.}
+		  \label{fig:MORporosity}
+\end{figure}
+
+\begin{figure}[ht]
+		  \centering
+\includegraphics[width=12cm,height=6cm]{chapters/pics/mor_l.eps}
+		  \caption{Liquid pressure potential and velocity.}
+		  \label{fig:MORliquid}
+\end{figure}
+
+\begin{figure}[ht]
+		  \centering
+\includegraphics[width=12cm,height=6cm]{chapters/pics/mor_s.eps}
+		  \caption{Solid pressure potential and velocity.}
+		  \label{fig:MORsolid}
+\end{figure}
