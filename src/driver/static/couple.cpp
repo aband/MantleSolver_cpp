@@ -75,45 +75,132 @@ inline vector<double> infcoeff(const int& n, const double& phi){
     return work;
 }
 
+inline vector<double> oddcoeff(const int& n, const double& phi, const int& r, const int& add){
+
+    vector<double> work;
+
+    assert(n>2);
+
+    work.resize(n);
+
+    vector<double> tmp;
+    tmp.resize(n+1);
+
+    // c1
+    work.at(0) = 1.0;
+
+    tmp.at(0) = 0.0;
+    tmp.at(1) = 1.0;
+
+/*
+    int tn1 = 3+r;
+    work.at(1) = -1.0/3.0*phi*phi*((tn1-2)*(tn1+3)+4+2*(tn1+2)) * work.at(0) / 
+                 ( ((tn1-1)*tn1 +6*tn1 +4)*phi - 1);
+
+    int tn2 = 5+r;
+    work.at(2) = (phi*phi*phi*work.at(0) - 14*phi*phi*work.at(1)) / (54*phi - 1);
+*/
+    int nn = 0;
+
+    for (int i=1; i<n; i++){
+        nn = i*2+add;
+
+        double c0 = 4.0/3.0 * phi*phi*phi * ((nn+r-4)*(nn+r+1)+ 4 + 4*(nn+r));
+        double c1 = 1.0/3.0 * phi*phi * ((nn+r-2)*(nn+r+3) + 4 + 2*(nn+r+2));
+        double c2 = phi*((nn+r+5)*(nn+r) + 4) - 1.0;
+        
+        work.at(i) = (c0*tmp.at(i-2+1) - c1*tmp.at(i-1+1))/c2;
+        tmp.at(i+1) = work.at(i);
+
+    }
+
+    return work;
+}
+
+inline vector<double> evencoeff(const int& n, const double& phi){
+
+    vector<double> work;
+
+    assert(n>2);
+
+    work.resize(n);
+
+    // c1
+    work.at(0) = 1.0;
+    work.at(1) = -4.0*phi*phi * work.at(0) / (18*phi - 1);
+    work.at(2) = (40*phi*phi*phi*work.at(0) - 14*phi*phi*work.at(1)) / (54*phi - 1);
+
+    int nn = 0;
+
+    for (int i=3; i<n; i++){
+        nn = i*2;
+
+        double c0 = 4.0/3.0 * phi*phi*phi * ((nn-4)*(nn+1)+ 4 + 4*nn);
+        double c1 = 1.0/3.0 * phi*phi * ((nn-2)*(nn+3) + 4 + 2*(nn+2));
+        double c2 = phi*((nn+5)*nn + 4) - 1.0;
+
+        work.at(i) = (c0*work.at(i-2) - c1*work.at(i-1))/c2;
+    }
+
+    return work;
+}
+
 const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
 
     double work = 0.0;
 
     double phi = AssignPorosity(point, pp);
-    phi = 0.01;
+    phi = 0.001;
 
     double z = point[1];
 
-/*
-    if (z<0){
-        double r1 = (3+sqrt(9+4/phi))/2;
-        double r2 = (3-sqrt(9+4/phi))/2;
-        work = phi*phi/(1-4*phi) * (pow(L,4-r1)*pow(-1*z,r1) - z*z*z*z);
-    }
-*/
+    double r1 = (3+sqrt(9+4/phi))/2;
+    double r2 = (-5+sqrt(9+4/phi))/2;
 
-    double c0 = -1.0/(1-4*phi); 
-    double c2 = -(phi+4*phi*phi*c0)/(18*phi - 1);
-    double c4 = (80.0/3.0*phi*phi*phi*c0 - 10*phi*phi*c2)/(40*phi-1);
-
-    int cutoff = 500;
+    int cutoff = 20;
     vector<double> coeff = infcoeff(cutoff,phi);
+    vector<double> ocoeff = oddcoeff(cutoff,phi,r2,1);
+    vector<double> ecoeff = oddcoeff(cutoff,phi,r2,0);
+
+    double p1 = 0.0; 
+    double a1 = 0.0;
+    double b1 = 0.0;
+
+    for (int i=0; i<cutoff; i++){
+        p1 += coeff.at(i)*pow(2,i*2);
+        a1 += coeff.at(i)*pow(2,i*2);
+        b1 += ocoeff.at(i)*pow(2,i*2+1+r2);
+    }
+
+    double p2 = 0.0; 
+    double a1 = 0.0;
+    double b1 = 0.0;
+
+    for (int i=0; i<cutoff; i++){
+        p2 += coeff.at(i)*pow(0.5,i*2);
+        a2 += coeff.at(i)*pow(0.5,i*2);
+        b2 += ocoeff.at(i)*pow(0.5,i*2+1+r2);
+    }
+
+    double c1 = 0.0;
+    double c2 = 0.0;
+
 
     if (z<0){
         double scale = phi*phi*z*z*z*z;
 
-        double r1 = (3+sqrt(9+4/phi))/2;
+       // work = scale * (c0)  
+       //         + phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
+//        work = phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
 
-        //work = -1.0*scale * (c2 * z*z);  
-					//+ phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
 
         for (int i=0; i<cutoff; i++){
-            work += coeff.at(i)*pow(z,i*2)*scale;
-				if (z < -1.9){
-				//cout << coeff.at(i) << " " << pow(z,i*2) << endl;
-			   cout << coeff.at(i)*pow(z,i*2)*scale << endl;	
-				}
+            work += (coeff.at(i)*pow(z,i*2) + 
+                     phscale*ocoeff.at(i)*pow(abs(z),i*2+1+r2));
         }
+
+        work *= scale;
+
     }
 
     return work;
