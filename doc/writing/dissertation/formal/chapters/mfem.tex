@@ -424,12 +424,12 @@ When no melting presents $\phi = 0$, the equations reduce to
 		  u = -v = 0,\quad\text{and}\quad q'_s = 1, \quad\text{and}\quad q_l = 0.
 \end{equation}
 When melting presents $\phi > 0$, the equations can be reduced to
-\begin{equation}
+\begin{equation}\label{eq:ode}
 		  \phi^{2+2\Theta}\bigg(\frac{3+\phi - 4\phi^2}{3\phi}u' \bigg)' - u = \phi^{2+2\Theta}(1-\phi),
 \end{equation}
 where all other quantities can be determined according to $u$ as
 \begin{equation}
-		  v=-u, \quad \text{and}\quad  q'_l = -\phi^{-2-2\Theta}u, \quad \text{and}\quad qs = u'/\phi + q_l.
+		  v=-u, \quad \text{and}\quad  q'_l = -\phi^{-2-2\Theta}u, \quad \text{and}\quad q_s = u'/\phi + q_l.
 \end{equation}
 When $\phi$ is constant, we define an auxiliary function $R$ as
 \begin{equation}
@@ -573,6 +573,24 @@ where $c$ is a constant kernel.
 								\caption{Quadratic porosity compaction column test.}
 								\label{tab:constporositycolumn}
 					 \end{table}
+In the previous literature, we made the assumption that $\phi = \phi_+ z^2 \ll 1$.
+Here, we present an alternative way of constructing approximation solution of the
+second order ordinary differential equation~\eqref{eq:ode}. 
+Let $v = u/\phi^2 = u/(\phi_+^2 z^4)$,
+\begin{equation}
+		  v' = \frac{-4v}{z} + \frac{u'}{\phi_+^2 z^4}.
+\end{equation}
+Substitute $u$ with $v$, we have 
+\begin{equation}
+		  \frac{\phi_+}{3} \bigg[  \bigg]
+\end{equation}
+We assume that there exists a solution that can be represented as a sum of 
+an infinity series. The solution can be understood as the sum of a particular
+solution and two homogenous power-series solution.
+Consider the homogenous equation
+\begin{equation}\label{eq:homogenous}
+\phi
+\end{equation}
 
 
 \end{itemize}

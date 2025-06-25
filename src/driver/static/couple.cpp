@@ -75,7 +75,8 @@ inline vector<double> infcoeff(const int& n, const double& phi){
     return work;
 }
 
-inline vector<double> oddcoeff(const int& n, const double& phi, const int& r, const int& add){
+inline vector<double> recurcoeff(const int& n, const double& phi, 
+					                  const int& r, const int& add){
 
     vector<double> work;
 
@@ -92,14 +93,6 @@ inline vector<double> oddcoeff(const int& n, const double& phi, const int& r, co
     tmp.at(0) = 0.0;
     tmp.at(1) = 1.0;
 
-/*
-    int tn1 = 3+r;
-    work.at(1) = -1.0/3.0*phi*phi*((tn1-2)*(tn1+3)+4+2*(tn1+2)) * work.at(0) / 
-                 ( ((tn1-1)*tn1 +6*tn1 +4)*phi - 1);
-
-    int tn2 = 5+r;
-    work.at(2) = (phi*phi*phi*work.at(0) - 14*phi*phi*work.at(1)) / (54*phi - 1);
-*/
     int nn = 0;
 
     for (int i=1; i<n; i++){
@@ -110,6 +103,7 @@ inline vector<double> oddcoeff(const int& n, const double& phi, const int& r, co
         double c2 = phi*((nn+r+5)*(nn+r) + 4) - 1.0;
         
         work.at(i) = (c0*tmp.at(i-2+1) - c1*tmp.at(i-1+1))/c2;
+//		  cout << "all : " << tmp.at(i-2+1) << "  " <<tmp.at(i-1+1)<< endl;
         tmp.at(i+1) = work.at(i);
 
     }
@@ -117,6 +111,38 @@ inline vector<double> oddcoeff(const int& n, const double& phi, const int& r, co
     return work;
 }
 
+inline double recurcoeff_derive(const vector<double>& infcoeff,
+                         const vector<double>& ecoeff,
+		                   const int& r, const int& cutoff,
+								 const double& phi, const double& z, const double& c){
+
+    double work = 0.0;
+
+    for (int i=0; i<cutoff; i++){
+        work += infcoeff.at(i)*phi*phi*(4+i*2)*pow(abs(z),4+i*2-1)
+                + c* ecoeff.at(i)*phi*phi*(4+i*2+r)*pow(abs(z),4+i*2+r-1);
+    }
+    return work;
+}
+
+inline double recurcoeff_inte(const vector<double>& infcoeff,
+                              const vector<double>& ecoeff,
+		                        const int& r, const int& cutoff,
+								      const double& phi, const double& z, 
+										const double& c){
+
+    double work = 0.0;
+
+    for (int i=0; i<cutoff; i++){
+        work += infcoeff.at(i)*pow(abs(z),i*2+1)/(i*2+1.0)
+             + c* ecoeff.at(i)*pow(abs(z),i*2+r+1)/(i*2+1.0+r);
+    }
+
+    return work;
+}
+
+
+/*
 inline vector<double> evencoeff(const int& n, const double& phi){
 
     vector<double> work;
@@ -128,7 +154,7 @@ inline vector<double> evencoeff(const int& n, const double& phi){
     // c1
     work.at(0) = 1.0;
     work.at(1) = -4.0*phi*phi * work.at(0) / (18*phi - 1);
-    work.at(2) = (40*phi*phi*phi*work.at(0) - 14*phi*phi*work.at(1)) / (54*phi - 1);
+    work.at(2) = (80.0/3.0*phi*phi*phi*work.at(0) - 10*phi*phi*work.at(1)) / (40*phi - 1);
 
     int nn = 0;
 
@@ -140,27 +166,30 @@ inline vector<double> evencoeff(const int& n, const double& phi){
         double c2 = phi*((nn+5)*nn + 4) - 1.0;
 
         work.at(i) = (c0*work.at(i-2) - c1*work.at(i-1))/c2;
+
+//		  cout << "even : " <<  work.at(i-2) << "  " <<work.at(i-1)<< endl;
+ 
     }
 
     return work;
 }
-
+*/
 const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
 
     double work = 0.0;
 
     double phi = AssignPorosity(point, pp);
-    phi = 0.001;
+    phi = 0.01;
 
     double z = point[1];
 
     double r1 = (3+sqrt(9+4/phi))/2;
     double r2 = (-5+sqrt(9+4/phi))/2;
 
-    int cutoff = 20;
+    int cutoff = 5;
     vector<double> coeff = infcoeff(cutoff,phi);
-    vector<double> ocoeff = oddcoeff(cutoff,phi,r2,1);
-    vector<double> ecoeff = oddcoeff(cutoff,phi,r2,0);
+    vector<double> ocoeff = recurcoeff(cutoff,phi,r2,1);
+    vector<double> ecoeff = recurcoeff(cutoff,phi,r2,0);
 
     double p1 = 0.0; 
     double a1 = 0.0;
@@ -168,39 +197,47 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
 
     for (int i=0; i<cutoff; i++){
         p1 += coeff.at(i)*pow(2,i*2);
-        a1 += coeff.at(i)*pow(2,i*2);
+        a1 += ecoeff.at(i)*pow(2,i*2+r2);
         b1 += ocoeff.at(i)*pow(2,i*2+1+r2);
     }
 
     double p2 = 0.0; 
-    double a1 = 0.0;
-    double b1 = 0.0;
+    double a2 = 0.0;
+    double b2 = 0.0;
 
     for (int i=0; i<cutoff; i++){
-        p2 += coeff.at(i)*pow(0.5,i*2);
-        a2 += coeff.at(i)*pow(0.5,i*2);
-        b2 += ocoeff.at(i)*pow(0.5,i*2+1+r2);
+        p2 += coeff.at(i)*pow(1.2,i*2);
+        a2 += ecoeff.at(i)*pow(1.2,i*2+r2);
+        b2 += ocoeff.at(i)*pow(1.2,i*2+1+r2);
     }
 
     double c1 = 0.0;
     double c2 = 0.0;
 
+    double multi = 1.0/(a1*b2-a2*b1);
+
+    c1 = b1*p2-b2*p1;
+    c2 = a2*p1-a1*p2;
+
+    c1*=multi;
+    c2*=multi;
+
+    c1 = -p1/a1;
 
     if (z<0){
         double scale = phi*phi*z*z*z*z;
 
-       // work = scale * (c0)  
-       //         + phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
-//        work = phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
-
+/*
+        work = scale * 1.0/(4*phi-1)  
+                + phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
+*/
 
         for (int i=0; i<cutoff; i++){
-            work += (coeff.at(i)*pow(z,i*2) + 
-                     phscale*ocoeff.at(i)*pow(abs(z),i*2+1+r2));
+            work += coeff.at(i)*pow(z,i*2)
+						  + c1*ecoeff.at(i)*pow(abs(z),i*2+r2);
+                 // + c2*ocoeff.at(i)*pow(abs(z),i*2+1+r2));
         }
-
         work *= scale;
-
     }
 
     return work;
@@ -263,25 +300,47 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 
     std::array<double,2> work {0.0,0.0};
 
-    double phi = 0.001;
+    double phi = 0.01;
 
     double z = point[1];
 
     double r1 = (3+sqrt(9+4/phi))/2;
     double r2 = (3-sqrt(9+4/phi))/2;
 
-    double up = phi*phi/(1-4*phi) * (r1*pow(L,4-r1)*pow(abs(z),r1-1) - 4*pow(abs(z),3));
+    double tmp1 = phi*phi/(1-4*phi) * (r1*pow(L,4-r1)*pow(abs(z),r1-1) - 4*pow(abs(z),3));
 
+    int cutoff = 20;
+    double r = (-5+sqrt(9+4/phi))/2;
+
+    vector<double> coeff = infcoeff(cutoff,phi);
+    vector<double> ecoeff = recurcoeff(cutoff,phi,r,0);
+
+    double p1 = 0.0;
+	 double a1 = 0.0;
+
+    for (int i=0; i<cutoff; i++){
+        p1 += coeff.at(i)*pow(2,i*2);
+        a1 += ecoeff.at(i)*pow(2,i*2+r);
+    }
+
+    double c1 = -p1/a1;
+
+    double tmp2 = recurcoeff_derive(coeff, ecoeff, r, cutoff, phi, z, c1); 
 
     // ql
+	 double tt = 0.0;
+	 double ttt = 0.0; 
     if (z < 0){
-        //work.at(0) = 1.0/(1-4*phi) * (z + pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
+        //tt = 1.0/(1-4*phi) * (z + pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
 
-        //work.at(1) = work.at(0) - up/phi/z/z;
+        //work.at(1) = tt - tmp1/phi/z/z;
 
-        work.at(1) = z - 1.0/3.0 * phi * pow(z,3) - up * (1-4*phi*z*z)/3.0;
+        ttt = z - 1.0/3.0 * phi * pow(z,3) - tmp1 * (1-4*phi*z*z)/3.0;
 
-        work.at(0) = work.at(1) + up/phi/z/z;
+        //work.at(0) = ttt + tmp1/phi/z/z;
+        work.at(0) = recurcoeff_inte(coeff,ecoeff,r,cutoff,phi,z,c1); 
+
+        work.at(1) = z - 1.0/3.0 * phi * pow(z,3) + tmp2 * (1-4*phi*z*z)/3.0;
 
     } else {
 
@@ -754,7 +813,7 @@ double sumqs_minus = 0.0;
 
         double ql = tildeqf *coef;
 //        double qs = -ql + 1.0/(1-avephi)*(ql+q);
-        double qs = -ql + 1.0/(1-phif)*(ql+q);
+        double qs = -ql + 1.0/(1-avephi)*(ql+q);
 
         ql_vec.at(nelem) = -ql;
         qs_vec.at(nelem) = qs;
