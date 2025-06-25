@@ -52,9 +52,12 @@ inline vector<double> infcoeff(const int& n, const double& phi){
 
     vector<double> work;
 
-    assert(n > 2);
+    if (n<3){
 
-	 work.resize(n);
+	 work.resize(3);
+    } else {
+        work.resize(n);
+    }
 
     work.at(0) = 1.0/(4*phi - 1);  
     work.at(1) = (-1.0*phi - 4*phi*phi*work.at(0))/(18*phi - 1);
@@ -80,7 +83,7 @@ inline vector<double> recurcoeff(const int& n, const double& phi,
 
     vector<double> work;
 
-    assert(n>2);
+    assert(n>1);
 
     work.resize(n);
 
@@ -101,9 +104,8 @@ inline vector<double> recurcoeff(const int& n, const double& phi,
         double c0 = 4.0/3.0 * phi*phi*phi * ((nn+r-4)*(nn+r+1)+ 4 + 4*(nn+r));
         double c1 = 1.0/3.0 * phi*phi * ((nn+r-2)*(nn+r+3) + 4 + 2*(nn+r+2));
         double c2 = phi*((nn+r+5)*(nn+r) + 4) - 1.0;
-        
+
         work.at(i) = (c0*tmp.at(i-2+1) - c1*tmp.at(i-1+1))/c2;
-//		  cout << "all : " << tmp.at(i-2+1) << "  " <<tmp.at(i-1+1)<< endl;
         tmp.at(i+1) = work.at(i);
 
     }
@@ -135,7 +137,7 @@ inline double recurcoeff_inte(const vector<double>& infcoeff,
 
     for (int i=0; i<cutoff; i++){
         work += infcoeff.at(i)*pow(abs(z),i*2+1)/(i*2+1.0)
-             + c* ecoeff.at(i)*pow(abs(z),i*2+r+1)/(i*2+1.0+r);
+             + c*ecoeff.at(i)*pow(abs(z),i*2+r+1)/(i*2+1.0+r);
     }
 
     return work;
@@ -179,7 +181,7 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
     double work = 0.0;
 
     double phi = AssignPorosity(point, pp);
-    phi = 0.01;
+    phi = 0.001;
 
     double z = point[1];
 
@@ -238,6 +240,7 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
                  // + c2*ocoeff.at(i)*pow(abs(z),i*2+1+r2));
         }
         work *= scale;
+
     }
 
     return work;
@@ -300,7 +303,7 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 
     std::array<double,2> work {0.0,0.0};
 
-    double phi = 0.01;
+    double phi = 0.001;
 
     double z = point[1];
 
@@ -309,7 +312,7 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 
     double tmp1 = phi*phi/(1-4*phi) * (r1*pow(L,4-r1)*pow(abs(z),r1-1) - 4*pow(abs(z),3));
 
-    int cutoff = 20;
+    int cutoff = 10;
     double r = (-5+sqrt(9+4/phi))/2;
 
     vector<double> coeff = infcoeff(cutoff,phi);
@@ -325,22 +328,27 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 
     double c1 = -p1/a1;
 
+    //cout << c1 << "  " << pow(L,4-r1)/(1-4*phi) << "  " << 1.0/ pow(2,r1-4);
+
     double tmp2 = recurcoeff_derive(coeff, ecoeff, r, cutoff, phi, z, c1); 
 
     // ql
 	 double tt = 0.0;
 	 double ttt = 0.0; 
     if (z < 0){
-        //tt = 1.0/(1-4*phi) * (z + pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
+        tt = 1.0/(1-4*phi) * (z + pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
 
         //work.at(1) = tt - tmp1/phi/z/z;
 
         ttt = z - 1.0/3.0 * phi * pow(z,3) - tmp1 * (1-4*phi*z*z)/3.0;
 
         //work.at(0) = ttt + tmp1/phi/z/z;
-        work.at(0) = recurcoeff_inte(coeff,ecoeff,r,cutoff,phi,z,c1); 
 
-        work.at(1) = z - 1.0/3.0 * phi * pow(z,3) + tmp2 * (1-4*phi*z*z)/3.0;
+        work.at(0) = recurcoeff_inte(coeff,ecoeff,r,cutoff,phi,z,c1) + c1*phi*0.2*pow(abs(z),r+5); 
+
+        //cout << tt << "  " << work.at(0) << endl;
+
+        work.at(1) = z - 1.0/3.0 * phi * pow(z,3) + tmp2 * (1-4*phi*z*z)/3.0; 
 
     } else {
 
@@ -942,7 +950,7 @@ sumexact += -1.0*exactval[1];
 		  if (j < halfsize){
         qs_exact.at(nelem) = qs_exact.at(nelem) - sum_exactqs_half1 +sum_vecqs_half1;
         } else {
-       qs_exact.at(nelem) = qs_exact.at(nelem) - sum_exactqs_half2 +sum_vecqs_half2;
+        qs_exact.at(nelem) = qs_exact.at(nelem) - sum_exactqs_half2 +sum_vecqs_half2;
 		  }
 
         fprintf(exactqs, "%.16f ", qs_exact.at(nelem));

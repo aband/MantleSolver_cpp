@@ -333,7 +333,7 @@ We use the projection operators defined in
 
 \input chapters/linear.tex
 
-\subsection{Numerical Test}
+\section{Numerical Test}
 We test our MFEM setup with two different scenarios.
 First, we test a pseudo 1D problem but with 2D elements equipped with three different
 porosity scenarios.
@@ -565,37 +565,128 @@ where $c$ is a constant kernel.
 							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
 							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
 							  \hline
-							  $2\times20$ &  9.616e-07 & -& 9.616e-07 & - & \quad & \quad & \quad & \quad\\
-							  $2\times40$ &  3.212e-07 & 1.58 & 3.212e-07 & 1.58 & \quad & \quad & \quad & \quad\\
-							  $2\times80$ &  9.028e-08 & 1.83 & 9.028e-08 & 1.83 & \quad & \quad & \quad & \quad\\
-							  $2\times160$ & 2.746e-08 & 1.72 & 2.746e-08 & 1.72 & \quad & \quad & \quad & \quad
+							  $2\times20$ &  9.616e-07 & -& 9.616e-07 & - & - & - & - & -\\
+							  $2\times40$ &  3.212e-07 & 1.58 & 3.212e-07 & 1.58 & - & - & - & -\\
+							  $2\times80$ &  9.028e-08 & 1.83 & 9.028e-08 & 1.83 & - & - & - & -\\
+							  $2\times160$ & 2.746e-08 & 1.72 & 2.746e-08 & 1.72 & - & - & - & -
 					\end{tabular}
-								\caption{Quadratic porosity compaction column test.}
+								\caption{Quadratic porosity compaction column test $\phi_0 = 0.001$.}
 								\label{tab:constporositycolumn}
 					 \end{table}
-In the previous literature, we made the assumption that $\phi = \phi_+ z^2 \ll 1$.
+In the previous literature, we made the assumption that $\phi = \phi_0 z^2 \ll 1$.
 Here, we present an alternative way of constructing approximation solution of the
 second order ordinary differential equation~\eqref{eq:ode}. 
-Let $v = u/\phi^2 = u/(\phi_+^2 z^4)$,
+Let $v = u/\phi^2 = u/(\phi_0^2 z^4)$,
 \begin{equation}
-		  v' = \frac{-4v}{z} + \frac{u'}{\phi_+^2 z^4}.
+		  v' = \frac{-4v}{z} + \frac{u'}{\phi_0^2 z^4}.
 \end{equation}
 Substitute $u$ with $v$, we have 
-\begin{equation}
-		  \frac{\phi_+}{3} \bigg[  \bigg]
+\begin{equation}\label{eq:nonhomoode}
+		  f(u'',u',u,z) = \bigg[ \frac{3+\phi_0z^2 - 4\phi_+z^4}{3\phi_0z^2}\big(\phi_0^2 z^4 v' + 4\phi_0^2 z^3 v\big) \bigg]' - v = 1 - \phi_0z^2.
 \end{equation}
 We assume that there exists a solution that can be represented as a sum of 
-an infinity series. The solution can be understood as the sum of a particular
-solution and two homogenous power-series solution.
-Consider the homogenous equation
+an infinity series.
+The solution can be understood as the sum of a particular
+solution and a homogenous power-series solution,
+which solves the homogenous second order ODE $f(u'',u',u',z) = 0$.
+We apply Frobenius method here, assuming the homogenous solution
+has the form as
 \begin{equation}\label{eq:homogenous}
-\phi
+v_H = (z-z_0)^r \sum_{n=0}^\infty a_n (z-z_0)^n,
 \end{equation}
+where we pick $z_0 = 0$ for simplicity. We write the homogenous
+recurrence as
+\begin{equation}\label{eq:recursive}
+\begin{aligned}
+&\bigg\{ \phi_0 \Big[(n+r-1)(n+r) + 6(n+r) + 4 \Big] - 1 \bigg\} a_n + \\ 
+&\bigg\{ \frac{\phi_0^2}{3} \Big[(n+r-2)(n+r+3) + 4 + 2(n+r+2) \Big] \bigg\} a_{n-2} +\\
+&\bigg\{ \frac{4\phi_0^3}{3} \Big[ (n+r-4)(n+r+1) +4 +4(n+r) \Big] \bigg\} a_{n-4}  = 0,
+\end{aligned}
+\end{equation}
+where we obtain the indicial equation be equating the coefficient associated to $a_0$ term to zero, i.e.,
+\begin{equation}
+\phi_0\big[(0+r-1)(0+r) +6(0+r) + 4\big] - 1 = 0,
+\end{equation}
+where we solve for the positive root as
+\begin{equation}
+r = \frac{-5+\sqrt{9+4/\phi_0}}{2}.
+\end{equation}
+Notice that odd and even coefficients are independent against each other, we can decompose the 
+homogenous solution into two independent power-series according to even and odd coefficients as
+\begin{equation}
+v_1 = z^r \sum_{n=0}^{\infty} a_{2n} z^{2n}, \quad v_2 = z^r \sum_{n=0}^{\infty} a_{2n+1} z^{2n+1}.
+\end{equation}
+Then we proceed to determine the particular solution that solves the
+nonhomogenous function $f(u'',u',u,z) = 1-\phi_0z^2$.
+\begin{equation}
+v_p = \sum_{n=0}^\infty c_n z^n.
+\end{equation}
+Substituting the particular solution into the non-homogenous ODE~\eqref{eq:nonhomoode}, we obtain the coefficient 
+by matching the coefficients on the right hand side according to different orders.
+\begin{equation}
+\begin{aligned}
+c_0 & = \frac{1}{4\phi_0 - 1} \\
+c_2 & = \frac{-\phi_0 - 4\phi_0^2 c_0}{18\phi_0 - 1} \\
+c_4 & = \frac{80/3 \phi_0^3 c_0  - 10 \phi_0^2 c_2}{40\phi_0 -1}.
+\end{aligned}
+\end{equation}
+The rest of the coefficients can be determined with the recurrence form~\eqref{eq:recursive}.
+Omitting the power-series $v_2$ containing only odd coefficient, we have the final form of
+the series solution as
+\begin{equation}
+v = v_p + C v_1,
+\end{equation}
+and we determine the costant $C$ with boundary condition $v(-2) = 0$, i.e., $C = -v_p(-2)/v_1(-2)$.
+Now we redo the convergence test $\phi = \phi_0 z^2$
+					 \begin{table}
+					\begin{tabular}{c || c | c || c | c || c | c || c | c }
+							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
+							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
+							  \hline
+							  $2\times20$ &  9.558e-07 & -& 9.558e-07 & - & 3.100e-03 & - & 4.628e-06 & -\\
+							  $2\times40$ &  3.176e-07 & 1.59 & 3.176e-07 & 1.59 & 1.600e-03 & 0.95 & 2.185e-06 & 1.08\\
+							  $2\times80$ &  8.686e-08 & 1.87 & 8.686e-08 & 1.87 & 9.589e-04 & 0.74 & 1.258e-06 & 0.80\\
+							  $2\times160$ & 2.222e-08 & 1.97 & 2.222e-08 & 1.97 & 7.749e-04 & 0.31 & 9.917e-07 & 0.46
+					\end{tabular}
+								\caption{Quadratic porosity compaction column test $\phi_0 = 0.001$.}
+								\label{tab:constporositycolumn}
+					 \end{table}
+Since we do not make the assumetion that $\phi_0 z^ \ll 1$ anymore, we test convergence on the case where $\phi_0 = 0.1$.
 
+					 \begin{figure}[ht]
+						\centering
+						\begin{minipage}[t]{0.47\textwidth}
+						\centering
+								\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quad_0.01_euler.eps}
+								\subcaption{True solution with previous form.}
+								\end{minipage}
+								\begin{minipage}[t]{0.47\textwidth}
+								\centering
+\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quad_0.01_series.eps}
+\subcaption{Ture solution in series form.}
+\end{minipage}
+								\caption{Comparison two closed form solution to quadratic porosity compaction column test $\phi_0 = 0.01$, 
+								$N = 160$.}
+								\label{fig:quadraticporocompactcolumn}
+					 \end{figure}
+
+					 \begin{table}
+					\begin{tabular}{c || c | c || c | c || c | c || c | c }
+							  \quad & \multicolumn{2}{c||}{$u$ (new)} & \multicolumn{2}{c||}{$v$ (new)}& \multicolumn{2}{c||}{$u$ (old)} & \multicolumn{2}{c}{$v$ (old)} \\
+							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
+							  \hline
+							  $2\times20$ &  2.438e-05 & -& 2.438e-05 & - & 2.887e-05 & - & 2.887e-05 & -\\
+							  $2\times40$ &  6.249e-06 & 1.96 & 6.249e-06 & 1.96 & 1.184e-05 & 1.286 & 1.184e-05 & 1.286\\
+							  $2\times80$ &  1.486e-06 & 2.07 & 1.486e-06 & 2.07 & 8.591e-06 & 0.463 & 8.591e-06 & 0.463\\
+							  $2\times160$ & 3.908e-07 & 1.96 & 3.908e-07 & 1.96 & 8.048e-06 & 0.094 & 8.048e-06 & 0.094
+					\end{tabular}
+								\caption{Quadratic porosity compaction column test $\phi_0 = 0.01$.}
+								\label{tab:constporositycolumn}
+					 \end{table}
 
 \end{itemize}
 
-Problem Setup 2: Mid-Ocean Ridge.
+Problem Setup 2: \textit{Mid-Ocean Ridge}.
 
 We now reconsider the Mid-Ocean ridge test case in~\cite{DegenerateDarcy}.
 We solve the full system of equations on a dimensionless 
