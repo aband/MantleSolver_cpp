@@ -1,5 +1,5 @@
 \section{Coupled Degenerate Darcy-Stokes System}
-Now we consider a scaled nondimensionalized degenerate Darcy-Stokes coupled boundary-value problem:
+We consider a degenerate Darcy-Stokes coupled boundary-value problem in the dimensionless form:
 
 Find two velocity-pressure potential pairs $(\check{\mathbf{v}}_r, \check{q}_l)$ and 
 $(\check{\mathbf{v}}_s, \check{q})$ such that 
@@ -19,17 +19,19 @@ $(\check{\mathbf{v}}_s, \check{q})$ such that
 \end{alignat}
 and
 \begin{equation}\label{eq:bv}
-		  \begin{aligned}
-					 \check{\mathbf{v}}_r\cdot \pmb{\nu} &= g_{r} \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
-					 \check{\mathbf{v}}_s &= \mathbf{g}_{s} \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{u,S}, \\
-					 p &= p_0 \hspace{0.5cm} \text{on} \hspace{0.2cm} \Gamma_{i,D}, \\
-					 \pmb{\tau}\cdot \pmb{\nu} - p &= \pmb{t}_0 \hspace{0.56cm} \text{on} \hspace{0.2cm} \Gamma_{i,S},
-		  \end{aligned}
+		  \begin{alignedat}{2}
+					 \check{\mathbf{v}}_r\cdot \pmb{\nu} &= g_{r} \quad &&\text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
+					 \check{\mathbf{v}}_s &= \mathbf{g}_{s} \quad &&\text{on} \hspace{0.2cm} \Gamma_{u,S}, \\
+					 \check{q}_l &= q_{0} \quad &&\text{on} \hspace{0.2cm} \Gamma_{i,D}, \\
+					 \pmb{\tau}\cdot \pmb{\nu} - q &= \pmb{t}_0  \quad &&\text{on} \hspace{0.2cm} \Gamma_{i,S}.
+		  \end{alignedat}
 \end{equation}
-where $\Gamma_{u,D}$ and $\Gamma_{u,S}$ denote the part of boundary we assign essential boundary conditions for 
-Darcy and Stokes problem respectively, 
-and $\Gamma_{i,D}$ and $\Gamma_{i,S}$ represent the part of boundary we assign natural boundary conditions 
-respectively. We have $\Gamma_{u,D} \cup \Gamma_{i,D} = \partial \Omega$ and $\Gamma_{u,S} \cup \Gamma_{i,S} = \partial \Omega$.
+Here, $\Gamma_{u,D}$ and $\Gamma_{u,S}$ denote the parts of the boundary, where essential boundary conditions 
+are prescribed for 
+the Darcy and the Stokes problems, respectively, 
+while $\Gamma_{i,D}$ and $\Gamma_{i,S}$ represent the portions of the boundary, where natural boundary conditions 
+are imposed.
+We have $\Gamma_{u,D} \cup \Gamma_{i,D} = \partial \Omega$ and $\Gamma_{u,S} \cup \Gamma_{i,S} = \partial \Omega$.
 
 We expand the gradient term in equation~\eqref{eq:dimensionlessdarcy_flow_sc_bv}
 and the divergence term in equation~\eqref{eq:dimensionlessconsMass_flow_sc_bv} as
@@ -154,7 +156,7 @@ We state well-posedness result of the scaled model as follows.
 		  See~\cite{DegenerateDarcy}.
 \end{proof}
 
-\subsection{The scaled mixed finite element method}
+\subsection{A scaled mixed finite element method}
 We discretize the scaled mixed formulation with
 two space pairs $\mathbb{V}_{D,h} \times \mathbb{W}_{D,h} \subset H(\text{div}; \Omega) \times L^2(\Omega)$
 and $\mathbb{V}_{S,h} \times \mathbb{W}_{S,h} \subset (H^1(\Omega))^2 \times L^2(\Omega)$.
@@ -374,9 +376,8 @@ Substitute the compuated results into PDE
 \end{equation}
 \fi
 
-Problem Setup 1: Column Compaction.
-
-In this problemsetup, we perform a convergence test on a 2D grid with a pseudo 1D problem.
+\subsection{Column compaction with constant porosity}
+In this subsection, we perform a convergence test on a 2D grid with a pseudo 1D problem.
 We study a compacting column in one direction. The column extends over $y \in [-L,L]$
 and has no flow through top and bottom boundaries. We prescribe the following boundary conditions
 \begin{itemize}

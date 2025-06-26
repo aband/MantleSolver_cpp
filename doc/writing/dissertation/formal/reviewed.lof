@@ -1,0 +1,17 @@
+\addvspace {10pt}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Phases and species in an representative volume element (RVE).}}{19}{figure.caption.8}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Eutectic phase diagram of a Olivine-Orthopyroxene system.}}{25}{figure.caption.9}%
+\contentsline {figure}{\numberline {1.3}{\ignorespaces \relax }}{27}{figure.caption.10}%
+\contentsline {figure}{\numberline {1.4}{\ignorespaces Phase diagram when the composition of opx is smaller than the eutectic composition. Region V does not appear.}}{27}{figure.caption.10}%
+\contentsline {figure}{\numberline {1.5}{\ignorespaces Enthalpy-Composition diagram}}{29}{figure.caption.11}%
+\addvspace {10pt}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces An exhibition of a reference square element, a local reference element, and a general non-degenerate quadrilateral element.}}{35}{figure.caption.13}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces An exhibition of a full logically rectangular quasi-uniform quadrilateral mesh $\EuScript {T}_h$.}}{36}{figure.caption.14}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Rational function $R_0$.}}{40}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Edge nodal basis function $\varphi ^{(2)}_{e,0}$ in $\EuScript {DS}_2$.}}{41}{figure.caption.16}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Vertex nodal basis function $\varphi ^2_{v,0}$ in $\EuScript {DS}_2$.}}{41}{figure.caption.17}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Supplemental rational function $R$ in $\EuScript {DS}_1$.}}{42}{figure.caption.18}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Vertex nodal basis function in $\EuScript {DS}_1$.}}{43}{figure.caption.19}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces ``Linear" shape function $\pmb {\varphi }_l$.}}{48}{figure.caption.20}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces ``Constant" shape function $\pmb {\varphi }_c$.}}{49}{figure.caption.21}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Numerical results on rectangular and quadrilateral mesh.}}{58}{figure.caption.22}%
