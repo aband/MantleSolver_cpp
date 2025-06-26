@@ -20,9 +20,9 @@ $(\check{\mathbf{v}}_s, \check{q})$ such that
 and
 \begin{equation}\label{eq:bv}
 		  \begin{alignedat}{2}
-					 \check{\mathbf{v}}_r\cdot \pmb{\nu} &= g_{r} \quad &&\text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
+					 \phi^{1+\Theta}\check{\mathbf{v}}_r\cdot \pmb{\nu} &= g_{r} \quad &&\text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
 					 \check{\mathbf{v}}_s &= \mathbf{g}_{s} \quad &&\text{on} \hspace{0.2cm} \Gamma_{u,S}, \\
-					 \check{q}_l &= q_{0} \quad &&\text{on} \hspace{0.2cm} \Gamma_{i,D}, \\
+					 \check{q}_l &= \phi^{1/2}q_{l,0} \quad &&\text{on} \hspace{0.2cm} \Gamma_{i,D}, \\
 					 \pmb{\tau}\cdot \pmb{\nu} - q &= \pmb{t}_0  \quad &&\text{on} \hspace{0.2cm} \Gamma_{i,S}.
 		  \end{alignedat}
 \end{equation}
@@ -31,8 +31,12 @@ are prescribed for
 the Darcy and the Stokes problems, respectively, 
 while $\Gamma_{i,D}$ and $\Gamma_{i,S}$ represent the portions of the boundary, where natural boundary conditions 
 are imposed.
-We have $\Gamma_{u,D} \cup \Gamma_{i,D} = \partial \Omega$ and $\Gamma_{u,S} \cup \Gamma_{i,S} = \partial \Omega$.
+We assume the essential and natural boundary conditions are non overlapping and covering
+the entire boundary, i.e., $\Gamma_{u,D} \cup \Gamma_{i,D} = \partial \Omega, \, \Gamma_{u,D} \cap \Gamma_{i,D} = \O$ 
+and $\Gamma_{u,S} \cup \Gamma_{i,S} = \partial \Omega, \, \Gamma_{u,S} \cap \Gamma_{i,S} = \O$.
 
+To ensure well-posedness in the presence of degeneracy ($\phi=0$), we must verity that 
+all terms scaled by $\phi^{-1/2}$ remain well-defined.
 We expand the gradient term in equation~\eqref{eq:dimensionlessdarcy_flow_sc_bv}
 and the divergence term in equation~\eqref{eq:dimensionlessconsMass_flow_sc_bv} as
 \begin{equation}
@@ -43,24 +47,23 @@ and the divergence term in equation~\eqref{eq:dimensionlessconsMass_flow_sc_bv} 
 					 \phi^{\Theta - 1/2} \nabla \phi \cdot \check{\mathbf{v}}_r,
 		  \end{aligned}
 \end{equation}
-where they are well-defined provided that
+are they are well-defined provided that
 \begin{equation}\label{eq:phiboundness}
 		  \phi^{\Theta - 1/2} \nabla \phi \in (L^{\infty}(\Omega))^2.
 \end{equation}
 
-A scaled Hilbert space is defined as follows for this 
-specific scaled formulation, where
+We define a scaled Hilbert space tailored to the present formulation, within which
 the scaled velocity $\check{\mathbf{v}}_r$ should lie in.
 \begin{defn}
 Consider a scaled Hilbert space:
 \begin{equation}\label{eq:scaledHspace}
-		  \mathbb{V}^{\phi}_D = H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
-		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Phi} \mathbf{v})
+		  H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
+		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v})
 		  \in L^2(\Omega) \Big\},
 \end{equation}
 which is a Hilbert space equipped with the inner product
 \begin{equation}\label{eq:scaledinnerp}
-		  (\mathbf{u}, \mathbf{v})_{\mathbb{V}^{\phi}_D} = 
+		  (\mathbf{u}, \mathbf{v})_{H_\phi(\text{div};\Omega)} = 
 		  (\mathbf{u}, \mathbf{v}) + 
 		  (\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{u}), \phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{v})).
 \end{equation}
@@ -68,14 +71,22 @@ The normal trace on $\partial \Omega$ is well-defined as
 \begin{equation}\label{eq:tracescaled}
 		  \norm{\phi^{1/2+\Theta}\mathbf{v}\cdot \pmb{\nu}}_{H^{-1/2}(\partial \Omega)} < C_{\Omega} \Big\{ \norm{\mathbf{v}}_{L^2(\Omega)} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v})}_{L^2(\Omega)} \Big\}
 \end{equation}
-		  subsequently, we have the space $H_\phi^{-1/2}(\text{div};\partial \Omega)$ understood as the image of this normal trace operator.
+		  subsequently, we have the space $H_\phi^{-1/2}(\text{div};\partial \Omega)$ understood as the image of the normal trace operator on $H_\phi(\text{div};\Omega)$.
 \end{defn}
 \subsection{The weak formulation}
-We define the following function spaces for the scaled Darcy-Stokes coupled system as
+We assume that the Dirichlet data
+$\mathbf{g}_s \in (H^{1/2}(\Gamma_{u,S}))^2$, and understand 
+$\tilde{\mathbf{g}}_s \in (H^1(\Omega))^2$ as a continuous extension from the
+boundary into the domain.
+%$\mathbf{g}_r \in (H^{1/2}_\phi(\text{div};\Gamma_{u,D}))^2$
+%and . 
+Similarly, we assume that $\phi^{-1/2} g_r \in H^{-1/2}_\phi(\partial \Omega)$
+We understand $\tilde{\mathbf{g}}_r \in H_\phi(\text{div};\Omega)$
+and. The following energy spaces are defined for this scaled Darcy-Stokes coupled system 
 \begin{equation}\label{eq:spaces}
 		  \begin{aligned}
-					 \mathbb{V}^\phi_D &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = \mathbf{0} \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\},\\
-					 \mathbb{U}^\phi_D &= \Big\{\mathbf{u}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{u}\cdot \pmb{\nu} = \mathbf{g}_r \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\} = \tilde{\mathbf{g}}_r + \mathbb{V}^\phi_D,\\
+					 \mathbb{V}^\phi_D &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = 0 \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\},\\
+					 \mathbb{U}^\phi_D &= \Big\{\mathbf{u}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{u}\cdot \pmb{\nu} = \phi^{-1/2}g_r \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\} = \tilde{\mathbf{g}}_r + \mathbb{V}^\phi_D,\\
 					 \mathbb{W}_D      &= L^2(\Omega),\\
 					 \mathbb{V}_S &= \Big\{\mathbf{v}\in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \hspace{0.15cm} \text{on}\hspace{0.15cm}  \Gamma_{u,S} \Big\},\\
 					 \mathbb{U}_S &= \Big\{\mathbf{u}\in (H^1(\Omega))^2 : \mathbf{u} = \mathbf{g}_s \hspace{0.15cm} \text{on}\hspace{0.15cm}  \Gamma_{u,S} \Big\} 
@@ -84,17 +95,9 @@ We define the following function spaces for the scaled Darcy-Stokes coupled syst
 		  \end{aligned}
 \end{equation}
 where each space is equipped with their natural norms.
-Here, $\tilde{\mathbf{g}}_r$ and $\tilde{\mathbf{g}}_s$ are finite energy lift 
-of Dirichlet data $\mathbf{g}_r$ and $\mathbf{g}_s$ respectively. 
-
-We understand the boundary values in the sense of Trace Theorem~\ref{thm:tracethm}
-and the scaled normal trace operator~\eqref{eq:tracescaled}.
-We assume regularity for Dirichlet data 
-$\mathbf{g}_r \in (H^{1/2}_\phi(\text{div};\Gamma_{u,D}))^2$
-and $\mathbf{g}_s \in (H^{1/2}(\Gamma_{u,S}))^2$. 
-We understand $\tilde{\mathbf{g}}_r \in H_\phi(\text{div};\Omega)$
-and $\tilde{\mathbf{g}}_s \in (H^1(\Omega))^2$ as a continuous extension from the
-boundary into the domain.
+%Here, $\tilde{\mathbf{g}}_r$ and $\tilde{\mathbf{g}}_s$ are finite energy lift 
+%of Dirichlet data $\mathbf{g}_r$ and $\mathbf{g}_s$ respectively. 
+%We understand the boundary values in the sense of Trace Theorem~\ref{thm:tracethm}
 %To impose essential boundary conditoins, we assume that a function $\mathbf{g}_s = \check{\mathbf{v}}_{s,0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \Gamma_{u,S}$ 
 %and $\mathbf{g}_s = \mathbf{0} \hspace{0.2cm} \text{on} \hspace{0.2cm} \partial \Omega / \Gamma_{u,S}$.
 %Then $\mathbf{g}_s \in (H^{1/2}(\partial \Omega))^2$ and
@@ -102,12 +105,9 @@ boundary into the domain.
 %the extension $\mathbf{g}_{s} \in (H^1(\Gamma_{u,S}))^2$ and $\norm{\mathbf{g}_{s,0}}_1 \leq C \norm{\mathbf{v}_{s,0}}_{1/2,\Gamma_{u,S}}$. 
 %Similarly, we can define a bounded extension of $\check{\mathbf{v}}_r \in \mathbb{V}_D^\phi$ such that   
 
-A compatibility condition enforcing mass conservation on the entire domain
-is needed if essential boundary 
-condition is prescribed on
-the entire boundary $\partial \Omega$, i.e., 
-when $\Gamma_{u,D} = \Gamma_{u,S} = \partial \Omega$ the Dirichlet data 
-satisfies
+A compatibility condition is required to ensure global mass conservation when essential boundary conditions 
+are prescribed on the entire boundary $\partial \Omega$, i.e., when $\Gamma_{u,D} = \Gamma_{u,S} = \partial \Omega$. 
+In this case, the Dirichlet data must satisfy:
 \begin{equation}
 		  \int_{\partial \Omega} (\mathbf{g}_r + \mathbf{g}_s) \cdot \pmb{\nu}\, ds = 0.
 \end{equation}
