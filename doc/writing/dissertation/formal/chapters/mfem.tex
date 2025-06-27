@@ -47,7 +47,7 @@ and the divergence term in equation~\eqref{eq:dimensionlessconsMass_flow_sc_bv} 
 					 \phi^{\Theta - 1/2} \nabla \phi \cdot \check{\mathbf{v}}_r,
 		  \end{aligned}
 \end{equation}
-are they are well-defined provided that
+and they are well-defined provided that
 \begin{equation}\label{eq:phiboundness}
 		  \phi^{\Theta - 1/2} \nabla \phi \in (L^{\infty}(\Omega))^2.
 \end{equation}
@@ -81,8 +81,14 @@ boundary into the domain.
 %$\mathbf{g}_r \in (H^{1/2}_\phi(\text{div};\Gamma_{u,D}))^2$
 %and . 
 Similarly, we assume that $\phi^{-1/2} g_r \in H^{-1/2}_\phi(\partial \Omega)$
-We understand $\tilde{\mathbf{g}}_r \in H_\phi(\text{div};\Omega)$
-and. The following energy spaces are defined for this scaled Darcy-Stokes coupled system 
+understood as the image of the scaled normal trace operator~\eqref{eq:tracescaled}.
+Let
+\begin{equation}
+		  \phi^{1/2+\Theta}\mathbf{g}_r\cdot \pmb{\nu} = \phi^{-1/2}g_r \quad \text{on} \quad \partial \Omega.
+\end{equation}
+We understand $\tilde{\mathbf{g}}_r$ as a continuous extension from the boundary into the domain.
+
+The following energy spaces are defined for this scaled Darcy-Stokes coupled system 
 \begin{equation}\label{eq:spaces}
 		  \begin{aligned}
 					 \mathbb{V}^\phi_D &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = 0 \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\},\\
@@ -105,12 +111,15 @@ where each space is equipped with their natural norms.
 %the extension $\mathbf{g}_{s} \in (H^1(\Gamma_{u,S}))^2$ and $\norm{\mathbf{g}_{s,0}}_1 \leq C \norm{\mathbf{v}_{s,0}}_{1/2,\Gamma_{u,S}}$. 
 %Similarly, we can define a bounded extension of $\check{\mathbf{v}}_r \in \mathbb{V}_D^\phi$ such that   
 
-A compatibility condition is required to ensure global mass conservation when essential boundary conditions 
+A compatibility condition is required to ensure overall mass conservation when essential boundary conditions 
 are prescribed on the entire boundary $\partial \Omega$, i.e., when $\Gamma_{u,D} = \Gamma_{u,S} = \partial \Omega$. 
 In this case, the Dirichlet data must satisfy:
 \begin{equation}
 		  \int_{\partial \Omega} (\mathbf{g}_r + \mathbf{g}_s) \cdot \pmb{\nu}\, ds = 0.
 \end{equation}
+In practice, we may not enforce this compatibility condition explicitly due 
+to the pressence of natural boundary conditons.
+
 The standard mixed form for the proposed coupled system reads as follows:
 %Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_D + \tilde{\mathbf{g}}_{r}$,
 %$\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{V}_S + \tilde{\mathbf{g}}_S$, and $\check{q}\in \mathbb{W}_S$ such that
@@ -131,7 +140,7 @@ $\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{U}_S$, and $\c
 		  \mathbb{W}_D.
 \end{alignat}
 
-We state well-posedness result of the scaled model as follows.
+We state well-posedness result of the scaled model directly as follows.
 \begin{lem}\label{lem:ExistenceUniqueness}
 		  (Existence and Uniqueness)
 
@@ -157,25 +166,25 @@ We state well-posedness result of the scaled model as follows.
 \end{proof}
 
 \subsection{A scaled mixed finite element method}
-We discretize the scaled mixed formulation with
-two space pairs $\mathbb{V}_{D,h} \times \mathbb{W}_{D,h} \subset H(\text{div}; \Omega) \times L^2(\Omega)$
-and $\mathbb{V}_{S,h} \times \mathbb{W}_{S,h} \subset (H^1(\Omega))^2 \times L^2(\Omega)$.
-Recall the aforementioned inf-sup stable mixed finite element space pairs on $E \in \mathcal{T}_h$:
+We discretize the scaled mixed formulation using
+two pairs of finite element spaces: $\mathbb{V}_{D,h} \times \mathbb{W}_{D,h} \subset H(\text{div}; \Omega) \times L^2(\Omega)$ for the Darcy part of the system
+and $\mathbb{V}_{S,h} \times \mathbb{W}_{S,h} \subset (H^1(\Omega))^2 \times L^2(\Omega)$ for the Stokes part of the system.
+We recall the aforementioned inf-sup stable mixed finite element space pairs on each element $E \in \mathcal{T}_h$:
 \begin{itemize}
-\item For the Darcy part of the system.
+		  \item Reduced $H(\text{div})$ conforming space $\mathbb{V}_1^0$ in Section~\ref{sec:reducedHdiv},
 \begin{equation}
 \begin{aligned}
 		  \mathbb{V}_{D,h}(E) = \mathbb{V}_1^0(E) &= (\mathbb{P}_1(E))^2 \oplus 
-		  \text{curl}\,\mathbb{S}_2^{\mathcal{DS}}(E) \\
-					 \mathbb{W}_{D,h}(E) = \mathbb{W}(E) &= \mathbb{P}_0(E)
+		  \text{curl}\,\mathbb{S}_2^{\mathcal{DS}}(E), \\
+					 \mathbb{W}_{D,h}(E) = \mathbb{W}(E) &= \mathbb{P}_0(E);
 \end{aligned}
 \end{equation}
 
-\item For the Stokes part of the system.
+\item Modified Bernardi-Raugel element in Section~\ref{sec:mbr},
 \end{itemize}
 \begin{equation}
 \begin{aligned}
-		  \mathbb{V}_{S,h}(E) = \mathbb{V}^{\mathcal{BR}}_1(E) &= (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0,\mathbf{b}_1,\mathbf{b}_2,\mathbf{b}_3 \} \\
+		  \mathbb{V}_{S,h}(E) = \mathbb{V}^{\mathcal{BR}}_1(E) &= (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0,\mathbf{b}_1,\mathbf{b}_2,\mathbf{b}_3 \}, \\
 		  \mathbb{W}_{S,h}(E) = \mathbb{W}(E)   &= \mathbb{P}_0(E).
 		  \end{aligned}
 \end{equation}
@@ -208,23 +217,23 @@ $\check{\mathbf{v}}_{s,h} \in \mathbf{V}_{S,h,\mathbf{0}} + \hat{\mathbf{g}}_s$ 
 \end{alignat}
 
 \subsection{Local Mass Conservation}
-Before we continue the discussion, we need to make sure that the formulation is 
-well-defined, i.e., not dividing by zero.
+Before proceeding, we ensure that the formulation is well-defined—specifically, 
+that no division by zero occurs. 
 The term $\phi^{-1/2}$ in the symmetric equations~\eqref{eq:weak_darcy} 
 and~\eqref{eq:weak_continuous} causes trouble 
 when there is no melting, i.e., $\phi = 0$.
-In order to deal with it, we define an element-averaged variable $\phi_E$ 
-as
+To address this, we utilize an element-averaged variable $\phi_E$ as
 \begin{equation}\label{eq:averaged_phi}
 		  \phi_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x})\, d\mathbf{x},
 \end{equation}
-where $\lvert E \rvert$ is the area of element $E$.
+where $\lvert E \rvert$ is the area of element $E$ and 
+$\phi_E = \mathcal{P}_{\mathbb{W}_{D,h}}\phi\rvert_E \in \mathbf{W}_{D,h}$. 
 Then the two terms involving divergence is modified as
 \begin{equation}\label{eq:newvariable_phi}
 		  \phi^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v}) \rvert_E = \left\{
 					 \begin{alignedat}{2}
-								&\phi_E^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v})  \hspace{0.2cm} &&\text{if}\hspace{0.2cm} \overline{\phi}_E \neq 0,\\
-								&0 \hspace{0.5cm} &&\text{if} \hspace{0.2cm} \overline{\phi}_E = 0,
+								&\phi_E^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v})  \hspace{0.2cm} &&\text{if}\hspace{0.2cm} \phi_E \neq 0,\\
+								&0 \hspace{0.5cm} &&\text{if} \hspace{0.2cm} \phi_E = 0,
 					 \end{alignedat}
 					 \right.
 \end{equation}
