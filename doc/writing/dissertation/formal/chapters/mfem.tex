@@ -86,7 +86,7 @@ Let
 \begin{equation}
 		  \phi^{1/2+\Theta}\mathbf{g}_r\cdot \pmb{\nu} = \phi^{-1/2}g_r \quad \text{on} \quad \partial \Omega.
 \end{equation}
-We understand $\tilde{\mathbf{g}}_r$ as a continuous extension from the boundary into the domain.
+We view $\tilde{\mathbf{g}}_r$ as a continuous extension from the boundary into the domain.
 
 The following energy spaces are defined for this scaled Darcy-Stokes coupled system 
 \begin{equation}\label{eq:spaces}
@@ -344,7 +344,7 @@ We use the projection operators defined in
 
 \input chapters/linear.tex
 
-\section{Numerical Test}
+\section{Convergence Test}
 We test our MFEM setup with two different scenarios.
 First, we test a pseudo 1D problem but with 2D elements equipped with three different
 porosity scenarios.
@@ -376,7 +376,7 @@ Substitute the compuated results into PDE
 \begin{equation}
 \begin{aligned}
 \tilde{\bold{v}}_r + \phi_f^{1/2}\nabla\check{q}_f &= 
--\frac{\phi_f^{-1/2}}{1-\phi_f}\begin{pmatrix}x^2 \\ y^2 \end{pmatrix} + \phi_f^{1/2}\begin{pmatrix} 2 \\ 2 \end{pmatrix}\\
+\frac{\phi_f^{-1/2}}{1-\phi_f}\begin{pmatrix}x^2 \\ y^2 \end{pmatrix} + \phi_f^{1/2}\begin{pmatrix} 2 \\ 2 \end{pmatrix}\\
 \phi_f^{1/2}\nabla \cdot (\check{\bold{v}}_r) + \frac{1}{1-\phi_f}\check{q}_f  &= \frac{-2}{1-\phi_f}(x+y) + \frac{1}{1-\phi_f}2(x+y)=0\\
 \nabla \cdot \check{\bold{v}}_s - \frac{\phi_f^{1/2}}{1-\phi_f}\check{q}_f &= \frac{2\phi_f^{1/2}}{1-\phi_f}(x+y) - \frac{2\phi_f^{1/2}}{1-\phi_f}(x+y) = 0\\
 -2(1-\phi_f)\nabla \cdot \sigma(\check{\bold{v}}_s) &= -2(1-\phi_f)\nabla \cdot (\mathcal{D}\check{\bold{v}}_s - \frac{1}{3}(\nabla \cdot \check{\bold{v}}_s) \bold{\text{I}}) = 
@@ -385,7 +385,6 @@ Substitute the compuated results into PDE
 \end{equation}
 \fi
 
-\subsection{Column compaction with constant porosity}
 In this subsection, we perform a convergence test on a 2D grid with a pseudo 1D problem.
 We study a compacting column in one direction. The column extends over $y \in [-L,L]$
 and has no flow through top and bottom boundaries. We prescribe the following boundary conditions
@@ -448,8 +447,7 @@ When $\phi$ is constant, we define an auxiliary function $R$ as
 
 We test our MFEM code on three porosity settings,
 and use the closed form solutions derived in~\cite{DegenerateDarcy}.
-\begin{itemize}
-		  \item Constant porosity; 
+\subsection{Column compaction with Constant porosity}
 					 \begin{equation}
 								\phi_0(z) = \phi_0;
 					 \end{equation}
@@ -465,10 +463,10 @@ and use the closed form solutions derived in~\cite{DegenerateDarcy}.
 where $c$ is a constant kernel.
 					 \begin{figure}[ht]
 						\centering
-								\includegraphics[width=3cm,height=8cm]{chapters/pics/porosity_const.eps}
-\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_const.eps}
-\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quiver_const.eps}
-								\includegraphics[width=3cm,height=8cm]{chapters/pics/q_const.eps}
+								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_const.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_const.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quiver_const.eps}
+								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/q_const.eps}
 								\caption{Constant porosity compaction column test.}
 								\label{fig:constporocompactcolumn}
 					 \end{figure}
@@ -488,7 +486,7 @@ where $c$ is a constant kernel.
 								\label{tab:constporositycolumn}
 					 \end{table}
 
-		  \item Piecewise constant porosity;
+\subsection{Piecewise constant porosity}
 					 \begin{equation}
 								\phi_J(z) = \left \{
 										  \begin{aligned}
@@ -513,10 +511,10 @@ where $c$ is a constant kernel.
 
 					 \begin{figure}[ht]
 						\centering
-								\includegraphics[width=3cm,height=8cm]{chapters/pics/porosity_piececonst.eps}
-\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_piececonst.eps}
-\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quiver_piececonst.eps}
-\includegraphics[width=3cm,height=8cm]{chapters/pics/q_piececonst.eps}
+								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_piececonst.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_piececonst.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quiver_piececonst.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/q_piececonst.eps}
 								\caption{Piecewise constant porosity compaction column test.}
 								\label{fig:piececonstporocompactcolumn}
 					 \end{figure}
@@ -535,55 +533,30 @@ where $c$ is a constant kernel.
 								\label{tab:constporositycolumn}
 					 \end{table}
 
-		  \item Quadratic porosity.
+\subsection{Column compaction with quadratic porosity.}
 					 \begin{equation}
 								\phi_2(z) = \left \{
 										  \begin{aligned}
 													 &0 \hspace{0.95cm} \text{if}\hspace{0.2cm}  z> 0,\\
-													 &\phi_0z^2 \hspace{0.3cm} \text{if}\hspace{0.2cm} z\leq 0,
+													 &\phi_0z^2 \hspace{0.3cm} \text{if}\hspace{0.2cm} z\leq 0.
 										  \end{aligned}
 										  \right.
 					 \end{equation}
-					 Closed form solution:
-
-					 We conclude that $u=-v=0$ when $z>0$.
-					 \begin{equation}
-								\begin{aligned}
-										  u &= \frac{\phi_0^2}{1-4\phi_0}\bigg(L^{4-r_1}z^{r_1} - z^4\bigg),\\
-										  v &= -v\\
-										  q_l&= \frac{1}{1-4\phi_0} \bigg(z + \frac{L^{4-r_1}(-z)^{r_1-3}}{r_1-3} \bigg) + c,\\
-										  q_s&= z + c,
-								\end{aligned}
-					 \end{equation}
-					 where 
-					 \begin{equation}
-								r_1 = \frac{3+\sqrt{9+4/\phi_0}}{2}.
-					 \end{equation}
-
-					 \begin{figure}[ht]
-						\centering
-								\includegraphics[width=3cm,height=8cm]{chapters/pics/porosity_quad.eps}
-\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quad.eps}
-\includegraphics[width=3cm,height=8cm]{chapters/pics/vel_quiver_quad.eps}
-								\includegraphics[width=3cm,height=8cm]{chapters/pics/q_quad.eps}
-								\caption{Quadratic porosity compaction column test.}
-								\label{fig:quadraticporocompactcolumn}
-					 \end{figure}
-
-					 \begin{table}
-					\begin{tabular}{c || c | c || c | c || c | c || c | c }
-							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
-							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
-							  \hline
-							  $2\times20$ &  9.616e-07 & -& 9.616e-07 & - & - & - & - & -\\
-							  $2\times40$ &  3.212e-07 & 1.58 & 3.212e-07 & 1.58 & - & - & - & -\\
-							  $2\times80$ &  9.028e-08 & 1.83 & 9.028e-08 & 1.83 & - & - & - & -\\
-							  $2\times160$ & 2.746e-08 & 1.72 & 2.746e-08 & 1.72 & - & - & - & -
-					\end{tabular}
-								\caption{Quadratic porosity compaction column test $\phi_0 = 0.001$.}
-								\label{tab:constporositycolumn}
-					 \end{table}
-In the previous literature, we made the assumption that $\phi = \phi_0 z^2 \ll 1$.
+%					 Closed form solution:
+%					 \begin{equation}
+%								\begin{aligned}
+%										  u &= \frac{\phi_0^2}{1-4\phi_0}\bigg(L^{4-r_1}z^{r_1} - z^4\bigg),\\
+%										  v &= -v\\
+%										  q_l&= \frac{1}{1-4\phi_0} \bigg(z + \frac{L^{4-r_1}(-z)^{r_1-3}}{r_1-3} \bigg) + c,\\
+%										  q_s&= z + c,
+%								\end{aligned}
+%					 \end{equation}
+%					 where 
+%					 \begin{equation}
+%								r_1 = \frac{3+\sqrt{9+4/\phi_0}}{2}.
+%					 \end{equation}
+We are interested in presenting the result when $\phi_0 = 0.01$, which is not approximated precisely using previous
+closed form solution due to the assumption $\phi \ll 1$ does not hold anymore.
 Here, we present an alternative way of constructing approximation solution of the
 second order ordinary differential equation~\eqref{eq:ode}. 
 Let $v = u/\phi^2 = u/(\phi_0^2 z^4)$,
@@ -597,14 +570,14 @@ Substitute $u$ with $v$, we have
 We assume that there exists a solution that can be represented as a sum of 
 an infinity series.
 The solution can be understood as the sum of a particular
-solution and a homogenous power-series solution,
-which solves the homogenous second order ODE $f(u'',u',u',z) = 0$.
-We apply Frobenius method here, assuming the homogenous solution
+solution and a homogeneous power-series solution,
+which solves the homogeneous second order ODE $f(u'',u',u',z) = 0$.
+We apply Frobenius method here, assuming the homogeneous solution
 has the form as
 \begin{equation}\label{eq:homogenous}
 v_H = (z-z_0)^r \sum_{n=0}^\infty a_n (z-z_0)^n,
 \end{equation}
-where we pick $z_0 = 0$ for simplicity. We write the homogenous
+where we pick $z_0 = 0$ for simplicity. We write the homogeneous
 recurrence as
 \begin{equation}\label{eq:recursive}
 \begin{aligned}
@@ -622,16 +595,16 @@ where we solve for the positive root as
 r = \frac{-5+\sqrt{9+4/\phi_0}}{2}.
 \end{equation}
 Notice that odd and even coefficients are independent against each other, we can decompose the 
-homogenous solution into two independent power-series according to even and odd coefficients as
+homogeneous solution into two independent power-series according to even and odd coefficients as
 \begin{equation}
 v_1 = z^r \sum_{n=0}^{\infty} a_{2n} z^{2n}, \quad v_2 = z^r \sum_{n=0}^{\infty} a_{2n+1} z^{2n+1}.
 \end{equation}
 Then we proceed to determine the particular solution that solves the
-nonhomogenous function $f(u'',u',u,z) = 1-\phi_0z^2$.
+non-homogeneous function $f(u'',u',u,z) = 1-\phi_0z^2$.
 \begin{equation}
 v_p = \sum_{n=0}^\infty c_n z^n.
 \end{equation}
-Substituting the particular solution into the non-homogenous ODE~\eqref{eq:nonhomoode}, we obtain the coefficient 
+Substituting the particular solution into the non-homogeneous ODE~\eqref{eq:nonhomoode}, we obtain the coefficient 
 by matching the coefficients on the right hand side according to different orders.
 \begin{equation}
 \begin{aligned}
@@ -647,22 +620,47 @@ the series solution as
 v = v_p + C v_1,
 \end{equation}
 and we determine the costant $C$ with boundary condition $v(-2) = 0$, i.e., $C = -v_p(-2)/v_1(-2)$.
+
+					 \begin{figure}[ht]
+						\centering
+								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_quad.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quad.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quiver_quad.eps}
+								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/q_quad.eps}
+								\caption{Quadratic porosity compaction column test $\phi_0 = 0.001$.}
+								\label{fig:quadraticporocompactcolumn}
+					 \end{figure}
+\iffalse
+					 \begin{table}
+					\begin{tabular}{c || c | c || c | c || c | c || c | c }
+							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
+							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
+							  \hline
+							  $2\times20$ &  9.616e-07 & -& 9.616e-07 & - & - & - & - & -\\
+							  $2\times40$ &  3.212e-07 & 1.58 & 3.212e-07 & 1.58 & - & - & - & -\\
+							  $2\times80$ &  9.028e-08 & 1.83 & 9.028e-08 & 1.83 & - & - & - & -\\
+							  $2\times160$ & 2.746e-08 & 1.72 & 2.746e-08 & 1.72 & - & - & - & -
+					\end{tabular}
+								\caption{Quadratic porosity compaction column test $\phi_0 = 0.001$.}
+								\label{tab:constporositycolumn}
+					 \end{table}
+					 \fi
 Now we redo the convergence test $\phi = \phi_0 z^2$
 					 \begin{table}
 					\begin{tabular}{c || c | c || c | c || c | c || c | c }
 							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
 							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
 							  \hline
-							  $2\times20$ &  9.558e-07 & -& 9.558e-07 & - & 3.100e-03 & - & 4.628e-06 & -\\
-							  $2\times40$ &  3.176e-07 & 1.59 & 3.176e-07 & 1.59 & 1.600e-03 & 0.95 & 2.185e-06 & 1.08\\
-							  $2\times80$ &  8.686e-08 & 1.87 & 8.686e-08 & 1.87 & 9.589e-04 & 0.74 & 1.258e-06 & 0.80\\
-							  $2\times160$ & 2.222e-08 & 1.97 & 2.222e-08 & 1.97 & 7.749e-04 & 0.31 & 9.917e-07 & 0.46
+							  $2\times20$ &  9.558e-07 & -& 9.558e-07 & - & 3.088e-03 & - & 4.660e-06 & -\\
+							  $2\times40$ &  3.176e-07 & 1.59 & 3.176e-07 & 1.59 & 1.525e-03 & 1.02 & 2.196e-06 & 1.09\\
+							  $2\times80$ &  8.686e-08 & 1.87 & 8.686e-08 & 1.87 & 7.442e-04 & 1.04 & 1.130e-06 & 0.96\\
+							  $2\times160$ & 2.222e-08 & 1.97 & 2.222e-08 & 1.97 & 2.893e-04 & 1.36 & 5.578e-07 & 1.02
 					\end{tabular}
 								\caption{Quadratic porosity compaction column test $\phi_0 = 0.001$.}
 								\label{tab:constporositycolumn}
 					 \end{table}
 Since we do not make the assumetion that $\phi_0 z^ \ll 1$ anymore, we test convergence on the case where $\phi_0 = 0.1$.
-
+\iffalse
 					 \begin{figure}[ht]
 						\centering
 						\begin{minipage}[t]{0.47\textwidth}
@@ -679,24 +677,33 @@ Since we do not make the assumetion that $\phi_0 z^ \ll 1$ anymore, we test conv
 								$N = 160$.}
 								\label{fig:quadraticporocompactcolumn}
 					 \end{figure}
+\fi
+					 \begin{figure}[ht]
+						\centering
+								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_quad_0.1.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quad_0.01_series.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quiver_quad_0.01_series.eps}
+								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/q_quad_0.1.eps}
+								\caption{Quadratic porosity compaction column test $\phi_0=0.01$.}
+								\label{fig:quadraticporocompactcolumn_0.01}
+					 \end{figure}
 
 					 \begin{table}
 					\begin{tabular}{c || c | c || c | c || c | c || c | c }
-							  \quad & \multicolumn{2}{c||}{$u$ (new)} & \multicolumn{2}{c||}{$v$ (new)}& \multicolumn{2}{c||}{$u$ (old)} & \multicolumn{2}{c}{$v$ (old)} \\
+							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
 							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
 							  \hline
-							  $2\times20$ &  2.438e-05 & -& 2.438e-05 & - & 2.887e-05 & - & 2.887e-05 & -\\
-							  $2\times40$ &  6.249e-06 & 1.96 & 6.249e-06 & 1.96 & 1.184e-05 & 1.286 & 1.184e-05 & 1.286\\
-							  $2\times80$ &  1.486e-06 & 2.07 & 1.486e-06 & 2.07 & 8.591e-06 & 0.463 & 8.591e-06 & 0.463\\
-							  $2\times160$ & 3.908e-07 & 1.96 & 3.908e-07 & 1.96 & 8.048e-06 & 0.094 & 8.048e-06 & 0.094
+							  $2\times20$ &  2.438e-05 & -& 2.438e-05 & - &  & - &  & -\\
+							  $2\times40$ &  6.249e-06 & 1.96 & 6.249e-06 & 1.96 &  &  &  & \\
+							  $2\times80$ &  1.486e-06 & 2.07 & 1.486e-06 & 2.07 &  &  &  & \\
+							  $2\times160$ & 3.908e-07 & 1.96 & 3.908e-07 & 1.96 &  &  &  & 
 					\end{tabular}
 								\caption{Quadratic porosity compaction column test $\phi_0 = 0.01$.}
 								\label{tab:constporositycolumn}
 					 \end{table}
 
-\end{itemize}
 
-Problem Setup 2: \textit{Mid-Ocean Ridge}.
+\section{Mid-Ocean Ridge Test}
 
 We now reconsider the Mid-Ocean ridge test case in~\cite{DegenerateDarcy}.
 We solve the full system of equations on a dimensionless 

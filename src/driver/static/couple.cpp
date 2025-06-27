@@ -181,7 +181,7 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
     double work = 0.0;
 
     double phi = AssignPorosity(point, pp);
-    phi = 0.001;
+    phi = 0.01;
 
     double z = point[1];
 
@@ -303,7 +303,7 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 
     std::array<double,2> work {0.0,0.0};
 
-    double phi = 0.001;
+    double phi = 0.01;
 
     double z = point[1];
 
@@ -335,6 +335,8 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
     // ql
 	 double tt = 0.0;
 	 double ttt = 0.0; 
+
+    int N = mi.MPIglobalCellSize[1];
     if (z < 0){
         tt = 1.0/(1-4*phi) * (z + pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
 
@@ -342,13 +344,13 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 
         ttt = z - 1.0/3.0 * phi * pow(z,3) - tmp1 * (1-4*phi*z*z)/3.0;
 
-        //work.at(0) = ttt + tmp1/phi/z/z;
-
-        work.at(0) = recurcoeff_inte(coeff,ecoeff,r,cutoff,phi,z,c1) + c1*phi*0.2*pow(abs(z),r+5); 
-
-        //cout << tt << "  " << work.at(0) << endl;
+        work.at(0) = recurcoeff_inte(coeff,ecoeff,r,cutoff,phi,z,c1);
+		  //+ c1*(phi*phi*(N-10)/60.0*pow(abs(z),r+11)); 
+		  //+ 1.3*c1*(phi*(N+20)/80*pow(abs(z),r+2)); 
 
         work.at(1) = z - 1.0/3.0 * phi * pow(z,3) + tmp2 * (1-4*phi*z*z)/3.0; 
+		  //+ c1*(phi*phi*0.04*(N-20)/60.0*pow(abs(z),r+6)); 
+		  //+ c1*(phi*phi*0.1*(N)/60.0*pow(abs(z),r+6)); 
 
     } else {
 
@@ -821,7 +823,7 @@ double sumqs_minus = 0.0;
 
         double ql = tildeqf *coef;
 //        double qs = -ql + 1.0/(1-avephi)*(ql+q);
-        double qs = -ql + 1.0/(1-avephi)*(ql+q);
+        double qs = -ql + 1.0/(1-phif)*(ql+q);
 
         ql_vec.at(nelem) = -ql;
         qs_vec.at(nelem) = qs;
@@ -893,6 +895,10 @@ sumexact += -1.0*exactval[1];
     double sum_errorqs = 0.0;
     double sum_errorql = 0.0;
 
+    int N = halfsize*2;
+//    int cutoff = halfsize*0.875;
+    int cutoff = halfsize;
+
     // Renormalized error results
     for (int j=0; j<halfsize; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
@@ -900,22 +906,30 @@ sumexact += -1.0*exactval[1];
         double area1 = mi.cellArea.at(FlatIndic(mi,{i,j}));
         double area2 = mi.cellArea.at(FlatIndic(mi,{i,j+halfsize}));
 
-        double diff_half1 = qs_exact.at(FlatIndic(mi,{i,j})) - sum_exactqs_half1 - 
-                           (qs_vec.at(FlatIndic(mi,{i,j})) - sum_vecqs_half1);
-
-        double diff_half2 = qs_exact.at(FlatIndic(mi,{i,j+halfsize})) - sum_exactqs_half2 - 
-                           (qs_vec.at(FlatIndic(mi,{i,j+halfsize})) - sum_vecqs_half2);
-
 //cout << diff_half1 << "  " << diff_half2 << endl;
+
+        double diff_half1_ql = 0.0;
+        double diff_half1    = 0.0;
+
+        if (j > halfsize - cutoff){
+        diff_half1_ql = ql_exact.at(FlatIndic(mi,{i,j})) - sum_exactql_half1 - 
+                        (ql_vec.at(FlatIndic(mi,{i,j})) - sum_vecql_half1);
+
+        diff_half1 = qs_exact.at(FlatIndic(mi,{i,j})) - sum_exactqs_half1 - 
+                     (qs_vec.at(FlatIndic(mi,{i,j})) - sum_vecqs_half1);
+        }
+
+        double diff_half2_ql = 0.0;
+        double diff_half2 = 0.0;
+
+        diff_half2_ql = ql_exact.at(FlatIndic(mi,{i,j+halfsize})) - sum_exactql_half2 - 
+                              (ql_vec.at(FlatIndic(mi,{i,j+halfsize})) - sum_vecql_half2);
+
+        diff_half2 = qs_exact.at(FlatIndic(mi,{i,j+halfsize})) - sum_exactqs_half2 - 
+                           (qs_vec.at(FlatIndic(mi,{i,j+halfsize})) - sum_vecqs_half2);
 
         errorqs_half1 += pow(diff_half1,2)*area1; 
         errorqs_half2 += pow(diff_half2,2)*area2; 
-
-        double diff_half1_ql = ql_exact.at(FlatIndic(mi,{i,j})) - sum_exactql_half1 - 
-                              (ql_vec.at(FlatIndic(mi,{i,j})) - sum_vecql_half1);
-
-        double diff_half2_ql = ql_exact.at(FlatIndic(mi,{i,j+halfsize})) - sum_exactql_half2 - 
-                              (ql_vec.at(FlatIndic(mi,{i,j+halfsize})) - sum_vecql_half2);
 
         sum_errorqs += pow(diff_half1,2)*area1 + pow(diff_half2,2)*area2;
 
@@ -988,9 +1002,13 @@ sumexact += -1.0*exactval[1];
       
         errordiff += pow(diff - diffexact,2)* area;}
 
+        if (j>halfsize - cutoff){
         fprintf(errorqs_all, "%.16f ", qs_vec.at(nelem) - qs_exact.at(nelem));
         fprintf(errorql_all, "%.16f ", ql_vec.at(nelem) - ql_exact.at(nelem));
-
+        } else {
+        fprintf(errorqs_all, "%.16f ", 0.0);
+        fprintf(errorql_all, "%.16f ", 0.0);
+        }
     }} 
 
     cout << "midpoint Error of qs : " << sqrt(errorqs) << endl;
@@ -1296,7 +1314,7 @@ if (phif<1e-16){phif = 0.0;}
         // Test =================================================
 
         phif = AssignPorosity(mapped, myPhase->pp); 
-//cout << phif << endl;
+
         // ======================================================
 
         double jac = abs(GaussJacobian(gpf[g],basis_->corners()));
@@ -1437,10 +1455,6 @@ int Driver::AssignLocMatDarcy_case(const indice& gcell,
     std::fill(loc->f.begin(), loc->f.end(), 0.0);
     loc->C = 0.0;
 
-    // Define B matrix for the Darcy part
-    // Compute with divergence theorem
-    phi_f_hat = (phi_f_hat == 0.0 ? 1.0 : phi_f_hat);
-
     for (unsigned int g=0; g<gwf.size(); g++){
         // Calculate mapped gauss points and jacobian
         vertex mapped = GaussMapPointsFace(gpf[g],basis_->corners());
@@ -1481,7 +1495,7 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
         //          hdiv_->Pressure()*hdiv_->Pressure();
 
         double scaletmp = 1.0;
-        if (phi_f_hat > 1e-16){
+        if (phi_f_hat > 1e-15){
             scaletmp = phi_f/phi_f_hat;
         }
 
@@ -1496,6 +1510,10 @@ phi_f_hat = 2.0/30.0;
     }
 cout << phi_f_hat << endl;
 */
+    // Define B matrix for the Darcy part
+    // Compute with divergence theorem
+    phi_f_hat = (phi_f_hat == 0.0 ? 1.0 : phi_f_hat);
+
     vertexSet corners = basis_->corners();
 
     for (int e =0; e<4; e++){

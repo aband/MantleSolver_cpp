@@ -32,7 +32,7 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
     // Quadratic porosity
 
     if (point[1]<-0.0){
-        return 0.001*point[1]*point[1];
+        return 0.01*point[1]*point[1];
     } else {
         return 0.0;
     }
