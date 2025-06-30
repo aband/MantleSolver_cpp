@@ -188,7 +188,7 @@ We recall the aforementioned inf-sup stable mixed finite element space pairs on 
 		  \mathbb{W}_{S,h}(E) = \mathbb{W}(E)   &= \mathbb{P}_0(E).
 		  \end{aligned}
 \end{equation}
-We can impose essential boundary conditions by projecting extensions
+We impose essential boundary conditions by projecting extensions
 $\tilde{\mathbf{g}}_r$ and $\tilde{\mathbf{g}}_s$ into
 the finite element spaces as $\hat{\mathbf{g}}_r \in \mathbb{V}_{D,h}$ and $\hat{\mathbf{g}}_s \in \mathbb{V}_{S,h}$.
 
@@ -227,7 +227,7 @@ To address this, we utilize an element-averaged variable $\phi_E$ as
 		  \phi_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x})\, d\mathbf{x},
 \end{equation}
 where $\lvert E \rvert$ is the area of element $E$ and 
-$\phi_E = \mathcal{P}_{\mathbb{W}_{D,h}}\phi\rvert_E \in \mathbf{W}_{D,h}$. 
+$\phi_E = \mathcal{P}_{\mathbb{W}_{D,h}}\phi\rvert_E \in \mathbb{W}_{D,h}$. 
 Then the two terms involving divergence is modified as
 \begin{equation}\label{eq:newvariable_phi}
 		  \phi^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v}) \rvert_E = \left\{
@@ -238,18 +238,19 @@ Then the two terms involving divergence is modified as
 					 \right.
 \end{equation}
 where the point-wise term $\phi^{-1/2}$ is modified to be a cell-averaged term $\phi_E^{-1/2}$. 
-We expand the integral term involving divergence according to 
-the divergence theorem as
+We apply the divergence theorem to expand the integral term involving the
+divergence operator in equation~\eqref{eq:weak_continuous} as
 \begin{equation}\label{eq:divtheorem}
-		  \begin{aligned}
-					 \int_E \phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta} \pmb{\psi}_{r,h})\omega_{l,h}\, d\mathbf{x} &=\int_{\partial E} \phi_E^{-1/2} \phi^{1+\Theta} \pmb{\psi}_{r,h}\cdot \pmb{\nu} \omega_{l,h}\, ds \\
-					 &+\int_{E}\phi_E^{-1/2}\phi^{1+\Theta}\pmb{\psi}_{r,h} \cdot \nabla \omega_{l,h}\, d\mathbf{x}.
-		  \end{aligned}
+%		  \begin{aligned}
+					 \int_E \phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta} \pmb{\psi}_{r,h})\omega_{l,h}\, d\mathbf{x} =\int_{\partial E} \phi_E^{-1/2} \phi^{1+\Theta} \pmb{\psi}_{r,h}\cdot \pmb{\nu} \omega_{l,h}\, ds, \\
+%					 &+\int_{E}\phi_E^{-1/2}\phi^{1+\Theta}\pmb{\psi}_{r,h} \cdot \nabla \omega_{l,h}\, d\mathbf{x}.
+%		  \end{aligned}
 \end{equation}
-The second term vanishes when $\omega_{l,h}$ is constant on element $E$.
-We now propose our local mass conserved version by
-replacing the term $\phi^{1/2}$ in equation~\eqref{eq:weak_compaction} with
-$\phi_E^{1/2}$ as
+where $\omega_{l,h} \in \mathbb{W}_{D,h}$ is constant on the element $E \in \mathcal{T}_h$.
+%The second term vanishes when $\omega_{l,h}$ is constant on element $E$.
+We now propose our local mass conserved version %by
+%replacing the term $\phi^{1/2}$ in equation~\eqref{eq:weak_compaction} 
+with $\phi_E^{1/2}$ as
 \iffalse
 \begin{alignat}{2}
 		  \label{eq:weak_stokes_mass}
@@ -278,22 +279,23 @@ $\phi_E^{1/2}$ as
 		  &					 &&\forall \omega_{l,h} \in 
 		  \mathbb{W}_{D,h}.
 \end{alignat}
-To see local mass conservation of the fluid, let $E \in \mathcal{T}_h$ be any element. 
-The equation~\eqref{eq:weak_continuous_mass} gives
+Here, the term $\phi \phi_E^{-1}$ in equation~\eqref{eq:weak_continuous_mass} is viewed as 1 when $\phi_E = 0$.
+To verify local mass conservation of the fluid, consider any element $E \in \mathcal{T}_h$, 
+equation~\eqref{eq:weak_continuous_mass} gives
 \begin{equation}
-		  \int_E \nabla \cdot (\phi^{1+\Theta} \check{\mathbf{v}}_{r,h}) d\mathbf{x} + \int_E \frac{\phi}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h) dx = 0,
+		  \int_E \nabla \cdot (\phi^{1+\Theta} \check{\mathbf{v}}_{r,h})\, d\mathbf{x} + \int_E \frac{\phi}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h)\, dx = 0,
 \end{equation}
-and the equation~\eqref{eq:weak_compaction_mass} gives
+and equation~\eqref{eq:weak_compaction_mass} gives
 \begin{equation}
-		  \int_E \nabla \cdot \mathbf{v}_{s,h} d\mathbf{x} - \int_E \frac{\phi}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h) dx = 0.
+		  \int_E \nabla \cdot \mathbf{v}_{s,h}\, d\mathbf{x} - \int_E \frac{\phi}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h)\, dx = 0.
 \end{equation}
-We define an auxiliary space $\omega_E$ being 1 on $E$ and 0 elsewhere.
+%We define an auxiliary space $\omega_E$ being 1 on $E$ and 0 elsewhere.
 We sum equations~\eqref{eq:weak_compaction_mass} and~\eqref{eq:weak_continuous_mass} 
 together 
 assuming that $\omega_h = \omega_E \in \mathbb{W}_{S,h}$ and $\omega_{l,h} = \phi_E^{-1/2} \omega_E \in \mathbb{W}_{D,h}$. 
 The local mass conservation of the phase-averaged mixture is now retrieved as
 \begin{equation}
-		  \int_{E}\nabla \cdot (\phi^{1+\Theta}\check{\mathbf{v}}_r + \check{\mathbf{v}}_s) d\mathbf{x} = 0.
+		  \int_{E}\nabla \cdot (\phi^{1+\Theta}\check{\mathbf{v}}_r + \check{\mathbf{v}}_s)\, d\mathbf{x} = 0.
 \end{equation}
 
 \subsection{Recovery of the unscaled Darcy variables}
@@ -303,8 +305,8 @@ an element $E$ we define
 \begin{equation}
 		  \check{q}_{l,h}\rvert_{E} = \left\{
 					 \begin{alignedat}{2}
-								&\phi_E^{-1/2} \tilde{\check{q}}_{l,h}\lvert_E \quad &&\text{if} \phi_E \neq 0,\\
-								&0                                                   &&\text{if} \phi_E = 0,
+								&\phi_E^{-1/2} \tilde{\check{q}}_{l,h}\lvert_E \quad &&\text{if}\, \phi_E \neq 0,\\
+								&0                                                   &&\text{if}\, \phi_E = 0,
 					 \end{alignedat}
 					 \right.
 \end{equation}

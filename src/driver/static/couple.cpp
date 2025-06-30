@@ -113,6 +113,86 @@ inline vector<double> recurcoeff(const int& n, const double& phi,
     return work;
 }
 
+inline vector<double> newrecurcoeff(const int& n, const double& phi,
+                                    const int& r, const int& add){
+
+    vector<double> work;
+
+    assert(n>0);
+
+    work.resize(n);
+
+    vector<double> tmp;
+
+    tmp.resize(n+1);
+
+    work.at(0) = 1.0;
+
+    tmp.at(0) = 0.0;
+	 tmp.at(1) = 1.0;
+
+    int nn = 0;
+
+    for (int i=1; i<n; i++){
+        nn = i*2+add;
+
+        double cn4 = 4.0/3.0 * phi*phi*phi*(nn+r-4)*(nn+r-3);
+        double cn2 = 1.0/3.0 * phi*phi*(nn+r-2)*(nn+r-3);
+        double cn  = phi*(nn+r)*(nn+r-3) - 1.0;
+
+        work.at(i) = (cn4*tmp.at(i-2+1) - cn2*tmp.at(i-1+1))/cn;
+        tmp.at(i+1)= work.at(i);
+
+    }
+
+    return work;
+}
+
+inline vector<double> newrecurcoeff_p(const int& n, const double& phi,
+                                      const bool& nocut){
+
+    vector<double> work;
+    if (n<3){
+        work.resize(3);
+	 } else {
+        work.resize(n);
+    }
+
+    // c4
+    work.at(0) = phi*phi/(4*phi - 1);
+    // c6
+    work.at(1) = -1*(phi*phi*phi + 4*phi*phi*work.at(0)) / (18*phi - 1);
+	 // c8
+    work.at(2) = (80.0/3.0*phi*phi*phi*work.at(0) - 10*phi*phi*work.at(1))/
+				(40*phi-1);
+
+    int nn = 0;
+    if (n>3){
+
+        if (nocut){
+            for (int i=3; i<n; i++){
+
+                // start with c10
+                nn = i*2 + 4; 
+
+                double cn4 = 4.0/3.0 * phi*phi*phi*(nn-4)*(nn-3);
+                double cn2 = 1.0/3.0 * phi*phi*(nn-2)*(nn-3);
+                double cn  = phi*(nn)*(nn-3) - 1.0;
+
+                work.at(i) = (cn4*work.at(i-2) - cn2*work.at(i-1))/cn;
+ 
+            }
+        } else {
+            for (int i=3; i<n; i++){
+
+                work.at(i) = 0.0;
+            }
+	     }
+    }
+
+    return work;
+}
+
 inline double recurcoeff_derive(const vector<double>& infcoeff,
                          const vector<double>& ecoeff,
 		                   const int& r, const int& cutoff,
@@ -143,42 +223,11 @@ inline double recurcoeff_inte(const vector<double>& infcoeff,
     return work;
 }
 
-
 /*
-inline vector<double> evencoeff(const int& n, const double& phi){
-
-    vector<double> work;
-
-    assert(n>2);
-
-    work.resize(n);
-
-    // c1
-    work.at(0) = 1.0;
-    work.at(1) = -4.0*phi*phi * work.at(0) / (18*phi - 1);
-    work.at(2) = (80.0/3.0*phi*phi*phi*work.at(0) - 10*phi*phi*work.at(1)) / (40*phi - 1);
-
-    int nn = 0;
-
-    for (int i=3; i<n; i++){
-        nn = i*2;
-
-        double c0 = 4.0/3.0 * phi*phi*phi * ((nn-4)*(nn+1)+ 4 + 4*nn);
-        double c1 = 1.0/3.0 * phi*phi * ((nn-2)*(nn+3) + 4 + 2*(nn+2));
-        double c2 = phi*((nn+5)*nn + 4) - 1.0;
-
-        work.at(i) = (c0*work.at(i-2) - c1*work.at(i-1))/c2;
-
-//		  cout << "even : " <<  work.at(i-2) << "  " <<work.at(i-1)<< endl;
- 
-    }
-
-    return work;
-}
-*/
 const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
 
     double work = 0.0;
+    double work1 = 0.0;
 
     double phi = AssignPorosity(point, pp);
     phi = 0.01;
@@ -193,14 +242,28 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
     vector<double> ocoeff = recurcoeff(cutoff,phi,r2,1);
     vector<double> ecoeff = recurcoeff(cutoff,phi,r2,0);
 
+    vector<double> c_p = newrecurcoeff_p(cutoff, phi,true); 
+    vector<double> odd_c_h = newrecurcoeff(cutoff, phi, r1, 1);
+    vector<double> even_c_h = newrecurcoeff(cutoff, phi, r1, 0);
+
     double p1 = 0.0; 
     double a1 = 0.0;
     double b1 = 0.0;
+
+    double newp1 = 0.0;
+    double newa1 = 0.0;
+    double newb1 = 0.0;
 
     for (int i=0; i<cutoff; i++){
         p1 += coeff.at(i)*pow(2,i*2);
         a1 += ecoeff.at(i)*pow(2,i*2+r2);
         b1 += ocoeff.at(i)*pow(2,i*2+1+r2);
+
+        newp1 += c_p.at(i)*pow(2,i*2+4); 
+        newa1 += even_c_h.at(i)*pow(2,i*2+r1);
+        newb1 += odd_c_h.at(i)*pow(2,i*2+1+r1); 
+	//	  cout << c_p.at(i) << endl;
+//		  cout << coeff.at(i) << endl;
     }
 
     double p2 = 0.0; 
@@ -208,13 +271,16 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
     double b2 = 0.0;
 
     for (int i=0; i<cutoff; i++){
-        p2 += coeff.at(i)*pow(1.2,i*2);
+        p2 += coeff.at(i)*pow(1.2,i*2+4);
         a2 += ecoeff.at(i)*pow(1.2,i*2+r2);
         b2 += ocoeff.at(i)*pow(1.2,i*2+1+r2);
     }
 
     double c1 = 0.0;
     double c2 = 0.0;
+
+    double newc1 = 0.0;
+    double newc2 = 0.0;
 
     double multi = 1.0/(a1*b2-a2*b1);
 
@@ -225,27 +291,93 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
     c2*=multi;
 
     c1 = -p1/a1;
+    newc1 = -newp1/newa1;
 
     if (z<0){
         double scale = phi*phi*z*z*z*z;
 
-/*
-        work = scale * 1.0/(4*phi-1)  
-                + phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
-*/
+
+//        work = scale * 1.0/(4*phi-1)  
+//                + phi*phi/(1-4*phi)*pow(L,4-r1)*pow(-1*z,r1);
+
 
         for (int i=0; i<cutoff; i++){
-            work += coeff.at(i)*pow(z,i*2)
-						  + c1*ecoeff.at(i)*pow(abs(z),i*2+r2);
+            work1 += coeff.at(i)*pow(z,i*2) * scale;
+				//		  + c1*ecoeff.at(i)*pow(abs(z),i*2+r2);
                  // + c2*ocoeff.at(i)*pow(abs(z),i*2+1+r2));
+            work += c_p.at(i)*pow(z,i*2+4)
+                  + newc1*even_c_h.at(i)*pow(abs(z),i*2+r1);
+//cout << work << "  " << work1 << endl;
         }
-        work *= scale;
+        //work *= scale;
 
     }
 
     return work;
 }
+*/
 
+const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
+
+    double work = 0.0;
+
+    double phi = 0.001;
+
+    double z = point[1];
+    double r = (3+sqrt(9+4/phi))/2;
+    double rn = (3-sqrt(9+4/phi))/2;
+
+    int cutoff = 5;
+    vector<double> c_p = newrecurcoeff_p(cutoff, phi, true); 
+    vector<double> odd_c_h = newrecurcoeff(cutoff, phi, r, 1);
+    vector<double> even_c_h = newrecurcoeff(cutoff, phi, r, 0);
+    vector<double> even_c_hn = newrecurcoeff(cutoff, phi, rn, 0);
+
+    double p1 = 0.0; 
+    double a1 = 0.0;
+    double b1 = 0.0;
+    double p2 = 0.0;
+    double a2 = 0.0;
+    double b2 = 0.0;
+    double d1 = 0.0;
+    double d2 = 0.0;
+
+    for (int i=0; i<cutoff; i++){
+        p1 += c_p.at(i)*pow(0.2,i*2+4); 
+        a1 += even_c_h.at(i)*pow(0.2,i*2+r); 
+        d1 += even_c_hn.at(i)*pow(0.2,i*2+rn);
+        b1 += odd_c_h.at(i)*pow(0.2,i*2+1+r); 
+
+        p2 += c_p.at(i)*pow(2,i*2+4); 
+        a2 += even_c_h.at(i)*pow(2,i*2+r); 
+        d2 += even_c_hn.at(i)*pow(2,i*2+rn);
+        b2 += odd_c_h.at(i)*pow(2,i*2+1+r); 
+
+        //p2 += c_p.at(i)*pow(0.0001,i*2+4);
+        //a2 += even_c_h.at(i)*pow(0.0001,i*2+r);
+        //b2 += odd_c_h.at(i)*pow(0.0001,i*2+1+r);
+    }	
+
+    //double c1 = -p1/a1;
+    //double c2 = -p1/b1;
+    double multi = 1.0/(a1*d2-a2*d1);
+    double c1 = d1*p2-d2*p1;
+    double c2 = a2*p1-a1*p2;
+
+    c1*=multi;
+    c2*=multi;
+
+    if (z<-0.2){
+        for (int i=0; i<cutoff; i++){
+             work += c_p.at(i)*pow(abs(z),i*2+4)
+                  + c1*even_c_h.at(i)*pow(abs(z),i*2+r)+
+                  + c2*even_c_hn.at(i)*pow(abs(z),i*2+rn);
+                  //+ c2*odd_c_h.at(i)*pow(abs(z),i*2+r+1);
+        }
+    }
+
+    return work;
+}
 // True solution for pressure potentials
 
 const std::array<double,2> trueSolnq(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
@@ -299,6 +431,113 @@ const indice& global, PhysProperty * pp, const double& L){
     return work;
 }
 
+inline double newrecurcoeff_deriv(const vector<double>& c_p,
+                                  const vector<double>& even_c_h, 
+                                  const vector<double>& even_c_hn,
+											 const double& c1,
+											 const double& c2,
+											 const int& r1,
+											 const int& r2,
+											 const double& phi, 
+											 const double& z,
+											 const int& cutoff){
+
+    double work = 0.0;
+
+    for (int i=0; i<cutoff; i++){
+        work += c_p.at(i)*pow(abs(z),2*i+4-1)*(2*i+4)+
+					 c1*even_c_h.at(i)*pow(abs(z),i*2+r1-1)*(2*i+r1)+
+					 c2*even_c_hn.at(i)*pow(abs(z),i*2+r2-1)*(2*i+r2);
+    }
+
+    return work;
+}
+
+inline double newrecurcoeff_inte(const vector<double>& c_p,
+                              const vector<double>& even_c_h,
+										const vector<double>& even_c_hn,
+										const double& c1,
+										const double& c2,
+									   const int& r1,
+										const int& r2,
+										const double& phi, 
+										const double& z,
+										const int& cutoff){
+
+    double work = 0.0;
+
+	 for (int i=0; i<cutoff; i++){
+        work += c_p.at(i)*pow(abs(z),2*i+1)/(2*i+1)/phi/phi+
+		   		 c1*even_c_h.at(i)*pow(abs(z),i*2+r1-4+1)/(2*i+r1-4+1)/phi/phi+
+	  	   		 c2*even_c_hn.at(i)*pow(abs(z),i*2+r2-4+1)/(2*i+r2-4+1)/phi/phi;
+    } 
+
+    return work;
+}
+
+const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
+
+    std::array<double,2> work {0.0,0.0};
+
+    double z = point[1];
+    double phi = 0.001;
+    double r1 = (3+sqrt(9+4/phi))/2;
+    double r2 = (3-sqrt(9+4/phi))/2;
+
+    int cutoff = 5;
+    vector<double> c_p = newrecurcoeff_p(cutoff, phi, true); 
+ 
+    vector<double> even_c_h = newrecurcoeff(cutoff, phi, r1, 0);
+    vector<double> even_c_hn = newrecurcoeff(cutoff, phi, r2, 0);
+
+    double p1 = 0.0; 
+    double a1 = 0.0;
+    double p2 = 0.0;
+    double a2 = 0.0;
+    double d1 = 0.0;
+    double d2 = 0.0;
+
+    for (int i=0; i<cutoff; i++){
+        p1 += c_p.at(i)*pow(0.2,i*2+4); 
+        a1 += even_c_h.at(i)*pow(0.2,i*2+r1); 
+        d1 += even_c_hn.at(i)*pow(0.2,i*2+r2);
+
+        p2 += c_p.at(i)*pow(2,i*2+4); 
+        a2 += even_c_h.at(i)*pow(2,i*2+r1); 
+        d2 += even_c_hn.at(i)*pow(2,i*2+r2);
+
+        //p2 += c_p.at(i)*pow(0.0001,i*2+4);
+        //a2 += even_c_h.at(i)*pow(0.0001,i*2+r);
+        //b2 += odd_c_h.at(i)*pow(0.0001,i*2+1+r);
+    }	
+
+    double multi = 1.0/(a1*d2-a2*d1);
+    double c1 = d1*p2-d2*p1;
+    double c2 = a2*p1-a1*p2;
+
+    c1*=multi;
+    c2*=multi;
+
+    double tmp2 = newrecurcoeff_deriv(c_p, even_c_h, even_c_hn, c1,c2,
+                              r1, r2, phi, z, cutoff); 
+    double tmp1 = newrecurcoeff_inte(c_p, even_c_h, even_c_hn, c1,c2,
+                              r1, r2, phi, z, cutoff); 
+    if (z < -0.2){
+
+        //work.at(0) = tmp1;
+
+        work.at(1) = z - 1.0/3.0*phi*pow(z,3) + tmp2*(1-4*phi*z*z)/3.0;
+
+        work.at(0) = work.at(1) + tmp2/phi/z/z; 
+    }else{
+        work.at(1) = z;
+        work.at(0) = 0.0;
+    }
+
+    return work;
+} 
+
+/*
 const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, const indice& global, PhysProperty * pp, const double& L){
 
     std::array<double,2> work {0.0,0.0};
@@ -337,7 +576,7 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 	 double ttt = 0.0; 
 
     int N = mi.MPIglobalCellSize[1];
-    if (z < 0){
+    if (z < 0.2){
         tt = 1.0/(1-4*phi) * (z + pow(L,4-r1)*pow(abs(z),r1-3)/(r1-3));
 
         //work.at(1) = tt - tmp1/phi/z/z;
@@ -360,6 +599,7 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
     }
     return work;
 }
+*/
 
 int printExactPorosity(int mark, const MeshInfo& mi, const char * fieldname, PhysProperty * pp){
 
