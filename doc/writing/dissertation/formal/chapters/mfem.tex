@@ -113,9 +113,9 @@ where each space is equipped with their natural norms.
 
 A compatibility condition is required to ensure overall mass conservation when essential boundary conditions 
 are prescribed on the entire boundary $\partial \Omega$, i.e., when $\Gamma_{u,D} = \Gamma_{u,S} = \partial \Omega$. 
-In this case, the Dirichlet data must satisfy:
+In this case, the prescribed Dirichlet data must satisfy the following compatibility condition:
 \begin{equation}
-		  \int_{\partial \Omega} (\mathbf{g}_r + \mathbf{g}_s) \cdot \pmb{\nu}\, ds = 0.
+		  \int_{\partial \Omega} (\phi^{1+\Theta}\mathbf{g}_r + \mathbf{g}_s) \cdot \pmb{\nu}\, ds = 0.
 \end{equation}
 In practice, we may not enforce this compatibility condition explicitly due 
 to the pressence of natural boundary conditons.
@@ -140,7 +140,7 @@ $\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{U}_S$, and $\c
 		  \mathbb{W}_D.
 \end{alignat}
 
-We state well-posedness result of the scaled model directly as follows.
+We state the well-posedness result of the scaled formulation directly as follows.
 \begin{lem}\label{lem:ExistenceUniqueness}
 		  (Existence and Uniqueness)
 
@@ -215,6 +215,39 @@ $\check{\mathbf{v}}_{s,h} \in \mathbf{V}_{S,h,\mathbf{0}} + \hat{\mathbf{g}}_s$ 
 		  &					 &&\forall \omega_{l,h} \in 
 		  \mathbb{W}_{D,h}.
 \end{alignat}
+The existence and convergence results of the proposed new mixed finite element discretization can be established
+in complete analogy with the proof in~\cite{DegenerateDarcy}. We state the results below without repeating the full
+derivation for completeness.
+\begin{lem}
+If~\eqref{eq:phiboundness} holds, then there exists a unique solution to the scaled mixed finite element 
+method~\eqref{eq:weak_stokes}--\eqref{eq:weak_continuous}.
+\end{lem}
+\begin{proof}
+See~\cite{DegenerateDarcy}.
+\end{proof}
+\begin{lem}
+Assume that~\eqref{eq:phiboundness} holds on the porosity, $0\leq \phi \leq \phi^* <1$, the mesh
+is quasiuniform. Then the difference of the solution to the scaled formulation~\eqref{eq:weak_stokes}--\eqref{eq:weak_continuous},
+and its finite elment approximation satisfy
+\begin{equation}
+\begin{aligned}
+&\norm{\tilde{\mathbf{v}}_r - \tilde{\mathbf{v}}_{r,h}}_{L^2(\Omega)} + 
+\norm{\mathcal{P}_{\mathbb{W}_{D,h}}\big[\phi^{-1/2}\nabla \cdot(\phi^{1+\Theta}(\tilde{\mathbf{v}}_r - \tilde{\mathbf{v}}_{r,h})
+)\big]}_{L^{2}(\Omega)} + \norm{\mathbf{v}_s - \mathbf{v}_{s,h}}_{H^1(\Omega)} \\
+&+ \norm{\tilde{q}_l - \tilde{q}_{l,h}}_{L^2(\Omega)} + \norm{q - q_h}_{L^2(\Omega)} \\
+&\leq C \bigg\{\norm{\tilde{\mathbf{v}}_r - \pi_{\mathbb{V}_1^0} \tilde{\mathbf{v}}_r}_{L^2(\Omega)}  + 
+\norm{\mathcal{P}_{\mathbb{W}_{D.h}}[\phi^{-1/2}\nabla\cdot(\phi^{1+\Theta}(\tilde{\mathbf{v}}_r - \pi_{\mathbb{V}_1^0}\tilde{\mathbf{v}}_r))]}_{L^2(\Omega)}  \\
+&+\norm{\pi_{\mathbb{V}_1^0}\tilde{\mathbf{g}}_r - \hat{\mathbf{g}}_r}_{L^2(\Omega)} + 
+\norm{\tilde{q}_l - \mathcal{P}_{\mathbb{W}_{D,h}}\tilde{q}_l}_{L^2(\Omega)} + \norm{q - \mathcal{P}_{\mathbb{W}_{S,h}}q}_{L^2(\Omega)}\\ 
+&+ \norm{\mathbf{v}_s - \pi_{\mathbb{V}_\mathcal{BR}}\mathbf{v}_s}_{H^1(\Omega)} + \norm{\pi_{\mathbb{V}_\mathcal{BR}}\tilde{\mathbf{g}}_s - \hat{\mathbf{g}}_s } \bigg\},
+\end{aligned}
+\end{equation}
+where $\pi_{\mathbb{V}_{1}^0}$ and $\pi_{\mathbb{V}_\mathcal{BR}}$ are porjection operators defined in section~$\ref{sec:stabV10}$ 
+and section~$\ref{sec:stabVbr}$ respectively.
+\end{lem}
+\begin{proof}
+See~\cite{DegenerateDarcy}.
+\end{proof}
 
 \subsection{Local Mass Conservation}
 Before proceeding, we ensure that the formulation is well-defined—specifically, 
@@ -298,30 +331,6 @@ The local mass conservation of the phase-averaged mixture is now retrieved as
 		  \int_{E}\nabla \cdot (\phi^{1+\Theta}\check{\mathbf{v}}_r + \check{\mathbf{v}}_s)\, d\mathbf{x} = 0.
 \end{equation}
 
-\subsection{Recovery of the unscaled Darcy variables}
-The unscaled Darcy potential is $\check{q}_f = \phi^{-1/2}\tilde{\check{q}}_l$, see~\eqref{eq:scaledVariables}. 
-We can reterive an approximate Darcy potential. We assume that $\check{q}_{f,h} \in \mathbb{W}_{D,h}$, so on
-an element $E$ we define
-\begin{equation}
-		  \check{q}_{l,h}\rvert_{E} = \left\{
-					 \begin{alignedat}{2}
-								&\phi_E^{-1/2} \tilde{\check{q}}_{l,h}\lvert_E \quad &&\text{if}\, \phi_E \neq 0,\\
-								&0                                                   &&\text{if}\, \phi_E = 0,
-					 \end{alignedat}
-					 \right.
-\end{equation}
-where the liquid pressure potential $\check{q}_l$ does not hold any physical 
-meanings when there is no melting presents ($\phi = 0$).
-
-The relative Darcy velocity is given by $\check{\mathbf{v}}_r = \phi^{\Theta} \tilde{\check{\mathbf{v}}}$, 
-see~\eqref{eq:scaledVariables} as well. To maintain local mass balance, we 
-enforce that on each edge $e_i \subset \partial E$
-\begin{equation}
-		  \int_{e_i} \phi^{1+\Theta} \tilde{\check{\mathbf{v}}}_r \cdot \pmb{\nu}_i\, ds = \int_{e_i} \phi \check{\mathbf{v}}_{r,h} \cdot \pmb{\nu} \, ds.
-\end{equation}
-
-\subsection{Uniqueness and Convergence properties}
-
 \begin{lem}
 		  Assuming~\eqref{eq:phiboundness} holds, there exists a unique solution
 		  to the modified local mass conservation modified
@@ -343,6 +352,28 @@ We derive a bound for the error by taking the difference
 of 
 
 We use the projection operators defined in 
+
+\subsection{Recovery of the unscaled Darcy variables}
+The unscaled Darcy potential is $\check{q}_f = \phi^{-1/2}\tilde{\check{q}}_l$, see~\eqref{eq:scaledVariables}. 
+We can reterive an approximate Darcy potential. We assume that $\check{q}_{f,h} \in \mathbb{W}_{D,h}$, so on
+an element $E$ we define
+\begin{equation}
+		  \check{q}_{l,h}\rvert_{E} = \left\{
+					 \begin{alignedat}{2}
+								&\phi_E^{-1/2} \tilde{\check{q}}_{l,h}\lvert_E \quad &&\text{if}\, \phi_E \neq 0,\\
+								&0                                                   &&\text{if}\, \phi_E = 0,
+					 \end{alignedat}
+					 \right.
+\end{equation}
+where the liquid pressure potential $\check{q}_l$ does not hold any physical 
+meanings when there is no melting presents ($\phi = 0$).
+
+The relative Darcy velocity is given by $\check{\mathbf{v}}_r = \phi^{\Theta} \tilde{\check{\mathbf{v}}}$, 
+see~\eqref{eq:scaledVariables} as well. To maintain local mass balance, we 
+enforce that on each edge $e_i \subset \partial E$
+\begin{equation}
+		  \int_{e_i} \phi^{1+\Theta} \tilde{\check{\mathbf{v}}}_r \cdot \pmb{\nu}_i\, ds = \int_{e_i} \phi \check{\mathbf{v}}_{r,h} \cdot \pmb{\nu} \, ds.
+\end{equation}
 
 \input chapters/linear.tex
 
