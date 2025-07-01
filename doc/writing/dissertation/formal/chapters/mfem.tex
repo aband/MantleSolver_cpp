@@ -132,9 +132,9 @@ $\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{U}_S$, and $\c
 		  \label{eq:weak_coupled_2}
 					 &(\nabla \cdot \check{\bold{v}}_{s}, \omega)  + \Big(\frac{\phi^{1/2}}{1-\phi} (\check{q}_l - \phi^{1/2}\check{q}), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_S,\\
 					 \label{eq:weak_coupled_3}
-					 &(\bold{\check{v}}_{r},\pmb{\psi}_r)  - (\check{q}_{l},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r)) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_D^\phi,\\
+					 &(\bold{\check{v}}_{r},\pmb{\psi}_r)  - (\check{q}_{l},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_r)) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_D^\phi,\\
 					 \nonumber
-					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r),\omega_f) + \Big(\frac{1}{1-\phi}(\check{q}_{l} - \phi^{1/2}\check{q}),\omega_f \Big) &&= 0 \\
+					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r),\omega_l) + \Big(\frac{1}{1-\phi}(\check{q}_{l} - \phi^{1/2}\check{q}),\omega_l \Big) &&= 0 \\
 					 \label{eq:weak_coupled_4}
 		  &					 &&\forall \omega_f \in 
 		  \mathbb{W}_D.
@@ -239,7 +239,7 @@ and its finite elment approximation satisfy
 \norm{\mathcal{P}_{\mathbb{W}_{D.h}}[\phi^{-1/2}\nabla\cdot(\phi^{1+\Theta}(\tilde{\mathbf{v}}_r - \pi_{\mathbb{V}_1^0}\tilde{\mathbf{v}}_r))]}_{L^2(\Omega)}  \\
 &+\norm{\pi_{\mathbb{V}_1^0}\tilde{\mathbf{g}}_r - \hat{\mathbf{g}}_r}_{L^2(\Omega)} + 
 \norm{\tilde{q}_l - \mathcal{P}_{\mathbb{W}_{D,h}}\tilde{q}_l}_{L^2(\Omega)} + \norm{q - \mathcal{P}_{\mathbb{W}_{S,h}}q}_{L^2(\Omega)}\\ 
-&+ \norm{\mathbf{v}_s - \pi_{\mathbb{V}_\mathcal{BR}}\mathbf{v}_s}_{H^1(\Omega)} + \norm{\pi_{\mathbb{V}_\mathcal{BR}}\tilde{\mathbf{g}}_s - \hat{\mathbf{g}}_s } \bigg\},
+&+ \norm{\mathbf{v}_s - \pi_{\mathbb{V}_\mathcal{BR}}\mathbf{v}_s}_{H^1(\Omega)} + \norm{\pi_{\mathbb{V}_\mathcal{BR}}\tilde{\mathbf{g}}_s - \hat{\mathbf{g}}_s }_{H^1(\Omega)} \bigg\},
 \end{aligned}
 \end{equation}
 where $\pi_{\mathbb{V}_{1}^0}$ and $\pi_{\mathbb{V}_\mathcal{BR}}$ are porjection operators defined in section~$\ref{sec:stabV10}$ 
@@ -275,7 +275,7 @@ We apply the divergence theorem to expand the integral term involving the
 divergence operator in equation~\eqref{eq:weak_continuous} as
 \begin{equation}\label{eq:divtheorem}
 %		  \begin{aligned}
-					 \int_E \phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta} \pmb{\psi}_{r,h})\omega_{l,h}\, d\mathbf{x} =\int_{\partial E} \phi_E^{-1/2} \phi^{1+\Theta} \pmb{\psi}_{r,h}\cdot \pmb{\nu} \omega_{l,h}\, ds, \\
+					 \int_E \phi_E^{-1/2} \nabla \cdot (\phi^{1+\Theta} \pmb{\psi}_{r,h})\omega_{l,h}\, d\mathbf{x} =\int_{\partial E} \phi_E^{-1/2} (\phi^{1+\Theta} \pmb{\psi}_{r,h}\cdot \pmb{\nu}) \omega_{l,h}\, ds, \\
 %					 &+\int_{E}\phi_E^{-1/2}\phi^{1+\Theta}\pmb{\psi}_{r,h} \cdot \nabla \omega_{l,h}\, d\mathbf{x}.
 %		  \end{aligned}
 \end{equation}
@@ -345,14 +345,10 @@ The local mass conservation of the phase-averaged mixture is now retrieved as
 		  proof. Hence, we are not repeating here.
 \end{proof}
 
-We now derive a bound for the local mass conservation modified scaled mixed
-finite element method.
+To derive a bound for the error, we take the difference of the scaled formulation~\eqref{eq:weak_coupled_1}--\eqref{eq:weak_coupled_4} and 
+the discretized formulation with local mass conservation modification~\eqref{eq:weak_stokes_mass}--\eqref{eq:weak_continuous_mass}:
 
-We derive a bound for the error by taking the difference
-of 
-
-We use the projection operators defined in 
-
+\iffalse
 \subsection{Recovery of the unscaled Darcy variables}
 The unscaled Darcy potential is $\check{q}_f = \phi^{-1/2}\tilde{\check{q}}_l$, see~\eqref{eq:scaledVariables}. 
 We can reterive an approximate Darcy potential. We assume that $\check{q}_{f,h} \in \mathbb{W}_{D,h}$, so on
@@ -374,6 +370,7 @@ enforce that on each edge $e_i \subset \partial E$
 \begin{equation}
 		  \int_{e_i} \phi^{1+\Theta} \tilde{\check{\mathbf{v}}}_r \cdot \pmb{\nu}_i\, ds = \int_{e_i} \phi \check{\mathbf{v}}_{r,h} \cdot \pmb{\nu} \, ds.
 \end{equation}
+\fi
 
 \input chapters/linear.tex
 
