@@ -321,7 +321,7 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
 
     double work = 0.0;
 
-    double phi = 0.001;
+    double phi = 0.01;
 
     double z = point[1];
     double r = (3+sqrt(9+4/phi))/2;
@@ -346,19 +346,18 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
         p1 += c_p.at(i)*pow(0.2,i*2+4); 
         a1 += even_c_h.at(i)*pow(0.2,i*2+r); 
         d1 += even_c_hn.at(i)*pow(0.2,i*2+rn);
-        b1 += odd_c_h.at(i)*pow(0.2,i*2+1+r); 
+        //b1 += odd_c_h.at(i)*pow(0.2,i*2+1+r); 
 
         p2 += c_p.at(i)*pow(2,i*2+4); 
         a2 += even_c_h.at(i)*pow(2,i*2+r); 
         d2 += even_c_hn.at(i)*pow(2,i*2+rn);
-        b2 += odd_c_h.at(i)*pow(2,i*2+1+r); 
+        //b2 += odd_c_h.at(i)*pow(2,i*2+1+r); 
 
         //p2 += c_p.at(i)*pow(0.0001,i*2+4);
         //a2 += even_c_h.at(i)*pow(0.0001,i*2+r);
         //b2 += odd_c_h.at(i)*pow(0.0001,i*2+1+r);
     }	
 
-    //double c1 = -p1/a1;
     //double c2 = -p1/b1;
     double multi = 1.0/(a1*d2-a2*d1);
     double c1 = d1*p2-d2*p1;
@@ -367,10 +366,13 @@ const double trueSoln_q(const MeshInfo& mi, const vertex& point, const indice& g
     c1*=multi;
     c2*=multi;
 
+    c1 = -p2/a2;
+    c2 = 0.0;
+
     if (z<-0.2){
         for (int i=0; i<cutoff; i++){
              work += c_p.at(i)*pow(abs(z),i*2+4)
-                  + c1*even_c_h.at(i)*pow(abs(z),i*2+r)+
+                  + c1*even_c_h.at(i)*pow(abs(z),i*2+r)
                   + c2*even_c_hn.at(i)*pow(abs(z),i*2+rn);
                   //+ c2*odd_c_h.at(i)*pow(abs(z),i*2+r+1);
         }
@@ -480,7 +482,7 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
     std::array<double,2> work {0.0,0.0};
 
     double z = point[1];
-    double phi = 0.001;
+    double phi = 0.01;
     double r1 = (3+sqrt(9+4/phi))/2;
     double r2 = (3-sqrt(9+4/phi))/2;
 
@@ -518,11 +520,14 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
     c1*=multi;
     c2*=multi;
 
+    c1=-p2/a2;
+    c2= 0.0;
+
     double tmp2 = newrecurcoeff_deriv(c_p, even_c_h, even_c_hn, c1,c2,
                               r1, r2, phi, z, cutoff); 
     double tmp1 = newrecurcoeff_inte(c_p, even_c_h, even_c_hn, c1,c2,
                               r1, r2, phi, z, cutoff); 
-    if (z < -0.2){
+    if (z < -0.0){
 
         //work.at(0) = tmp1;
 

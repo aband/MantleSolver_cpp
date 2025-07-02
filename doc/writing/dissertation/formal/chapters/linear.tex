@@ -186,9 +186,9 @@ system given in equation~\eqref{eq:saddle},
 
 We now examine the structure of the resulting saddle point system.
 The scaled formulation~\eqref{eq:weak_coupled_3} guarantees that the 
-matrix $\mathbf{A}_D$ is nonsingular, therefore the coupled $\mathbf{A}$ is 
-nonsingular as well. The saddle point system can be factorized as
-\begin{equation}
+matrix $\mathbf{A}_D$ is nonsingular, therefore the coupled matrix $\mathbf{A}$ is 
+nonsingular. The saddle point system can be factorized as
+\begin{equation}\label{eq:blockfactor}
 		  \begin{bmatrix}
 					 \mathbf{A} &\mathbf{B} \\
 					 \mathbf{B}^T &\mathbf{C}
@@ -204,57 +204,75 @@ nonsingular as well. The saddle point system can be factorized as
 		  \end{bmatrix},
 \end{equation}
 where $\mathbf{S}$ is the Schur complement
-\begin{equation*}
-		  \mathbf{S} = -(\mathbf{C} + \mathbf{BA}^{-1}\mathbf{B}^T),
-\end{equation*}
+\begin{equation}
+		  \mathbf{S} = -(\mathbf{C} + \mathbf{BA}^{-1}\mathbf{B}^T).
+\end{equation}
 
-The presence of an evolving no-melting regions, where the porosity $\phi=0$, 
-poses some obstacle to some traditional solver.
-On one hand, the existence of zero porosity region guarantees that $\bold{B}$ 
-matrix
-formed in Darcy system does not has full column rank.
-is usually not invertable directly.
-On the other hand, in addition to the constant null space induced by gradient of
-pressure,
-the null space of $\bold{B}$ 
-matrix $\text{ker}(\bold{B})$ in our darcy problem 
-is not fixed due to evloution of melting (change of zero porosity region).
-
-Taking into consideration that the solver will be implemented in parallel, 
+The presence of the evolving no-melting region, where the porosity $\phi=0$, 
+affects the kernal space of the matrix $\mathbf{B}_D$.
+On one hand, the rank deficiency in matrix $\mathbf{B}$ makes the Schur complement
+singular. On the other hand, the changing kernal space poses some difficulties
+applying classical null space methods to our system.
+Taking into consideration that the solver will be implemented in parallel in the future, 
 a iterative solver is more suitable than direct solver.
 
-\subsection{Schur Complement}
-To begin with, we discuss a "direct" way to solve this derived saddle point system.
-Now consider a general saddle point system~\eqref{eq:saddle} with 
-symmetric positive-definite matrix $\mathbf{A}$ as
+Rather than applying a general-purpose solver such as generalized minimal 
+residual method (GMRES) to the full linear system,
+we focus on iterative methods that exploit the structural properties of the block matrices.
+We start with a ``direct" way to solve this derived saddle point system.
+Consider the block LU matrix factorization equivalent to~\eqref{eq:blockfactor}, 
+\begin{equation}
+%		  \begin{bmatrix}
+%					 \mathbf{A} &\mathbf{B} \\
+%					 \mathbf{B}^T &\mathbf{C}
+%		  \end{bmatrix} = 
+\begin{bmatrix}
+					 I &\mathbf{O}\\
+					 -\mathbf{B}^T\mathbf{A}^{-1} &I
+		  \end{bmatrix}
+\begin{bmatrix}
+					 I &\mathbf{O}\\
+					 \mathbf{B}^T\mathbf{A}^{-1} &I
+		  \end{bmatrix}\begin{bmatrix}
+					 \mathbf{A}  &\mathbf{B}\\
+					 \mathbf{O} &\mathbf{S}
+		  \end{bmatrix} \begin{bmatrix}
+\mathbf{x}\\
+\mathbf{y}
+		  \end{bmatrix} = \begin{bmatrix}
+					 I &\mathbf{O}\\
+					 -\mathbf{B}^T\mathbf{A}^{-1} &I
+		  \end{bmatrix}\begin{bmatrix}
+		  \mathbf{F}\\
+		  \mathbf{G}
+		  \end{bmatrix}.
+\end{equation}
+We can solve for $\mathbf{x}$ and $\mathbf{y}$ with block backsubstitution,
 \begin{equation}
 \begin{aligned}
-\mathbf{A} \mathbf{x} + \mathbf{B} \mathbf{y} &= \mathbf{f},\\
-\mathbf{B}^T \mathbf{x} -\mathbf{C}\mathbf{y} &= \mathbf{g}.
+\mathbf{x} &= \mathbf{A}^{-1} (\mathbf{F} - \mathbf{B} \mathbf{y}),\\
+\mathbf{y} &= \mathbf{S}^{-1}(\mathbf{G} - \mathbf{B}^T \mathbf{A}^{-1}\mathbf{F}),
 \end{aligned}
 \end{equation}
-We represent the solution vector $\mathbf{x}$ as
-\begin{equation}
-\mathbf{x} = \mathbf{A}^{-1} (\mathbf{f} - \mathbf{B} \mathbf{y}),
-\end{equation}
-where $\mathbf{A}^{-1}$ is computed with conjugate gradient algorithm.
-We then eliminate $\mathbf{x}$ to represent $\mathbf{y}$ as
-\begin{equation}
-\mathbf{y} = \mathbf{S}^{-1}(\mathbf{g} - \mathbf{B}^T \mathbf{A}^{-1}\mathbf{f}),
-\end{equation}
-where $\mathbf{S}^{-1}$ is computed with Minimal Resigual algorithm~\cite{doi:10.1137/0712047} 
-due to the formed Schur complement being a symmtric indefinite system.
+where $\mathbf{A}^{-1}$ can be computed either directly using the Cholesky factorization or iteratively via 
+the Conjugate Gradient method.
+The schur complement $\mathbf{S}$, which is usually non-invertible, 
+its inverse $\mathbf{S}^{-1}$ can be approximated with the Minimal Resigual algorithm following~\cite{doi:10.1137/0712047}.
 
 \subsection{Uzawa Iteration}
-Uzawa algorithm was originally introduced by~\cite{uzawa_arrow_hurwicz},
-which gained popularity in computational fluid dynamics.
-It has later been applied to the case of discretizing Stokes problem with 
-Mixed Finite Element. Some inexact inner solver to accelerate uzawa iteration
-was discussed by
+The Uzawa algorithm was originally introduced by~\cite{uzawa_arrow_hurwicz},
+and later gained popularity in computational fluid dynamics.
+It has later been applied to the discretization Stokes problem using
+Mixed Finite Element methods. Some notable variants incorporating inexact inner solver to accelerate Uzawa iteration
+was subsequently discussed by
 ~\cite{InexactUzawa_Elam_Golub} and ~\cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}.
 
-We start by stating an abstract inexact ezawa iteration algorithm in 
+We start by presenting an abstract inexact ezawa iteration algorithm in 
 Algorithm~\ref{alg:inexactuzawa}.
+While some approaches employ a scaled diagonal matrix $\alpha \mathbf{I}$ as the preconditioner $\mathbf{Q}_B^{-1}$. 
+However, such a simple choice does not ensure convergence for our coupled system.
+In Algorithm~\ref{alg:modifieduzawa}, we modify the algorithm to tailor to our coupled system.
+
 \begin{algorithm}
 		  \caption{Inexact Uzawa Iteration\label{alg:inexactuzawa}}
 		  \begin{algorithmic}[1]
@@ -276,17 +294,12 @@ Algorithm~\ref{alg:inexactuzawa}.
 					 \EndWhile
 		  \end{algorithmic}
 \end{algorithm}
-Some choose diagonal matrix $\alpha \mathbf{I}$ for precondictioner $\mathbf{Q}_A$. However, such simple matrix wouldn't generate a convergence result when applied
-to our coupled problem. In the next section, we introduce a modified algorithm
-that would solve our system.
 
-\subsection{Modified Uzawa Iteration}
-We will present a modified Uzawa iteration algorithm to deal with this
-coupled degenerate singular system.
+
 \begin{algorithm}
-\caption{Modified Uzawa Iteration}
+\caption{Modified Uzawa Iteration\label{alg:modifieduzawa}}
 		  \begin{algorithmic}[1]
-					 \State Initialize $\bold{x}_0 = \bold{0}$, $\bold{y}_0 = \bold{0}$, tolence $\text{tol} = 1$ and residual $res = 0$.
+					 \State Initialize $\bold{x}_0 = \bold{0}$, $\bold{y}_0 = \bold{0}$, tolence $\text{tol} > 0$ and residual $res = 0$.
 					 \vspace{0.3cm}
 					 \While {res $>$ tol}
 					 \vspace{0.3cm}
@@ -296,7 +309,7 @@ coupled degenerate singular system.
 					 \vspace{0.3cm}
 					 \State Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$
 					 \vspace{0.3cm}
-					 \State Obtain $\tilde{\bold{y}} =\text{argmin}_{\bold{x}\in V} ||(\bold{B}^T\bold{A}^{-1}\bold{B} - \bold{C})^{-1}\tilde{\bold{y}}-\bold{r} ||$
+					 \State Obtain $\tilde{\bold{y}} =\text{argmin}_{\bold{y}\in V} ||(\bold{B}^T\bold{A}^{-1}\bold{B} - \bold{C})^{-1}\tilde{\bold{y}}-\bold{r} ||$
 					 \vspace{0.3cm}
 					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
 					 \vspace{0.3cm}
