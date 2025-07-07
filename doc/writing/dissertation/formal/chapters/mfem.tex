@@ -23,7 +23,7 @@ and
 					 \phi^{1+\Theta}\check{\mathbf{v}}_r\cdot \pmb{\nu} &= g_{r} \quad &&\text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
 					 \check{\mathbf{v}}_s &= \mathbf{g}_{s} \quad &&\text{on} \hspace{0.2cm} \Gamma_{u,S}, \\
 					 \check{q}_l &= \phi^{1/2}q_{l,0} \quad &&\text{on} \hspace{0.2cm} \Gamma_{i,D}, \\
-					 \pmb{\tau}\cdot \pmb{\nu} - q &= \pmb{t}_0  \quad &&\text{on} \hspace{0.2cm} \Gamma_{i,S}.
+					 \pmb{\tau}\cdot \pmb{\nu} - q &= t_0  \quad &&\text{on} \hspace{0.2cm} \Gamma_{i,S}.
 		  \end{alignedat}
 \end{equation}
 Here, $\Gamma_{u,D}$ and $\Gamma_{u,S}$ denote the parts of the boundary, where essential boundary conditions 
@@ -377,14 +377,14 @@ enforce that on each edge $e_i \subset \partial E$
 \input chapters/linear.tex
 
 \section{Convergence Test}
-We test our MFEM setup with two different scenarios.
-First, we test a pseudo 1D problem but with 2D elements equipped with three different
+\iffalse
+In this section, we test our MFEM setup with two different scenarios.
+First, we test a pseudo 1D problem with three different
 porosity scenarios.
 Second, we test a
-more complex yet a more realistic problem representing Mid Ocean Ridge where
+more complex yet more realistic problem representing Mid Ocean Ridge where
 no true solution is presented.
 
-\iffalse
 Problem Setup 1: Manufactured Solution.
 
 We solve a manufactured system of equations on the rectangular domain 
@@ -417,161 +417,249 @@ Substitute the compuated results into PDE
 \end{equation}
 \fi
 
-In this subsection, we perform a convergence test on a 2D grid with a pseudo 1D problem.
-We study a compacting column in one direction. The column extends over $y \in [-L,L]$
-and has no flow through top and bottom boundaries. We prescribe the following boundary conditions
-\begin{itemize}
-		  \item Bottom Edge;
-					 \begin{itemize}
-								\item Essential boundary condition:
-										  \begin{equation*}
-										  \left\{
-													 \begin{aligned}
-																 \check{\mathbf{v}}_s &= \mathbf{0};\\
-																\mathbf{b} &= \mathbf{0};
-													 \end{aligned}\right.
-										  \end{equation*}
-								\item Essential boundary condition: Normal Darcy flux $\check{\mathbf{v}}_r\cdot \pmb{\nu}= 0$;
-					 \end{itemize}
-		  \item Left and Right side Edges;
-					 \begin{itemize}
-								\item y component of Stokes velocity is free, x component is kept as zero;
-								\item Darcy velocity, which is understood as flux is also kept zero;
-							   \item normal flux dof fixed with a zero flux.
-					 \end{itemize}
-		  \item Top Edge;
-					 \begin{itemize}
-								\item Stokes velocity $\check{\mathbf{v}}_s = \mathbf{0}$;
-								\item Darcy velocity $\check{\mathbf{v}}_l = \mathbf{0}$;
-							   \item Normal flux is also determined to be zero.
-					 \end{itemize}
-\end{itemize}
-We assume no velocity in x direction, $\check{\mathbf{v}}_s \cdot \mathbf{i} = 0$, 
+In this section, we perform a convergence test on a 2D ($M\times N$) grid 
+with a pseudo 1D problem.
+We study a compacting column in one direction, which extends over $y \in [-H,H]$ and $x \in [-L,L]$
+and has no flow through top $y=H$ and bottom $y=-H$ boundaries. 
+
+In the following all tests, we take $H=2$. The entire domains extends four
+compaction lengths. We fix the parameter $\Theta = 0$. Each problem is solved
+on four different values of $N \in \{20,40,80,160\}$. The code is implemented
+in PETSc/C++, the implementation details will be discussed in the later section.
+
+\subsection{1D simplification}
+\iffalse
+To transform the 2D equations to 1D, we assume no velocity in x direction, 
+$\check{\mathbf{v}}_s \cdot \mathbf{i} = 0$,
 and $\check{\mathbf{v}}_r \cdot \mathbf{i} = 0$, where $\mathbf{i}$ is 
 the unit vector in x direction pointing from left to right.
 Let $u = \phi \check{\mathbf{v}}_r \cdot \mathbf{j}$
 and $v = \check{\mathbf{v}}_s \cdot \mathbf{j}$, where $\mathbf{j}$
 is the unit vector in y direction pointing upwards.
+\fi
+To begin with, we assume that the solid and the liquid velocity only have values
+in $y$ direction, i.e.,
+$\check{\mathbf{v}}_s = (0,v(y))$ and
+$\phi\check{\mathbf{v}}_r = (0,u(y))$. 
+Let $\Theta = 0$,
+the 2D equations are simplified as
+
 \begin{equation}\label{eq:qdcolumncompaction}
 		  \begin{aligned}
 					 u + \phi^{2} q'_l &= 0, \\
 					 u' + \phi(q_l - q_s)&= 0, \\
 					 [q_s - \frac{1}{3}(1-4\phi)v']' &= 1-\phi,\\
-					 v' - \phi(q_f - q_s) &=0,
+					 v' - \phi(q_f - q_s) &=0.
 		  \end{aligned}
 \end{equation}
-When no melting presents $\phi = 0$, the equations reduce to 
+Here, we impose boundary conditions on this 1D problem as
 \begin{equation}
-		  u = -v = 0,\quad\text{and}\quad q'_s = 1, \quad\text{and}\quad q_l = 0.
+		  u(H)= u(-H) =-v(H) = -v(-H) = 0.
 \end{equation}
-When melting presents $\phi > 0$, the equations can be reduced to
+When there is no melting presents $\phi = 0$, the equations reduce to 
+\begin{equation}
+		  u = -v = 0,\quad q'_s = 1, \quad\text{and}\quad q_l = 0.
+\end{equation}
+When melt presents $\phi > 0$, the equations can be reduced to
 \begin{equation}\label{eq:ode}
-		  \phi^{2+2\Theta}\bigg(\frac{3+\phi - 4\phi^2}{3\phi}u' \bigg)' - u = \phi^{2+2\Theta}(1-\phi),
+		  \phi^{2}\bigg(\frac{3+\phi - 4\phi^2}{3\phi}u' \bigg)' - u = \phi^{2}(1-\phi),
 \end{equation}
 where all other quantities can be determined according to $u$ as
 \begin{equation}
-		  v=-u, \quad \text{and}\quad  q'_l = -\phi^{-2-2\Theta}u, \quad \text{and}\quad q_s = u'/\phi + q_l.
+		  v=-u, \quad \text{and}\quad  q'_l = -\phi^{-2}u, \quad \text{and}\quad q_s = u'/\phi + q_l.
 \end{equation}
 When $\phi$ is constant, we define an auxiliary function $R$ as
-\begin{equation}
-		  R = \bigg( \phi^{2+2\Theta}\frac{3+\phi - 4\phi^2}{3\phi} \bigg)^{-1/2}.
+\begin{equation}\label{eq:Rphi}
+		  R = \bigg( \phi^{2}\frac{3+\phi - 4\phi^2}{3\phi} \bigg)^{-1/2}.
 \end{equation}
 
-We test our MFEM code on three porosity settings,
-and use the closed form solutions derived in~\cite{DegenerateDarcy}.
+\subsection{2D Boundary conditions}
+Despite the problem has been reduced to 1D, we still need to prescribe the boundary
+conditions for the 2D computational domain.
+To begin with, we list all the dofs that need to be prescribed on edge of each element 
+$e \in \partial E \subset \partial \Omega$.
+\begin{itemize}
+		  \item Stokes velocity $\check{\mathbf{v}}_s$ and bubble function $\mathbf{b}$;
+					 \begin{itemize}
+								\item Normal flux: $\check{\mathbf{v}}_s \cdot \pmb{\nu}$ and 
+										  $\alpha = \lvert e \rvert^{-1}\int_e\mathbf{b}\cdot \pmb{\nu}\,ds$ are prescribed compatibly together,
+										  i.e., they should be prescribed with same type of boundary condiitons;
+								\item Tangential velocity: $\check{\mathbf{v}}_s \cdot \pmb{\tau}$; 
+					 \end{itemize}
+
+		  \item Darcy normal flux $\phi\check{\mathbf{v}}_l \cdot \pmb{\nu} = \mathbf{u} \cdot \pmb{\nu}$.
+
+\end{itemize}
+The following boundary conditions are designed to mimic the behavior of a 1D 
+problem on a 2D grid. 
+\begin{itemize}
+		  \item Top and Bottom Edge $y=-H$;
+					 \begin{itemize}
+								\item Normal Stokes velocity and flux bubble are prescribed with essential boundary conditions:
+						  \begin{equation*}
+									 \check{\mathbf{v}}_s \cdot \pmb{\nu} = v = 0,\, \mathbf{b}\cdot \pmb{\nu} = 0.
+						  \end{equation*}
+				\item Tangential Stokes velocity is prescribed with essential boundary condition:
+						  \begin{equation*}
+									 \check{\mathbf{v}}_s \cdot \pmb{\tau} = 0.
+						  \end{equation*}
+								\item Normal Darcy flux is prescribed with essential boundary conditon:
+										  \begin{equation*}
+													 \phi\check{\mathbf{v}}_r\cdot \pmb{\nu}= u = 0.
+										  \end{equation*}
+					 \end{itemize}
+		  \item Left and Right Edges $x=-L$ and $x=L$;
+					 \begin{itemize}
+								\item Normal Stokes velocity and flux bubble are prescribed with essential boundary conditions:
+						  \begin{equation*}
+									 \check{\mathbf{v}}_s \cdot \pmb{\nu} = v = 0,\, \mathbf{b}\cdot \pmb{\nu} = 0.
+						  \end{equation*}
+				\item Tangential Stokes velocity is prescribed with natural boundary condition - a free traction
+						  boundary condition:
+						  \begin{equation*}
+									 t_0 = 0.
+						  \end{equation*}
+								\item Normal Darcy flux is prescribed with essential boundary conditon:
+										  \begin{equation*}
+													 \phi\check{\mathbf{v}}_r\cdot \pmb{\nu}= u = 0.
+										  \end{equation*}
+					 \end{itemize}
+\end{itemize}
+We then test our MFEM code on three porosity settings,
+and compare with some of the closed form solutions 
+derived in~\cite{DegenerateDarcy}.
+
 \subsection{Column compaction with Constant porosity}
-					 \begin{equation}
-								\phi_0(z) = \phi_0;
+First, we start with a constant porosity:
+					 \begin{equation}\label{eq:constporosity}
+								\phi(y) = \phi_0.
 					 \end{equation}
-					 Closed form solution:
+					We solving the differential equation and write the closed form solution in terms of 
+					the constant~\eqref{eq:Rphi}.
 					 \begin{equation}
 								\begin{aligned}
-										  u &= -\phi_0^2 (1-\phi_0) \bigg[1 - \frac{\cosh{(Rz)}}{\cosh{(RL)}} \bigg], \\
+										  u &= -\phi_0^2 (1-\phi_0) \bigg[1 - \frac{\cosh{(Ry)}}{\cosh{(RL)}} \bigg], \\
                                 v &= -u, \\
-										  q_l &= (1-\phi_0) \bigg[z - \frac{1}{R}\frac{\sinh{(Rz)}}{\cosh{(RL)}} \bigg] + c,\\
-										  q_s &= (1-\phi_0) \bigg[z - \frac{1-4\phi_0}{3+\phi_0-4\phi_0^2} \frac{\phi_0}{R}\frac{\sinh{(Rz)}}{\cosh{(RL)}} \bigg] + c,
+										  q_l &= (1-\phi_0) \bigg[y - \frac{1}{R}\frac{\sinh{(Ry)}}{\cosh{(RL)}} \bigg] + c,\\
+										  q_s &= (1-\phi_0) \bigg[y - \frac{1-4\phi_0}{3+\phi_0-4\phi_0^2} \frac{\phi_0}{R}\frac{\sinh{(Ry)}}{\cosh{(RL)}} \bigg] + c,
 								\end{aligned}
 					 \end{equation}
-where $c$ is a constant kernel.
-					 \begin{figure}[ht]
-						\centering
-								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_const.eps}
-\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_const.eps}
-\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quiver_const.eps}
-								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/q_const.eps}
-								\caption{Constant porosity compaction column test.}
-								\label{fig:constporocompactcolumn}
-					 \end{figure}
+where $c$ is a constant. 
 
+In Figure~\ref{fig:constporocompactcolumn}, we show that the numerical solutions (dashed lines) 
+match the closed form solutions (solid lines).
+In Table~\ref{tab:constporositycolumn}, we see 
+precisely optimal second order convergence rate in $L^2$ norm of errors of 
+the scalar velocities $u$ and $v$. 
+Note that the $L^2$ norm of the pressure potentials are computed with the 
+mid-point quadrature rule,
+therefore, we observe a second order superconvergence rate in pressure potentials
+$q_s$ and $q_l$.
 					 \begin{table}[ht]
 \centering
 					\begin{tabular}{c || c | c || c | c || c | c || c | c }
 							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
-							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
+							  $M\times N$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
 							  \hline
 							  $2\times20$ & 3.100e-05 & - & 3.100e-05 & - & 3.285e-03 & - & 3.638e-05 & -\\
 							  $2\times40$ & 8.047e-06 & 1.95 & 8.047e-06 & 1.95 & 8.731e-04 & 1.91 & 9.671e-06 & 1.91\\
 							  $2\times80$ & 2.031e-06 & 1.99 & 2.031e-06 & 1.99 & 2.218e-04 & 1.98 & 2.457e-06 & 1.98\\
 							  $2\times160$ & 5.091e-07 & 2.00 & 5.091e-07 & 2.00 & 5.567e-05 & 1.99 & 6.166e-07 & 1.99
 					\end{tabular}
-								\caption{Constant porosity compaction column test.}
+								\caption{Constant porosity~\eqref{eq:constporosity}, 
+								with $\phi_0 = 0.04$. $L^2$ norm of errors and 
+								convergence rates
+								for the scalar velocities $u$ and $v$, the solid and 
+								the liquid pressure potentials $q_s$ and $q_l$.}
 								\label{tab:constporositycolumn}
 					 \end{table}
-
-\subsection{Piecewise constant porosity}
-					 \begin{equation}
-								\phi_J(z) = \left \{
+					 \begin{figure}[ht]
+						\centering
+								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_const.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_const.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quiver_const.eps}
+								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/q_const.eps}
+								\caption{Constant porosity~\eqref{eq:constporosity} with
+								$\phi_0 = 0.04$. Shown are the porosity $\phi$, scalar
+								velocities $u$ and $v$ along with closed form solution, velocity vectors $\check{\mathbf{v}}_s$ and $\phi\check{\mathbf{v}}_r$ reconstructed on the edge quadrature points,
+								$q_l$ and $q_s$ together.}
+								\label{fig:constporocompactcolumn}
+					 \end{figure}
+\subsection{Discontinuous porosity}
+We proceede to test our code with a discontinuous porosity distribution, where a ``jump" presents at the point $y=0$.
+The even number of mesh grid in $y$ direction ensures that the discontinuity lands on the edge between two elements.
+					 \begin{equation}\label{eq:phidiscon}
+								\phi(z) = \left \{
 										  \begin{aligned}
 													 &0 \hspace{0.6cm} \text{if}\hspace{0.2cm}  z> 0,\\
 													 &\phi_0 \hspace{0.4cm} \text{if}\hspace{0.2cm} z\leq 0,
 										  \end{aligned}
 										  \right.
 					 \end{equation}
-					 Closed form solution:
-
-					 We conclude that $u=-v=0$ when $z>0$, and $q_l = 0$, $q_s = z + c$.
-					 When $z<0$, $\phi_0 \neq 0$,
-					 \begin{equation}
+					 The closed form solution is also given in terms of the constant~\eqref{eq:Rphi} as:
+					 \begin{itemize}
+								\item When $y>0$,
+										  \begin{equation*}
+										  u=-v=0,
+													 \, q_l = 0,\,\text{and}\,\, q_s = z + c;
+										  \end{equation*}
+								\item When $y<0$ and $\phi_0 \neq 0$,
+					 \begin{equation*}
 								\begin{aligned}
 										  u &= \phi_0^2(1-\phi_0) \bigg[1 - \cosh(Rz) + \frac{1 - \cosh{(RL)}}{\sinh{(RL)}}\sinh{(Rz)} \bigg],\\
 								 v &= -u, \\
 										  q_l &= -(1-\phi_0)\bigg[z - \frac{1}{R}\sinh(Rz) + \frac{1-\cosh(RL)}{R\sinh(RL)}\cosh(Rz)\bigg] + c,\\
-										  q_s &= q_l + \frac{u'}{\phi_0} + c,
+										  q_s &= q_l + \frac{u'}{\phi_0} + c.
 								\end{aligned}
-					 \end{equation}
-                where $c$ is a constant kernel shifting the pressure potential.
-
-					 \begin{figure}[ht]
-						\centering
-								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_piececonst.eps}
-\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_piececonst.eps}
-\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quiver_piececonst.eps}
-\includegraphics[width=3.5cm,height=9cm]{chapters/pics/q_piececonst.eps}
-								\caption{Piecewise constant porosity compaction column test.}
-								\label{fig:piececonstporocompactcolumn}
-					 \end{figure}
-
+					 \end{equation*}
+                %where $c$ is a constant.
+                \end{itemize}
+In Figure~\ref{fig:piececonstporocompactcolumn}, we show that the numerical solutions (dashed lines) 
+match the closed form solutions (solid lines). 
+. In Table~\ref{tab:discontinuousporositycolumn},  
+we also see precisely
+optimal second order convergence rate in scalar velocities $u$ and $v$ 
+and a second order 
+superconvergence rate of pressure potentials $q_s$ and $q_l$ 
+due to using the mid-point 
+quadrature rule.
 					 \begin{table}
 					\begin{tabular}{c || c | c || c | c || c | c || c | c }
 							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
-							  $m\times n$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
+							  $M\times N$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
 							  \hline
 							  $2\times20$ & 2.980e-05 & - & 2.980e-05 & - & 3.794e-03 & - & 4.202e-05 & -\\
 							  $2\times40$ & 7.681e-06 & 1.96 & 7.681e-06 & 1.96 & 1.005e-03 & 1.92 & 1.114e-05 & 1.92\\
 							  $2\times80$ & 1.958e-06 & 1.97 & 1.958e-06 & 1.97 & 2.472e-04 & 2.02 & 2.738e-06 & 2.02\\
 							  $2\times160$ & 4.974e-07 & 1.98& 4.974e-07 & 1.98 & 5.972e-05 & 2.04 & 6.615e-07 & 2.05 
 					\end{tabular}
-								\caption{Piecewise Constant porosity compaction column test.}
-								\label{tab:constporositycolumn}
+								\caption{Discontinuous porosity~\eqref{eq:phidiscon}, 
+								with $\phi_0 = 0.04$. $L^2$ norm of errors and 
+								convergence rates
+								for the scalar velocities $u$ and $v$, the solid and 
+								the liquid pressure potentials $q_s$ and $q_l$.}
+								\label{tab:discontinuousporositycolumn}
 					 \end{table}
-
+					 \begin{figure}[ht]
+						\centering
+								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_piececonst.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_piececonst.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quiver_piececonst.eps}
+\includegraphics[width=3.5cm,height=9cm]{chapters/pics/q_piececonst.eps}
+								\caption{Discontinuous porosity~\eqref{eq:phidiscon} with
+								$\phi_0 = 0.04$. Shown are the porosity $\phi$, scalar
+								velocities $u$ and $v$ along with closed form solution, velocity vectors $\check{\mathbf{v}}_s$ and $\phi\check{\mathbf{v}}_r$ reconstructed on the edge quadrature points,
+								$q_l$ and $q_s$ together.}
+								\label{fig:piececonstporocompactcolumn}
+					 \end{figure}
 \subsection{Column compaction with quadratic porosity.}
-					 \begin{equation}
-								\phi_2(z) = \left \{
-										  \begin{aligned}
-													 &0 \hspace{0.95cm} \text{if}\hspace{0.2cm}  z> 0,\\
-													 &\phi_0z^2 \hspace{0.3cm} \text{if}\hspace{0.2cm} z\leq 0.
-										  \end{aligned}
+For the final test, we test our code with a discontinuous quadratic porosity as
+					 \begin{equation}\label{eq:quadphi}
+								\phi(y) = \left \{
+										  \begin{alignedat}{2}
+													 &0 \hspace{0.95cm} &&\text{if}\hspace{0.2cm}  y> 0,\\
+													 &\phi_0y^2 \hspace{0.3cm} &&\text{if}\hspace{0.2cm} y\leq 0.
+										  \end{alignedat}
 										  \right.
 					 \end{equation}
 %					 Closed form solution:
@@ -591,6 +679,7 @@ We are interested in presenting the result when $\phi_0 = 0.01$, which is not ap
 closed form solution due to the assumption $\phi \ll 1$ does not hold anymore.
 Here, we present an alternative way of constructing approximation solution of the
 second order ordinary differential equation~\eqref{eq:ode}. 
+\iffalse
 Let $v = u/\phi^2 = u/(\phi_0^2 z^4)$,
 \begin{equation}
 		  v' = \frac{-4v}{z} + \frac{u'}{\phi_0^2 z^4}.
@@ -601,9 +690,6 @@ Substitute $u$ with $v$, we have
 \end{equation}
 We assume that there exists a solution that can be represented as a sum of 
 an infinity series.
-The solution can be understood as the sum of a particular
-solution and a homogeneous power-series solution,
-which solves the homogeneous second order ODE $f(u'',u',u',z) = 0$.
 We apply Frobenius method here, assuming the homogeneous solution
 has the form as
 \begin{equation}\label{eq:homogenous}
@@ -611,17 +697,7 @@ v_H = (z-z_0)^r \sum_{n=0}^\infty a_n (z-z_0)^n,
 \end{equation}
 where we pick $z_0 = 0$ for simplicity. We write the homogeneous
 recurrence as
-\begin{equation}\label{eq:recursive}
-\begin{aligned}
-&\bigg\{ \phi_0 \Big[(n+r-1)(n+r) + 6(n+r) + 4 \Big] - 1 \bigg\} a_n + \\ 
-&\bigg\{ \frac{\phi_0^2}{3} \Big[(n+r-2)(n+r+3) + 4 + 2(n+r+2) \Big] \bigg\} a_{n-2} +\\
-&\bigg\{ \frac{4\phi_0^3}{3} \Big[ (n+r-4)(n+r+1) +4 +4(n+r) \Big] \bigg\} a_{n-4}  = 0,
-\end{aligned}
-\end{equation}
-where we obtain the indicial equation be equating the coefficient associated to $a_0$ term to zero, i.e.,
-\begin{equation}
-\phi_0\big[(0+r-1)(0+r) +6(0+r) + 4\big] - 1 = 0,
-\end{equation}
+
 where we solve for the positive root as
 \begin{equation}
 r = \frac{-5+\sqrt{9+4/\phi_0}}{2}.
@@ -638,13 +714,7 @@ v_p = \sum_{n=0}^\infty c_n z^n.
 \end{equation}
 Substituting the particular solution into the non-homogeneous ODE~\eqref{eq:nonhomoode}, we obtain the coefficient 
 by matching the coefficients on the right hand side according to different orders.
-\begin{equation}
-\begin{aligned}
-c_0 & = \frac{1}{4\phi_0 - 1} \\
-c_2 & = \frac{-\phi_0 - 4\phi_0^2 c_0}{18\phi_0 - 1} \\
-c_4 & = \frac{80/3 \phi_0^3 c_0  - 10 \phi_0^2 c_2}{40\phi_0 -1}.
-\end{aligned}
-\end{equation}
+
 The rest of the coefficients can be determined with the recurrence form~\eqref{eq:recursive}.
 Omitting the power-series $v_2$ containing only odd coefficient, we have the final form of
 the series solution as
@@ -652,15 +722,105 @@ the series solution as
 v = v_p + C v_1,
 \end{equation}
 and we determine the costant $C$ with boundary condition $v(-2) = 0$, i.e., $C = -v_p(-2)/v_1(-2)$.
+\fi
 
+To begin with, we expand our second order ordinary differential equation (ODE) as
+\begin{equation}
+		  f(u'',u',u,z) = P(z) u'' + Q(z) u' - u = \phi^2(1-\phi),
+\end{equation}
+where $z = \lvert y \rvert$ for simplicity and 
+\begin{equation}
+		  \begin{aligned}
+					 P(z) &= \phi_0 z^2 + \frac{\phi_0^2 z^4}{3} - 
+					 \frac{4\phi_0^3z^6}{3},\\
+					 Q(z) &= -2\phi_0z - \frac{8\phi_0^3 z^5}{3}.
+		  \end{aligned}
+\end{equation}
+We conclude that the singular point at $z=0$ is a regular singular point given
+\begin{equation}
+		  \lim_{z\rightarrow 0} z \frac{Q(z)}{P(z)} < \infty, \, \text{and} \,\,
+\lim_{z\rightarrow 0} z^2 \frac{1}{P(z)} < \infty,
+\end{equation}
+which indiciates that we can approximate this second order ODE with a series
+solution using Frobenius method.
+The solution can be understood as the sum of a particular
+solution solving $f(u'',u',u,z) = \phi^2(1-\phi)$ and a homogeneous 
+power-series solution solving $f(u'',u',u,z) = 0$. Assuming the series solution
+$u$ and its frist and second order derivatives take the form as
+\begin{equation}
+		  u = \sum_{n=0}^{\infty} c_n z^{n+r}, \, 
+		  u' = \sum_{n=1}^{\infty} (n+r) c_n z^{n-1+r}, \, \text{and} \, \,
+		  u'' = \sum_{n=1}^{\infty} (n+r)(n-1+r) c_n z^{n-2+r}.
+\end{equation}
+Substitute these series solutions to the homogenous equation, we have the 
+recurrence relationship of the coefficients as
+\begin{equation}\label{eq:recursive}
+\begin{aligned}
+&\bigg\{ \phi_0 \Big[(n+r-3)(n+r) \Big] - 1 \bigg\} c_n + \\ 
+&\bigg\{ \frac{\phi_0^2}{3} \Big[(n+r-2)(n+r-3) \Big] \bigg\} c_{n-2} +\\
+&\bigg\{ \frac{-4\phi_0^3}{3} \Big[ (n+r-4)(n+r-3) \Big] \bigg\} c_{n-4}  = 0,
+\end{aligned}
+\end{equation}
+where we obtain the indicial solution by equating the coefficient associated to 
+the $c_0$ term to zero, i.e.,
+\begin{equation}
+\phi_0\big[(0+r-3)(0+r) \big] - 1 = 0.
+\end{equation}
+Two roots solve this quadratic equation, and can be written directly with 
+quadratic formula as
+\begin{equation}
+		  r_1 = \frac{3+\sqrt{9+4/\phi_0}}{2}\, \, \text{and} \,\,
+r_2 = \frac{3-\sqrt{9+4/\phi_0}}{2}.
+\end{equation}
+We now write the frist three non-zero coefficients of the particular solution as
+\begin{equation}
+		  \begin{aligned}
+c_4 & = \frac{\phi_0^2}{4\phi_0 - 1}, \\
+c_6 & = \frac{-\phi_0^3 - 4\phi_0^2 c_4}{18\phi_0 - 1}, \\
+c_8 & = \frac{80/3 \phi_0^3 c_4  - 10 \phi_0^2 c_6}{40\phi_0 -1},
+		  \end{aligned}
+\end{equation}
+where rest of the coefficients can be computed with the recurrence relationship 
+by setting $r=0$.
+We assume the soution takes the form as
+\begin{equation}
+		  u = u_p + A u_{r_1} + B u_{r_2},
+\end{equation}
+where $u_p$ is the particular solution, $u_{r_1}$ and $u_{r_2}$ are the two 
+homogenous solutions with different power $r_1$ and $r_2$. 
+The linear coefficients $A$ and $B$ can be determined
+by solving a linear system caused by boundary conditions.
+In our case, we drop the negative root $r_2$ when the singular point $z=0$ 
+is included. The coefficient $A$ can be solved with the boundary condition 
+at $z=2$ as
+\begin{equation}
+		  A = -u_p(z=2)/u_{r_1}(z=2).
+\end{equation}
+Using the aforementioned series solution, we now perform the convergence test 
+on two different porosity scales $\phi_0 = 0.01$ and
+$\phi_0 = 0.001$.
+
+In Table~\ref{tab:quadporositycolumn_0.001} and 
+Table~\ref{tab:quadporositycolumn_0.01}, we observe second order convergence
+rate in scalar velocities $u$ and $v$ without degradation. However, it is 
+suprising that the solid and the liquid pressure potentials $q_s$ and $q_l$
+does not exhibit correct convergence rate towards the new closed form 
+solution. 
+In Figure~\ref{fig:quadporocompactcolumn} and 
+Figure~\ref{fig:quadporocompactcolumn_0.01}, we show that the numerical 
+solutions (dash line) match the closed form solution (solid line), despite 
+the pressure potentials are not converging towards the closed form solution.
 					 \begin{figure}[ht]
 						\centering
 								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_quad.eps}
 \includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quad.eps}
 \includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quiver_quad.eps}
 								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/q_quad.eps}
-								\caption{Quadratic porosity compaction column test $\phi_0 = 0.001$.}
-								\label{fig:quadraticporocompactcolumn}
+\caption{Quadratic porosity~\eqref{eq:quadphi} with $\phi_0 = 0.001$. Shown are the porosity $\phi$, scalar
+								velocities $u$ and $v$ along with closed form solution, velocity vectors $\check{\mathbf{v}}_s$ and $\phi\check{\mathbf{v}}_r$ reconstructed on the edge quadrature points,
+								$q_l$ and $q_s$ together.}
+
+								\label{fig:quadporocompactcolumn}
 					 \end{figure}
 \iffalse
 					 \begin{table}
@@ -673,11 +833,9 @@ and we determine the costant $C$ with boundary condition $v(-2) = 0$, i.e., $C =
 							  $2\times80$ &  9.028e-08 & 1.83 & 9.028e-08 & 1.83 & - & - & - & -\\
 							  $2\times160$ & 2.746e-08 & 1.72 & 2.746e-08 & 1.72 & - & - & - & -
 					\end{tabular}
-								\caption{Quadratic porosity compaction column test $\phi_0 = 0.001$.}
-								\label{tab:constporositycolumn}
+							\label{tab:constporositycolumn}
 					 \end{table}
-					 \fi
-Now we redo the convergence test $\phi = \phi_0 z^2$
+\fi
 					 \begin{table}
 					\begin{tabular}{c || c | c || c | c || c | c || c | c }
 							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
@@ -688,10 +846,12 @@ Now we redo the convergence test $\phi = \phi_0 z^2$
 							  $2\times80$ &  8.686e-08 & 1.87 & 8.686e-08 & 1.87 & 7.442e-04 & 1.04 & 1.130e-06 & 0.96\\
 							  $2\times160$ & 2.222e-08 & 1.97 & 2.222e-08 & 1.97 & 2.893e-04 & 1.36 & 5.578e-07 & 1.02
 					\end{tabular}
-								\caption{Quadratic porosity compaction column test $\phi_0 = 0.001$.}
-								\label{tab:constporositycolumn}
+									\caption{Quadratic porosity~\eqref{eq:quadphi}  with $\phi_0 = 0.001$. $L^2$ norm of errors and 
+								convergence rates
+								for the scalar velocities $u$ and $v$, the solid and 
+								the liquid pressure potentials $q_s$ and $q_l$.}		
+								\label{tab:quadporositycolumn_0.001}
 					 \end{table}
-Since we do not make the assumetion that $\phi_0 z^ \ll 1$ anymore, we test convergence on the case where $\phi_0 = 0.1$.
 \iffalse
 					 \begin{figure}[ht]
 						\centering
@@ -716,8 +876,10 @@ Since we do not make the assumetion that $\phi_0 z^ \ll 1$ anymore, we test conv
 \includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quad_0.01_series.eps}
 \includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quiver_quad_0.01_series.eps}
 								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/q_quad_0.1.eps}
-								\caption{Quadratic porosity compaction column test $\phi_0=0.01$.}
-								\label{fig:quadraticporocompactcolumn_0.01}
+\caption{Quadratic porosity~\eqref{eq:quadphi} with $\phi_0 = 0.01$. Shown are the porosity $\phi$, scalar
+								velocities $u$ and $v$ along with closed form solution, velocity vectors $\check{\mathbf{v}}_s$ and $\phi\check{\mathbf{v}}_r$ reconstructed on the edge quadrature points,
+								$q_l$ and $q_s$ together.}
+								\label{fig:quadporocompactcolumn_0.01}
 					 \end{figure}
 
 					 \begin{table}
@@ -730,16 +892,19 @@ Since we do not make the assumetion that $\phi_0 z^ \ll 1$ anymore, we test conv
 							  $2\times80$ &  1.486e-06 & 2.07 & 1.486e-06 & 2.07 &  &  &  & \\
 							  $2\times160$ & 3.908e-07 & 1.96 & 3.908e-07 & 1.96 &  &  &  & 
 					\end{tabular}
-								\caption{Quadratic porosity compaction column test $\phi_0 = 0.01$.}
-								\label{tab:constporositycolumn}
+									\caption{Quadratic porosity~\eqref{eq:quadphi}  with $\phi_0 = 0.01$. $L^2$ norm of errors and 
+								convergence rates
+								for the scalar velocities $u$ and $v$, the solid and 
+								the liquid pressure potentials $q_s$ and $q_l$.}		
+	
+								\label{tab:quadporositycolumn_0.01}
 					 \end{table}
 
 
-\section{Mid-Ocean Ridge Test}
-
+\section{Simulation of a simple Mid-Ocean Ridge model}
 We now reconsider the Mid-Ocean ridge test case in~\cite{DegenerateDarcy}.
 We solve the full system of equations on a dimensionless 
-rectangular domain $x \in [-0.5,0.5]$ and $z \in[-0.5, 0.0]$.
+rectangular domain $x \in [-0.5,0.5]$ and $y \in[-0.5, 0.0]$.
 The boundary conditions are imposed by
 assigning classical corner flow solution of
 Stokes velocity in~\cite{SPIEGELMAN1987137}
@@ -753,7 +918,7 @@ z^2
 \end{equation}
 where $U_0 = 10^{-9}\text{m/s} \approx 3.2\text{cm/yr}$ is the 
 constant upwelling velocity of mantle.
-According to mass conservation condition, we set no Darcy flux across the 
+According to the mass conservation condition, we set no Darcy flux across the 
 boundary.
 We then set a not identically vanishing porosity by the formula
 \begin{equation}\label{eq:porositydistri}

@@ -193,14 +193,14 @@ nonsingular. The saddle point system can be factorized as
 					 \mathbf{A} &\mathbf{B} \\
 					 \mathbf{B}^T &\mathbf{C}
 		  \end{bmatrix} = \begin{bmatrix}
-					 I &\mathbf{O}\\
+					 I &\mathbf{0}\\
 					 \mathbf{B}^T\mathbf{A}^{-1} &I
 		  \end{bmatrix}\begin{bmatrix}
-					 \mathbf{A}  &\mathbf{O}\\
-					 \mathbf{O} &\mathbf{S}
+					 \mathbf{A}  &\mathbf{0}\\
+					 \mathbf{0} &\mathbf{S}
 		  \end{bmatrix} \begin{bmatrix}
 					 I &\mathbf{A}^{-1} \mathbf{B} \\
-					 \mathbf{O} &I
+					 \mathbf{0} &I
 		  \end{bmatrix},
 \end{equation}
 where $\mathbf{S}$ is the Schur complement
@@ -227,20 +227,20 @@ Consider the block LU matrix factorization equivalent to~\eqref{eq:blockfactor},
 %					 \mathbf{B}^T &\mathbf{C}
 %		  \end{bmatrix} = 
 \begin{bmatrix}
-					 I &\mathbf{O}\\
+					 I &\mathbf{0}\\
 					 -\mathbf{B}^T\mathbf{A}^{-1} &I
 		  \end{bmatrix}
 \begin{bmatrix}
-					 I &\mathbf{O}\\
+					 I &\mathbf{0}\\
 					 \mathbf{B}^T\mathbf{A}^{-1} &I
 		  \end{bmatrix}\begin{bmatrix}
 					 \mathbf{A}  &\mathbf{B}\\
-					 \mathbf{O} &\mathbf{S}
+					 \mathbf{0} &\mathbf{S}
 		  \end{bmatrix} \begin{bmatrix}
 \mathbf{x}\\
 \mathbf{y}
 		  \end{bmatrix} = \begin{bmatrix}
-					 I &\mathbf{O}\\
+					 I &\mathbf{0}\\
 					 -\mathbf{B}^T\mathbf{A}^{-1} &I
 		  \end{bmatrix}\begin{bmatrix}
 		  \mathbf{F}\\
@@ -248,7 +248,7 @@ Consider the block LU matrix factorization equivalent to~\eqref{eq:blockfactor},
 		  \end{bmatrix}.
 \end{equation}
 We can solve for $\mathbf{x}$ and $\mathbf{y}$ with block backsubstitution,
-\begin{equation}
+\begin{equation}\label{eq:direct}
 \begin{aligned}
 \mathbf{x} &= \mathbf{A}^{-1} (\mathbf{F} - \mathbf{B} \mathbf{y}),\\
 \mathbf{y} &= \mathbf{S}^{-1}(\mathbf{G} - \mathbf{B}^T \mathbf{A}^{-1}\mathbf{F}),
@@ -266,13 +266,19 @@ It has later been applied to the discretization Stokes problem using
 Mixed Finite Element methods. Some notable variants incorporating inexact inner solver to accelerate Uzawa iteration
 was subsequently discussed by
 ~\cite{InexactUzawa_Elam_Golub} and ~\cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}.
-
-We start by presenting an abstract inexact ezawa iteration algorithm in 
-Algorithm~\ref{alg:inexactuzawa}.
-While some approaches employ a scaled diagonal matrix $\alpha \mathbf{I}$ as the preconditioner $\mathbf{Q}_B^{-1}$. 
+We start by giving a brief overview of the inexact Uzawa iteration, which generates a sequence of approximation $\mathbf{x}_k$ 
+and $\mathbf{y}_k$ as
+\begin{equation}
+		  \begin{aligned}
+					 \mathbf{x}_k &= \mathbf{x}_{k-1} + \mathbf{Q}_A^{-1} (\mathbf{F} - (\mathbf{A}\mathbf{x}_{k-1} + \mathbf{B}\mathbf{y}_k)),\\
+					 \mathbf{y}_k &= \mathbf{y}_{k-1} + \mathbf{Q}_B^{-1}(\mathbf{B}^T\mathbf{x}_{k} - \mathbf{C}\mathbf{y}_{k-1} -\mathbf{G}),
+		  \end{aligned}
+\end{equation}
+where the intitial conditions $\mathbf{x}_0$ and $\mathbf{y}_0$ are usually given as $0$ for simplicity. Here, $\mathbf{Q}_A$ and $\mathbf{Q}_B$
+are two preconditioners selected by users. We present this simple inexact uzawa iteration formally in Algorithm~\ref{alg:inexactuzawa}.
+The choice for $\mathbf{Q}_A^{-1}$ is straightforward, we use $A^{-1}$ for accurate approximation.
+Some approaches employ a scaled diagonal matrix $\alpha \mathbf{I}$ as the preconditioner $\mathbf{Q}_B^{-1}$. 
 However, such a simple choice does not ensure convergence for our coupled system.
-In Algorithm~\ref{alg:modifieduzawa}, we modify the algorithm to tailor to our coupled system.
-
 \begin{algorithm}
 		  \caption{Inexact Uzawa Iteration\label{alg:inexactuzawa}}
 		  \begin{algorithmic}[1]
@@ -284,18 +290,46 @@ In Algorithm~\ref{alg:modifieduzawa}, we modify the algorithm to tailor to our c
 					 \vspace{0.3cm}
 					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \tilde{\mathbf{x}}$
 					 \vspace{0.3cm}
-					 \State Obtain $\tilde{\bold{y}} = \mathbf{Q}_B^{-1}(\bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G})$
+					 \State Obtain $\tilde{\bold{y}} = \mathbf{Q}_B^{-1}(\bold{B}^T\bold{x}_{i+1} - \bold{C}\bold{y}_{i} - \bold{G})$
 					 \vspace{0.3cm}
 					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
 					 \vspace{0.3cm}
-					 \State Update $\text{res} = \norm{\tilde{\mathbf{x}}}_2 + 
-					 \norm{\tilde{\mathbf{y}}}_2$
+					 \State Update $\text{res} = \norm{\tilde{\mathbf{x}}}_{l^2} + 
+					 \norm{\tilde{\mathbf{y}}}_{l^2}$
 					 \vspace{0.3cm}
 					 \EndWhile
 		  \end{algorithmic}
 \end{algorithm}
 
-
+We now seek a replacement for the preconditioner $\mathbf{Q}_B^{-1}$.
+Let $\mathbf{Q}_A^{-1} = \mathbf{A}^{-1}$, 
+\begin{equation}\label{eq:xk}
+		  \mathbf{x}_k = \mathbf{A}^{-1} (\mathbf{F} - \mathbf{B}\mathbf{y}_k).
+\end{equation}
+We substitute~\eqref{eq:xk} back, and arrive at a first order Richardson iteration for $\mathbf{y}$ as
+\begin{equation}
+		  \mathbf{y}_{k} = \mathbf{y}_{k-1} + \mathbf{Q}_B^{-1}\big(\mathbf{B}^T\mathbf{A}^{-1}\mathbf{F} - \mathbf{G} - (\mathbf{B}^T\mathbf{A}^{-1}\mathbf{B} + \mathbf{C})\mathbf{y}_{k-1}\big),
+\end{equation}
+where we remark that the residual $\mathbf{r} = \mathbf{B}^T\mathbf{A}^{-1}\mathbf{F} - \mathbf{G} - (\mathbf{B}^T\mathbf{A}^{-1}\mathbf{B} + 
+\mathbf{C})\mathbf{y}_{k-1}$,
+and can be represented as $[\mathbf{r}_S,\mathbf{r}_D]^T$.
+It is obvious that the better preconditioner $\mathbf{Q}_B$ approximate the Schur complement for the coupled system, the better convergence behavior we would have.
+Hence, we compute an alternative preconditioner $\mathbf{Q}_B^{-1}$ 
+approximating the Schur complement in Darcy and Stokes system respectively as
+\begin{equation}
+		  \mathbf{Q}_B = \begin{bmatrix}
+			 (\bold{B}_S^T\bold{A}_S^{-1}\bold{B}_S + \bold{C}_S) &\mathbf{0}\\
+          \mathbf{0} & (\bold{B}_D^T\bold{A}_D^{-1}\bold{B}_D + \bold{C}_D)
+		  \end{bmatrix} = \begin{bmatrix}
+					 -\mathbf{S}_S & \mathbf{0}\\
+					 \mathbf{0} & -\mathbf{S}_D
+		  \end{bmatrix}.
+\end{equation}
+In practice, we don't form Schur complement explicitly, instead
+we find the approximate increment $\tilde{\mathbf{y}}_i,\, i\in\{S,D\}$ in the 
+krylov subspace $\mathbf{V}_{k,i} = \mathcal{K}_r(-\mathbf{S}_i, \mathbf{r}_i)$
+that minimize the $l^2$ norm of the equation $\norm{-\mathbf{S}_i \tilde{\mathbf{y}}_i - \mathbf{r}_i}$.
+In Algorithm~\ref{alg:modifieduzawa}, we present this modified algorithm formally.
 \begin{algorithm}
 \caption{Modified Uzawa Iteration\label{alg:modifieduzawa}}
 		  \begin{algorithmic}[1]
@@ -303,15 +337,28 @@ In Algorithm~\ref{alg:modifieduzawa}, we modify the algorithm to tailor to our c
 					 \vspace{0.3cm}
 					 \While {res $>$ tol}
 					 \vspace{0.3cm}
-					 \State Obtain $\tilde{\mathbf{x}} = \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$
+					 \State Obtain $\tilde{\mathbf{x}} = \bold{A}^{-1} (\bold{F} - (\bold{A}\bold{x}_i + \bold{B}\bold{y}_i))$, where
+					 $\tilde{\mathbf{x}} = 
+					 [\tilde{\mathbf{x}}_S, \tilde{\mathbf{x}}_D]^T$
 					 \vspace{0.3cm}
 					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \tilde{\mathbf{x}}$
 					 \vspace{0.3cm}
-					 \State Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$
+					 \State Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$, where $\mathbf{r} = [\mathbf{r}_S,\mathbf{r}_D]^T$.
+                \vspace{0.3cm}
+					 \State Obtain 
+					 \begin{equation*}
+					 \begin{aligned}
+								%&\tilde{\bold{y}}_S =\text{argmin}_{\tilde{\bold{y}}\in \mathbf{V}_k} \norm{-(\bold{B}_S^T\bold{A}_S^{-1}\bold{B}_S + \bold{C}_S)\tilde{\bold{y}}-\bold{r}_S}_{l^2} \\
+								%&\tilde{\bold{y}}_D =\text{argmin}_{\tilde{\bold{y}}\in \mathbf{V}_k} \norm{-(\bold{B}_D^T\bold{A}_D^{-1}\bold{B}_D + \bold{C}_D)\tilde{\bold{y}}-\bold{r}_D}_{l^2}
+								&\tilde{\bold{y}}_S =\text{argmin}_{\tilde{\bold{y}}\in \mathbf{V}_{k,S}} \norm{-\bold{S}_S\tilde{\bold{y}}-\bold{r}_S}_{l^2} \\
+								&\tilde{\bold{y}}_D =\text{argmin}_{\tilde{\bold{y}}\in \mathbf{V}_{k,D}} \norm{-\bold{S}_D\tilde{\bold{y}}-\bold{r}_D}_{l^2}
+					 \end{aligned}
+		  \end{equation*}
+					 %\vspace{0.3cm}
+					 %\State Obtain $\tilde{\bold{y}} = \mathbf{Q}_B^{-1}(\bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G})$
 					 \vspace{0.3cm}
-					 \State Obtain $\tilde{\bold{y}} =\text{argmin}_{\bold{y}\in V} ||(\bold{B}^T\bold{A}^{-1}\bold{B} - \bold{C})^{-1}\tilde{\bold{y}}-\bold{r} ||$
-					 \vspace{0.3cm}
-					 \State Update $\bold{y}_{i+1} = \bold{y}_i + \tilde{\bold{y}}$
+					 \State Update $\bold{y}_{i+1} = \bold{y}_i + 
+					 [\tilde{\bold{y}}_S,\tilde{\bold{y}}_D]^T$
 					 \vspace{0.3cm}
 
 					 					 \State Update $\text{res} = \norm{\tilde{\mathbf{x}}}_2 + 
@@ -320,3 +367,7 @@ In Algorithm~\ref{alg:modifieduzawa}, we modify the algorithm to tailor to our c
 					 \EndWhile
 \end{algorithmic}
 \end{algorithm}
+The nature of Uzawa iteration being a fixed point Richardson iteration open up future opportunities 
+applying acceleration method to it, e.g., Anderson Acceleration~\cite{doi:10.1137/10078356X}.
+We compare the result of our modified Uzawa iteration with the reference algorithm~\eqref{eq:direct} and get identical result.
+More work regarding convergence behavior will be done in the future.

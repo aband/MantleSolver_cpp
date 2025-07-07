@@ -1,4 +1,4 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{8}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -55,5 +55,13 @@ Marc Spiegelman and Dan McKenzie.
 \newblock \doi{https://doi.org/10.1016/0012-821X(87)90057-4}.
 \newblock URL
   \url{https://www.sciencedirect.com/science/article/pii/0012821X87900574}.
+
+\bibitem[Walker and Ni(2011)]{doi:10.1137/10078356X}
+Homer~F. Walker and Peng Ni.
+\newblock Anderson acceleration for fixed-point iterations.
+\newblock \emph{SIAM Journal on Numerical Analysis}, 49\penalty0 (4):\penalty0
+  1715--1735, 2011.
+\newblock \doi{10.1137/10078356X}.
+\newblock URL \url{https://doi.org/10.1137/10078356X}.
 
 \end{thebibliography}
