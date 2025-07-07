@@ -1,67 +1,50 @@
-\begin{thebibliography}{8}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Arbogast et~al.(2017)Arbogast, Hesse, and Taicher]{DegenerateDarcy}
-T.~Arbogast, M.~A. Hesse, and A.~L. Taicher.
-\newblock Mixed methods for two-phase {D}arcy-{S}tokes mixtures of partially
-  melted materials with regions of zero porosity.
-\newblock \emph{SIAM J. Sci. Comput.}, 39\penalty0 (2):\penalty0 B375--B402,
-  2017.
-\newblock {DOI} 10.1137/16M1091095.
+\bibitem[Arbogast et~al.(2024)Arbogast, Huang, and Tian]{MultiLevelWeno}
+Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian.
+\newblock A finite volume multilevel weno scheme for multidimensional scalar
+  conservation laws.
+\newblock \emph{Comput. Methods Appl. Mech. Engrg.}, 421, 2024.
 
-\bibitem[Benzi et~al.(2005)Benzi, Golub, and Liesen]{Benzi_Golub_Liesen_2005}
-Michele Benzi, Gene~H. Golub, and Jörg Liesen.
-\newblock Numerical solution of saddle point problems.
-\newblock \emph{Acta Numerica}, 14:\penalty0 1–137, 2005.
-\newblock \doi{10.1017/S0962492904000212}.
+\bibitem[Arbogast et~al.(2025)Arbogast, Huang, Tian, and M.Gray]{sigmaP}
+Todd Arbogast, Chieh-Sen Huang, Chenyu Tian, and Gabirel M.Gray.
+\newblock An efficient and accurate approximation to the classic polynomial
+  smoothness indicator.
+\newblock \emph{In Preparation.}, 2025.
 
-\bibitem[Bramble et~al.(1997)Bramble, Pasciak, T, and
-  Vassilev]{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}
-James~H. Bramble, Joseph~E. Pasciak, Apostol T, and Vassilev.
-\newblock Analysis of the inexact uzawa algorithm for saddle point problems.
-\newblock \emph{SIAM. J. Numer. Anal.}, 34:\penalty0 1072--1092, 1997.
+\bibitem[Bramble and Hilbert(1970)]{EstimationofLinearFunctionals}
+J.H. Bramble and S.~R. Hilbert.
+\newblock Estimation of linear functionals on {S}obolev spaces with application
+  to {F}ourier transform and spline interpolation.
+\newblock \emph{SIAM J. Numer. Anal.}, 7\penalty0 (1):\penalty0 112--124, 1970.
+\newblock \doi{10.1137/0707006}.
 
-\bibitem[Elman and Golub(1994)]{InexactUzawa_Elam_Golub}
-Howard~C. Elman and Gene~H. Golub.
-\newblock Inexact and preconditioned uzawa algorithms for saddle point
-  problems.
-\newblock \emph{SIAM. J. Numer. Anal.}, 31:\penalty0 1645--1661, 1994.
+\bibitem[Dupont and Scott(1980)]{PolynomialApproximation}
+Todd Dupont and Ridgway Scott.
+\newblock Polynomial approximation of functions in {S}obolev spaces.
+\newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
+  441--463, 1980.
 
-\bibitem[K.J.Arrow et~al.(1958)K.J.Arrow, Hurwicz, and
-  Uzawa]{uzawa_arrow_hurwicz}
-K.J.Arrow, L.~Hurwicz, and H.~Uzawa.
-\newblock \emph{Studies in Linear and Nonlinear Programming}.
-\newblock Standford University Press, 1958.
+\bibitem[Huang et~al.(2023)Huang, Arbogast, and
+  Tian]{WENOAOSimplifiedSmoothness}
+Chieh-Sen Huang, Todd Arbogast, and Chenyu Tian.
+\newblock Multidimensional weno-ao reconstructions using a simplified
+  smoothness indicator and applications to conservation laws.
+\newblock \emph{J. Sci. Comput.}, 97, 2023.
 
-\bibitem[Paige and Saunders(1975)]{doi:10.1137/0712047}
-C.~C. Paige and M.~A. Saunders.
-\newblock Solution of sparse indefinite systems of linear equations.
-\newblock \emph{SIAM Journal on Numerical Analysis}, 12\penalty0 (4):\penalty0
-  617--629, 1975.
-\newblock \doi{10.1137/0712047}.
-\newblock URL \url{https://doi.org/10.1137/0712047}.
+\bibitem[Jiang and Shu(1996)]{JSSmoothness}
+Guang-Shan Jiang and Chi-Wang Shu.
+\newblock Efficient implementation of weighted eno schemes.
+\newblock \emph{J. Comput. Phys.}, 126:\penalty0 202--228, 1996.
 
-\bibitem[Spiegelman and McKenzie(1987)]{SPIEGELMAN1987137}
-Marc Spiegelman and Dan McKenzie.
-\newblock Simple 2-d models for melt extraction at mid-ocean ridges and island
-  arcs.
-\newblock \emph{Earth and Planetary Science Letters}, 83\penalty0 (1):\penalty0
-  137--152, 1987.
-\newblock ISSN 0012-821X.
-\newblock \doi{https://doi.org/10.1016/0012-821X(87)90057-4}.
-\newblock URL
-  \url{https://www.sciencedirect.com/science/article/pii/0012821X87900574}.
-
-\bibitem[Walker and Ni(2011)]{doi:10.1137/10078356X}
-Homer~F. Walker and Peng Ni.
-\newblock Anderson acceleration for fixed-point iterations.
-\newblock \emph{SIAM Journal on Numerical Analysis}, 49\penalty0 (4):\penalty0
-  1715--1735, 2011.
-\newblock \doi{10.1137/10078356X}.
-\newblock URL \url{https://doi.org/10.1137/10078356X}.
+\bibitem[Olver(1997)]{olver1997asymptotics}
+Frank Olver.
+\newblock \emph{Asymptotics and special functions}.
+\newblock AK Peters/CRC Press, 1997.
 
 \end{thebibliography}

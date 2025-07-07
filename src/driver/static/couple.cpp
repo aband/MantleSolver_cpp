@@ -533,7 +533,8 @@ const std::array<double,2> trueSolnq_q(const MeshInfo& mi, const vertex& point, 
 
         work.at(1) = z - 1.0/3.0*phi*pow(z,3) + tmp2*(1-4*phi*z*z)/3.0;
 
-        work.at(0) = work.at(1) + tmp2/phi/z/z; 
+        //work.at(0) = work.at(1) + tmp2/phi/z/z;
+        work.at(0) = tmp1;
     }else{
         work.at(1) = z;
         work.at(0) = 0.0;

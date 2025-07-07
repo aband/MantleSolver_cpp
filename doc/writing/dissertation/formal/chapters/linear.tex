@@ -260,25 +260,28 @@ The schur complement $\mathbf{S}$, which is usually non-invertible,
 its inverse $\mathbf{S}^{-1}$ can be approximated with the Minimal Resigual algorithm following~\cite{doi:10.1137/0712047}.
 
 \subsection{Uzawa Iteration}
-The Uzawa algorithm was originally introduced by~\cite{uzawa_arrow_hurwicz},
-and later gained popularity in computational fluid dynamics.
-It has later been applied to the discretization Stokes problem using
-Mixed Finite Element methods. Some notable variants incorporating inexact inner solver to accelerate Uzawa iteration
-was subsequently discussed by
+The Uzawa algorithm, originally introduced by~\cite{uzawa_arrow_hurwicz},
+later gained popularity in computational fluid dynamics.
+It was later applied to the discretization of the Stokes problem using
+Mixed Finite Element methods. Notable variants incorporating inexact inner solver to accelerate Uzawa iteration
+was discussed by
 ~\cite{InexactUzawa_Elam_Golub} and ~\cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}.
-We start by giving a brief overview of the inexact Uzawa iteration, which generates a sequence of approximation $\mathbf{x}_k$ 
-and $\mathbf{y}_k$ as
-\begin{equation}
+
+We begin with a brief overview of the inexact Uzawa iteration, which generates a sequence of approximations $\{\mathbf{x}_k\}$ 
+and $\{\mathbf{y}_k\}$ as
+\begin{equation}\label{eq:uzawasystem}
 		  \begin{aligned}
-					 \mathbf{x}_k &= \mathbf{x}_{k-1} + \mathbf{Q}_A^{-1} (\mathbf{F} - (\mathbf{A}\mathbf{x}_{k-1} + \mathbf{B}\mathbf{y}_k)),\\
-					 \mathbf{y}_k &= \mathbf{y}_{k-1} + \mathbf{Q}_B^{-1}(\mathbf{B}^T\mathbf{x}_{k} - \mathbf{C}\mathbf{y}_{k-1} -\mathbf{G}),
+					 \mathbf{x}_k &= \mathbf{x}_{k-1} + \mathbf{Q}_A^{-1} \big[\mathbf{F} - (\mathbf{A}\mathbf{x}_{k-1} + \mathbf{B}\mathbf{y}_{k-1})\big],\\
+					 \mathbf{y}_k &= \mathbf{y}_{k-1} + \mathbf{Q}_B^{-1}\big(\mathbf{B}^T\mathbf{x}_{k} - \mathbf{C}\mathbf{y}_{k-1} -\mathbf{G}\big),
 		  \end{aligned}
 \end{equation}
-where the intitial conditions $\mathbf{x}_0$ and $\mathbf{y}_0$ are usually given as $0$ for simplicity. Here, $\mathbf{Q}_A$ and $\mathbf{Q}_B$
-are two preconditioners selected by users. We present this simple inexact uzawa iteration formally in Algorithm~\ref{alg:inexactuzawa}.
-The choice for $\mathbf{Q}_A^{-1}$ is straightforward, we use $A^{-1}$ for accurate approximation.
-Some approaches employ a scaled diagonal matrix $\alpha \mathbf{I}$ as the preconditioner $\mathbf{Q}_B^{-1}$. 
-However, such a simple choice does not ensure convergence for our coupled system.
+where the initial conditions $\mathbf{x}_0$ and $\mathbf{y}_0$ are typically set to zero for simplicity. 
+The matrices $\mathbf{Q}_A$ and $\mathbf{Q}_B$
+are user-defined preconditioners. The inexact Uzawa iteration is formally presented in Algorithm~\ref{alg:inexactuzawa}.
+
+The choice of $\mathbf{Q}_A^{-1}$ can be straightforward, we use $\mathbf{A}^{-1}$ to obtain an accurate $\mathbf{x}_k$.
+For $\mathbf{Q}_B$, some approaches choose a simple scaled diagonal matrix $\alpha \mathbf{I}$. 
+However, such a simplistic choice does not guarantee convergence of our coupled system.
 \begin{algorithm}
 		  \caption{Inexact Uzawa Iteration\label{alg:inexactuzawa}}
 		  \begin{algorithmic}[1]
@@ -301,21 +304,23 @@ However, such a simple choice does not ensure convergence for our coupled system
 		  \end{algorithmic}
 \end{algorithm}
 
-We now seek a replacement for the preconditioner $\mathbf{Q}_B^{-1}$.
-Let $\mathbf{Q}_A^{-1} = \mathbf{A}^{-1}$, 
+We now seek an alternative for the preconditioner $\mathbf{Q}_B$.
+For the remainder of the discussion, we set $\mathbf{Q}_A = \mathbf{A}$, 
 \begin{equation}\label{eq:xk}
-		  \mathbf{x}_k = \mathbf{A}^{-1} (\mathbf{F} - \mathbf{B}\mathbf{y}_k).
+		  \mathbf{x}_k = \mathbf{A}^{-1} \big(\mathbf{F} - \mathbf{B}\mathbf{y}_k \big).
 \end{equation}
-We substitute~\eqref{eq:xk} back, and arrive at a first order Richardson iteration for $\mathbf{y}$ as
+Substituting equation~\eqref{eq:xk} back into the system~\eqref{eq:uzawasystem}
+yields a first order Richardson iteration for $\mathbf{y}$ as
 \begin{equation}
-		  \mathbf{y}_{k} = \mathbf{y}_{k-1} + \mathbf{Q}_B^{-1}\big(\mathbf{B}^T\mathbf{A}^{-1}\mathbf{F} - \mathbf{G} - (\mathbf{B}^T\mathbf{A}^{-1}\mathbf{B} + \mathbf{C})\mathbf{y}_{k-1}\big),
+		  \mathbf{y}_{k} = \mathbf{y}_{k-1} + \mathbf{Q}_B^{-1}\big[\mathbf{B}^T\mathbf{A}^{-1}\mathbf{F} - \mathbf{G} - (\mathbf{B}^T\mathbf{A}^{-1}\mathbf{B} + \mathbf{C})\mathbf{y}_{k-1}\big],
 \end{equation}
 where we remark that the residual $\mathbf{r} = \mathbf{B}^T\mathbf{A}^{-1}\mathbf{F} - \mathbf{G} - (\mathbf{B}^T\mathbf{A}^{-1}\mathbf{B} + 
 \mathbf{C})\mathbf{y}_{k-1}$,
-and can be represented as $[\mathbf{r}_S,\mathbf{r}_D]^T$.
-It is obvious that the better preconditioner $\mathbf{Q}_B$ approximate the Schur complement for the coupled system, the better convergence behavior we would have.
-Hence, we compute an alternative preconditioner $\mathbf{Q}_B^{-1}$ 
-approximating the Schur complement in Darcy and Stokes system respectively as
+and can be decomposed as $[\mathbf{r}_S,\mathbf{r}_D]^T$ according to the two subsystems.
+It is evident that the closer the preconditioner $\mathbf{Q}_B$ approximate the Schur complement for the coupled system, 
+the better the iteration algorithm behavior.
+Therefore, we can construct an alternative preconditioner $\mathbf{Q}_B$ 
+by approximating the Schur complement separately for the Stokes and the Darcy subsystems as
 \begin{equation}
 		  \mathbf{Q}_B = \begin{bmatrix}
 			 (\bold{B}_S^T\bold{A}_S^{-1}\bold{B}_S + \bold{C}_S) &\mathbf{0}\\
@@ -325,11 +330,15 @@ approximating the Schur complement in Darcy and Stokes system respectively as
 					 \mathbf{0} & -\mathbf{S}_D
 		  \end{bmatrix}.
 \end{equation}
-In practice, we don't form Schur complement explicitly, instead
-we find the approximate increment $\tilde{\mathbf{y}}_i,\, i\in\{S,D\}$ in the 
-krylov subspace $\mathbf{V}_{k,i} = \mathcal{K}_r(-\mathbf{S}_i, \mathbf{r}_i)$
-that minimize the $l^2$ norm of the equation $\norm{-\mathbf{S}_i \tilde{\mathbf{y}}_i - \mathbf{r}_i}$.
-In Algorithm~\ref{alg:modifieduzawa}, we present this modified algorithm formally.
+In practice, the Schur complement is not formed explicitly, Instead
+we compute an approximate increment $\tilde{\mathbf{y}}_i,\, i\in\{S,D\}$ within the 
+Krylov subspace $\mathbf{V}_{k,i} = \mathcal{K}_r(-\mathbf{S}_i, \mathbf{r}_i)$
+,which minimizes the $l^2$ norm of the residual, i.e., 
+\begin{equation}
+\tilde{\mathbf{y}_i} = \text{argmin}_{\tilde{\bold{y}}\in \mathbf{V}_{k,i}}\norm{-\mathbf{S}_i \tilde{\mathbf{y}} - \mathbf{r}_i}, \quad i \in \{S,D\}.
+\end{equation}
+Note that we may relax the minimization to accelerate the inner solver.
+The modified algorithm is presented formally in Algorithm~\ref{alg:modifieduzawa}.
 \begin{algorithm}
 \caption{Modified Uzawa Iteration\label{alg:modifieduzawa}}
 		  \begin{algorithmic}[1]
@@ -343,7 +352,7 @@ In Algorithm~\ref{alg:modifieduzawa}, we present this modified algorithm formall
 					 \vspace{0.3cm}
 					 \State Update $\bold{x}_{i+1} = \bold{x}_i + \tilde{\mathbf{x}}$
 					 \vspace{0.3cm}
-					 \State Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$, where $\mathbf{r} = [\mathbf{r}_S,\mathbf{r}_D]^T$.
+					 \State Obtain $\bold{r} = \bold{B}^T\bold{x}_{i+1} + \bold{C}\bold{y}_{i} - \bold{G}$, where $\mathbf{r} = [\mathbf{r}_S,\mathbf{r}_D]^T$
                 \vspace{0.3cm}
 					 \State Obtain 
 					 \begin{equation*}
@@ -361,13 +370,14 @@ In Algorithm~\ref{alg:modifieduzawa}, we present this modified algorithm formall
 					 [\tilde{\bold{y}}_S,\tilde{\bold{y}}_D]^T$
 					 \vspace{0.3cm}
 
-					 					 \State Update $\text{res} = \norm{\tilde{\mathbf{x}}}_2 + 
-					 \norm{\tilde{\mathbf{y}}}_2$
+					 					 \State Update $\text{res} = \norm{\tilde{\mathbf{x}}}_{l^2} + 
+					 \norm{\tilde{\mathbf{y}}}_{l^2}$
 	\vspace{0.3cm}
 					 \EndWhile
 \end{algorithmic}
 \end{algorithm}
-The nature of Uzawa iteration being a fixed point Richardson iteration open up future opportunities 
-applying acceleration method to it, e.g., Anderson Acceleration~\cite{doi:10.1137/10078356X}.
-We compare the result of our modified Uzawa iteration with the reference algorithm~\eqref{eq:direct} and get identical result.
-More work regarding convergence behavior will be done in the future.
+
+The Uzawa iteration, being a fixed point Richardson iteration,lends itself naturally to
+acceleration techniques, such as Anderson Acceleration~\cite{doi:10.1137/10078356X}.
+We compare the result of our modified Uzawa iteration with the reference algorithm~\eqref{eq:direct} and get identical results.
+Further investigation into its convergence behavior will be pursued in future work.

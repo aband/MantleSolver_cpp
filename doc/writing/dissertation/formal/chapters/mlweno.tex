@@ -1,3 +1,8 @@
+\definecolor{myBlue}{RGB}{190,203,211}
+\definecolor{myRed}{RGB}{244,186,175}
+\definecolor{myGreen}{RGB}{114,138,122}
+\definecolor{myYellow}{RGB}{241,208,157}
+
 \section{Hyperbolic Transport System}
 
 
@@ -5,11 +10,11 @@
 The finite volume method (FVM) is a discretization method widely used in
 various scenarios that conservation laws are involved.
 The finite volume is a robust algorithm that can be applied to 
-arbitriary complex geometry. 
+arbitrary complex geometry. 
 The most important aspect of FVM that benefits this simulation is
 that the local mass conservation is achieved naturally.
 To begin with, we consider a general conservation law 
-retarding a scalar variable $u$ as
+regarding a scalar variable $u$ as
 \begin{equation}\label{eq:conservationlaw}
 		  \left \{
 		  \begin{aligned}
@@ -32,11 +37,11 @@ We use the Lax-Friedrichs numerical flux
 \end{equation}
 where $u^+$ and $u^-$ represent values approximated from element $E^+ \in \mathcal{T}_h$ and $E^- \in \mathcal{T}_h$ respectively,
 and $\pmb{\nu}$ is the unit vector pointing from $E^+$ to $E^-$ orthogonal to the edge.
-Here, $\alpha_{LF}$ is the Lax-Fredrich stabilizer factor. We have two different ways to compute $\alpha_{LF}$ depending on 
+Here, $\alpha_{LF}$ is the Lax-Friedrichs stabilizer factor. We have two different ways to compute $\alpha_{LF}$ depending on 
 the knowledge of solution.
 \begin{itemize}
-		  \item The global LF Stabilizer: $\alpha_{LF} = \max_{u}\lvert \partial (\mathbf{f}\cdot \pmb{\nu}) / \partial u \rvert $;
-		  \item The local LF Stabilizer: $\alpha_{LF} = \max(\lvert \partial (\mathbf{f}^+ \cdot \pmb{\nu}) / \partial u^+ \rvert,
+		  \item The global Lax-Friedrichs Stabilizer: $\alpha_{LF} = \max_{u}\lvert \partial (\mathbf{f}\cdot \pmb{\nu}) / \partial u \rvert $;
+		  \item The local Lax-Friedrichs Stabilizer: $\alpha_{LF} = \max(\lvert \partial (\mathbf{f}^+ \cdot \pmb{\nu}) / \partial u^+ \rvert,
 					 \lvert \partial (\mathbf{f}^- \cdot \pmb{\nu}) / \partial u^- \rvert)$.
 \end{itemize}
 The numerical flux $\mathbf{F}$~\eqref{eq:LFflux} is consistent and conservtive across the edge. 
