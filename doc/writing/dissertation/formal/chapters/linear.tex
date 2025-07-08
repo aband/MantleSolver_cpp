@@ -1,14 +1,14 @@
 \section{Saddle Point System}
-Saddle point system arises frequently in scientific and engineering applications, including 
-constrained optimization problem, image reconstruction and optimal control.
-Saddle point system has been extensively and systematically studied, notably
+Saddle point systems arise frequently in scientific and engineering applications, including 
+constrained optimization problems, image reconstruction, and optimal control.
+Saddle point systems have been extensively and systematically studied, notably
 by~\cite{Benzi_Golub_Liesen_2005}.
 In our case, the saddle point system arises naturally from the mixed finite 
 element discretization.
 
 In this section,
 we give a brief overview of the properties of a saddle point 
-systems and present an iteration method tailored to our problem.
+system and present an iteration method tailored to our problem.
 We express the abstract saddle point system as 
 \begin{equation}\label{eq:saddle}
 		  \begin{bmatrix}
@@ -58,13 +58,13 @@ side vector $\mathbf{F}$ as
 		  \mathbf{B} = \begin{bmatrix}
 					 \mathbf{B}_K \\
 					 \mathbf{B}_M
-		  \end{bmatrix} \text{and}\quad \mathbf{F} = \begin{bmatrix}
+		  \end{bmatrix}\quad \text{and}\quad \mathbf{F} = \begin{bmatrix}
 					 \mathbf{F}_K\\
 					 \mathbf{F}_M
 		  \end{bmatrix}.
 \end{equation}
 We reformulate the linear system using the regrouped dofs and derive a reduced system
-of the form:
+of the form
 \begin{equation}
 		  \begin{bmatrix}\label{eq:reducedsaddle}
 					 \mathbf{A}_K & \mathbf{B}_K\\
@@ -145,10 +145,11 @@ original coupled linear system as
 \end{bmatrix}.
 \end{equation}
 We group these block matrices accordingly and 
-reterive the simple abstract saddle point
-system given in equation~\eqref{eq:saddle},
+retrieve the simple abstract saddle point
+system given in equation~\eqref{eq:saddle} with
 \begin{equation}
-\bold{A} = \begin{bmatrix}
+		  \begin{aligned}
+					 &\bold{A} = \begin{bmatrix}
 \bold{A}_S   & \bold{0}    \\
 \bold{0}     & \bold{A}_D  
 \end{bmatrix},
@@ -162,7 +163,8 @@ system given in equation~\eqref{eq:saddle},
 \bold{C}_S &  \bold{K}   \\
 \bold{K}   &  \bold{C}_D
 \end{bmatrix},
-\quad \bold{F} = \begin{bmatrix}
+\quad \\
+					 &\bold{F} = \begin{bmatrix}
 \bold{F}_S \\
 \bold{F}_D
 \end{bmatrix},
@@ -171,23 +173,35 @@ system given in equation~\eqref{eq:saddle},
 -\bold{G}_S \\
 -\bold{G}_D
 \end{bmatrix},
-\end{equation}
-\begin{equation}
-\begin{bmatrix}
-		  \bold{A}   & \bold{B} \\
-		  \bold{B}^T & -\bold{C}
-\end{bmatrix} \begin{bmatrix}
-\bold{x} \\ \bold{y}
-\end{bmatrix} = \begin{bmatrix}
-		  \bold{F} \\
-		  \bold{G}
+\quad
+					 \bold{x} = \begin{bmatrix}
+\bold{x}_S \\
+\bold{x}_D
+\end{bmatrix},
+\quad
+\bold{y} = \begin{bmatrix}
+\bold{y}_S \\
+\bold{y}_D
 \end{bmatrix}.
+\end{aligned}
 \end{equation}
+
+%\begin{equation}
+%\begin{bmatrix}
+%		  \bold{A}   & \bold{B} \\
+%		  \bold{B}^T & -\bold{C}
+%\end{bmatrix} \begin{bmatrix}
+%\bold{x} \\ \bold{y}
+%\end{bmatrix} = \begin{bmatrix}
+%		  \bold{F} \\
+%		  \bold{G}
+%\end{bmatrix}.
+%\end{equation}
 
 We now examine the structure of the resulting saddle point system.
 The scaled formulation~\eqref{eq:weak_coupled_3} guarantees that the 
 matrix $\mathbf{A}_D$ is nonsingular, therefore the coupled matrix $\mathbf{A}$ is 
-nonsingular. The saddle point system can be factorized as
+nonsingular. The saddle point system can be factored as
 \begin{equation}\label{eq:blockfactor}
 		  \begin{bmatrix}
 					 \mathbf{A} &\mathbf{B} \\
@@ -214,13 +228,13 @@ On one hand, the rank deficiency in matrix $\mathbf{B}$ makes the Schur compleme
 singular. On the other hand, the changing kernal space poses some difficulties
 applying classical null space methods to our system.
 Taking into consideration that the solver will be implemented in parallel in the future, 
-a iterative solver is more suitable than direct solver.
+an iterative solver is more suitable than a direct solver.
 
-Rather than applying a general-purpose solver such as generalized minimal 
+Rather than applying a general-purpose solver such as the generalized minimal 
 residual method (GMRES) to the full linear system,
 we focus on iterative methods that exploit the structural properties of the block matrices.
 We start with a ``direct" way to solve this derived saddle point system.
-Consider the block LU matrix factorization equivalent to~\eqref{eq:blockfactor}, 
+Consider the block LU matrix factorization of~\eqref{eq:saddle} equivalent to~\eqref{eq:blockfactor}, 
 \begin{equation}
 %		  \begin{bmatrix}
 %					 \mathbf{A} &\mathbf{B} \\
@@ -256,8 +270,8 @@ We can solve for $\mathbf{x}$ and $\mathbf{y}$ with block backsubstitution,
 \end{equation}
 where $\mathbf{A}^{-1}$ can be computed either directly using the Cholesky factorization or iteratively via 
 the Conjugate Gradient method.
-The schur complement $\mathbf{S}$, which is usually non-invertible, 
-its inverse $\mathbf{S}^{-1}$ can be approximated with the Minimal Resigual algorithm following~\cite{doi:10.1137/0712047}.
+The Schur complement $\mathbf{S}$ is usually non-invertible.
+Its ``inverse" $\mathbf{S}^{-1}$ can be approximated with the Minimal Resigual algorithm following~\cite{doi:10.1137/0712047}.
 
 \subsection{Uzawa Iteration}
 The Uzawa algorithm, originally introduced by~\cite{uzawa_arrow_hurwicz},

@@ -44,34 +44,39 @@ and the divergence term in equation~\eqref{eq:dimensionlessconsMass_flow_sc_bv} 
 					 \phi^{1+\Theta} \nabla (\phi^{-1/2} \check{q}_l) &= \phi^{1/2+\Theta} \nabla \check{q}_l +  \phi^{\Theta-1/2} \check{q}_l \nabla \phi, \\
 					 \phi^{-1/2} \nabla \cdot (\phi^{1+\Theta} \check{\mathbf{v}}_r) &=
 					 \phi^{1/2+\Theta} \nabla \cdot \check{\mathbf{v}}_r + 
-					 \phi^{\Theta - 1/2} \nabla \phi \cdot \check{\mathbf{v}}_r,
+					 \phi^{\Theta - 1/2} \nabla \phi \cdot \check{\mathbf{v}}_r.
 		  \end{aligned}
 \end{equation}
-and they are well-defined provided that
+They are well-defined provided that
 \begin{equation}\label{eq:phiboundness}
 		  \phi^{\Theta - 1/2} \nabla \phi \in (L^{\infty}(\Omega))^2.
 \end{equation}
 
 We define a scaled Hilbert space tailored to the present formulation, within which
-the scaled velocity $\check{\mathbf{v}}_r$ should lie in.
+the scaled velocity $\check{\mathbf{v}}_r$ should lie 
 \begin{defn}
-Consider a scaled Hilbert space:
+Let
 \begin{equation}\label{eq:scaledHspace}
 		  H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
 		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v})
-		  \in L^2(\Omega) \Big\},
+		  \in L^2(\Omega) \Big\}.
 \end{equation}
-which is a Hilbert space equipped with the inner product
+This is a Hilbert space equipped with the inner product
 \begin{equation}\label{eq:scaledinnerp}
 		  (\mathbf{u}, \mathbf{v})_{H_\phi(\text{div};\Omega)} = 
 		  (\mathbf{u}, \mathbf{v}) + 
 		  (\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{u}), \phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{v})).
 \end{equation}
-The normal trace on $\partial \Omega$ is well-defined as
-\begin{equation}\label{eq:tracescaled}
-		  \norm{\phi^{1/2+\Theta}\mathbf{v}\cdot \pmb{\nu}}_{H^{-1/2}(\partial \Omega)} < C_{\Omega} \Big\{ \norm{\mathbf{v}}_{L^2(\Omega)} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v})}_{L^2(\Omega)} \Big\}
+The normal trace on $\partial \Omega$ is well-defined by
+		  \begin{equation}\label{eq:scaledtraceoperator}
+		  \langle \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu}, \psi \rangle = \big(\mathbf{v}, \phi^{1+\Theta}\nabla(\phi^{-1/2}\psi)\big) + 
+		  \big(\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}),\psi \big), \quad \forall \psi \in H^1(\Omega),
 \end{equation}
-		  subsequently, we have the space $H_\phi^{-1/2}(\text{div};\partial \Omega)$ understood as the image of the normal trace operator on $H_\phi(\text{div};\Omega)$.
+		  using~\eqref{eq:phiboundness}, moreover,
+\begin{equation}\label{eq:tracescaled}
+		  \norm{\phi^{1/2+\Theta}\mathbf{v}\cdot \pmb{\nu}}_{H^{-1/2}(\partial \Omega)} < C_{\Omega} \Big\{ \norm{\mathbf{v}}_{L^2(\Omega)} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v})}_{L^2(\Omega)} \Big\}.
+\end{equation}
+ Subsequently, we have the space $H_\phi^{-1/2}(\text{div};\partial \Omega)$ understood as the image of the normal trace operator on $H_\phi(\text{div};\Omega)$.
 \end{defn}
 \subsection{The weak formulation}
 We assume that the Dirichlet data
@@ -81,7 +86,7 @@ boundary into the domain.
 %$\mathbf{g}_r \in (H^{1/2}_\phi(\text{div};\Gamma_{u,D}))^2$
 %and . 
 Similarly, we assume that $\phi^{-1/2} g_r \in H^{-1/2}_\phi(\partial \Omega)$
-understood as the image of the scaled normal trace operator~\eqref{eq:tracescaled}.
+understood as the image of the scaled normal trace operator~\eqref{eq:scaledtraceoperator}.
 Let
 \begin{equation}
 		  \phi^{1/2+\Theta}\mathbf{g}_r\cdot \pmb{\nu} = \phi^{-1/2}g_r \quad \text{on} \quad \partial \Omega.
@@ -100,7 +105,7 @@ The following energy spaces are defined for this scaled Darcy-Stokes coupled sys
 		  \mathbb{W}_S &= L^2(\Omega),
 		  \end{aligned}
 \end{equation}
-where each space is equipped with their natural norms.
+where each space is equipped with its natural norm.
 %Here, $\tilde{\mathbf{g}}_r$ and $\tilde{\mathbf{g}}_s$ are finite energy lift 
 %of Dirichlet data $\mathbf{g}_r$ and $\mathbf{g}_s$ respectively. 
 %We understand the boundary values in the sense of Trace Theorem~\ref{thm:tracethm}
@@ -113,12 +118,12 @@ where each space is equipped with their natural norms.
 
 A compatibility condition is required to ensure overall mass conservation when essential boundary conditions 
 are prescribed on the entire boundary $\partial \Omega$, i.e., when $\Gamma_{u,D} = \Gamma_{u,S} = \partial \Omega$. 
-In this case, the prescribed Dirichlet data must satisfy the following compatibility condition:
+In this case, the prescribed Dirichlet data must satisfy the compatibility condition
 \begin{equation}
 		  \int_{\partial \Omega} (\phi^{1+\Theta}\mathbf{g}_r + \mathbf{g}_s) \cdot \pmb{\nu}\, ds = 0.
 \end{equation}
-In practice, we may not enforce this compatibility condition explicitly due 
-to the pressence of natural boundary conditons.
+%In practice, we may not enforce this compatibility condition explicitly due 
+%to the pressence of natural boundary conditons.
 
 The standard mixed form for the proposed coupled system reads as follows:
 %Find $\check{\mathbf{v}}_r \in \mathbb{V}^{\phi}_D + \tilde{\mathbf{g}}_{r}$,
@@ -216,8 +221,8 @@ $\check{\mathbf{v}}_{s,h} \in \mathbf{V}_{S,h,\mathbf{0}} + \hat{\mathbf{g}}_s$ 
 		  \mathbb{W}_{D,h}.
 \end{alignat}
 The existence and convergence results of the proposed new mixed finite element discretization can be established
-in complete analogy with the proof in~\cite{DegenerateDarcy}. We state the results below without repeating the full
-derivation for completeness.
+in complete analogy with the proof in~\cite{DegenerateDarcy}. We state the results below %without repeating the full
+%derivation for completeness.
 \begin{lem}
 If~\eqref{eq:phiboundness} holds, then there exists a unique solution to the scaled mixed finite element 
 method~\eqref{eq:weak_stokes}--\eqref{eq:weak_continuous}.
@@ -226,7 +231,7 @@ method~\eqref{eq:weak_stokes}--\eqref{eq:weak_continuous}.
 See~\cite{DegenerateDarcy}.
 \end{proof}
 \begin{lem}
-Assume that~\eqref{eq:phiboundness} holds on the porosity, $0\leq \phi \leq \phi^* <1$, the mesh
+Assume that~\eqref{eq:phiboundness} holds on the porosity, $0\leq \phi \leq \phi^* <1$, and the mesh
 is quasiuniform. Then the difference of the solution to the scaled formulation~\eqref{eq:weak_stokes}--\eqref{eq:weak_continuous},
 and its finite elment approximation satisfy
 \begin{equation}
@@ -242,8 +247,8 @@ and its finite elment approximation satisfy
 &+ \norm{\mathbf{v}_s - \pi_{\mathbb{V}_\mathcal{BR}}\mathbf{v}_s}_{H^1(\Omega)} + \norm{\pi_{\mathbb{V}_\mathcal{BR}}\tilde{\mathbf{g}}_s - \hat{\mathbf{g}}_s }_{H^1(\Omega)} \bigg\},
 \end{aligned}
 \end{equation}
-where $\pi_{\mathbb{V}_{1}^0}$ and $\pi_{\mathbb{V}_\mathcal{BR}}$ are porjection operators defined in section~$\ref{sec:stabV10}$ 
-and section~$\ref{sec:stabVbr}$ respectively.
+where $\pi_{\mathbb{V}_{1}^0}$ and $\pi_{\mathbb{V}_\mathcal{BR}}$ are projection operators defined in Section~$\ref{sec:stabV10}$ 
+and Section~$\ref{sec:stabVbr}$ respectively.
 \end{lem}
 \begin{proof}
 See~\cite{DegenerateDarcy}.
@@ -261,7 +266,7 @@ To address this, we utilize an element-averaged variable $\phi_E$ as
 \end{equation}
 where $\lvert E \rvert$ is the area of element $E$ and 
 $\phi_E = \mathcal{P}_{\mathbb{W}_{D,h}}\phi\rvert_E \in \mathbb{W}_{D,h}$. 
-Then the two terms involving divergence is modified as
+Then the two terms involving divergence are modified as
 \begin{equation}\label{eq:newvariable_phi}
 		  \phi^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v}) \rvert_E = \left\{
 					 \begin{alignedat}{2}
@@ -270,7 +275,7 @@ Then the two terms involving divergence is modified as
 					 \end{alignedat}
 					 \right.
 \end{equation}
-where the point-wise term $\phi^{-1/2}$ is modified to be a cell-averaged term $\phi_E^{-1/2}$. 
+wherein the point-wise term $\phi^{-1/2}$ was modified to be a cell-averaged term $\phi_E^{-1/2}$. 
 We apply the divergence theorem to expand the integral term involving the
 divergence operator in equation~\eqref{eq:weak_continuous} as
 \begin{equation}\label{eq:divtheorem}
@@ -313,19 +318,19 @@ with $\phi_E^{1/2}$ as
 		  \mathbb{W}_{D,h}.
 \end{alignat}
 Here, the term $\phi \phi_E^{-1}$ in equation~\eqref{eq:weak_continuous_mass} is viewed as 1 when $\phi_E = 0$.
-To verify local mass conservation of the fluid, consider any element $E \in \mathcal{T}_h$, 
-equation~\eqref{eq:weak_continuous_mass} gives
+We sum equations~\eqref{eq:weak_compaction_mass} and~\eqref{eq:weak_continuous_mass} 
+together 
+assuming that $\omega_h = \omega_E = 1\in \mathbb{W}_{S,h}$ and $\omega_{l,h} = \phi_E^{-1/2} \omega_E \in \mathbb{W}_{D,h}$. 
+To verify local mass conservation of the fluid, consider any element $E \in \mathcal{T}_h$.
+Equation~\eqref{eq:weak_continuous_mass} gives
 \begin{equation}
-		  \int_E \nabla \cdot (\phi^{1+\Theta} \check{\mathbf{v}}_{r,h})\, d\mathbf{x} + \int_E \frac{\phi}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h)\, dx = 0,
+		  \int_E \nabla \cdot (\phi^{1+\Theta} \check{\mathbf{v}}_{r,h})\, d\mathbf{x} + \int_E \frac{\phi \phi_E^{-1/2}}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h)\, dx = 0,
 \end{equation}
 and equation~\eqref{eq:weak_compaction_mass} gives
 \begin{equation}
-		  \int_E \nabla \cdot \mathbf{v}_{s,h}\, d\mathbf{x} - \int_E \frac{\phi}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h)\, dx = 0.
+		  \int_E \nabla \cdot \check{\mathbf{v}}_{s,h}\, d\mathbf{x} - \int_E \frac{\phi\phi_E^{-1/2}}{1-\phi} (\check{q}_{l,h} - \phi_E^{1/2}\check{q}_h)\, dx = 0.
 \end{equation}
 %We define an auxiliary space $\omega_E$ being 1 on $E$ and 0 elsewhere.
-We sum equations~\eqref{eq:weak_compaction_mass} and~\eqref{eq:weak_continuous_mass} 
-together 
-assuming that $\omega_h = \omega_E \in \mathbb{W}_{S,h}$ and $\omega_{l,h} = \phi_E^{-1/2} \omega_E \in \mathbb{W}_{D,h}$. 
 The local mass conservation of the phase-averaged mixture is now retrieved as
 \begin{equation}
 		  \int_{E}\nabla \cdot (\phi^{1+\Theta}\check{\mathbf{v}}_r + \check{\mathbf{v}}_s)\, d\mathbf{x} = 0.
@@ -340,9 +345,9 @@ The local mass conservation of the phase-averaged mixture is now retrieved as
 \begin{proof}
 		  See~\cite{DegenerateDarcy}.
 		  The local mass conservation modification 
-		  replace the term $1/(1-\phi)$ with $(\phi \phi_E^{-1})/(1-\phi)$
+		  replaces the term $1/(1-\phi)$ with $(\phi \phi_E^{-1})/(1-\phi)$
 		  ,which makes it completely analogous to the previous
-		  proof. Hence, we are not repeating here.
+		  proof. Hence, we do not repeat it here.
 \end{proof}
 
 \iffalse
