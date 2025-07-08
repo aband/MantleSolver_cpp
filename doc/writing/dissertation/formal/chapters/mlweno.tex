@@ -14,10 +14,10 @@ To begin with, we consider a general hyperbolic conservation law
 regarding a scalar variable $u$ as
 \begin{equation}\label{eq:conservationlaw}
 		  \left \{
-		  \begin{aligned}
-					 &\frac{\partial u(\mathbf{x},t)}{\partial t} + \nabla \cdot \mathbf{f}(u; \mathbf{x},t) = 0, \hspace{0.2cm} t>0, \mathbf{x} \in \Omega, \\ 
-					 &u(\mathbf{x},0) = u_0(\mathbf{x}), \hspace{2.5cm} \mathbf{x} \in \Omega,
-		  \end{aligned}
+		  \begin{alignedat}{2}
+					 &\frac{\partial u(\mathbf{x},t)}{\partial t} + \nabla \cdot \mathbf{f}(u; \mathbf{x},t) = 0, \hspace{0.2cm} t>0, &&\mathbf{x} \in \Omega, \\ 
+					 &u(\mathbf{x},0) = u_0(\mathbf{x}), \hspace{2.5cm} &&\mathbf{x} \in \Omega,
+		  \end{alignedat}
 		  \right .
 \end{equation}
 where we assume the domain $\Omega \subset \mathbb{R}^2$. The term $\mathbf{f}$ is 
@@ -26,8 +26,11 @@ We write the basic semi-discretized form of basic finite volume method as
 \begin{equation}
 		  \frac{\partial \overline{u}}{\partial t} + \frac{1}{\lvert E \rvert}\int_{\partial E} \mathbf{F}(\mathbf{x},t) \cdot \pmb{\nu} d\mathbf{x} = 0,
 \end{equation}
-where we use the cell-averaged value $\overline{u} = \frac{1}{\lvert E \rvert} \int_{E} u(\mathbf{x}, t) d\mathbf{x}$, 
-and $F(\mathbf{x},t)$ is the approximated numerical flux. 
+where we use the cell-averaged value 
+\begin{equation}\label{eq:cellaveval}
+\overline{u} = \frac{1}{\lvert E \rvert} \int_{E} u(\mathbf{x}, t)\, d\mathbf{x},
+\end{equation}
+and $\mathbf{F}(\mathbf{x},t)$ is the approximated numerical flux. 
 We use the Lax-Friedrichs numerical flux
 \begin{equation}\label{eq:LFflux}
 		  \mathbf{F}(u^+, u^-) = \frac{1}{2}[(\mathbf{f}(u^+)+\mathbf{f}(u^-))\cdot \pmb{\nu} - \alpha_{LF}(u^+-u^-)],
@@ -53,72 +56,81 @@ $\lvert e_i \rvert$ and $\lvert E \rvert$ respectively.
 Assuming a quadrature rule with $G$ points on each edge, we have
 \begin{equation}
 		  \overline{u}_t + \sum_{i=0}^4\frac{\lvert e_i \rvert}{\lvert E \rvert}
-		  \sum_{g} \omega_{i,g} \mathbf{F}(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-) = 0,
+		  \sum_{g=0}^G \omega_{i,g} \mathbf{F}(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-)\cdot \pmb{\nu}_i = 0,
 \end{equation}
-where $\omega_{i,g}$ represents $g$th quadrature points on edge $e_i$.
+where $\omega_{i,g}$ represents the weight associated to the $g\textsuperscript{th}$ quadrature points on edge $e_i$.
 
 \section[ML-WENO]{The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}
-We develop a accurate, versatile, robust and efficient finite volume 
+We develop an accurate, versatile, robust and efficient finite volume 
 weighted essentially non oscillatory (WENO) techniques for reconstruction of
 discontinuous values with cell averaged values in~\cite{MultiLevelWeno}.
 The ML-WENO reconstruction will be primarily used in reconstruction of 
 values on both sided of the edge for numerical flux computation 
 appears in FVM discretization. It can also be applied to general 
-reconstruction of discontinuous variables, e.g., discontinuous darcy pressure 
+reconstruction of discontinuous variables, e.g., piece-wise constant discontinuous Darcy pressure 
 appears on the zero-nonzero porosity interface.
 
 \subsection{Stencil Polynomial}
-Given a stencil $\mathcal{S} = \{E_0, E_2, \dots, E_k\}$ of the quasiuniform logically rectangular mesh. We can define
-an associated tensor product stencil polynomial 
-$Q_{s,t} \in \mathbb{Q}_{(s,t)} \vcentcolon= \mathbb{P}_{s-1}(x) \otimes \mathbb{P}_{t-1}(y)$,
-where $s$ and $t$ equal to the stencil sizes in the 
-x- and y-directions, respectively.
-We scale our stencil polynomial individually as
+Given a rectangular stencil $\mathcal{S} = \{E_{i,j},\, i\leq s,\, j\leq t\} \subset \mathcal{T}_h$ of 
+the quasi uniform logically rectangular mesh, which covers the area $\Omega_{\mathcal{S}} = \cup_{E \in \mathcal{S}} \Omega_{E}$.
+For each stencil, we
+associate a tensor product stencil polynomial 
+$Q^{\mathcal{S}}_{s,t} \in \mathbb{Q}_{s-1,t-1}(\Omega_{\mathcal{S}})$ with it. % \vcentcolon= \mathbb{P}_{s-1}(x) \otimes \mathbb{P}_{t-1}(y)$,
+%where $s$ and $t$ equal to the stencil sizes in the 
+%x- and y-directions, respectively.
+We write the tensor product stencil polynomial with proper scale as
 \begin{equation} \label{eq:stencilpolynomial}
-		  Q_{s,t} = \sum_{p<s, q<t} c_{p,q} \Big(\frac{x - x_\mathcal{S}}{h_\mathcal{S}}\Big)^p 
+		  Q^{\mathcal{S}}_{s,t}(x,y) = \sum_{p<s, q<t} c_{p,q} \Big(\frac{x - x_\mathcal{S}}{h_\mathcal{S}}\Big)^p 
 		  \Big(\frac{y - y_\mathcal{S}}{h_\mathcal{S}}\Big)^q,
 \end{equation}
-where $(x_\mathcal{S},y_\mathcal{S})$ is the center point of the stencil 
-$\Omega_\mathcal{S} = \cup_{E\in \mathcal{S}} \subset \mathbb{R}^2$, and $h_\mathcal{S} = 
-\sqrt{\sum_{k}E_k/k}$ is the diameter of 
-average cell size. Let $\xi = (x-x_\mathcal{S})/h_\mathcal{S}$ and $\eta = (y-y_\mathcal{S})/h_\mathcal{S}$ be the 
-normalized varaibles, we can rewrite it into normalized version:
+where $(x_\mathcal{S},y_\mathcal{S})$ is any point in the stencil 
+$\mathcal{S}$. We choose the stencil ``center" point: the intersection point of two diagonal lines joining top left, bottom right
+and top right, bottom left corners.
+Assuming the cell $E_{i,j} \in \mathcal{S} \subset \mathcal{T}_h$ is shape regular as in Definition~\ref{def:shaperegularity},
+we define the stencil scale parameter $h_\mathcal{S} = 
+\sum_{i\leq s, j\leq t}E_{i,j}/(s\times t)$ as the average diameter of all stencil cells. 
+Let $\xi = (x-x_\mathcal{S})/h_\mathcal{S}$ and $\eta = (y-y_\mathcal{S})/h_\mathcal{S}$ denote the 
+normalized variables, we can rewrite equation~\eqref{eq:stencilpolynomial} as
 \begin{equation}\label{eq:stencilpolynomialscaled}
-		  \hat{Q}_{s,t} = \sum_{p<s, q<t} c_{p,q} \xi^p \eta^q.
+		  \hat{Q}^{\mathcal{S}}_{s,t}(\xi, \eta) = \sum_{p<s, q<t} c_{p,q} \xi^p \eta^q.
 \end{equation}
 
-In finite volume scenerio, we are dealing with cell averaged value of the
-scalar transport variable
-\begin{equation}\label{eq:cellaveraged}
-		  \overline{u}_E = \frac{1}{|E|}\int_E u(\mathbf{x}) d\mathbf{x} = \frac{1}{|E|} \int_{E}u(x,y) dx dy.
-\end{equation}
-We can calculate coefficents $c_{p,q}$ by imposing a constraint that cell averaged
-value \eqref{eq:cellaveraged} is preserved through integral with stencil polynomial
+%In finite volume scenerio, we are dealing with cell averaged value of the
+%scalar transport variable
+%\begin{equation}\label{eq:cellaveraged}
+%		  \overline{u}_E = \frac{1}{|E|}\int_E u(\mathbf{x}) d\mathbf{x} = \frac{1}{|E|} \int_{E}u(x,y) dx dy.
+%\end{equation}
+%The coefficients $c_{p,q}$ can be determined by imposing a constraint that the cell-averaged
+The tensor product stencil polynomial satisfies the condition that the cell-averaged
+value \eqref{eq:cellaveval} is preserved through integral over each cell as
 \begin{equation}\label{eq:stencilpolycoefficent}
-		  \frac{1}{|E_k|} \int_{E_k} Q(\mathbf{x}) d\mathbf{x} = \overline{u}_{E_k}, \quad 
-		  \forall E_k \in \mathcal{S}.
+		  \frac{1}{|E_{i,j}|} \iint_{E_{i,j}} Q^{\mathcal{S}}_{s,t}(x,y)\, dxdy = \overline{u}_{i,j}, \quad 
+		  \forall E_{i,j} \in \mathcal{S},
 \end{equation}
-We will replace $\overline{u}_{E_k}$ with $\overline{u}_k$ in the following
-discussion for simplicity.
+where $\overline{u}_{i,j}$ represents the cell-averaged scalar variable over cell $E_{i,j}$.
 
-We can represent stencil polynomial with basis polynomials 
-$Q_{s,t} = \sum_{k} \overline{u}_{k} \phi^k_{s,t}$,
-where basis polynomials $\phi^k_{s,t}$ can be calculated as
+One way to construct a stencil polynomial $Q^\mathcal{S}_{s,t}$ is using basis polynomials.
+Let 
+$Q^{\mathcal{S}}_{s,t} = \sum_{i,j} \overline{u}_{i,j} \phi^{i,j}_{s,t}$,
+where basis polynomials $\phi^{i,j}_{s,t}$ satisfy
 \begin{equation}\label{eq:basispoly}
-		  \frac{1}{\lvert E_{k'}\rvert } \int_{E_{k'}} \phi^k_{s,t} (\mathbf{x}) d\mathbf{x} = 
-		  \frac{1}{\lvert \hat{E}_{k'}\rvert} \iint_{\hat{E}_{k'}}\hat{\phi}^k_{s,t}(\xi, \eta) d\xi d\eta = \left \{
+		  \frac{1}{\lvert E_{i',j'}\rvert } \iint_{E_{i',j'}} \phi^{i,j}_{s,t} (x,y)\, dxdy = 
+		  %\frac{1}{\lvert \hat{E}_{k'}\rvert} \iint_{\hat{E}_{k'}}\hat{\phi}^k_{s,t}(\xi, \eta) d\xi d\eta = 
+		  \left \{
 					 \begin{aligned}
-								&1 \quad  k' = k\\
-								&0 \quad  k' \neq k
+								&1 \quad  (i',j') = (i,j)\\
+								&0 \quad  (i',j') \neq (i,j)
 					 \end{aligned}
-					 \right. \quad \forall E_{k'}, E_k \in \mathcal{S},
+					 \right. 
+					 ,\quad \forall E_{i',j'} \in \mathcal{S},
 \end{equation}
-which would lead to a $(s \times t) \times (s \times t)$ non-singular linear system. 
-We can now represent stencil polynomial with normalized basis polynomials as:
+which would always lead to a $(s \times t) \times (s \times t)$ non-singular linear system.
+We can write the basis polynomials in terms of normalized coordinates $\xi$ and $\eta$ as well,
+and represent the normalized stencil polynomial~\eqref{eq:stencilpolynomialscaled} with normalized basis polynomials as:
 \begin{equation}\label{eq:normalizedstencilpoly}
-\hat{Q}_{s,t}(\xi, \eta) = \sum_k \overline{u}_k \hat{\phi}_{s,t}^k(\xi, \eta).
+\hat{Q}^{\mathcal{S}}_{s,t}(\xi, \eta) = \sum_{i,j} \overline{u}_k \hat{\phi}_{s,t}^{i,j}(\xi, \eta).
 \end{equation}
-
+\iffalse
 We define a linear projection operator $\pi_\mathcal{S}$ and let $\pi_\mathcal{S} u_\mathcal{S} = Q$ be a linear 
 projection onto polynomial space $W_p$ such that $\mathbb{Q}_{s,t} \subset W_p$.
 We estimate interpolation error with the Bramble-Hilbert Lemma~\cite{PolynomialApproximation} 
@@ -139,9 +151,10 @@ Let $\Omega_S$ be the domain covered by stencil $\mathcal{S}$ in $\mathbb{R}^2$ 
 \norm{u-\pi_S u} = 
 \end{equation}
 \end{proof}
-In a general 2D situtation when $s \neq t$, the execessive order will be "wasted",
-since the order or accuracy will be $\min(s,t)$. However, in some cases, where
-we aquire the prior knowledge of the solution being qusi-1D, e.g.,
+\fi
+In a general 2D situation when $s \neq t$, the excessive order will be "wasted",
+since the order of accuracy will be $\min(s,t)$. However, in some cases, where
+we acquire the prior knowledge of the solution being quasi-1D, e.g.,
 the transport velocity is fixed in one direction. We can have uneven stencils
 that has $\max(s,t)$ order of accuracy but in the desired direction.
 In other cases when derivative is involved, we also need an stretched 
@@ -407,7 +420,7 @@ boundary, therefore, no fixed boundary condition should be assigned. We use
 The inflow boundary can be understood in various ways.
 We can understand it as prescribing the inflow flux $\mathbf{f}_B$ 
 or fixing the boundary
-value $u_B$ as an equivelent to Dirichlet boundary in the context of Finite
+value $u_B$ as an equivalent to Dirichlet boundary in the context of Finite
 Element. In the special case when a zero flux is prescribed, we would
 call it noflow boundary.
 In the inflow case, there may be a discontinuous inflow shock wave. 
@@ -432,5 +445,5 @@ u(x,y,t) = \left \{
 \end{aligned}
 		  \right.
 \end{equation}
-We forward martching to the time = $2.0$, when trailing rarefaction reaches the 
+We forward marching to the time = $2.0$, when trailing rarefaction reaches the 
 leading shock. We use SSP2RK time stepping scheme.
