@@ -152,7 +152,11 @@ Let $\Omega_S$ be the domain covered by stencil $\mathcal{S}$ in $\mathbb{R}^2$ 
 \end{equation}
 \end{proof}
 \fi
-In a general 2D situation when $s \neq t$, the excessive order will be "wasted",
+In most of the two-dimensional situation,
+we implement a square stencil, i.e., $s=t=r$.
+The approxmatibility of tensor product polynomials is given in~\cite{PolynomialApproximation}.
+Given a bounded interpolation projection, 
+when $s \neq t$, the excessive order will be "wasted",
 since the order of accuracy will be $\min(s,t)$. However, in some cases, where
 we acquire the prior knowledge of the solution being quasi-1D, e.g.,
 the transport velocity is fixed in one direction. We can have uneven stencils
