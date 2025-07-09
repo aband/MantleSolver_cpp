@@ -4,56 +4,57 @@
 \definecolor{myYellow}{RGB}{241,208,157}
 
 \section{Finite Volume Method}
-The finite volume method (FVM) is a discretization method widely used in
-various scenarios that conservation laws are involved.
-The finite volume is a robust algorithm that can be applied to 
+The finite volume method (FVM) is a widely used discretization method for
+various problems governed by conservation laws.
+The FVM is particularly robust and well-suited for  
 arbitrary complex geometry. 
-The most important aspect of FVM that benefits this simulation is
-that the local mass conservation is achieved naturally.
+A key advantage of FVM that benefits this simulation is
+its natural enforcement of local mass conservation.
+
 To begin with, we consider a general hyperbolic conservation law 
 regarding a scalar variable $u$ as
 \begin{equation}\label{eq:conservationlaw}
 		  \left \{
 		  \begin{alignedat}{2}
-					 &\frac{\partial u(\mathbf{x},t)}{\partial t} + \nabla \cdot \mathbf{f}(u; \mathbf{x},t) = 0, \hspace{0.2cm} t>0, &&\mathbf{x} \in \Omega, \\ 
+					 &\frac{\partial u(\mathbf{x},t)}{\partial t} + \nabla \cdot \mathbf{f}(u; \mathbf{x},t) = 0, \hspace{0.2cm} t>0,\, &&\mathbf{x} \in \Omega, \\ 
 					 &u(\mathbf{x},0) = u_0(\mathbf{x}), \hspace{2.5cm} &&\mathbf{x} \in \Omega,
 		  \end{alignedat}
 		  \right .
 \end{equation}
-where we assume the domain $\Omega \subset \mathbb{R}^2$. The term $\mathbf{f}$ is 
-a flux transporting scalar variable $u$.
-We write the basic semi-discretized form of basic finite volume method as
+where we assume the domain $\Omega \subset \mathbb{R}^2$. The term $\mathbf{f}$ represents
+the flux transporting the scalar variable $u$.
+The basic semi-discretized formulation of the finite volume method can be written as
 \begin{equation}
 		  \frac{\partial \overline{u}}{\partial t} + \frac{1}{\lvert E \rvert}\int_{\partial E} \mathbf{F}(\mathbf{x},t) \cdot \pmb{\nu} d\mathbf{x} = 0,
 \end{equation}
-where we use the cell-averaged value 
+where the cell-averaged value $\overline{u}$ is calculated as
 \begin{equation}\label{eq:cellaveval}
-\overline{u} = \frac{1}{\lvert E \rvert} \int_{E} u(\mathbf{x}, t)\, d\mathbf{x},
+\overline{u} = \frac{1}{\lvert E \rvert} \int_{E} u(\mathbf{x}, t)\, d\mathbf{x}.
 \end{equation}
-and $\mathbf{F}(\mathbf{x},t)$ is the approximated numerical flux. 
-We use the Lax-Friedrichs numerical flux
+Here, $\mathbf{F}(\mathbf{x},t)$ denotes the approximated numerical flux. 
+We employ the Lax-Friedrichs numerical flux
 \begin{equation}\label{eq:LFflux}
 		  \mathbf{F}(u^+, u^-) = \frac{1}{2}[(\mathbf{f}(u^+)+\mathbf{f}(u^-))\cdot \pmb{\nu} - \alpha_{LF}(u^+-u^-)],
 \end{equation}
-where $u^+$ and $u^-$ represent values approximated from element $E^+ \in \mathcal{T}_h$ and $E^- \in \mathcal{T}_h$ respectively,
-and $\pmb{\nu}$ is the unit vector pointing from $E^+$ to $E^-$ orthogonal to the edge.
-Here, $\alpha_{LF}$ is the Lax-Friedrichs stabilizer factor. We have two different ways to compute $\alpha_{LF}$ depending on 
-the knowledge of solution.
+where $u^+$ and $u^-$ denote the values approximated from the perspective of element 
+$E^+ \in \mathcal{T}_h$ and $E^- \in \mathcal{T}_h$ respectively,
+The unit normal vector $\pmb{\nu}$ points from $E^+$ to $E^-$, and is orthogonal to the edge.
+The parameter $\alpha_{LF}$ is the Lax-Friedrichs stabilizer factor. 
+Depending on the available information about the solution, there are two possible approaches for computing $\alpha_{LF}$:
 \begin{itemize}
-		  \item The global Lax-Friedrichs Stabilizer: $\alpha_{LF} = \max_{u}\lvert \partial (\mathbf{f}\cdot \pmb{\nu}) / \partial u \rvert $;
+		  \item The global Lax-Friedrichs Stabilizer: $\alpha_{LF} = \max_{\mathbf{x} \in \Omega}\lvert \partial (\mathbf{f}(\mathbf{x})\cdot \pmb{\nu}) / \partial u \rvert $;
 		  \item The local Lax-Friedrichs Stabilizer: $\alpha_{LF} = \max(\lvert \partial (\mathbf{f}^+ \cdot \pmb{\nu}) / \partial u^+ \rvert,
 					 \lvert \partial (\mathbf{f}^- \cdot \pmb{\nu}) / \partial u^- \rvert)$.
 \end{itemize}
-The numerical flux $\mathbf{F}$~\eqref{eq:LFflux} is consistent and conservtive across the edge. 
-We now replace the $u^+$ and $u^-$ with reconstructed values and rewrite the numerical flux as
+The numerical flux $\mathbf{F}$, as defined in equation~\eqref{eq:LFflux}, is consistent and conservative across element interfaces. 
+We now replace the $u^+$ and $u^-$ with reconstructed values $\mathcal{R}^+$ and $\mathcal{R}^-$ and express the numerical flux as
 \begin{equation}\label{eq:reconstructionflux}
-		  \mathbf{F}(\mathcal{R}^+, \mathcal{R}-) = \frac{1}{2}[(\mathbf{f}(\mathcal{R}^+)+\mathbf{f}(\mathcal{R}^-)\cdot \pmb{\nu} - \alpha_{LF}(\mathcal{R}^+-\mathcal{R}^-)],
+		  \mathbf{F}(\mathcal{R}^+, \mathcal{R}-) = \frac{1}{2}[(\mathbf{f}(\mathcal{R}^+)+\mathbf{f}(\mathcal{R}^-)\cdot \pmb{\nu} - \alpha_{LF}(\mathcal{R}^+-\mathcal{R}^-)].
 \end{equation}
-where $\mathcal{R}$ is a higher order reconstruction value. We evaluate the
-integrals over each edge $e_i \in \partial E$ with a quadrature rule. 
-We represent length of edge $e_i$ and area of cell $E$ with 
-$\lvert e_i \rvert$ and $\lvert E \rvert$ respectively.
-Assuming a quadrature rule with $G$ points on each edge, we have
+Here, the reconstructed value $\mathcal{R}$ is of higher-order accuracy. We evaluate the
+integrals over each edge $e_i \in \partial E$ with a suitable quadrature rule. 
+Let $\lvert e_i \rvert$ denote the length of edge $e_i$ and $\lvert E \rvert$ denote the area of the cell $E$ with 
+Assuming a quadrature rule with $G$ points per edge, the semi-discretized formulation becomes:
 \begin{equation}
 		  \overline{u}_t + \sum_{i=0}^4\frac{\lvert e_i \rvert}{\lvert E \rvert}
 		  \sum_{g=0}^G \omega_{i,g} \mathbf{F}(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-)\cdot \pmb{\nu}_i = 0,
@@ -62,23 +63,23 @@ where $\omega_{i,g}$ represents the weight associated to the $g\textsuperscript{
 
 \section[ML-WENO]{The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}
 We develop an accurate, versatile, robust and efficient finite volume 
-weighted essentially non oscillatory (WENO) techniques for reconstruction of
-discontinuous values with cell averaged values in~\cite{MultiLevelWeno}.
-The ML-WENO reconstruction will be primarily used in reconstruction of 
-values on both sided of the edge for numerical flux computation 
-appears in FVM discretization. It can also be applied to general 
+multi level weighted essentially non oscillatory (ML-WENO) reconstruction weighting scheme
+in~\cite{MultiLevelWeno}.
+The ML-WENO method is primarily used to reconstruct 
+values on both sides of the element interfaces..
+It can also be applied to a general 
 reconstruction of discontinuous variables, e.g., piece-wise constant discontinuous Darcy pressure 
-appears on the zero-nonzero porosity interface.
+arising due to zero and nonzero porosity regions.
 
-\subsection{Stencil Polynomial}
-Given a rectangular stencil $\mathcal{S} = \{E_{i,j},\, i\leq s,\, j\leq t\} \subset \mathcal{T}_h$ of 
-the quasi uniform logically rectangular mesh, which covers the area $\Omega_{\mathcal{S}} = \cup_{E \in \mathcal{S}} \Omega_{E}$.
+\subsection{Stencil Polynomials}
+Given a rectangular stencil $\mathcal{S} = \{E_{i,j},\, i\leq s,\, j\leq t\} \subset \mathcal{T}_h$ on a quasi uniform 
+logically rectangular mesh, which covers the area $\Omega_{\mathcal{S}} = \cup_{E \in \mathcal{S}} \Omega_{E}$.
 For each stencil, we
-associate a tensor product stencil polynomial 
-$Q^{\mathcal{S}}_{s,t} \in \mathbb{Q}_{s-1,t-1}(\Omega_{\mathcal{S}})$ with it. % \vcentcolon= \mathbb{P}_{s-1}(x) \otimes \mathbb{P}_{t-1}(y)$,
+construct a tensor product stencil polynomial 
+$Q^{\mathcal{S}}_{s,t} \in \mathbb{Q}_{s-1,t-1}(\Omega_{\mathcal{S}})$. % \vcentcolon= \mathbb{P}_{s-1}(x) \otimes \mathbb{P}_{t-1}(y)$,
 %where $s$ and $t$ equal to the stencil sizes in the 
 %x- and y-directions, respectively.
-We write the tensor product stencil polynomial with proper scale as
+The scaled tensor product stencil polynomial is expressed as
 \begin{equation} \label{eq:stencilpolynomial}
 		  Q^{\mathcal{S}}_{s,t}(x,y) = \sum_{p<s, q<t} c_{p,q} \Big(\frac{x - x_\mathcal{S}}{h_\mathcal{S}}\Big)^p 
 		  \Big(\frac{y - y_\mathcal{S}}{h_\mathcal{S}}\Big)^q,
@@ -86,11 +87,14 @@ We write the tensor product stencil polynomial with proper scale as
 where $(x_\mathcal{S},y_\mathcal{S})$ is any point in the stencil 
 $\mathcal{S}$. We choose the stencil ``center" point: the intersection point of two diagonal lines joining top left, bottom right
 and top right, bottom left corners.
-Assuming the cell $E_{i,j} \in \mathcal{S} \subset \mathcal{T}_h$ is shape regular as in Definition~\ref{def:shaperegularity},
+Assuming that each cell $E_{i,j} \in \mathcal{S} \subset \mathcal{T}_h$ is shape regular as in Definition~\ref{def:shaperegularity},
 we define the stencil scale parameter $h_\mathcal{S} = 
-\sum_{i\leq s, j\leq t}E_{i,j}/(s\times t)$ as the average diameter of all stencil cells. 
-Let $\xi = (x-x_\mathcal{S})/h_\mathcal{S}$ and $\eta = (y-y_\mathcal{S})/h_\mathcal{S}$ denote the 
-normalized variables, we can rewrite equation~\eqref{eq:stencilpolynomial} as
+\sum_{i\leq s, j\leq t}E_{i,j}/(s\times t)$ as the average diameter of all cells in the stencil. 
+Introducing the normalized coordinates
+\begin{equation}
+\xi = \frac{x-x_\mathcal{S}}{h_\mathcal{S}},\quad \text{and} \quad \eta = \frac{y-y_\mathcal{S}}{h_\mathcal{S}}.
+\end{equation}
+We can rewrite equation~\eqref{eq:stencilpolynomial} in normalized coordinates as
 \begin{equation}\label{eq:stencilpolynomialscaled}
 		  \hat{Q}^{\mathcal{S}}_{s,t}(\xi, \eta) = \sum_{p<s, q<t} c_{p,q} \xi^p \eta^q.
 \end{equation}
@@ -112,7 +116,7 @@ where $\overline{u}_{i,j}$ represents the cell-averaged scalar variable over cel
 One way to construct a stencil polynomial $Q^\mathcal{S}_{s,t}$ is using basis polynomials.
 Let 
 $Q^{\mathcal{S}}_{s,t} = \sum_{i,j} \overline{u}_{i,j} \phi^{i,j}_{s,t}$,
-where basis polynomials $\phi^{i,j}_{s,t}$ satisfy
+where the basis polynomials $\phi^{i,j}_{s,t}$ satisfy
 \begin{equation}\label{eq:basispoly}
 		  \frac{1}{\lvert E_{i',j'}\rvert } \iint_{E_{i',j'}} \phi^{i,j}_{s,t} (x,y)\, dxdy = 
 		  %\frac{1}{\lvert \hat{E}_{k'}\rvert} \iint_{\hat{E}_{k'}}\hat{\phi}^k_{s,t}(\xi, \eta) d\xi d\eta = 
@@ -125,8 +129,8 @@ where basis polynomials $\phi^{i,j}_{s,t}$ satisfy
 					 ,\quad \forall E_{i',j'} \in \mathcal{S},
 \end{equation}
 which would always lead to a $(s \times t) \times (s \times t)$ non-singular linear system.
-We can write the basis polynomials in terms of normalized coordinates $\xi$ and $\eta$ as well,
-and represent the normalized stencil polynomial~\eqref{eq:stencilpolynomialscaled} with normalized basis polynomials as:
+We can write the basis polynomials in terms of normalized coordinates $\xi$ and $\eta$ as well, and
+rewrite it as
 \begin{equation}\label{eq:normalizedstencilpoly}
 \hat{Q}^{\mathcal{S}}_{s,t}(\xi, \eta) = \sum_{i,j} \overline{u}_k \hat{\phi}_{s,t}^{i,j}(\xi, \eta).
 \end{equation}
@@ -152,106 +156,123 @@ Let $\Omega_S$ be the domain covered by stencil $\mathcal{S}$ in $\mathbb{R}^2$ 
 \end{equation}
 \end{proof}
 \fi
-In most of the two-dimensional situation,
-we implement a square stencil, i.e., $s=t=r$.
-The approxmatibility of tensor product polynomials is given in~\cite{PolynomialApproximation}.
-Given a bounded interpolation projection, 
-when $s \neq t$, the excessive order will be "wasted",
-since the order of accuracy will be $\min(s,t)$. However, in some cases, where
-we acquire the prior knowledge of the solution being quasi-1D, e.g.,
-the transport velocity is fixed in one direction. We can have uneven stencils
-that has $\max(s,t)$ order of accuracy but in the desired direction.
-In other cases when derivative is involved, we also need an stretched 
-stencil to compensate for the order loss when approximates derivative.
+In most two-dimensional cases,
+we implement a square stencil with $s=t=r$.
+The approxmatibility of a tensor product polynomial is related to the associated complete polynomial 
+, as discussed by~\cite{PolynomialApproximation}.
+Given a bounded interpolation projection operator $\mathcal{Q}$, for all $\mathbf{x} \in E \in \mathcal{S}$, we have
+\begin{equation}
+\lvert D^\alpha u(\mathbf{x}) - D^\alpha \big(\mathcal{Q} u(\mathbf{x})\big) \rvert \leq \left \{ 
+\begin{alignedat}{2}
+&C h^{r-\lvert \alpha \rvert}  \quad && \text{if $u$ is smooth on the stencil},\\
+&C && \text{otherwise},
+\end{alignedat}
+		  \right.
+\end{equation}
+where $\alpha = (\alpha_1, \alpha_2)$ is a two-dimensional multi-index, and $\lvert \alpha \rvert = \alpha_1 + \alpha_2 \leq r$.
+The uneven stencils ($s \neq t$) are used in the following two situations:
+\begin{itemize}
+\item When some a prior knowledge of the solution is acquired before simulation, e.g.,
+the transport velocity is known to be fixed in a single direction. 
+
+\item When derivatives are approximated, e.g., diffusive flux is computed across the element edge, where a stretched stencil is necessary to compensate for the loss of accuracy associated with derivative approximation.
+\end{itemize}
+For simplicity, we restrict the following discussions to the square case $s=t=r$.
 
 \subsection{Stencil polynomial smoothness indicators}
-We define a smoothness indicator $\sigma$ as a measurement of 
-smoothness of $u(\mathbf{x})$ on the stencil $S$. 
-The classic method from~\cite{JSSmoothness} is defined in analogue to 
-a cell-averaged Sobolev seminorm as:
+A smoothness indicator $\sigma$ is defined to quantify the
+smoothness of the tensor product polynomial $Q^\mathcal{S}_{r,r}$ on the stencil $\mathcal{S}$. 
+The classical approach by~\cite{JSSmoothness} defines $\sigma$ is in analogue to 
+a Sobolev seminorm as:
 \begin{equation}
-		  \sigma_{JS} = \sum_{1\leq \lvert\alpha\rvert \leq m} 
-		  \int\int_{E_0} \lvert E_0 \rvert^{\lvert\alpha\rvert -1} 
+		  \sigma_{JS} = \sum_{1\leq \lvert\alpha\rvert \leq r} 
+		  \int\int_{E_0} \frac{h_\mathcal{S}^{2\lvert\alpha\rvert}}{\lvert E_0 \rvert} 
 		  (\mathcal{D}^\alpha Q(x,y))^2 dxdy,
 \end{equation}
-where $\alpha = (\alpha_1, \alpha_2)$ is a multi-index, $\lvert \alpha \rvert = \alpha_1 + \alpha_2$, 
-and $\mathcal{D}$ is the derivative operator $\mathcal{D}^\alpha = \partial^{\lvert \alpha \rvert} / \partial x^{\alpha_1} \partial y^{\alpha_2}$.
-The Jiang-Shu smoothness indicator can be reformed with basis polynomials:
+%where $\alpha = (\alpha_1, \alpha_2)$ is a multi-index in two dimension, $\lvert \alpha \rvert = \alpha_1 + \alpha_2$, 
+%and $\mathcal{D}$ is the derivative operator $\mathcal{D}^\alpha = \partial^{\lvert \alpha \rvert} / \partial x^{\alpha_1} \partial y^{\alpha_2}$.
+The Jiang-Shu smoothness indicator can be computed utilizing predefined basis polynomials~\eqref{eq:basispoly}:
 \begin{equation}\label{eq:JSsmoothenssIC}
 \begin{aligned}
-		  \sigma_{JS} &= \sum_{1\leq \lvert \alpha \rvert \leq m} \lvert E_0 \rvert^{\lvert \alpha \rvert -1} \iint_{E_0} (\mathcal{D}^\alpha Q(x,y))^2 dx dy\\
-					  &= \sum_{1\leq \lvert \alpha \rvert \leq m} \iint_{\hat{E}_0} (\mathcal{D}^\alpha\hat{Q}(\xi, \eta))^2 d\xi d\eta \\
-					  &= \sum_{1\leq \lvert \alpha \rvert \leq m} \iint_{\hat{E}_0} \big( \sum_{ij} \overline{u}_{ij} \mathcal{D}^\alpha \hat{\phi}_{i,j}(\xi, \eta) \big)^2 d\xi d\eta \\
-					  &= \sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'.j'} \sum_{1\leq \lvert \alpha \rvert \leq m} 
+		  \sigma_{JS} &= \sum_{1\leq \lvert \alpha \rvert \leq r}  \frac{h_\mathcal{S}^{2\lvert\alpha\rvert}}{\lvert E_0 \rvert} 
+		  \iint_{E_0} (\mathcal{D}^\alpha Q(x,y))^2 dx dy\\
+					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{1\leq \lvert \alpha \rvert \leq r} \iint_{\hat{E}_0} (\mathcal{D}^\alpha\hat{Q}(\xi, \eta))^2 d\xi d\eta \\
+					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{1\leq \lvert \alpha \rvert \leq r} \iint_{\hat{E}_0} \big( \sum_{ij} \overline{u}_{ij} \mathcal{D}^\alpha \hat{\phi}_{i,j}(\xi, \eta) \big)^2 d\xi d\eta \\
+					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'.j'} \sum_{1\leq \lvert \alpha \rvert \leq r} 
 					  \iint_{\hat{E}_{ij}} \mathcal{D}^\alpha \hat{\phi}_{ij}(\xi, \eta) 
 					  \mathcal{D}^\alpha \hat{\phi}_{i'j'}(\xi, \eta) d\xi d\eta \\
-					  &= \sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'j'} \sigma^{i'j'}_{ij},
+					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'j'} \sigma^{i'j'}_{ij},
 \end{aligned}
 \end{equation}
-where $\sigma^{i'j'}_{ij}$ can be precomputed after mesh is established after mesh is established.
+where the coefficient tensor $\sigma^{i'j'}_{ij}$ can be precomputed offline after mesh is established.
 
-Alternatively, we can expand the Jiang-Shu smoothness indicator according to polynomial coefficients,
-which paves the way for further simplification. 
-Recall the tensor product polynomial version~\eqref{eq:stencilpolynomialscaled},
-\begin{equation}
+Alternatively, we can compute the Jiang-Shu smoothness indicator directly using 
+the polynomial coefficients formulation~\eqref{eq:stencilpolynomialscaled} as
+%Recall the tensor product polynomial version~\eqref{eq:stencilpolynomialscaled},
+\begin{equation}\label{eq:cofformulation}
 		  \begin{aligned}
-					 \sigma_{JS} &= \sum_{1\leq \lvert \alpha \rvert m} \\
-					 &= \sum \sum \eta_{i} c_i c_j
+					  \sigma_{JS} &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{1\leq \lvert \alpha \rvert \leq r} \iint_{\hat{E}_0} (\mathcal{D}^\alpha\hat{Q}(\xi, \eta))^2 d\xi d\eta \\
+					 &= \sum_{\lvert \gamma \rvert \leq r} \sum_{\lvert \beta \rvert \leq r} c_\gamma c_\beta 
+					 \bigg(\sum_{1\leq \lvert \alpha \rvert \leq r}\frac{h^2_\mathcal{S}}{\lvert E_0 \rvert} \iint_{E_0} 
+					 \mathcal{D}^\alpha \xi^\gamma \mathcal{D}^\alpha \eta^\beta \, d\xi d\eta \bigg)\\
+					 &= \sum_{\lvert \gamma \rvert \leq r} \sum_{\lvert \beta \rvert \leq r} c_\gamma c_\beta \zeta_{\gamma, \beta},
 		  \end{aligned}
 \end{equation}
+which paves the way for further simplification. 
 
-We observe that the smoothness indicator exhibit following convergence property that
-there exists some value $C > 0$ such that when $h \rightarrow 0^+$,
+The smoothness indicator exhibits the following convergence property:
+there exists a constant $C > 0$ such that when $h \rightarrow 0^+$,
 \begin{equation}\label{eq:smoothconvergence}
 		  \sigma = \begin{cases}
 					 Ch^2 + \mathcal{O} (h^3) \quad &\text{Smooth}, \\
-					 \Theta (1)  &\text{Not Smooth},
+					 \Theta (1)  &\text{Not Smooth}.
 		  \end{cases}
 \end{equation}
-where stencils are defined on quasi uniform mesh. This observation comes directly from the scaling property of 
-Sobolev seminorm.
+%where stencils are defined on quasi uniform mesh. 
+%This observation comes directly from the scaling property of Sobolev seminorm.
 
 \subsection{Two alternative smoothness indicator}
-We proposed two alternative ways of defining smoothness indicator in~\cite{WENOAOSimplifiedSmoothness}
-and~\cite{sigmaP}.
+We propose two alternative ways of defining a smoothness indicator
 
 \begin{itemize}
-\item \textit{Simple smoothness indicator}
+\item \textit{Simple smoothness indicator}~\cite{WENOAOSimplifiedSmoothness}
 \begin{equation}\label{eq:simpsmoothnessIC}
 \sigma_{\text{simp}} = \frac{1}{N_\mathcal{S} -1 } \sum_k (\overline{u}_k - \overline{u}_0)^2,
 \end{equation}
 where $\overline{u}_0$ is the cell averaged solution in target cell. 
-We define this simple smoothness indicator in order to reduce the computational cost and to deal with
-distorted stencil on unstructured mesh. However, this simple smoothness indicator is not as robust
-as the classic Jiang-Shu smoothness indicator. Hence, we stick to the classic definition in the following
-discussion.
+This simple smoothness indicator is designed to reduce the computational cost and to deal with
+distorted stencil on unstructured meshes. However, this simple smoothness indicator is not as robust
+as the classic Jiang-Shu smoothness indicator.
 
-\item \textit{Polynomial smoothness indicator}
+\item \textit{Polynomial smoothness indicator}~\cite{sigmaP}
 		  \begin{equation}
-					 \sigma_{P} = \sum \eta_i c_i^2
+					 \sigma_{P} = \sum_{\alpha} \zeta_{\alpha, \alpha} c_{\alpha}^2
 		  \end{equation}
-We obtain this polynomial smoothness indicator by dropping all the cross terms. 
+		  which is obtained by dropping all the cross terms appeared in the formulation~\eqref{eq:cofformulation}.
+		  This alternative serves as a good approximation to the classic Jiang-Shu smoothness indicator while the 
+		  computing efficiency is greatly improved.
 \end{itemize}
 
 \subsection{ML-WENO weighting}
 Given a target cell $E_{i,j}$, we can create a nonempty set of stencils $\{\mathcal{S}_l \ni E_{i,j}, l = 0,1, \dots, L, L \geq 0\}$.
-The reconstruction of u on target cell $E_{i,j}$ is a convex combination of stencil polynomials~\eqref{eq:normalizedstencilpoly}
+The reconstruction of u on the target cell $E_{i,j}$ is a convex combination of the stencil polynomials defined in equation~\eqref{eq:normalizedstencilpoly}
 \begin{equation}\label{eq:reconstruction}
-\mathcal{R}(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q_l(\mathbf{x}), \quad \mathbf{x} \in E_{i,j},
+\mathcal{R}(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q^{\mathcal{S}_l}(\mathbf{x}), \quad \mathbf{x} \in E_{i,j},
 \end{equation}
-where $\sum_l \tilde{\omega}_l = 1$ is normalized nonlinear weights associated with stencils accordingly.
+where $\sum_l \tilde{\omega}_l = 1$ is the normalized nonlinear weights associated with stencils accordingly.
 \begin{figure}[ht]
 \centering
 \input chapters/tikz/mlstencil.tex
 \caption{An example of (3,2,1) multi-level stencils combination on logically rectangular 
 quadrilateral mesh.\label{fig:quadmesh}}
 \end{figure}
-We begin by arbitrarily chosing a set of linear weights $\{\omega_l\}$ and scale with stencil smoothness indicator as
+We begin by arbitrarily choosing a set of linear weights $\{\omega_l\}$ and scale them with stencil smoothness indicator as
 \begin{equation}\label{eq:nonlinearwgts}
 \hat{\omega}_l = \frac{\omega_l}{(\sigma_l + \epsilon h_0^2)^{ar_l + n_l}},
 \end{equation}
-where $r_l = \max\{s,t\}$, $\epsilon = 1e-4$ and $a > 0.5$ are picked as constants. The biasing factor $n_l = n(r_l)$ 
-is used to biasing away further from constant level, whose smoothness indicator is always zero, when the solution is 
+where $r_l = \max\{s,t\} = r$ in the cases of using square stencils, 
+and the constants $\epsilon = 1e-4$ and $a > 0.5$ are chosen accordingly. The biasing factor $n_l = n(r_l)$ 
+is used to biasing away further from the constant level, whose smoothness indicator is always zero, when the solution is 
 smooth. We pick 
 \begin{equation}\label{eq:biasingfctor}
 n(r_l) = n_l = \begin{cases}
@@ -260,36 +281,36 @@ n(r_l) = n_l = \begin{cases}
 4, \quad &\text{if} \quad r_l \geq 3.
 \end{cases}
 \end{equation}
-We then renormalize scaled weights
+We then renormalise scaled weights as
 \begin{equation}\label{eq:normalizednonlinearwgts}
 \tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}}.
 \end{equation}
 
 \subsection{The ML-WENO Reconstruction Error}
-In this section, we consider the accuracy of our multi-level weighting scheme.
-We group the set of 
-indices $l \in \mathcal{L} = \{0,1,2,\dots L\}$ according to the order of reconstruction polynomials,
-i.e., the shape of individual stencil. We denote the set of indices of
-stencils have $s$ cells in x direction and $t$ cells in y direction as $\mathcal{L}_{s,t}$.
-We make the assumption that the mesh resolution is fine enough so that there exist 
-at least one stencil that is smooth if shock presents. We define two sets holding 
+In this section, we analyze the accuracy of our multi-level weighting scheme.
+We regroup the set of 
+indices $l \in \mathcal{L} = \{0,1,2,\dots L\}$ according to the order of the stencil polynomials.
+Specifically, we denote the set of indices of
+stencils have $s$ cells in x direction and $t$ cells in y direction as $\mathcal{L}_{s,t} \subset \mathcal{L}$.
+We assume the mesh resolution is sufficiently fine such that 
+at least one smooth stencil exists in the presence of shocks. Accordingly, we define two sets holding 
 indices of stencils with or without jump as
 \begin{equation}\label{eq:groupstencil}
 \begin{aligned}
 		  \text{Smooth} &= \{l:\hspace{0.2cm} \text{$u$ is smooth on $\mathcal{S}_l$}, \}\\
-		  \text{Jump}   &= \{l:\hspace{0.2cm} \text{$u$ has a jump on $\mathcal{S}_l$}\}
+		  \text{Jump}   &= \{l:\hspace{0.2cm} \text{$u$ has a jump on $\mathcal{S}_l$}\}.
 \end{aligned}
 \end{equation}
-where we assume $\text{Smooth} \cup \text{Jump} = \mathcal{L}$ and $\text{Smooth} \cap \text{Jump} = \emptyset$.
-We represent the set of indices of stencils of shape $(s,t)$ that is smooth as $\mathcal{L}_{s,t} \cap \text{Smooth}$,
-and the set of stencils of shat $(s,t)$ that has a jump as $\mathcal{L}_{s,t} \cap \text{Jump}$.
-For convience, we assume square stencils, where $r=s=t$. 
-The accuracy result can be applied to $s\neq t$ situation directly in the selected direction.
+We assume that $\text{Smooth} \cup \text{Jump} = \mathcal{L}$ and $\text{Smooth} \cap \text{Jump} = \emptyset$.
+We represent the set of indices of stencils of size $(s\times t)$ that is smooth as $\mathcal{L}_{s,t} \cap \text{Smooth}$,
+and the set of stencils of size $(s\times t)$ that has a jump as $\mathcal{L}_{s,t} \cap \text{Jump}$.
+%For convenience, we assume square stencils, where $r=s=t$. 
+%The accuracy result can be applied to $s\neq t$ situation directly in the selected direction.
 We show that the reconstruction is accurate with respect to the target cell $E_0$ to order
 \begin{equation}\label{eq:maxr}
 r_{\max} = \max\{r: \text{Smooth} \cap \mathcal{L}_{r,r}  \neq \emptyset \}.
 \end{equation}
-In Figure~\ref{fig:stencilshock}, we illustrate a (3,2,1) combination of stencils with thow shock presents.
+In Figure~\ref{fig:stencilshock}, we illustrate a (3,2,1) combination of stencils with two shocks present.
 Here, $\text{Smooth} = \{0, 1 \} $, which
 indicates that stencil $\mathcal{S}_0$ and $\mathcal{S}_1$ do not have jump present.
 In this case, we expect the accuracy of reconstruction is $r_{\max} = \text{Smooth} \cap \mathcal{L}_{2,2} = 2$.
@@ -300,9 +321,9 @@ In this case, we expect the accuracy of reconstruction is $r_{\max} = \text{Smoo
 quadrilateral mesh with two shock presents.\label{fig:stencilshock}}
 \end{figure}
 
-We state the estimation of reconstruction error show in~\cite{MultiLevelWeno}.
+We follow the estimation of reconstruction error show in~\cite{MultiLevelWeno}.
 We start by estimating the error of our nonlinear scaling~\eqref{eq:nonlinearwgts} 
-asscoiated to some stencil $\mathcal{S}_l$
+associated with some stencils $\mathcal{S}_l$
 for some $m>0$.
 \begin{equation}
 \hat{\omega}_l = \frac{\omega_l}{(\sigma_l + \epsilon h_0^2)^m}.
