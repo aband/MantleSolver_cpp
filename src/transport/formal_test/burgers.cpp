@@ -80,7 +80,6 @@ double advfunc(const double& u,
                const vertex& vel, const vertex& unitnormal){
 
     // A Burgers type flux
-
     return u*u/2.0 *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 }
 
@@ -134,8 +133,8 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
             flux    = 0.0;
         } else {
             cellout = globalcell + mi.faceNormal[0];
-            flux    = edgefluxintegral(mi, globalcell, cellout, hori, allwgts, vel,
-                                       ml, use, lu);
+            //flux    = edgefluxintegral(mi, globalcell, cellout, hori, allwgts, vel,
+            //                           ml, use, lu);
 				flux = 0.0;
         }
 

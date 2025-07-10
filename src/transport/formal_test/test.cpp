@@ -24,7 +24,7 @@ int main(int argc, char ** argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    int M = 30, N = 10;
+    int M = 10, N = 10;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
@@ -44,11 +44,17 @@ int main(int argc, char ** argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    double dt = 0.005;
+    double dt = 0.25*1.0/(double)M;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-dt", &dt, NULL));
 
-    int Nt = 400;
+    int Nt = 8*M;
     ierr = PetscOptionsGetInt(NULL,NULL,"-Nt",&Nt,NULL);CHKERRQ(ierr);
+
+    double CFL = dt/(1.0/(double)M);
+
+    cout << "dt, dh = " << dt << " , " << 1.0/(double)M << ". " << "CFL number is : " << CFL << endl;
+
+    M *= 3;
 
     // Create dmMesh
     PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
@@ -90,6 +96,8 @@ int main(int argc, char ** argv){
 
     AssignValuesMeshInfo(mi, dmMesh, dmu);
 
+    cout << "check point 1" << endl;
+
     mi.L = L;
     mi.H = H;
 
@@ -108,7 +116,6 @@ int main(int argc, char ** argv){
     unordered_map<std::string, vector<indice>> interior;
 //    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
 //    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
-
 //    use.setmethod("interior", interior);
 //    use.setbias("interior");
 
@@ -136,7 +143,10 @@ int main(int argc, char ** argv){
     // =================================================================
 
     //simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+	 cout << "Time stepping starts. " << endl;
+//    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+//    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
 
     // =================================================================

@@ -1,4 +1,4 @@
-function [] = reconplot(M, N, mark)
+function [] = reconplot(M, N, mark, mytitle)
 
 % Read grid files 
 
@@ -19,10 +19,9 @@ sol = reshape(sol, 3*M, 3*N);
 
 s = surf(pX, pY, sol)
 s.EdgeColor = 'none';
-title(filename)
+title(mytitle)
 ylabel("y")
 xlabel("x")
 colormap(turbo)
 colorbar
 caxis([0,1])
-

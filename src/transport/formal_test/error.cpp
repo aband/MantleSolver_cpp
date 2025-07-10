@@ -197,13 +197,56 @@ int simpleRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,
         getflux(mi, ml, use, &sol, &flux, dmu, dmmesh);
 
         VecAXPY(sol, -1*dt, flux);
+		  cout << "At time : " << t << endl;
     }
 
     return 1;
 }
 
-int simpleSSP3RK(){
+int simpleSSP3RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml, mluse& use, DM dmu, DM dmmesh){
 
+    Vec sol = *insol;
+
+    int event = 1;
+
+    Vec temp;
+    VecDuplicate(sol, &temp);
+    VecCopy(sol, temp);
+
+    Vec temp2;
+    VecDuplicate(sol, &temp2);
+    VecCopy(sol, temp2);
+
+    for (int t=0 ; t<Nt; t++){
+
+        Vec flux;
+        VecDuplicate(sol, &flux);
+
+        getflux(mi,ml,use,&sol,&flux,dmu,dmmesh);
+
+        VecAXPY(temp, -1*dt, flux);
+
+        Vec flux2;
+        VecDuplicate(sol, &flux2);
+
+        getflux(mi, ml, use, &temp, &flux2, dmu, dmmesh);
+
+        VecScale(temp2, 0.75);
+        VecAXPY(temp2, 0.25, temp);
+        VecAXPY(temp2, -0.25*dt, flux2);
+
+        // Second stage
+        Vec flux3;
+        VecDuplicate(sol, &flux3);
+
+        getflux(mi, ml, use, &temp2, &flux3, dmu, dmmesh);
+
+        VecScale(sol, 1.0/3.0);
+        VecAXPY(sol, 2.0/3.0, temp2);
+        VecAXPY(sol, -2.0/3.0*dt, flux3);
+
+        cout << "At Time : " << t << endl;
+    }
 
     return 1;
 }
@@ -234,6 +277,8 @@ int simpleSSP2RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel&
         VecScale(sol, 0.5);
         VecAXPY(sol, 0.5, temp);
         VecAXPY(sol, -0.5*dt, flux2);
+
+        cout << "At Time : " << t << endl;
 
     }
 

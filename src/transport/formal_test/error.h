@@ -13,4 +13,6 @@ int simpleRK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,
 
 int simpleSSP2RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,  mluse& use, DM dmu, DM dmmesh);
 
+int simpleSSP3RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,  mluse& use, DM dmu, DM dmmesh);
+
 #endif

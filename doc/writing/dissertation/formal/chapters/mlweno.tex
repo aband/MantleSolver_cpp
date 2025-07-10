@@ -422,9 +422,9 @@ the formal error estimate of the reconstruction.
 \end{lem}
 
 \subsection{Handling Boundary Conditions}
-In our simulation, we couple FEM and FVM solver on a single mesh. Therefore, 
+We couple FEM and FVM solver on a single mesh in our simulation. Therefore, 
 accurate and compatible boundary condition should be assigned accordingly.
-However, it is usually difficult to manage boundary condition for higher order finite volume and finite difference method, which
+However, it is usually difficult to manage boundary conditions for higher order finite volume and finite difference method, which
 require wide stencils. Some deal with the difficulty use ghost cells or points outside the boundary, and maintain
 the same stencil as if they were in the interior of the domain. However, the extrapolation or estimation of the 
 manufactured values of ghost cells or ghost points are not straightforward.
