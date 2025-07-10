@@ -263,7 +263,7 @@ where $\sum_l \tilde{\omega}_l = 1$ is the normalized nonlinear weights associat
 \begin{figure}[ht]
 \centering
 \input chapters/tikz/mlstencil.tex
-\caption{An example of (3,2,1) multi-level stencils combination on logically rectangular 
+\caption{An example of a (3,2,1) multi-level stencils combination on a logically rectangular 
 quadrilateral mesh.\label{fig:quadmesh}}
 \end{figure}
 We begin by arbitrarily choosing a set of linear weights $\{\omega_l\}$ and scale them with stencil smoothness indicator as
@@ -287,61 +287,62 @@ We then renormalise scaled weights as
 \end{equation}
 
 \subsection{The ML-WENO Reconstruction Error}
-In this section, we analyze the accuracy of our multi-level weighting scheme.
-We regroup the set of 
-indices $l \in \mathcal{L} = \{0,1,2,\dots L\}$ according to the order of the stencil polynomials.
+In this section, we analyze the accuracy of the new multi-level weighting scheme.
+Consider the set containing indices of stencils $l \in \mathcal{L} = \{0,1,2,\dots L\}$. 
+%according to the order of the stencil polynomials.
 Specifically, we denote the set of indices of
-stencils have $s$ cells in x direction and $t$ cells in y direction as $\mathcal{L}_{s,t} \subset \mathcal{L}$.
+stencils of size $s\times t$ as $\mathcal{L}_{s,t} \subset \mathcal{L}$.
 We assume the mesh resolution is sufficiently fine such that 
-at least one smooth stencil exists in the presence of shocks. Accordingly, we define two sets holding 
-indices of stencils with or without jump as
+at least one smooth stencil exists in the presence of shocks. Accordingly, we define two index sets:
+one containing the stencils identified as smooth, and the other containing those that exhibit discontinuities as
 \begin{equation}\label{eq:groupstencil}
 \begin{aligned}
-		  \text{Smooth} &= \{l:\hspace{0.2cm} \text{$u$ is smooth on $\mathcal{S}_l$}, \}\\
-		  \text{Jump}   &= \{l:\hspace{0.2cm} \text{$u$ has a jump on $\mathcal{S}_l$}\}.
+		  \text{Smooth} &= \{l:\hspace{0.2cm} \text{$u$ is smooth on $\mathcal{S}_l$}\},\\
+		  \text{Jump}   &= \{l:\hspace{0.2cm} \text{$u$ has a jump on $\mathcal{S}_l$}\},
 \end{aligned}
 \end{equation}
-We assume that $\text{Smooth} \cup \text{Jump} = \mathcal{L}$ and $\text{Smooth} \cap \text{Jump} = \emptyset$.
-We represent the set of indices of stencils of size $(s\times t)$ that is smooth as $\mathcal{L}_{s,t} \cap \text{Smooth}$,
-and the set of stencils of size $(s\times t)$ that has a jump as $\mathcal{L}_{s,t} \cap \text{Jump}$.
+where $\text{Smooth} \cup \text{Jump} = \mathcal{L}$ and $\text{Smooth} \cap \text{Jump} = \emptyset$.
+%We represent the set of indices of stencils of size $(s\times t)$ that is smooth as $\mathcal{L}_{s,t} \cap \text{Smooth}$,
+%and the set of stencils of size $(s\times t)$ that has a jump as $\mathcal{L}_{s,t} \cap \text{Jump}$.
 %For convenience, we assume square stencils, where $r=s=t$. 
 %The accuracy result can be applied to $s\neq t$ situation directly in the selected direction.
 We show that the reconstruction is accurate with respect to the target cell $E_0$ to order
 \begin{equation}\label{eq:maxr}
 r_{\max} = \max\{r: \text{Smooth} \cap \mathcal{L}_{r,r}  \neq \emptyset \}.
 \end{equation}
-In Figure~\ref{fig:stencilshock}, we illustrate a (3,2,1) combination of stencils with two shocks present.
-Here, $\text{Smooth} = \{0, 1 \} $, which
-indicates that stencil $\mathcal{S}_0$ and $\mathcal{S}_1$ do not have jump present.
-In this case, we expect the accuracy of reconstruction is $r_{\max} = \text{Smooth} \cap \mathcal{L}_{2,2} = 2$.
-\begin{figure}[ht]
+Figure~\ref{fig:stencilshock} illustrates a (3,2,1) combination of stencils in the presence of two shocks.
+In this example, the set containing indices of smooth stencils is $\text{Smooth} = \{0, 1 \} $, indicating 
+that stencils $\mathcal{S}_0$ and $\mathcal{S}_1$ do not have jump.
+Consequently, we expect the accuracy of reconstruction is $r_{\max} = \text{Smooth} \cap \mathcal{L}_{2,2} = 2$.
+\begin{figure}[htb]
 \centering
 \input chapters/tikz/stencilsplit.tex
-\caption{An illustration of a (3,2,1) multi-level stencils combination on logically rectangular 
+\caption{An illustration of a (3,2,1) multi-level stencils combination on a logically rectangular 
 quadrilateral mesh with two shock presents.\label{fig:stencilshock}}
 \end{figure}
 
-We follow the estimation of reconstruction error show in~\cite{MultiLevelWeno}.
-We start by estimating the error of our nonlinear scaling~\eqref{eq:nonlinearwgts} 
+We follow the estimation of reconstruction error in~\cite{MultiLevelWeno}.
+We start by estimating the error of the nonlinear scaling~\eqref{eq:nonlinearwgts} 
 associated with some stencils $\mathcal{S}_l$
 for some $m>0$.
 \begin{equation}
 \hat{\omega}_l = \frac{\omega_l}{(\sigma_l + \epsilon h_0^2)^m}.
 \end{equation}
-We estimate the reconstruction error for two situtaions.
+We estimate the reconstruction error under two distinct situtaions:
 \begin{itemize}
 \item $l \in \text{Smooth}$, the smoothness indicator $\sigma_l = Ch^2 + \mathcal{O}(h^3)$; 
 \item $l \in \text{Jump}$, the smoothness indicator $\sigma_l = \Theta(1)$.
 \end{itemize}
-Use the asymptotic estimation result from~\cite{olver1997asymptotics}. Let $n\geq m$, 
-$a>0$, and $b>0$
+We employ the asymptotic estimation result from~\cite{olver1997asymptotics}. 
+Assuming $n\geq m$, 
+$a>0$, and $b>0$, then
 \begin{equation}\label{eq:asymptoticresult}
 \begin{aligned}
 \frac{a}{bh^m + \mathcal{O}(h^n)} &= \frac{ah^{-m}}{b} \big(1 + \mathcal{O}(h^{n-m})\big),\\
 \frac{a}{bh^{-n} + \mathcal{O}(h^{-m})} &= \frac{ah^{n}}{b} \big(1 + \mathcal{O}(h^{n-m})\big).
 \end{aligned}
 \end{equation}
-For the smooth stencil $\mathcal{S}_l \in \text{Smooth}$
+For the smooth stencil $\mathcal{S}_l,\,  l\in \text{Smooth}$
 \begin{equation}
 \begin{aligned}
 \hat{\omega}_l = \frac{\omega_l}{(\sigma_l+ \epsilon h_0^2)^m} &= \frac{\omega_l}{((C+\epsilon)h^2_0 + \mathcal{O}(h^3))^m}\\
@@ -379,7 +380,7 @@ Assume $h<1$, we keep the largest $ar+\eta(r)$ number as our estimator
 					 &+ \mathcal{O}(h^{1-2(ar_{\max}+\eta(r_{\max}))}).
 		  \end{aligned}
 \end{equation}
-later, we denote the set $\text{Smooth}\cap \mathcal{L}_{r}$ as $\text{Smooth}_r$ for 
+later, we denote the set $\text{Smooth}\cap \mathcal{L}_{r,r}$ as $\text{Smooth}_r$ for 
 simplicity.
 The overall accuracy estimation of the nonlinear weighting~\eqref{eq:normalizednonlinearwgts} is presented as
 \begin{itemize}
@@ -403,7 +404,7 @@ Now we can estimate the reconstruction error as
 \begin{aligned}
 \lvert u(\mathbf{x}) - \mathcal{R}(\mathbf{x}) \rvert &= \lvert \sum_{l}\tilde{\omega}_l (u(\mathbf{x} - Q_l(\mathbf{x})))  \rvert\\
 &\leq \sum_{l \in \text{Smooth}} \tilde{\omega}_l \lvert u(\mathbf{x}) - Q_l(\mathbf{x}) \rvert + \sum_{l \in \text{Jump}} \tilde{\omega}_l \lvert u(\mathbf{x}) - Q_l(\mathbf{x}) \rvert \\
-&\leq \sum_r \sum_{\substack{l\in \\\text{Smooth}\cap \mathcal{L}_{r,r}}} \Theta(h^{2[a(r_{\max} - r) + (\eta(r_{\max}) - \eta(r))]}) \mathcal{O}(h^r) \\
+&\leq \sum_r \sum_{\substack{l\in \text{Smooth}_r}} \Theta(h^{2[a(r_{\max} - r) + (\eta(r_{\max}) - \eta(r))]}) \mathcal{O}(h^r) \\
 &\quad \qquad + \sum_{l\in \text{Jump}} \Theta (h^{2(ar_{\max}+\eta(r_{\max}))}) \mathcal{O}(1) \\
 &= \mathcal{O}(h^{r_{\max}})
 \end{aligned}

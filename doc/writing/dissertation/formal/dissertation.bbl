@@ -1,4 +1,4 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -16,13 +16,6 @@ Todd Arbogast, Chieh-Sen Huang, Chenyu Tian, and Gabirel M.Gray.
 \newblock An efficient and accurate approximation to the classic polynomial
   smoothness indicator.
 \newblock \emph{In Preparation.}, 2025.
-
-\bibitem[Bramble and Hilbert(1970)]{EstimationofLinearFunctionals}
-J.H. Bramble and S.~R. Hilbert.
-\newblock Estimation of linear functionals on {S}obolev spaces with application
-  to {F}ourier transform and spline interpolation.
-\newblock \emph{SIAM J. Numer. Anal.}, 7\penalty0 (1):\penalty0 112--124, 1970.
-\newblock \doi{10.1137/0707006}.
 
 \bibitem[Dupont and Scott(1980)]{PolynomialApproximation}
 Todd Dupont and Ridgway Scott.

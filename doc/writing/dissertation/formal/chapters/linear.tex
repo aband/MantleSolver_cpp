@@ -218,7 +218,7 @@ nonsingular. The saddle point system can be factored as
 		  \end{bmatrix},
 \end{equation}
 where $\mathbf{S}$ is the Schur complement
-\begin{equation}
+\begin{equation}\label{eq:schurcomplement}
 		  \mathbf{S} = -(\mathbf{C} + \mathbf{BA}^{-1}\mathbf{B}^T).
 \end{equation}
 
@@ -277,7 +277,7 @@ Its ``inverse" $\mathbf{S}^{-1}$ can be approximated with the Minimal Resigual a
 The Uzawa algorithm, originally introduced by~\cite{uzawa_arrow_hurwicz},
 later gained popularity in computational fluid dynamics.
 It was later applied to the discretization of the Stokes problem using
-Mixed Finite Element methods. Notable variants incorporating inexact inner solver to accelerate Uzawa iteration
+Mixed Finite Element methods. Notable variants incorporating an inexact inner solver to accelerate the Uzawa iteration
 was discussed by
 ~\cite{InexactUzawa_Elam_Golub} and ~\cite{AnalysisInexactUzawa_Bramble_Pasciak_Vassilev}.
 
@@ -299,7 +299,7 @@ However, such a simplistic choice does not guarantee convergence of our coupled 
 \begin{algorithm}
 		  \caption{Inexact Uzawa Iteration\label{alg:inexactuzawa}}
 		  \begin{algorithmic}[1]
-					 \State Initialize $\bold{x}_0 = \bold{0}$, $\bold{y}_0 = \bold{0}$, tolence $\text{tol} = 1$ and residual $res = 0$.
+					 \State Initialize $\bold{x}_0 = \bold{0}$, $\bold{y}_0 = \bold{0}$, tolence $\text{tol} = 1$ and residual $res = \infty$.
 					 \vspace{0.3cm}
 					 \While {res $>$ tol}
 					 \vspace{0.3cm}
@@ -326,13 +326,18 @@ For the remainder of the discussion, we set $\mathbf{Q}_A = \mathbf{A}$,
 Substituting equation~\eqref{eq:xk} back into the system~\eqref{eq:uzawasystem}
 yields a first order Richardson iteration for $\mathbf{y}$ as
 \begin{equation}
-		  \mathbf{y}_{k} = \mathbf{y}_{k-1} + \mathbf{Q}_B^{-1}\big[\mathbf{B}^T\mathbf{A}^{-1}\mathbf{F} - \mathbf{G} - (\mathbf{B}^T\mathbf{A}^{-1}\mathbf{B} + \mathbf{C})\mathbf{y}_{k-1}\big],
+		  \mathbf{y}_{k} = \mathbf{y}_{k-1} + \mathbf{Q}_B^{-1}\big[\mathbf{B}^T\mathbf{A}^{-1}\mathbf{F} - \mathbf{G} - (\mathbf{B}^T\mathbf{A}^{-1}\mathbf{B} + \mathbf{C})\mathbf{y}_{k-1}\big].
 \end{equation}
-where we remark that the residual $\mathbf{r} = \mathbf{B}^T\mathbf{A}^{-1}\mathbf{F} - \mathbf{G} - (\mathbf{B}^T\mathbf{A}^{-1}\mathbf{B} + 
-\mathbf{C})\mathbf{y}_{k-1}$,
-and can be decomposed as $[\mathbf{r}_S,\mathbf{r}_D]^T$ according to the two subsystems.
-It is evident that the closer the preconditioner $\mathbf{Q}_B$ approximate the Schur complement for the coupled system, 
-the better the iteration algorithm behavior.
+The residual for this formulation would be when $y_k= y_{k-1}$, so let
+\begin{equation}
+\mathbf{r} = \mathbf{B}^T\mathbf{A}^{-1}\mathbf{F} - \mathbf{G} - (\mathbf{B}^T\mathbf{A}^{-1}\mathbf{B} + 
+\mathbf{C})\mathbf{y}_{k-1},
+\end{equation}
+and this can be decomposed as $[\mathbf{r}_S,\mathbf{r}_D]^T$ according to the two subsystems.
+It is evident from~\eqref{eq:schurcomplement} and~\eqref{eq:direct} that the 
+closer the 
+preconditioner $\mathbf{Q}_B$ approximates the Schur complement for the coupled system, 
+the better the algorithm behaves.
 Therefore, we can construct an alternative preconditioner $\mathbf{Q}_B$ 
 by approximating the Schur complement separately for the Stokes and the Darcy subsystems as
 \begin{equation}
@@ -344,10 +349,10 @@ by approximating the Schur complement separately for the Stokes and the Darcy su
 					 \mathbf{0} & -\mathbf{S}_D
 		  \end{bmatrix}.
 \end{equation}
-In practice, the Schur complement is not formed explicitly, Instead
+In practice, the Schur complement is not formed explicitly. Instead
 we compute an approximate increment $\tilde{\mathbf{y}}_i,\, i\in\{S,D\}$ within the 
-Krylov subspace $\mathbf{V}_{k,i} = \mathcal{K}_r(-\mathbf{S}_i, \mathbf{r}_i)$
-,which minimizes the $l^2$ norm of the residual, i.e., 
+Krylov subspace $\mathbf{V}_{k,i} = \mathcal{K}_r(-\mathbf{S}_i, \mathbf{r}_i)$,
+which minimizes the $l^2$ norm of the residual, i.e., 
 \begin{equation}
 \tilde{\mathbf{y}_i} = \text{argmin}_{\tilde{\bold{y}}\in \mathbf{V}_{k,i}}\norm{-\mathbf{S}_i \tilde{\mathbf{y}} - \mathbf{r}_i}, \quad i \in \{S,D\}.
 \end{equation}
@@ -356,7 +361,7 @@ The modified algorithm is presented formally in Algorithm~\ref{alg:modifieduzawa
 \begin{algorithm}
 \caption{Modified Uzawa Iteration\label{alg:modifieduzawa}}
 		  \begin{algorithmic}[1]
-					 \State Initialize $\bold{x}_0 = \bold{0}$, $\bold{y}_0 = \bold{0}$, tolence $\text{tol} > 0$ and residual $res = 0$.
+					 \State Initialize $\bold{x}_0 = \bold{0}$, $\bold{y}_0 = \bold{0}$, tolence $\text{tol} > 0$ and residual $res = \infty$.
 					 \vspace{0.3cm}
 					 \While {res $>$ tol}
 					 \vspace{0.3cm}
@@ -391,7 +396,7 @@ The modified algorithm is presented formally in Algorithm~\ref{alg:modifieduzawa
 \end{algorithmic}
 \end{algorithm}
 
-The Uzawa iteration, being a fixed point Richardson iteration,lends itself naturally to
+The Uzawa iteration, being a fixed point Richardson iteration, lends itself naturally to
 acceleration techniques, such as Anderson Acceleration~\cite{doi:10.1137/10078356X}.
 We compare the result of our modified Uzawa iteration with the reference algorithm~\eqref{eq:direct} and get identical results.
 Further investigation into its convergence behavior will be pursued in future work.

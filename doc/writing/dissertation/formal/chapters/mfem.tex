@@ -428,10 +428,10 @@ We study a compacting column aligned along the $y$-direction,
 defined over the domain $y \in [-H,H]$ and $x \in [-L,L]$
 with no flow boundary conditions imposed at $y=\pm H$. 
 
-For all tests presented below, we take $H=2$ and $L=0.2$, and the entire domains spans four
+For all tests presented below, we take $H=2$ and $L=0.2$, and the entire domain spans four
 compaction lengths. We fix the parameter $\Theta = 0$. Each problem is solved
-using four different levels of refinement in $y$-direction, i.e., $N \in \{20,40,80,160\}$. The code is implemented
-in PETSc/C++, with implementation details discussed in a later section.
+using four different levels of refinement in the $y$-direction, i.e., $N \in \{20,40,80,160\}$. The code is implemented
+in PETSc/C++, with implementation details discussed in a later chapter.
 
 \subsection{1D simplification}
 \iffalse
@@ -444,7 +444,7 @@ and $v = \check{\mathbf{v}}_s \cdot \mathbf{j}$, where $\mathbf{j}$
 is the unit vector in y direction pointing upwards.
 \fi
 To begin with, we assume that both the solid and the liquid velocities have nonzero 
-components only in $y$-direction, i.e.,
+components only in the $y$-direction, i.e.,
 $\check{\mathbf{v}}_s = (0,v(y))$ and
 $\phi\check{\mathbf{v}}_r = (0,u(y))$. 
 The 2D equations are then simplified as
@@ -454,7 +454,7 @@ The 2D equations are then simplified as
 					 u + \phi^{2} q'_l &= 0, \\
 					 u' + \phi(q_l - q_s)&= 0, \\
 					 [q_s - \frac{1}{3}(1-4\phi)v']' &= 1-\phi,\\
-					 v' - \phi(q_f - q_s) &=0.
+					 v' - \phi(q_l - q_s) &=0.
 		  \end{aligned}
 \end{equation}
 The no flow boundary conditions for this one-dimensional problem
@@ -462,7 +462,7 @@ are specified as
 \begin{equation}
 		  u(\pm H) =-v(\pm H) = 0.
 \end{equation}
-When there is no melting presents $\phi = 0$, the equations reduce to 
+When there is no melting present, $\phi = 0$, the equations reduce to 
 a simple solution as
 \begin{equation}
 		  u = -v = 0,\quad q'_s = 1, \quad\text{and}\quad q_l = 0.
@@ -481,8 +481,8 @@ We define an auxiliary function $R$ for the case where $\phi$ is constant:
 \end{equation}
 
 \subsection{2D Boundary conditions}
-Despite the problem has been reduced to one dimension, 
-boundary conditions are still be specified for the full 2D computational domain.
+Despite the problem being reduced to one dimension, 
+boundary conditions are still specified for the full 2D computational domain.
 To begin with, we list all the degrees of freedom (dofs) that must be prescribed on edges of each element 
 $e \in \partial E \subset \partial \Omega$.
 \begin{itemize}
@@ -524,8 +524,7 @@ problem within the two-dimensional grid.
 						  \begin{equation*}
 									 \check{\mathbf{v}}_s \cdot \pmb{\nu} = v = 0,\, \lvert e \rvert^{-1}\int_e \mathbf{b}\cdot \pmb{\nu}\, ds = 0;
 						  \end{equation*}
-				\item Tangential Stokes velocity is prescribed with natural boundary condition - a free traction
-						  boundary condition:
+				\item Tangential Stokes velocity is prescribed with the natural boundary condition: free traction
 						  \begin{equation*}
 									 t_0 = 0;
 						  \end{equation*}
@@ -544,7 +543,7 @@ First, we start with a constant porosity:
 					 \begin{equation}\label{eq:constporosity}
 								\phi(y) = \phi_0.
 					 \end{equation}
-					We solving the ODE~\eqref{eq:ode} and write the closed form solution in terms of 
+					We solve the ODE~\eqref{eq:ode} and write the closed form solution in terms of 
 					the auxiliary constant~\eqref{eq:Rphi}.
 					 \begin{equation}
 								\begin{aligned}
@@ -565,7 +564,7 @@ which results in a second order superconvergence behavior for these quantities.
 In Figure~\ref{fig:constporocompactcolumn}, we demonstrates that the numerical solutions (dashed lines) 
 closely match the closed-form solutions (solid lines).
 
-					 \begin{table}[ht]
+					 \begin{table}[htb]
 \centering
 					\begin{tabular}{c || c | c || c | c || c | c || c | c }
 							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
@@ -583,7 +582,7 @@ closely match the closed-form solutions (solid lines).
 								the liquid pressure potentials $q_s$ and $q_l$.}
 								\label{tab:constporositycolumn}
 					 \end{table}
-					 \begin{figure}[ht]
+					 \begin{figure}[htb]
 						\centering
 								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_const.eps}
 \includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_const.eps}
@@ -652,7 +651,7 @@ closely match the closed-form solutions (solid lines) with a degenerate region.
 								the liquid pressure potentials $q_s$ and $q_l$.}
 								\label{tab:discontinuousporositycolumn}
 					 \end{table}
-					 \begin{figure}[ht]
+					 \begin{figure}[htb]
 						\centering
 								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_piececonst.eps}
 \includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_piececonst.eps}
@@ -665,7 +664,7 @@ closely match the closed-form solutions (solid lines) with a degenerate region.
 								\label{fig:piececonstporocompactcolumn}
 					 \end{figure}
 \subsection{Column compaction with quadratic porosity.}
-For the final test, we test our implementation with a discontinuous quadratic porosity as
+For the final test, we consider our implementation with the continuous quadratic porosity 
 					 \begin{equation}\label{eq:quadphi}
 								\phi(y) = \left \{
 										  \begin{alignedat}{2}
@@ -687,9 +686,9 @@ For the final test, we test our implementation with a discontinuous quadratic po
 %					 \begin{equation}
 %								r_1 = \frac{3+\sqrt{9+4/\phi_0}}{2}.
 %					 \end{equation}
-We focus on the case where $\phi_0 = 0.01$, which is no longer accurately captured by the previous
-derived closed-form solution due to the breakdown of the assumption $\phi \ll 1$.
-To address this, we present an alternative approach of constructing approximation solution to the
+We focus on the case where $\phi_0 = 0.01$, which is not accurately captured by the
+closed-form solution derived in~\cite{DegenerateDarcy} due to the breakdown of the assumption $\phi \ll 1$.
+To address this, we present an alternative approach of constructing an approximation solution to the
 second-order ordinary differential equation (ODE)~\eqref{eq:ode}. 
 \iffalse
 Let $v = u/\phi^2 = u/(\phi_0^2 z^4)$,
@@ -737,7 +736,7 @@ and we determine the constant $C$ with boundary condition $v(-2) = 0$, i.e., $C 
 \fi
 
 To begin with, we rewrite our second order ODE into
-\begin{equation}
+\begin{equation}\label{eq:partODE}
 		  f(u'',u',u,z) = P(z) u'' + Q(z) u' - u = \phi^2(1-\phi),
 \end{equation}
 where $z = \lvert y \rvert$ for simplicity and 
@@ -758,13 +757,14 @@ solution via the Frobenius method.
 The solution can be interpreted as the sum of a particular
 solution solving $f(u'',u',u,z) = \phi^2(1-\phi)$ and a homogeneous 
 power-series solution solving $f(u'',u',u,z) = 0$. We assume that the series solution
-$u$ and its first and second order derivatives take the form as
-\begin{equation}
+$u$ and its first and second order derivatives take the form 
+\begin{equation}\label{eq:seriessoln}
 		  u = \sum_{n=0}^{\infty} c_n z^{n+r}, \, 
-		  u' = \sum_{n=1}^{\infty} (n+r) c_n z^{n-1+r}, \, \text{and} \, \,
-		  u'' = \sum_{n=1}^{\infty} (n+r)(n-1+r) c_n z^{n-2+r}.
+		  u' = \sum_{n=0}^{\infty} (n+r) c_n z^{n-1+r}, \, \text{and} \, \,
+		  u'' = \sum_{n=0}^{\infty} (n+r)(n-1+r) c_n z^{n-2+r}.
 \end{equation}
-Substitute these series solutions to the homogeneous equation, we have the 
+
+For the homogenous soution, substitute these series~\eqref{eq:seriessoln} in the homogeneous equation. We have the 
 recurrence relationship of the coefficients as
 \begin{equation}\label{eq:recursive}
 \begin{aligned}
@@ -773,7 +773,8 @@ recurrence relationship of the coefficients as
 &\bigg\{ \frac{-4\phi_0^3}{3} \Big[ (n+r-4)(n+r-3) \Big] \bigg\} c_{n-4}  = 0,
 \end{aligned}
 \end{equation}
-where we obtain the indicial solution by equating the coefficient associated to 
+where $c_m=0$ if $m<0$.
+We obtain the indicial solution by equating the coefficient associated to 
 the $c_0$ term to zero, i.e.,
 \begin{equation}
 \phi_0\big[(0+r-3)(0+r) \big] - 1 = 0.
@@ -784,16 +785,23 @@ the quadratic formula as
 		  r_1 = \frac{3+\sqrt{9+4/\phi_0}}{2}\, \, \text{and} \,\,
 r_2 = \frac{3-\sqrt{9+4/\phi_0}}{2}.
 \end{equation}
-We now write the frist three non-zero coefficients of the particular solution as
+Here, we denote $u_{r_1}$ and $u_{r_2}$ the two homogenous solutions with 
+different powers $r_1$ and $r_2$.
+
+For the particular solution, since the right hand side of~\eqref{eq:partODE}
+is an even polynomial, we can find a solutin with $r=0$, and all odd indexed 
+coefficients being zero. Moreover, $c_0 = c_2 = 0$ and 
+the first three non-zero coefficients of the particular solution are
 \begin{equation}
 		  \begin{aligned}
 c_4 & = \frac{\phi_0^2}{4\phi_0 - 1}, \\
 c_6 & = \frac{-\phi_0^3 - 4\phi_0^2 c_4}{18\phi_0 - 1}, \\
-c_8 & = \frac{80/3 \phi_0^3 c_4  - 10 \phi_0^2 c_6}{40\phi_0 -1},
+c_8 & = \frac{80/3 \phi_0^3 c_4  - 10 \phi_0^2 c_6}{40\phi_0 -1}.
 		  \end{aligned}
 \end{equation}
-where the remaining coefficients can be determined through the recurrence relationship 
-assuming $r=0$.
+
+The remaining coefficients can be determined through the recurrence 
+relationship~\eqref{eq:seriessoln}.
 We assume the solution takes the form as a linear combination of particular solution and two 
 homogeneous solutions:
 \begin{equation}\label{eq:fullsoln}
@@ -817,15 +825,16 @@ In Table~\ref{tab:quadporositycolumn_0.001} and
 Table~\ref{tab:quadporositycolumn_0.01}, we observe second order convergence
 rate of the $L^2$-norm of errors for scalar velocities $u$ and $v$ without degradation. However, it is 
 surprising that the solid and the liquid pressure potentials $q_s$ and $q_l$
-does not exhibit correct convergence rate towards the new closed-form 
+do not exhibit the correct convergence rate towards the new closed-form 
 solution.
 We notice that the numerical solution and the close-form solution no longer agree with each other close to 
 the bottom boundary $y=-2$.
 Figure~\ref{fig:quadporocompactcolumn} and 
 Figure~\ref{fig:quadporocompactcolumn_0.01} illustrate that the numerical solutions (dashed lines) 
-closely match the closed-form solutions (solid lines), despite the pressure potentials not converging to the closed-form solution.
+closely match the closed-form solutions (solid lines), despite the pressure potentials not converging to the closed-form solution. Further investigation is needed
+to understand this discrepency.
 
-					 \begin{figure}[ht]
+					 \begin{figure}[htb]
 						\centering
 								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_quad.eps}
 \includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quad.eps}
@@ -868,7 +877,7 @@ closely match the closed-form solutions (solid lines), despite the pressure pote
 								\label{tab:quadporositycolumn_0.001}
 					 \end{table}
 \iffalse
-					 \begin{figure}[ht]
+					 \begin{figure}[htb]
 						\centering
 						\begin{minipage}[t]{0.47\textwidth}
 						\centering
@@ -885,7 +894,7 @@ closely match the closed-form solutions (solid lines), despite the pressure pote
 								\label{fig:quadraticporocompactcolumn}
 					 \end{figure}
 \fi
-					 \begin{figure}[ht]
+					 \begin{figure}[htb]
 						\centering
 								\includegraphics[width=3.5cm,height=9cm]{chapters/pics/porosity_quad_0.1.eps}
 \includegraphics[width=3.5cm,height=9cm]{chapters/pics/vel_quad_0.01_series.eps}
@@ -943,26 +952,27 @@ We then set a not identically vanishing porosity by the formula:
 		  \end{aligned}
 		  \right.
 \end{equation}
-where $l = 20\,\text{m}$ is the offset set to avoid singularity computation
-at the center $x=0$ we translate the coordinates $x$ to $x-l$ if $x<0$, and 
+where $l = 20\,\text{m}$ is the offset used to avoid a singularity 
+at the center $x=0$, i.e., we translate the coordinates $x$ to $x-l$ if $x<0$, 
+and 
 $x+l$ when $x>0$.
 In Figure~\ref{fig:MORporosity}, we show the porosity distribution within the
 computational domain.
 We perform the current numerical simulation over the full domain. 
-\begin{figure}[ht]
+\begin{figure}[htb]
 		  \centering
 \includegraphics[width=16cm,height=8cm]{chapters/pics/mor_poro.eps}
 		  \caption{Porosity distribution.}
 		  \label{fig:MORporosity}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[htb]
 		  \centering
 \includegraphics[width=16cm,height=8cm]{chapters/pics/mor_l.eps}
 		  \caption{Liquid pressure potential and velocity.}
 		  \label{fig:MORliquid}
 \end{figure}
-\begin{figure}[ht]
+\begin{figure}[htb]
 		  \centering
 \includegraphics[width=16cm,height=8cm]{chapters/pics/mor_s.eps}
 		  \caption{Solid pressure potential and velocity.}
@@ -971,10 +981,12 @@ We perform the current numerical simulation over the full domain.
 In Figure~\ref{fig:MORliquid} and Figure~\ref{fig:MORsolid}, we
 exhibit the dimensionless Stokes velocity $(\check{\mathbf{v}}_s,\check{q}_s)$ 
 and Darcy velocity $(\phi \check{\mathbf{v}}_r, \check{q}_l)$ respectively.
-We observe the molten magma rising toward the surface and concentrating in regions where
-most porosity presents. The solid matrix upwells from the bottom of the domain. 
-We observe compaction occurs in partially molten region where the buoyancy
-can no longer support overlaying the solid matrix due to density difference
+We observe the molten magma rising toward the surface and concentrating in 
+regions where
+most porosity is presents. 
+The solid matrix upwells from the bottom of the domain. 
+We observe compaction occurs in the partially molten region where the buoyancy
+can no longer support overlaying the solid matrix due to the density difference
 between  the solid and the liquid phases.
-Despite of the presence of extensive no melting region, 
-the system is solved successfully using modified Uzawa iteration
+Despite the presence of an extensive no melting region, 
+the system is solved successfully using the modified Uzawa iteration
