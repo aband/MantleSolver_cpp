@@ -83,9 +83,7 @@ int reconPlot(const MeshInfo& mi, multilevel& ml, mluse& use, int mark, Vec * gl
                         fprintf(gridrecony, "%.12f ",mapped[1]);
                     }
                 }
-
             }
-
         }
     }
 
@@ -131,6 +129,27 @@ int printSol(int mark, Vec * global, const MeshInfo& mi){
     }fprintf(sol, "\n");}
 
     fclose(sol);
+
+    return 1;
+}
+
+int eff_order(const MeshInfo& mi, multilevel& mi, mluse& use, int mark, Vec * global, bool grid, DM dmu, double h0){
+
+    Vec temp = *global;
+
+    const char * fieldname = "eff_order";
+
+    char * filename = (char *)malloc(strlen(fieldname)+10+4);
+
+    char n_char[10];
+
+    std::sprintf(n_char,"%d",mark);
+    strcpy(filename, fieldname);
+    strcat(filename, n_char);
+    strcat(filename, ".dat");
+
+
+    for 
 
     return 1;
 }

@@ -41,6 +41,7 @@ int reconstruction::prepare(const vector<int>& insize, const MeshInfo& mi){
         vector<vector<vertex>> cornerSet; 
         vector<vertex> refcell;
         vertex center;
+
         for (int j=0; j<size[1]; j++){
             for (int i=0; i<size[0]; i++){
                 indice global {i+mi.MPIlocalCellStart[0] + k, 

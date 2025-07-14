@@ -78,7 +78,7 @@ The normal trace on $\partial \Omega$ is well-defined by
 \end{equation}
  Subsequently, we have the space $H_\phi^{-1/2}(\text{div};\partial \Omega)$ understood as the image of the normal trace operator on $H_\phi(\text{div};\Omega)$.
 \end{defn}
-\subsection{The weak formulation}
+\subsection{The Weak Formulation}
 We assume that the Dirichlet data
 $\mathbf{g}_s \in (H^{1/2}(\Gamma_{u,S}))^2$, and understand 
 $\tilde{\mathbf{g}}_s \in (H^1(\Omega))^2$ as a continuous extension from the
@@ -170,7 +170,7 @@ We state the well-posedness result of the scaled formulation directly as follows
 		  See~\cite{DegenerateDarcy}.
 \end{proof}
 
-\subsection{A scaled mixed finite element method}
+\subsection{A Scaled Mixed Finite Element Method}
 We discretize the scaled mixed formulation using
 two pairs of finite element spaces: $\mathbb{V}_{D,h} \times \mathbb{W}_{D,h} \subset H(\text{div}; \Omega) \times L^2(\Omega)$ for the Darcy part of the system
 and $\mathbb{V}_{S,h} \times \mathbb{W}_{S,h} \subset (H^1(\Omega))^2 \times L^2(\Omega)$ for the Stokes part of the system.
@@ -538,7 +538,7 @@ We then test our MFEM implementation using three different porosity configuratio
 and compare the results against some of the closed-form solutions 
 derived in~\cite{DegenerateDarcy}.
 
-\subsection{Column compaction with Constant porosity}
+\subsection{Column Compaction with Constant Porosity}
 First, we start with a constant porosity:
 					 \begin{equation}\label{eq:constporosity}
 								\phi(y) = \phi_0.
@@ -594,7 +594,7 @@ closely match the closed-form solutions (solid lines).
 								$q_l$ and $q_s$ together.}
 								\label{fig:constporocompactcolumn}
 					 \end{figure}
-\subsection{Discontinuous porosity}
+\subsection{Column Compaction with Discontinuous Porosity}
 We proceed to test our implementation with a discontinuous porosity distribution, 
 featuring a ``jump" at $y=0$. 
 The region $y>0$ part is considered as degenerate $\phi = 0$.
@@ -663,7 +663,7 @@ closely match the closed-form solutions (solid lines) with a degenerate region.
 								$q_l$ and $q_s$ together.}
 								\label{fig:piececonstporocompactcolumn}
 					 \end{figure}
-\subsection{Column compaction with quadratic porosity.}
+\subsection{Column Compaction With Quadratic Porosity.}
 For the final test, we consider our implementation with the continuous quadratic porosity 
 					 \begin{equation}\label{eq:quadphi}
 								\phi(y) = \left \{
@@ -925,7 +925,7 @@ to understand this discrepency.
 					 \end{table}
 
 
-\section{Simulation of a simple Mid-Ocean Ridge model}
+\section{Simulation of a Simple Mid-Ocean Ridge Model}
 We now revisit the Mid-Ocean ridge test case in~\cite{DegenerateDarcy}.
 The full system of equations is solved on a dimensionless 
 rectangular domain defined by $x \in [-0.5,0.5]$ and $y \in[-0.5, 0.0]$.

@@ -1,4 +1,4 @@
-\begin{thebibliography}{6}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -15,13 +15,24 @@ Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian.
 Todd Arbogast, Chieh-Sen Huang, Chenyu Tian, and Gabirel M.Gray.
 \newblock An efficient and accurate approximation to the classic polynomial
   smoothness indicator.
-\newblock \emph{In Preparation.}, 2025.
+\newblock \emph{Submitted.}, 2025.
 
 \bibitem[Dupont and Scott(1980)]{PolynomialApproximation}
 Todd Dupont and Ridgway Scott.
 \newblock Polynomial approximation of functions in {S}obolev spaces.
 \newblock \emph{Mathematics of Computation}, 34\penalty0 (150):\penalty0
   441--463, 1980.
+
+\bibitem[Friedrich(1998)]{FRIEDRICH1998194}
+Oliver Friedrich.
+\newblock Weighted essentially non-oscillatory schemes for the interpolation of
+  mean values on unstructured grids.
+\newblock \emph{Journal of Computational Physics}, 144\penalty0 (1):\penalty0
+  194--212, 1998.
+\newblock ISSN 0021-9991.
+\newblock \doi{https://doi.org/10.1006/jcph.1998.5988}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/S0021999198959885}.
 
 \bibitem[Huang et~al.(2023)Huang, Arbogast, and
   Tian]{WENOAOSimplifiedSmoothness}
@@ -39,5 +50,17 @@ Guang-Shan Jiang and Chi-Wang Shu.
 Frank Olver.
 \newblock \emph{Asymptotics and special functions}.
 \newblock AK Peters/CRC Press, 1997.
+
+\bibitem[Semplice and Visconti(2020)]{Semplice2020}
+M.~Semplice and G.~Visconti.
+\newblock Efficient implementation of adaptive order reconstructions.
+\newblock \emph{Journal of Scientific Computing}, 83, 2020.
+
+\bibitem[Semplice et~al.(2023)Semplice, Travaglia, and Puppo]{Semplice2023}
+M.~Semplice, E.~Travaglia, and G.~Puppo.
+\newblock One-and multi-dimensional cwenoz reconstructions for implementing
+  boundary conditions without ghost cells.
+\newblock \emph{Communications on Applied Mathematics and Computation},
+  5:\penalty0 143--169, 2023.
 
 \end{thebibliography}

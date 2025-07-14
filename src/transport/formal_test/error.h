@@ -15,4 +15,7 @@ int simpleSSP2RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel&
 
 int simpleSSP3RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel& ml,  mluse& use, DM dmu, DM dmmesh);
 
+// Compute effective reconstruction order
+int eff_order(const MeshInfo& mi, multilevel& ml, mluse& use, int mark, Vec * global, bool grid, DM dmu, double h0);
+
 #endif
