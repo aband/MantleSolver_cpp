@@ -86,6 +86,7 @@ add_library(mlweno_lib
 		  ${SRC}/mlweno/tensor.cpp
 		  ${SRC}/mlweno/reconstruction.cpp
 		  ${SRC}/mlweno/mluse.cpp
+		  ${SRC}/mlweno/efficient_stenpoly.cpp
 )
 
 # Specify any additional include directories if needed
@@ -132,6 +133,10 @@ add_executable(testarea
 add_executable(testconst
 			testconst.cpp
 		  )
+
+add_executable(efficient
+			efficient.cpp
+)
 
 #add_executable(testadolc
 #		  testadolc.cpp
@@ -196,6 +201,14 @@ target_link_libraries(testarea
 		  )
 
 target_link_libraries(testconst
+		  general_lib
+		  io_lib
+		  mlweno_lib
+		  PkgConfig::PETSC
+		  PkgConfig::LAPACKE
+		  )
+
+target_link_libraries(efficient
 		  general_lib
 		  io_lib
 		  mlweno_lib

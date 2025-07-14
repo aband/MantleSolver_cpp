@@ -49,55 +49,6 @@ averaged velocity $\overline{\mathbf{v}}$,
  pre-calculated from the Darcy-Stokes part, and the partition functions $\kappa$ and $\lambda$. 
  These quantities are only updated before commencing the next time step.
 
-\subsection{Time stepping}
-In this section, we briefly talk 
-about suitable time integration technique. 
-We will focus on explicit scheme for two reasons
-\begin{itemize}
-		  \item Phase package cannot be
-evaluated with long time intervals.
-\item Jacobian is hard to evaluate since a MFEM solver is involved.
-\end{itemize}
-While forward Eular is sufficient in stability analysis,
-it only provides first order accuracy. Therefore, we use strong-stability 
-preservation (SSP) scheme proposed by~\cite{doi:10.1137/S003614450036757X},
-which is a higher order time stepping scheme while preserving 
-the stability properties of forward Euler.
-We start with first order forward Euler as
-\begin{equation}
-u^{n+1} = u^n + \Delta t \tilde{\mathbf{F}}(u^n),
-\end{equation}
-where $\tilde{\mathbf{F}}(u^n)$ represents a spatial discretization.
-
-We state a multi-stage SSP Runge-Kutta  method as
-\begin{equation}\label{eq:multistageSSP}
-\begin{aligned}
-		  u^{0} &= u^n ,\\
-		  u^{(i)}   &= \sum_{j=0}^{i-1} \alpha_{i,j}u^{(j)} + \Delta t \beta_{i,j} \tilde{\mathbf{F}}(u^{(j)}), \quad 1\leq i \leq m\\
-		  u^{n+1} &= u^m,
-\end{aligned}
-\end{equation}
-where $\sum_{j}^{i-1} \alpha_{i,j} = 1$ for consistency. 
-In our computation, we have second order accuracy in MFEM solver, and a MLWENO(3,2)
-reconstruction in FVM. Hence the highest order of time stepping accurcay is three.
-We write second and third order SSP Runge-Kutta explicit as
-\begin{equation}
-\begin{aligned}
-		  u^{0}   &= u^n\\
-		  u^{(1)} &= u^{(0)} + \Delta t \tilde{\mathbf{F}}(u^{(0)})\\
-		  u^{n+1} &= u^{(0)} + \frac{1}{2} \Delta t \tilde{\mathbf{F}}(u^{(0)}) + \frac{1}{2} \Delta t \tilde{\mathbf{F}}(u^{(1)}),
-\end{aligned}
-\end{equation}
-and 
-\begin{equation}
-\begin{aligned}
-		  u^{0}   &= u^n ,\\
-		  u^{(1)} &= u^{(0)} + \Delta t \tilde{\mathbf{F}}(u^{(0)}),\\
-		  u^{(2)} &= \frac{3}{4} u^n + \frac{1}{4} u^{(1)} + \frac{1}{4} \Delta t \tilde{\mathbf{F}}(u^{(1)})\\
-		  u^{n+1} &= \frac{1}{3} u^{(0)}+\frac{2}{3}u^{(2)} + \frac{2}{3}\Delta t \tilde{\mathbf{F}}(u^{(2)}).
-\end{aligned}
-\end{equation}
-
 \subsection{Boundary Conditions}
 In practical implementation, we prescribe boundary conditions to each dofs on the boundary.
 Each dofs will be associated with two types of boundary conditions. 

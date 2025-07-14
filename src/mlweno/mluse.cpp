@@ -454,6 +454,26 @@ double mluse::eval(const vertex& point, const multilevel& ml,
     return work;
 }
 
+int mluse::eff_order(const indice& index,    const multilevel& ml, 
+                     const std::string& pos, const weights& wgts) const{
+
+    int work = 0;
+
+    indice targetstencilindex;
+
+    for (const auto& it: bias.at(pos)){
+
+        for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
+            targetstencilindex = index + reconstMethod.at(pos).at(it.first).at(m);
+            if (stencilexist(ml, targetstencilindex, it.first)){
+                Tensor<double> sol = Tensor<double>(2);
+            }
+        }
+    }
+
+    return work;
+}
+
 int mluse::sumscaled(const multilevel& ml,
                      double& sum, 
                      derivative& sumder,

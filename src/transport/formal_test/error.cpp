@@ -148,8 +148,17 @@ int eff_order(const MeshInfo& mi, multilevel& mi, mluse& use, int mark, Vec * gl
     strcat(filename, n_char);
     strcat(filename, ".dat");
 
+    FILE * order = fopen(filename,"w");
 
-    for 
+    for(int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for(int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        int oval;
+
+
+
+        fprintf(order, "%d ", oval);
+    }}
 
     return 1;
 }
