@@ -133,7 +133,7 @@ int printSol(int mark, Vec * global, const MeshInfo& mi){
     return 1;
 }
 
-int eff_order(const MeshInfo& mi, multilevel& mi, mluse& use, int mark, Vec * global, bool grid, DM dmu, double h0){
+int eff_order(const MeshInfo& mi, multilevel& ml, mluse& use, int mark, Vec * global, bool grid, DM dmu, double h0){
 
     Vec temp = *global;
 

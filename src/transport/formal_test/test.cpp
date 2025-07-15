@@ -103,9 +103,11 @@ int main(int argc, char ** argv){
 
     multilevel ml = multilevel();
 
+cout << "Start here " << endl;
     ml.addLevel("(5,5)", {5,5}, mi);
     ml.addLevel("(3,3)", {3,3}, mi);
     ml.addLevel("(2,2)", {2,2}, mi);
+cout << "End here " << endl;
 
     double h0 = sqrt((L*H)/(double)(M*N));
 
@@ -146,7 +148,7 @@ int main(int argc, char ** argv){
 	 cout << "Time stepping starts. " << endl;
 //    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+//    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
 
     // =================================================================
