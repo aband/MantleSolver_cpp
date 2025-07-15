@@ -55,7 +55,7 @@ int reconlevel::prepare(const vector<int>& insize,
         stencilPoly({k,s}).h = scale;
         stencilPoly({k,s}).setCoef(cornerSet, center, scale);
         //stencilPoly({k,s}).printCoef();
-        stencilPoly({k,s}).sigma(refcell, area, center, scale);
+//        stencilPoly({k,s}).sigma(refcell, area, center, scale);
     }}
 
 

@@ -17,7 +17,7 @@ class reconlevel{
         vector<int> size {-1,-1};
         Tensor<stencilpoly> sp;
 
-        vector<int> offset {-1,-1};
+        int left, right, bottom, top;
 }
 
 #endif
