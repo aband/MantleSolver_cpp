@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{14}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -16,6 +16,50 @@ Todd Arbogast, Chieh-Sen Huang, Chenyu Tian, and Gabirel M.Gray.
 \newblock An efficient and accurate approximation to the classic polynomial
   smoothness indicator.
 \newblock \emph{Submitted.}, 2025.
+
+\bibitem[Balay et~al.(2025{\natexlab{a}})Balay, Abhyankar, Adams, Benson,
+  Brown, Brune, Buschelman, Constantinescu, Dalcin, Dener, Eijkhout,
+  Faibussowitsch, Gropp, Hapla, Isaac, Jolivet, Karpeev, Kaushik, Knepley,
+  Kong, Kruger, May, McInnes, Mills, Mitchell, Munson, Roman, Rupp, Sanan,
+  Sarich, Smith, Suh, Zampini, Zhang, Zhang, and Zhang]{petsc-user-ref}
+Satish Balay, Shrirang Abhyankar, Mark~F. Adams, Steven Benson, Jed Brown,
+  Peter Brune, Kris Buschelman, Emil Constantinescu, Lisandro Dalcin, Alp
+  Dener, Victor Eijkhout, Jacob Faibussowitsch, William~D. Gropp, V\'{a}clav
+  Hapla, Tobin Isaac, Pierre Jolivet, Dmitry Karpeev, Dinesh Kaushik,
+  Matthew~G. Knepley, Fande Kong, Scott Kruger, Dave~A. May, Lois~Curfman
+  McInnes, Richard~Tran Mills, Lawrence Mitchell, Todd Munson, Jose~E. Roman,
+  Karl Rupp, Patrick Sanan, Jason Sarich, Barry~F. Smith, Hansol Suh, Stefano
+  Zampini, Hong Zhang, Hong Zhang, and Junchao Zhang.
+\newblock {PETSc/TAO} users manual.
+\newblock Technical Report ANL-21/39 - Revision 3.23, Argonne National
+  Laboratory, 2025{\natexlab{a}}.
+
+\bibitem[Balay et~al.(2025{\natexlab{b}})Balay, Abhyankar, Adams, Benson,
+  Brown, Brune, Buschelman, Constantinescu, Dalcin, Dener, Eijkhout,
+  Faibussowitsch, Gropp, Hapla, Isaac, Jolivet, Karpeev, Kaushik, Knepley,
+  Kong, Kruger, May, McInnes, Mills, Mitchell, Munson, Roman, Rupp, Sanan,
+  Sarich, Smith, Zampini, Zhang, Zhang, and Zhang]{petsc-web-page}
+Satish Balay, Shrirang Abhyankar, Mark~F. Adams, Steven Benson, Jed Brown,
+  Peter Brune, Kris Buschelman, Emil~M. Constantinescu, Lisandro Dalcin, Alp
+  Dener, Victor Eijkhout, Jacob Faibussowitsch, William~D. Gropp, V\'{a}clav
+  Hapla, Tobin Isaac, Pierre Jolivet, Dmitry Karpeev, Dinesh Kaushik,
+  Matthew~G. Knepley, Fande Kong, Scott Kruger, Dave~A. May, Lois~Curfman
+  McInnes, Richard~Tran Mills, Lawrence Mitchell, Todd Munson, Jose~E. Roman,
+  Karl Rupp, Patrick Sanan, Jason Sarich, Barry~F. Smith, Stefano Zampini, Hong
+  Zhang, Hong Zhang, and Junchao Zhang.
+\newblock {PETS}c {W}eb page.
+\newblock \url{https://petsc.org/}, 2025{\natexlab{b}}.
+\newblock URL \url{https://petsc.org/}.
+
+\bibitem[Baumgart(1975)]{10.1145/1499949.1500071}
+Bruce~G. Baumgart.
+\newblock A polyhedron representation for computer vision.
+\newblock In \emph{Proceedings of the May 19-22, 1975, National Computer
+  Conference and Exposition}, AFIPS '75, page 589–596, New York, NY, USA,
+  1975. Association for Computing Machinery.
+\newblock ISBN 9781450379199.
+\newblock \doi{10.1145/1499949.1500071}.
+\newblock URL \url{https://doi.org/10.1145/1499949.1500071}.
 
 \bibitem[Dupont and Scott(1980)]{PolynomialApproximation}
 Todd Dupont and Ridgway Scott.
@@ -48,6 +92,13 @@ Chieh-Sen Huang, Todd Arbogast, and Chenyu Tian.
 \newblock Multidimensional weno-ao reconstructions using a simplified
   smoothness indicator and applications to conservation laws.
 \newblock \emph{J. Sci. Comput.}, 97, 2023.
+
+\bibitem[Hughes(1987)]{FEMHughes}
+Thomas~J.R. Hughes.
+\newblock \emph{The Finite Element Method: Linear Static and Dynamic Finite
+  Element Analysis}.
+\newblock Dover Publications, 1987.
+\newblock ISBN 9780486411811.
 
 \bibitem[Jiang and Shu(1996)]{JSSmoothness}
 Guang-Shan Jiang and Chi-Wang Shu.

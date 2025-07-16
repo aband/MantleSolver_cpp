@@ -4,22 +4,21 @@
 \definecolor{myGreen}{RGB}{114,138,122}
 \definecolor{myYellow}{RGB}{241,208,157}
 
-
 \chapter[Code Implementation]{Code Implementation}
 \label{code}
 
 In this project, all numerical experiments and simulations are 
-written in C++/C with the support of basic iterative solver and 
-simple parallel data management provided by PETSc.
-We perform numerical experiments in quasi-uniform mesh as
-defined in ...
-We talk about implementation of a coupled FEM-FVM code 
-without losing generality and flexibility of optimization in the future.
+implemented in C++/C, with basic iterative solver and 
+simple parallel data management facilitated by PETSc.
+%We perform numerical experiments on mesh as
+%defined in ...
+In this section, we describe the implementation of a coupled FEM-FVM code,
+designed to preserve generality and support future optimization and extensibility.
 
-It structures as follows that a general implementation of
-unstructured mesh will be given, and a more specific example of application 
-regarding our logically rectangular mesh will be discussed in details.
-All application are expressed in two dimension scenario.
+We first present a general implementation for
+unstructured mesh, followed by a detailed discussion of a specfic application
+involving a logically rectangular mesh. ALl applications are considered in
+a two-dimensional setting.
 
 \input chapters/geometry.tex
 
