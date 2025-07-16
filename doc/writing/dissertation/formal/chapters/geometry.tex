@@ -3,32 +3,32 @@ A fundamental step in developing a FEM or FVM code
 is the indexing of geometric entities.
 The mesh index data structure implemented in the code is inspired by the classical 
 viewpoint of Boundary Representation (BREP) framework, 
-orginally introduced by~\cite{10.1145/1499949.1500071}.
+originally introduced by~\cite{10.1145/1499949.1500071}.
 In the two-dimensional case,
 each element is bounded by a set of edges,
 and each edge is defined by a set of vertices.
-We begin by assuming the following representation for global geometric object:
+We begin by introducing the following notations for global geometric objects:
 \begin{equation}\label{eq:globalgeometricOBJ}
 		  \begin{aligned}
 					 \text{Vertex} \quad &V_i, \quad i\in ID_V,\\
 					 \text{Edge} \quad &E_i, \quad i\in ID_E,\\
-					 \text{Cell}  \quad &C_i, \quad i\in ID_C,
+					 \text{Face}  \quad &F_i, \quad i\in ID_F,
 		  \end{aligned}
 \end{equation}
-where $ID_V$, $ID_E$ and $ID_C$ denote countable 
-sets containing all unique global indices for vertices, edges and cells (or faces),
+where $ID_V$, $ID_E$ and $ID_F$ denote countable 
+sets containing all unique global indices for vertices, edges and faces,
 respectively. Superscripts are used to indicate subsets of these global index sets. 
 For example, 
 $ID^{E_i}_{V} \subset ID_{V}$ represents the set of global  
 vertex indices associated with edge $E_i$, which is a subset of the global vertex index set.
 
-We assume the following representation 
+We again present the following notations
 for local geometric entities:
 \begin{equation}\label{eq:localgeometricOBJ}
 		  \begin{aligned}
 					 \text{Vertex} \quad &v_i, \quad i\in id_v,\\
 					 \text{Edge} \quad &e_i, \quad i\in id_e,\\
-					 \text{Cell} \quad &c_i, \quad i\in id_c
+					 \text{Face} \quad &f_i, \quad i\in id_f
 		  \end{aligned}
 \end{equation}
 where $id_v$, $id_e$ and $id_c$ denote countable sets
@@ -36,7 +36,7 @@ containing local index for vertices, edges and faces
 corresponding to a given geometrical object.
 Superscripts are used to indicate the target geometrical object. 
 For example,
-$id_v^{E_i} = \{0,1\}$ represents the local indices of the two vertices 
+$id_v^{E_i} = \{0,1\}$ represents the local index of the two vertices 
 bounding the edge $E_i$.
 
 We establish a one-to-one mapping between local and global indices through
@@ -58,85 +58,92 @@ This array-based representation enables the implicit construction of a global-to
 mapping within each geometric entity.
 
 \subsection{General Unstructured Mesh}
-In both FEM and FVM solvers, where a cell(element) serves as the fundamental geometry entity.
-we start with a brief analysis of the information each cell
+In both FEM and FVM solvers, where a face object $F_i$ serves as the fundamental geometry entity.
+we start with a brief analysis of the information each face
 should access from its local perspective.
-Each polygon cell $C_i$ should have the following access to other geometric
+Each face $F_i$ should have the access to the following geometric
 objects as
 \begin{itemize}
-		  \item Adjacent polygons connected by edges;
-		  \item Adjacent polygons connected with vertices, 
+		  \item The adjacent polygons connected by edges;
+		  \item The adjacent polygons connected with vertices, 
 					 but not sharing an edge;
-		  \item Incident vertices;
-		  \item Edges that bounds this element.
+		  \item The incident vertices;
+		  \item Edges that bound this element.
 \end{itemize}
-Within the local set, we can relate edges and vertices directly.
-For convinence, 
-each edge $j$ should has links to:
+%Within the local set, we can relate edges and vertices directly.
+%For convenience, 
+%each edge $j$ should has links to:
+At the same time, each edge $E_j$ should have access to:
 \begin{itemize}
-		  \item Two polygons that sharing this edge;
-		  \item Two vertices that bounds this edge.
+		  \item Two adjacent polygons that share this edge;
+		  \item Two vertices that bound this edge.
 \end{itemize}
 
-In FEM and FVM computation, we work with a orientable mesh, where 
-"clockwise" and "countercolckwise" can be defined consistently.
-Hence, we can use half edge data structure to regulate direction
-in a unstructured polygon mesh.
+For simplicity, we restrict our discussion to quadrilaterals in
+the following discussions.
+In FEM and FVM computations, we assume an orientable mesh, where 
+``clockwise" and ``counterclockwise" orientations can be consistently defined.
+This allows the use of a half-edge data structure to systematically manage edge directions.
 \begin{figure}[ht]
 \centering
 \input chapters/tikz/halfedge.tex
-		  \caption{An illustration of the half-edge data structure}
+		  \caption{An illustration of the half-edge data structure for a quadrilateral.}
 		  \label{fig:halfedge}
 \end{figure}
-In figure~\ref{fig:halfedge}, we present an illustration of the half edge 
-data structure applied to a quadrilateral mesh. For each target cell $E_i$,
-it sees the vertex $V_i$ and the local link $l_i$ to the next vertex $V_i^+$.
-Hence the direction of the link $l_i:V_i \rightarrow V_i^+$ is determined from the perspective of the 
-target cell $C_i$.
+
+Figure~\ref{fig:halfedge} illustrates a simple half-edge 
+data structure applied to a quadrilateral mesh. 
+For each face $F_i$,
+the associated vertex $V_i$ references the outgoing link $l_i$ that points to the next vertex $V_{i^+}$,
+while the incoming link $l_{i^-}$, which points to $V_i$  is not directly referenced.
+Consequently, a normal ``direction" can be determined from the perspective of each face object $F_i$ in 
+accordance to the direction of links.
 
 \section{Logically Rectangular Mesh}
-Mesh generation is not the main focus of this project, hence
-we adopt a much simpler way of implementing quadrilateral mesh,
-the logically rectangular way.
-We generate the quadrialteral mesh by randomly distorting each 
+Mesh generation is not the primary focus of this project, therefore,
+we restrict to a logically rectangular mesh and adopt a simpler approach of 
+generating a quadrilateral mesh if needed.
+The quadrilateral mesh is generated by randomly distorting each 
 interior vertex coordinates.
-There is no affine mapping between reference square mesh and generated
-mesh. The indexing of geometrical objects remain untouched through
-the vertex distortion.
+However, the indexing of geometrical entities remain unchanged despite
+the vertex perturbation.
 
-In our case, all the indices are represented with cartesian coordinates.
-Therefore, we can setup local to global mapping of geometric objects 
-easily with liear functions.
-Consider a mesh with $M\times N$ cells, the totlal number of vertex
-is $(M+1)\times (N+1)$ and the total number of edges is 
+In our implementation, all indices are represented using Cartesian coordinates.
+This allows the local-to-global mapping of geometric entities to be established easily through linear functions.
+All geometry entities can be indexed using Cartesian coordinates straightforwardly.
+For a mesh with $M\times N$ cells, the total number of vertices
+is $(M+1)\times (N+1)$, while the total number of edges is 
 $M\times (N+1) + (M+1)\times N $. 
-We count horizontal edges first, and the vertical edges are counted
-starting from $M\times (N+1)$.
+Horizontal edges are indexed first, and vertical edges are indexed
+sequentially starting from the offset $M\times (N+1)$.
 
-Before we dig into index convention of a this kind of mesh deeply, 
-we introduce a reshape function communicating N-dimensional data
-and One-dimensional data.
+Before we delving into the indexing conventions of a this type of mesh,
+we introduce a reshape function that facilitates communication between N-dimensional data
+and its one-dimensional representation.
 
-\subsection{Reshape N-dimensional Data}
-The natural representation of a 2D cartesian data is a pair of index $(i,j)$. 
-However,
-we usually reshape the 2D data into a 1D array for a more natural 
-representation in computation. We give a more general reshape function
+\subsection{Reshape of N-dimensional Data}
+The natural representation of a 2D Cartesian data is a pair of index $(i,j)$. 
+In practice,
+it is often reshaped into a 1D array for more efficient
+computational handling. We introduce a general reshape function
 that projects N-dimensional data to a one-dimensional data. 
-This reshape function can also be used for tensor data, e.g., base smoothness
-indicator~\ref{}. 
-There exists a bijective mapping as
+This reshape function can also be used for tensor data, e.g., Jiang-Shu smoothness
+indicator~\eqref{eq:JSsmoothnessIC}.
+
+Consider a bijective map between N-dimensional data and its one-dimensional data representation as
 \begin{equation}
 		  i \leftrightarrow (i_0, i_1 , \ldots, i_{N-1}).
 \end{equation}
-The algorithm~\ref{alg:reshape} illustrates the 
-simple implementation of this reshape function.
+Algorithm~\ref{alg:reshape} illustrates a
+simple implementation of the reshape function.
+The inverse operation, reshaping one-dimensional data back into N-dimensional form, 
+can be achieved using modulo and integer division operations.
 \begin{algorithm}[htb]
-\caption{N dimensional reshape\label{alg:reshape}}
-		  Consider a N-dimensional array $\{n_0\times n_i\times \ldots n_{N-1}\}$.
+\caption{Reshape N-dimensional data\label{alg:reshape}}
+		  Consider a N-dimensional array of size $\{n_0\times n_i\times \ldots n_{N-1}\}$.
 		  \vspace{0.3cm}
 
-Let $I=0$ be the result, and $a=0$ be the multiplier.
+Let $I=0$ be the variable storing output, and $a=0$ be the intermediate multiplier.
 		  \vspace{0.3cm}
 
 		  Consider an input N-dimensional index $\{i_0, i_1, \ldots, i_{N-1}\}$.
@@ -145,88 +152,88 @@ Let $I=0$ be the result, and $a=0$ be the multiplier.
 \begin{algorithmic} [1]
 		  \For{\rm rank $r= 0,1,\ldots, N-1$} 
 		  \vspace{0.3cm}
-		  \State $I = I + i_r * a$.
+		  \State $I = I + i_r \times a$.
 		  \vspace{0.3cm}
 		  \State $a = a\times n_r$.
 		  \vspace{0.3cm}
 		  \EndFor
 \end{algorithmic}
 \end{algorithm}
-We can also reverse the process reshaping 1D data back into N-dimensional 
-data with modulo and integer division operation.
-We use these two index interchangeablely.
-We introduce a new notation highlighting the relation between N-dimensional
-and one-dimensional data as
+
+Throughout this work, we use these two index representations interchangeably.
+To emphasize the relation between N-dimensional
+and its one-dimensional representation, we introduce the following notation as
 \begin{equation}\label{eq:reshapenotation}
 		  i(i_0, i_1, \ldots, i_{N_1})_{n_0, n_1, \ldots, n_{N-1}},
 \end{equation}
-where $i$ is the index in one-dimensional array, $(i_0, i_1, \ldots, i_{N-1})$ 
-is the N-dimensional index, and $n_0, n_1, \ldots, n_{N-1}$ represents
-the size of N-dimensional array. 
+where $i$ denotes the mapping from the N-dimensional data to the one-dimensional data, while $(i_0, i_1, \ldots, i_{N-1})$ 
+is the corresponding N-dimensional index. The N-dimensional quantities $n_0, n_1, \ldots, n_{N-1}$ represent
+the respective sizes along each dimension of the N-dimensional array. 
 
-\subsection{Local Vertex Index}
-We represent local vertex index with the new notation.
-For a given vertex with local index $i \in id_v$ 
-associated with a cell with global index $I \in ID_C$,
-we define an index convention as
+\subsection{Local Vertex Representation}
+We now represent the local vertex index with the new notation~\eqref{eq:reshapenotation}.
+For any vertex, we can represent its local index as
 \begin{equation}
 		  a(a_0,a_1)_{2,2},
 \end{equation}
-where $a_0, a_1 \in \{0,1\}$. We found the next point simply by
-adding $1$ to the one-dimensional index as
+where $a_0, a_1 \in \{0,1\}$. We can link to the next point simply by
+adding $1$ to the one-dimensional index under the understanding of modulo as
 \begin{equation}
 		  b \equiv a+1 \Mod{4},
 \end{equation}
-where the direction is naturally defined by pointing from vertex $v_a$
-to $v_b$.
+which is a simple half-edge data representation.
+The direction is naturally defined by this addition operation.
 
-\subsection{Local Global Index convention}
-Assuming local vertex and edge number being counted in the same way 
-as indicated in the mesh~\ref{}, where the counting starts from left
-bottom corner.
-We define the local to global mapping with the local index of vertex and
-global index of cell.
-Consider mapping the local index $i$ of vertex $v_i$ in the 
-cell $C_{K(I_0, I_1)_{M,N}}$ as
-\begin{equation}\label{eq:gtolocal}
-		  id_v \ni i(i_0, i_1)_{m,n} \rightarrow I(I_0, I_1)_{M+1,N+1} \in ID_V.
+\subsection{Local to Global Index Convention}
+Recall that local vertex and edge are indexed starting from bottom left corner, 
+as illustrated in Figure~\ref{fig:meshexample}.
+We now define the local to global index mapping with the help of the new notation~\eqref{eq:reshapenotation}.
+Consider any local vertex $v_i$ associated to a quadrilateral face $F_{I(I_0,I_1)_{M,N}}$ with the local index
+\begin{equation}
+id_v \ni i(i_0, i_1)_{2,2}.
 \end{equation}
-We write the mapped global index with the reshape 
-notation~\eqref{eq:reshapenotation} as
+We find the corresponding global index with ease as
+%Consider the mapping from the local vertex $v_i$ within the 
+%face $F_{I(I_0, I_1)_{M,N}}$ as
+%\begin{equation}\label{eq:gtolocal}
+%		  \rightarrow I(I_0, I_1)_{M+1,N+1} \in ID_V.
+%\end{equation}
+%We write the mapped global index with the reshape 
+%notation~\eqref{eq:reshapenotation} as
 \begin{equation}
 		  ID_V \ni I(I_0+i_0, I_1+i_1)_{M+1,N+1}.
 \end{equation}
-Note that the bottom golbal index of left corner vertex share the 
-same N-dimensional index as the global index of the cell.
-We then discuss the local to global mapping for vertical and horizontal edges.
-Consider the starting vertex $id_v \ni i(i_0,i_1)$ of the edge $e_i$ such that
+%Note that the global index of the bottom left corner vertex share the 
+%same N-dimensional index as the global index of the cell.
+We continue our discussion the local-to-global mapping for vertical and horizontal edges.
+Consider edge $e_i$ defined by the vertex $id_v \ni i(i_0,i_1)$ and its half-edge link $l_i$:
 \begin{itemize}
-		  \item Horizontal Edge;
+		  \item Global index of the horizontal edge:
 \begin{equation}
-		  ID_E \ni I(I_0,I_1+i_1)_{M,N+1}.
+		  ID_E \ni I(I_0,I_1+i_1)_{M,N+1};
 \end{equation}
-		  \item Vertical Edge.
+		  \item Global index of the vertical edge:
 \begin{equation}
 		  ID_E \ni I(I_0+i_0,I_1)_{M+1,N} + M\times (N+1).
 \end{equation}
 \end{itemize}
 
 \section{Dofs and MFEM assembly}
-In FEM and FVM computation, we need to associate geometrical objects with
-degrees of freedom. For FVM scheme, the dofs associated with
-edge flux are straightforward. However, the MFEM dofs require careful 
-treatment, especially for those dofs on the boundary. We follow the idea
-in~\cite{FEMHughes}, we need three data processing arrays: ID, IEN and LM
+In FEM and FVM computations, it is necessary to associate geometrical entities with
+degrees of freedom(dofs). For FVM schemes, the dofs associated with
+edge flux are straightforward. However, in MFEM, the treatment of dofs requires
+more carefully handling, particularly for those located on the boundary. 
+Following the approach of~\cite{FEMHughes}, we employ three data processing arrays: ID, IEN and LM
 arrays.
-We start with the introduction of these three arrays as
+We begin by the introduction of these three arrays as
 \begin{itemize}
-		  \item IEN array.
+		  \item IEN array:
 					 \begin{equation}
 								\text{IEN}(a,e) = A,
 					 \end{equation}
 					 where $a$ is the local dof index, $e$ is the global element
-					 number and $A$ is the global dof index.
-		  \item ID array.
+					 number and $A$ is the global dof index;
+		  \item ID array:
 					 \begin{equation}
 								\text{ID}(A) = \left \{ 
 								\begin{aligned}
@@ -237,70 +244,78 @@ We start with the introduction of these three arrays as
 					 \end{equation}
 					 where $P$ is the position used in global matrix assembly, 
 					 and $\text{Essen}$ denotes the boundary assigned with 
-					 essential boundary condition.
-		  \item LM array.
+					 essential boundary condition;
+		  \item LM array:
 					 \begin{equation}
 								\text{LM} = \text{ID}(\text{IEN}(a,e)).
 					 \end{equation}
 \end{itemize}
 In actual code implementation, we create LM array by screening all dofs prior 
-to computation, while IEN and ID array are not actually stored.
+to computation, while IEN and ID array are not stored explicitly.
 
-\subsection{Index Convention Example}
-For $H(\text{div})$ element, the dofs are mainly associated with edge like
-FVM, which is easy to comprehend and implement. Therefore, we chose to give a detailed
-description of how Modified Bernardi-Raugel is implemented with the concept
-of ID, IEN and LM arrays, where vertex dofs and edge dofs are mixed. 
-In Figure~\ref{fig:brelem}, we illustrate dofs in a bernardi regauel
-element, where two dofs (x dof and y dof) are associated with vertex nodes 
-and one dof (flux dof) associated with edge nodes. We count x dof first
-y dof second, flux acorss horizontal edges third and the flux
-across vertical edges.
-\begin{figure}[ht]
+\subsection{MFEM Indexing Example}
+For first order $H(\text{div})$ conforming element, the velocity dofs are primarily associated with edges, 
+similar to
+FVM, making them relatively intuitive to understand and implement. 
+Therefore, we provide a detailed
+description of how the velocity dofs of a modified Bernardi-Rgual element is implemented using
+ID, IEN and LM arrays, where both vertex dofs and edge dofs are present. 
+
+\begin{figure}[htb]
 \centering
 \input chapters/tikz/br.tex
-		  \caption{An exhibition of dofs associated with a modified Bernardi-Regual element.}
+		  \caption{An exhibition of velocity dofs associated with a modified Bernardi-Raugel element.}
 \label{fig:brelem}
 \end{figure}
+Figure~\ref{fig:brelem} illustrates the dofs layout in a Bernardi-Raugel
+element: two dofs (the x- and y-components) are associated with each vertex nodes 
+while one flux dof is associated with each edge node. 
+%We count x dof first
+%y dof second, flux across horizontal edges third and the flux
+%across vertical edges.
+The global dofs are ordered as follows: x -and y-component of the vertex dofs, followed
+by flux dofs on horizontal edges and finally flux dofs on vertical edges.
 
-In Figure~\ref{fig:44mesh}, we show a simple $4\times 4$ mesh with corresponding
-index associated with each dof marked.
+\begin{figure}[htb]
+\centering
+\input chapters/tikz/44mesh.tex
+		  \caption{An exhibition of velocity dofs associated with Bernardi-Raugel  on a $4 \times 4$ mesh.}
+\label{fig:44mesh}
+\end{figure}
+
+Figure~\ref{fig:44mesh} shows a simple $4\times 4$ mesh with corresponding
+index associated with each velocity dof marked.
 The total dof counts equal to $2\times(3\times3) + 2\times 3 + 3 \times 2 = 30$.
-For a column upwelling problem,
-We assume the following boundary condition is prescribed.
+For example,
+we assume the following boundary conditions are prescribed:
 \begin{itemize}
-		  \item Bottom Edge;
+		  \item Bottom Edge:
 					 \begin{itemize}
-								\item x dof fixed with zero;
-								\item y dof fixed with a constant upwelling speed;
-							   \item normal flux dof fixed with a constant influx.
+								\item x-component is fixed with zero;
+								\item y-component is fixed with a constant value;
+							   \item normal flux is fixed with a constant value.
 					 \end{itemize}
 		  \item Left and Right side Edges;
 					 \begin{itemize}
-								\item x dof fixed with zero;
-								\item y dof is free, given natural boundary condition (zero stress);
-							   \item normal flux dof fixed with a zero flux.
+								\item x-component is fixed with zero;
+								\item y-component is free, given natural boundary condition (zero stress);
+							   \item normal flux is fixed with a zero flux.
 					 \end{itemize}
 		  \item Top Edge;
 					 \begin{itemize}
-								\item x dof fixed with zero;
-								\item y dof is free, given natural boundary condition (zero stress);
-							   \item normal flux dof is free.
+								\item x-component fixed with zero;
+								\item y-component is free, given natural boundary condition (zero stress);
+							   \item normal flux is free.
 					 \end{itemize}
 \end{itemize}
 
-We mark all the
-dof index that are not prescribed, i.e., will be determined by 
-solving a linear system with superscript a $*$.
-These "free" dofs consist of interior dofs and boundary dofs that are given
-natural boundary condition.
-\begin{figure}[ht]
-\centering
-\input chapters/tikz/44mesh.tex
-		  \caption{An exhibition of br dofs index with a $4 \times 4$ mesh.}
-\label{fig:44mesh}
-\end{figure}
-We can form a reduced ID array with the information in Figure~\ref{fig:44mesh} as
+In Figure~\ref{fig:44mesh},
+we mark all the
+dofs that are not prescribed, i.e., will be determined by 
+solving the linear system, with a superscript $*$.
+These \textit{free} dofs consist of interior dofs as well as boundary dofs subject to
+natural boundary conditions.
+We can construct an ID array accordingly in Table~\ref{tab:IDarray}.
 \begin{table}[ht]
 \centering
 		  \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
@@ -310,7 +325,9 @@ We can form a reduced ID array with the information in Figure~\ref{fig:44mesh} a
 					 A & 3 & 4 & 4 & 13 & 14 & 16 & 20 & 21 & 22 & 23 & 25 & 28\\
 					 \hline
 		  \end{tabular}
-		  \caption[ID array]{Generated ID array relating to Figure~\ref{fig:44mesh}.}
+		  \caption[ID array]{ID array generated to the dofs in Figure~\ref{fig:44mesh}.}
 		  \label{tab:IDarray}
 \end{table}
-The reduced linear system excluding essential boundary dofs will be $12 \times 12$.
+
+As a result, the reduced linear system excluding prescribed velocity dofs is $12 \times 12$,
+which is the size of the ID array in Table~\ref{tab:IDarray}.

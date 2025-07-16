@@ -1,4 +1,4 @@
-\begin{tikzpicture}[scale = 2]
+\begin{tikzpicture}[scale = 3]
 
 \coordinate (a) at (-0.1 , -0.05);
 \coordinate (b) at ( 1.15,  0.08);
@@ -7,5 +7,17 @@
 
 \draw (a) -- (b) -- (c) -- (d) -- cycle;
 
+% ============================================
+\draw (a) node[below left=1mm] {$V_{i^+}$};
+\draw [-{Latex[length=2.5mm]}] (-0.01, 0.81) -- (-0.13, -0.03);
+\draw (-0.07, 0.39) node[left=1mm] {$l_{i}$};
+
+\draw (d) node [above left=1mm] {$V_i$};
+\draw [dashed, -{Latex[length=2.5mm]}] (0.84, 1.10) -- (0.01, 0.85);
+\draw (0.425, 0.975) node[above=1mm] {$l_{i^-}$};
+
+\draw (c) node [above right=1mm] {$V_{i^-}$};
+
+\draw (0.48, 0.48) node {$F_i$};
 
 \end{tikzpicture}

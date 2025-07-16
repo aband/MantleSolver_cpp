@@ -205,7 +205,7 @@ the target cell, i.e., the cell $E$ form witch $(x,y)$ is taken in $Q^\mathcal{S
 %where $\alpha = (\alpha_1, \alpha_2)$ is a multi-index in two dimension, $\lvert \alpha \rvert = \alpha_1 + \alpha_2$, 
 %and $\mathcal{D}$ is the derivative operator $\mathcal{D}^\alpha = \partial^{\lvert \alpha \rvert} / \partial x^{\alpha_1} \partial y^{\alpha_2}$.
 The Jiang-Shu smoothness indicator can be computed utilizing the predefined basis polynomials~\eqref{eq:basispoly}:
-\begin{equation}\label{eq:JSsmoothenssIC}
+\begin{equation}\label{eq:JSsmoothnessIC}
 \begin{aligned}
 		  \sigma_{JS} &= \sum_{1\leq \lvert \alpha \rvert \leq r}  \frac{h_\mathcal{S}^{2\lvert\alpha\rvert}}{\lvert E_0 \rvert} 
 		  \iint_{E_0} (\mathcal{D}^\alpha Q(x,y))^2 dx dy\\
@@ -557,16 +557,29 @@ boundary condition that generates an incoming shock wave.
 For the outflow example, we test linear transport of a sine wave traveling 
 diagonally across the domain, which takes the true form of solution as
 \begin{equation}
-		  u(\mathbf{x},t) = \left\{\begin{aligned}
-\sin
-		  \end{aligned}
+\label{eq:outflowtest}
+		  u(x,y,t) = \left\{\begin{alignedat}{2}
+&\sin^6\bigg( \frac{x-0.1-t}{0.8} \pi\bigg) \sin^6 \bigg( \frac{y-0.1-t}{0.8} \pi \bigg), && 0.1+t \leq x \leq 0.9+t,\\
+&\quad                                                                                    && 0.1+t \leq y \leq 0.9+t,\\
+&0                                                                                       ,&& \text{otherwise}.
+		  \end{alignedat}
 		  \right.
 \end{equation}
 
 \subsection{Inflow at the boundary}
+For the inflow example, we use the Burgers-like equation $u_t + u^3 u_x = 0$ with the flux $\mathbf{f}(u) = (u^4/4,0)$
+in the domain $(0,1)^2$. The Dirichlet boundary condition on the left boundary 
+\begin{equation}
+\label{eq:inflowtest}
+u_D(x,y,t) = \left\{\begin{alignedat}{2}
+&\sin^2(2\pi y),\quad &&y\leq0.25, y\geq 0.75,\\
+&1,             \quad &&0.25 < y < 0.75,
+\end{alignedat}
+\right.
+\end{equation}
 
 
-\section{Numerical Test}
+\section{Other Numerical Test}
 For completeness, we test our ML-WENO algorithm with simple Riemann shock and rarefraction.
 Let $\mathbf{f}(u) = (u^2/2, u^2/2)$ be the Burgers flux function. In this example,
 we take the initial condition $u_0(x,y) = 1$, and the computational domain $\Omega = [0,3] \times [0,1]$.
