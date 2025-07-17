@@ -222,7 +222,6 @@ int multilevel::updatesigma(double ** localsol){
         }}
         alllevelsigma.insert(std::make_pair(it, stensigma));
     }
-
     return 1;
 }
 
