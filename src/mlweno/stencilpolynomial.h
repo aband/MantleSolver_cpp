@@ -86,7 +86,6 @@ class stencilpolynomial {
         double polyintegral(const vector<vertex>& corners, const double& area,
                             const vertex& center, const double& h,
                             const int& index);
-
 };
 
 #endif

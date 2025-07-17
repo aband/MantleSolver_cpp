@@ -164,19 +164,6 @@ double stencilpolynomial::sigmaintegral(const vector<vertex>& corners,
     return work;
 }
 
-double stencilpolynomial::polyintegral(const vector<vertex>& corners, 
-                                       const double& area,
-                                       const vertex& center, const double& h,
-                                       const int& index1, const int& index2){
-
-    double work = 0.0;
-
-
-
-
-    return work;
-}
-
 int stencilpolynomial::sigma(const vector<vertex>& corners, const double& area,
                              const vertex& center, const double& h){
 
