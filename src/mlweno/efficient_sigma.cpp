@@ -5,6 +5,7 @@ double stencilpolynomial::polyintegral(const vector<vertex>& corners,
                                        const vertex& center, const double& h,
                                        const int& index1){
 
+    // Compute poly basis eta
     double work = 0.0;
 
     const valarray<double>& gwf = GaussWeightsFace;
@@ -40,7 +41,7 @@ int stencilpolynomial::newsigmaintegral(const <vertex>& corners,
     der.setSize(size);
     Tensor_zero(der);
 
-    
+    // Not repeating calculation 
 
 
     return 1; 
