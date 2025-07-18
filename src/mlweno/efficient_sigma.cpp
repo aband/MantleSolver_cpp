@@ -1,5 +1,36 @@
 #include "stencilpolynomial.h"
 
+stencilpolynomial::stencilpolynomial(const int& inorder){
+
+    // Create an even stencil with given order
+    order = inorder;
+
+    size.at(0) = order+1; 
+    size.at(1) = order+1;
+
+    tensorpoly.setSize(size);
+
+    for (int i=0; i<tensorpoly.getSize(); i++){
+        tensorpoly(i) = polynomial(size.at(0), size.at(1));
+    }
+}
+
+stencilpolynomial::stencilpolynomial(const int& sizex,
+                                     const int& sizey,
+                                     const int& inorder){
+
+    order = inorder;
+
+    size.at(0) = sizex;
+    size.at(1) = sizey;
+
+    tensorpoly.setSize(size);
+
+    for (int i=0; i<tensorpoly.getSize(); i++){
+        tensorpoly(i) = polynomial(size.at(0), size.at(1));
+    }
+}
+
 double stencilpolynomial::polyintegral(const vector<vertex>& corners, 
                                        const double& area,
                                        const vertex& center, const double& h,
@@ -42,7 +73,17 @@ int stencilpolynomial::newsigmaintegral(const <vertex>& corners,
     Tensor_zero(der);
 
     // Not repeating calculation 
+    for (int i=0; i<gpf.size(); i++){
 
+        valarray<double> mapped = GaussMapPointsFace(gpf[i], tmp);
+
+        double jac = abs(GaussJacobian(gpf[i], tmp));
+        double gw  = gwf[i];
+
+        
+
+
+    }
 
     return 1; 
 }
@@ -69,18 +110,13 @@ int stencilpolynomial::sigma(const vector<vertex>& corners, const double& area,
                 tensorsigma({j,i}) = tensorsigma({i,j});
             }
         }
-
     } else if (type == "Poly"){
         // Polynomial approximation of smoothness indicator sigma
         // Only the diagonal part is necessary
         total = ;
         tensorsigma.setSize(total, 1);
 
-        for (int p=0; p<total; p++){
-             tensorsigma({p,1}) = polyintegral(corners, area, center, h, p);
-        }
-
+        for (int p=0; p<total; p++){tensorsigma({p,1}) = polyintegral(corners, area, center, h, p);}
     }
-
     return 1;
 }

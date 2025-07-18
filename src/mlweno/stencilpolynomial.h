@@ -11,6 +11,14 @@ class stencilpolynomial {
         stencilpolynomial(const int& sizex,
                           const int& sizey);
 
+        // Automatic determination of polynomial order
+        stencilpolynomial(const int& inorder);
+
+        // Uneven stencil, need to specify polynomial order
+        stencilpolynomial(const int& sizex,
+                          const int& sizey,
+                          const int& inorder);
+
         ~stencilpolynomial() {};
 
         vertex center;
@@ -86,6 +94,8 @@ class stencilpolynomial {
         double polyintegral(const vector<vertex>& corners, const double& area,
                             const vertex& center, const double& h,
                             const int& index);
+
+        int order = 0;
 };
 
 #endif
