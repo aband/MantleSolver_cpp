@@ -22,6 +22,26 @@ int computeDerivative(const int& der,  const int& degree,
     return 1;
 }
 
+int computeDerivative(const int& der,  const int& degree, 
+                      const double& x, const double& scale,
+                      double * coef, vector<double>& work){
+
+    double xx = x/scale;
+
+    for (int d=0; d<=der; d++){work[d] = 0.0;}
+
+    for (int i=degree-1; i>=0; i--){
+        for (int d=der; d>=1; d--){
+            work[d] = work[d]*xx + d*work[d-1];
+        }
+        work[0] = work[0]*xx + coef[i];
+    }
+
+    for(int d=1; d<=der; d++) {work[d] /= pow(scale,d);}
+
+    return 1;
+}
+
 // Numerical integral function but used specifically for polynomial
 double polyNumIntegralFace(const vector<vertex>& corners,
                            const double& h,
@@ -129,8 +149,11 @@ int polynomial::evalDer(const int& derx,    const int& dery,
     int degreex = degree[0];
     int degreey = degree[1];
 
-    double * workx = new double [derx + 1];  
-    double * worky = new double [dery + 1];
+    //double * workx = new double [derx + 1];  
+    //double * worky = new double [dery + 1];
+
+    vector<double> workx; workx.resize(derx+1);
+    vector<double> worky; worky.resize(dery+1);
 
     double ycoef[derx + 1][degreey];
 
@@ -154,6 +177,9 @@ int polynomial::evalDer(const int& derx,    const int& dery,
             derTensor({dx,dy}) = worky[dy];
         }
     }
+
+    // delete workx;
+	 // delete worky;
 
     return 1;
 }

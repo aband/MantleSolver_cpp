@@ -77,6 +77,8 @@ class stencilpolynomial {
         double sigma(const polynomial& collapse, const vector<vertex>& corners,
                      const double& area, const vertex& center, const double& h);
 
+        int stencilOrder(){return order;};
+
     private:
 
         vector<int> size {-1,-1};

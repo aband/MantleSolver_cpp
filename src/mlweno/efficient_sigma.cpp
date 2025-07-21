@@ -71,9 +71,10 @@ int stencilpolynomial::newsigmaintegral(const <vertex>& corners,
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>&   gpf = GaussPointsFace;
 
+    // Holding all the computed derivatives
     int total = size.at(0)*size.at(1);
-    derv.setSize({total, total});
-    Tensor_zero(derv);
+    deriv.setSize({total, total});
+    Tensor_zero(deriv);
 
     vector<vertex> tmp = corners;          // Extract four corners
     for (auto & p: tmp) {p-=center; p/=h;} // Transform points locally
@@ -85,7 +86,9 @@ int stencilpolynomial::newsigmaintegral(const <vertex>& corners,
     Tensor_zero(der);
 
     // Not repeating calculation 
-    for (int a=0; a<total; a++){	
+    for (int a=0; a<total; a++){
+        
+
         for (int i=0; i<gpf.size(); i++){
 
             valarray<double> mapped = GaussMapPointsFace(gpf[i], tmp);
@@ -93,8 +96,11 @@ int stencilpolynomial::newsigmaintegral(const <vertex>& corners,
             double jac = abs(GaussJacobian(gpf[i], tmp));
             double gw  = gwf[i];
 
-		      tensorpoly(a).evalDer(size.at(0)-1,size.at(1)-1,
-			    			            mapped[0],mapped[1],1.0, der);
+            Tensor_zero(tmp):
+
+            tensorpoly(a).evalDer(size.at(0)-1,size.at(1)-1,
+                                  mapped[0], mapped[1], 1.0, tmp);
+
         }
     }
 
@@ -110,12 +116,19 @@ int stencilpolynomial::sigma(const vector<vertex>& corners, const double& area,
     // Compute basis tensor for Jiang-Shu sigma and polynomial sigma
     int total = 0;
 
+    Tensor<double> sigmainte = Tensor<double>(2);
+
     if (type == "JS"){
         // Jiang-Shu basis tensor
         total = size[0]*size[1];
+
+        sigmainte.setSize(size);
         tensorsigma.setSize({total, total});
+
+        newsigmaintegral(corners, area, center, h, sigmainte);
+
         for (int d=0; d<total; d++){
-            tensorsigma({d,d}) = sigmaintegral(corners, area, center, h, i, j);}
+            tensorsigma({d,d}) = sigmainte(d)*sigmainte(d);}
 
         for (int j=0; j<total; j++){
             for (int i=0; i<j; i++){
