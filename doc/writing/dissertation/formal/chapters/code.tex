@@ -8,16 +8,16 @@
 \label{code}
 
 In this project, all numerical experiments and simulations are 
-implemented in C++/C, with basic iterative solver and 
-simple parallel data management facilitated by PETSc.
+implemented in C++/C, with basic iterative solvers and 
+simple parallel data management facilitated by PETSc~\cite{petsc-user-ref}.
 %We perform numerical experiments on mesh as
 %defined in ...
 In this section, we describe the implementation of a coupled FEM-FVM code,
 designed to preserve generality and support future optimization and extensibility.
 
-We first present a general implementation for
+We first present a general implementation for an
 unstructured mesh, followed by a detailed discussion of a specfic application
-involving a logically rectangular mesh. ALl applications are considered in
+involving a logically rectangular mesh. All applications are considered in
 a two-dimensional setting.
 
 \input chapters/geometry.tex

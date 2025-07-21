@@ -57,6 +57,9 @@ class polynomial {
                     const double& x,    const double& y,
                     const double& scale, Tensor<double>& tensor) const;
 
+        int evalDer(const int& alpha, const double& x, const double& y,
+                    const double& scale, Tensor<double>& der) const;
+
     private:
 
         vector<int> degree {-1,-1};
