@@ -8,6 +8,9 @@ extern "C"{
 #include "output.h"
 }
 
+#include <chrono>
+using namespace std::chrono;
+
 int main(int argc, char ** argv){
 
     // Initializing petsc function
@@ -94,7 +97,7 @@ int main(int argc, char ** argv){
 
     multilevel ml = multilevel();
 
-cout << "Efficient Testing ... " << endl;
+cout << "Efficient Test on grid : " << M << "  " << N  << endl;
     ml.addLevel("(2,2)",{2,2}, mi);
 	 cout << "(2,2) level created." <<endl;
 	 ml.addLevel("(3,3)",{3,3}, mi);
