@@ -28,8 +28,8 @@ if (FORTRAN_COMPILER)
 endif (FORTRAN_COMPILER)
 
 # Set Optimization flags
-#set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
-#set(CMAKE_CXX_FLAGS "-g")
+set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-g")
 
 project(test)
 
@@ -86,7 +86,7 @@ add_library(mlweno_lib
 		  ${SRC}/mlweno/tensor.cpp
 		  ${SRC}/mlweno/reconstruction.cpp
 		  ${SRC}/mlweno/mluse.cpp
-		  ${SRC}/mlweno/efficient_stenpoly.cpp
+		  #${SRC}/mlweno/efficient_stenpoly.cpp
 )
 
 # Specify any additional include directories if needed

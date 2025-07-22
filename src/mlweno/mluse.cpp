@@ -469,7 +469,7 @@ int mluse::eff_order(const indice& index,    const multilevel& ml,
             targetstencilindex = index + reconstMethod.at(pos).at(it.first).at(m);
             if (stencilexist(ml, targetstencilindex, it.first)){
                 // extract stencil size (maximum size)
-                work += wgts.at(it.first).at(m) * ml.getorder(it.first); 
+                //work += wgts.at(it.first).at(m) * ml.getorder(it.first); 
             } 
         }
     }

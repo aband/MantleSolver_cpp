@@ -88,8 +88,8 @@ class multilevel{
         /**!
          * Get stencil order
          */ 
-        int getorder(const std::string& name) const 
-        {return mlrecons.at(name).stencilOrder();};
+        //int getorder(const std::string& name) const 
+        //{return mlrecons.at(name).stencilOrder();};
 
         /**!
          * Extract cell averaged solution to a tensor object

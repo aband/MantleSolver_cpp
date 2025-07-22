@@ -1,4 +1,3 @@
-#include "efficient_stenpoly.h"
 #include "reconstruction.h"
 #include "mluse.h"
 #include "petsc.h"
@@ -20,7 +19,7 @@ int main(int argc, char ** argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    int M = 3, N = 3;
+    int M = 240, N = 80;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
@@ -90,10 +89,21 @@ int main(int argc, char ** argv){
     mi.H = H;
 
     double h0 = sqrt((L*H)/(double)(M*N));
-
     // =====================================================================
+    // Define a usage for this multilevel weno
 
-    
+    multilevel ml = multilevel();
+
+cout << "Efficient Testing ... " << endl;
+    ml.addLevel("(2,2)",{2,2}, mi);
+	 cout << "(2,2) level created." <<endl;
+	 ml.addLevel("(3,3)",{3,3}, mi);
+	 cout << "(3,3) level created." <<endl;
+    ml.addLevel("(4,4)",{4,4}, mi);
+	 cout << "(4,4) level created." <<endl;
+	 ml.addLevel("(5,5)",{5,5}, mi);
+	 cout << "(5,5) level created." <<endl;
+cout << "All Levels added ..." << endl;
 
     return 1;
 }
