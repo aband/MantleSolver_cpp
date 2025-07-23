@@ -132,3 +132,16 @@ target_link_libraries(burgersTest
 		  general_lib
 		  PkgConfig::LAPACKE
 )
+
+add_executable(inflowTest
+        test.cpp
+		  error.cpp
+		  inflow.cpp
+)
+
+target_link_libraries(inflowTest
+        io_lib
+		  transport_lib
+		  general_lib
+		  PkgConfig::LAPACKE
+)

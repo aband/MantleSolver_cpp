@@ -96,15 +96,12 @@ int main(int argc, char ** argv){
 
     AssignValuesMeshInfo(mi, dmMesh, dmu);
 
-    cout << "check point 1" << endl;
-
     mi.L = L;
     mi.H = H;
 
     multilevel ml = multilevel();
 
 cout << "Start here " << endl;
-    ml.addLevel("(5,5)", {5,5}, mi);
     ml.addLevel("(3,3)", {3,3}, mi);
     ml.addLevel("(2,2)", {2,2}, mi);
 cout << "End here " << endl;
@@ -116,13 +113,8 @@ cout << "End here " << endl;
 
     // Test for nonlinear weighting
     unordered_map<std::string, vector<indice>> interior;
-//    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
-//    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
-//    use.setmethod("interior", interior);
-//    use.setbias("interior");
-
-    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
-    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1}}));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {-1,0}, {0,0} }));
 
     use.setmethod("interior", interior);
     use.setbias("interior");
@@ -146,7 +138,7 @@ cout << "End here " << endl;
 
     //simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 	 cout << "Time stepping starts. " << endl;
-    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+//    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);

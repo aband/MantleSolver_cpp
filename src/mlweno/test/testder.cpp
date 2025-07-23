@@ -117,6 +117,7 @@ int main(int argc, char ** argv){
     ml.addLevel("(3,3)", {3,3}, mi);
     ml.addLevel("(2,2)", {2,2}, mi);
 
+cout << "reach here" << endl;
     // =================================================================
     Vec globalvec, localvec;
     double ** locvals;
@@ -176,7 +177,6 @@ int main(int argc, char ** argv){
     cout << "Reconstructed value : " << use.eval(test, ml, "all", 
          allwgts({target[0], target[1]}), target, locvals) << endl 
          << "Function value : " << func(test, {(L-h0)/2,0.0})<< endl;
-
     derivative testder;
 //    use.der(test, ml, "all", allwgts({target[0], target[1]}), {target[0],target[1]}, locvals,
 //             mi, testder); 
