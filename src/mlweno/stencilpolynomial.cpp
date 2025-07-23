@@ -12,6 +12,7 @@ stencilpolynomial::stencilpolynomial(const int& sizex,
     for (int i=0; i<tensorpoly.getSize(); i++){
         tensorpoly(i) = polynomial(sizex,sizey);
     }
+
 }
 
 int stencilpolynomial::setCoef(const vector<vector<vertex>>& cornerSet,
@@ -119,9 +120,9 @@ double stencilpolynomial::eval(const vertex& point,
 }
 
 double stencilpolynomial::sigmaintegral(const vector<vertex>& corners, 
-                                        const double& area,
-                                        const vertex& center, const double& h,
-                                        const int& index1, const int& index2){
+                     const double& area,
+                     const vertex& center, const double& h,
+                     const int& index1, const int& index2){
 
     double work = 0.0;
 
@@ -138,7 +139,6 @@ double stencilpolynomial::sigmaintegral(const vector<vertex>& corners,
     Tensor_zero(der);
 
     for (int i=0; i<gpf.size(); i++){
-
         valarray<double> mapped = GaussMapPointsFace(gpf[i],tmp);
         double jac = abs(GaussJacobian(gpf[i],tmp));
         double gw = gwf[i];

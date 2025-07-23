@@ -86,12 +86,6 @@ class multilevel{
         {return mlrecons.at(name).getStencilSize(index);};
 
         /**!
-         * Get stencil order
-         */ 
-        //int getorder(const std::string& name) const 
-        //{return mlrecons.at(name).stencilOrder();};
-
-        /**!
          * Extract cell averaged solution to a tensor object
          */
         int getsol(Tensor<double>& stencilsol, double ** localsol,
@@ -126,7 +120,6 @@ class multilevel{
          * scaled sigma, and derivative of scaled sigma
          */
         int updateall(double ** localsol, const double& h0, const int& s, const double& ep, const MeshInfo& mi) ;
-
 
         // =======================================================================================================
         /**!

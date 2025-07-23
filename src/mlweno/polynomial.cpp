@@ -151,9 +151,8 @@ int polynomial::evalDer(const int& derx,    const int& dery,
 
     //double * workx = new double [derx + 1];  
     //double * worky = new double [dery + 1];
-
     vector<double> workx; workx.resize(derx+1);
-    vector<double> worky; worky.resize(dery+1);
+	 vector<double> worky; worky.resize(dery+1);
 
     double ycoef[derx + 1][degreey];
 
@@ -178,8 +177,8 @@ int polynomial::evalDer(const int& derx,    const int& dery,
         }
     }
 
-    // delete workx;
-	 // delete worky;
+    //delete workx;
+	 //delete worky;
 
     return 1;
 }

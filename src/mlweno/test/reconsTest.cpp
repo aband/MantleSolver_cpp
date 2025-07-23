@@ -139,10 +139,12 @@ VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
 
     Tensor<double> stencilsol33 = Tensor<double>(2);
     stencilsol33.setSize({3,3});
+
     Tensor<double> stencilsol22 = Tensor<double>(2);
     stencilsol22.setSize({2,2});
 
     ml.getsol(stencilsol33, locvals, {0,0}, "(3,3)");
+
     ml.getsol(stencilsol22, locvals, {0,0}, "(2,2)");
 
     ml.updatesigma(locvals);

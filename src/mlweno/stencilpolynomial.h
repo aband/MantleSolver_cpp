@@ -11,14 +11,6 @@ class stencilpolynomial {
         stencilpolynomial(const int& sizex,
                           const int& sizey);
 
-        // Automatic determination of polynomial order
-        stencilpolynomial(const int& inorder);
-
-        // Uneven stencil, need to specify polynomial order
-        stencilpolynomial(const int& sizex,
-                          const int& sizey,
-                          const int& inorder);
-
         ~stencilpolynomial() {};
 
         vertex center;
@@ -77,15 +69,12 @@ class stencilpolynomial {
         double sigma(const polynomial& collapse, const vector<vertex>& corners,
                      const double& area, const vertex& center, const double& h);
 
-        int stencilOrder(){return order;};
-
     private:
 
         vector<int> size {-1,-1};
 
         Tensor<polynomial> tensorpoly;
 
-        string sigmaType;
         Tensor<double> tensorsigma;
 
         // Calculate the integral in smoothness indicator
@@ -93,11 +82,6 @@ class stencilpolynomial {
                              const vertex& center, const double& h,
                              const int& index1, const int& index2);
 
-        double polyintegral(const vector<vertex>& corners, const double& area,
-                            const vertex& center, const double& h,
-                            const int& index);
-
-        int order = 0;
 };
 
 #endif

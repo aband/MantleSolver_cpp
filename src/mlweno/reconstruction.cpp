@@ -57,7 +57,7 @@ int reconstruction::prepare(const vector<int>& insize, const MeshInfo& mi){
         stencilPoly({k,s}).h = scale;
         stencilPoly({k,s}).setCoef(cornerSet, center, scale);
         //stencilPoly({k,s}).printCoef();
-    //    stencilPoly({k,s}).sigma(refcell, area, center, scale);
+        stencilPoly({k,s}).sigma(refcell, area, center, scale);
     }}
 
     // Test print output ==========================================================
@@ -222,6 +222,7 @@ int multilevel::updatesigma(double ** localsol){
         }}
         alllevelsigma.insert(std::make_pair(it, stensigma));
     }
+
     return 1;
 }
 

@@ -86,7 +86,7 @@ add_library(mlweno_lib
 		  ${SRC}/mlweno/tensor.cpp
 		  ${SRC}/mlweno/reconstruction.cpp
 		  ${SRC}/mlweno/mluse.cpp
-		  #${SRC}/mlweno/efficient_stenpoly.cpp
+		  ${SRC}/mlweno/efficient_stenpoly.cpp
 )
 
 # Specify any additional include directories if needed

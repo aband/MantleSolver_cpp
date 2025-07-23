@@ -461,16 +461,13 @@ int mluse::eff_order(const indice& index,    const multilevel& ml,
 
     indice targetstencilindex;
 
-    int stenOrder = 0;
-
     for (const auto& it: bias.at(pos)){
 
         for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
             targetstencilindex = index + reconstMethod.at(pos).at(it.first).at(m);
             if (stencilexist(ml, targetstencilindex, it.first)){
-                // extract stencil size (maximum size)
-                //work += wgts.at(it.first).at(m) * ml.getorder(it.first); 
-            } 
+                Tensor<double> sol = Tensor<double>(2);
+            }
         }
     }
 
