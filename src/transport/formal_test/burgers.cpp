@@ -38,7 +38,7 @@ double edgefluxintegral_test(const MeshInfo& mi,
         //double LF = sqrt(vel.at(g)[0]*vel.at(g)[0] + vel.at(g)[1]*vel.at(g)[1]);
         double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
         LF = find_max(abs(dfdu(uin)), abs(dfdu(uout))) * LF;
-        //LF = 1.0;
+        LF = 1.0;
 
         work += gwe[g] * tempLFflux(uin, uout, 
                                     advfunc(uin,vel.at(g),unitNormal),

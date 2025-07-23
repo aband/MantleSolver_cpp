@@ -104,9 +104,12 @@ int main(int argc, char ** argv){
     multilevel ml = multilevel();
 
 cout << "Start here " << endl;
-    ml.addLevel("(5,5)", {5,5}, mi);
+//    ml.addLevel("(5,5)", {5,5}, mi);
+cout << "(5,5) prepared." << endl;
     ml.addLevel("(3,3)", {3,3}, mi);
+cout << "(3,3) prepared." << endl;
     ml.addLevel("(2,2)", {2,2}, mi);
+cout << "(2,2) prepared." << endl;
 cout << "End here " << endl;
 
     double h0 = sqrt((L*H)/(double)(M*N));
@@ -116,21 +119,22 @@ cout << "End here " << endl;
 
     // Test for nonlinear weighting
     unordered_map<std::string, vector<indice>> interior;
-//    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
-//    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
-//    use.setmethod("interior", interior);
-//    use.setbias("interior");
+    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+    use.setmethod("interior", interior);
+    use.setbias("interior");
 
-    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
-    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} }));
+//    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
+//    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} }));
 
     use.setmethod("interior", interior);
     use.setbias("interior");
 
     // add biased (3,3) stencil to side cells
     unordered_map<std::string, vector<indice>> side;
-    side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-1}, {0,-1} }));
-    side.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+    //side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-1}, {0,-1} }));
+    //side.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+    side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {0,0}, {-2,0} }));
 
     use.setmethod("side", side);
     use.setbias("side");
@@ -146,8 +150,8 @@ cout << "End here " << endl;
 
     //simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 	 cout << "Time stepping starts. " << endl;
-    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-//    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+//    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
 
