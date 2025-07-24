@@ -424,8 +424,6 @@ inline bool outside(const MeshInfo& mi, const indice& cell){
     }
 }
 
-
-
 int Driver::AssignLocMatDarcy_case(const indice& gcell,
                                    const Tensor<weights>& allwgts,
                                    double ** lphi,
@@ -513,7 +511,6 @@ int Driver::AssignLocMatDarcy_case(const indice& gcell,
 //            double phi_f_e = abs(advection.eval(mapped, ml, location(mi, gcell), allwgts({gcell[0], gcell[1]}), gcell, lphi));
 
             indice cellout = gcell + mi.faceNormal[((e-1)+4)%4];
-
 
             double phi_f_e = 0.0;
 

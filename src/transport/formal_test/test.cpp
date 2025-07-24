@@ -151,9 +151,10 @@ cout << "End here " << endl;
     //simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 	 cout << "Time stepping starts. " << endl;
 //    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+//    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-    reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
+//    reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
+    exactSol(mi,2.0, func, 1, true);
 
     // =================================================================
 
