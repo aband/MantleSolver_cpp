@@ -112,7 +112,7 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
     vector<vertex> vel;
     vel.resize(gpe.size());
     for (int i=0; i<vel.size(); i++){
-        vel.at(i) = {1,0};
+        vel.at(i) = {1,1};
     }
 
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
@@ -131,13 +131,15 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         if (j==0){
             // Temperatory
             // y=0 Dirichlet boundary 
-            flux    = 0.0;
+
+            flux
+
         } else {
 				// y= Y free outflow boundary
             cellout = globalcell + mi.faceNormal[0];
-            //flux    = edgefluxintegral(mi, globalcell, cellout, hori, allwgts, vel,
-            //                           ml, use, lu);
-				flux = 0.0;
+            flux    = edgefluxintegral(mi, globalcell, cellout, hori, allwgts, vel,
+                                       ml, use, lu);
+				//flux = 0.0;
         }
 
         horiedge({i,j}) = flux;
@@ -165,6 +167,16 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         vertexSet vert    = {corners.at(2), corners.at(1)};
 
         vertedge({mi.MPIglobalCellSize[0], j}) = edgefluxintegral(mi, gcell, vert, allwgts, vel, ml, use, lu);
+    }
+
+    // Free outflow
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice gcell {i, mi.MPIglobalCellSize[1]-1};
+        vertexSet corners = extractCorners(mi, gcell);
+        vertexSet hori    = {corners.at(3), corners.at(2)};
+
+        horiedge({i, mi.MPIglobalCellSize[1]}) = edgefluxintegral(mi, gcell, hori, allwgts, vel, ml, use, lu);
     }
 
     return 1;

@@ -1,24 +1,28 @@
 \addvspace {10pt}
-\contentsline {figure}{\numberline {1.1}{\ignorespaces Phases and species in an representative volume element (RVE).}}{20}{figure.caption.8}%
-\contentsline {figure}{\numberline {1.2}{\ignorespaces Eutectic phase diagram of a Olivine-Orthopyroxene system.}}{26}{figure.caption.9}%
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Phases and species in an representative volume element (RVE).\relax }}{20}{figure.caption.8}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Eutectic phase diagram of a Olivine-Orthopyroxene system.\relax }}{26}{figure.caption.9}%
 \contentsline {figure}{\numberline {1.3}{\ignorespaces \relax }}{28}{figure.caption.10}%
-\contentsline {figure}{\numberline {1.4}{\ignorespaces Phase diagram when the composition of opx is smaller than the eutectic composition. Region V does not appear.}}{28}{figure.caption.10}%
-\contentsline {figure}{\numberline {1.5}{\ignorespaces Enthalpy-Composition diagram}}{30}{figure.caption.11}%
+\contentsline {figure}{\numberline {1.4}{\ignorespaces Phase diagram when the composition of opx is smaller than the eutectic composition. Region V does not appear.\relax }}{28}{figure.caption.10}%
+\contentsline {figure}{\numberline {1.5}{\ignorespaces Enthalpy-Composition diagram\relax }}{30}{figure.caption.11}%
 \addvspace {10pt}
-\contentsline {figure}{\numberline {2.1}{\ignorespaces An exhibition of a reference square element, a local reference element, and a general non-degenerate quadrilateral element.}}{36}{figure.caption.13}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces An exhibition of a full logically rectangular quasi-uniform quadrilateral mesh $\EuScript {T}_h$.}}{37}{figure.caption.14}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Rational function $R_0$.}}{41}{figure.caption.15}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Edge nodal basis function $\varphi ^{(2)}_{e,0}$ in $\EuScript {DS}_2$.}}{42}{figure.caption.16}%
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Vertex nodal basis function $\varphi ^2_{v,0}$ in $\EuScript {DS}_2$.}}{42}{figure.caption.17}%
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Supplemental rational function $R$ in $\EuScript {DS}_1$.}}{43}{figure.caption.18}%
-\contentsline {figure}{\numberline {2.7}{\ignorespaces Vertex nodal basis function in $\EuScript {DS}_1$.}}{44}{figure.caption.19}%
-\contentsline {figure}{\numberline {2.8}{\ignorespaces ``Linear" shape function $\pmb {\varphi }_l$.}}{49}{figure.caption.20}%
-\contentsline {figure}{\numberline {2.9}{\ignorespaces ``Constant" shape function $\pmb {\varphi }_c$.}}{50}{figure.caption.21}%
-\contentsline {figure}{\numberline {2.10}{\ignorespaces Numerical results on rectangular and quadrilateral mesh.}}{59}{figure.caption.22}%
-\contentsline {figure}{\numberline {2.11}{\ignorespaces Constant porosity~\eqref {eq:constporosity} with $\phi _0 = 0.04$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.}}{77}{figure.caption.26}%
-\contentsline {figure}{\numberline {2.12}{\ignorespaces Discontinuous porosity~\eqref {eq:phidiscon} with $\phi _0 = 0.04$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.}}{79}{figure.caption.28}%
-\contentsline {figure}{\numberline {2.13}{\ignorespaces Quadratic porosity~\eqref {eq:quadphi} with $\phi _0 = 0.001$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.}}{82}{figure.caption.29}%
-\contentsline {figure}{\numberline {2.14}{\ignorespaces Quadratic porosity~\eqref {eq:quadphi} with $\phi _0 = 0.01$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.}}{83}{figure.caption.31}%
-\contentsline {figure}{\numberline {2.15}{\ignorespaces Porosity distribution.}}{84}{figure.caption.33}%
-\contentsline {figure}{\numberline {2.16}{\ignorespaces Liquid pressure potential and velocity.}}{85}{figure.caption.34}%
-\contentsline {figure}{\numberline {2.17}{\ignorespaces Solid pressure potential and velocity.}}{85}{figure.caption.35}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces An exhibition of a reference square element, a local reference element, and a general non-degenerate quadrilateral element.\relax }}{36}{figure.caption.13}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces An exhibition of a full logically rectangular quasi-uniform quadrilateral mesh $\EuScript {T}_h$.\relax }}{37}{figure.caption.14}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Rational function $R_0$.\relax }}{41}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Edge nodal basis function $\varphi ^{(2)}_{e,0}$ in $\EuScript {DS}_2$.\relax }}{42}{figure.caption.16}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Vertex nodal basis function $\varphi ^2_{v,0}$ in $\EuScript {DS}_2$.\relax }}{42}{figure.caption.17}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Supplemental rational function $R$ in $\EuScript {DS}_1$.\relax }}{43}{figure.caption.18}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Vertex nodal basis function in $\EuScript {DS}_1$.\relax }}{44}{figure.caption.19}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces ``Linear" shape function $\pmb {\varphi }_l$.\relax }}{49}{figure.caption.20}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces ``Constant" shape function $\pmb {\varphi }_c$.\relax }}{50}{figure.caption.21}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Numerical results on rectangular and quadrilateral mesh.\relax }}{59}{figure.caption.22}%
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Constant porosity\nobreakspace {}\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {eq:constporosity}\unskip \@@italiccorr )}} with $\phi _0 = 0.04$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.\relax }}{77}{figure.caption.26}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Discontinuous porosity\nobreakspace {}\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {eq:phidiscon}\unskip \@@italiccorr )}} with $\phi _0 = 0.04$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.\relax }}{79}{figure.caption.28}%
+\contentsline {figure}{\numberline {2.13}{\ignorespaces Quadratic porosity\nobreakspace {}\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {eq:quadphi}\unskip \@@italiccorr )}} with $\phi _0 = 0.001$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.\relax }}{82}{figure.caption.29}%
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Quadratic porosity\nobreakspace {}\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {eq:quadphi}\unskip \@@italiccorr )}} with $\phi _0 = 0.01$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.\relax }}{83}{figure.caption.31}%
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Porosity distribution.\relax }}{84}{figure.caption.33}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Liquid pressure potential and velocity.\relax }}{85}{figure.caption.34}%
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Solid pressure potential and velocity.\relax }}{85}{figure.caption.35}%
+\addvspace {10pt}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces An illustration of the half-edge data structure for a quadrilateral.\relax }}{88}{figure.caption.36}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces An exhibition of velocity dofs associated with a modified Bernardi-Raugel element.\relax }}{92}{figure.caption.37}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces An exhibition of velocity dofs associated with Bernardi-Raugel on a $4 \times 4$ mesh.\relax }}{93}{figure.caption.38}%

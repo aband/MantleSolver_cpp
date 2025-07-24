@@ -302,7 +302,7 @@ We finally renormalise the scaled weights as
 \end{equation}
 
 \subsection{The ML-WENO Reconstruction Error}
-In this section, we analyze the accuracy of the new multi-level weighting scheme.
+In this subsection, we analyze the accuracy of the new multi-level weighting scheme.
 Consider the set containing indices of stencils $l \in \mathcal{L} = \{0,1,2,\dots L\}$. 
 %according to the order of the stencil polynomials.
 Specifically, we denote the set of indices of
@@ -437,20 +437,23 @@ the formal error estimate of the reconstruction.
 \end{lem}
 
 \subsection{Time stepping}
-In this section, we briefly talk 
-about suitable time integration technique. 
+In this subsection, we briefly talk 
+about some suitable time integration techniques. 
 We will focus on explicit scheme for two reasons
 \begin{itemize}
 		  \item Phase package cannot be
-evaluated with long time intervals.
+evaluated with long time intervals;
 \item Jacobian is hard to evaluate since a MFEM solver is involved.
 \end{itemize}
 While forward Eular is sufficient in stability analysis,
 it only provides first order accuracy. Therefore, we use strong-stability 
 preservation (SSP) scheme proposed by~\cite{doi:10.1137/S003614450036757X},
 which is a higher order time stepping scheme while preserving 
-the stability properties of forward Euler.
-We start with first order forward Euler as
+the stability properties of forward Euler in theory.
+In accordance to the accuracy of the MFEM solver, which provides second order
+accuracy in velocity, we omit the redundant discussion regarding time
+integration exceeding third order accuracy.
+To begin with, the first-order forward Euler as
 \begin{equation}
 u^{n+1} = u^n + \Delta t \tilde{\mathbf{F}}(u^n),
 \end{equation}
