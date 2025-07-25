@@ -8,6 +8,8 @@ extern "C"{
 #include "output.h"
 }
 
+#include <chrono>
+
 int main(int argc, char ** argv){
 
     // Initializing petsc function
@@ -94,14 +96,30 @@ int main(int argc, char ** argv){
     multilevel ml = multilevel();
 
     cout << "Efficient Test on grid : " << M << "  " << N << endl;
+	 auto start = std::chrono::steady_clock::now();
 	 ml.addLevel("(2,2)",{2,2},mi);
-    cout << "(2,2) level created." << endl; 
+	 auto end = std::chrono::steady_clock::now();
+	 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
+    cout << "(2,2) level created. Using " << duration.count() << " ms." << endl;
+
+	 start = std::chrono::steady_clock::now();
 	 ml.addLevel("(3,3)",{3,3},mi);
-    cout << "(3,3) level created." << endl; 
+	 end = std::chrono::steady_clock::now();
+	 duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
+    cout << "(3,3) level created. Using " << duration.count() << " ms." << endl;
+
+	 start = std::chrono::steady_clock::now();
 	 ml.addLevel("(4,4)",{4,4},mi);
-    cout << "(4,4) level created." << endl; 
+	 end = std::chrono::steady_clock::now();
+	 duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
+    cout << "(4,4) level created. Using " << duration.count() << " ms." << endl;
+
+	 start = std::chrono::steady_clock::now();
 	 ml.addLevel("(5,5)",{5,5},mi);
-    cout << "(5,5) level created." << endl; 
+	 end = std::chrono::steady_clock::now();
+	 duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
+    cout << "(5,5) level created. Using " << duration.count() << " ms." << endl;
+
     cout << "All Levels added ..." << endl;
 
     return 1;
