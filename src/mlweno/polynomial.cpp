@@ -23,10 +23,10 @@ int computeDerivative(const int& der,  const int& degree,
 }
 
 int computeDerivative(const int& der,  const int& degree, 
-                      const double& x, const double& scale,
+                      const double& x, const double& h,
                       double * coef, vector<double>& work){
 
-    double xx = x/scale;
+    double xx = x/h;
 
     for (int d=0; d<=der; d++){work[d] = 0.0;}
 
@@ -37,7 +37,7 @@ int computeDerivative(const int& der,  const int& degree,
         work[0] = work[0]*xx + coef[i];
     }
 
-    for(int d=1; d<=der; d++) {work[d] /= pow(scale,d);}
+    for(int d=1; d<=der; d++) {work[d] /= pow(h,d);}
 
     return 1;
 }

@@ -73,6 +73,8 @@ class stencilpolynomial {
 
         vector<int> size {-1,-1};
 
+        int order = 0;
+
         Tensor<polynomial> tensorpoly;
 
         Tensor<double> tensorsigma;
