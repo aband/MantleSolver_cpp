@@ -28,6 +28,11 @@ int computeDerivative(const int& der,  const int& degree,
 
     double xx = x/h;
 
+//    for (int t=0; t<degree; t++){
+//        cout << coef[t] << "  " ;
+//    }
+//    cout << endl;
+
     for (int d=0; d<=der; d++){work[d] = 0.0;}
 
     for (int i=degree-1; i>=0; i--){
@@ -167,7 +172,7 @@ int polynomial::evalDer(const int& derx,    const int& dery,
         computeDerivative(derx, degreex, x, scale, xcoef, workx); 
         for (int d=0; d<=derx; d++){ycoef[d][r] = workx[d];}
         start += degreex;
-		  degreex--;
+		  //degreex--;
     }
 
     // Horner's method in x

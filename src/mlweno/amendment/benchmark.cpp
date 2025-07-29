@@ -4,6 +4,8 @@
 
 #include "../polynomial.h"
 
+#include <chrono>
+
 // Horner's method
 
 static double horner(double x, const double* coef, int degree) {
@@ -30,7 +32,11 @@ static double horner(double x, const double* coef, int degree) {
 static void horner_der(int der, double* val, double x, double h, 
 					        const double* coef, int degree) {
   double xx = x/h;
-  
+
+//  for (int t=0; t<degree+1; t++){
+//  cout << coef[t] << "  " ;
+//  }
+//cout << endl;
   for(int i = 0; i<= der; i++) val[i] = 0;
   
   for(int i = degree; i >= 0; i--) {
@@ -72,9 +78,10 @@ void polynomial2D_ders(int derX, int derY, double* val,
   int start = 0;
   for(int j = 0; j <= polyn_degree; j++) {
     horner_der(derX,valX,xx0,h,&my_coef[start],sz-1);
-    for(int d = 0; d <= derX; d++) yCoef[d][j] = valX[d];
+    for(int d = 0; d <= derX; d++) 
+	 {yCoef[d][j] = valX[d];}
     start += sz;
-    sz--;
+    //sz--;
   }
 
   // Horner's method in y
@@ -98,7 +105,25 @@ int main(){
         val[i]     = 0.0;
     }
 
-    polynomial2D_ders(3,3,val,1.0,1.0,0.0,0.0,0.2,4,my_coef);
+/*
+    my_coef[9] = 0.0;
+    my_coef[13] = 0.0;
+	 my_coef[14] = 0.0;
+	 my_coef[17] = 0.0;
+	 my_coef[18] = 0.0;
+	 my_coef[19] = 0.0;
+	 my_coef[21] = 0.0;
+	 my_coef[22] = 0.0;
+	 my_coef[23] = 0.0;
+	 my_coef[24] = 0.0;
+*/
+
+	 auto start = std::chrono::steady_clock::now();
+	 for (int it = 0; it < 1000000; it++){
+    polynomial2D_ders(4,4,val,1.0,1.0,0.0,0.0,0.2,4,my_coef);}
+	 auto end = std::chrono::steady_clock::now();
+	 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
+    cout << "Benchmark Test: " << duration.count() << " ms." << endl;
 
     // Benchmark code
     for (int i=0; i<25; i++){
@@ -118,7 +143,13 @@ int main(){
     Tensor<double> der;
     der.setSize({5,5});
 
-    testp.evalDer(3,3,1.0,1.0,0.2,der);
+	 start = std::chrono::steady_clock::now();
+	 for (int it = 0; it < 1000000; it++){
+    testp.evalDer(4,4,1.0,1.0,0.2,der);
+    }
+	 end = std::chrono::steady_clock::now();
+	 duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
+    cout << "My function Test: " << duration.count() << " ms." << endl;
 
     for (int i=0; i<25; i++){
         std::cout << der(i) << " " ;

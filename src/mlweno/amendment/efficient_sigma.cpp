@@ -60,11 +60,9 @@ int stencilpolynomial::sigmacomplete(const vector<vertex>& corners,
 										     der1({i,j}) * der2({i,j});
                     }	
                 }
-
             }
         }
     }
-
 
     return 1;
 }
