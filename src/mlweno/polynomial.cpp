@@ -167,6 +167,7 @@ int polynomial::evalDer(const int& derx,    const int& dery,
         computeDerivative(derx, degreex, x, scale, xcoef, workx); 
         for (int d=0; d<=derx; d++){ycoef[d][r] = workx[d];}
         start += degreex;
+		  degreex--;
     }
 
     // Horner's method in x

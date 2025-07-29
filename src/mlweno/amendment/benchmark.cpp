@@ -27,7 +27,8 @@ static double horner(double x, const double* coef, int degree) {
 }
 
 // 1D Horner's method for polynomial derivative evaluation (all up to der) for p(x/h)
-static void horner_der(int der, double* val, double x, double h, const double* coef, int degree) {
+static void horner_der(int der, double* val, double x, double h, 
+					        const double* coef, int degree) {
   double xx = x/h;
   
   for(int i = 0; i<= der; i++) val[i] = 0;
@@ -41,7 +42,8 @@ static void horner_der(int der, double* val, double x, double h, const double* c
 }
 
 // 1D Horner's method for all polynomial derivative evaluation for p(x/h)
-static void horner_der(double* val, double x, double h, const double* coef, int degree) {
+static void horner_der(double* val, double x, double h, 
+					        const double* coef, int degree) {
   double xx = x/h;
   
   for(int i = 0; i<= degree; i++) val[i] = 0;
@@ -89,13 +91,14 @@ int main(){
     // A n*n tensor product polynomial
     double my_coef[5*5];
 
-    for (int i=0; i<25; i++){
-        my_coef[i] = (double)i;
-    }
-
     double val[5*5];
 
-    polynomial2D_ders(3,3,val, 1.0,1.0,0.0,0.0,0.2,4,my_coef);
+    for (int i=0; i<25; i++){
+        my_coef[i] = (double)i;
+        val[i]     = 0.0;
+    }
+
+    polynomial2D_ders(3,3,val,1.0,1.0,0.0,0.0,0.2,4,my_coef);
 
     // Benchmark code
     for (int i=0; i<25; i++){
@@ -105,9 +108,24 @@ int main(){
 		  }
     }
 
+    cout << endl; 
+
+    // =================================
     polynomial testp = polynomial(5,5);
     testp.setCoef(my_coef);
-    testp.printCoef();
+    //testp.printCoef();
+
+    Tensor<double> der;
+    der.setSize({5,5});
+
+    testp.evalDer(3,3,1.0,1.0,0.2,der);
+
+    for (int i=0; i<25; i++){
+        std::cout << der(i) << " " ;
+		  if (i%5 == 4){
+            std::cout << std::endl;
+		  }
+    }
 
     return 1;
 }
