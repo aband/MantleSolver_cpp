@@ -1,4 +1,5 @@
 #include "polynomial.h"
+#include "stencilpolynomial.h"
 
 stencilpolynomial::stencilpolynomial(const int& order){
     size[0] = order+1;
@@ -36,32 +37,43 @@ int stencilpolynomial::sigmacomplete(const vector<vertex>& corners,
     Tensor<double> der2 = Tensor<double>(2);
     der2.setSize(size);
 
-    for (int g=0; g<gpf.size(); g++)
-        valarray<double> mapped = GaussMapPointsFace(gpf[i],tmp);
-        double jac = abs(GaussJacobian(gpf[i],tmp));
-        double gw = gwf[i];
+    double sigmaij = 0.0;
 
-        for (int jcell=0; j<total; j++){
-					 Tensor_zero(der1);
-                tensorpoly(jcell).evalDer(size[0]-1, size[1]-1, 
-                                          mapped[0], mapped[1], 1.0, der1);
-            for (int icell=0; i<=j; i++){
-                Tensor_zero(der2);
-                tensorpoly(icell).evalDer(size[0]-1, size[1]-1, 
-                                          mapped[0], mapped[1], 1.0, der2);
+    vector<Tensor<double>> allder;
+    allder.resize(total);
 
+    for (int g=0; g<gpf.size(); g++){
+        valarray<double> mapped = GaussMapPointsFace(gpf[g],tmp);
+        double jac = abs(GaussJacobian(gpf[g],tmp));
+        double gw = gwf[g];
+
+        for (int cell=0; cell<total; cell++){
+			   allder.at(cell).setSize(size);
+				Tensor_zero(allder.at(cell));
+            tensorpoly(cell).evalDer(size[0]-1, size[1]-1,
+                                     mapped[0], mapped[1], 1.0, allder.at(cell));
+        }
+
+//        for (int jcell=0; jcell<total; jcell++){
+//            for (int icell=0; icell<=jcell; icell++){
                 // Compute derivative of a complete polynomial
 					 // instead of a tensor product one
-					 double sigmaij = 0.0; 
-                for (int j=0; j<order+1; j++){
-                    int iStart = (j==0) ? 1:0;
-                    for (int i=iStart; i<order+1 -j; i++){
-                        sigmaij += pow(area/(h*h),2*(i+j)) * gw*jac* 
-										     der1({i,j}) * der2({i,j});
-                    }	
-                }
-            }
-        }
+//					 sigmaij = 0.0; 
+//                for (int j=0; j<order+1; j++){
+//                    int iStart = (j==0) ? 1:0;
+//                    for (int i=iStart; i<order+1-j; i++){
+//                        sigmaij += pow(h,2*(i+j))/area * gw*jac* 
+//                                   allder.at(jcell)({i,j}) * 
+//											  allder.at(icell)({i,j});
+//                    }
+//                }
+//            }
+//        }
+        for (int j=0; j<total; j++){
+            for (int i=0; i<total; i++){
+                Tensor_multi_add(allder.at(j), allder.at(i), gw*jac, der);
+		      }
+		  }
     }
 
     return 1;

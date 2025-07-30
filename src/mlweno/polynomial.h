@@ -62,7 +62,7 @@ class polynomial {
                     const double& x , const double& y,
                     const double& x0, const double& y0,
                     const double& h,  Tensor<double>& tensor) const 
-        {evalDer(derx, dery, x-x0, y-y0, h, tensor);}
+        {evalDer(derx, dery, x-x0, y-y0, h, tensor); return 1;}
 
     private:
 

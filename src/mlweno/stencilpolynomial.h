@@ -11,6 +11,8 @@ class stencilpolynomial {
         stencilpolynomial(const int& sizex,
                           const int& sizey);
 
+        stencilpolynomial(const int& order);
+
         ~stencilpolynomial() {};
 
         vertex center;
@@ -47,6 +49,11 @@ class stencilpolynomial {
          */
         int sigma(const vector<vertex>& corners, const double& area,
                   const vertex& center, const double& h);
+
+        int sigmacomplete(const vector<vertex>& corners,
+                          const double& area,
+                          const vertex& center,
+                          const double& h);
 
         double sigma(const Tensor<double>& sol) const;
 
