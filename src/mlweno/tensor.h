@@ -64,6 +64,7 @@ class Tensor{
         vector<int> dim;
 
         int flattern(const vector<int>& index) const{
+/*
             int in = 0;
             int multiplier = 1;
             for (int i=0; i<rank; i++){
@@ -72,6 +73,10 @@ class Tensor{
                 multiplier *= dim[i];
             }
             return in;
+*/
+            // Use this 2D specified case to accelerate runtime
+            return dim.at(0)*index.at(1) + index.at(0);      
+
         }
 
         vector<T> val;

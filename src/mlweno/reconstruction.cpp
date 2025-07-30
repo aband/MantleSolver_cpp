@@ -57,8 +57,7 @@ int reconstruction::prepare(const vector<int>& insize, const MeshInfo& mi){
         stencilPoly({k,s}).h = scale;
         stencilPoly({k,s}).setCoef(cornerSet, center, scale);
         //stencilPoly({k,s}).printCoef();
-        //stencilPoly({k,s}).sigma(refcell, area, center, scale);
-        stencilPoly({k,s}).sigmacomplete(refcell, area, center, scale);
+        stencilPoly({k,s}).sigma(refcell, area, center, scale);
     }}
 
     // Test print output ==========================================================

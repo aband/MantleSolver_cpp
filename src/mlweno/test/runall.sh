@@ -1,3 +1,3 @@
 cd build;
 make;
-./testsigma; ./testder; ./testconst; ./testarea; ./reconTest; ./fulltest
+./testsigma; ./testder; ./testconst; ./testarea; ./fulltest

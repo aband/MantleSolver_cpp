@@ -181,8 +181,8 @@ int main(int argc, char ** argv){
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
     int M = 240, N = 80;
-//    ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
-//    ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
     double L = 3, H = 1;
     double xstart = 0.0, ystart = 0.0;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
@@ -260,9 +260,26 @@ int main(int argc, char ** argv){
 	 duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
     cout << "(5,5) level created. Using " << duration.count() << " ms." << endl;
 
+    // Pick a stencil
+    int startM = M/2-2;
+    int startN = N/2-2;
 
-    
+    // Create a stencil polynomial
+    stencilpolynomial stenp = stencilpolynomial(5);
 
+    vector<vector<vertex>> cornerSet;
+    vector<vertex> refcell;
+    vertex center;
+
+    // Extract a 5*5 stencil
+    for (int j=0; j<5; j++){
+        for (int i=0; i<5; i++){
+            indice global {i+startM, 
+                           j+startN};
+            vector<vertex> cellCornerSet = extractCorners(mi, global);
+            cornerSet.push_back(cellCornerSet);
+        } 
+    }
 
     return 1;
 }
