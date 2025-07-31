@@ -16,8 +16,19 @@ tensorstencilpoly::tensorstencilpoly(const int& insizex,
     sizey = insizey;
 }
 
-int tensorstencilpoly::setCoef(const vector<vector<vertex>>& cornerSet,
-                               const vertex& center, const double& h){
+int tensorstencilpoly::setCoef(const MeshInfo& mi,
+                               const int& gstartx,   const int& gstarty){
+
+    // Extract tensor product stencil
+    vector<vector<vertex>> cornerSet;
+    vector<vertex> refcell;
+
+    for (int j=0; j<sizey; j++){
+        for (int i=0; i<sizex; i++){
+            indice global {i+gstartx, j+gstarty};
+            cornerSet.push_back(extractCorners(mi, global));
+        }
+    }
 
     // Setup linear system for computing basis polynomials 
     lapack_int n    = sizex*sizey;
@@ -25,8 +36,9 @@ int tensorstencilpoly::setCoef(const vector<vector<vertex>>& cornerSet,
     lapack_int lda  = n;
     lapack_int ldb  = nrhs;
 
-    double * a = new double [n*n] ();
     coef = new double [n*nrhs] ();
+
+    double * a = new double [n*n] ();
     lapack_int * p = new int [n] ();
 
     for (int cell=0; cell<n; cell++){
@@ -43,11 +55,11 @@ int tensorstencilpoly::setCoef(const vector<vector<vertex>>& cornerSet,
     fill(coef,coef+n*nrhs,0);
     for (int i=0; i<nrhs; i++) {coef[i*n+i]=a[n*i];}
 
-    int err = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, p, b, ldb);
+    int err = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, p, coef, ldb);
 
     if (err){
         printf("ERROR: Weno Basis Coefficient for order %d, %d. Error type %d \n",
-                 xdegree,ydegree,err);
+                 sizex,sizey,err);
     }
 
     delete [] a;

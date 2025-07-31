@@ -2,7 +2,6 @@
 #define TENSORSTENCILPOLY_H_
 
 #include "util.h"
-#include "tensor.h"
 #include <map>
 
 class tensorstencilpoly {
@@ -23,12 +22,8 @@ class tensorstencilpoly {
         ~tensorstencilpoly() {};
 
         // Compute stencil base polynomial coefficients
-        int setCoef(const vector<vector<vertex>>& cornerSet, 
-                    const vertex& center, const double& h);
-
-        int setCoef(const vector<vector<vertex>>& cornerSet,
-                    const double& x0, const double& y0, const double& h)
-        {setCoef(cornerSet, {x0,y0}, h); return 1;};
+        int setCoef(const MeshInfo& mi,
+                    const int& gstartx, const int& gstarty);
 
     private:
         double * coef = nullptr;
@@ -36,6 +31,9 @@ class tensorstencilpoly {
         int order = 0;
         int sizex = 0;
         int sizey = 0;
-}
+
+        vertex center = {0.0,0.0};
+        double h = 0.0;
+};
 
 #endif
