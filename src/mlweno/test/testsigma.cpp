@@ -67,8 +67,10 @@ int main(int argc, char ** argv){
         cornerSetSet2.push_back(work);
     }}
     stencilpolynomial stencilpoly = stencilpolynomial(3,3);
-
+cout << h << endl;
     stencilpoly.setCoef(cornerSetSet2, center, h); 
+
+    stencilpoly.printCoef();
 
     vector<double> tmp {0.037037037037043, 0.259259259259265, 0.703703703703710,
                         0.037037037037043, 0.259259259259265, 0.703703703703710,

@@ -51,7 +51,7 @@ int stencilpolynomial::setCoef(const vector<vector<vertex>>& cornerSet,
             for (int xpow =0; xpow < xdegree; xpow++){
             int r = porder.getIndex({xpow, ypow});
             a[cell*n+r] = NumIntegralFace(work, {xpow, ypow}, center, scale, basePoly);
-//				cout << r << "  " << ydegree << "  " << xpow << "  " <<  ypow << "  " << a[cell*n+r] << endl;
+				//cout << r << "  " << ydegree << "  " << xpow << "  " <<  ypow << "  " << a[cell*n+r] << endl;
             }
         }
 

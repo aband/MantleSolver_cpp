@@ -19,11 +19,20 @@ class tensorstencilpoly {
                           const int& sizey,
                           const int& order);
 
-        ~tensorstencilpoly() {};
+        ~tensorstencilpoly();
 
         // Compute stencil base polynomial coefficients
-        int setCoef(const MeshInfo& mi,
-                    const int& gstartx, const int& gstarty);
+        int setCoef(const MeshInfo& mi, const int& gstartx, const int& gstarty);
+
+        // Evaluate single stencil polynomials 
+        double eval(const double& x, const double& y, const int& ncell) const;
+        double eval(const double& x,  const double& y, 
+                    const double& x0, const double& y0, 
+                    const double& h,  const int& ncell) const;  
+
+        // Print stencil polynomial coefficients
+        int printCoef();
+        int printCoef(double* c, int n);
 
     private:
         double * coef = nullptr;
@@ -32,7 +41,9 @@ class tensorstencilpoly {
         int sizex = 0;
         int sizey = 0;
 
-        vertex center = {0.0,0.0};
+        vertex center  = {0.0,0.0};
+        vector<vertex> refcell;
+        double refarea = 0.0;
         double h = 0.0;
 };
 

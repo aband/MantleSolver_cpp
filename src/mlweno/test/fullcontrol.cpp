@@ -1,5 +1,4 @@
 // manually assign everything
-
 #include "stencilpolynomial.h"
 #include "reconstruction.h"
 #include "mluse.h"
@@ -68,7 +67,7 @@ int main(int argc, char ** argv){
     PetscCall(DMSetUp(dmu));     
 
     // Create MeshParam object (historical object one time use only)
-	 MeshParam mp; 
+    MeshParam mp; 
     mp.xstart = xstart;
     mp.ystart = ystart;
     mp.L = L;

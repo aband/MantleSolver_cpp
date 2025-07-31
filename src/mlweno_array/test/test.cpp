@@ -97,8 +97,17 @@ int main(int argc, char ** argv){
     int startN = N/2-2;
 
     // Define tensor product stencil polynomial
-    tensorstencilpoly stenpoly = tensorstencilpoly(5);
-   
+    tensorstencilpoly stenpoly = tensorstencilpoly(2);
+
+    stenpoly.setCoef(mi, startM, startN);
+    stenpoly.printCoef();
+
+    cout << endl;
+    for (int cell=0; cell<9; cell++){
+        cout << stenpoly.eval(0.46,0.4505,cell) << "  ";
+    }
+    cout << endl;
+
 
     return 1;
 }
