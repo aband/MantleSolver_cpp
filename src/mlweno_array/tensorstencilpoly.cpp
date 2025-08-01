@@ -48,6 +48,75 @@ static double horner(double x, const double* coef, int degree) {
   }
 }
 
+// 1D Horner's method for polynomial derivative evaluation (all up to der) for p(x/h)
+static int horner_der(int der, double* val, double x, double h, 
+					        const double* coef, int degree) {
+  double xx = x/h;
+
+//  for (int t=0; t<degree+1; t++){
+//  cout << coef[t] << "  " ;
+//  }
+//cout << endl;
+  for(int i = 0; i<= der; i++) val[i] = 0;
+  
+  for(int i = degree; i >= 0; i--) {
+    for(int d=der; d>=1; d--) val[d] = val[d]*xx + d*val[d-1];
+    val[0] = val[0]*xx + coef[i];
+  }
+
+  for(int d=1; d<=der; d++) val[d] /= pow(h,d);
+
+  return 1;
+}
+
+// 1D Horner's method for all polynomial derivative evaluation for p(x/h)
+static int horner_der(double* val, double x, double h, 
+					        const double* coef, int degree) {
+  double xx = x/h;
+  
+  for(int i = 0; i<= degree; i++) val[i] = 0;
+  
+  for(int i = degree; i >= 0; i--) {
+    for(int d=degree - i; d>=1; d--) val[d] = val[d]*xx + d*val[d-1];
+    val[0] = val[0]*xx + coef[i];
+  }
+
+  for(int d=1; d<=degree; d++) val[d] /= pow(h,d);
+
+  return 1;
+}
+
+// Evaluate val[m + (derX+1)*n] = D_x^m D_y^n p(x), p(x) = Sum_ij c_ij (x-x0)^i (y-y0)^j / h^(i+j)
+static int polynomial2D_ders(int derX, int derY, double* val,
+			                    double x, double y, double x0, double y0, double h,
+			                    int polyn_degree, double* my_coef) {
+  double xx0 = x-x0;
+  double yy0 = y-y0;
+
+  double valX[derX+1];
+  double valY[derY+1];
+  double yCoef[derX+1][polyn_degree+1];
+  
+  // Horner's method in x, for each power of y
+  int sz = polyn_degree+1;
+  int start = 0;
+  for(int j = 0; j <= polyn_degree; j++) {
+    horner_der(derX,valX,xx0,h,&my_coef[start],sz-1);
+    for(int d = 0; d <= derX; d++) 
+	 {yCoef[d][j] = valX[d];}
+    start += sz;
+  }
+
+  // Horner's method in y
+  for(int dX = 0; dX <= derX; dX++) {
+    horner_der(derY,valY,yy0,h,yCoef[dX],polyn_degree);
+    for(int dY = 0; dY <= derY; dY++) {
+      val[dX + (derX+1)*dY] = valY[dY];
+    }
+  }
+  return 1;
+}
+
 // ==========================================================================
 
 tensorstencilpoly::tensorstencilpoly(const int& inorder){
@@ -167,6 +236,13 @@ double tensorstencilpoly::eval(const double& x,  const double& y,
     return horner(yy, ycoef, sizey-1);
 }
 
+int tensorstencilpoly::der(int derX, int derY, int ncell){
+
+    int start = ncell*sizex*sizey;
+
+    return 1;
+}
+
 int tensorstencilpoly::printCoef(){
 
     int n = sizex*sizey;
@@ -176,7 +252,7 @@ int tensorstencilpoly::printCoef(){
 //            cout << coef[r*n+p] << "  " ;
 //        } cout << endl;
         printCoef(&coef[p*n], n);
-		  cout << endl;
+        cout << endl;
     } 
 
     return 1;
