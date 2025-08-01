@@ -30,9 +30,8 @@ class tensorstencilpoly {
                     const double& x0, const double& y0, 
                     const double& h,  const int& ncell) const;  
 
-        int der(const int& derx, const int& dery,
-                const double& x, const double& y,
-                double* val);
+        int der(int derX, int derY, int ncell, double * dp, double x, double y);
+        int der(int derX, int derY, int ncell, double * dp, double x, double y, double x0, double y0, double scale);
 
         // Print stencil polynomial coefficients
         int printCoef();

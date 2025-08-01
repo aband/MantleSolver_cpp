@@ -168,6 +168,35 @@ int main(int argc, char ** argv){
     }
 
     // ==================================
+	 cout << endl;
+    double coef2[9] = {0.00173611 , 0.0208333 ,-0.0208333, 0.0208333, 0.25 ,-0.25 ,-0.0208333 ,-0.25 ,0.25 };
+    polynomial testp2 = polynomial(3,3);
+    testp2.setCoef(coef2);
+    //testp2.printCoef();
+
+    Tensor<double> der2;
+    der2.setSize({3,3});
+    testp2.evalDer(1,1,0.01,0.0005, 0.1, der2);
+
+    for (int i=0; i<9; i++){
+        std::cout << der2(i) << " " ;
+		  if (i%3 == 2){
+            std::cout << std::endl;
+		  }
+    }
+
+    double val2[9] = {0};
+    polynomial2D_ders(1,1,val2,0.46,0.4505,0.45,0.45,0.1,2,coef2);
+	 for (int i=0; i<9; i++){
+        std::cout << val2[i] << " " ;
+		  if (i%3 == 2){
+            std::cout << std::endl;
+		  }
+    }
+
+
+
+    // ==================================
 	  
     cout << endl << "Test of stencil sigmas ... " << endl;
 
@@ -180,7 +209,7 @@ int main(int argc, char ** argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    int M = 240, N = 80;
+    int M = 10, N = 10;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
     double L = 3, H = 1;

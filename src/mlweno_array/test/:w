@@ -117,41 +117,6 @@ static int polynomial2D_ders(int derX, int derY, double* val,
   return 1;
 }
 
-static int tensorpoly_ders(int derX, int derY, int sizex, int sizey, double* val, 
-                           double x, double y, double x0, double y0, double h, double* my_coef){
-//cout << x0 << "  " << y0 << "  " << h << endl;
-//  for (int c=0; c<9; c++){
-//      cout << my_coef[c] << "  ";
-//  }
-
-  double xx0 = x-x0;
-  double yy0 = y-y0;
-
-  double valX[derX+1] = {0};
-  double valY[derY+1] = {0};
-  double yCoef[derX+1][sizey];
-  
-  // Horner's method in x, for each power of y
-  int sz = sizex;
-  int start = 0;
-  for(int j = 0; j < sizey; j++) {
-    horner_der(derX,valX,xx0,h,&my_coef[start],sz-1);
-    for(int d = 0; d <= derX; d++) 
-	 {yCoef[d][j] = valX[d];}
-    start += sz;
-  }
-
-  // Horner's method in y
-  for(int dX = 0; dX <= derX; dX++) {
-    horner_der(derY,valY,yy0,h,yCoef[dX],sizey-1);
-    for(int dY = 0; dY <= derY; dY++) {
-      val[dX + sizex*dY] = valY[dY];
-    }
-  }
-
-    return 1;
-}
-
 // ==========================================================================
 
 tensorstencilpoly::tensorstencilpoly(const int& inorder){
@@ -273,16 +238,14 @@ double tensorstencilpoly::eval(const double& x,  const double& y,
 
 int tensorstencilpoly::der(int derX, int derY, int ncell, double * dp, double x, double y){
 
-    //polynomial2D_ders(derX, derY, dp, x, y, center[0], center[1], h, order, &coef[ncell*sizex*sizey]);
-    tensorpoly_ders(derX, derY, sizex, sizey, dp, x, y, center[0], center[1], h, &coef[ncell*sizex*sizey]);
+    polynomial2D_ders(derX, derY, dp, x, y, center[0], center[1], h, order, &coef[ncell*sizex*sizey]);
 
     return 1;
 }
 
-int tensorstencilpoly::der(int derX, int derY, int ncell, double * dp, double x, double y, double x0, double y0, double scale){
+int tensorstencilpoly::der(int derX, int derY, int ncell, double * dp, double x, double y){
 
-    //polynomial2D_ders(derX, derY, dp, x, y, x0, y0, scale, order, &coef[ncell*sizex*sizey]);
-    tensorpoly_ders(derX, derY, sizex, sizey, dp, x, y, x0, y0, scale, &coef[ncell*sizex*sizey]);
+
 
     return 1;
 }

@@ -108,5 +108,16 @@ int main(int argc, char ** argv){
     }
     cout << endl;
 
+    double val[9] = {0};
+
+    stenpoly.der(1,1,0,val, 0.46, 0.4505); 
+
+    cout << endl;
+    for (int j=0; j<3; j++){
+        for (int i=0; i<3; i++){
+            cout << val[j*3+i] << "   " ;
+        } cout << endl;
+    }
+
     return 1;
 }
