@@ -169,14 +169,15 @@ int main(int argc, char ** argv){
 
     // ==================================
 	 cout << endl;
-    double coef2[9] = {0.00173611 , 0.0208333 ,-0.0208333, 0.0208333, 0.25 ,-0.25 ,-0.0208333 ,-0.25 ,0.25 };
+    //double coef2[9] = {0.00173611 , 0.0208333 ,-0.0208333, 0.0208333, 0.25 ,-0.25 ,-0.0208333 ,-0.25 ,0.25 };
+    double coef2[9] = {-0.0451389,   1.07617e-18,   0.0416667,   -0.541667,   -6.30283e-17,   0.5,   0.541667 ,  -3.10619e-17 ,  -0.5};
     polynomial testp2 = polynomial(3,3);
     testp2.setCoef(coef2);
     //testp2.printCoef();
 
     Tensor<double> der2;
     der2.setSize({3,3});
-    testp2.evalDer(1,1,0.01,0.0005, 0.1, der2);
+    testp2.evalDer(2,2,0.01,0.0005, 0.1, der2);
 
     for (int i=0; i<9; i++){
         std::cout << der2(i) << " " ;
@@ -186,7 +187,7 @@ int main(int argc, char ** argv){
     }
 
     double val2[9] = {0};
-    polynomial2D_ders(1,1,val2,0.46,0.4505,0.45,0.45,0.1,2,coef2);
+    polynomial2D_ders(2,2,val2,0.46,0.4505,0.45,0.45,0.1,2,coef2);
 	 for (int i=0; i<9; i++){
         std::cout << val2[i] << " " ;
 		  if (i%3 == 2){

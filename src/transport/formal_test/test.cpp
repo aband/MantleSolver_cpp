@@ -44,11 +44,13 @@ int main(int argc, char ** argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    double dt = 0.25*1.0/(double)M;
+    double dt = 0.05*1.0/(double)M;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-dt", &dt, NULL));
 
-    int Nt = 8*M;
+    int Nt = 10;
     ierr = PetscOptionsGetInt(NULL,NULL,"-Nt",&Nt,NULL);CHKERRQ(ierr);
+
+    Nt *= M;
 
     double CFL = dt/(1.0/(double)M);
 
@@ -104,12 +106,12 @@ int main(int argc, char ** argv){
     multilevel ml = multilevel();
 
 cout << "Start here " << endl;
-//    ml.addLevel("(5,5)", {5,5}, mi);
+    ml.addLevel("(5,5)", {5,5}, mi);
 cout << "(5,5) prepared." << endl;
     ml.addLevel("(3,3)", {3,3}, mi);
 cout << "(3,3) prepared." << endl;
-    ml.addLevel("(2,2)", {2,2}, mi);
-cout << "(2,2) prepared." << endl;
+//    ml.addLevel("(2,2)", {2,2}, mi);
+//cout << "(2,2) prepared." << endl;
 cout << "End here " << endl;
 
     double h0 = sqrt((L*H)/(double)(M*N));
@@ -119,13 +121,13 @@ cout << "End here " << endl;
 
     // Test for nonlinear weighting
     unordered_map<std::string, vector<indice>> interior;
-    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
-    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
-    use.setmethod("interior", interior);
-    use.setbias("interior");
+//    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+//    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+//    use.setmethod("interior", interior);
+//    use.setbias("interior");
 
-//    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
-//    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} }));
 
     use.setmethod("interior", interior);
     use.setbias("interior");
@@ -134,6 +136,7 @@ cout << "End here " << endl;
     unordered_map<std::string, vector<indice>> side;
     //side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-1}, {0,-1} }));
     //side.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+    side.insert(std::make_pair<std::string, vector<indice>>("(5,5)", {{-2,0}, {2,0} }));
     side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {0,0}, {-2,0} }));
 
     use.setmethod("side", side);
@@ -152,9 +155,9 @@ cout << "End here " << endl;
 	 cout << "Time stepping starts. " << endl;
 //    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-//    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-//    reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
-    exactSol(mi,2.0, func, 1, true);
+    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
+//    exactSol(mi,2.0, func, 1, true);
 
     // =================================================================
 

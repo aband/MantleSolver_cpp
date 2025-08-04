@@ -323,12 +323,16 @@ int simpleSSP3RK(double dt, int Nt, Vec * insol, const MeshInfo& mi, multilevel&
         VecAXPY(temp2, 0.25, temp);
         VecAXPY(temp2, -0.25*dt, flux2);
 
+//        VecScale(sol, 0.75);
+//        VecAXPY(sol, 0.25, temp);
+//        VecAXPY(sol, -0.25*dt, flux2);
+
         // Second stage
         Vec flux3;
         VecDuplicate(sol, &flux3);
 
         getflux(mi, ml, use, &temp2, &flux3, dmu, dmmesh);
-
+//VecView(flux3, PETSC_VIEWER_STDOUT_WORLD);
         VecScale(sol, 1.0/3.0);
         VecAXPY(sol, 2.0/3.0, temp2);
         VecAXPY(sol, -2.0/3.0*dt, flux3);

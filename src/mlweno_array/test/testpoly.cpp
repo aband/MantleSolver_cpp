@@ -9,6 +9,8 @@ extern "C"{
 #include "tensorstencilpoly.h"
 #include <chrono>
 
+#include "error.h"
+
 double func(const vertex& point,
             const vector<double>& param){
 
@@ -166,7 +168,7 @@ int main(int argc, char ** argv){
     PetscCall(DMCreateGlobalVector(dmu, &globalvec));
 
     SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {0.0}, func);
-VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
+//VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
     // Distribute local part to local vectors.
     PetscCall(DMGetLocalVector(dmu, &localvec)); 
 
@@ -175,7 +177,7 @@ VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
 
     PetscCall(DMDAVecGetArray(dmu, localvec, &locvals));
 
-
+    printexactsol(mi, 0, func, 1, true, {0.0});
 
     // =================================================================
     DMDAVecRestoreArray(dmu,localvec,&locvals);

@@ -11,7 +11,7 @@ class reconstruction {
         reconstruction()  {};
         ~reconstruction() {};
 
-        int setWgts(vector<tensorstencilpoly *> ){
+        int setWgts(vector<> ){
 
             return 1;
         }
@@ -20,6 +20,8 @@ class reconstruction {
 
         vector<double> linwgts;
         vector<double> nonlinwgts;
+
+        vector<tensorstencilpoly *> stenpoly;
 
 }
 
