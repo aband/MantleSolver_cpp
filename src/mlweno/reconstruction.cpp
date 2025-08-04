@@ -131,6 +131,13 @@ int reconstruction::dsigma(const vector<int>& index,
     return 1;
 }
 
+int reconstruction::printSigmaTensor(int s){
+
+    stencilPoly(s).printSigmaTensor();
+
+    return 1;
+}
+
 // ================================================================================
 int multilevel::addLevel(const std::string& name, 
                          const vector<int>& stencilSize,

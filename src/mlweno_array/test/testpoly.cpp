@@ -7,6 +7,21 @@ extern "C"{
 }
 
 #include "tensorstencilpoly.h"
+#include <chrono>
+
+double func(const vertex& point,
+            const vector<double>& param){
+
+    if (point[0] < param[0]) {
+
+    return sin(point[0])*cos(point[1]);
+
+    } else {
+
+    return sin(point[0])*cos(point[1]) + 0.1;
+
+    }
+}
 
 int main(int argc, char ** argv){
 
@@ -110,7 +125,9 @@ int main(int argc, char ** argv){
 
     double val[9] = {0};
 
-    stenpoly.der(1,1,0,val, 0.46, 0.4505); 
+    //for (int ncell = 0; ncell<9; ncell ++){
+    int ncell = 1;
+    stenpoly.der(2,2,ncell,val, 0.46, 0.4505); 
 
     cout << endl;
     for (int j=0; j<3; j++){
@@ -118,6 +135,58 @@ int main(int argc, char ** argv){
             cout << val[j*3+i] << "   " ;
         } cout << endl;
     }
+
+    cout << endl;
+    //}
+
+    stenpoly.setSigma();
+    stenpoly.printSigmaBase();
+
+    // Set full stencils
+    cout << M << "  " << N << endl;
+    vector<tensorstencilpoly *> allsten;
+    allsten.resize(M*N);
+
+	 auto start = std::chrono::steady_clock::now();
+    for (int j=0; j<N-4; j++){
+    for (int i=0; i<M-4; i++){
+			int s = j*M+i;
+        allsten.at(s) = new tensorstencilpoly(5);
+        allsten.at(s)->setCoef(mi,i,j);
+		  allsten.at(s)->setSigma();
+    }}
+	 auto end = std::chrono::steady_clock::now();
+	 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
+    cout << "Time Test: " << duration.count() << " ms." << endl;
+
+    // Reconstruction test
+    Vec globalvec, localvec;
+    double ** locvals;
+
+    PetscCall(DMCreateGlobalVector(dmu, &globalvec));
+
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {0.0}, func);
+VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
+    // Distribute local part to local vectors.
+    PetscCall(DMGetLocalVector(dmu, &localvec)); 
+
+    PetscCall(DMGlobalToLocalBegin(dmu, globalvec, INSERT_VALUES, localvec));
+    PetscCall(DMGlobalToLocalEnd(dmu, globalvec, INSERT_VALUES, localvec));
+
+    PetscCall(DMDAVecGetArray(dmu, localvec, &locvals));
+
+
+
+    // =================================================================
+    DMDAVecRestoreArray(dmu,localvec,&locvals);
+    DMRestoreLocalVector(dmu, &localvec); 
+
+    PetscCall(VecDestroy(&globalvec));
+ 
+    PetscCall(VecDestroy(&globalmesh));
+    PetscCall(DMDestroy(&dmMesh));
+    PetscCall(DMDestroy(&dmu));
+
 
     return 1;
 }

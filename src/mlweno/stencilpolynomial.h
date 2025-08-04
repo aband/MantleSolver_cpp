@@ -76,6 +76,8 @@ class stencilpolynomial {
         double sigma(const polynomial& collapse, const vector<vertex>& corners,
                      const double& area, const vertex& center, const double& h);
 
+        int printSigmaTensor();
+
     private:
 
         vector<int> size {-1,-1};

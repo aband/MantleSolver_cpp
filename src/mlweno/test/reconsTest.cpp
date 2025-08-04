@@ -115,6 +115,8 @@ int main(int argc, char ** argv){
     multilevel ml = multilevel();
 
     ml.addLevel("(3,3)", {3,3}, mi);
+    ml.printCoef("(3,3)", 1);
+    ml.printSigmaTensor("(3,3)",1);
     ml.addLevel("(2,2)", {2,2}, mi);
 
     // =================================================================

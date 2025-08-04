@@ -34,6 +34,10 @@ class reconstruction{
 
         int printcoef(){for (int i=0;i<stencilPoly.getSize(); i++){stencilPoly(i).printCoef();} return 1;}
 
+        int printCoef(int s){return stencilPoly(s).printCoef();}
+
+        int printSigmaTensor(int s);
+
     private:
 
         // Reconstruction stencil size
@@ -85,6 +89,12 @@ class multilevel{
         int getStencilSize(const std::string& name, const int& index)const 
         {return mlrecons.at(name).getStencilSize(index);};
 
+        int printSigmaTensor(const std::string& name, const int& index)
+        {return mlrecons.at(name).printSigmaTensor(index);};
+
+        int printCoef(const std::string& name, const int& index)
+        {return mlrecons.at(name).printCoef(index);};
+
         /**!
          * Extract cell averaged solution to a tensor object
          */
@@ -126,6 +136,8 @@ class multilevel{
          * Print out all stencil polynomial coefficients
          */
         int printcoef(const std::string& name);
+
+
 
         int printsigma(const std::string& name);
 

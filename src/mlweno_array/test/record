@@ -1,0 +1,47 @@
+// old sigma base
+int tensorstencilpoly::setSigma(){
+
+    // Compute sigma as a complete polynomial
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>&   gpf = GaussPointsFace;
+
+    vector<vertex> tmp = refcell;          // Extract four corners
+    for (auto & p: tmp) {p-=center; p/=h;} // Transform points locally
+
+    int total = sizex*sizey;
+
+    sigmabase = new double [total * total] ();
+    memset(sigmabase, 0, total*total);
+
+    double all[total * total] = {0};
+
+    for (int g=0; g<gpf.size(); g++){    
+
+        valarray<double> mapped = GaussMapPointsFace(gpf[g],tmp);
+        double jac = abs(GaussJacobian(gpf[g],tmp));
+        double gw = gwf[g];
+
+        for (int ncell = 0; ncell<total; ncell++){
+            //der(sizex-1, sizey-1, ncell, &all[ncell*total], mapped[0], mapped[1]);
+            der(sizex-1, sizey-1, ncell, &all[ncell*total], 
+                mapped[0], mapped[1],
+                0.0, 0.0, 1);
+        }
+
+        for (int jcell=0; jcell<total; jcell++){
+            for (int icell=0; icell<total; icell++){
+
+//                complete_sum(&all[jcell*total], 
+//                             &all[icell*total], );
+                sigmabase[jcell*total+icell] += 
+								tensor_sum(&all[jcell*total],
+                                   &all[icell*total],
+                                   total,refarea, h, gw, jac);
+            }
+        }
+    }
+
+    return 1;
+}
+
+

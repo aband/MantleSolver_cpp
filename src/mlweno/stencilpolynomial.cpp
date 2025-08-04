@@ -95,6 +95,17 @@ int stencilpolynomial::printCoef(){
     return 1;
 }
 
+int stencilpolynomial::printSigmaTensor(){
+
+    for (int j=0; j<size[0]*size[1]; j++){
+        for (int i=0; i<size[0]*size[1]; i++){
+        cout << tensorsigma({i,j}) << "  " ;
+        }cout << endl;
+    }
+
+    return 1;
+}
+
 double stencilpolynomial::eval(const Tensor<double>& sol, const vertex& point, 
                                const vertex& center, const double& h) const{
 
@@ -158,7 +169,8 @@ double stencilpolynomial::sigmaintegral(const vector<vertex>& corners,
 
     // Sum through all order of derivatives
     for (int i=1; i<total; i++){
-        work += der(i) * pow(area/(h*h),i); 
+        work += der(i) * pow(area/(h*h),i);
+
     }
 
     return work;

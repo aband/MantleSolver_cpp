@@ -173,7 +173,7 @@ tensorstencilpoly::tensorstencilpoly(const int& insizex,
 tensorstencilpoly::~tensorstencilpoly(){
 
     if (coef) delete [] coef;
-
+    if (sigmabase) delete [] sigmabase;
 }
 
 int tensorstencilpoly::setCoef(const MeshInfo& mi, const int& gstartx, const int& gstarty){
@@ -286,7 +286,125 @@ int tensorstencilpoly::der(int derX, int derY, int ncell, double * dp, double x,
 
     return 1;
 }
+/*
+static double complete_sum(double * deri, double * derj, int sizex, int sizey){
 
+    double work = 0.0;
+
+    return work;
+}
+*/
+static double tensor_sum(double * deri, double * derj, int total, 
+                         double area, double h, double gw, double jac){
+
+    double work = 0.0;
+
+    for (int t=1; t<total; t++){
+        work += deri[t] * derj[t] *gw*jac *pow(h*h,t); 
+    }
+
+    return work;
+}
+
+static int lowertri(double * sigmatensor, double * all, int total, 
+				        double area, double h, double gw, double jac){
+
+    for (int d=0; d<total; d++){
+        sigmatensor[d*total+d] += tensor_sum(&all[d*total],
+                                             &all[d*total],
+                                  total,area, h, gw, jac);
+    }
+
+    for (int j=1; j<total; j++){
+        for (int i=0; i<j; i++){
+            sigmatensor[j*total+i] += tensor_sum(&all[j*total],
+                                                 &all[i*total],
+                                      total,area, h, gw, jac);   
+            sigmatensor[i*total+j] = sigmatensor[j*total+i];
+        }
+    }
+
+    return 1;
+}
+
+int tensorstencilpoly::setSigma(){
+
+    // Compute sigma as a complete polynomial
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>&   gpf = GaussPointsFace;
+
+//    vector<vertex> tmp = refcell;          // Extract four corners
+//    for (auto & p: tmp) {p-=center; p/=h;} // Transform points locally
+
+    int total = sizex*sizey;
+
+    sigmabase = new double [total * total] ();
+    memset(sigmabase, 0, total*total);
+
+    double all[total * total] = {0};
+
+    for (int g=0; g<gpf.size(); g++){    
+
+        valarray<double> mapped = GaussMapPointsFace(gpf[g],refcell);
+        double jac = abs(GaussJacobian(gpf[g],refcell));
+        double gw = gwf[g];
+
+        for (int ncell = 0; ncell<total; ncell++){
+            der(sizex-1, sizey-1, ncell, &all[ncell*total], mapped[0], mapped[1]);
+        }
+
+        lowertri(sigmabase, all, total, refarea, h, gw, jac);
+    }
+
+    for (int t=0; t<total*total; t++){
+        sigmabase[t] /= refarea;
+    }
+
+    return 1;
+}
+
+// Evaluation and sigma 
+// simplified serial version
+double tensorstencilpoly::eval(double ** localsol,
+                               const int& startx, const int& starty,
+                               const double& x, const double& y){
+
+    double work = 0.0;
+
+    int cell = 0;
+    for (int j=0; j<sizey; j++){
+    for (int i=0; i<sizex; i++){
+        cell = j*sizex+i; 
+        work += localsol[starty+j][startx+i] * eval(x,y,cell);
+    }}
+
+    return work;
+}
+
+double tensorstencilpoly::sigma(double ** localsol,
+                                const int& startx, const int& starty){
+
+    double work = 0.0;
+
+    int total = sizex*sizey;
+    int cell1=0;
+    int cell2=0;
+    for (int j1=0; j1<sizey; j1++){
+    for (int i1=0; i1<sizex; i1++){
+        cell1 = j1*sizex + i1;
+        for (int j2=0; j2<sizey; j2++){
+        for (int i2=0; i2<sizex; i2++){
+            cell2 = j2*sizex + i2;
+            work += localsol[starty+j1][startx+i1] * 
+						  localsol[starty+j2][startx+i2] * 
+						  sigmabase[cell1*total + cell2];
+        }}
+    }}
+
+    return work;
+}
+
+// Print functions
 int tensorstencilpoly::printCoef(){
 
     int n = sizex*sizey;
@@ -307,6 +425,17 @@ int tensorstencilpoly::printCoef(double * c, int n){
     for (int r=0; r<n; r++){
         cout << c[r] << "   ";
     }
+
+    return 1;
+}
+
+int tensorstencilpoly::printSigmaBase(){
+
+    int total = sizex*sizey;
+    for (int j=0; j<total; j++){
+    for (int i=0; i<total; i++){
+        cout << sigmabase[j*total + i] << "  " ;
+    }cout << endl;}
 
     return 1;
 }
