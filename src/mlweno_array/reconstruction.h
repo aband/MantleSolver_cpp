@@ -11,18 +11,27 @@ class reconstruction {
         reconstruction()  {};
         ~reconstruction() {};
 
-        int setWgts(vector<> ){
-
-            return 1;
-        }
+        int setWgts(vector<vector<sigma>>& );
 
     private:
 
-        vector<double> linwgts;
-        vector<double> nonlinwgts;
+        vector<int> stencilnum;
 
-        vector<tensorstencilpoly *> stenpoly;
+        vector<vector<double>> linwgts;
+        vector<vector<double>> nonlinwgts;
 
+        vector<vector<indice>> pickstencil;
+}
+
+const int geteta(int r){
+
+    if (r==0){
+        return 1;
+    } else if (r==1){
+        return 3;
+    } else {
+        return 4;
+    }
 }
 
 #endif

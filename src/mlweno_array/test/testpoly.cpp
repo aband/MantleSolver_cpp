@@ -146,16 +146,16 @@ int main(int argc, char ** argv){
 
     // Set full stencils
     cout << M << "  " << N << endl;
-    vector<tensorstencilpoly *> allsten;
+    vector<tensorstencilpoly> allsten;
     allsten.resize(M*N);
 
 	 auto start = std::chrono::steady_clock::now();
     for (int j=0; j<N-4; j++){
     for (int i=0; i<M-4; i++){
 			int s = j*M+i;
-        allsten.at(s) = new tensorstencilpoly(5);
-        allsten.at(s)->setCoef(mi,i,j);
-		  allsten.at(s)->setSigma();
+        allsten.at(s) = tensorstencilpoly(5);
+        allsten.at(s).setCoef(mi,i,j);
+		  allsten.at(s).setSigma();
     }}
 	 auto end = std::chrono::steady_clock::now();
 	 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
@@ -188,7 +188,6 @@ int main(int argc, char ** argv){
     PetscCall(VecDestroy(&globalmesh));
     PetscCall(DMDestroy(&dmMesh));
     PetscCall(DMDestroy(&dmu));
-
 
     return 1;
 }
