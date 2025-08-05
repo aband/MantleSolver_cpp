@@ -127,7 +127,7 @@ cout << "End here " << endl;
 //    use.setbias("interior");
 
     interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
-    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} , {-1,0}, {-2,-1}, {0,-1}, {-1,-2}}));
 
     use.setmethod("interior", interior);
     use.setbias("interior");
@@ -137,7 +137,8 @@ cout << "End here " << endl;
     //side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-1}, {0,-1} }));
     //side.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
     side.insert(std::make_pair<std::string, vector<indice>>("(5,5)", {{-2,0}, {2,0} }));
-    side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {0,0}, {-2,0} }));
+    //side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {0,0}, {-2,0} }));
+    side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} , {-1,0}, {-2,-1}, {0,-1}, {-1,-2}}));
 
     use.setmethod("side", side);
     use.setbias("side");

@@ -396,8 +396,8 @@ double tensorstencilpoly::sigma(double ** localsol,
         for (int i2=0; i2<sizex; i2++){
             cell2 = j2*sizex + i2;
             work += localsol[starty+j1][startx+i1] * 
-						  localsol[starty+j2][startx+i2] * 
-						  sigmabase[cell1*total + cell2];
+                    localsol[starty+j2][startx+i2] * 
+                    sigmabase[cell1*total + cell2];
         }}
     }}
 

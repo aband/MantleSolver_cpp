@@ -11,27 +11,36 @@ class reconstruction {
         reconstruction()  {};
         ~reconstruction() {};
 
-        int setWgts(vector<vector<sigma>>& );
+        int init();
+
+        int setWgts(const vector<double>& stensigma, double h0);
+
+        int extractsigma(const vector<double>& sigma_lg,
+                         const vector<double>& sigam_sm);
+
+        vector<indice> sten_lg;
+        vector<indice> sten_sm;
+        int use_sten_const;
+
+        vector<double> linwgts;
+
+        int count;
 
     private:
 
         vector<int> stencilnum;
 
-        vector<vector<double>> linwgts;
-        vector<vector<double>> nonlinwgts;
+        vector<double> nonlinwgts;
 
-        vector<vector<indice>> pickstencil;
-}
+        vector<int> stenorder;
 
-const int geteta(int r){
+        double epsilon = 1e-4;
+        int    s       = 1;
 
-    if (r==0){
-        return 1;
-    } else if (r==1){
-        return 3;
-    } else {
-        return 4;
-    }
-}
+};
+
+const int geteta(int r);
+
+const bool validsten(int r, const MeshInfo& mi);
 
 #endif

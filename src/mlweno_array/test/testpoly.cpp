@@ -7,6 +7,7 @@ extern "C"{
 }
 
 #include "tensorstencilpoly.h"
+#include "reconstruction.h"
 #include <chrono>
 
 #include "error.h"
@@ -146,17 +147,29 @@ int main(int argc, char ** argv){
 
     // Set full stencils
     cout << M << "  " << N << endl;
-    vector<tensorstencilpoly> allsten;
-    allsten.resize(M*N);
+    vector<tensorstencilpoly> sten5;
+    sten5.resize((M-4)*(N-4));
+
+    vector<tensorstencilpoly> sten3;
+    sten3.resize((M-2)*(N-2));
 
 	 auto start = std::chrono::steady_clock::now();
     for (int j=0; j<N-4; j++){
     for (int i=0; i<M-4; i++){
-			int s = j*M+i;
-        allsten.at(s) = tensorstencilpoly(5);
-        allsten.at(s).setCoef(mi,i,j);
-		  allsten.at(s).setSigma();
+        int s = j*(M-4)+i;
+        sten5.at(s) = tensorstencilpoly(4);
+        sten5.at(s).setCoef(mi,i,j);
+		  sten5.at(s).setSigma();
     }}
+
+    for (int j=0; j<N-2; j++){
+    for (int i=0; i<M-2; i++){
+        int s = j*(M-2)+i;
+        sten3.at(s) = tensorstencilpoly(2);
+        sten3.at(s).setCoef(mi,i,j);
+		  sten3.at(s).setSigma();
+    }}
+
 	 auto end = std::chrono::steady_clock::now();
 	 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
     cout << "Time Test: " << duration.count() << " ms." << endl;
@@ -176,6 +189,28 @@ int main(int argc, char ** argv){
     PetscCall(DMGlobalToLocalEnd(dmu, globalvec, INSERT_VALUES, localvec));
 
     PetscCall(DMDAVecGetArray(dmu, localvec, &locvals));
+
+    vector<reconstruction> my_recon;
+    my_recon.resize(M*N);
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        int s = j*M+i;
+        my_recon.at(s) = reconstruction();
+
+        my_recon.at(s).sten_lg.push_back({-2,-2});
+
+        my_recon.at(s).sten_sm.push_back({-2,-2});
+        my_recon.at(s).sten_sm.push_back({-2, 0});
+        my_recon.at(s).sten_sm.push_back({ 0,-2});
+        my_recon.at(s).sten_sm.push_back({ 0, 0});
+
+
+
+        my_recon.at(s).use_sten_const = 1;
+
+        my_recon.at(s).init();
+    }}
 
     printexactsol(mi, 0, func, 1, true, {0.0});
 
