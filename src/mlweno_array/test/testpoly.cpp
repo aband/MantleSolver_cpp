@@ -193,23 +193,23 @@ int main(int argc, char ** argv){
     vector<reconstruction> my_recon;
     my_recon.resize(M*N);
 
+    vector<indice> sten_lg_pre = {{-2,-2}};
+    vector<indice> sten_sm_pre = {{-2,-2},{-2,0},{0,-2},{0,0}};
+
     for (int j=0; j<N; j++){
     for (int i=0; i<M; i++){
         int s = j*M+i;
         my_recon.at(s) = reconstruction();
 
-        my_recon.at(s).sten_lg.push_back({-2,-2});
-
-        my_recon.at(s).sten_sm.push_back({-2,-2});
-        my_recon.at(s).sten_sm.push_back({-2, 0});
-        my_recon.at(s).sten_sm.push_back({ 0,-2});
-        my_recon.at(s).sten_sm.push_back({ 0, 0});
-
-
-
         my_recon.at(s).use_sten_const = 1;
 
-        my_recon.at(s).init();
+        my_recon.at(s).init(3,3,5,5,2,4,sten_lg_pre, sten_sm_pre, mi,{i,j});
+    }}
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        int s = j*M+i;
+        cout << my_recon.at(s).sten_lg.size() + my_recon.at(s).sten_sm.size() + my_recon.at(s).use_sten_const << endl;
     }}
 
     printexactsol(mi, 0, func, 1, true, {0.0});
