@@ -60,4 +60,32 @@ int printexactsol(const MeshInfo& mi, double t,
     return 1;
 }
 
+int printreconsol(const vector<reconstruction>& my_recon, int M, int N, int mark){
 
+    const char * fieldname = "reconSol";
+
+    char * filename = (char *)malloc(strlen(fieldname)+10+4);
+
+    char n_char[10];
+
+    std::sprintf(n_char,"%d",mark);
+    strcpy(filename, fieldname);
+    strcat(filename, n_char);
+    strcat(filename, ".dat");
+
+    FILE * sol = fopen(filename,"w");
+
+    for (int j=0; j<N; j++){
+        for (int l=0; l<3; l++){
+            for (int i=0; i<M; i++){
+                for (int g=0; g<3; g++){
+                    fprintf(sol, "%.12f ", my_recon.at(j*M+i).elem_val.at(l*3+g) );
+                }
+            }
+        }
+    }
+
+    fclose(sol);
+
+    return 1;
+}

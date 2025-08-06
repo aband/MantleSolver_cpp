@@ -35,12 +35,19 @@ class tensorstencilpoly {
 
         double eval(double ** localsol,
                     const int& startx, const int& starty,
-                    const double& x, const double& y);
+                    const double& x, const double& y) const;
+
+        double eval(double ** localsol, const vertex& p) const {return eval(localsol, startx, starty, p[0], p[1]);};
 
         int der(int derX, int derY, int ncell, double * dp, double x, double y);
         int der(int derX, int derY, int ncell, double * dp, double x, double y, double x0, double y0, double scale);
 
         double sigma(double ** localsol, const int& startx, const int& starty);
+
+        double sigma(double ** localsol){return sigma(localsol, startx, starty);};
+
+        int startx;
+        int starty;
 
         // Print stencil polynomial coefficients
         int printCoef();
@@ -60,6 +67,7 @@ class tensorstencilpoly {
         vector<vertex> refcell;
         double refarea = 0.0;
         double h = 0.0;
+
 };
 
 #endif

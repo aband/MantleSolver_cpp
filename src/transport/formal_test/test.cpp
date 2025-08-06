@@ -44,10 +44,10 @@ int main(int argc, char ** argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    double dt = 0.05*1.0/(double)M;
+    double dt = 0.1*1.0/(double)M;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-dt", &dt, NULL));
 
-    int Nt = 10;
+    int Nt = 20;
     ierr = PetscOptionsGetInt(NULL,NULL,"-Nt",&Nt,NULL);CHKERRQ(ierr);
 
     Nt *= M;
@@ -154,9 +154,9 @@ cout << "End here " << endl;
 
     //simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 	 cout << "Time stepping starts. " << endl;
-//    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-//    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    //simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+//    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
 //    exactSol(mi,2.0, func, 1, true);
 

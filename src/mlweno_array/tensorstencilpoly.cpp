@@ -367,7 +367,7 @@ int tensorstencilpoly::setSigma(){
 // simplified serial version
 double tensorstencilpoly::eval(double ** localsol,
                                const int& startx, const int& starty,
-                               const double& x, const double& y){
+                               const double& x, const double& y) const{
 
     double work = 0.0;
 

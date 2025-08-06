@@ -15,7 +15,7 @@ extern "C"{
 double func(const vertex& point,
             const vector<double>& param){
 
-    if (point[0] < param[0]) {
+    if (point[0] < 0.5) {
 
     return sin(point[0])*cos(point[1]);
 
@@ -160,6 +160,8 @@ int main(int argc, char ** argv){
         sten5.at(s) = tensorstencilpoly(4);
         sten5.at(s).setCoef(mi,i,j);
 		  sten5.at(s).setSigma();
+		  sten5.at(s).startx = i;
+		  sten5.at(s).starty = j;
     }}
 
     for (int j=0; j<N-2; j++){
@@ -168,11 +170,32 @@ int main(int argc, char ** argv){
         sten3.at(s) = tensorstencilpoly(2);
         sten3.at(s).setCoef(mi,i,j);
 		  sten3.at(s).setSigma();
+		  sten3.at(s).startx = i;
+		  sten3.at(s).starty = j;
     }}
 
 	 auto end = std::chrono::steady_clock::now();
 	 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
     cout << "Time Test: " << duration.count() << " ms." << endl;
+
+    // Set all the reconstruction
+//    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2},{-3, -2}};
+    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2}};
+    vector<indice> sten_sm_pre = {{-2,-2},{-2, 0},{0 ,-2},{0,0}};
+
+    vector<reconstruction> my_recon;
+    my_recon.resize(M*N);
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        int s = j*M+i;
+        my_recon.at(s) = reconstruction();
+
+        my_recon.at(s).use_sten_const = 1;
+
+        my_recon.at(s).init(3,3,5,5,2,4,sten_lg_pre, sten_sm_pre, mi,{i,j});
+        
+    }}
 
     // Reconstruction test
     Vec globalvec, localvec;
@@ -190,29 +213,77 @@ int main(int argc, char ** argv){
 
     PetscCall(DMDAVecGetArray(dmu, localvec, &locvals));
 
-    vector<reconstruction> my_recon;
-    my_recon.resize(M*N);
+    // Compute sigma 
+    vector<double> sigma_lg;
+    sigma_lg.resize(sten5.size());
 
-    vector<indice> sten_lg_pre = {{-2,-2}};
-    vector<indice> sten_sm_pre = {{-2,-2},{-2,0},{0,-2},{0,0}};
+    vector<double> sigma_sm;
+    sigma_sm.resize(sten3.size());
 
-    for (int j=0; j<N; j++){
-    for (int i=0; i<M; i++){
-        int s = j*M+i;
-        my_recon.at(s) = reconstruction();
+    for (int j=0; j<N-4; j++){
+    for (int i=0; i<M-4; i++){
+        int s = j*(M-4)+i;
+        sigma_lg.at(s) = sten5.at(s).sigma(locvals); 
+    }}   
 
-        my_recon.at(s).use_sten_const = 1;
-
-        my_recon.at(s).init(3,3,5,5,2,4,sten_lg_pre, sten_sm_pre, mi,{i,j});
+    for (int j=0; j<N-2; j++){
+    for (int i=0; i<M-2; i++){
+        int s = j*(M-2)+i;
+        sigma_sm.at(s) = sten3.at(s).sigma(locvals);
     }}
 
+/*
     for (int j=0; j<N; j++){
     for (int i=0; i<M; i++){
         int s = j*M+i;
         cout << my_recon.at(s).sten_lg.size() + my_recon.at(s).sten_sm.size() + my_recon.at(s).use_sten_const << endl;
     }}
+*/
+   
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        int s = j*M+i;
+        my_recon.at(s).extractsigma(sigma_lg, sigma_sm);
+        my_recon.at(s).setWgts(1.0/(double)M);
+		  //my_recon.at(s).printinfo();
+        //my_recon.at(s).efforder();
+        //cout << my_recon.at(s).efforder() << "  ";
+    }}
+
+    //my_recon.at(0).printinfo();
 
     printexactsol(mi, 0, func, 1, true, {0.0});
+
+    vector<vertex> sample = {{-1+1e-3,-1+1e-3},
+                             { 0     ,-1+1e-3},
+                             { 1-1e-3,-1+1e-3},
+									  {-1+1e-3, 0},
+                             { 0     , 0},
+                             { 1-1e-3, 0},
+									  {-1+1e-3, 1-1e-3},
+                             { 0     , 1-1e-3},
+                             { 1-1e-3, 1-1e-3}};
+
+    vector<vertex> mapped; 
+    mapped.resize(sample.size());
+
+    // Evalutation at sample points
+    for (int j=0; j<N; j++){
+
+        for (int i=0; i<M; i++){
+
+            // Extract corners of the selected cell
+            vertexSet corners = extractCorners(mi, {i,j});
+
+            for (int g=0; g<sample.size(); g++){
+                mapped.at(g) = GaussMapPointsFace(sample.at(g), corners);
+            }
+
+            my_recon.at(j*M+i).eval(locvals, mapped, sten5, sten3);
+        }
+    }
+
+    printreconsol(my_recon, M ,N, 1);
 
     // =================================================================
     DMDAVecRestoreArray(dmu,localvec,&locvals);

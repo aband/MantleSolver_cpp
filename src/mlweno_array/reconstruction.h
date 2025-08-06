@@ -18,9 +18,7 @@ class reconstruction {
                  const vector<indice>& sten_sm_pre,
                  const MeshInfo& mi, indice start);
 
-        int setWgts(const vector<double>& stensigma_lg,
-                    const vector<double>& stensigma_sm,
-					  	  double h0);
+        int setWgts(double h0);
 
         int extractsigma(const vector<double>& sigma_lg,
                          const vector<double>& sigam_sm);
@@ -30,24 +28,49 @@ class reconstruction {
         vector<indice> sten_sm;
         int use_sten_const;
 
+        vector<int> flat_sten_lg;
+        vector<int> flat_sten_sm;
+
         // Linear weights
         vector<double> linwgts_lg;
         vector<double> linwgts_sm;
-        double linwgts_const;
+        double linwgts_const = 0;
 
         // Nonlinear weights
         vector<double> nonlinwgts_lg;
         vector<double> nonlinwgts_sm;
         double nonlinwgts_const;
 
+        // r = order + 1
+        // used in weighting calculation
         int r_sm;
         int r_lg;
         int r_const = 1;
 
+        indice gstart;
+
+        int eval(double ** localvals, const vector<vertex>& p, 
+                 const vector<tensorstencilpoly>& sten_lg, 
+                 const vector<tensorstencilpoly>& sten_sm);
+
+        vector<double> elem_val;
+
+        // print functions
+        int printinfo();
+
+        double efforder();
+
     private:
 
-        vector<int> stencilnum;
-        vector<double> nonlinwgts;
+        // Extracted smoothness indicator
+        vector<double> stensigma_lg;
+        vector<double> stensigma_sm;
+
+        int allsize_lgx;
+        int allsize_lgy;
+       
+        int allsize_smx;
+        int allsize_smy;
 
         double epsilon = 1e-4;
         int    s       = 1;

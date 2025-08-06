@@ -2,16 +2,16 @@ function [] = reconplot(M, N, mark, mytitle)
 
 % Read grid files 
 
-fileID = fopen('build/gridreconx.dat','r');
+fileID = fopen('savedrun/gridreconx.dat','r');
 pX = fscanf(fileID, '%f', [1,Inf]);
 
-fileID = fopen('build/gridrecony.dat','r');
+fileID = fopen('savedrun/gridrecony.dat','r');
 pY = fscanf(fileID, '%f', [1,Inf]);
 
 pX = reshape(pX, 3*M, 3*N);
 pY = reshape(pY, 3*M, 3*N);
 
-filename = strcat('build/reconSol',string(mark));
+filename = strcat('savedrun/reconSol',string(mark));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 sol = fscanf(fileID, '%f', [1,Inf]);
