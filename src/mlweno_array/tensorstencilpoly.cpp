@@ -376,8 +376,10 @@ double tensorstencilpoly::eval(double ** localsol,
     for (int i=0; i<sizex; i++){
         cell = j*sizex+i; 
         work += localsol[starty+j][startx+i] * eval(x,y,cell);
+//        cout << localsol[starty+j][startx+i] << "  " ;
     }}
-
+    //}cout << endl;}
+//cout << endl;
     return work;
 }
 

@@ -21,7 +21,7 @@ double func(const vertex& point,
 
     } else {
 
-    return sin(point[0])*cos(point[1]) + 0.1;
+    return sin(point[0])*cos(point[1]) + 0.5;
 
     }
 }
@@ -114,6 +114,7 @@ int main(int argc, char ** argv){
     int startM = M/2-2;
     int startN = N/2-2;
 
+/*
     // Define tensor product stencil polynomial
     tensorstencilpoly stenpoly = tensorstencilpoly(2);
 
@@ -144,6 +145,7 @@ int main(int argc, char ** argv){
 
     stenpoly.setSigma();
     stenpoly.printSigmaBase();
+*/
 
     // Set full stencils
     cout << M << "  " << N << endl;
@@ -181,6 +183,7 @@ int main(int argc, char ** argv){
     // Set all the reconstruction
 //    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2},{-3, -2}};
     vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2}};
+    //vector<indice> sten_lg_pre = {{-2,-2}};
     vector<indice> sten_sm_pre = {{-2,-2},{-2, 0},{0 ,-2},{0,0}};
 
     vector<reconstruction> my_recon;
@@ -247,10 +250,13 @@ int main(int argc, char ** argv){
         my_recon.at(s).setWgts(1.0/(double)M/(double)N);
 		  //my_recon.at(s).printinfo();
         //my_recon.at(s).efforder();
-        //cout << my_recon.at(s).efforder() << "  ";
-    }}
+        cout << my_recon.at(s).efforder() << "  ";
+    }cout << endl;}
 
-    //my_recon.at(0).printinfo();
+    int midM = M/2;
+    int midN = N/2;
+cout<< "At the middle cell : " << midM << " , " << midN << endl;
+    my_recon.at(midN*M+midM).printinfo();
 
     printexactsol(mi, 0, func, 1, true, {0.0});
 
@@ -280,6 +286,9 @@ int main(int argc, char ** argv){
             }
 
             my_recon.at(j*M+i).eval(locvals, mapped, sten5, sten3);
+            //if (j==midN && i==midM){
+            //    my_recon.at(j*M+i).eval(locvals, mapped, sten5, sten3);
+            //}
         }
     }
 

@@ -8,7 +8,11 @@ inline double LFflux(double fneg, double fpos, double uneg, double upos, double 
     return 0.5*(fneg + fpos - alpha*(upos-uneg));    
 }
 
-double edgefluxintegral(const reconstruction& recon_out,
-                        const reconstruction& recon_in);
+double advflux_edge(const reconstruction& recon_out,
+                    const reconstruction& recon_in,
+                    double ** localvals);
+// Boundary
+double advflux_edge(const reconstruction& recon_in,
+                    double ** localvals, int e);
 
 #endif

@@ -192,7 +192,8 @@ int reconstruction::printinfo(){
     }cout << endl;
 
     if (use_sten_const){
-        cout << "The constant stencil is being used here." << endl;
+        cout << "The constant stencil : " << nonlinwgts_const << endl;
+      
     }cout << endl;
 
     return 1;
