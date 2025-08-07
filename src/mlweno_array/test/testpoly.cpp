@@ -244,7 +244,7 @@ int main(int argc, char ** argv){
     for (int i=0; i<M; i++){
         int s = j*M+i;
         my_recon.at(s).extractsigma(sigma_lg, sigma_sm);
-        my_recon.at(s).setWgts(1.0/(double)M);
+        my_recon.at(s).setWgts(1.0/(double)M/(double)N);
 		  //my_recon.at(s).printinfo();
         //my_recon.at(s).efforder();
         //cout << my_recon.at(s).efforder() << "  ";

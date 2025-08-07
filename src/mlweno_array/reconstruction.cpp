@@ -91,23 +91,23 @@ int reconstruction::extractsigma(const vector<double>& sigma_lg,
 
     for (int s=0; s<sten_lg.size(); s++){
 
-        indice stenid = sten_lg.at(s) + gstart;
-
-        stensigma_lg.at(s) = sigma_lg.at(stenid[1] * allsize_lgy + stenid[0]);
+//        indice stenid = sten_lg.at(s) + gstart;
+//        stensigma_lg.at(s) = sigma_lg.at(stenid[1] * allsize_lgx + stenid[0]);
+        stensigma_lg.at(s) = sigma_lg.at(flat_sten_lg.at(s));
 
     }
 
     for (int s=0; s<sten_sm.size(); s++){
 
-        indice stenid = sten_sm.at(s) + gstart;
-
-        stensigma_sm.at(s) = sigma_sm.at(stenid[1] * allsize_smy + stenid[0]);
+//        indice stenid = sten_sm.at(s) + gstart;
+//        stensigma_sm.at(s) = sigma_sm.at(stenid[1] * allsize_smx + stenid[0]);
+        stensigma_sm.at(s) = sigma_sm.at(flat_sten_sm.at(s));
     }
 
     return 1;
 }
 
-int reconstruction::setWgts(double h0){
+int reconstruction::setWgts(double area){
 
     double sum = 0.0;
 
@@ -115,17 +115,17 @@ int reconstruction::setWgts(double h0){
     //nonlinwgts_sm.clear(); 
 
     for (int l=0; l<nonlinwgts_lg.size(); l++){
-        nonlinwgts_lg.at(l) = linwgts_lg.at(l) / pow(stensigma_lg.at(l) + epsilon*h0*h0, s*r_lg + geteta(r_lg));
+        nonlinwgts_lg.at(l) = linwgts_lg.at(l) / pow(stensigma_lg.at(l) + epsilon*area, s*r_lg + geteta(r_lg));
         sum += nonlinwgts_lg.at(l);
     }
 
     for (int l=0; l<nonlinwgts_sm.size(); l++){
-        nonlinwgts_sm.at(l) = linwgts_sm.at(l) / pow(stensigma_sm.at(l) + epsilon*h0*h0, s*r_sm + geteta(r_sm));
+        nonlinwgts_sm.at(l) = linwgts_sm.at(l) / pow(stensigma_sm.at(l) + epsilon*area, s*r_sm + geteta(r_sm));
         sum += nonlinwgts_sm.at(l);
     }
 
     if (use_sten_const){
-        nonlinwgts_const = linwgts_const / pow(0.0 + epsilon*h0*h0, s*r_const + geteta(r_const));
+        nonlinwgts_const = linwgts_const / pow(0.0 + epsilon*area, s*r_const + geteta(r_const));
 		  sum += nonlinwgts_const;
     }
 

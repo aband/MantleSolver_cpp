@@ -18,7 +18,7 @@ class reconstruction {
                  const vector<indice>& sten_sm_pre,
                  const MeshInfo& mi, indice start);
 
-        int setWgts(double h0);
+        int setWgts(double area);
 
         int extractsigma(const vector<double>& sigma_lg,
                          const vector<double>& sigam_sm);
