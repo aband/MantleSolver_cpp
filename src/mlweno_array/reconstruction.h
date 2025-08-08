@@ -53,6 +53,10 @@ class reconstruction {
                  const vector<tensorstencilpoly>& sten_lg, 
                  const vector<tensorstencilpoly>& sten_sm);
 
+        double eval(double ** localvals, const vertex& p,
+                    const vector<tensorstencilpoly>& sten_lg,
+                    const vector<tensorstencilpoly>& sten_sm) const;
+
         vector<double> elem_val;
 
         // print functions

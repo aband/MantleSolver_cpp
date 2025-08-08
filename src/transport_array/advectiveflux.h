@@ -8,11 +8,11 @@ inline double LFflux(double fneg, double fpos, double uneg, double upos, double 
     return 0.5*(fneg + fpos - alpha*(upos-uneg));    
 }
 
-double advflux_edge(const reconstruction& recon_out,
-                    const reconstruction& recon_in,
-                    double ** localvals);
-// Boundary
-double advflux_edge(const reconstruction& recon_in,
-                    double ** localvals, int e);
+int advflux_all(const vector<reconstruction>& my_recon,
+                const vector<tensorstencilpoly>& sten_lg,
+                const vector<tensorstencilpoly>& sten_sm,
+                double ** localvals,
+                vector<double>& advflux,
+                const MeshInfo& mi);
 
 #endif

@@ -598,3 +598,18 @@ u(x,y,t) = \left \{
 \end{equation}
 We forward marching to the time = $2.0$, when trailing rarefaction reaches the 
 leading shock. We use SSP2RK time stepping scheme.
+\begin{figure}[htb]
+\centering
+\begin{minipage}[t]{0.9\textwidth}
+\centering
+\includegraphics[width=6.5cm,height=5cm]{chapters/pics/rarefraction_1.eps}
+\includegraphics[width=6.5cm,height=5cm]{chapters/pics/rarefraction_2.eps}
+\end{minipage}%
+\begin{minipage}[t]{0.1\textwidth}
+\centering
+\includegraphics[width=0.5cm,height=4cm]{chapters/pics/colorbar.png}
+\end{minipage}
+\caption{The reconstructed solution on the $180\times 60$ rectangular mesh at times 1.0 and 2.0. (The rare faction 
+and shock meet at time 2.0.)}
+\label{fig:rarafactiontest}
+\end{figure}

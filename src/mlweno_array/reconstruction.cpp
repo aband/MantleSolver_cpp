@@ -172,6 +172,27 @@ int reconstruction::eval(double ** localvals, const vector<vertex>& p,
     return 1;
 }
 
+double reconstruction::eval(double ** localvals, const vertex& p,
+                            const vector<tensorstencilpoly>& sten_lg,
+                            const vector<tensorstencilpoly>& sten_sm) const{
+
+    double work= 0.0;
+
+    for (int s=0; s<nonlinwgts_lg.size(); s++){
+        work += nonlinwgts_lg.at(s) * sten_lg.at(flat_sten_lg.at(s)).eval(localvals,p);
+    } 
+
+    for (int s=0; s<nonlinwgts_sm.size(); s++){
+        work += nonlinwgts_sm.at(s) * sten_sm.at(flat_sten_sm.at(s)).eval(localvals,p);
+    }
+
+    if (use_sten_const){
+        work += nonlinwgts_const * localvals[gstart[1]][gstart[0]];
+    }
+
+    return work;
+}
+
 // ===========================================================
 int reconstruction::printinfo(){
 
