@@ -582,10 +582,13 @@ u_D(0,y,t) = \left\{\begin{alignedat}{2}
 \end{equation}
 
 
-\section{Other Numerical Test}
-For completeness, we test our ML-WENO algorithm with simple Riemann shock and rarefraction.
-Let $\mathbf{f}(u) = (u^2/2, u^2/2)$ be the Burgers flux function. In this example,
-we take the initial condition $u_0(x,y) = 1$, and the computational domain $\Omega = [0,3] \times [0,1]$.
+\section{Numerical Test}
+We test our ML-WENO algorithm with Riemann shock and rarefaction.
+Let $\mathbf{f}(u) = (u^2/2, 0)$ be the Burgers flux function. 
+In this example,
+we take the initial condition $u_0(x,y) = 1$ in the strip $0.5<x<1.5$ and 0 elsewhere within the computational domain $\Omega = [0,3] \times [0,1]$.
+We assign zero flux boundary condition on the two sides $y=0$ and $y=1$.
+
 The true solution is 
 \begin{equation}\label{eq:truesolutionrarefaction}
 u(x,y,t) = \left \{ 
@@ -597,7 +600,9 @@ u(x,y,t) = \left \{
 		  \right.
 \end{equation}
 We forward marching to the time = $2.0$, when trailing rarefaction reaches the 
-leading shock. We use SSP2RK time stepping scheme.
+leading shock. For simplicification, we test the problem on a $180\times 60$ rectangular mesh.
+We compute the solution to time 2 using the standard SSP3 RUnge-Kutta time stepping scheme,
+with time step $\Delta t = 0.2h$.
 \begin{figure}[htb]
 \centering
 \begin{minipage}[t]{0.9\textwidth}
@@ -607,7 +612,7 @@ leading shock. We use SSP2RK time stepping scheme.
 \end{minipage}%
 \begin{minipage}[t]{0.1\textwidth}
 \centering
-\includegraphics[width=0.5cm,height=4cm]{chapters/pics/colorbar.png}
+\includegraphics[width=0.5cm,height=5cm]{chapters/pics/colorbar.png}
 \end{minipage}
 \caption{The reconstructed solution on the $180\times 60$ rectangular mesh at times 1.0 and 2.0. (The rare faction 
 and shock meet at time 2.0.)}

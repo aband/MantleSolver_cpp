@@ -1,84 +1,120 @@
 #include "advectiveflux.h"
 
-int advflux_all(const vector<reconstruction>& my_recon,
-                const vector<tensorstencilpoly>& sten_lg,
-                const vector<tensorstencilpoly>& sten_sm,
-                double ** localvals,
-					 vector<double>& advflux,
-					 const MeshInfo& mi,
-					 bool localLF,
-					 double globalLF){
+static bool isoutflow(vertex vel, vertex normal){
 
-    int M = mi.MPIglobalCellSize[0];
-    int N = mi.MPIglobalCellSize[1];
+    if(vel[0]*normal[0] + vel[1]*normal[1] > 0){
+        return true;
+    } else {
+        return false;
+    }
+}
 
-    // Clear flux vector
-    advflux.clear();
-    advflux.resize(M*(N+1) + N*(M+1));
-
-    const valarray<double>& gwe = GaussWeightsEdge;
-    const valarray<double>& gpe = GaussPointsEdge;
-
-    vector<double> quadwts;
-    vector<vertex> quadpts;
-
-    double len = 0.0;
-    vertex unitNormal;
+// Interior edge
+double advflux_edge(const reconstruction& recon_neg,
+					     const reconstruction& recon_pos,
+                    const vector<tensorstencilpoly>& sten_lg,
+                    const vector<tensorstencilpoly>& sten_sm,
+                    double ** localvals,
+						  const vertexSet& edge,
+						  const vector<vertex>& vel,
+						  bool localLF,
+						  double gLF){
 
     double work = 0.0;
 
-    double LF = globalLF;
+    // Compute flux integration along the edge
+    const valarray<double>& gwe = GaussWeightsEdge;
+	 const valarray<double>& gpe = GaussPointsEdge;
 
-    // Interior horizonal edges 
-    for (int j=0; j<N-1; j++){
-    for (int i=0; i<M  ; i++){
+    double len = length(edge);
+	 vertex unitNormal = UnitNormal(edge, len);
 
-        indice gcell {i, j};
-        vertexSet corners = extractCorners(mi, gcell);
+    for (int g=0; g<gpe.size(); g++){
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
-        int neg =     j*M + i;
-        int pos = (j+1)*M + i;
+        double uneg = recon_neg.eval(localvals, mapped, sten_lg, sten_sm); 
+        double upos = recon_neg.eval(localvals, mapped, sten_lg, sten_sm); 
 
-        work = 0.0;
+        double fneg = advfunc(uneg, vel.at(g), unitNormal);
+        double fpos = advfunc(upos, vel.at(g), unitNormal);
 
-        // Get quad points
-        vertexSet hori {corners.at(3), corners.at(2)};
-
-        len = length(hori);
-        unitNormal = UnitNormal(hori, len);
-
-        for (int g=0; g<gpe.size(); g++){
-            vertex mapped = GaussMapPointsEdge({gpe[g]}, hori);
-
-            double uneg = my_recon.at(neg).eval(locvals, mapped, sten_lg, sten_sm);
-            double upos = my_recon.at(pos).eval(locvals, mapped, sten_lg, sten_sm);
-
-            vertex fneg = advfunc(uneg, vel.at(g), unitNormal);
-            vertex fpos = advfunc(upos, vel.at(g), unitNormal);
-
-            if (localLF) {
-                LF = ads(vel.at(g)[0] * unitNormal[0] + vel.at(g)[1] * unitNormal[1]);
-					 LF = find_max(abs(dadvfunc(uneg)), abs(dadvfunc(upos))) * LF;
-            }
-
-            work += gwe[g] * LFflux(fneg, fpos, uneg, upos, LF)* len/2.0; 
+        if (localLF) {
+            gLF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
+				gLF = find_max(abs(dfdu(uneg)),abs(dfdu(upos)))*gLF;
         }
-
-        advflux.at(pos) = work;
-    }}
-
-    // On the boundary hori edge
-    for (int i=0; i<M; i++){
-        // Two edges
-        vertexSet top {};
-        indice top {};
-        vertexSet corners = extractCorners(mi, top);
-
-        indice top {};
-        vertexSet corners = extractCorners(mi, bottom);
-
-      
+        work += gwe[g] * LFflux(fneg, fpos, uneg, upos, gLF)* len/2.0;
     }
 
-    return 1;
+    return work;
+}
+
+// Boundary flux integration, use one-sided reconstruction object
+// Used in free outflow boundary condition
+double advflux_edge(const reconstruction& recon,
+                    const vector<tensorstencilpoly>& sten_lg,
+                    const vector<tensorstencilpoly>& sten_sm,
+                    double ** localvals,
+						  const vertexSet& edge,
+						  const vector<vertex>& vel,
+						  bool localLF,
+						  double gLF){
+
+    double work = 0.0;
+
+    // Compute flux integration along the edge
+    const valarray<double>& gwe = GaussWeightsEdge;
+	 const valarray<double>& gpe = GaussPointsEdge;
+
+    double len = length(edge);
+	 vertex unitNormal = UnitNormal(edge, len);
+
+    for (int g=0; g<gpe.size(); g++){
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+
+        double u = recon.eval(localvals, mapped, sten_lg, sten_sm); 
+        double f = advfunc(u, vel.at(g), unitNormal);
+ 
+        if (localLF) {
+            gLF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
+				gLF = find_max(abs(dfdu(u)),abs(dfdu(u)))*gLF;
+        }
+        work += gwe[g] * LFflux(f, f, u, u, gLF)* len/2.0;
+ 
+    }
+
+    return work;
+}
+
+double advflux_edge(double (*func)(const vertex& point,
+								           const vector<double>& param),
+					     const vector<double>& param,
+					     const vertexSet& edge,
+						  const vector<vertex>& vel,
+						  bool localLF,
+						  double gLF){
+
+    double work = 0.0;
+
+    // Compute flux integration along the edge
+    const valarray<double>& gwe = GaussWeightsEdge;
+	 const valarray<double>& gpe = GaussPointsEdge;
+
+    double len = length(edge);
+	 vertex unitNormal = UnitNormal(edge, len);
+
+    for (int g=0; g<gpe.size(); g++){
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+
+        double u = func(mapped, param);
+        double f = advfunc(u, vel.at(g), unitNormal);
+ 
+        if (localLF) {
+            gLF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
+				gLF = find_max(abs(dfdu(u)),abs(dfdu(u)))*gLF;
+        }
+        work += gwe[g] * LFflux(f, f, u, u, gLF)* len/2.0;
+ 
+    }
+
+    return work;
 }
