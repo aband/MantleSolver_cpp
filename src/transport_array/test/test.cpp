@@ -12,9 +12,13 @@ extern "C"{
 
 #include "error.h"
 
+#include "advectiveflux.h"
+
+#include "rk.h"
+
 double init(const vertex& point,
             const vector<double>& param){
-
+/*
     if (point[0] < 0.5) {
 
     return sin(point[0])*cos(point[1]);
@@ -24,6 +28,10 @@ double init(const vertex& point,
     return sin(point[0])*cos(point[1]) + 0.5;
 
     }
+*/
+
+return 0.0;
+
 }
 
 int main(int argc, char ** argv){
@@ -37,9 +45,22 @@ int main(int argc, char ** argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-    int M = 30, N = 30;
+    int M = 20, N = 20;
     ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
     ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
+
+    double dt = 0.4*1.0/(double)M;
+    PetscCall(PetscOptionsGetReal(NULL,NULL,"-dt", &dt, NULL));
+
+    int Nt = 10;
+    ierr = PetscOptionsGetInt(NULL,NULL,"-Nt",&Nt,NULL);CHKERRQ(ierr);
+
+    //Nt *= M;
+
+    double CFL = dt/(1.0/(double)M);
+
+    cout << "dt, dh = " << dt << " , " << 1.0/(double)M << ". " << "CFL number is : " << CFL << ". The final time is : " << 
+    Nt * dt << ". " << endl;
 
     double L = 1, H = 1;
     //double xstart = -L/2, ystart = -H/2;
@@ -125,7 +146,10 @@ int main(int argc, char ** argv){
     vector<tensorstencilpoly> sten3;
     sten3.resize((M-2)*(N-2));
 
-	 auto start = std::chrono::steady_clock::now();
+    vector<tensorstencilpoly> sten2;
+    sten2.resize((M-1)*(N-1));
+
+//	 auto start = std::chrono::steady_clock::now();
     for (int j=0; j<N-4; j++){
     for (int i=0; i<M-4; i++){
         int s = j*(M-4)+i;
@@ -146,20 +170,65 @@ int main(int argc, char ** argv){
 		  sten3.at(s).starty = j;
     }}
 
-	 auto end = std::chrono::steady_clock::now();
-	 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
-    cout << "Time Test: " << duration.count() << " ms." << endl;
+    for (int j=0; j<N-1; j++){
+    for (int i=0; i<M-1; i++){
+        int s = j*(M-1) + i;
+        sten2.at(s) = tensorstencilpoly(1);
+        sten2.at(s).setCoef(mi,i,j);
+		  sten2.at(s).setSigma();
+		  sten2.at(s).startx = i;
+		  sten2.at(s).starty = j;
+    }}
 
-    // Prepare for stencils
-    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2}};
-    vector<indice> sten_sm_pre = {{-2,-2},{-2, 0},{0 ,-2},{0,0}};
+//	 auto end = std::chrono::steady_clock::now();
+//	 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
+//    cout << "Time Test: " << duration.count() << " ms." << endl;
+
+    // Prepare for stencils (5,3) reconstruction
+    //vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2}};
+    //vector<indice> sten_sm_pre = {{-2,-2},{-2, 0},{0 ,-2},{0,0}};
+
+    // Prepare for stencils (3,2) reconstruction
+    vector<indice> sten_lg_pre = {{-1,-1}};
+    vector<indice> sten_sm_pre = {{-1,-1}, {-1,0}, {0,-1}, {0,0}};
 
     vector<reconstruction> my_recon;
     my_recon.resize(M*N);
 
+    // Initializing reconstrucitons for each cell
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        int s = j*M+i;
+ 
+        my_recon.at(s) = reconstruction();
+        if (i==0){
+            my_recon.at(s).use_sten_const = 1;
+		  }else {
+            my_recon.at(s).use_sten_const = 0;
+        }
+        my_recon.at(s).init(2,2,3,3,1,2,sten_lg_pre, sten_sm_pre, mi,{i,j});
+    }}
+
     printexactsol(mi, 0, init, 1, true, {0.0});
 
+    rk1(dt, Nt, &globalvec, mi, dmu, dmMesh, my_recon, sten3, sten2);
+//    rk2(dt, Nt, &globalvec, mi, dmu, dmMesh, my_recon, sten3, sten2);
 
+    Vec localvec; 
+    double ** locvals;
+
+    // Distribute local part to local vectors.
+    PetscCall(DMGetLocalVector(dmu, &localvec)); 
+
+    PetscCall(DMGlobalToLocalBegin(dmu, globalvec, INSERT_VALUES, localvec));
+    PetscCall(DMGlobalToLocalEnd(dmu, globalvec, INSERT_VALUES, localvec));
+
+    PetscCall(DMDAVecGetArray(dmu, localvec, &locvals));
+
+    printreconsol(my_recon, M, N, 1, sten3, sten2, mi, locvals);
+
+    DMDAVecRestoreArray(dmu,localvec,&locvals);
+    DMRestoreLocalVector(dmu, &localvec); 
 
     // =======================================
     PetscCall(VecDestroy(&globalvec));

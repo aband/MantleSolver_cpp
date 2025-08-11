@@ -1,6 +1,8 @@
+#include "transfunc.h"
+
 double dfdu(const double& u){
 
-    return u;
+    return u*u*u;
 }
 
 // Burgers for testing
@@ -8,7 +10,8 @@ double advfunc(const double& u,
                const vertex& vel, const vertex& unitnormal){
 
     // A Burgers type flux
-    return u*u/2.0 *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+//    return u*u/2.0 *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
+    return u*u*u*u/4.0 *(unitnormal[0]*vel[0] + unitnormal[1]*vel[1]);
 }
 
 int dadvfunc(const derivative& du, const double& u, const vertex& vel, const vertex& unitnormal, derivative& work){
@@ -22,7 +25,16 @@ int dadvfunc(const derivative& du, const double& u, const vertex& vel, const ver
     return 1;
 }
 
-int computeEdgeFlux(vector<double>& edgeflux,
+double inflow(const vertex& point, const vector<double>& param){
+
+    if (point[1] <= 0.25 || point[1] >= 0.75) {
+        return sin(2*M_PI*point[1])*sin(2*M_PI*point[1]);   
+    } else {
+        return 1;
+    }
+}
+
+int computeEdgeFlux(vector<double>& edgeflux, double t,
                     const MeshInfo& mi, double ** localvals,
 						  const vector<reconstruction>& my_recon,
 						  const vector<tensorstencilpoly>& sten_lg,
@@ -53,6 +65,17 @@ int computeEdgeFlux(vector<double>& edgeflux,
         edgeflux.at(position) = advflux_edge(my_recon.at(neg), my_recon.at(pos),
                                 sten_lg, sten_sm, localvals, edge, constvel, false,1.0);
     }}
+
+    // inflow boundary with prescribed function
+    for (int j=0; j<N; j++){
+        vertexSet corners = extractCorners(mi, {0,j});
+        vertexSet edge {corners.at(3), corners.at(0)};
+
+        position = M*(N+1) + j*(M+1);
+
+        edgeflux.at(position) = advflux_edge(inflow, {t}, edge, constvel, false, 1.0);
+
+    }
 
     return 1;
 }

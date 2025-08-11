@@ -1,5 +1,12 @@
 #include "advectiveflux.h"
 
+int testlink(){
+
+    cout << "Can be linked" << endl;
+
+    return 1;
+}
+
 static bool isoutflow(vertex vel, vertex normal){
 
     if(vel[0]*normal[0] + vel[1]*normal[1] > 0){

@@ -1,5 +1,5 @@
-#ifndef ADVECTIVEFLUX_H_
-#define ADVECTIVEFLUX_H_
+#ifndef ADVECTIVEFLUX_ARRAY_H_
+#define ADVECTIVEFLUX_ARRAY_H_
 
 #include "tensorstencilpoly.h"
 #include "reconstruction.h"
@@ -36,5 +36,7 @@ double advflux_edge(double (*func)(const vertex& point,
 						  const vector<vertex>& vel,
 						  bool localLF,
 						  double gLF);
+
+int testlink();
 
 #endif

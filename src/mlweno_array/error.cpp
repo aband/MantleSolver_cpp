@@ -89,3 +89,44 @@ int printreconsol(const vector<reconstruction>& my_recon, int M, int N, int mark
 
     return 1;
 }
+
+int printreconsol(vector<reconstruction>& my_recon, int M, int N, int mark, 
+                  const vector<tensorstencilpoly>& sten_lg,
+						const vector<tensorstencilpoly>& sten_sm,
+						const MeshInfo& mi,
+						double ** locvals){
+
+    vector<vertex> sample = {{-1+1e-3,-1+1e-3},
+                             { 0     ,-1+1e-3},
+                             { 1-1e-3,-1+1e-3},
+									  {-1+1e-3, 0},
+                             { 0     , 0},
+                             { 1-1e-3, 0},
+									  {-1+1e-3, 1-1e-3},
+                             { 0     , 1-1e-3},
+                             { 1-1e-3, 1-1e-3}};
+
+    vector<vertex> mapped; 
+    mapped.resize(sample.size());
+
+    // Evalutation at sample points
+    for (int j=0; j<N; j++){
+
+        for (int i=0; i<M; i++){
+
+            // Extract corners of the selected cell
+            vertexSet corners = extractCorners(mi, {i,j});
+
+            for (int g=0; g<sample.size(); g++){
+                mapped.at(g) = GaussMapPointsFace(sample.at(g), corners);
+            }
+
+            my_recon.at(j*M+i).eval(locvals, mapped, sten_lg, sten_sm);
+            //if (j==midN && i==midM){
+            //    my_recon.at(j*M+i).eval(locvals, mapped, sten5, sten3);
+            //}
+        }
+    }
+
+    return printreconsol(my_recon, M ,N, 1);
+}
