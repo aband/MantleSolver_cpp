@@ -68,6 +68,8 @@ class stencilpolynomial {
          */
         int dsigma(const Tensor<double>& sol, vector<double>& der);
 
+        int getorder() const{return order;};
+
         /**!
          * Function will be used for testing purpose
          */

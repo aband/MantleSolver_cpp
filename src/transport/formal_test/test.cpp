@@ -56,7 +56,7 @@ int main(int argc, char ** argv){
 
     cout << "dt, dh = " << dt << " , " << 1.0/(double)M << ". " << "CFL number is : " << CFL << endl;
 
-    M *= 3;
+//    M *= 3;
 
     // Create dmMesh
     PetscCall(DMDACreate2d(PETSC_COMM_WORLD, 
@@ -155,10 +155,16 @@ cout << "End here " << endl;
     //simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 	 cout << "Time stepping starts. " << endl;
     //simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
-    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+//    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
-//    exactSol(mi,2.0, func, 1, true);
+    exactSol(mi,2.0, func, 1, true);
+
+    // Effective order
+
+    eff_order(mi, ml, use, 1, &globalvec, true, dmu, h0);
+
+    // Error map
 
     // =================================================================
 

@@ -30,6 +30,8 @@ class reconstruction{
         int getSize() const{return stencilPoly.getSize();};
         int getSize(const int& dim) const{return stencilPoly.getSize(dim);};
 
+        int getorder() const{return stencilPoly(0).getorder();};
+
         int getStencilSize(const int& dim) const{return size.at(dim);};
 
         int printcoef(){for (int i=0;i<stencilPoly.getSize(); i++){stencilPoly(i).printCoef();} return 1;}
@@ -79,6 +81,9 @@ class multilevel{
                    const vector<int>& index,
                    const Tensor<double>& sol,
                    vector<double>& der) const;
+
+        int getorder(const std::string& name) const
+        {return mlrecons.at(name).getorder();}
 
         int getSize(const std::string& name)const 
         {return mlrecons.at(name).getSize();};

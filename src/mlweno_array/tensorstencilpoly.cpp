@@ -205,6 +205,7 @@ int tensorstencilpoly::setCoef(const MeshInfo& mi, const int& gstartx, const int
     coef = new double [n*nrhs] ();
 
     double * a = new double [n*n] ();
+    //double * b = new double [n*n] ();
     lapack_int * p = new int [n] ();
 
     for (int cell=0; cell<n; cell++){
@@ -220,6 +221,8 @@ int tensorstencilpoly::setCoef(const MeshInfo& mi, const int& gstartx, const int
     }
 
     fill(coef,coef+n*nrhs,0);
+    //fill(b,b+n*nrhs,0);
+    //for (int i=0; i<nrhs; i++) {b[i*n+i]=a[n*i];}
     for (int i=0; i<nrhs; i++) {coef[i*n+i]=a[i];}
 
     int err = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, p, coef, ldb);
@@ -228,8 +231,15 @@ int tensorstencilpoly::setCoef(const MeshInfo& mi, const int& gstartx, const int
         printf("ERROR: Weno Basis Coefficient for order %d, %d. Error type %d \n",
                  sizex,sizey,err);
     }
-
+/*
+    for (int p=0; p<n; p++){
+        for (int r=0; r<n; r++){
+            coef[p*n+r] = b[r*n+p];
+        }
+    }
+*/
     delete [] a;
+    //delete [] b;
     delete [] p;
 
     return 1;

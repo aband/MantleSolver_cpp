@@ -12,7 +12,7 @@ stencilpolynomial::stencilpolynomial(const int& sizex,
     for (int i=0; i<tensorpoly.getSize(); i++){
         tensorpoly(i) = polynomial(sizex,sizey);
     }
-
+    order = find_max(sizex,sizey);
 }
 
 int stencilpolynomial::setCoef(const vector<vector<vertex>>& cornerSet,

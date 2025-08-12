@@ -127,6 +127,7 @@ cout << "End here " << endl;
     use.setmethod("side", side);
     use.setbias("side");
 
+
     // =================================================================
     Vec globalvec;
 

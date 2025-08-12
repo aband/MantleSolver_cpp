@@ -21,7 +21,7 @@ double func(const vertex& point,
 
     } else {
 
-    return sin(point[0])*cos(point[1]) + 0.5;
+    return sin(point[0])*cos(point[1]) ;
 
     }
 }
@@ -182,8 +182,8 @@ int main(int argc, char ** argv){
 
     // Set all the reconstruction
 //    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2},{-3, -2}};
-    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2}};
-    //vector<indice> sten_lg_pre = {{-2,-2}};
+//    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2}};
+    vector<indice> sten_lg_pre = {{-2,-2}};
     vector<indice> sten_sm_pre = {{-2,-2},{-2, 0},{0 ,-2},{0,0}};
 
     vector<reconstruction> my_recon;
@@ -194,7 +194,7 @@ int main(int argc, char ** argv){
         int s = j*M+i;
         my_recon.at(s) = reconstruction();
 
-        my_recon.at(s).use_sten_const = 1;
+        my_recon.at(s).use_sten_const = 0;
 
         my_recon.at(s).init(3,3,5,5,2,4,sten_lg_pre, sten_sm_pre, mi,{i,j});
         

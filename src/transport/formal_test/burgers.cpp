@@ -57,7 +57,7 @@ double func(const vertex& point,
 
     // Initialize with simple Reimann shock and rarefaction function
     // time inputed as param[0] 
-
+/*
     // Rarefraction initial condition
     if (point[0] < 0.5 || point[0] >=(0.5*param[0]+1.5)){
         return 0;
@@ -68,6 +68,18 @@ double func(const vertex& point,
     } else {
         return 0;
     }
+*/
+    if (point[0] < 0.5) {
+
+    return sin(point[0])*cos(point[1]);
+
+    } else {
+
+    return pow(sin((point[0]+0.3)*M_PI/2)*
+               cos((point[1]-0.6)*M_PI/2),6) +0.5;
+
+    }
+
 }
 
 double dfdu(const double& u){

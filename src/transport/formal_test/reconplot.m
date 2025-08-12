@@ -22,16 +22,20 @@ sol = reshape(sol, 3*M, 3*N);
 
 figure
 s = surf(pX, pY, sol)
-s.EdgeColor = 'none';
+%s.EdgeColor = 'none';
 title(mytitle)
 ylabel("y")
 xlabel("x")
 colormap(turbo)
 %colorbar
 axis equal
-xlim([0,3])
-ylim([0,1])
-zlim([0,1])
+%xlim([0,3])
+%ylim([0,1])
+%zlim([0,1])
+set(gcf, 'Position', [50 50 1000 800]); % Set position and size of the current figure
+
+figure
+mesh(pX,pY)
 
 fig = figure 
 ax = axes;

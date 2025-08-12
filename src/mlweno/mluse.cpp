@@ -466,7 +466,9 @@ int mluse::eff_order(const indice& index,    const multilevel& ml,
         for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
             targetstencilindex = index + reconstMethod.at(pos).at(it.first).at(m);
             if (stencilexist(ml, targetstencilindex, it.first)){
-                Tensor<double> sol = Tensor<double>(2);
+
+                work += wgts.at(it.first).at(m) * ml.getorder(it.first);
+					 cout << ml.getorder(it.first) << endl;
             }
         }
     }

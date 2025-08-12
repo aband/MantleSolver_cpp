@@ -43,5 +43,3 @@ xlabel("x")
 colormap(turbo)
 colorbar
 caxis([0,1])
-
-

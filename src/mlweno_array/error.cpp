@@ -24,17 +24,17 @@ int printexactsol(const MeshInfo& mi, double t,
     vector<vertex> sample1 = {{-1+1e-3,-1+1e-3},
                               { 0     ,-1+1e-3},
                               { 1-1e-3,-1+1e-3}};
-/*
+
     vector<vertex> sample2 = {{-1+1e-3, 0},
                               { 0     , 0},
                               { 1-1e-3, 0}};
-*/
+
     vector<vertex> sample3 = {{-1+1e-3, 1-1e-3},
                               { 0     , 1-1e-3},
                               { 1-1e-3, 1-1e-3}};
 
-//    vector<vector<vertex>> sampleSet = {sample1,sample2,sample3};
-    vector<vector<vertex>> sampleSet = {sample1,sample3};
+    vector<vector<vertex>> sampleSet = {sample1,sample2,sample3};
+//    vector<vector<vertex>> sampleSet = {sample1,sample3};
 
     // Print exact solution on the given sample points
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
@@ -77,7 +77,7 @@ int printreconsol(const vector<reconstruction>& my_recon, int M, int N, int mark
     FILE * sol = fopen(filename,"w");
 
     for (int j=0; j<N; j++){
-        for (int l=0; l<2; l++){
+        for (int l=0; l<3; l++){
             for (int i=0; i<M; i++){
                 for (int g=0; g<3; g++){
                     fprintf(sol, "%.12f ", my_recon.at(j*M+i).elem_val.at(l*3+g) );
@@ -100,9 +100,9 @@ int printreconsol(vector<reconstruction>& my_recon, int M, int N, int mark,
     vector<vertex> sample = {{-1+1e-3,-1+1e-3},
                              { 0     ,-1+1e-3},
                              { 1-1e-3,-1+1e-3},
-								//	  {-1+1e-3, 0},
-                        //   { 0     , 0},
-                        //   { 1-1e-3, 0},
+									  {-1+1e-3, 0},
+							        { 0     , 0},
+							        { 1-1e-3, 0},
 									  {-1+1e-3, 1-1e-3},
                              { 0     , 1-1e-3},
                              { 1-1e-3, 1-1e-3}};

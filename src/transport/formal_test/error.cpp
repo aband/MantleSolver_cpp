@@ -193,7 +193,8 @@ int printSol(int mark, Vec * global, const MeshInfo& mi){
     return 1;
 }
 
-int eff_order(const MeshInfo& mi, multilevel& ml, mluse& use, int mark, Vec * global, bool grid, DM dmu, double h0){
+int eff_order(const MeshInfo& mi, multilevel& ml, mluse& use, int mark, 
+              Vec * global, bool grid, DM dmu, double h0){
 
     Vec temp = *global;
 
@@ -210,15 +211,31 @@ int eff_order(const MeshInfo& mi, multilevel& ml, mluse& use, int mark, Vec * gl
 
     FILE * order = fopen(filename,"w");
 
+    Vec localvec;
+    double ** locvals;
+
+    PetscCall(DMGetLocalVector(dmu, &localvec)); 
+
+    PetscCall(DMGlobalToLocalBegin(dmu, temp, INSERT_VALUES, localvec));
+    PetscCall(DMGlobalToLocalEnd(dmu, temp, INSERT_VALUES, localvec));
+
+    PetscCall(DMDAVecGetArray(dmu, localvec, &locvals));
+
+    ml.updatesigma(locvals);
+    Tensor<weights> allwgts;
+ 
+    use.computeWgts(ml, mi, h0, allwgts, location);
+ 
     for(int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for(int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
-        int oval;
-
-
+        int oval = use.eff_order({i,j}, ml, location(mi, {i,j}), allwgts({i,j}));
 
         fprintf(order, "%d ", oval);
     }}
+
+    DMDAVecRestoreArray(dmu,localvec,&locvals);
+    DMRestoreLocalVector(dmu, &localvec); 
 
     return 1;
 }
