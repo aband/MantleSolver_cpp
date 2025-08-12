@@ -286,14 +286,26 @@ int tensorstencilpoly::der(int derX, int derY, int ncell, double * dp, double x,
 
     return 1;
 }
-/*
-static double complete_sum(double * deri, double * derj, int sizex, int sizey){
+
+// Compute complete order instead of tensor product order
+static double complete_sum(double * deri, double * derj, int order, 
+                           double area, double h, double gw, double jac){
 
     double work = 0.0;
 
+    for (int j=0; j<=order; j++){
+        int istart = (j==0) ? 1:0;
+
+        for (int i=istart; i<=order-j; i++){
+            work += deri[i+(order+1)*j] *
+                    derj[i+(order+1)*j] *gw*jac*pow(h*h,i+j);
+        }
+    }
+
     return work;
 }
-*/
+
+// Compute tensor product order
 static double tensor_sum(double * deri, double * derj, int total, 
                          double area, double h, double gw, double jac){
 
@@ -306,20 +318,26 @@ static double tensor_sum(double * deri, double * derj, int total,
     return work;
 }
 
-static int lowertri(double * sigmatensor, double * all, int total, 
+static int lowertri(double * sigmatensor, double * all, int total, int order, 
 				        double area, double h, double gw, double jac){
 
     for (int d=0; d<total; d++){
-        sigmatensor[d*total+d] += tensor_sum(&all[d*total],
-                                             &all[d*total],
-                                  total,area, h, gw, jac);
+//        sigmatensor[d*total+d] += tensor_sum(&all[d*total],
+//                                             &all[d*total],
+//                                  total,area, h, gw, jac);
+        sigmatensor[d*total+d] += complete_sum(&all[d*total],
+                                               &all[d*total],
+                                  order,area, h, gw, jac);
     }
 
     for (int j=1; j<total; j++){
         for (int i=0; i<j; i++){
-            sigmatensor[j*total+i] += tensor_sum(&all[j*total],
-                                                 &all[i*total],
-                                      total,area, h, gw, jac);   
+//            sigmatensor[j*total+i] += tensor_sum(&all[j*total],
+//                                                 &all[i*total],
+//                                      total,area, h, gw, jac);   
+            sigmatensor[j*total+i] += complete_sum(&all[j*total],
+                                                   &all[i*total],
+                                      order,area, h, gw, jac);   
             sigmatensor[i*total+j] = sigmatensor[j*total+i];
         }
     }
@@ -353,7 +371,7 @@ int tensorstencilpoly::setSigma(){
             der(sizex-1, sizey-1, ncell, &all[ncell*total], mapped[0], mapped[1]);
         }
 
-        lowertri(sigmabase, all, total, refarea, h, gw, jac);
+        lowertri(sigmabase, all, total, order, refarea, h, gw, jac);
     }
 
     for (int t=0; t<total*total; t++){
