@@ -557,7 +557,7 @@ boundary condition that generates an incoming shock wave.
 %There are some other special cases that require special treatment on the 
 %boundary, e.g., when symmetry should be enforced.
 
-\subsection{Additional stencils reinforced at the boundary}
+\subsection{Example on additional stencils reinforced at the boundary}
 \iffalse
 For the outflow example, we test linear transport of a sine wave traveling 
 diagonally across the domain, which takes the true form of solution as
@@ -585,9 +585,11 @@ u(x,y) = \left \{
 		  \end{alignedat}
 		  \right.
 \end{equation}
-We illustrate a fifth order-stencil that being used simutaneously
-in the reconstruction of three different target cells interior cell $E_i$,
-boundary cell $E_b$ and corner cell $E_c$ in Figure~\ref{fig:fullmesh2}.
+Consider a (5,3) ML-WENO reconstruction, which usually consists of two different stencils, 
+a $5 \times 5$ large stencilprovide fifth-order 
+We illustrate a fifth order-stencil that can be used simutaneously
+in the reconstruction of three different target cells :interior cell $E_i$,
+boundary cell $E_b$ and corner cell $E_c$ as shown in Figure~\ref{fig:fullmesh2}.
 \begin{figure}[htb]
 \centering
 \input chapters/tikz/mesh2.tex
@@ -596,14 +598,31 @@ boundary cell $E_b$ and corner cell $E_c$ in Figure~\ref{fig:fullmesh2}.
 		  \label{fig:fullmesh2}
 \end{figure}
 
+
 \begin{figure}[htb]
 \centering
 \includegraphics[width=12cm, height=7cm]{chapters/pics/53reconstruction.eps}
 \includegraphics[width=0.7cm,height=7cm]{chapters/pics/colorbar.png}
-\label{fig:53reconstruction}
-\caption{The reconstructed solution on the $40\times 40$ randomly distorted logically rectangular mesh.}
+\caption{The reconstructed solution on the $20\times 20$ randomly distorted logically rectangular mesh.}
 \label{fig:53reconstruction}
 \end{figure}
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}[t]{0.9\textwidth}
+\centering
+\includegraphics[width=6.5cm, height=5cm]{chapters/pics/effective_order1.eps}
+\includegraphics[width=6.5cm, height=5cm]{chapters/pics/effective_order2.eps}
+\end{minipage}%
+\begin{minipage}[t]{0.1\textwidth}
+\centering
+\includegraphics[width=0.7cm,height=5cm]{chapters/pics/colorbar2.png}
+\end{minipage}
+\caption{Effective reconstruciton order with and without some additional fifth-order stencils 
+on one side of the boundary $y=0$.}
+\label{fig:Effective order}
+\end{figure}
+
 
 \subsection{Inflow at the boundary}
 For the inflow example, we use the Burgers-like equation $u_t + u^3 u_x = 0$ with the flux $\mathbf{f}(u) = (u^4/4,0)$

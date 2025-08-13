@@ -11,6 +11,40 @@ extern "C"{
 
 #include "temp.h"
 
+double init(const vertex& point,
+            const vector<double>& param){
+
+    // Initial condition
+
+    // Initialize with simple Reimann shock and rarefaction function
+    // time inputed as param[0] 
+/*
+    // Rarefraction initial condition
+    if (point[0] < 0.5 || point[0] >=(0.5*param[0]+1.5)){
+        return 0;
+    } else if (point[0]>=0.5 && point[0]<param[0]+0.5){
+        return (point[0]-0.5)/param[0];
+    } else if (point[0]>=point[0]+0.5 || point[0] <0.5*param[0]+1.5){
+        return 1;
+    } else {
+        return 0;
+    }
+*/
+    if (point[0] < 0.5) {
+
+    return sin(point[0])*cos(point[1]);
+
+    } else {
+
+    return pow(sin((point[0]+0.3)*M_PI/2)*
+               cos((point[1]-0.6)*M_PI/2),6) +0.5;
+
+    }
+
+}
+
+
+
 int main(int argc, char ** argv){
 
     // Integrated test with petsc and mesh functions
@@ -126,17 +160,17 @@ cout << "End here " << endl;
 //    use.setmethod("interior", interior);
 //    use.setbias("interior");
 
-    //interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} , {-3,-2}, {-4,-2}}));
-    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2},{-2,-1},{-2,0} }));
+    //interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} , {-2,-1}, {-2, 0}}));
     //interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} , {-1,0}, {-2,-1}, {0,-1}, {-1,-2}}));
-   interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0}}));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} }));
 
     use.setmethod("interior", interior);
     use.setbias("interior");
 
     // add biased (3,3) stencil to side cells
     unordered_map<std::string, vector<indice>> side;
-    side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2} }));
+    side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-1}, {0,-1} }));
     side.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
     //side.insert(std::make_pair<std::string, vector<indice>>("(5,5)", {{-2,0}, {2,0} }));
     //side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {0,0}, {-2,0} }));
@@ -150,7 +184,7 @@ cout << "End here " << endl;
 
     PetscCall(DMCreateGlobalVector(dmu, &globalvec));
 
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {0.0,0.0}, func);
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {0.0,0.0}, init);
 
     // =================================================================
 
@@ -160,7 +194,7 @@ cout << "End here " << endl;
 //    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);
-    exactSol(mi,2.0, func, 1, true);
+    exactSol(mi,2.0, init, 1, true);
 
     // Effective order
 

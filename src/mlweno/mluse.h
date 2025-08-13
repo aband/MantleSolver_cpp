@@ -99,8 +99,8 @@ class mluse {
                     const weights& wgts,
                     const indice& index, double ** localsol) const;
 
-        int eff_order(const indice& index,    const multilevel& ml, 
-                      const std::string& pos, const weights& wgts) const;
+        double eff_order(const indice& index,    const multilevel& ml, 
+                         const std::string& pos, const weights& wgts) const;
 
         int sumscaled(const multilevel& ml,
                       double& sumwgts,

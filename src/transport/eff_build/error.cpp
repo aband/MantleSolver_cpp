@@ -229,10 +229,10 @@ int eff_order(const MeshInfo& mi, multilevel& ml, mluse& use, int mark,
     for(int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for(int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
-        double oval = use.eff_order({i,j}, ml, location(mi, {i,j}), allwgts({i,j}));
+        int oval = use.eff_order({i,j}, ml, location(mi, {i,j}), allwgts({i,j}));
 
-        fprintf(order, "%f ", oval);
-    }fprintf(order, " \n");}
+        fprintf(order, "%d ", oval);
+    }}
 
     DMDAVecRestoreArray(dmu,localvec,&locvals);
     DMRestoreLocalVector(dmu, &localvec); 

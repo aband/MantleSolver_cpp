@@ -454,10 +454,10 @@ double mluse::eval(const vertex& point, const multilevel& ml,
     return work;
 }
 
-int mluse::eff_order(const indice& index,    const multilevel& ml, 
+double mluse::eff_order(const indice& index,    const multilevel& ml, 
                      const std::string& pos, const weights& wgts) const{
 
-    int work = 0;
+    double work = 0;
 
     indice targetstencilindex;
 
@@ -466,12 +466,13 @@ int mluse::eff_order(const indice& index,    const multilevel& ml,
         for (int m=0; m<reconstMethod.at(pos).at(it.first).size(); m++){
             targetstencilindex = index + reconstMethod.at(pos).at(it.first).at(m);
             if (stencilexist(ml, targetstencilindex, it.first)){
-
                 work += wgts.at(it.first).at(m) * ml.getorder(it.first);
-					 cout << ml.getorder(it.first) << endl;
+//					 cout << "wgts and order : " << ml.getorder(it.first) << "  "  << wgts.at(it.first).at(m) << "  " << work << endl;
+            } else {
+                work += 0;
             }
-        }
-    }
+        } 
+    }//cout << endl << work << endl;
 
     return work;
 }
