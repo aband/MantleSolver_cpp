@@ -548,7 +548,8 @@ to the inflow boundary.
 					 the value is fixed at zero.
 \end{itemize}
 
-In the following subsections, we present two examples: the first illustrates
+In the following subsections, we present two examples: the first
+example illustrates
 how additional higher order stencils affect reconstruction order, 
 while the second address an inflow Dirichlet
 boundary condition that generates an incoming shock wave.
@@ -570,7 +571,12 @@ diagonally across the domain, which takes the true form of solution as
 		  \right.
 \end{equation}
 \fi
-Consider a standard (5,3) reconstruction on a $[0,1]^2$ domain with the function 
+We use logically rectangular meshes, each vertices are randomly perturbed in $x$ and $y$
+directions within
+a range of $[-0.15,0.15]$ times the unperturbed mesh spacing $h$.
+A full example mesh is depicted in Figure~\ref{fig:fullmesh}.
+
+Let $u(x,y)$ be an arbitrary test function defined within the domain $\Omega = [0,1]^2$ as 
 \begin{equation}
 u(x,y) = \left \{ 
 		  \begin{alignedat}{2}
@@ -579,10 +585,15 @@ u(x,y) = \left \{
 		  \end{alignedat}
 		  \right.
 \end{equation}
-
+We illustrate a fifth order-stencil that being used simutaneously
+in the reconstruction of three different target cells interior cell $E_i$,
+boundary cell $E_b$ and corner cell $E_c$ in Figure~\ref{fig:fullmesh2}.
 \begin{figure}[htb]
 \centering
-\input chapters/tikz/53stencil.tex
+\input chapters/tikz/mesh2.tex
+		  \caption{An illustration of three different cells sharing 
+		  the same fifth order stencil.}
+		  \label{fig:fullmesh2}
 \end{figure}
 
 \begin{figure}[htb]
