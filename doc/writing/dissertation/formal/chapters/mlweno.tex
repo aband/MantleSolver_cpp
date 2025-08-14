@@ -585,8 +585,18 @@ u(x,y) = \left \{
 		  \end{alignedat}
 		  \right.
 \end{equation}
-Consider a (5,3) ML-WENO reconstruction, which usually consists of two different stencils, 
-a $5 \times 5$ large stencilprovide fifth-order 
+Consider a standard (5,3) ML-WENO reconstruction, each reconstruction of 
+a target cell consists of two different stencils of different polynomial order,
+a $5 \times 5$ large stencil of fifth-order accuracy and four $3 \times 3$ small stencils of 
+third-order accuracy.
+\begin{figure}[htb]
+\centering
+\input chapters/tikz/53stencil.tex
+\caption{An example of a standard (5,3) stencils combination on a 
+logically rectangular quadrilateral mesh.}
+\label{fig:53stencils}
+\end{figure}
+
 We illustrate a fifth order-stencil that can be used simutaneously
 in the reconstruction of three different target cells :interior cell $E_i$,
 boundary cell $E_b$ and corner cell $E_c$ as shown in Figure~\ref{fig:fullmesh2}.
