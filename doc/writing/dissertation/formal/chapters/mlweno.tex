@@ -585,10 +585,11 @@ u(x,y) = \left \{
 		  \end{alignedat}
 		  \right.
 \end{equation}
-Consider a standard (5,3) ML-WENO reconstruction, each reconstruction of 
-a target cell consists of two different stencils of different polynomial order,
-a $5 \times 5$ large stencil of fifth-order accuracy and four $3 \times 3$ small stencils of 
-third-order accuracy.
+We now consider the standard (5,3) ML-WENO reconstruction for a cell $E_{i,j}$ located far away from boundaries
+as shown in Figure~\ref{fig:53stencils}. 
+This reconstruction consists of two different stencils with different approximation accuracy: 
+a $5 \times 5$ large stencil providing fifth-order accuracy and four $3 \times 3$ small stencils providing
+third-order accuracy. 
 \begin{figure}[htb]
 \centering
 \input chapters/tikz/53stencil.tex
@@ -596,18 +597,33 @@ third-order accuracy.
 logically rectangular quadrilateral mesh.}
 \label{fig:53stencils}
 \end{figure}
+However, when the cell $E_{i,j}$ located within the two-cell distance from any boundary, the large stencil 
+becomes unavailable, leading to a degeneracy in the order of accuracy near the boundary. 
+In this case, ML-WENO grants flexibility of associating an additional large stencil to the cells within 
+the two-cell distance from boundary.
 
-We illustrate a fifth order-stencil that can be used simutaneously
-in the reconstruction of three different target cells :interior cell $E_i$,
-boundary cell $E_b$ and corner cell $E_c$ as shown in Figure~\ref{fig:fullmesh2}.
+Figure~\ref{fig:fullmesh2} illustrates a case where a fifth-order stencil centered at cell $E_{i,j}$
+can be used 
+in the ML-WENO reconstruction of different target cells :interior cell (red),
+cells located one cell away from the boundary (green) and cells on the boundary
+(yellow).
 \begin{figure}[htb]
 \centering
 \input chapters/tikz/mesh2.tex
-		  \caption{An illustration of three different cells sharing 
-		  the same fifth order stencil.}
+		  \caption{An illustration of different cells using one fifth-order stencil to avoid accuracy degeneracy.}
 		  \label{fig:fullmesh2}
 \end{figure}
 
+We define the effective polynomial degree of the reconstructions for each cell as
+\begin{equation}\label{eq:efforder}
+p_{eff} = \sum_{l} \tilde{\omega}_l r_l -1.
+\end{equation}
+In Figure~\ref{fig:Effective_order}, we see good approximation (polynomial degree 4) over the middle of the 
+domain except two layers of cells around the shock. However, the reconstruction drops to polynomial degree 3,
+within two-cell distance from the boundary. With the help of additional large stencil as shown in Figure~\ref{fig:53stencils},
+we can achieve good approximation (polynomial degree 4) at the top right corner of the boundary. Figure~\ref{fig:53reconstruction},
+illustrates the reconstructed solution on the $20 \times 20$ randomly distorted logically rectangular mesh with
+additional treatment on the top right corner.
 
 \begin{figure}[htb]
 \centering
@@ -628,9 +644,9 @@ boundary cell $E_b$ and corner cell $E_c$ as shown in Figure~\ref{fig:fullmesh2}
 \centering
 \includegraphics[width=0.7cm,height=5cm]{chapters/pics/colorbar2.png}
 \end{minipage}
-\caption{Effective reconstruciton order with and without some additional fifth-order stencils 
+\caption{Effective polynomial degree with and without some additional fifth-order stencils 
 on one side of the boundary $y=0$.}
-\label{fig:Effective order}
+\label{fig:Effective_order}
 \end{figure}
 
 

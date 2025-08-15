@@ -127,7 +127,7 @@ cout << "End here " << endl;
 //    use.setbias("interior");
 
     //interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} , {-3,-2}, {-4,-2}}));
-    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2},{-2,-1},{-2,0} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
     //interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} , {-1,0}, {-2,-1}, {0,-1}, {-1,-2}}));
    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0}}));
 
@@ -136,14 +136,21 @@ cout << "End here " << endl;
 
     // add biased (3,3) stencil to side cells
     unordered_map<std::string, vector<indice>> side;
-    side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2} }));
-    side.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
-    //side.insert(std::make_pair<std::string, vector<indice>>("(5,5)", {{-2,0}, {2,0} }));
-    //side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {0,0}, {-2,0} }));
+    //side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2} }));
+    //side.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+    side.insert(std::make_pair<std::string, vector<indice>>("(5,5)", {{-2,0}, {2,0}}));
+    side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {0,0}, {-2,0} }));
     //side.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} , {-1,0}, {-2,-1}, {0,-1}, {-1,-2}}));
 
     use.setmethod("side", side);
     use.setbias("side");
+
+    unordered_map<std::string, vector<indice>> corner;
+    corner.insert(std::make_pair<std::string, vector<indice>>("(5,5)", {{-4,-4}} ));
+    corner.insert(std::make_pair<std::string, vector<indice>>("(3,3)", {{-2,-2},{0,-2},{0,0},{-2,0}} ));
+
+    use.setmethod("corner", corner);
+    use.setbias("corner");
 
     // =================================================================
     Vec globalvec;

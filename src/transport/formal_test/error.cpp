@@ -3,13 +3,15 @@
 
 std::string location(const MeshInfo& mi, const indice& gcell){
 
-    //if (gcell[1] == 0 || gcell[1] == mi.MPIglobalCellSize[1]-1){
-    //    return "side";
-    //} else {
-    //    return "interior";
-   // }
+    if (gcell[1] >= mi.MPIglobalCellSize[1] - 10 && gcell[0] >= mi.MPIglobalCellSize[0]-2){
+        return "corner";
+    } else if (gcell[1] >= mi.MPIglobalCellSize[1] - 2 && gcell[0] >= mi.MPIglobalCellSize[0]-5){
+        return "corner";
+    } else {
+        return "interior";
+    }
 
-    return "interior";
+    //return "interior";
 }
 
 int reconPlot(const MeshInfo& mi, multilevel& ml, mluse& use, int mark, Vec * global, bool grid, DM dmu, double h0){
