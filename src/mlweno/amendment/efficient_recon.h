@@ -18,7 +18,7 @@ class singlelevel{
         int order = 0;
 
         int getsol(Tensor<double>& stencilsol, double ** localsol, 
-                   const indice& stencilindex, const std::string& name) const;
+                   const indice& stencilindex) const;
 
         int updatesigma();
 
@@ -29,6 +29,10 @@ class singlelevel{
 
         double eval(const vector<int>& index, 
                     const Tensor<double>& sol,
+                    const vertex& point) const;
+
+        double eval(const vector<int>& stenindex,
+                    double ** sol,
                     const vertex& point) const;
 
         // Print coefficients

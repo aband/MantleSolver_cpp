@@ -1,5 +1,4 @@
-#include "reconstruction.h"
-#include "eff"
+#include "efficient_recon.h"
 
 int singlelevel::prepare(int inorder, 
                          const vector<int>& insize,
