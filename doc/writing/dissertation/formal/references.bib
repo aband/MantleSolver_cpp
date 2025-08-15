@@ -616,3 +616,18 @@ author = {M. Semplice and E. Travaglia and G. Puppo},
 		  year = {2020},
 		  author = {M. Semplice and G. Visconti},
 }
+
+@article{TAN20108144,
+title = {Inverse Lax-Wendroff procedure for numerical boundary conditions of conservation laws},
+journal = {Journal of Computational Physics},
+volume = {229},
+number = {21},
+pages = {8144-8166},
+year = {2010},
+issn = {0021-9991},
+doi = {https://doi.org/10.1016/j.jcp.2010.07.014},
+url = {https://www.sciencedirect.com/science/article/pii/S0021999110003979},
+author = {Sirui Tan and Chi-Wang Shu},
+keywords = {Numerical boundary conditions, Hyperbolic conservation laws, Finite difference method, Cartesian mesh, Lax-Wendroff procedure, Extrapolation, Solid wall},
+abstract = {We develop a high order finite difference numerical boundary condition for solving hyperbolic conservation laws on a Cartesian mesh. The challenge results from the wide stencil of the interior high order scheme and the fact that the boundary intersects the grids in an arbitrary fashion. Our method is based on an inverse Lax-Wendroff procedure for the inflow boundary conditions. We repeatedly use the partial differential equation to write the normal derivatives to the inflow boundary in terms of the time derivatives and the tangential derivatives. With these normal derivatives, we can then impose accurate values of ghost points near the boundary by a Taylor expansion. At outflow boundaries, we use Lagrange extrapolation or least squares extrapolation if the solution is smooth, or a weighted essentially non-oscillatory (WENO) type extrapolation if a shock is close to the boundary. Extensive numerical examples are provided to illustrate that our method is high order accurate and has good performance when applied to one and two-dimensional scalar or system cases with the physical boundary not aligned with the grids and with various boundary conditions including the solid wall boundary condition. Additional numerical cost due to our boundary treatment is discussed in some of the examples.}
+}

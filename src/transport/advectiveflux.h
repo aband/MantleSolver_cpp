@@ -73,6 +73,12 @@ int edgefluxintegral(const MeshInfo& mi,
                      derivative& der,
                      double& f);
 
+double edgefluxintegral(const vertexSet& edge, 
+                        double (*func)(const vertex& point,
+                                       const vector<double>& param),
+                        const vector<double>& param,
+                        const vector<vertex>& vel);
+
 double getcellflux(const MeshInfo& mi, const indice& gcell,
                    const Tensor<double>& vertedge, 
                    const Tensor<double>& horiedge);
@@ -84,6 +90,8 @@ int getcellflux(const MeshInfo& mi, const indice& gcell,
                 const Tensor<derivative>& horiedgeder,
                 double& flux,
                 derivative& dflux);
+
+
 
 // ======================================================================================
 

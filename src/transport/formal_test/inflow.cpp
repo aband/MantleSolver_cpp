@@ -52,11 +52,13 @@ double edgefluxintegral_inflow(const MeshInfo& mi,
 double func(const vertex& point,
             const vector<double>& param){
 
-    if (point[1] < 0.25 || point[1] > 0.75){
-        return pow(sin(2*M_PI*point[1]),2);
-    } else {
-        return 1.0;
-    }
+//    if (point[1] < 0.25 || point[1] > 0.75){
+//        return pow(sin(2*M_PI*point[1]),2);
+//    } else {
+//        return 1.0;
+//    }
+
+    return 0.0;
 }
 
 double dfdu(const double& u){
@@ -81,6 +83,19 @@ int dadvfunc(const derivative& du, const double& u, const vertex& vel, const ver
     unordered_map_arithmetic(work, du, std::plus<double>(), direction, std::multiplies<double>());
 
     return 1;
+}
+
+double inflowfunc(const vertex& point, const vector<double>& param){
+
+    double work=0.0;
+
+    if (point[1] < 0.25 || point[1] > 0.75){
+        return -pow(sin(2*M_PI*point[1]),2);
+    } else {
+        return -1.0;
+    }
+
+    return work;
 }
 
 int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
@@ -119,9 +134,9 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
             flux    = 0.0;
         } else {
             cellout = globalcell + mi.faceNormal[0];
-            flux    = edgefluxintegral_inflow(mi, globalcell, cellout,hori,allwgts,vel,
-                                       ml, use, lu);
-				//flux = 0.0;
+            //flux    = edgefluxintegral_inflow(mi, globalcell, cellout,hori,allwgts,vel,
+            //                           ml, use, lu);
+				flux = 0.0;
         }
 
         horiedge({i,j}) = flux;
@@ -148,6 +163,16 @@ int updateEdgeFlux(Tensor<double>& vertedge, Tensor<double>& horiedge,
         vertexSet vert    = {corners.at(2), corners.at(1)};
 
         vertedge({mi.MPIglobalCellSize[0], j}) = edgefluxintegral(mi, gcell, vert, allwgts, vel, ml, use, lu);
+    }
+
+    // Prescribed inflow boundary
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+
+        indice gcell {0, j};
+        vertexSet corners = extractCorners(mi, gcell);
+        vertexSet vert    = {corners.at(3), corners.at(0)};
+
+        vertedge({0,j}) = edgefluxintegral(vert, inflowfunc, {0}, vel);
     }
 
     return 1;

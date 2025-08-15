@@ -65,7 +65,7 @@ int reconstruction::init(int sizex_sm, int sizey_sm,
     }
 
     if (use_sten_const){
-        linwgts_const = 0.0001;
+        linwgts_const = 0.00000001;
     }
 
     // ===========================================================

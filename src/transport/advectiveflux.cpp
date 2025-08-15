@@ -165,6 +165,36 @@ double edgefluxintegral(const vertexSet& edge,
     return work;
 }
 
+double edgefluxintegral(const vertexSet& edge, 
+                        double (*func)(const vertex& point,
+                                       const vector<double>& param),
+                        const vector<double>& param,
+                        const vector<vertex>& vel){
+
+    double work = 0.0;
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    double len = length(edge);
+	 vertex unitNormal = UnitNormal(edge, len);
+
+    double gLF = 1.0;
+
+    for (int g=0; g<gpe.size(); g++){
+
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+
+        double u = func(mapped, param);
+        double f = advfunc(u, vel.at(g), unitNormal);
+ 
+        work += gwe[g] * LFflux(f, f, u, u, gLF)* len/2.0;
+ 
+    }
+
+    return work;
+}
+
 double edgefluxintegral(const vertexSet& edge,
                         const double& bnval,
                         const vector<vertex>& vel){

@@ -22,7 +22,7 @@ sol = reshape(sol, 3*M, 3*N);
 
 figure
 s = surf(pX, pY, sol)
-%s.EdgeColor = 'none';
+s.EdgeColor = 'none';
 title(mytitle)
 ylabel("y")
 xlabel("x")

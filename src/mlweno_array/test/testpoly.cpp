@@ -180,6 +180,8 @@ int main(int argc, char ** argv){
 	 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
     cout << "Time Test: " << duration.count() << " ms." << endl;
 
+    sten3.at(0).printCoef();
+
     // Set all the reconstruction
 //    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2},{-3, -2}};
 //    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2}};

@@ -1,4 +1,4 @@
-\begin{thebibliography}{13}
+\begin{thebibliography}{15}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -17,11 +17,11 @@ Todd Arbogast, Chieh-Sen Huang, Chenyu Tian, and Gabirel M.Gray.
   smoothness indicator.
 \newblock \emph{Submitted.}, 2025.
 
-\bibitem[Balay et~al.(2025)Balay, Abhyankar, Adams, Benson, Brown, Brune,
-  Buschelman, Constantinescu, Dalcin, Dener, Eijkhout, Faibussowitsch, Gropp,
-  Hapla, Isaac, Jolivet, Karpeev, Kaushik, Knepley, Kong, Kruger, May, McInnes,
-  Mills, Mitchell, Munson, Roman, Rupp, Sanan, Sarich, Smith, Suh, Zampini,
-  Zhang, Zhang, and Zhang]{petsc-user-ref}
+\bibitem[Balay et~al.(2025{\natexlab{a}})Balay, Abhyankar, Adams, Benson,
+  Brown, Brune, Buschelman, Constantinescu, Dalcin, Dener, Eijkhout,
+  Faibussowitsch, Gropp, Hapla, Isaac, Jolivet, Karpeev, Kaushik, Knepley,
+  Kong, Kruger, May, McInnes, Mills, Mitchell, Munson, Roman, Rupp, Sanan,
+  Sarich, Smith, Suh, Zampini, Zhang, Zhang, and Zhang]{petsc-user-ref}
 Satish Balay, Shrirang Abhyankar, Mark~F. Adams, Steven Benson, Jed Brown,
   Peter Brune, Kris Buschelman, Emil Constantinescu, Lisandro Dalcin, Alp
   Dener, Victor Eijkhout, Jacob Faibussowitsch, William~D. Gropp, V\'{a}clav
@@ -32,7 +32,24 @@ Satish Balay, Shrirang Abhyankar, Mark~F. Adams, Steven Benson, Jed Brown,
   Zampini, Hong Zhang, Hong Zhang, and Junchao Zhang.
 \newblock {PETSc/TAO} users manual.
 \newblock Technical Report ANL-21/39 - Revision 3.23, Argonne National
-  Laboratory, 2025.
+  Laboratory, 2025{\natexlab{a}}.
+
+\bibitem[Balay et~al.(2025{\natexlab{b}})Balay, Abhyankar, Adams, Benson,
+  Brown, Brune, Buschelman, Constantinescu, Dalcin, Dener, Eijkhout,
+  Faibussowitsch, Gropp, Hapla, Isaac, Jolivet, Karpeev, Kaushik, Knepley,
+  Kong, Kruger, May, McInnes, Mills, Mitchell, Munson, Roman, Rupp, Sanan,
+  Sarich, Smith, Zampini, Zhang, Zhang, and Zhang]{petsc-web-page}
+Satish Balay, Shrirang Abhyankar, Mark~F. Adams, Steven Benson, Jed Brown,
+  Peter Brune, Kris Buschelman, Emil~M. Constantinescu, Lisandro Dalcin, Alp
+  Dener, Victor Eijkhout, Jacob Faibussowitsch, William~D. Gropp, V\'{a}clav
+  Hapla, Tobin Isaac, Pierre Jolivet, Dmitry Karpeev, Dinesh Kaushik,
+  Matthew~G. Knepley, Fande Kong, Scott Kruger, Dave~A. May, Lois~Curfman
+  McInnes, Richard~Tran Mills, Lawrence Mitchell, Todd Munson, Jose~E. Roman,
+  Karl Rupp, Patrick Sanan, Jason Sarich, Barry~F. Smith, Stefano Zampini, Hong
+  Zhang, Hong Zhang, and Junchao Zhang.
+\newblock {PETS}c {W}eb page.
+\newblock \url{https://petsc.org/}, 2025{\natexlab{b}}.
+\newblock URL \url{https://petsc.org/}.
 
 \bibitem[Baumgart(1975)]{10.1145/1499949.1500071}
 Bruce~G. Baumgart.
@@ -104,5 +121,16 @@ M.~Semplice, E.~Travaglia, and G.~Puppo.
   boundary conditions without ghost cells.
 \newblock \emph{Communications on Applied Mathematics and Computation},
   5:\penalty0 143--169, 2023.
+
+\bibitem[Tan and Shu(2010)]{TAN20108144}
+Sirui Tan and Chi-Wang Shu.
+\newblock Inverse lax-wendroff procedure for numerical boundary conditions of
+  conservation laws.
+\newblock \emph{Journal of Computational Physics}, 229\penalty0 (21):\penalty0
+  8144--8166, 2010.
+\newblock ISSN 0021-9991.
+\newblock \doi{https://doi.org/10.1016/j.jcp.2010.07.014}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/S0021999110003979}.
 
 \end{thebibliography}

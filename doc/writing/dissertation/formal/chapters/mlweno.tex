@@ -453,7 +453,7 @@ To begin with, the first-order forward Euler method is written as
 \begin{equation}
 u^{n+1} = u^n + \Delta t \tilde{\mathbf{F}}(u^n),
 \end{equation}
-where $\tilde{\mathbf{F}}(u^n)$ represents the numerical integration of the numerical flux $F(u^n)$
+where $\tilde{\mathbf{F}}(u^n)$ represents the numerical integration of the numerical flux $\mathbf{F}(u^n)$
 in Equation~\eqref{eq:fvdis}.
 We then state a multi-stage explicit SSP Runge-Kutta  method as
 \begin{equation}\label{eq:multistageSSP}
@@ -489,15 +489,15 @@ and
 
 \section{Handling Boundary Conditions}
 We couple MFEM and FVM solver on a single mesh in our simulation. Therefore, 
-accurate and compatible boundary conditions are assigned accordingly.
+accurate and compatible boundary conditions need to be assigned accordingly.
 However, it is usually difficult to manage boundary conditions for higher order finite volume and finite difference method, which
-require wide stencils. 
+usually require wide stencils. 
 
 Some methods address this difficulty by using ghost cells or ghost points outside the computational domain, 
 allowing the use of interior-like stencils near boundaries. However, the extrapolation or estimation of the 
 manufactured values of ghost cells or ghost points are not straightforward.
 A notable method, the inverse
-Lax-Wendroff procedure, iteratively substitute normal derivatives
+Lax-Wendroff procedure introduced in~\cite{TAN20108144}, iteratively substitute normal derivatives
 of the solution with tangential and time derivatives using the PDE relation to impose more precise values
 for the ghost cells or ghost points.
 
@@ -585,7 +585,8 @@ u(x,y) = \left \{
 		  \end{alignedat}
 		  \right.
 \end{equation}
-We now consider the standard (5,3) ML-WENO reconstruction for a cell $E_{i,j}$ located far away from boundaries
+
+We consider the standard (5,3) ML-WENO reconstruction for a cell $E_{i,j}$ located far away from boundaries
 as shown in Figure~\ref{fig:53stencils}. 
 This reconstruction consists of two different stencils with different approximation accuracy: 
 a $5 \times 5$ large stencil providing fifth-order accuracy and four $3 \times 3$ small stencils providing
@@ -620,10 +621,9 @@ p_{eff} = \sum_{l} \tilde{\omega}_l r_l -1.
 \end{equation}
 In Figure~\ref{fig:Effective_order}, we see good approximation (polynomial degree 4) over the middle of the 
 domain except two layers of cells around the shock. However, the reconstruction drops to polynomial degree 3,
-within two-cell distance from the boundary. With the help of additional large stencil as shown in Figure~\ref{fig:53stencils},
-we can achieve good approximation (polynomial degree 4) at the top right corner of the boundary. Figure~\ref{fig:53reconstruction},
-illustrates the reconstructed solution on the $20 \times 20$ randomly distorted logically rectangular mesh with
-additional treatment on the top right corner.
+within the distance of two cells from the boundary. With the help of adding additional large stencil as shown in Figure~\ref{fig:53stencils},
+we can achieve good approximation (polynomial degree 4) at the top right corner of the boundary. Figure~\ref{fig:53reconstruction}
+illustrates the reconstructed solution on the $20 \times 20$ randomly distorted logically rectangular mesh.
 
 \begin{figure}[htb]
 \centering
@@ -650,9 +650,11 @@ on one side of the boundary $y=0$.}
 \end{figure}
 
 
-\subsection{Inflow at the boundary}
-For the inflow example, we use the Burgers-like equation $u_t + u^3 u_x = 0$ with the flux $\mathbf{f}(u) = (u^4/4,0)$
-in the domain $(0,1)^2$. The Dirichlet boundary condition on the left boundary 
+\subsection{Stabilization of a inflow boundary}
+We present another example demonstrating that adding a ``constant" level on the boundary stabilize problems with complex inflow
+boundary condition.
+For this case, we consider a Burgers-like equation $u_t + u^3 u_x = 0$ with a fourth order flux $\mathbf{f}(u) = (u^4/4,0)$
+in the domain $[0,0.5] \times [0,1]$. We impose Dirichlet boundary condition on the left boundary  as
 \begin{equation}
 \label{eq:inflowtest}
 u_D(0,y,t) = \left\{\begin{alignedat}{2}
@@ -661,8 +663,22 @@ u_D(0,y,t) = \left\{\begin{alignedat}{2}
 \end{alignedat}
 \right.
 \end{equation}
+Free outflow boundary conditions are assigned to the remaining boundaries. We consider a standard $(3,2)$ reconstruction,
+while on the inflow boundary $x=0$ we consider a $(3,2,1)$ multi-level stencils combination as shown in Figure~\ref{fig:quadmesh}.
+Without the additional ``constant" level, the inflow rapidly blows up shortly after entering the computational domain.
+Higher-order simulation results can be found in~\cite{MultiLevelWeno}.
 
-\section{Numerical Test}
+\begin{figure}[htb]
+\centering
+\includegraphics[width=5cm, height=5cm]{chapters/pics/inflowt01.eps}
+\includegraphics[width=5cm, height=5cm]{chapters/pics/inflowt02.eps}
+\includegraphics[width=0.5cm, height=5cm]{chapters/pics/colorbar.png}
+\caption{A test case demonstrating inflow stabilization using a constant stencil at the inflow boundary on a $50\times100$ 
+rectangular domain.}
+\label{fig:inflow}
+\end{figure}
+
+\section{Numerical test of }
 We test our ML-WENO algorithm with Riemann shock and rarefaction.
 Let $\mathbf{f}(u) = (u^2/2, 0)$ be the Burgers flux function. 
 In this example,

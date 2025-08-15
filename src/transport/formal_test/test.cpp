@@ -44,13 +44,13 @@ int main(int argc, char ** argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    double dt = 0.1*1.0/(double)M;
+    double dt = 0.2*1.0/(double)M;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-dt", &dt, NULL));
 
     int Nt = 10;
     ierr = PetscOptionsGetInt(NULL,NULL,"-Nt",&Nt,NULL);CHKERRQ(ierr);
 
-    Nt *= M;
+    //Nt *= M;
 
     double CFL = dt/(1.0/(double)M);
 
@@ -106,12 +106,14 @@ int main(int argc, char ** argv){
     multilevel ml = multilevel();
 
 cout << "Start here " << endl;
-    ml.addLevel("(5,5)", {5,5}, mi);
-cout << "(5,5) prepared." << endl;
+//    ml.addLevel("(5,5)", {5,5}, mi);
+//cout << "(5,5) prepared." << endl;
     ml.addLevel("(3,3)", {3,3}, mi);
 cout << "(3,3) prepared." << endl;
-//    ml.addLevel("(2,2)", {2,2}, mi);
-//cout << "(2,2) prepared." << endl;
+    ml.addLevel("(2,2)", {2,2}, mi);
+cout << "(2,2) prepared." << endl;
+    ml.addLevel("const", {1,1}, mi);
+cout << "const prepared: "<< ml.getSize("const") << endl;
 cout << "End here " << endl;
 
     double h0 = sqrt((L*H)/(double)(M*N));
@@ -121,15 +123,15 @@ cout << "End here " << endl;
 
     // Test for nonlinear weighting
     unordered_map<std::string, vector<indice>> interior;
-//    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
-//    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    interior.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
 //    use.setmethod("interior", interior);
 //    use.setbias("interior");
 
     //interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} , {-3,-2}, {-4,-2}}));
-    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
+//    interior.insert(std::make_pair<std::string, vector<indice>>("(5,5)", { {-2,-2} }));
     //interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0} , {-1,0}, {-2,-1}, {0,-1}, {-1,-2}}));
-   interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0}}));
+//   interior.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-2,-2}, {0,-2}, {-2,0}, {0,0}}));
 
     use.setmethod("interior", interior);
     use.setbias("interior");
@@ -145,12 +147,23 @@ cout << "End here " << endl;
     use.setmethod("side", side);
     use.setbias("side");
 
-    unordered_map<std::string, vector<indice>> corner;
-    corner.insert(std::make_pair<std::string, vector<indice>>("(5,5)", {{-4,-4}} ));
-    corner.insert(std::make_pair<std::string, vector<indice>>("(3,3)", {{-2,-2},{0,-2},{0,0},{-2,0}} ));
+//    unordered_map<std::string, vector<indice>> corner;
+//    corner.insert(std::make_pair<std::string, vector<indice>>("(5,5)", {{-4,-4}} ));
+//    corner.insert(std::make_pair<std::string, vector<indice>>("(3,3)", {{-2,-2},{0,-2},{0,0},{-2,0}} ));
 
-    use.setmethod("corner", corner);
-    use.setbias("corner");
+//    use.setmethod("corner", corner);
+//    use.setbias("corner");
+
+    // inflow
+    unordered_map<std::string, vector<indice>> inflow;
+    inflow.insert(std::make_pair<std::string, vector<indice>> ("(3,3)", {{-1,-1}}));
+    inflow.insert(std::make_pair<std::string, vector<indice>> ("(2,2)", {{-1,-1}, {-1,0}, {0,0}, {0,-1}}));
+
+    inflow.insert(std::make_pair<std::string, vector<indice>> ("const", {{0,0}} ));
+
+    use.setmethod("inflow", inflow);
+    use.setbias("inflow");
+	 use.setbias("inflow","const",0.001);
 
     // =================================================================
     Vec globalvec;
@@ -163,7 +176,7 @@ cout << "End here " << endl;
 
     //simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 	 cout << "Time stepping starts. " << endl;
-    //simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);

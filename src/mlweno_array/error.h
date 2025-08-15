@@ -19,4 +19,10 @@ int printreconsol(vector<reconstruction>& my_recon, int M, int N, int mark,
 						const MeshInfo& mi,
 						double ** locvals);
 
+int printreconsol2(vector<reconstruction>& my_recon, int M, int N, int mark, 
+                   const vector<tensorstencilpoly>& sten_lg,
+					 	 const vector<tensorstencilpoly>& sten_sm,
+					 	 const MeshInfo& mi,
+					 	 double ** locvals);
+
 #endif
