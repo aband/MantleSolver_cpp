@@ -63,7 +63,7 @@ int computeEdgeFlux(vector<double>& edgeflux, double t,
         position = M*(N+1) + j*(M+1)+i+1;
 
         edgeflux.at(position) = advflux_edge(my_recon.at(neg), my_recon.at(pos),
-                                sten_lg, sten_sm, localvals, edge, constvel, false,1.0);
+                                sten_lg, sten_sm, localvals, edge, constvel, false, 1.0);
     }}
 
     // inflow boundary with prescribed function

@@ -36,15 +36,20 @@ sol2 = fscanf(fileID, '%f', [1,Inf]);
 sol2 = reshape(sol2, 3*M, 3*N);
 
 figure
-s = surf(2*pX, pY, sol2)
+s = surf(pX, pY, sol2)
 s.EdgeColor = 'none';
 view(360,0)
-%ylim([0,1.2])
-xlim([0,0.3])
 title(mytitle)
 ylabel("y")
 xlabel("x")
 colormap(turbo)
+set(gcf, 'Position',[50 50 350 1200]);
+ylim([0,1.2])
+xlim([0,0.23])
+zlim([-0.2,1.2])
+axis([0 0.23 0 1.2])
+%axis equal
+
 %colorbar
 %caxis([0,1])
 

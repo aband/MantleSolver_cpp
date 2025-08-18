@@ -49,11 +49,15 @@ averaged velocity $\overline{\mathbf{v}}$,
  pre-calculated from the Darcy-Stokes part, and the partition functions $\kappa$ and $\lambda$. 
  These quantities are only updated before commencing the next time step.
 
-\subsection{Boundary Conditions}
+\subsection{Boundary conditions}
 In practical implementation, we prescribe boundary conditions to each dofs on the boundary.
 Each dofs will be associated with two types of boundary conditions. 
 
-\section{Prescribed Melting Problem}
+\section{Column Tests}
+
+We first test our coupled algorithm with a pseudo-1D column setting.
+
+\subsection{Prescribed Melting Case}
 Before fully coupled computation, 
 we illustrate a simpler model coupling case coupling MFEM and FVM
 solver. Instead of deciding porosity with phase package computation,
@@ -137,6 +141,6 @@ and
 		  \right.
 \end{equation}
 
+\subsection{Phase Transition Case}
 
-
-\subsection{Fully coupled Computation}
+\section{Two-Dimensional Test}

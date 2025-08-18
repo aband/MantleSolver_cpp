@@ -356,6 +356,7 @@ static int lowertri(double * sigmatensor, double * all, int total, int order,
     return 1;
 }
 
+
 int tensorstencilpoly::setSigma(){
 
     // Compute sigma as a complete polynomial
@@ -391,6 +392,7 @@ int tensorstencilpoly::setSigma(){
 
     return 1;
 }
+
 
 // Evaluation and sigma 
 // simplified serial version

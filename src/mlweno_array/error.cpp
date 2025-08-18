@@ -186,7 +186,7 @@ int printreconsol2(vector<reconstruction>& my_recon, int M, int N, int mark,
 
                 for (int g=0; g<3; g++){
                     vertex mapped = GaussMapPointsFace(sampleSet.at(l)[g], corners);
-                    fprintf(sol, "%.12f ", my_recon.at(j*M+i).eval(locvals, mapped, sten_lg, sten_sm) );
+                    fprintf(sol, "%.16f ", my_recon.at(j*M+i).eval(locvals, mapped, sten_lg, sten_sm) );
                 }
             }
         }

@@ -141,7 +141,7 @@ int main(int argc, char ** argv){
     // ====================================================
     cout <<"The total cells : " << M << ", " << N << endl;
     vector<tensorstencilpoly> sten5;
-//   sten5.resize((M-4)*(N-4));
+   sten5.resize((M-4)*(N-4));
 
     vector<tensorstencilpoly> sten3;
     sten3.resize((M-2)*(N-2));
@@ -189,7 +189,7 @@ int main(int argc, char ** argv){
     //vector<indice> sten_sm_pre = {{-2,-2},{-2, 0},{0 ,-2},{0,0}, {-1,-1}, {0,-1}};
 
     // Prepare for stencils (3,2) reconstruction
-    vector<indice> sten_lg_pre = {{-1,-1}, {0,-1}};
+    vector<indice> sten_lg_pre = {{-1,-1}};
     vector<indice> sten_sm_pre = {{-1,-1}, {-1,0}, {0,-1}, {0,0}};
 
     vector<reconstruction> my_recon;
@@ -212,8 +212,8 @@ int main(int argc, char ** argv){
 
     printexactsol(mi, 0, init, 1, true, {0.0});
 
-    rk1(dt, Nt, &globalvec, mi, dmu, dmMesh, my_recon, sten3, sten2);
-//    rk2(dt, Nt, &globalvec, mi, dmu, dmMesh, my_recon, sten3, sten2);
+//    rk1(dt, Nt, &globalvec, mi, dmu, dmMesh, my_recon, sten3, sten2);
+    rk2(dt, Nt, &globalvec, mi, dmu, dmMesh, my_recon, sten3, sten2);
 
     Vec localvec; 
     double ** locvals;
@@ -228,6 +228,14 @@ int main(int argc, char ** argv){
 
 //    printreconsol(my_recon, M, N, 1, sten3, sten2, mi, locvals);
     printreconsol2(my_recon, M, N, 1, sten3, sten2, mi, locvals);
+//    printreconsol2(my_recon, M, N, 1, sten5, sten3, mi, locvals);
+
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+				int s = j*M+i;
+        cout << my_recon.at(s).efforder() << "  ";
+    }cout << endl;}
 
     DMDAVecRestoreArray(dmu,localvec,&locvals);
     DMRestoreLocalVector(dmu, &localvec); 

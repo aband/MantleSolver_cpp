@@ -433,7 +433,7 @@ compaction lengths. We fix the parameter $\Theta = 0$. Each problem is solved
 using four different levels of refinement in the $y$-direction, i.e., $N \in \{20,40,80,160\}$. The code is implemented
 in PETSc/C++, with implementation details discussed in a later chapter.
 
-\subsection{1D simplification}
+\subsection{1D Simplification}
 \iffalse
 To transform the 2D equations to 1D, we assume no velocity in x direction, 
 $\check{\mathbf{v}}_s \cdot \mathbf{i} = 0$,
@@ -480,7 +480,7 @@ We define an auxiliary function $R$ for the case where $\phi$ is constant:
 		  R = \bigg( \phi^{2}\frac{3+\phi - 4\phi^2}{3\phi} \bigg)^{-1/2}.
 \end{equation}
 
-\subsection{2D Boundary conditions}
+\subsection{2D Boundary Conditions}
 Despite the problem being reduced to one dimension, 
 boundary conditions are still specified for the full 2D computational domain.
 To begin with, we list all the degrees of freedom (dofs) that must be prescribed on edges of each element 

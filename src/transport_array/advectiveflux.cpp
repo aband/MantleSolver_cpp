@@ -40,7 +40,7 @@ double advflux_edge(const reconstruction& recon_neg,
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
         double uneg = recon_neg.eval(localvals, mapped, sten_lg, sten_sm); 
-        double upos = recon_neg.eval(localvals, mapped, sten_lg, sten_sm); 
+        double upos = recon_pos.eval(localvals, mapped, sten_lg, sten_sm);
 
         double fneg = advfunc(uneg, vel.at(g), unitNormal);
         double fpos = advfunc(upos, vel.at(g), unitNormal);
@@ -49,7 +49,7 @@ double advflux_edge(const reconstruction& recon_neg,
             gLF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
 				gLF = find_max(abs(dfdu(uneg)),abs(dfdu(upos)))*gLF;
         }
-        work += gwe[g] * LFflux(fneg, fpos, uneg, upos, gLF)* len/2.0;
+        work += gwe[g] * LFflux(fpos, fneg, upos, uneg, gLF)* len/2.0;
     }
 
     return work;

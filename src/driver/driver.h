@@ -87,6 +87,7 @@ class Driver {
                                               const vector<double>& param));
 
         double h0;
+
        /**!
         * Create boundary condition vectors
         */
