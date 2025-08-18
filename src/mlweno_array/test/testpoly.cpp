@@ -21,7 +21,7 @@ double func(const vertex& point,
 
     } else {
 
-    return sin(point[0])*cos(point[1]) ;
+    return sin(point[0])*cos(point[1]) +0.5;
 
     }
 }

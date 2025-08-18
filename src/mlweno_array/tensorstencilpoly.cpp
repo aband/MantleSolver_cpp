@@ -162,9 +162,9 @@ tensorstencilpoly::tensorstencilpoly(const int& inorder){
     sizey = inorder+1;
 }
 
-tensorstencilpoly::tensorstencilpoly(const int& insizex,
-                                     const int& insizey,
-                                     const int& inorder){
+tensorstencilpoly::tensorstencilpoly(const int& inorder,
+                                     const int& insizex,
+                                     const int& insizey){
     order = inorder;
     sizex = insizex;
     sizey = insizey;

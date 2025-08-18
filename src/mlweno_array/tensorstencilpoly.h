@@ -15,9 +15,9 @@ class tensorstencilpoly {
 
         tensorstencilpoly(const int& order);
 
-        tensorstencilpoly(const int& sizex, 
-                          const int& sizey,
-                          const int& order);
+        tensorstencilpoly(const int& inorder,
+                          const int& insizex, 
+                          const int& insizey);
 
         ~tensorstencilpoly();
 
@@ -54,6 +54,7 @@ class tensorstencilpoly {
         int printCoef(double* c, int n);
 
         int printSigmaBase();
+
     private:
         double * coef = nullptr;
 

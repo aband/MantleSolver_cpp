@@ -1,5 +1,13 @@
 #include "error.h"
 
+double LnormError(){
+
+    double work = 0.0;
+
+
+    return work;
+}
+
 int printexactsol(const MeshInfo& mi, double t, 
                   double (*func)(const vertex& point,
                                  const vector<double>& param), 
