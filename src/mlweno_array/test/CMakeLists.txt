@@ -109,3 +109,14 @@ target_link_libraries(testpoly
 		  mlweno_array_lib
 		  PkgConfig::LAPACKE
 )
+
+add_executable(testsigma
+        testsigma.cpp
+)
+
+target_link_libraries(testsigma
+		  general_lib
+		  io_lib
+		  mlweno_array_lib
+		  PkgConfig::LAPACKE
+)

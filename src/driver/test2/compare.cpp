@@ -1,4 +1,6 @@
 #include "driver.h"
+#include "print.h"
+#include "read.h"
 
 int main(int argc, char **argv){
 
@@ -10,14 +12,18 @@ int main(int argc, char **argv){
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
     // Input mesh parameter =========================================================
-    int M=2, N=20;
+    int M=4, N=20;
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
     double L = 0.1, H = 0.4;
-    double xstart = -0.5*L, ystart = -1.0001*H;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
+
+    double addy = 0.0;
+    PetscCall(PetscOptionsGetReal(NULL,NULL,"-addy",&addy,NULL));
+
+    double xstart = -0.5*L, ystart = -1.0001*H - addy;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-ystart", &ystart, NULL));
 
@@ -61,9 +67,27 @@ int main(int argc, char **argv){
                        stencilWidthMesh, stencilWidthU,
                        physicsScale, meshType);
 
-    driver->PrepareTransport(InitHD, InitCD); 
+    /**!
+     * Initialize global cell averaged value vectors.
+     * Initialize multi level reconstruction objects
+     */
+    driver->PrepareTransport(InitHD, InitCD);
 
-    driver->exactandreconstructTest();
+    printCellCenterGrid(driver->mi);
+    printCellAve(1, &driver->globalHD, driver->mi, "HD");
+    printCellAve(1, &driver->globalCD, driver->mi, "CD");
 
-    return 1;
+
+
+
+
+    VecDestroy(&driver->globalmesh);
+    VecDestroy(&driver->globalHD);
+    VecDestroy(&driver->globalCD);
+    DMDestroy(&driver->dmu);
+    DMDestroy(&driver->dmMesh);
+
+    PetscFinalize();
+
+    return 0;
 }

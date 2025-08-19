@@ -88,7 +88,8 @@ class Driver {
          vector<tensorstencilpoly> stensm;
 
          // HD and CD will be using the same reconstruction method
-         vector<reconstruction> my_recon;  
+         vector<reconstruction> my_recon_HD;  
+         vector<reconstruction> my_recon_CD;  
 
         /**!
          * Create boundary condition vectors
@@ -116,6 +117,27 @@ class Driver {
         double CDbottom;
 
         std::vector<double> parameter;
+
+        int CellAvePorosity(const indice& gcell, double ** lHD, double ** lCD);
+
+
+        int AssignLocMatStokes(const indice& gcell,
+                               double ** lHD,
+                               double ** lCD,
+                               LocMat * loc);
+ 
+        int AssignLocMatDarcy(const indice& gcell,
+                              double ** lHD,
+                              double ** lCD,
+                              LocMat * loc);
+ 
+        int AssignLocMatCouple(const indice& gcell,
+                               double ** lHD,
+                               double ** lCD,
+                               double& k);
+ 
+        // Eat and spit test
+        int exactandreconstructTest();
 
     private:
 

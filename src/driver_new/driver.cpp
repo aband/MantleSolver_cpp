@@ -143,3 +143,104 @@ int Driver::CreateScatterVec(){
 
     return 1;
 }
+
+int Driver::exactandreconstructTest(){
+
+    // Eat and spit test
+    printexactsol(mi, 0, InitCD, 1, true, {0.0});
+
+    int M = mi.MPIglobalCellSize[0];
+    int N = mi.MPIglobalCellSize[1];
+
+    vector<double> sigma_lg;
+    sigma_lg.resize(stenlg.size());
+
+    vector<double> sigma_sm;
+    sigma_sm.resize(stensm.size());
+
+    Vec localvecCD; 
+    double ** locvalsCD;
+
+    // Distribute local part to local vectors.
+    PetscCall(DMGetLocalVector(dmu, &localvecCD)); 
+
+    PetscCall(DMGlobalToLocalBegin(dmu, globalCD, INSERT_VALUES, localvecCD));
+    PetscCall(DMGlobalToLocalEnd(dmu, globalCD, INSERT_VALUES, localvecCD));
+
+    PetscCall(DMDAVecGetArray(dmu, localvecCD, &locvalsCD));
+
+    for (int s=0; s<stenlg.size(); s++){
+        sigma_lg.at(s) = stenlg.at(s).sigma(locvalsCD);
+    }
+
+    for (int s=0; s<stensm.size(); s++){
+        sigma_sm.at(s) = stensm.at(s).sigma(locvalsCD);
+    }
+
+    // Setup nonlinear weights
+    for (int s=0; s<my_recon_CD.size(); s++){
+        my_recon_CD.at(s).extractsigma(sigma_lg, sigma_sm);
+        my_recon_CD.at(s).setWgts(1.0/(double)M/(double)N);
+    }
+
+    printreconsol2(my_recon_CD, M, N, 1, stenlg, stensm, mi, locvalsCD);
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+				int s = j*M+i;
+        cout << my_recon_CD.at(s).efforder() << "  ";
+    }cout << endl;}
+
+    DMDAVecRestoreArray(dmu,localvecCD,&locvalsCD);
+    DMRestoreLocalVector(dmu, &localvecCD); 
+
+    cout << endl << endl;
+
+    // ==========================================================
+    printexactsol(mi, 0, InitHD, 2, true, {0.0});
+
+    sigma_lg.clear();
+    sigma_lg.resize(stenlg.size());
+
+    sigma_sm.clear();
+    sigma_sm.resize(stensm.size());
+
+    Vec localvecHD; 
+    double ** locvalsHD;
+
+    // Distribute local part to local vectors.
+    PetscCall(DMGetLocalVector(dmu, &localvecHD)); 
+
+    PetscCall(DMGlobalToLocalBegin(dmu, globalHD, INSERT_VALUES, localvecHD));
+    PetscCall(DMGlobalToLocalEnd(dmu, globalHD, INSERT_VALUES, localvecHD));
+
+    PetscCall(DMDAVecGetArray(dmu, localvecHD, &locvalsHD));
+
+    for (int s=0; s<stenlg.size(); s++){
+        sigma_lg.at(s) = stenlg.at(s).sigma(locvalsHD);
+    }
+
+    for (int s=0; s<stensm.size(); s++){
+        sigma_sm.at(s) = stensm.at(s).sigma(locvalsHD);
+    }
+
+    // Setup nonlinear weights
+    for (int s=0; s<my_recon_HD.size(); s++){
+        my_recon_HD.at(s).extractsigma(sigma_lg, sigma_sm);
+        my_recon_HD.at(s).setWgts(abs(L_*H_)/(double)M/(double)N);
+    }
+
+    printreconsol2(my_recon_HD, M, N, 2, stenlg, stensm, mi, locvalsHD);
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+				int s = j*M+i;
+        cout <<"At cell " << i << ", " << j  << "  " << my_recon_HD.at(s).efforder() << "   ";
+		  cout << my_recon_HD.at(s).printinfo() << endl;
+    }cout << endl;}
+
+    DMDAVecRestoreArray(dmu,localvecHD,&locvalsHD);
+    DMRestoreLocalVector(dmu, &localvecHD); 
+
+    return 1;
+}

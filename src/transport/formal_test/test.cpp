@@ -35,6 +35,9 @@ int main(int argc, char ** argv){
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-ystart", &ystart, NULL));
 
+    L = 0.1; H = 0.4;
+    xstart = -0.5*L, ystart = -1.0001*H ;
+
     int stencilWidthMesh = 5; // Ghost layer thickness for vertex
     int stencilWidthU = 3;    // Ghost layer thickness for cell
 
@@ -112,8 +115,8 @@ cout << "Start here " << endl;
 cout << "(3,3) prepared." << endl;
     ml.addLevel("(2,2)", {2,2}, mi);
 cout << "(2,2) prepared." << endl;
-    ml.addLevel("const", {1,1}, mi);
-cout << "const prepared: "<< ml.getSize("const") << endl;
+//    ml.addLevel("const", {1,1}, mi);
+//cout << "const prepared: "<< ml.getSize("const") << endl;
 cout << "End here " << endl;
 
     double h0 = sqrt((L*H)/(double)(M*N));
@@ -159,11 +162,11 @@ cout << "End here " << endl;
     inflow.insert(std::make_pair<std::string, vector<indice>> ("(3,3)", {{-1,-1}}));
     inflow.insert(std::make_pair<std::string, vector<indice>> ("(2,2)", {{-1,-1}, {-1,0}, {0,0}, {0,-1}}));
 
-    inflow.insert(std::make_pair<std::string, vector<indice>> ("const", {{0,0}} ));
+    //inflow.insert(std::make_pair<std::string, vector<indice>> ("const", {{0,0}} ));
 
     use.setmethod("inflow", inflow);
     use.setbias("inflow");
-	 use.setbias("inflow","const",0.001);
+	 //use.setbias("inflow","const",0.001);
 
     // =================================================================
     Vec globalvec;
@@ -176,7 +179,7 @@ cout << "End here " << endl;
 
     //simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 	 cout << "Time stepping starts. " << endl;
-    simpleRK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
+    simpleRK(0, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP2RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
 //    simpleSSP3RK(dt, Nt, &globalvec, mi, ml, use, dmu, dmMesh);
     reconPlot(mi, ml, use, 1, &globalvec, true, dmu, h0);

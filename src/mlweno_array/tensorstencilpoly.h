@@ -27,6 +27,8 @@ class tensorstencilpoly {
         // Compute sigma tensor base
         int setSigma();
 
+        int setSigma(const MeshInfo& mi, indice local);
+
         // Evaluate single stencil polynomials 
         double eval(const double& x, const double& y, const int& ncell) const;
         double eval(const double& x,  const double& y, 
@@ -59,6 +61,9 @@ class tensorstencilpoly {
         double * coef = nullptr;
 
         double * sigmabase = nullptr;
+
+        vector<double *> sigmabasetarget;
+        vector<indice> localtarget;
 
         int order = 0;
         int sizex = 0;

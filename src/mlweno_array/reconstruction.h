@@ -26,7 +26,7 @@ class reconstruction {
         // Stencils
         vector<indice> sten_lg;
         vector<indice> sten_sm;
-        int use_sten_const;
+        int use_sten_const = 0;
 
         vector<int> flat_sten_lg;
         vector<int> flat_sten_sm;
@@ -76,7 +76,7 @@ class reconstruction {
         int allsize_smx;
         int allsize_smy;
 
-        double epsilon = 1e-4;
+        double epsilon = 1e-5;
         int    s       = 1;
 };
 

@@ -19,9 +19,9 @@ int main(int argc, char ** argv){
     MPI_Comm_size(PETSC_COMM_WORLD,&size);
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
-//    int M = 30, N = 30;
-//    ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
-//    ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
+    int M = 30, N = 30;
+    ierr = PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL);CHKERRQ(ierr);
+    ierr = PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL);CHKERRQ(ierr);
 
     int order = 3;
     ierr = PetscOptionsGetInt(NULL,NULL,"-order",&order,NULL);CHKERRQ(ierr);
@@ -94,6 +94,37 @@ int main(int argc, char ** argv){
 
     mi.L = L;
     mi.H = H;
+
+    cout << M << "  " << N << endl;
+    vector<tensorstencilpoly> sten5;
+    sten5.resize((M-4)*(N-4));
+
+    vector<tensorstencilpoly> sten3;
+    sten3.resize((M-2)*(N-2));
+
+    for (int j=0; j<N-4; j++){
+    for (int i=0; i<M-4; i++){
+        int s = j*(M-4)+i;
+        sten5.at(s) = tensorstencilpoly(4);
+        sten5.at(s).setCoef(mi,i,j);
+		  sten5.at(s).startx = i;
+		  sten5.at(s).starty = j;
+		  sten5.at(s).setSigma();
+    }}
+
+    for (int j=0; j<N-2; j++){
+    for (int i=0; i<M-2; i++){
+        int s = j*(M-2)+i;
+        sten3.at(s) = tensorstencilpoly(2);
+        sten3.at(s).setCoef(mi,i,j);
+		  sten3.at(s).startx = i;
+		  sten3.at(s).starty = j;
+
+        for (int locy = 0; locy<3; locy++){
+        for (int locx = 0; locx<3; locx++){
+		      sten3.at(s).setSigma(mi, {locx, locy});
+        }}
+    }}
 
 
     return 1;

@@ -334,3 +334,32 @@ int Driver::CreateScatterVec(){
 
     return 1;
 }
+
+int Driver::check(){
+
+    Vec localu;
+
+    DMGetLocalVector(dmu, &localu);
+
+    DMGlobalToLocalBegin(dmu, globalHD, INSERT_VALUES, localu);
+    DMGlobalToLocalEnd(dmu, globalHD, INSERT_VALUES, localu); 
+
+    double ** lu;
+    DMDAVecGetArray(dmu, localu, &lu);
+
+    double ** f;
+    DMDAVecGetArray(dmu, flux, &f);
+
+    // Update non linear weights with current cell-averaged solution
+    ml.updatesigma(lu);
+
+    Tensor<weights> allwgts;
+    double h0 = sqrt((mi.L*mi.H)/(double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
+
+    use.computeWgts(ml, mi, h0, allwgts,location);
+
+
+
+
+    return 1;
+}

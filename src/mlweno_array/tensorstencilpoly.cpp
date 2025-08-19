@@ -174,6 +174,10 @@ tensorstencilpoly::~tensorstencilpoly(){
 
     if (coef) delete [] coef;
     if (sigmabase) delete [] sigmabase;
+
+    for (int i=0; i<sigmabasetarget.size(); i++){
+        if (sigmabasetarget[i]) delete [] sigmabasetarget[i];
+    }
 }
 
 int tensorstencilpoly::setCoef(const MeshInfo& mi, const int& gstartx, const int& gstarty){
@@ -356,7 +360,6 @@ static int lowertri(double * sigmatensor, double * all, int total, int order,
     return 1;
 }
 
-
 int tensorstencilpoly::setSigma(){
 
     // Compute sigma as a complete polynomial
@@ -393,6 +396,49 @@ int tensorstencilpoly::setSigma(){
     return 1;
 }
 
+int tensorstencilpoly::setSigma(const MeshInfo& mi, indice local){
+
+    localtarget.push_back(local);
+
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>&   gpf = GaussPointsFace;
+
+    int total = sizex*sizey;
+
+    double * locsigmabase = new double [total * total] ();
+    memset(locsigmabase, 0, total*total);
+
+    // Get target cell
+    int gcellx = startx + local[0];
+    int gcelly = starty + local[1];
+ 
+    vertexSet targetcorner = extractCorners(mi, {gcellx, gcelly});
+
+    double all[total * total] = {0};
+
+    double targetarea = mi.cellArea.at(FlatIndic(mi,{gcellx, gcelly}));
+
+    for (int g=0; g<gpf.size(); g++){    
+
+        valarray<double> mapped = GaussMapPointsFace(gpf[g],targetcorner);
+        double jac = abs(GaussJacobian(gpf[g],targetcorner));
+        double gw = gwf[g];
+
+        for (int ncell = 0; ncell<total; ncell++){
+            der(sizex-1, sizey-1, ncell, &all[ncell*total], mapped[0], mapped[1]);
+        }
+
+        lowertri(locsigmabase, all, total, order, refarea, h, gw, jac);
+    }
+
+    for (int t=0; t<total*total; t++){
+        locsigmabase[t] /= targetarea;
+    }
+
+    sigmabasetarget.push_back(locsigmabase);
+
+    return 1;
+}
 
 // Evaluation and sigma 
 // simplified serial version

@@ -16,7 +16,7 @@ double InitHD(const valarray<double>& point,
 
     double HD = 2.9-2.5*point[1];
 
-    if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
+    if (point[1] < -0.20){HD = 2.9 + 2.5*0.20 + 0.2;}
 
     return HD;
 }
@@ -38,24 +38,24 @@ int Driver::PrepareTransport(double (*initHD)(const valarray<double>& point,
     int M = mi.MPIglobalCellSize[0];
     int N = mi.MPIglobalCellSize[1];
 
-    stenlg.resize(M*(N-2));
+    stenlg.resize((M-2)*(N-2));
 
     for (int j=0; j<N-2; j++){
-    for (int i=0; i<M; i++){
+    for (int i=0; i<M-2; i++){
         int s = j*(M-2)+i;
-        stenlg.at(s) = tensorstencilpoly(2, 1, 3);
+        stenlg.at(s) = tensorstencilpoly(2, 3, 3);
         stenlg.at(s).setCoef(mi,i,j);
 		  stenlg.at(s).setSigma();
 		  stenlg.at(s).startx = i;
 		  stenlg.at(s).starty = j;
     }}
   
-    stensm.resize(M*(N-1));
+    stensm.resize((M-1)*(N-1));
 
     for (int j=0; j<N-1; j++){
-    for (int i=0; i<M; i++){
+    for (int i=0; i<M-1; i++){
         int s = j*(M-1) + i;
-        stensm.at(s) = tensorstencilpoly(1, 1, 2);
+        stensm.at(s) = tensorstencilpoly(1, 2, 2);
         stensm.at(s).setCoef(mi,i,j);
 		  stensm.at(s).setSigma();
 		  stensm.at(s).startx = i;
@@ -63,21 +63,27 @@ int Driver::PrepareTransport(double (*initHD)(const valarray<double>& point,
     }}
 
     // (3,2) reconstruction but 1D
-    vector<indice> sten_lg_pre = {{0,-1}};
-    vector<indice> sten_sm_pre = {{0,-1}, {0,0}};
+    //vector<indice> sten_lg_pre = {{0,-1}};
+    //vector<indice> sten_sm_pre = {{0,-1}, {0,0}};
 
-    vector<reconstruction> my_recon;
-    my_recon.resize(M*N);
+    vector<indice> sten_lg_pre = {{-1,-1}};
+    vector<indice> sten_sm_pre = {{-1,-1}, {0,0}, {-1,0}, {0,-1}};
+
+    my_recon_HD.resize(M*N);
+    my_recon_CD.resize(M*N);
 
     // Initializing reconstrucitons for each cell
     for (int j=0; j<N; j++){
     for (int i=0; i<M; i++){
         int s = j*M+i;
  
-        my_recon.at(s) = reconstruction();
+        my_recon_HD.at(s) = reconstruction();
 
-        my_recon.at(s).init(2,2,3,3,1,2,sten_lg_pre, sten_sm_pre, mi,{i,j});
+        my_recon_HD.at(s).init(2,2,3,3,1,2,sten_lg_pre, sten_sm_pre, mi,{i,j});
 
+        my_recon_CD.at(s) = reconstruction();
+
+        my_recon_CD.at(s).init(2,2,3,3,1,2,sten_lg_pre, sten_sm_pre, mi,{i,j});
     }}
 
     // Compute bottom fixed value

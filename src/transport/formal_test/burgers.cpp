@@ -69,6 +69,8 @@ double func(const vertex& point,
         return 0;
     }
 */
+
+/*
     if (point[0] < 0.5) {
 
     return sin(point[0])*cos(point[1]);
@@ -80,6 +82,13 @@ double func(const vertex& point,
 
     }
 
+*/
+
+    double HD = 2.9-2.5*point[1];
+
+    if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
+
+    return HD;
 }
 
 double dfdu(const double& u){

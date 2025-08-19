@@ -13,4 +13,6 @@ int quiverOutputEvent(double * ux, double * uy, double *vx, double * vy, int mar
 
 int quiverOutputEventTransform(double * ux, double * uy, double *vx, double * vy, int mark, int M, int N, double V0);
 
+int reconPlot(const MeshInfo& mi, multilevel& ml, mluse& use, int mark, Vec * global, bool grid, DM dmu, double h0);
+
 #endif
