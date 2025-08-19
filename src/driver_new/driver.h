@@ -36,6 +36,11 @@ extern "C"{
 #include "advectiveflux.h"
 #include "rk.h"
 
+double InitCD(const valarray<double>& point,
+              const vector<double>& param);
+
+double InitHD(const valarray<double>& point,
+              const vector<double>& param);
 
 class Driver {
 

@@ -1,4 +1,25 @@
 #include "driver.h"
+// Initialize dimensionless composition and enthalpy
+double InitCD(const valarray<double>& point,
+              const vector<double>& param){
+
+    // Constant composition value 
+    return 0.04;
+}
+
+double InitHD(const valarray<double>& point,
+              const vector<double>& param){
+
+    // Linear simple distribution of enthalpy
+	 // We pass nondimensionalize normalization factor in param.at(0)
+    //double HD = 0.01;
+
+    double HD = 2.9-2.5*point[1];
+
+    if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
+
+    return HD;
+}
 
 // Case specified different case requires different 
 // Prepare reconstruction stencils
@@ -17,8 +38,10 @@ int Driver::PrepareTransport(double (*initHD)(const valarray<double>& point,
     int M = mi.MPIglobalCellSize[0];
     int N = mi.MPIglobalCellSize[1];
 
+    stenlg.resize(M*(N-2));
+
     for (int j=0; j<N-2; j++){
-    for (int i=0; i<M-2; i++){
+    for (int i=0; i<M; i++){
         int s = j*(M-2)+i;
         stenlg.at(s) = tensorstencilpoly(2, 1, 3);
         stenlg.at(s).setCoef(mi,i,j);
@@ -26,9 +49,11 @@ int Driver::PrepareTransport(double (*initHD)(const valarray<double>& point,
 		  stenlg.at(s).startx = i;
 		  stenlg.at(s).starty = j;
     }}
+  
+    stensm.resize(M*(N-1));
 
     for (int j=0; j<N-1; j++){
-    for (int i=0; i<M-1; i++){
+    for (int i=0; i<M; i++){
         int s = j*(M-1) + i;
         stensm.at(s) = tensorstencilpoly(1, 1, 2);
         stensm.at(s).setCoef(mi,i,j);

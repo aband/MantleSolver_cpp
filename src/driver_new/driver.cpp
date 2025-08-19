@@ -143,19 +143,3 @@ int Driver::CreateScatterVec(){
 
     return 1;
 }
-
-int Driver::SolveFlow(int maxIter, double tolUzawa, double ** lHD, double ** lCD){
-
-    ParallelMatrixAssemble(lHD, lCD);
-
-    int nelem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
-
-    CreateLinearSys(reducedStokes_, nelem);
-    CreateLinearSys(reducedDarcy_, nelem);
-
-    CreateCoupledSystem(reducedStokes_, reducedDarcy_, Result_, &K);
-
-    CoupledUzawa(Result_, tolUzawa, maxIter);
-
-    return 1;
-}

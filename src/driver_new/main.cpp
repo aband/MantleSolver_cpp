@@ -1,6 +1,6 @@
 #include "driver.h"
 
-int main(){
+int main(int argc, char **argv){
 
     PetscMPIInt   size,rank;
     PetscInitialize(&argc, &argv, NULL, NULL);
@@ -61,7 +61,7 @@ int main(){
                        stencilWidthMesh, stencilWidthU,
                        physicsScale, meshType);
 
-   
+    driver->PrepareTransport(InitHD, InitCD); 
 
     return 1;
 }

@@ -164,7 +164,8 @@ target_link_libraries(transport_lib
 
 add_library(driver_lib
 		  ${SRC}/driver_new/driver.cpp
-		  case.cpp
+		  ${SRC}/driver_new/couple.cpp
+        case.cpp
 		  )
 
 target_include_directories(driver_lib
@@ -190,7 +191,9 @@ target_link_libraries(driver_lib
 
 # Generate an excutable file
 add_executable(test
-        test.cpp
+        ../main.cpp
+		  case.cpp
+		  flow_setting.cpp
 )
 
 target_link_libraries(test
