@@ -109,6 +109,16 @@ int reconstruction::extractsigma(const vector<double>& sigma_lg,
     return 1;
 }
 
+int reconstruction::extractsigma(const vector<double>& sigma_lg, 
+                                 const vector<vector<double>>& sigma_sm){
+
+    for (int s=0; s<sten_lg.size(); s++){
+        stensigma_lg.at(s) = sigma_lg.at(flat_sten_lg.at(s));
+    }
+// .....
+    return 1;
+}
+
 int reconstruction::setWgts(double area){
 
     double sum = 0.0;

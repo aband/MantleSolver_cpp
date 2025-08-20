@@ -48,6 +48,8 @@ class tensorstencilpoly {
 
         double sigma(double ** localsol){return sigma(localsol, startx, starty);};
 
+        int sigma(double ** localsol, vector<double>& locsigma);
+
         int startx;
         int starty;
 
@@ -62,8 +64,7 @@ class tensorstencilpoly {
 
         double * sigmabase = nullptr;
 
-        vector<double *> sigmabasetarget;
-        vector<indice> localtarget;
+        unordered_map<int, double *> sigmabasetarget;
 
         int order = 0;
         int sizex = 0;

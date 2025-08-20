@@ -175,8 +175,8 @@ tensorstencilpoly::~tensorstencilpoly(){
     if (coef) delete [] coef;
     if (sigmabase) delete [] sigmabase;
 
-    for (int i=0; i<sigmabasetarget.size(); i++){
-        if (sigmabasetarget[i]) delete [] sigmabasetarget[i];
+    for (auto& it: sigmabasetarget){
+        if (sigmabasetarget[it.first]) delete [] sigmabasetarget[it.first];
     }
 }
 
@@ -398,15 +398,16 @@ int tensorstencilpoly::setSigma(){
 
 int tensorstencilpoly::setSigma(const MeshInfo& mi, indice local){
 
-    localtarget.push_back(local);
-
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>&   gpf = GaussPointsFace;
 
     int total = sizex*sizey;
 
     double * locsigmabase = new double [total * total] ();
+
     memset(locsigmabase, 0, total*total);
+
+    int localcell = local[1]*sizex + local[0];
 
     // Get target cell
     int gcellx = startx + local[0];
@@ -435,7 +436,39 @@ int tensorstencilpoly::setSigma(const MeshInfo& mi, indice local){
         locsigmabase[t] /= targetarea;
     }
 
-    sigmabasetarget.push_back(locsigmabase);
+//    sigmabasetarget.insert(std::make_pair<int, double *>
+//						  (local[1]*sizex+local[0], locsigmabase));
+    sigmabasetarget[local[1]*sizex+local[0]] =  locsigmabase;
+
+    return 1;
+}
+
+int tensorstencilpoly::sigma(double ** localsol, vector<double>& locsigma){
+
+    locsigma.clear();
+    locsigma.resize(sigmabasetarget.size());
+
+    int total = sizex*sizey;
+    int cell1=0;
+    int cell2=0;
+
+    for (int sig =0; sig<sigmabasetarget.size(); sig++){
+
+        locsigma.at(sig) = 0;
+        for (int j1=0; j1<sizey; j1++){
+        for (int i1=0; i1<sizex; i1++){
+            cell1 = j1*sizex + i1;
+
+            for (int j2=0; j2<sizey; j2++){
+            for (int i2=0; i2<sizex; i2++){
+                cell2 = j2*sizex + i2;
+
+                locsigma.at(sig) += localsol[starty+j1][startx+i1] * 
+                                    localsol[starty+j2][startx+i2] * 
+                                    sigmabasetarget.at(sig)[cell1*total + cell2];
+            }}
+        }}
+    }
 
     return 1;
 }

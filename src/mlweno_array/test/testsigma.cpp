@@ -7,6 +7,22 @@ extern "C"{
 }
 
 #include "tensorstencilpoly.h"
+#include "reconstruction.h"
+#include "error.h"
+
+double func(const vertex& point,
+            const vector<double>& param){
+
+    if (point[0] < 0.5) {
+
+    return sin(point[0])*cos(point[1]);
+
+    } else {
+
+    return sin(point[0])*cos(point[1]) +0.5;
+
+    }
+}
 
 int main(int argc, char ** argv){
 
@@ -126,6 +142,110 @@ int main(int argc, char ** argv){
         }}
     }}
 
+    vector<indice> sten_lg_pre = {{-2,-2}};
+    vector<indice> sten_sm_pre = {{-2,-2},{-2, 0},{0 ,-2},{0,0}};
+
+    vector<reconstruction> my_recon;
+    my_recon.resize(M*N);
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        int s = j*M+i;
+        my_recon.at(s) = reconstruction();
+
+        my_recon.at(s).use_sten_const = 0;
+
+        my_recon.at(s).init(3,3,5,5,2,4,sten_lg_pre, sten_sm_pre, mi,{i,j});
+        
+    }}
+
+    // Reconstruction test
+    Vec globalvec, localvec;
+    double ** locvals;
+
+    PetscCall(DMCreateGlobalVector(dmu, &globalvec));
+
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalvec, {0.0}, func);
+    // VecView(globalvec, PETSC_VIEWER_STDOUT_WORLD);
+    // Distribute local part to local vectors.
+    PetscCall(DMGetLocalVector(dmu, &localvec)); 
+
+    PetscCall(DMGlobalToLocalBegin(dmu, globalvec, INSERT_VALUES, localvec));
+    PetscCall(DMGlobalToLocalEnd(dmu, globalvec, INSERT_VALUES, localvec));
+
+    PetscCall(DMDAVecGetArray(dmu, localvec, &locvals));
+
+    vector<double> sigma_lg;
+    sigma_lg.resize(sten5.size());
+
+    vector<vector<double>> sigma_sm;
+    sigma_sm.resize(sten3.size());
+
+    for (int j=0; j<N-4; j++){
+    for (int i=0; i<M-4; i++){
+        int s = j*(M-4)+i;
+        sigma_lg.at(s) = sten5.at(s).sigma(locvals); 
+    }}   
+
+    for (int j=0; j<N-2; j++){
+    for (int i=0; i<M-2; i++){
+        int s = j*(M-2)+i;
+        sten3.at(s).sigma(locvals, sigma_sm.at(s));
+    }}
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        int s = j*M+i;
+
+
+
+        cout << my_recon.at(s).efforder() << "  ";
+    }cout << endl;}
+
+
+    vector<vertex> sample = {{-1+1e-3,-1+1e-3},
+                             { 0     ,-1+1e-3},
+                             { 1-1e-3,-1+1e-3},
+									  {-1+1e-3, 0},
+                             { 0     , 0},
+                             { 1-1e-3, 0},
+									  {-1+1e-3, 1-1e-3},
+                             { 0     , 1-1e-3},
+                             { 1-1e-3, 1-1e-3}};
+
+    vector<vertex> mapped; 
+    mapped.resize(sample.size());
+
+    // Evalutation at sample points
+    for (int j=0; j<N; j++){
+
+        for (int i=0; i<M; i++){
+
+            // Extract corners of the selected cell
+            vertexSet corners = extractCorners(mi, {i,j});
+
+            for (int g=0; g<sample.size(); g++){
+                mapped.at(g) = GaussMapPointsFace(sample.at(g), corners);
+            }
+
+            my_recon.at(j*M+i).eval(locvals, mapped, sten5, sten3);
+            //if (j==midN && i==midM){
+            //    my_recon.at(j*M+i).eval(locvals, mapped, sten5, sten3);
+            //}
+        }
+    }
+
+    printreconsol(my_recon, M ,N, 1);
+
+    // =================================================================
+    DMDAVecRestoreArray(dmu,localvec,&locvals);
+    DMRestoreLocalVector(dmu, &localvec); 
+
+    PetscCall(VecDestroy(&globalvec));
+ 
+    PetscCall(VecDestroy(&globalmesh));
+    PetscCall(DMDestroy(&dmMesh));
+    PetscCall(DMDestroy(&dmu));
 
     return 1;
 }

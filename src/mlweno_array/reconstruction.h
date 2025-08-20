@@ -23,6 +23,9 @@ class reconstruction {
         int extractsigma(const vector<double>& sigma_lg,
                          const vector<double>& sigam_sm);
 
+        int extractsigma(const vector<double>& sigma_lg,
+                         const vector<vector<double>>& sigam_sm);
+
         // Stencils
         vector<indice> sten_lg;
         vector<indice> sten_sm;
