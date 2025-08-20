@@ -13,15 +13,24 @@ extern "C"{
 double func(const vertex& point,
             const vector<double>& param){
 
-    if (point[0] < 0.5) {
+    //if (point[0] < 0.5) {
+//
+//    return sin(point[0])*cos(point[1]);
 
-    return sin(point[0])*cos(point[1]);
+    //return 1;
 
-    } else {
+//    } else {
 
-    return sin(point[0])*cos(point[1]) +0.5;
+//    return sin(point[0])*cos(point[1]) +0.5;
 
-    }
+    //return 2;
+//    }
+
+    double HD = 2.9-2.5*point[1];
+
+    if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
+
+    return HD;
 }
 
 int main(int argc, char ** argv){
@@ -42,9 +51,14 @@ int main(int argc, char ** argv){
     int order = 3;
     ierr = PetscOptionsGetInt(NULL,NULL,"-order",&order,NULL);CHKERRQ(ierr);
 
-    double L = 1, H = 1;
+    
+	 double L = 1, H = 1;
     //double xstart = -L/2, ystart = -H/2;
     double xstart = 0.0, ystart = 0.0;
+
+    L = 0.1, H = 0.4;
+    xstart = -0.5*L, ystart = -1.0001*H;
+ 
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
@@ -191,17 +205,39 @@ int main(int argc, char ** argv){
     for (int i=0; i<M-2; i++){
         int s = j*(M-2)+i;
         sten3.at(s).sigma(locvals, sigma_sm.at(s));
+//        cout << "Stencil : " << i << "  " << j << endl;
+/*
+        for (int ly=0; ly<3; ly++){
+        for (int lx=0; lx<3; lx++){
+
+            cout << sigma_sm.at(s).at(ly*3+lx) << "  " ;
+
+        }cout << endl;}
+        cout << endl;
+*/
     }}
 
     for (int j=0; j<N; j++){
     for (int i=0; i<M; i++){
         int s = j*M+i;
 
+        my_recon.at(s).extractsigma(sigma_lg, sigma_sm);
+        my_recon.at(s).setWgts(1.0/(double)M/(double)N);
 
-
+        //cout << "At cell : " << i << "  " << j << endl;
+        //my_recon.at(s).printinfo();
+		  //my_recon.at(s).printsigma();
         cout << my_recon.at(s).efforder() << "  ";
+    //}}
     }cout << endl;}
 
+    int halfM = M/2;
+
+    cout << "At cell : " << halfM  << ", " << 2 << endl;
+    my_recon.at(2*M+halfM).printinfo();
+    my_recon.at(2*M+halfM).printsigma();
+
+    printexactsol(mi, 0, func, 1, true, {0.0});
 
     vector<vertex> sample = {{-1+1e-3,-1+1e-3},
                              { 0     ,-1+1e-3},

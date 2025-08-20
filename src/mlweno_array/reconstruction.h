@@ -65,6 +65,8 @@ class reconstruction {
         // print functions
         int printinfo();
 
+        int printsigma();
+
         double efforder();
 
     private:
@@ -73,13 +75,19 @@ class reconstruction {
         vector<double> stensigma_lg;
         vector<double> stensigma_sm;
 
+        int stensizelgx;
+        int stensizelgy;
+
+        int stensizesmx;
+        int stensizesmy;
+
         int allsize_lgx;
         int allsize_lgy;
        
         int allsize_smx;
         int allsize_smy;
 
-        double epsilon = 1e-5;
+        double epsilon = 1e-6;
         int    s       = 1;
 };
 

@@ -40,6 +40,12 @@ int reconstruction::init(int sizex_sm, int sizey_sm,
     sten_lg.clear();
     sten_sm.clear();
 
+    stensizelgx = sizex_lg;
+    stensizelgy = sizey_lg;
+
+    stensizesmx = sizex_sm;
+    stensizesmy = sizey_sm;
+
     allsize_lgx = mi.MPIglobalCellSize[0] - sizex_lg+1;
     allsize_lgy = mi.MPIglobalCellSize[1] - sizey_lg+1;
 
@@ -115,7 +121,15 @@ int reconstruction::extractsigma(const vector<double>& sigma_lg,
     for (int s=0; s<sten_lg.size(); s++){
         stensigma_lg.at(s) = sigma_lg.at(flat_sten_lg.at(s));
     }
-// .....
+
+    for (int s=0; s<sten_sm.size(); s++){
+        indice position = sten_sm.at(s);
+        int po = abs(position[1]) * stensizesmx + abs(position[0]);
+        stensigma_sm.at(s) = sigma_sm.at(flat_sten_sm.at(s)).at(po);
+
+//        cout << position[0] << "  " << position[1] << "   "  << sigma_sm.at(s).at(po) <<  endl;
+    }
+
     return 1;
 }
 
@@ -127,12 +141,12 @@ int reconstruction::setWgts(double area){
     //nonlinwgts_sm.clear(); 
 
     for (int l=0; l<nonlinwgts_lg.size(); l++){
-        nonlinwgts_lg.at(l) = linwgts_lg.at(l) / pow(stensigma_lg.at(l) + epsilon*area, s*r_lg + geteta(r_lg));
+        nonlinwgts_lg.at(l) = linwgts_lg.at(l) / pow(abs(stensigma_lg.at(l)) + epsilon*area, s*r_lg + geteta(r_lg));
         sum += nonlinwgts_lg.at(l);
     }
 
     for (int l=0; l<nonlinwgts_sm.size(); l++){
-        nonlinwgts_sm.at(l) = linwgts_sm.at(l) / pow(stensigma_sm.at(l) + epsilon*area, s*r_sm + geteta(r_sm));
+        nonlinwgts_sm.at(l) = linwgts_sm.at(l) / pow(abs(stensigma_sm.at(l)) + epsilon*area, s*r_sm + geteta(r_sm));
         sum += nonlinwgts_sm.at(l);
     }
 
@@ -227,6 +241,27 @@ int reconstruction::printinfo(){
     if (use_sten_const){
         cout << "The constant stencil : " << nonlinwgts_const << endl;
       
+    }cout << endl;
+
+    return 1;
+}
+
+int reconstruction::printsigma(){
+
+    cout << "Number of " << sten_lg.size() <<  " large stencil of order : " << r_lg  << " is used." << endl;
+
+    for (int s=0; s<sten_lg.size(); s++ ){
+        cout << "At stencil : (" << sten_lg.at(s)[0] + gstart[0] << ", " << 
+                                    sten_lg.at(s)[1] + gstart[1] << ") " << 
+												stensigma_lg.at(s) << "  " << endl;
+    }cout << endl;
+
+    cout << "Number of " << sten_sm.size() <<  " small stencil of order : " << r_sm  << " is used." << endl;
+
+    for (int s=0; s<sten_sm.size(); s++ ){
+        cout << "At stencil : (" << sten_sm.at(s)[0] + gstart[0] << ", " << 
+                                    sten_sm.at(s)[1] + gstart[1] << ") : " << 
+												stensigma_sm.at(s) << "  " << endl;
     }cout << endl;
 
     return 1;

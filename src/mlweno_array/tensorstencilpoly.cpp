@@ -412,7 +412,7 @@ int tensorstencilpoly::setSigma(const MeshInfo& mi, indice local){
     // Get target cell
     int gcellx = startx + local[0];
     int gcelly = starty + local[1];
- 
+
     vertexSet targetcorner = extractCorners(mi, {gcellx, gcelly});
 
     double all[total * total] = {0};
