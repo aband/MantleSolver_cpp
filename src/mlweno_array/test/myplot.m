@@ -32,7 +32,7 @@ ylabel("y")
 xlabel("x")
 colormap(turbo)
 colorbar
-caxis([0,1])
+%caxis([0,1])
 
 figure
 s = surf(pX, pY, sol2)
@@ -42,4 +42,4 @@ ylabel("y")
 xlabel("x")
 colormap(turbo)
 colorbar
-caxis([0,1])
+%caxis([0,1])

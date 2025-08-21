@@ -198,8 +198,9 @@ int main(int argc, char ** argv){
     for (int j=0; j<N-4; j++){
     for (int i=0; i<M-4; i++){
         int s = j*(M-4)+i;
-        sigma_lg.at(s) = sten5.at(s).sigma(locvals); 
-    }}   
+        sigma_lg.at(s) = sten5.at(s).sigma(locvals);
+		 cout << sigma_lg.at(s) << "  " ; 
+    }cout << endl;}   
 
     for (int j=0; j<N-2; j++){
     for (int i=0; i<M-2; i++){
