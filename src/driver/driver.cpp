@@ -334,7 +334,7 @@ int Driver::CreateScatterVec(){
 
     return 1;
 }
-
+/*
 int Driver::check(){
 
     Vec localu;
@@ -363,3 +363,4 @@ int Driver::check(){
 
     return 1;
 }
+*/

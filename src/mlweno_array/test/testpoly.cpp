@@ -15,6 +15,7 @@ extern "C"{
 double func(const vertex& point,
             const vector<double>& param){
 
+/*
     if (point[0] < 0.5) {
 
     return sin(point[0])*cos(point[1]);
@@ -24,6 +25,13 @@ double func(const vertex& point,
     return sin(point[0])*cos(point[1]) +0.5;
 
     }
+*/
+
+    double HD = 2.9+2.5*0.2-2.5*pow(point[1]+0.2,2);
+
+    if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
+
+    return HD;
 }
 
 int main(int argc, char ** argv){
@@ -44,6 +52,10 @@ int main(int argc, char ** argv){
     double L = 1, H = 1;
     //double xstart = -L/2, ystart = -H/2;
     double xstart = 0.0, ystart = 0.0;
+
+    L = 0.1, H = 0.4;
+    xstart = -0.5*L, ystart = -1.0001*H;
+ 
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
@@ -148,46 +160,76 @@ int main(int argc, char ** argv){
 */
 
     // Set full stencils
+/*
     cout << M << "  " << N << endl;
-    vector<tensorstencilpoly> sten5;
-    sten5.resize((M-4)*(N-4));
+    vector<tensorstencilpoly> stenlg;
+    int Nlg = N-4;
+    int Mlg = M-4;
+    stenlg.resize(Mlg*Nlg);
+	 int lgx = 5;
+	 int lgy = 5;
+	 int lgr = 4;
 
-    vector<tensorstencilpoly> sten3;
-    sten3.resize((M-2)*(N-2));
+    vector<tensorstencilpoly> stensm;
+	 int Nsm = N-2;
+	 int Msm = M-2;
+    stensm.resize(Msm*Nsm);
+	 int smx = 3;
+    int smy = 3;
+	 int smr = 2;
+
+    vector<indice> sten_lg_pre = {{-2,-2}};
+    vector<indice> sten_sm_pre = {{-2,-2},{-2, 0},{0 ,-2},{0,0}};
+*/
+
+    cout << M << "  " << N << endl;
+    vector<tensorstencilpoly> stenlg;
+    int Nlg = N-2;
+    int Mlg = M-2;
+    stenlg.resize(Mlg*Nlg);
+	 int lgx = 3;
+	 int lgy = 3;
+	 int lgr = 2;
+
+    vector<tensorstencilpoly> stensm;
+	 int Nsm = N-1;
+	 int Msm = M-1;
+    stensm.resize(Msm*Nsm);
+	 int smx = 2;
+    int smy = 2;
+	 int smr = 1;
+
+    vector<indice> sten_lg_pre = {{-1,-1}};
+    vector<indice> sten_sm_pre = {{-1,-1},{-1, 0},{0 ,-1},{0,0}};
 
 	 auto start = std::chrono::steady_clock::now();
-    for (int j=0; j<N-4; j++){
-    for (int i=0; i<M-4; i++){
-        int s = j*(M-4)+i;
-        sten5.at(s) = tensorstencilpoly(4);
-        sten5.at(s).setCoef(mi,i,j);
-		  sten5.at(s).setSigma();
-		  sten5.at(s).startx = i;
-		  sten5.at(s).starty = j;
+    for (int j=0; j<Nlg; j++){
+    for (int i=0; i<Mlg; i++){
+        int s = j*(Mlg)+i;
+        stenlg.at(s) = tensorstencilpoly(lgr);
+        stenlg.at(s).setCoef(mi,i,j);
+		  stenlg.at(s).setSigma();
+		  stenlg.at(s).startx = i;
+		  stenlg.at(s).starty = j;
     }}
 
-    for (int j=0; j<N-2; j++){
-    for (int i=0; i<M-2; i++){
-        int s = j*(M-2)+i;
-        sten3.at(s) = tensorstencilpoly(2);
-        sten3.at(s).setCoef(mi,i,j);
-		  sten3.at(s).setSigma();
-		  sten3.at(s).startx = i;
-		  sten3.at(s).starty = j;
+    for (int j=0; j<Nsm; j++){
+    for (int i=0; i<Msm; i++){
+        int s = j*(Msm)+i;
+        stensm.at(s) = tensorstencilpoly(smr);
+        stensm.at(s).setCoef(mi,i,j);
+		  stensm.at(s).setSigma();
+		  stensm.at(s).startx = i;
+		  stensm.at(s).starty = j;
     }}
 
 	 auto end = std::chrono::steady_clock::now();
 	 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
     cout << "Time Test: " << duration.count() << " ms." << endl;
 
-    sten3.at(0).printCoef();
+    stensm.at(0).printCoef();
 
     // Set all the reconstruction
-//    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2},{-3, -2}};
-//    vector<indice> sten_lg_pre = {{-2,-2},{-3,-2},{-1,-2}};
-    vector<indice> sten_lg_pre = {{-2,-2}};
-    vector<indice> sten_sm_pre = {{-2,-2},{-2, 0},{0 ,-2},{0,0}};
-
     vector<reconstruction> my_recon;
     my_recon.resize(M*N);
 
@@ -198,7 +240,7 @@ int main(int argc, char ** argv){
 
         my_recon.at(s).use_sten_const = 0;
 
-        my_recon.at(s).init(3,3,5,5,2,4,sten_lg_pre, sten_sm_pre, mi,{i,j});
+        my_recon.at(s).init(smx,smy,lgx,lgy,smr,lgr,sten_lg_pre, sten_sm_pre, mi,{i,j});
         
     }}
 
@@ -220,21 +262,21 @@ int main(int argc, char ** argv){
 
     // Compute sigma 
     vector<double> sigma_lg;
-    sigma_lg.resize(sten5.size());
+    sigma_lg.resize(stenlg.size());
 
     vector<double> sigma_sm;
-    sigma_sm.resize(sten3.size());
+    sigma_sm.resize(stensm.size());
 
-    for (int j=0; j<N-4; j++){
-    for (int i=0; i<M-4; i++){
-        int s = j*(M-4)+i;
-        sigma_lg.at(s) = sten5.at(s).sigma(locvals); 
+    for (int j=0; j<Nlg; j++){
+    for (int i=0; i<Mlg; i++){
+        int s = j*(Mlg)+i;
+        sigma_lg.at(s) = stenlg.at(s).sigma(locvals); 
     }}   
 
-    for (int j=0; j<N-2; j++){
-    for (int i=0; i<M-2; i++){
-        int s = j*(M-2)+i;
-        sigma_sm.at(s) = sten3.at(s).sigma(locvals);
+    for (int j=0; j<Nsm; j++){
+    for (int i=0; i<Msm; i++){
+        int s = j*(Msm)+i;
+        sigma_sm.at(s) = stensm.at(s).sigma(locvals);
     }}
 
 /*
@@ -287,7 +329,7 @@ cout<< "At the middle cell : " << midM << " , " << midN << endl;
                 mapped.at(g) = GaussMapPointsFace(sample.at(g), corners);
             }
 
-            my_recon.at(j*M+i).eval(locvals, mapped, sten5, sten3);
+            my_recon.at(j*M+i).eval(locvals, mapped, stenlg, stensm);
             //if (j==midN && i==midM){
             //    my_recon.at(j*M+i).eval(locvals, mapped, sten5, sten3);
             //}

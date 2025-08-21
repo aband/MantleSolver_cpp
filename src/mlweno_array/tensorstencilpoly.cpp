@@ -438,7 +438,15 @@ int tensorstencilpoly::setSigma(const MeshInfo& mi, indice local){
 
 //    sigmabasetarget.insert(std::make_pair<int, double *>
 //						  (local[1]*sizex+local[0], locsigmabase));
-    sigmabasetarget[local[1]*sizex+local[0]] =  locsigmabase;
+    sigmabasetarget[localcell] =  locsigmabase;
+
+    return 1;
+}
+
+// Polynomial smoothness indicator
+int tensorstencilpoly::setSigma_p(double ** localvals){
+
+    
 
     return 1;
 }

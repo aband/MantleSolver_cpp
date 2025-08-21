@@ -1,12 +1,13 @@
 \chapter{Coupled Simulation}
-Now we couple locally mass conserved MFEM and FVM method together in this chapter.
+Now we couple locally mass conserved MFEM and FVM method together in this chapter and perform coupled numerical simulation for partially molten mantle.
 We discuss implementation details and coupling strategy combining MFEM, FVM and eutectic phase
 package.
 The remaining uncertainty of porosity $\phi$ will be fulfilled by phase package
 evaluation. Before we throw ourselves into the fully coupled problem.
 We test another porosity evolution scenerio with a more straightforward prescribed melting.
 Then we will show an example combining MFEM, FVM and eutectic phase package
-alltogether and perform coupled computation.
+alltogether and perform coupled computation. We start with pseudo 1D scenerios and 
+then proceed to perform full 2D simulation.
 
 \section{Coupled Algorithm}
 Let $U^n=(C^n, H^n)$ be the solution to the transport system at time $t^n$. 
@@ -53,9 +54,9 @@ averaged velocity $\overline{\mathbf{v}}$,
 In practical implementation, we prescribe boundary conditions to each dofs on the boundary.
 Each dofs will be associated with two types of boundary conditions. 
 
-\section{Column Tests}
+\section{Pseudo One-Dimensional Column Tests}
 
-We first test our coupled algorithm with a pseudo-1D column setting.
+We first test our coupled algorithm with a pseudo-1D column problem.
 
 \subsection{Prescribed Melting Case}
 Before fully coupled computation, 
@@ -78,7 +79,7 @@ We prescribe the following boundary conditions for MFEM and FVM solver.
 \begin{itemize}
 		  \item Bottom side;
 					 \begin{itemize}
-								\item MFEM. We prescirbe solid velocity at the bottom of the 
+								\item MFEM. We prescribe solid velocity at the bottom of the 
 physical domain, indicating supplying of mantle. 
 \begin{equation*}
 \check{\mathbf{v}}_s = \mathbf{v}_{\text{upwelling}}.

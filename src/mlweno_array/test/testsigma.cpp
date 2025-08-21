@@ -26,9 +26,9 @@ double func(const vertex& point,
     //return 2;
 //    }
 
-    double HD = 2.9-2.5*point[1];
+    double HD = 2.9+2.5*0.2-2.5*pow(point[1]+0.2,1);
 
-    if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
+    if (point[1] < -0.20){HD = 2.9 + 2.5*0.20 + 0.2;}
 
     return HD;
 }
@@ -125,39 +125,75 @@ int main(int argc, char ** argv){
     mi.L = L;
     mi.H = H;
 
+/*
     cout << M << "  " << N << endl;
-    vector<tensorstencilpoly> sten5;
-    sten5.resize((M-4)*(N-4));
+    vector<tensorstencilpoly> stenlg;
+    int Nlg = N-4;
+    int Mlg = M-4;
+    stenlg.resize(Mlg*Nlg);
+	 int lgx = 5;
+	 int lgy = 5;
+	 int lgr = 4;
 
-    vector<tensorstencilpoly> sten3;
-    sten3.resize((M-2)*(N-2));
-
-    for (int j=0; j<N-4; j++){
-    for (int i=0; i<M-4; i++){
-        int s = j*(M-4)+i;
-        sten5.at(s) = tensorstencilpoly(4);
-        sten5.at(s).setCoef(mi,i,j);
-		  sten5.at(s).startx = i;
-		  sten5.at(s).starty = j;
-		  sten5.at(s).setSigma();
-    }}
-
-    for (int j=0; j<N-2; j++){
-    for (int i=0; i<M-2; i++){
-        int s = j*(M-2)+i;
-        sten3.at(s) = tensorstencilpoly(2);
-        sten3.at(s).setCoef(mi,i,j);
-		  sten3.at(s).startx = i;
-		  sten3.at(s).starty = j;
-
-        for (int locy = 0; locy<3; locy++){
-        for (int locx = 0; locx<3; locx++){
-		      sten3.at(s).setSigma(mi, {locx, locy});
-        }}
-    }}
+    vector<tensorstencilpoly> stensm;
+	 int Nsm = N-2;
+	 int Msm = M-2;
+    stensm.resize(Msm*Nsm);
+	 int smx = 3;
+    int smy = 3;
+	 int smr = 2;
 
     vector<indice> sten_lg_pre = {{-2,-2}};
     vector<indice> sten_sm_pre = {{-2,-2},{-2, 0},{0 ,-2},{0,0}};
+*/
+
+    cout << M << "  " << N << endl;
+    vector<tensorstencilpoly> stenlg;
+    int Nlg = N-2;
+    int Mlg = M-2;
+    stenlg.resize(Mlg*Nlg);
+	 int lgx = 3;
+	 int lgy = 3;
+	 int lgr = 2;
+
+    vector<tensorstencilpoly> stensm;
+	 int Nsm = N-1;
+	 int Msm = M-1;
+    stensm.resize(Msm*Nsm);
+	 int smx = 2;
+    int smy = 2;
+	 int smr = 1;
+
+    vector<indice> sten_lg_pre = {{-1,-1}};
+    vector<indice> sten_sm_pre = {{-1,-1},{-1, 0},{0 ,-1},{0,0}};
+
+    // ===================================================================
+
+    for (int j=0; j<Nlg; j++){
+    for (int i=0; i<Mlg; i++){
+        int s = j*Mlg+i;
+        stenlg.at(s) = tensorstencilpoly(lgr);
+        stenlg.at(s).setCoef(mi,i,j);
+		  stenlg.at(s).startx = i;
+		  stenlg.at(s).starty = j;
+		  stenlg.at(s).setSigma();
+    }}
+
+    for (int j=0; j<Nsm; j++){
+    for (int i=0; i<Msm; i++){
+        int s = j*Msm+i;
+        stensm.at(s) = tensorstencilpoly(smr);
+        stensm.at(s).setCoef(mi,i,j);
+		  stensm.at(s).startx = i;
+		  stensm.at(s).starty = j;
+
+        for (int locy = 0; locy<smy; locy++){
+        for (int locx = 0; locx<smx; locx++){
+		      stensm.at(s).setSigma(mi, {locx, locy});
+        }}
+    }}
+
+    // ===================================================================
 
     vector<reconstruction> my_recon;
     my_recon.resize(M*N);
@@ -169,7 +205,7 @@ int main(int argc, char ** argv){
 
         my_recon.at(s).use_sten_const = 0;
 
-        my_recon.at(s).init(3,3,5,5,2,4,sten_lg_pre, sten_sm_pre, mi,{i,j});
+        my_recon.at(s).init(smx,smy,lgx,lgy,smr,lgr,sten_lg_pre, sten_sm_pre, mi,{i,j});
         
     }}
 
@@ -190,32 +226,32 @@ int main(int argc, char ** argv){
     PetscCall(DMDAVecGetArray(dmu, localvec, &locvals));
 
     vector<double> sigma_lg;
-    sigma_lg.resize(sten5.size());
+    sigma_lg.resize(stenlg.size());
 
     vector<vector<double>> sigma_sm;
-    sigma_sm.resize(sten3.size());
+    sigma_sm.resize(stensm.size());
 
-    for (int j=0; j<N-4; j++){
-    for (int i=0; i<M-4; i++){
-        int s = j*(M-4)+i;
-        sigma_lg.at(s) = sten5.at(s).sigma(locvals);
+    for (int j=0; j<Nlg; j++){
+    for (int i=0; i<Mlg; i++){
+        int s = j*Mlg+i;
+        sigma_lg.at(s) = stenlg.at(s).sigma(locvals);
 		 cout << sigma_lg.at(s) << "  " ; 
     }cout << endl;}   
 
-    for (int j=0; j<N-2; j++){
-    for (int i=0; i<M-2; i++){
-        int s = j*(M-2)+i;
-        sten3.at(s).sigma(locvals, sigma_sm.at(s));
-//        cout << "Stencil : " << i << "  " << j << endl;
-/*
-        for (int ly=0; ly<3; ly++){
-        for (int lx=0; lx<3; lx++){
+    for (int j=0; j<Nsm; j++){
+    for (int i=0; i<Msm; i++){
+        int s = j*Msm+i;
+        stensm.at(s).sigma(locvals, sigma_sm.at(s));
+        cout << "Stencil : " << i << "  " << j << endl;
 
-            cout << sigma_sm.at(s).at(ly*3+lx) << "  " ;
+        for (int ly=0; ly<smy; ly++){
+        for (int lx=0; lx<smx; lx++){
+
+            cout << sigma_sm.at(s).at(ly*smx+lx) << "  " ;
 
         }cout << endl;}
         cout << endl;
-*/
+
     }}
 
     for (int j=0; j<N; j++){
@@ -265,7 +301,7 @@ int main(int argc, char ** argv){
                 mapped.at(g) = GaussMapPointsFace(sample.at(g), corners);
             }
 
-            my_recon.at(j*M+i).eval(locvals, mapped, sten5, sten3);
+            my_recon.at(j*M+i).eval(locvals, mapped, stenlg, stensm);
             //if (j==midN && i==midM){
             //    my_recon.at(j*M+i).eval(locvals, mapped, sten5, sten3);
             //}

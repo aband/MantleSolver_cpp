@@ -84,7 +84,7 @@ double func(const vertex& point,
 
 */
 
-    double HD = 2.9-2.5*point[1];
+    double HD = 2.9+2.5*0.2-2.5*pow(point[1]+0.2,2);
 
     if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
 
