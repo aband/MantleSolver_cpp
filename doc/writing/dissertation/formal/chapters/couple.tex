@@ -10,10 +10,26 @@ alltogether and perform coupled computation. We start with pseudo 1D scenerios a
 then proceed to perform full 2D simulation.
 
 \section{Coupled Algorithm}
-Let $U^n=(C^n, H^n)$ be the solution to the transport system at time $t^n$. 
-Let $V^n=(\check{\mathbf{v}}_{h,r}^n,\check{\mathbf{v}}_{h,s}^n,\check{q}_{h,l}^n,\check{q}_h^n)$ 
-denote the solution to the Darcy-Stokes system at the same time. Moreover, let $W^n=(\phi^n, \check{T}^n, c_{s}^n, c_{l}^n, \phi_1^n)$ 
-denote the output of the phase calculation at $t^n$. We formulate an overall solution methods.
+Let $\mathcal{U}^n=(C^n, H^n)$ be the cell-averaged solution to the transport system~\eqref{dimensionlesstransport} at time $t^n$. 
+Let $\mathcal{V}^n=(\check{\mathbf{v}}_{r}^n,\check{\mathbf{v}}_{s}^n,\check{q}_{l}^n,\check{q}_s^n)$ 
+denote the solution to the Darcy-Stokes system at the same time step $t^n$. Moreover, let 
+$\mathcal{W}^n=(\phi^n, \phi_1^n, \check{T}^n, c_{s}^n, c_{l}^n)$ 
+denote the output of the phase calculation at $t^n$ given the transport result $U^n$. 
+We formulate an overall explicit coupled solver as shown in algorithm~\ref{alg:coupled}.
+
+The coupled solver is initialized from the initial distribution of the transport
+variables $U^0$ specifying the initial mass concentration and enthalpy. The eutectic 
+phase package gives $W^0$ corresponds to the $U^0$. 
+Once we know $W^0$, we have phase related variables
+porosity $\phi^n$ and individual concentrations $c_{i}^n$.
+
+The next time step $U^{n+1}$ is obtained by marching in time explicitly.
+
+The next time step $U^{n+1}$ is computed using fixed in time values for 
+The effective velocities $\check{\mathbf{v}}_{\text{eff}}$ and phase 
+averaged velocity $\check{\overline{\mathbf{v}}}$ are computed using 
+These quantities are only updated before commencing the next time step.
+
 \begin{algorithm}[htb]
 \caption{Sequential Coupled Solver\label{alg:coupled}}
 %\SetAlgoLined
@@ -40,23 +56,14 @@ denote the output of the phase calculation at $t^n$. We formulate an overall sol
 \EndFor
 \end{algorithmic}
 \end{algorithm}
-The coupled solver is initialized from the initial condition on the transport
-variables $U^0$ specifying the total initial mass and energy. The eutectic 
-phase package gives $W^0$. Once we know $W^0$, we have phase related variables
-porosity and individual concentrations.
 
-In Algorithm~\ref{alg:coupled}, $U^{n+1}$ is computed using fixed in time values for the effective velocities $\mathbf{v}_{\text{eff}}$ and phase 
-averaged velocity $\overline{\mathbf{v}}$, 
- pre-calculated from the Darcy-Stokes part, and the partition functions $\kappa$ and $\lambda$. 
- These quantities are only updated before commencing the next time step.
-
-\subsection{Boundary conditions}
-In practical implementation, we prescribe boundary conditions to each dofs on the boundary.
-Each dofs will be associated with two types of boundary conditions. 
+\subsection{}
 
 \section{Pseudo One-Dimensional Column Tests}
 
 We first test our coupled algorithm with a pseudo-1D column problem.
+
+\subsection{Boundary condition}
 
 \subsection{Prescribed Melting Case}
 Before fully coupled computation, 
