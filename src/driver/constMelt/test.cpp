@@ -32,7 +32,7 @@ int main(int argc, char **argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    int maxIter = 30; 
+    int maxIter = 100; 
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL));        
     double tolUzawa = 10e-17; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
@@ -88,8 +88,8 @@ int main(int argc, char **argv){
     /**!
      * Actual time stepping.
      */
-    driver->RK_case(dt, Tmax, maxIter, tolUzawa);
-    //driver->SSP2RK_case(dt, Tmax, maxIter, tolUzawa);
+    //driver->RK_case(dt, Tmax, maxIter, tolUzawa);
+    driver->SSP2RK_case(dt, Tmax, maxIter, tolUzawa);
 
     VecDestroy(&driver->globalmesh);
     VecDestroy(&driver->globalCD);

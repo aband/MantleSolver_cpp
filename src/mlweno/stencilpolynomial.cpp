@@ -170,7 +170,6 @@ double stencilpolynomial::sigmaintegral(const vector<vertex>& corners,
     // Sum through all order of derivatives
     for (int i=1; i<total; i++){
         work += der(i) * pow(area/(h*h),i);
-
     }
 
     return work;

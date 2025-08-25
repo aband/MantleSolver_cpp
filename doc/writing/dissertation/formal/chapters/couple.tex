@@ -4,9 +4,9 @@ We discuss implementation details and coupling strategy combining MFEM, FVM and 
 package.
 The remaining uncertainty of porosity $\phi$ will be fulfilled by phase package
 evaluation. Before we throw ourselves into the fully coupled problem.
-We test another porosity evolution scenerio with a more straightforward prescribed melting.
+We test another porosity evolution scenario with a more straightforward prescribed melting.
 Then we will show an example combining MFEM, FVM and eutectic phase package
-alltogether and perform coupled computation. We start with pseudo 1D scenerios and 
+altogether and perform coupled computation. We start with pseudo 1D scenarios and 
 then proceed to perform full 2D simulation.
 
 \section{Coupled Algorithm}
@@ -16,10 +16,10 @@ denote the solution to the Darcy-Stokes system at the same time step $t^n$. More
 $\mathcal{W}^n=(\phi^n, \phi_1^n, \check{T}^n, c_{s}^n, c_{l}^n)$ 
 denote the output of the phase calculation at $t^n$ given the transport result $U^n$. 
 
-For each time step $t^n$, we evaluate ML-WENO reconstructed dimensionless mass composition
-and enthalpy from the cell-averaged solution $\mathcal{U}^n$. 
+For each time step $t^n$, we reconstruct dimensionless mass composition
+and enthalpy from the cell-averaged solution $\mathcal{U}^n$ with ML-WENO reconstruction at each data points. 
 The eutectic phase package gives corresponding phase parameters $\mathcal{W}^n$ according
-to the pointwise values. Once we know $\mathcal{W}^n$, we solve a fixed in time Darcy-Stokes
+to these point wise values. Once we know $\mathcal{W}^n$, we solve a fixed in time Darcy-Stokes
 system at this time step $t^n$ for $\mathcal{V}^n$. The 
 cell-averaged solution $\mathcal{U}^{n+1}$ of the next time 
 step $t^{n+1}$ is then obtained by forward marching the system explicitly.
@@ -33,7 +33,7 @@ We formally formulate an overall explicit coupled solver as shown in algorithm~\
 \begin{algorithmic} [1]
 
 %		  Initialize:
-		  \State Initialize $\mathcal{U}^0$, comptute $\mathcal{W}^0$ with eutectic phase package.
+		  \State Initialize $\mathcal{U}^0$, compute $\mathcal{W}^0$ with eutectic phase package.
 		  \vspace{0.2cm}
 		  \State Compute $\phi^0$ in $\mathcal{W}^0$, solve the Darcy-Stokes system
 		  \eqref{eq:dimensionlessdarcy_flow_sc}--\eqref{eq:dimensionlesscompaction_flow_sc} for $\mathcal{V}^0$.
@@ -62,20 +62,26 @@ We formally formulate an overall explicit coupled solver as shown in algorithm~\
 \end{algorithm}
 
 \subsection{Discontinuous Data}
-Due to the nature of finite volume method, we may obtain different values from two 
+Due to the nature of the finite volume method, we may obtain different reconstructed dimensionless enthalpy and 
+mass concentration values from two 
+sides of an element edge and thus two different phase calculation results. It is crucial to have one compatible and appropriate
+porosity value used 
+on the edge for the continuous compaction equation in Darcy equation with divergence theorem involved in 
+equation~\eqref{eq:weak_continuous}.
 We employ geometric average for porosity $\phi_e$ on an element edge $e$ as
 \begin{equation}
 		  \phi_e = \frac{2\phi_e^{+}\phi_e^{-}}{\phi_e^{+} + \phi_e^{-}},
 \end{equation}
 where $\phi_e^{+}$ and $\phi_e^{-}$ are porosity evaluated from two 
 sides of the element edge $e$.
-
+When the porosity on one side equal zero, the geometric average of the porosity equals zero as well, which
+highlights the fact that there is no liquid flow travelling through this edge.
 
 \section{Pseudo One-Dimensional Column Tests}
-
-We first test our coupled algorithm with a pseudo-1D column problem.
-
-\subsection{Boundary condition}
+In this section, we first test our coupled algorithm on a 2D $M\times N$ grid with a pseudo-1D column problem.
+We test two different scenarios, one couples MFEM and FVM solver without phase computation but a simple 
+prescribed melting function instead. The other one exhibits a fully coupled scenario where phase transition
+and porosity evolution present.
 
 \subsection{Prescribed Melting Case}
 Before fully coupled computation, 
@@ -110,7 +116,7 @@ indicating no melting penetrating bottom of the computational domain;
 					 \end{itemize}
 		  \item Left and right side;
 					 \begin{itemize}
-								\item MFEM. We prescribe natural boundary conditon giving zero
+								\item MFEM. We prescribe natural boundary condition giving zero
 										  traction to the Stokes equation in tangential direction.
 										  We prescribe zero flux for dofs in normal direction for 
 										  the Stokes equation and Darcy equation.
