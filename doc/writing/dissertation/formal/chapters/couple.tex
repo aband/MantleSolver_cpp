@@ -15,20 +15,15 @@ Let $\mathcal{V}^n=(\check{\mathbf{v}}_{r}^n,\check{\mathbf{v}}_{s}^n,\check{q}_
 denote the solution to the Darcy-Stokes system at the same time step $t^n$. Moreover, let 
 $\mathcal{W}^n=(\phi^n, \phi_1^n, \check{T}^n, c_{s}^n, c_{l}^n)$ 
 denote the output of the phase calculation at $t^n$ given the transport result $U^n$. 
-We formulate an overall explicit coupled solver as shown in algorithm~\ref{alg:coupled}.
 
-The coupled solver is initialized from the initial distribution of the transport
-variables $U^0$ specifying the initial mass concentration and enthalpy. The eutectic 
-phase package gives $W^0$ corresponds to the $U^0$. 
-Once we know $W^0$, we have phase related variables
-porosity $\phi^n$ and individual concentrations $c_{i}^n$.
-
-The next time step $U^{n+1}$ is obtained by marching in time explicitly.
-
-The next time step $U^{n+1}$ is computed using fixed in time values for 
-The effective velocities $\check{\mathbf{v}}_{\text{eff}}$ and phase 
-averaged velocity $\check{\overline{\mathbf{v}}}$ are computed using 
-These quantities are only updated before commencing the next time step.
+For each time step $t^n$, we evaluate ML-WENO reconstructed dimensionless mass composition
+and enthalpy from the cell-averaged solution $\mathcal{U}^n$. 
+The eutectic phase package gives corresponding phase parameters $\mathcal{W}^n$ according
+to the pointwise values. Once we know $\mathcal{W}^n$, we solve a fixed in time Darcy-Stokes
+system at this time step $t^n$ for $\mathcal{V}^n$. The 
+cell-averaged solution $\mathcal{U}^{n+1}$ of the next time 
+step $t^{n+1}$ is then obtained by forward marching the system explicitly.
+We formally formulate an overall explicit coupled solver as shown in algorithm~\ref{alg:coupled}.
 
 \begin{algorithm}[htb]
 \caption{Sequential Coupled Solver\label{alg:coupled}}
@@ -36,28 +31,45 @@ These quantities are only updated before commencing the next time step.
  Let $U^0$ be given as initial data.
 
 \begin{algorithmic} [1]
- \For{\rm Time level $n=0,1,\ldots,n_{\max}-1$}
+
+%		  Initialize:
+		  \State Initialize $\mathcal{U}^0$, comptute $\mathcal{W}^0$ with eutectic phase package.
+		  \vspace{0.2cm}
+		  \State Compute $\phi^0$ in $\mathcal{W}^0$, solve the Darcy-Stokes system
+		  \eqref{eq:dimensionlessdarcy_flow_sc}--\eqref{eq:dimensionlesscompaction_flow_sc} for $\mathcal{V}^0$.
+		  \vspace{0.2cm}
+
+ \For{\rm Time level $n=1,2,\ldots,n_{\max}-1$}
 		  \vspace{0.3cm}
-\State Given $U^n$, compute $W^n$ by the eutectic phase package.
+		  \State Given $\mathcal{U}^n$, compute $\mathcal{W}^n$ by the eutectic phase package.
 		  \vspace{0.2cm}
-\State Given $\phi_f^n \in W^n$, solve the Darcy-Stokes system 
-		  \eqref{eq:dimensionlessdarcy_flow_sc}--\eqref{eq:dimensionlesscompaction_flow_sc} for $V^{n+1}$.
+\State Compute $\phi^n$ in $W^n$, solve the Darcy-Stokes system 
+		  \eqref{eq:dimensionlessdarcy_flow_sc}--\eqref{eq:dimensionlesscompaction_flow_sc} for $\mathcal{V}^{n+1}$.
 		  \vspace{0.2cm}
-		  \State Given $W^n$ and $V^{n+1}$, compute effective 
+		  \State Given $\mathcal{W}^n$ and $\mathcal{V}^{n+1}$, compute dimensionless effective 
 		  velocity~\eqref{eq:definitioneffvel} and phase averaged velocity as
 \begin{equation*}
-\bold{v}_{\text{eff}} = \frac{\phi_l \bold{v}_l + D_i\phi_s \bold{v}_s}{\phi_l + \phi_s D_i}, \quad \overline{\bold{v}} = \phi \mathbf{v}_r + \mathbf{v}_s.
+		  \check{\bold{v}}_{\text{eff}} = \frac{\phi \check{\bold{v}}_l + D_i(1-\phi) \check{\bold{v}}_s}{\phi + (1-\phi) D_i}, \quad \check{\overline{\bold{v}}} = \phi 
+		  \check{\mathbf{v}}_r + \check{\mathbf{v}}_s.
 \end{equation*}
 		  \vspace{0.2cm}
-        \State Time stepping the transport system~\eqref{eq:transportFV} to next time $n+1$ for $U^{n+1}$.
-%     \State Given $U^{n+1}$, compute $W^{n+1}$ by the eutecetic phase package.
-%     \State Given $\phi_f^{n+1}$ in $W^{n+1}$, solve the Darcy-Stokes system \eqref{eq:darcy_flow_sc_fem}--\eqref{eq:compaction_flow_sc_fem} for $V^{n+1}$.
+		  \State Explicitly marching forward the transport system~\eqref{eq:transportFV} to next time $n+1$ for $\mathcal{U}^{n+1}$.
+		  %\State Given $\mathcal{U}^{n+1}$, compute $\mathcal{W}^{n+1}$ by the eutecetic phase package.
+		  %\State Given $\phi_f^{n+1}$ in $\mathcal{W}^{n+1}$, solve the Darcy-Stokes system \eqref{eq:darcy_flow_sc_fem}--\eqref{eq:compaction_flow_sc_fem} for $V^{n+1}$.
 		  \vspace{0.3cm}
 \EndFor
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{}
+\subsection{Discontinuous Data}
+Due to the nature of finite volume method, we may obtain different values from two 
+We employ geometric average for porosity $\phi_e$ on an element edge $e$ as
+\begin{equation}
+		  \phi_e = \frac{2\phi_e^{+}\phi_e^{-}}{\phi_e^{+} + \phi_e^{-}},
+\end{equation}
+where $\phi_e^{+}$ and $\phi_e^{-}$ are porosity evaluated from two 
+sides of the element edge $e$.
+
 
 \section{Pseudo One-Dimensional Column Tests}
 
