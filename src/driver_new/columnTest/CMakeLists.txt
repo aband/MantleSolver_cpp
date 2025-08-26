@@ -165,6 +165,7 @@ target_link_libraries(transport_lib
 add_library(driver_lib
 		  ${SRC}/driver_new/driver.cpp
 		  ${SRC}/driver_new/couple.cpp
+		  ${SRC}/driver_new/couple_transport.cpp
         case.cpp
 		  )
 

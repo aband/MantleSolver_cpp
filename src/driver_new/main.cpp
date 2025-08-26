@@ -63,6 +63,8 @@ int main(int argc, char **argv){
 
     driver->PrepareTransport(InitHD, InitCD); 
 
+    driver->PrepareFlow();
+
     driver->exactandreconstructTest();
 
     return 1;

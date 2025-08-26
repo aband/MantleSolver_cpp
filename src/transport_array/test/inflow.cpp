@@ -57,6 +57,9 @@ int computeEdgeFlux(vector<double>& edgeflux, double t,
         vertexSet corners = extractCorners(mi, {i,j}); 
         vertexSet edge {corners.at(2), corners.at(1)};
 
+//        int neg = j*M+i;
+//        int pos = j*M+i+1;
+
         int neg = j*M+i;
         int pos = j*M+i+1;
 

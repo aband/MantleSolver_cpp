@@ -42,6 +42,21 @@ double InitCD(const valarray<double>& point,
 double InitHD(const valarray<double>& point,
               const vector<double>& param);
 
+double inflow(const valarray<double>& point,
+              const vector<double>& param);
+
+int clearall(vector<vertex>& effvel,
+                    vector<vertex>& phasevel,
+                    vector<vertex>& solidvel,
+                    vector<double>& TDin,
+                    vector<double>& TDout,
+                    vector<double>& dTdHin,
+                    vector<double>& dTdHout,
+						  vector<double>& CDin,
+						  vector<double>& CDout,
+						  vector<double>& HDin,
+						  vector<double>& HDout);
+
 class Driver {
 
     public:
@@ -164,10 +179,58 @@ class Driver {
 								  vector<double>& HDin,
 								  vector<double>& HDout);
 
+        int computeEffVel(const vector<vertex>& gaussp,
+                          const vertexSet& edgep,
+                          const indice& gcell,
+                          double ** lHD,
+                          double ** lCD,
+                          vector<vertex>& effvel,
+                          vector<vertex>& phasevel,
+                          vector<vertex>& solidvel,
+                          vector<double>& TD,
+                          vector<double>& dTdH,
+								  vector<double>& CD,
+								  vector<double>& HD);
+
+
+        int computeEffVel_Nonlinear(const vector<vertex>& gaussp,
+                                    const vertexSet& edgep,
+                                    const indice& gcellin, const indice& gcellout,
+                                    double ** lHD, double ** lCD,
+                                    vector<vertex>& effvel,
+                                    vector<vertex>& phasevel,
+                                    vector<vertex>& solidvel,
+                                    vector<double>& TDin,
+                                    vector<double>& TDout,
+                                    vector<double>& dTdHin,
+                                    vector<double>& dTdHout,
+			          					   vector<double>& CDin,
+						          		   vector<double>& CDout,
+          								   vector<double>& HDin,
+			          					   vector<double>& HDout,
+											   vector<double>& nonlinuin,
+											   vector<double>& nonlinuout,
+											   vector<double>& nonlinfin,
+											   vector<double>& nonlinfout,
+											   vector<double>& nonlindfduin,
+												vector<double>& nonlindfduout,
+												vector<vertex>& nonlinvel);
+
         // Eat and spit test
         int exactandreconstructTest();
 
-        // Time stepping functions
+        // Coupled transport functions
+        int computeEdgeFlux(vector<double>& edgefluxHD, 
+                            vector<double>& edgefluxCD, 
+                            double t, 
+                            double ** lHD, double ** lCD); 
+
+        int maxIter, tolUzawa, Nt;
+        double dt;
+
+        int getfluxall(Vec * fHD, Vec * fCD, bool updateVel, double t);
+
+        //int rk1(dt, Nt); 
 
     private:
 
