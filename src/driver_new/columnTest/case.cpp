@@ -38,36 +38,49 @@ int Driver::PrepareTransport(double (*initHD)(const valarray<double>& point,
     int M = mi.MPIglobalCellSize[0];
     int N = mi.MPIglobalCellSize[1];
 
-    stenlg.resize((M-2)*(N-2));
+	 int sizelgx = 1;
+    int sizelgy = 3;
+    int orderlg = 2;
+    int Mlg = M-sizelgx+1;
+    int Nlg = N-sizelgy+1;
 
-    for (int j=0; j<N-2; j++){
-    for (int i=0; i<M-2; i++){
-        int s = j*(M-2)+i;
-        stenlg.at(s) = tensorstencilpoly(2, 3, 3);
+	 int sizesmx = 1;
+    int sizesmy = 2;
+    int ordersm = 1;
+    int Msm = M-sizesmx+1;
+    int Nsm = N-sizesmy+1;
+
+    // (3,2) reconstruction but 1D
+    vector<indice> sten_lg_pre = {{0,-1}};
+    vector<indice> sten_sm_pre = {{0,-1}, {0,0}};
+
+    //vector<indice> sten_lg_pre = {{-1,-1}};
+    //vector<indice> sten_sm_pre = {{-1,-1}, {0,0}, {-1,0}, {0,-1}};
+
+    // ==================================================
+    stenlg.resize(Mlg*Nlg);
+
+    for (int j=0; j<Nlg; j++){
+    for (int i=0; i<Mlg; i++){
+        int s = j*Mlg+i;
+        stenlg.at(s) = tensorstencilpoly(orderlg, sizelgx, sizelgy);
         stenlg.at(s).setCoef(mi,i,j);
 		  stenlg.at(s).setSigma();
 		  stenlg.at(s).startx = i;
 		  stenlg.at(s).starty = j;
     }}
   
-    stensm.resize((M-1)*(N-1));
+    stensm.resize(Msm*Nsm);
 
-    for (int j=0; j<N-1; j++){
-    for (int i=0; i<M-1; i++){
-        int s = j*(M-1) + i;
-        stensm.at(s) = tensorstencilpoly(1, 2, 2);
+    for (int j=0; j<Nsm; j++){
+    for (int i=0; i<Msm; i++){
+        int s = j*Msm + i;
+        stensm.at(s) = tensorstencilpoly(ordersm, sizesmx, sizesmy);
         stensm.at(s).setCoef(mi,i,j);
 		  stensm.at(s).setSigma();
 		  stensm.at(s).startx = i;
 		  stensm.at(s).starty = j;
     }}
-
-    // (3,2) reconstruction but 1D
-    //vector<indice> sten_lg_pre = {{0,-1}};
-    //vector<indice> sten_sm_pre = {{0,-1}, {0,0}};
-
-    vector<indice> sten_lg_pre = {{-1,-1}};
-    vector<indice> sten_sm_pre = {{-1,-1}, {0,0}, {-1,0}, {0,-1}};
 
     my_recon_HD.resize(M*N);
     my_recon_CD.resize(M*N);
@@ -78,12 +91,10 @@ int Driver::PrepareTransport(double (*initHD)(const valarray<double>& point,
         int s = j*M+i;
  
         my_recon_HD.at(s) = reconstruction();
-
-        my_recon_HD.at(s).init(2,2,3,3,1,2,sten_lg_pre, sten_sm_pre, mi,{i,j});
-
         my_recon_CD.at(s) = reconstruction();
 
-        my_recon_CD.at(s).init(2,2,3,3,1,2,sten_lg_pre, sten_sm_pre, mi,{i,j});
+        my_recon_HD.at(s).init(sizesmx,sizesmy,sizelgx,sizelgy,ordersm,orderlg,sten_lg_pre, sten_sm_pre, mi,{i,j});
+        my_recon_CD.at(s).init(sizesmx,sizesmy,sizelgx,sizelgy,ordersm,orderlg,sten_lg_pre, sten_sm_pre, mi,{i,j});
     }}
 
     // Compute bottom fixed value
@@ -92,3 +103,5 @@ int Driver::PrepareTransport(double (*initHD)(const valarray<double>& point,
 
     return 1;
 }
+
+

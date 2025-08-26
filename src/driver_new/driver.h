@@ -135,9 +135,39 @@ class Driver {
                                double ** lHD,
                                double ** lCD,
                                double& k);
- 
+
+        int computephase(const std::vector<vertex>& gaussp,
+                         const vertexSet& edgep,
+                         const indice& gcell,
+                         double ** lHD, double ** lCD,
+                         vector<double>& cs,
+                         vector<double>& cl,
+                         vector<double>& phi,
+                         vector<double>& TD,
+                         vector<double>& dTdH,
+	                      vector<double>& cd,
+                         vector<double>& hd);
+
+        int computeEffVel(const vector<vertex>& gaussp,
+                          const vertexSet& edgep,
+                          const indice& gcellin, const indice& gcellout,
+                          double ** lHD, double ** lCD,
+                          vector<vertex>& effvel,
+                          vector<vertex>& phasevel,
+                          vector<vertex>& solidvel,
+                          vector<double>& TDin,
+                          vector<double>& TDout,
+                          vector<double>& dTdHin,
+                          vector<double>& dTdHout,
+								  vector<double>& CDin,
+								  vector<double>& CDout,
+								  vector<double>& HDin,
+								  vector<double>& HDout);
+
         // Eat and spit test
         int exactandreconstructTest();
+
+        // Time stepping functions
 
     private:
 
