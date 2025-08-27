@@ -65,7 +65,7 @@ int main(int argc, char **argv){
 
     driver->PrepareFlow();
 
-    driver->exactandreconstructTest();
+    //driver->exactandreconstructTest();
 
     return 1;
 }
