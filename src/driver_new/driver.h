@@ -225,12 +225,17 @@ class Driver {
                             double t, 
                             double ** lHD, double ** lCD); 
 
-        int maxIter, tolUzawa, Nt;
+        int maxIter, tolUzawa, Tmax;
         double dt;
 
         int getfluxall(Vec * fHD, Vec * fCD, bool updateVel, double t);
 
-        //int rk1(dt, Nt); 
+        int rk1(); 
+
+        int printGrid();
+        int printPhase(bool update, int mark);
+
+        int start = 0;
 
     private:
 

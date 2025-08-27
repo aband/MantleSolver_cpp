@@ -180,7 +180,7 @@ int Driver::exactandreconstructTest(){
     // Setup nonlinear weights
     for (int s=0; s<my_recon_CD.size(); s++){
         my_recon_CD.at(s).extractsigma(sigma_lg, sigma_sm);
-        my_recon_CD.at(s).setWgts(1.0/(double)M/(double)N);
+        my_recon_CD.at(s).setWgts(L_*H_/(double)M/(double)N);
     }
 
     printreconsol2(my_recon_CD, M, N, 1, stenlg, stensm, mi, locvalsCD);

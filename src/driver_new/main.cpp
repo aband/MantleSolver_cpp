@@ -30,9 +30,10 @@ int main(int argc, char **argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    int maxIter = 20; 
-    PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL));        
-    double tolUzawa = 10e-17; 
+    int maxIter = 30; 
+    PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL)); 
+
+    double tolUzawa = 10e-16; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
 
     double Tmax = 20; // Stop at the first step 
@@ -54,6 +55,12 @@ int main(int argc, char **argv){
 
     Driver * driver = new Driver();
 
+    // Assign parameters
+    driver->dt       = dt;
+    driver->maxIter  = maxIter;
+    driver->tolUzawa = tolUzawa;
+    driver->Tmax     = Tmax;
+
     driver->withUnit = withUnit;
     driver->CreatePhase();
     driver->ShowPhase();
@@ -64,6 +71,13 @@ int main(int argc, char **argv){
     driver->PrepareTransport(InitHD, InitCD); 
 
     driver->PrepareFlow();
+
+    driver->printGrid();
+    driver->printPhase(true, 1);
+
+    driver->rk1();
+
+    driver->printPhase(false, 2);
 
     //driver->exactandreconstructTest();
 
