@@ -65,6 +65,10 @@ class reconstruction {
         // print functions
         int printinfo();
 
+        int printmoreinfo(double ** localval,
+                    const vector<tensorstencilpoly>& sten_lg,
+                    const vector<tensorstencilpoly>& sten_sm) const;
+
         int printsigma();
 
         double efforder();

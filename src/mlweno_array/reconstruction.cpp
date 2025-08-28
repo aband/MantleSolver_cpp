@@ -246,6 +246,34 @@ int reconstruction::printinfo(){
     return 1;
 }
 
+int reconstruction::printmoreinfo(double ** localval, 
+                                  const vector<tensorstencilpoly>& my_sten_lg, 
+                                  const vector<tensorstencilpoly>& my_sten_sm) const{
+
+    cout << "Large Stencil coefs : " << endl;
+    for (int s=0; s<nonlinwgts_lg.size(); s++){
+
+		  my_sten_lg.at(flat_sten_lg.at(s)).printStencilSol(localval);
+        cout << endl;
+        my_sten_lg.at(flat_sten_lg.at(s)).printcollapseCoef(localval);
+		  cout << endl;
+    } 
+
+    cout << endl;
+
+    cout << "Small Stencil coefs : " << endl;
+    for (int s=0; s<nonlinwgts_sm.size(); s++){
+
+        my_sten_sm.at(flat_sten_sm.at(s)).printStencilSol(localval);
+		  cout << endl;
+        my_sten_sm.at(flat_sten_sm.at(s)).printcollapseCoef(localval);
+		  cout << endl;
+    }
+
+
+    return 1;
+}
+
 int reconstruction::printsigma(){
 
     cout << "Number of " << sten_lg.size() <<  " large stencil of order : " << r_lg  << " is used." << endl;

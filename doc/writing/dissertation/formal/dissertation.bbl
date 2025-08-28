@@ -1,9 +1,20 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{3}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Bangerth et~al.(2018)Bangerth, Dannberg, Fraters, Gassmoeller, Glerum,
+  Heister, Myhill, and Naliboff]{Bangerth2018}
+Wolfgang Bangerth, Juliane Dannberg, Menno Fraters, Rene Gassmoeller, Anne
+  Glerum, Timo Heister, Robert Myhill, and John Naliboff.
+\newblock {ASPECT: Advanced Solver for Planetary Evolution, Convection, and
+  Tectonics, User Manual}.
+\newblock 5 2018.
+\newblock \doi{10.6084/m9.figshare.4865333.v12}.
+\newblock URL
+  \url{https://figshare.com/articles/journal_contribution/ASPECT_Advanced_Solver_for_Problems_in_Earth_s_ConvecTion_User_Manual/4865333}.
 
 \bibitem[Schmeling(2000)]{Schmeling2000}
 Harro Schmeling.
@@ -11,5 +22,11 @@ Harro Schmeling.
 \newblock pages 141--178, 2000.
 \newblock \doi{10.1007/978-94-011-4016-4_5}.
 \newblock URL \url{https://doi.org/10.1007/978-94-011-4016-4_5}.
+
+\bibitem[Schubert et~al.(2001)Schubert, Turcotte, and
+  Olson]{SchubertTurcotteOlson2001}
+Gerald Schubert, Donald~L. Turcotte, and Peter Olson.
+\newblock \emph{Mantle Convection in the Earth and Planets}.
+\newblock Cambridge University Press, 2001.
 
 \end{thebibliography}

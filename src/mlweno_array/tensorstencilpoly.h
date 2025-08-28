@@ -59,7 +59,11 @@ class tensorstencilpoly {
         int printCoef();
         int printCoef(double* c, int n);
 
+        int printcollapseCoef(double ** localsol) const;
+
         int printSigmaBase();
+
+        int printStencilSol(double ** localsol) const;
 
     private:
         double * coef = nullptr;

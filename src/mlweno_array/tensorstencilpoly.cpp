@@ -549,12 +549,60 @@ int tensorstencilpoly::printCoef(double * c, int n){
     return 1;
 }
 
+int tensorstencilpoly::printcollapseCoef(double ** localsol) const{
+
+    vector<double> collapsecoef;
+    collapsecoef.resize(sizex*sizey);
+
+    for (int s=0; s<sizex*sizey; s++){
+        collapsecoef.at(s) = 0;
+	 }
+
+    for (int j=0; j<sizey; j++){
+    for (int i=0; i<sizex; i++){
+ 
+        int s= j*sizex + i;
+
+        for (int j2=0; j2<sizey; j2++){
+        for (int i2=0; i2<sizex; i2++){
+
+            int s2 = j2*sizex + i2;
+
+            collapsecoef.at(s) += localsol[starty+j2][startx+i2] * coef[s2*sizex*sizey + s];
+
+            cout << localsol[starty+j][startx+i] << "  " << coef[s2*sizex*sizey + s] << "   " ;
+
+        }}
+cout << endl;
+    }}
+
+    for (int s=0; s<sizex*sizey; s++){
+        cout << collapsecoef.at(s) << "  ";
+	 } cout << endl;
+
+    return 1;
+}
+
 int tensorstencilpoly::printSigmaBase(){
 
     int total = sizex*sizey;
     for (int j=0; j<total; j++){
     for (int i=0; i<total; i++){
         cout << sigmabase[j*total + i] << "  " ;
+    }cout << endl;}
+
+    return 1;
+}
+
+int tensorstencilpoly::printStencilSol(double ** localsol) const{
+
+    // Print 
+
+    for (int j=0; j<sizey; j++){
+    for (int i=0; i<sizex; i++){
+
+        cout << localsol[starty+j][startx+i] << "  " ;
+
     }cout << endl;}
 
     return 1;

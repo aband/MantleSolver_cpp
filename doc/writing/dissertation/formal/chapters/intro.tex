@@ -2,7 +2,11 @@
 \label{intro}
 \section{Background}
 
-Volcanism at the Earth's surface is a geologically important process that originates due to partial melting of the Earth's convecting mantle and subsequent melt segregation. Partial melting generates the oceanic and continental crust and determines the large-scale chemical evolution of the Earth. Moreover, similar processes may occur on other terrestrial planets. Most of the Earth's mantle is generally below its melting point, while partial melting occurs in the following three tectonic settings.
+Volcanism at the Earth's surface is a geologically important process that originates due to partial melting of the 
+Earth's convecting mantle and subsequent melt segregation. Partial melting generates the oceanic and continental crust and 
+determines the large-scale chemical evolution of the Earth. Moreover, similar processes may occur on other terrestrial planets. 
+Most of the Earth's mantle is generally below its melting point, while partial melting occurs in the following 
+three tectonic settings.
 
 \vspace*{-6pt}\begin{description}  
  \item[\ \ Mid-ocean ridges:] Upwelling of the convecting mantle beneath mid-ocean ridges leads to
@@ -15,17 +19,35 @@ Volcanism at the Earth's surface is a geologically important process that origin
 
 \cite{Schmeling2000}
 
-\section{Notable Existing Softwares}
+\section{Notable Existing Software}
 
-ASPECT : solve a Stokes system describing the movement of solid mantle material. 
-"However, this will not consider melt extraction or any relative movement between melt and solid 
-and there might be problems where the transport of melt is of interest".
+We introduce some existing software the solves similar problem but different from what we did.
 
-TerraFERMA : A high level wrapper for Fenics and Petsc.
+ASPECT : One of the most notable and advanced solver with excellent mesh control and numerics.
+It follows the discussion in~\cite{SchubertTurcotteOlson2001} and solves a Stokes system describing the movement of solid mantle 
+material coupled with a advection-diffusion-reaction
+equation system transporting energy and chemical species.
+Phase change is included as a right hand side of the transport equation as a part of the reaction term.
+``However, this will not consider melt extraction or any relative movement between melt and solid 
+and there might be problems where the transport of melt is of interest".\cite{Bangerth2018}, where
+it is the main focus of our solver.
 
-pMELTS: Thermodynamics simultion of melting and freezing. Mechanical behaviors and transport not emphasized. 
+TerraFERMA : A high level wrapper for FEniCS,  PETSc and a science neural options handling system SPuD. The main
+focus of the code is to provide a rapid and reproducible construction of multi-physics model arising in geophysics 
+scenarios.
+
+pMELTS: Thermodynamics simulation of melting and freezing. Mechanical behaviors and transport not emphasized. 
 
 \section{Outline}
-In Chapter\ref{chap:equations}, we introduce the governing equations describing
-the problem we are solving.
+In Chapter~\ref{chap:equations}, we present a detailed description of the mathematical model we used to describe 
+the partial melting process: mechanical flow, transport phenomenon and phase transition.
+In Section~\ref{sec:mechanics}, We begin by deriving a Darcy-Stokes coupled system incorporating compaction equation 
+from basic conservation laws. In Section~\ref{sec:transport}, we describe transport of chemical species and energy
+within partial molten mantle. In Section~\ref{sec:phase}, we present a simple linear parametrized two-component 
+eutectic phase diagram. In Section~\ref{sec:nondim}, we nondimensionlize the physical model with carefully selected
+characteristic physical scales and formally present the nondimensionalized equations.
+
+In Chapter~\ref{chap:numerics}, we describe one new MFEM solver and one new ML-WENO solver used to address the physical
+model defied previously.
+
 

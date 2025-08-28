@@ -27,7 +27,7 @@ double func(const vertex& point,
     }
 */
 
-    double HD = 2.9+2.5*0.2-2.5*pow(point[1]+0.2,2);
+    double HD = 2.9+2.5*0.2-2.5*pow(point[1]+0.2,1);
 
     if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
 
@@ -299,8 +299,11 @@ int main(int argc, char ** argv){
 
     int midM = M/2;
     int midN = N/2;
+
 cout<< "At the middle cell : " << midM << " , " << midN << endl;
     my_recon.at(midN*M+midM).printinfo();
+    my_recon.at(midN*M+midM).printmoreinfo(locvals, stenlg, stensm);
+
 
     printexactsol(mi, 0, func, 1, true, {0.0});
 
