@@ -218,8 +218,8 @@ int Driver::AssignLocMatStokes(const indice& gcell, double ** lHD, double ** lCD
 
             // Non dimensionalized version
             // Attention, porosity has been multiplied to right hand side force term
-            loc->f[j] += gw*jac* phi_f*(stokesforce[0]*brval[j][0] + 
-                                        stokesforce[1]*brval[j][1]);
+            loc->f[j] += gw*jac* (1-phi_f)*(stokesforce[0]*brval[j][0] + 
+                                            stokesforce[1]*brval[j][1]);
 
         }
 

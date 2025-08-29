@@ -235,6 +235,8 @@ class Driver {
         int printGrid();
         int printPhase(bool update, int mark);
 
+        int printEffVel(int mark, int side, double ** lHD, double ** lCD);
+
         int start = 0;
 
     private:

@@ -219,6 +219,8 @@ int Driver::printPhase(bool update, int mark){
         }
     }
 
+    printEffVel(mark, 2, lHD, lCD);
+
     fclose(fp);
     fclose(ft);
     fclose(fphase);
@@ -228,6 +230,176 @@ int Driver::printPhase(bool update, int mark){
     fclose(fhd);
 	 fclose(fcd);
 
-  
+    DMDAVecRestoreArray(dmu, localHD, &lHD);
+    DMRestoreLocalVector(dmu, &localHD);
+    DMDAVecRestoreArray(dmu, localCD, &lCD);
+    DMRestoreLocalVector(dmu, &localCD);
+
+    return 1;
+}
+
+int Driver::printEffVel(int mark, int side,
+                        double ** lHD,
+                        double ** lCD){
+
+    // Print Effective computed at the gauss points of each edge
+    // Only plot in selected direction
+    FILE * effvx = fopen(GetFilename("effvelx", mark),"w");
+    FILE * effvy = fopen(GetFilename("effvely", mark),"w");
+
+    FILE * phasevx = fopen(GetFilename("phasevelx", mark),"w");
+    FILE * phasevy = fopen(GetFilename("phasevely", mark),"w");
+
+    FILE * solidvx = fopen(GetFilename("solidvelx", mark),"w");
+    FILE * solidvy = fopen(GetFilename("solidvely", mark),"w");
+
+    FILE * gaussgridx = fopen("gaussgridx.dat", "w");
+    FILE * gaussgridy = fopen("gaussgridy.dat", "w");
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    std::vector<vertex> gaussp;
+    gaussp.resize(gpe.size());
+
+    vertexSet edge;
+
+    vector<vertex> effvel; effvel.resize(gaussp.size());
+    vector<vertex> phasevel; phasevel.resize(gaussp.size());
+    vector<vertex> solidvel; solidvel.resize(gaussp.size());
+    vector<double> TDin; TDin.resize(gaussp.size());
+    vector<double> TDout; TDout.resize(gaussp.size());
+    vector<double> dTdHin; dTdHin.resize(gaussp.size());
+    vector<double> dTdHout; dTdHout.resize(gaussp.size());
+    vector<double> CDin; CDin.resize(gaussp.size());
+    vector<double> CDout; CDout.resize(gaussp.size());
+    vector<double> HDin; HDin.resize(gaussp.size());
+    vector<double> HDout; HDout.resize(gaussp.size());
+ 
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice gcell {i,j};
+        indice gcellout;
+        vertexSet corners = extractCorners(mi, gcell);
+
+        effvel.clear(); effvel.resize(gaussp.size());
+        phasevel.clear(); phasevel.resize(gaussp.size());
+        solidvel.clear(); solidvel.resize(gaussp.size());
+
+        if (side==1){
+        // vertical
+
+            edge = {corners.at(3), corners.at(0)};
+
+            for (int g=0; g<gpe.size(); g++){
+                gaussp.at(g) = GaussMapPointsEdge({gpe[g]},edge);
+            }   
+
+            if (i==0){ // left side
+                computeEffVel(gaussp, edge, gcell, lHD, lCD, effvel, phasevel, solidvel, TDin, dTdHin, CDin, HDin);
+            } else {
+                gcellout = gcell + mi.faceNormal[3];
+                computeEffVel(gaussp, edge, gcell, gcellout, lHD, lCD, effvel, phasevel,solidvel, TDin, TDout, dTdHin, dTdHout, CDin, CDout, HDin, HDout);
+            }
+
+        } else if (side==2){
+        // horizontal
+
+            edge = {corners.at(0), corners.at(1)};
+
+            for (int g=0; g<gpe.size(); g++){
+                gaussp.at(g) = GaussMapPointsEdge({gpe[g]},edge);
+            }
+
+
+            if (j==0){ // bottom side
+
+                computeEffVel(gaussp, edge, gcell, lHD, lCD, effvel,phasevel,solidvel, TDin, dTdHin, CDin, HDin);
+
+            } else {
+                gcellout = gcell + mi.faceNormal[0];
+
+                computeEffVel(gaussp, edge, gcell, gcellout, lHD, lCD, effvel,phasevel,solidvel, TDin, TDout, dTdHin, dTdHout, CDin, CDout, HDin, HDout);
+
+            }
+
+        } else {
+            cout << "Pick a side. " << endl;
+        }
+
+        for (int g=0; g<gpe.size(); g++){
+
+            fprintf(effvx, "%e ", effvel.at(g)[0]);
+            fprintf(effvy, "%e ", effvel.at(g)[1]);
+
+            fprintf(phasevx, "%e ", phasevel.at(g)[0]);
+            fprintf(phasevy, "%e ", phasevel.at(g)[1]);
+
+            fprintf(solidvx, "%e ", solidvel.at(g)[0]);
+            fprintf(solidvy, "%e ", solidvel.at(g)[1]);
+
+            fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
+            fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
+        }
+
+    } fprintf(effvx, "\n ");
+      fprintf(effvy, "\n ");
+      fprintf(phasevx, "\n ");
+      fprintf(phasevy, "\n ");
+      fprintf(solidvx, "\n ");
+      fprintf(solidvy, "\n ");
+
+      fprintf(gaussgridx, "\n ");
+      fprintf(gaussgridy, "\n ");}
+
+    // top and left bottom
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice gcell {i, mi.MPIglobalCellSize[1]-1};
+        vertexSet corners = extractCorners(mi, gcell);
+        vertexSet hori    = {corners.at(3), corners.at(2)};
+
+        for (int g=0; g<gpe.size(); g++){gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, hori);}
+
+        computeEffVel(gaussp, hori, gcell, lHD, lCD, 
+                      effvel, phasevel, solidvel, TDin, dTdHin, CDin, HDin);
+
+        for (int g=0; g<gpe.size(); g++){
+
+            fprintf(effvx, "%e ", effvel.at(g)[0]);
+            fprintf(effvy, "%e ", effvel.at(g)[1]);
+
+            fprintf(phasevx, "%e ", phasevel.at(g)[0]);
+            fprintf(phasevy, "%e ", phasevel.at(g)[1]);
+
+            fprintf(solidvx, "%e ", solidvel.at(g)[0]);
+            fprintf(solidvy, "%e ", solidvel.at(g)[1]);
+
+            fprintf(gaussgridx, "%e ", gaussp.at(g)[0]);
+            fprintf(gaussgridy, "%e ", gaussp.at(g)[1]);
+        }
+
+      fprintf(effvx, "\n ");
+      fprintf(effvy, "\n ");
+      fprintf(phasevx, "\n ");
+      fprintf(phasevy, "\n ");
+      fprintf(solidvx, "\n ");
+      fprintf(solidvy, "\n ");
+
+      fprintf(gaussgridx, "\n ");
+      fprintf(gaussgridy, "\n ");
+    }
+
+    fclose(effvx);
+    fclose(effvy);
+    fclose(phasevx);
+    fclose(phasevy);
+    fclose(solidvx);
+    fclose(solidvy);
+
+    fclose(gaussgridx);
+    fclose(gaussgridy);
+
     return 1;
 }

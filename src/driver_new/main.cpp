@@ -73,7 +73,7 @@ int main(int argc, char **argv){
     driver->PrepareFlow();
 
     driver->printGrid();
-    driver->printPhase(true, 1);
+    //driver->printPhase(true, 1);
 
     driver->rk1();
 
