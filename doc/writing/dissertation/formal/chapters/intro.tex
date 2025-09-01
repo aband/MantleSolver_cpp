@@ -11,10 +11,19 @@ determines the large-scale chemical evolution of the Earth. Moreover, similar pr
 Most of the Earth's mantle is generally below its melting point, while partial melting occurs in the following 
 three tectonic settings.
 \fi
-Mantle melting—driven by decompression, heating, or water release—and constrained by mantle temperature and lithospheric stress, 
-indicates that the asthenosphere is often partially molten~\cite{Schmeling2000}. Volcanism, for instance, arises from mantle melting and melt segregation, 
-producing Earth’s crust and shaping its chemical evolution. %Comparable processes may also occur on other terrestrial planets. 
-Although most of Earth’s mantle lies below its melting point, partial melting takes place in three key tectonic settings.
+Mantle melting—driven by decompression, heating, or water release—
+is a crutial geophysical 
+process in lithosphere evolution and plate tectonics.
+Volcanism, for instance, arises from mantle melting and melt segregation, 
+producing Earth’s crust and shaping its chemical evolution.
+Comparable processes may also occur on other terrestrial planets.
+
+However, prevailing estimates of upper mantle temperatures, together the 
+inferred state of stress in the lithosphere,
+indicate that the asthenosphere is often partially molten 
+by~\cite{Schmeling2000}.  
+%Although most of Earth’s mantle lies below its melting point, 
+Partial melting takes place in the following three key tectonic settings.
 
 \vspace*{-6pt}\begin{description}  
  \item[\ \ Mid-ocean ridges:] Upwelling of the convecting mantle beneath mid-ocean ridges leads to
@@ -34,32 +43,51 @@ while the possible degeneracies in the porosity is well represented and studied.
 Our results exhibits evolution of porosity and phase transition possibly happen during the process of partial melting.
 \fi
 
-Modeling partial melting in the mantle poses significant challenges, as porosity vanishes in melt-free regions, rendering the governing two-phase flow equations 
-highly degenerate. In this thesis, we develop and apply advanced numerical schemes capable of robustly handling such degeneracies to study the temporal dynamics 
+A thorough understanding of partial melting is fundamental to comprehending the dynamics of mantle convection.
+However, modeling partial melting in the mantle poses significant challenges, as 
+porosity vanishes in melt-free regions, rendering the governing two-phase flow 
+equations 
+highly degenerate. In this thesis, we develop and apply advanced numerical 
+schemes capable of robustly handling such degeneracies to study the temporal 
+dynamics 
 of a partially molten mantle. The simulations resolve the coupled evolution of porosity and phase transitions, providing a consistent framework for analyzing 
 the thermomechanical processes associated with partial melting.
 
-\section{Notable Existing Software}
+\section{Notable Related Work}
 
-We introduce some existing software the solves similar problem but different from what we did.
+We review some existing software packages that address related aspects of the 
+problem,
+but differ in scope and methodology from our approach.
 
-ASPECT : One of the most notable and advanced solver with excellent mesh control and numerics.
+ASPECT : One of the most notable and advanced solver with excellent mesh 
+adaptivity and numerics, and 
+can simulate partial melting phenomenon.
 It follows the discussion in~\cite{SchubertTurcotteOlson2001} and solves a Stokes system describing the movement of solid mantle 
 material coupled with a advection-diffusion-reaction
 equation system transporting energy and chemical species.
 Phase change is included as a right hand side of the transport equation as a part of the reaction term.
 ``However, this will not consider melt extraction or any relative movement between melt and solid 
-and there might be problems where the transport of melt is of interest".\cite{Bangerth2018}, where
+and there might be problems where the transport of melt is of interest".\cite{Bangerth2018}, which, on the contrary,
 it is the main focus of our solver.
 
-TerraFERMA : A high level wrapper for FEniCS,  PETSc and a science neural options handling system SPuD. The main
+CitcomS : \cite{temdepenvis}, \cite{geoframework} A classical code used in
+simulation of mantle convection. It solves an imcompressible Stokes problem 
+coupled with energy transport, in consequence, melt extraction and chemical
+species transport are not well represented.
+
+TerraFERMA : \cite{TerraFerma} A high level wrapper for FEniCS,  PETSc and a science neural options handling system SPuD. The main
 focus of the code is to provide a rapid and reproducible construction of multi-physics model arising in geophysics 
 scenarios.
 
-pMELTS: Thermodynamics simulation of melting and freezing. Mechanical behaviors and transport not emphasized. 
+pMELTS/ MELTS: The MELTS software is designed to invectigate phase relations in magmatic systems during 
+melting and crystallization.
+However, mechanical behaviors and transport not included. 
 
 \section{Outline}
-In Chapter~\ref{chap:equations}, we present a detailed description of the mathematical model we used to describe 
+The rest of the dissertation is organized as follows.
+
+\begin{itemize}
+		  \item In Chapter~\ref{chap:equations}, we present a detailed description of the mathematical model we used to describe 
 the partial melting process: mechanical flow, transport phenomenon and phase transition.
 In Section~\ref{sec:mechanics}, We begin by deriving a Darcy-Stokes coupled system incorporating compaction equation 
 from basic conservation laws. In Section~\ref{sec:transport}, we describe transport of chemical species and energy
@@ -67,7 +95,9 @@ within partial molten mantle. In Section~\ref{sec:phase}, we present a simple li
 eutectic phase diagram. In Section~\ref{sec:nondim}, we nondimensionlize the physical model with carefully selected
 characteristic physical scales and formally present the nondimensionalized equations.
 
-In Chapter~\ref{chap:numerics}, we describe one new MFEM solver and one new ML-WENO solver used to address the physical
-model defied previously.
+\item In Chapter~\ref{chap:numerics}, we describe one new inf-sup stable 
+MFEM solver equipped with serendipity function space and one 
+new ML-WENO solver used to address the physical
+model defined previously.
 
-
+\end{itemize}

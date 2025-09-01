@@ -1,4 +1,4 @@
-\begin{thebibliography}{3}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -28,5 +28,27 @@ Harro Schmeling.
 Gerald Schubert, Donald~L. Turcotte, and Peter Olson.
 \newblock \emph{Mantle Convection in the Earth and Planets}.
 \newblock Cambridge University Press, 2001.
+
+\bibitem[Tan et~al.(2006)Tan, Choi, Thoutireddy, Gurnis, and
+  Aivazis]{geoframework}
+E.~Tan, E.~Choi, P.~Thoutireddy, M.~Gurnis, and M.~Aivazis.
+\newblock Geoframework: Coupling multiple models of mantle convection within a
+  computational framework.
+\newblock \emph{Geochemistry, Geophysics, Geosystems}, 7, 6 2006.
+\newblock \doi{10.1029/2005GC001155}.
+
+\bibitem[Wilson et~al.(2017)Wilson, Spiegeiman, and Keken]{TerraFerma}
+Cian~R. Wilson, Marc Spiegeiman, and Peter E.~Van Keken.
+\newblock Terraferma: The transparent finite element rapid model assembler for
+  multiphysics problems in earth sciences.
+\newblock \emph{Geochemistry, Geophysics, Geosystems}, 1 2017.
+\newblock \doi{10.1002/2016GC006702}.
+
+\bibitem[Zhong et~al.(2000)Zhong, Zuber, Moresi, and Gurnis]{temdepenvis}
+Shijie Zhong, Maria~T. Zuber, Louis Moresi, and Michael Gurnis.
+\newblock Role of temperature-dependent viscosity and surface plates in
+  spherical shell models of mantle convection.
+\newblock \emph{Journal of Geophysical Research}, 105\penalty0 (B5):\penalty0
+  11063--11082, 5 2000.
 
 \end{thebibliography}
