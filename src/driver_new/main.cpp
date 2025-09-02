@@ -30,7 +30,7 @@ int main(int argc, char **argv){
     int meshType = 0; 
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-meshtype",&meshType,NULL));
 
-    int maxIter = 30; 
+    int maxIter = 40; 
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL)); 
 
     double tolUzawa = 10e-16; 
