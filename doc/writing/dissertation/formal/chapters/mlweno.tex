@@ -71,6 +71,7 @@ Assuming a quadrature rule with $G$ point per edge, the semi-discretized formula
 where $\omega_{i,g}$ represents the weight associated to the $g\textsuperscript{th}$ quadrature points on edge $e_i$.
 
 \section[ML-WENO]{The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}
+\label{sec:mlweno}
 We developed an accurate, versatile, robust and efficient finite volume 
 multi level weighted essentially non oscillatory (ML-WENO) reconstruction
 in~\cite{MultiLevelWeno}.
@@ -487,6 +488,7 @@ and, for SSP3,
 \end{equation}
 
 \section{Handling Boundary Conditions}
+\label{sec:fvbc}
 We couple MFEM and FVM solvers on a single mesh in our simulation. Therefore, 
 accurate and compatible boundary conditions need to be assigned accordingly.
 However, it is usually difficult to manage boundary conditions for higher order finite volume and finite difference methods, which
