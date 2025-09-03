@@ -1,36 +1,36 @@
 \addvspace {10pt}
 \addvspace {10pt}
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Phases and species in an representative volume element (RVE).}}{22}{figure.caption.5}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Eutectic phase diagram of a Olivine-Orthopyroxene system.}}{28}{figure.caption.6}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Phase diagram when the composition of opx is smaller than the eutectic composition. Region V does not appear.}}{30}{figure.caption.7}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Enthalpy-Composition diagram}}{32}{figure.caption.8}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Phases and species in an representative volume element (RVE).\relax }}{22}{figure.caption.5}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Eutectic phase diagram of a Olivine-Orthopyroxene system.\relax }}{28}{figure.caption.6}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Phase diagram when the composition of opx is smaller than the eutectic composition. Region V does not appear.\relax }}{30}{figure.caption.7}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Enthalpy-Composition diagram\relax }}{32}{figure.caption.8}%
 \addvspace {10pt}
-\contentsline {figure}{\numberline {3.1}{\ignorespaces An exhibition of a reference square element, a local reference element, and a general non-degenerate quadrilateral element.}}{39}{figure.caption.10}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces An exhibition of a full logically rectangular quasi-uniform quadrilateral mesh $\EuScript {T}_h$.}}{40}{figure.caption.11}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Rational function $R_0$.}}{44}{figure.caption.12}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Edge nodal basis function $\varphi ^{(2)}_{e,0}$ in $\EuScript {DS}_2$.}}{45}{figure.caption.13}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Vertex nodal basis function $\varphi ^2_{v,0}$ in $\EuScript {DS}_2$.}}{45}{figure.caption.14}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Supplemental rational function $R$ in $\EuScript {DS}_1$.}}{46}{figure.caption.15}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Vertex nodal basis function in $\EuScript {DS}_1$.}}{47}{figure.caption.16}%
-\contentsline {figure}{\numberline {3.8}{\ignorespaces ``Linear" shape function $\pmb {\varphi }_l$.}}{52}{figure.caption.17}%
-\contentsline {figure}{\numberline {3.9}{\ignorespaces ``Constant" shape function $\pmb {\varphi }_c$.}}{53}{figure.caption.18}%
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Numerical results on rectangular and quadrilateral mesh.}}{62}{figure.caption.19}%
-\contentsline {figure}{\numberline {3.11}{\ignorespaces Constant porosity~\eqref {eq:constporosity} with $\phi _0 = 0.04$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.}}{80}{figure.caption.23}%
-\contentsline {figure}{\numberline {3.12}{\ignorespaces Discontinuous porosity~\eqref {eq:phidiscon} with $\phi _0 = 0.04$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.}}{82}{figure.caption.25}%
-\contentsline {figure}{\numberline {3.13}{\ignorespaces Quadratic porosity~\eqref {eq:quadphi} with $\phi _0 = 0.001$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.}}{85}{figure.caption.26}%
-\contentsline {figure}{\numberline {3.14}{\ignorespaces Quadratic porosity~\eqref {eq:quadphi} with $\phi _0 = 0.01$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.}}{86}{figure.caption.28}%
-\contentsline {figure}{\numberline {3.15}{\ignorespaces Porosity distribution.}}{87}{figure.caption.30}%
-\contentsline {figure}{\numberline {3.16}{\ignorespaces Liquid pressure potential and velocity.}}{88}{figure.caption.31}%
-\contentsline {figure}{\numberline {3.17}{\ignorespaces Solid pressure potential and velocity.}}{88}{figure.caption.32}%
-\contentsline {figure}{\numberline {3.18}{\ignorespaces An example of a (3,2,1) multi-level stencils combination on a logically rectangular quadrilateral mesh.}}{95}{figure.caption.33}%
-\contentsline {figure}{\numberline {3.19}{\ignorespaces An illustration of a (3,2,1) multi-level stencils combination on a logically rectangular quadrilateral mesh with two shock present.}}{97}{figure.caption.34}%
-\contentsline {figure}{\numberline {3.20}{\ignorespaces An example of a standard (5,3) stencils combination on a logically rectangular quadrilateral mesh.}}{103}{figure.caption.35}%
-\contentsline {figure}{\numberline {3.21}{\ignorespaces An illustration of different cells using one fifth-order stencil to avoid accuracy degeneracy.}}{103}{figure.caption.36}%
-\contentsline {figure}{\numberline {3.22}{\ignorespaces The reconstructed solution on the $20\times 20$ randomly distorted logically rectangular mesh.}}{104}{figure.caption.37}%
-\contentsline {figure}{\numberline {3.23}{\ignorespaces Effective polynomial degree with and without some additional fifth-order stencils added near the top right boundary.}}{104}{figure.caption.38}%
-\contentsline {figure}{\numberline {3.24}{\ignorespaces A test case demonstrating inflow stabilization using a constant stencil at the inflow boundary on a $80\times 80$ rectangular domain.}}{105}{figure.caption.39}%
-\contentsline {figure}{\numberline {3.25}{\ignorespaces The reconstructed solution on the $180\times 60$ rectangular mesh at times 1.0 and 2.0. (The rarefaction and shock meet at time 2.0.)}}{106}{figure.caption.40}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces An exhibition of a reference square element, a local reference element, and a general non-degenerate quadrilateral element.\relax }}{39}{figure.caption.10}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces An exhibition of a full logically rectangular quasi-uniform quadrilateral mesh $\EuScript {T}_h$.\relax }}{40}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Rational function $R_0$.\relax }}{44}{figure.caption.12}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Edge nodal basis function $\varphi ^{(2)}_{e,0}$ in $\EuScript {DS}_2$.\relax }}{45}{figure.caption.13}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Vertex nodal basis function $\varphi ^2_{v,0}$ in $\EuScript {DS}_2$.\relax }}{45}{figure.caption.14}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Supplemental rational function $R$ in $\EuScript {DS}_1$.\relax }}{46}{figure.caption.15}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Vertex nodal basis function in $\EuScript {DS}_1$.\relax }}{47}{figure.caption.16}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces ``Linear" shape function $\pmb {\varphi }_l$.\relax }}{52}{figure.caption.17}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces ``Constant" shape function $\pmb {\varphi }_c$.\relax }}{53}{figure.caption.18}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Numerical results on rectangular and quadrilateral mesh.\relax }}{62}{figure.caption.19}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Constant porosity\nobreakspace {}\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {eq:constporosity}\unskip \@@italiccorr )}} with $\phi _0 = 0.04$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.\relax }}{80}{figure.caption.23}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Discontinuous porosity\nobreakspace {}\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {eq:phidiscon}\unskip \@@italiccorr )}} with $\phi _0 = 0.04$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.\relax }}{82}{figure.caption.25}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Quadratic porosity\nobreakspace {}\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {eq:quadphi}\unskip \@@italiccorr )}} with $\phi _0 = 0.001$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.\relax }}{85}{figure.caption.26}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Quadratic porosity\nobreakspace {}\textup {\hbox {\mathsurround \z@ \normalfont (\ignorespaces \ref {eq:quadphi}\unskip \@@italiccorr )}} with $\phi _0 = 0.01$. Shown are the porosity $\phi $, scalar velocities $u$ and $v$ along with closed form solution, velocity vectors $\check {\mathbf {v}}_s$ and $\phi \check {\mathbf {v}}_r$ reconstructed on the edge quadrature points, $q_l$ and $q_s$ together.\relax }}{86}{figure.caption.28}%
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Porosity distribution.\relax }}{87}{figure.caption.30}%
+\contentsline {figure}{\numberline {3.16}{\ignorespaces Liquid pressure potential and velocity.\relax }}{88}{figure.caption.31}%
+\contentsline {figure}{\numberline {3.17}{\ignorespaces Solid pressure potential and velocity.\relax }}{88}{figure.caption.32}%
+\contentsline {figure}{\numberline {3.18}{\ignorespaces An example of a (3,2,1) multi-level stencils combination on a logically rectangular quadrilateral mesh.\relax }}{95}{figure.caption.33}%
+\contentsline {figure}{\numberline {3.19}{\ignorespaces An illustration of a (3,2,1) multi-level stencils combination on a logically rectangular quadrilateral mesh with two shock present.\relax }}{97}{figure.caption.34}%
+\contentsline {figure}{\numberline {3.20}{\ignorespaces An example of a standard (5,3) stencils combination on a logically rectangular quadrilateral mesh.\relax }}{103}{figure.caption.35}%
+\contentsline {figure}{\numberline {3.21}{\ignorespaces An illustration of different cells using one fifth-order stencil to avoid accuracy degeneracy.\relax }}{103}{figure.caption.36}%
+\contentsline {figure}{\numberline {3.22}{\ignorespaces The reconstructed solution on the $20\times 20$ randomly distorted logically rectangular mesh.\relax }}{104}{figure.caption.37}%
+\contentsline {figure}{\numberline {3.23}{\ignorespaces Effective polynomial degree with and without some additional fifth-order stencils added near the top right boundary.\relax }}{104}{figure.caption.38}%
+\contentsline {figure}{\numberline {3.24}{\ignorespaces A test case demonstrating inflow stabilization using a constant stencil at the inflow boundary on a $80\times 80$ rectangular domain.\relax }}{105}{figure.caption.39}%
+\contentsline {figure}{\numberline {3.25}{\ignorespaces The reconstructed solution on the $180\times 60$ rectangular mesh at times 1.0 and 2.0. (The rarefaction and shock meet at time 2.0.)\relax }}{106}{figure.caption.40}%
 \addvspace {10pt}
-\contentsline {figure}{\numberline {A.1}{\ignorespaces An illustration of the half-edge data structure for a quadrilateral.}}{109}{figure.caption.41}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces An exhibition of velocity dofs associated with a modified Bernardi-Raugel element.}}{113}{figure.caption.42}%
-\contentsline {figure}{\numberline {A.3}{\ignorespaces An exhibition of velocity dofs associated with Bernardi-Raugel on a $4 \times 4$ mesh.}}{114}{figure.caption.43}%
+\contentsline {figure}{\numberline {A.1}{\ignorespaces An illustration of the half-edge data structure for a quadrilateral.\relax }}{109}{figure.caption.41}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces An exhibition of velocity dofs associated with a modified Bernardi-Raugel element.\relax }}{113}{figure.caption.42}%
+\contentsline {figure}{\numberline {A.3}{\ignorespaces An exhibition of velocity dofs associated with Bernardi-Raugel on a $4 \times 4$ mesh.\relax }}{114}{figure.caption.43}%
