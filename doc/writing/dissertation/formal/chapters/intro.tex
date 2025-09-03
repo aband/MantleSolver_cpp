@@ -52,17 +52,28 @@ porosity vanishes in melt-free regions, rendering the governing two-phase flow
 equations highly degenerate. 
 In the absence of melt, the liquid velocity and pressure become undefined, 
 which compromises the well-posedness of the mechanical flow equations and 
-introduces discontinuities in transport.
+introduces discontinuities in transport quantities.
 
-In this thesis, building on the mathematical theory of~\cite{DegenerateDarcy} 
+In this dissertation, building on the mathematical theory of~\cite{DegenerateDarcy} 
 for handling degenerate two-phase flow, we design, analyze and implement 
-advanced numerical schemes capable of robustly handling such degeneracies 
-to study the time-dependent dynamics 
+advanced numerical schemes capable of robustly handling such degeneracies. 
+The aim is to study the time-dependent dynamics 
 of a partially molten mantle. The simulations resolve the coupled evolution of 
 porosity and phase transitions, providing a consistent framework for analyzing 
 the thermomechanical processes associated with partial melting.
 
 \section{Background}
+
+Melt extraction --- mackenize
+
+mantle convection models. 
+
+Serendipity, 
+
+WENO theory basis
+
+Eutectic phase , some work incorporated with linear phase
+
 
 \section{Related Software}
 
@@ -83,7 +94,7 @@ and there might be problems where the transport of melt is of interest"., which,
 it is the main focus of our solver.
 \fi
 
-\item [\ \ ASPECT :] One of the most advanced solvers, featuring excellent mesh 
+\item [\ \ ASPECT:] One of the most advanced solvers, featuring excellent mesh 
  adaptivity and numerical robustness, is capable of simulating partial 
  melting processes. Following the framework outlined 
 in~\cite{SchubertTurcotteOlson2001}, it solves a Stokes system for
@@ -93,25 +104,26 @@ incorporated
 through the reaction term on the right-hand side of the transport equations. 
 However, this approach does not account for melt extraction or relative motion 
 between melt and solid, which limits its applicability in problems where melt 
-transport is essential~\cite{Bangerth2018}. By contrast, modeling melt transport 
+					 transport is essential~(\cite{Bangerth2018}). By contrast, modeling melt transport 
 is a central focus of our solver.
 
-\item [\ \ CitcomS :]  A classical code used in
-simulation of mantle convection following the disscussion in~\cite{temdepenvis}, 
-~\cite{geoframework}. The code solves an imcompressible Stokes problem 
+\item [\ \ CitcomS:]  A classical code used in
+simulation of mantle convection following the disscussion in~\cite{temdepenvis} and
+~\cite{geoframework}. The code solves an incompressible Stokes problem 
 coupled with energy transport, however, melt extraction and chemical
 species transport are not explicitly represented.
 
-\item [\ \ TerraFERMA :] A high level wrapper for FEniCS,  PETSc and a science 
-neural options handling system SPuD~\cite{TerraFerma}. The primary aim 
+\item [\ \ TerraFERMA:] A high level wrapper for FEniCS,  PETSc and SPuD (a science 
+		  neural options handling system) developed by \cite{TerraFerma}. The primary aim 
 of this framework is to enable rapid and reproducible construction of 
-multi-physics model arising in geophysics scenarios.
+multi-physics model arising in geophysics scenarios. These packages do
+not handle the complexities fo mantle convection in any direct way.
 
-\item [\ \ MELTS :] The MELTS software family, originated by~\cite{MELTS},
+\item [\ \ MELTS:] The MELTS software family, originated by~\cite{MELTS},
 		  is designed to investigate phase 
 		  relations in magmatic systems during 
 melting and crystallization.
-However, mechanical behaviors and transport not included. 
+However, mechanical behaviors and transport are not included. 
 
 \end{description}\vspace*{-6pt}
 
@@ -155,4 +167,4 @@ Section~\ref{sec:fvbc} demonstrates the flexibility of the new ML-WENO
 reconstruction scheme to address the reconstruction on the boundary.
 
 Appendix~\ref{appex:code} is included to describe the code implementation
-in details.
+kn details.
