@@ -68,23 +68,54 @@ porosity and phase transitions, providing a consistent framework for analyzing
 the thermomechanical processes associated with partial melting.
 
 \section{Previous Work}
+Fundamental theoretical developments on two-phase flow in deformable porous media emerged during the 1970s and 1980s.
+\cite{MUSH}, \cite{ctx23979187210006011}, \cite{Fowler01031984} and 
+\cite{MagmaPhysics} each derived governing equations for partially molten materials within a two-phase flow framework, 
+differing slightly in formulation and geological context. 
+These early models emphasized the coupling between a deformable creeping solid matrix, described by the Stokes equations, 
+and fluid transport through porous flow governed by Darcy’s law. A key feature of this framework is the compaction of the solid 
+matrix, representing a unique mode of deformation.
 
-Some fundamental theory work regarding the mathematical modeling of relative movement between 
-magma and mantle matrix was done between 1970s to 1980s.
-Sleep (\cite{MUSH}), Stevenson , Fowler 1984 and 
-Mckenzie (\cite{MagmaPhysics}) all derive the similar governing equations 
-of a partially molten mantle in a two-phase flow framework but with minor 
-difference. The two-phase flow model - Darcy -Stokes.
+Building on this two-phase solid–fluid framework, a variety of specific models were developed. 
+\cite{ChannelingInstability} proposed a single-species model emphasizing the combined effects of dissolution and porous flow, 
+with less attention to compaction and energy transport.
+Later a reactive-dissolution model was advanced to further research
+in instability during melt segregation (\cite{CompactionDissolution};
+\cite{highporositychannels}). 
+Others approaches incorporated the enthalpy method to magma simulations enabling melting and freezing rates to be computed from 
+equilibrium phase diagrams. In these formulations, the liquid velocity was often not solved directly but inferred from the 
+solid velocity through relative Darcy's law,
+with phase diagrams parametrized with polynomial functions commonly employed
+(\cite{MagmaDynamicsEnthalpyMethod};
+\cite{PartialMeltinginUpwellingMantleColumn}).
 
+Geophysical studies have traditionally emphasized modeling aspects, with comparatively less focus on numerical methods.
+Finite difference and finite volume methods remain widely used among geophysicists.
+For example, \cite{flowindeformableporousp2} analyzed numerical convergence of finite difference schemes for solitary-wave solutions.
+More advanced approaches, such as total variation diminishing (TVD) flux-limiting schemes, were later applied to magma dynamics in
+~\cite{10.1111/j.1365-246X.2010.04528.x} and~\cite{KATZ2012226}.
+A high performance parallel implementation of finite difference method using PETSc is presented in~\cite{KATZ200752}.
+Finite element methods have also been employed in magma simulations.
+Convergence and preconditioners for iterative solution 
+of finite element discretizations of the magma dynamics equations are presented in (\cite{doi:10.1137/130946678} and 
+\cite{doi:10.1137/14099718X}). 
+Applications built with TerraFerma~\cite{TerraFerma} of finite elements to subduction-zone modeling were 
+demonstrated in~\cite{WILSON2014261}.
+The treatment of zero-melt regions was addressed differently within the finite element framework ASPECT~\cite{Bangerth2018}
+by~\cite{10.1093/gji/ggz190}.
 
-mantle convection models. 
-
-Serendipity, 
-
-WENO theory basis
-
-Eutectic phase , some work incorporated with linear phase
-
+\iffalse
+We follow the concept
+of enthalpy method while employ a more realistic and complex eutectic phase diagram.
+We also apply a noval local mass conservative numerical framework to magma simulation. 
+For the static mechanics system, we introduce an $H(\text{div})$-and an $H^1$- 
+conforming mixed finite element spaces for Darcy and Stokes subproblems 
+respectively. The mixed finite element spaces are constructed using a noval 
+direct serendipity space tailored for quadrilateral mesh. 
+To address the nonlinear transport of chemical species and energy in the 
+presence of porous media, we study and modify the weighted essentially 
+non-oscillatory (WENO) method.
+\fi
 
 \section{Related Software}
 
@@ -105,7 +136,21 @@ and there might be problems where the transport of melt is of interest"., which,
 it is the main focus of our solver.
 \fi
 
-\item [\ \ ASPECT:] One of the most advanced solvers, featuring excellent mesh 
+\item [\ \ PETSc:] A toolkit designed to assist the development of scalable solution of 
+scientific applications modeled by partial differential equations(\cite{petsc-user-ref} and \cite{petsc-web-page}. 
+It provides core functionality for data management, iterative linear solvers and discretization tools. PETSc provides the 
+flexibility and comprehensive set of utilities for our simulations.
+
+\item [\ \ FEniCS:] A popular open-source computing platform designed for the rapid implementation of partial differential equation 
+solvers using the finite element method (\cite{BarattaEtal2023}). It provides a wide range of finite element function spaces; however,
+since we employ a custom direct serendipity space coupled with a finite volume method, it is more convenient to assemble the 
+elements manually. 
+
+\item [\ \ DealII:] Another widely used open-source framework designed to enable the rapid development of finite element solvers for
+problems governed by partial differential equations (\cite{dealii2019design}). However, it does not provide the level of flexibility 
+required for implementing novel finite element function spaces or for coupling with our customized finite volume code. 
+
+\item [\ \ ASPECT:] One of the most advanced solvers based on DealII, featuring excellent mesh 
  adaptivity and numerical robustness, is capable of simulating partial 
  melting processes. Following the framework outlined 
 in~\cite{SchubertTurcotteOlson2001}, it solves a Stokes system for
@@ -128,7 +173,7 @@ species transport are not explicitly represented.
 		  neural options handling system) developed by \cite{TerraFerma}. The primary aim 
 of this framework is to enable rapid and reproducible construction of 
 multi-physics model arising in geophysics scenarios. These packages do
-not handle the complexities fo mantle convection in any direct way.
+not handle the complexities of mantle convection in any direct way.
 
 \item [\ \ MELTS:] The MELTS software family, originated by~\cite{MELTS},
 		  is designed to investigate phase 
@@ -137,6 +182,48 @@ melting and crystallization.
 However, mechanical behaviors and transport are not included. 
 
 \end{description}\vspace*{-6pt}
+
+\section{New Framework}
+In this dissertation, we extend the classical two-phase Darcy-Stokes framework
+by emphasizing compaction and by a rigorous mathematically treatment of the degeneracy in no melt regions.
+Our model includes three key components:
+\begin{itemize}
+\item A degenerate two-phase Darcy–Stokes system 
+describing the coupled interaction between the solid matrix and the interstitial melt;
+\item A nonlinear  
+system governing the transport of chemical species and thermal energy; 
+\item A eutectic phase relation characterizing the melting processes and connecting the transport 
+and static mechanical system through enthalpy method.
+\end{itemize}
+
+We develop a local mass conservative numerical framework to address this 
+complicated multiphysics system. 
+For the static mechanics system, we introduce an $H(\text{div})$-and an $H^1$- 
+conforming mixed finite element spaces for Darcy and Stokes subproblems 
+respectively. The mixed finite element spaces are constructed using a noval 
+direct serendipity space tailored for quadrilateral mesh.  
+A modified Bernardi–Raugel element is developed and analyzed. 
+We provide detailed proofs of its stability and approximation properties.
+A new modified uzawa iterative method is implemented to solve the 
+singular saddle 
+point problem induced by this degenerate coupled system. 
+
+To address the nonlinear transport of chemical species and energy in the 
+presence of porous media, we study and modify the weighted essentially 
+non-oscillatory (WENO) method originally by~\cite{Shu1998}.
+We propose two simple alternatives to accelerate the evaluation of the 
+smoothness indicator. Additionally, we develop a new multilevel WENO weighting 
+scheme that is more versatile and flexible, allowing the combination of 
+arbitrary stencils of different orders.
+
+We advance the multiphysics system by incorporating a eutectic phase module that
+ couples compositional and thermal information with porosity, thereby capturing 
+the evolution of porosity and phase transitions.
+
+The code is implemented in C/C++ along with PETSc, 
+and is designed to be easily adapted 
+for large-scale parallel execution on supercomputers,
+ with the potential to support general unstructured meshes.
 
 \section{Outline}
 The rest of the dissertation is organized as follows.
@@ -172,7 +259,10 @@ Section~\ref{sec:ds} to \ref{sec:darcystokes}
 develop a new MFEM formulation employing direct serendipity space for 
 application to the degenerate Darcy-Stokes equation. In Section~\ref{sec:saddle},
 we present a modified Uzawa algorithm applied to the linear system arising
-from the MFEM discretization. Section~\ref{sec:mlweno} introduces a new 
+from the MFEM discretization. Section~\ref{sec:mlweno} to~\ref{sec:numtest} discuss
+the FVM for solving the transport equations. We use the finite volume weighted 
+essentially non-oscillatory methods.
+Section~\ref{sec:mlweno} introduces a new 
 nonlinear weighting scheme for WENO reconstruction, and 
 Section~\ref{sec:fvbc} demonstrates the flexibility of the new ML-WENO 
 reconstruction scheme to address the reconstruction on the boundary.
