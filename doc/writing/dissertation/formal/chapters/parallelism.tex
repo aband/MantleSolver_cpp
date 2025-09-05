@@ -1,10 +1,15 @@
+\definecolor{myBlue}{RGB}{190,203,211}
+\definecolor{myRed}{RGB}{244,186,175}
+\definecolor{myGreen}{RGB}{114,138,122}
+\definecolor{myYellow}{RGB}{241,208,157}
+
 \section{Parallel Implementation}
 In this section, we disscuss some ideas regarding parallel implementation
-of MFEM and FVM solvers, and present some preliminary timing results for each 
+of MFEM and FVM solvers, and present some preliminary scability results for each 
 solver.
 The parallel implementation of the MFEM and FVM need different treatments.
 
-\begin{figure}[ht]
+\begin{figure}[htb]
 \centering
 \input chapters/tikz/pmesh.tex
 		  \caption{An exhibition of ghost region in parallel implementation of 
@@ -40,7 +45,7 @@ that directly mapping to global index with out adding another "local"
 index. However, in the worst case Hash table suffers $O(n)$ time
 complexity in searching.
 
-\section{PETSc Implementation}
+\section{Data Management with PETSc}
 PETSc, the Protable, Extensible Toolkit for Scientific Computation has been 
 gaining popularity in scientific applications modelled by partial 
 differential equations~\cite{petsc-web-page} and~\cite{petsc-user-ref}.

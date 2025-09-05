@@ -61,12 +61,14 @@ We formally formulate an overall explicit coupled solver as shown in algorithm~\
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Discontinuous Data}
+\subsection{Discontinuous Phase Variable}
 Due to the nature of the finite volume method, we may obtain different reconstructed dimensionless enthalpy and 
 mass concentration values from two 
 sides of an element edge and thus two different phase calculation results. It is crucial to have one compatible and appropriate
 porosity value used 
-on the edge for the continuous compaction equation in Darcy equation with divergence theorem involved in 
+on the element edge. 
+The edge values are used in multiple calculations.
+for the continuous compaction equation in Darcy equation with divergence theorem involved in 
 equation~\eqref{eq:weak_continuous}.
 We employ geometric average for porosity $\phi_e$ on an element edge $e$ as
 \begin{equation}

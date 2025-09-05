@@ -97,11 +97,11 @@ More advanced approaches, such as total variation diminishing (TVD) flux-limitin
 A high performance parallel implementation of finite difference method using PETSc is presented in~\cite{KATZ200752}.
 Finite element methods have also been employed in magma simulations.
 Convergence and preconditioners for iterative solution 
-of finite element discretizations of the magma dynamics equations are presented in (\cite{doi:10.1137/130946678} and 
-\cite{doi:10.1137/14099718X}). 
-Applications built with TerraFerma~\cite{TerraFerma} of finite elements to subduction-zone modeling were 
+of finite element discretizations of the magma dynamics equations are presented in \cite{doi:10.1137/130946678} and 
+\cite{doi:10.1137/14099718X}. 
+Applications built with TerraFerma~(\cite{TerraFerma}) of finite elements to subduction-zone modeling were 
 demonstrated in~\cite{WILSON2014261}.
-However, most of the formulations did not take degeneracy in the no melt zone into account.
+However, most existing formulations do not account for the degeneracy that arises in melt-free regions.
 
 The treatment of melt-free regions has been approached in several ways. 
 One strategy introduces a cutoff for material properties or primary variables 
@@ -110,8 +110,10 @@ A different approach was proposed by~\cite{10.1093/gji/ggz190}, in which a thres
 compared with the Darcy coefficient at quadrature points. At each time step, computational cells are classified as 
 either a ``melt" or a ``no melt" cell based on this threshold: the full two-phase system is solved in ``melt" cells, 
 while the Stokes system is solved in ``no melt" cells. Although effective in practice, this method is less 
-mathematically rigorous and misclassifying 
+mathematically rigorous and classifying 
 regions with actual melt as melt-free due to the imposed threshold.
+Moreover, the coexistence of two distinct governing equations may require different finite element spaces or 
+cause a loss of optimal convergence rates.
 
 \iffalse
 We follow the concept
@@ -133,6 +135,7 @@ problem,
 but differ in scope and methodology from our approach.
 
 \subsection{General Purpose Software}
+\iffalse
 \vspace*{-6pt}\begin{description}
 					 \iffalse
 adaptivity and numerics, and 
@@ -152,16 +155,32 @@ It provides core functionality for data management, iterative linear solvers and
 flexibility and comprehensive set of utilities for our simulations.
 
 \item [\ \ FEniCS:] A popular open-source computing platform designed for the rapid implementation of partial differential equation 
-solvers using the finite element method (\cite{BarattaEtal2023}). It provides a wide range of finite element function spaces; however,
+solvers using the finite element method (). It provides a wide range of finite element function spaces; however,
 since we employ a custom direct serendipity space coupled with a finite volume method, it is more convenient to assemble the 
 elements manually. 
 
 \item [\ \ DealII:] Another widely used open-source framework designed to enable the rapid development of finite element solvers for
-problems governed by partial differential equations (\cite{dealii2019design}). However, it does not provide the level of flexibility 
+problems governed by partial differential equations (). However, it does not provide the level of flexibility 
 required for implementing novel finite element function spaces or for coupling with our customized finite volume code. 
+\fi
 
-\subsection{Specific Mantle Software}
-\item [\ \ ASPECT:] One of the most advanced solvers based on DealII, featuring excellent mesh 
+Efficient numerical simulation of coupled geophysical processes requires robust and scalable computational frameworks. In this work, we primarily rely on PETSc, 
+a software toolkit designed to support the scalable solution of scientific applications modeled by partial differential equations (\cite{petsc-user-ref}; \cite{petsc-web-page}). 
+PETSc provides core functionality for parallel data management, iterative linear solvers, and discretization utilities, offering the flexibility and comprehensive tools needed for our simulations.
+
+Alternative open-source platforms, such as FEniCS and deal.II, provide high-level environments for the rapid development of finite element solvers. 
+FEniCS (\cite{BarattaEtal2023}) offers a broad range of finite element function spaces and automated assembly tools, while deal.II (\cite{dealii2019design}) is designed for modular 
+and efficient implementation of large-scale finite element methods. However, both frameworks are less suited to our specific requirements. In particular, our approach involves the 
+use of a custom direct serendipity finite element space coupled with a finite volume method, which requires finer control over element assembly than these platforms provide.
+
+For this reason, we directly implement the finite element assembly and couple it with our finite volume solver within the PETSc framework. This approach combines the flexibility needed 
+for novel discretization strategies with the scalability of PETSc’s linear algebra and solver infrastructure. This ensures both methodological innovation and computational efficiency in large-scale geophysical simulations.
+
+\subsection{Software for Mantle Dynamics}
+We now review several software frameworks specifically developed for simulations of mantle dynamics.
+
+\vspace*{-6pt}\begin{description}
+\item [\ \ ASPECT:] One of the most advanced solvers based on deal.II, featuring excellent mesh 
  adaptivity and numerical robustness, is capable of simulating partial 
  melting processes. Following the framework outlined 
 in~\cite{SchubertTurcotteOlson2001}, it solves a Stokes system for
@@ -235,8 +254,8 @@ The code is implemented in C/C++ along with PETSc,
 and is designed to be easily adapted 
 for large-scale parallel execution on supercomputers,
  with the potential to support general unstructured meshes.
-
-Our code gives us the ability to simulate the degeneracy 
+Our code enables the simulation of degeneracy in no melt regions and 
+advances transport processes in the presence of such regions.
 
 \section{Outline}
 The rest of the dissertation is organized as follows.
