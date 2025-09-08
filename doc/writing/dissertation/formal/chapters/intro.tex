@@ -11,12 +11,12 @@ Most of the Earth's mantle is generally below its melting point, while partial m
 three tectonic settings.
 \fi
 Mantle melting—driven by decompression, heating, or water release—is a crucial geophysical 
-process in lithospheric evolution and plate tectonics that shapes our planet today.
-Volcanism, for instance, the surface expression of magmatism, arises from mantle melting and melt segregation, 
+process in lithospheric evolution and plate tectonics that shapes our planet, both today and in the past.
+Volcanism, for instance, the surface expression of magma, arises from mantle melting and melt segregation, 
 producing Earth’s crust and shaping its chemical evolution.
 Comparable processes may also occur on other terrestrial planets and moons.
 The following three key tectonic settings highlight the fundamental role of mantle melting
-and magamtism.
+and magmatism.
 \vspace*{-6pt}\begin{description}  
  \item[\ \ Mid-ocean ridges:] Upwelling of the convecting mantle beneath mid-ocean ridges leads to
    decompression melting and generates the oceanic crust.
@@ -32,7 +32,7 @@ indicate that the asthenosphere is often partially molten
 (\cite{MagmaPhysics} and \cite{Schmeling2000}).  
 %Although most of Earth’s mantle lies below its melting point,
 In the partial melting scenarios, the porosity remains small enough
-that the solid mantle continuous to transmits stress and maintain a pressure
+that the solid mantle continues to transmits stress and maintain a pressure
 distinct from that of the full liquid magma. 
 
 \iffalse
@@ -56,7 +56,7 @@ poses significant challenges, as
 porosity vanishes in melt-free regions, rendering the governing two-phase flow 
 equations highly degenerate. 
 In the absence of melt, the liquid velocity and pressure become undefined, 
-which compromises the well-posedness of the mechanical flow equations and 
+which compromises the mathematical well-posedness of the mechanical flow equations and 
 introduces discontinuities in transport quantities.
 
 In this dissertation, building on the mathematical theory of~\cite{DegenerateDarcy} 
@@ -65,7 +65,7 @@ advanced numerical schemes capable of robustly handling such degeneracies.
 The aim is to study the time-dependent dynamics 
 of a partially molten mantle. The simulations resolve the coupled evolution of 
 porosity and phase transitions, providing a consistent framework for analyzing 
-the thermomechanical processes associated with partial melting.
+the thermomechanical processes associated with partial melting and melt segregation.
 
 \section{Previous Work}
 Fundamental theoretical developments on two-phase flow in deformable porous media emerged during the 1970s and 1980s.
@@ -84,8 +84,8 @@ in instability during melt segregation (\cite{CompactionDissolution};
 \cite{highporositychannels}). 
 Others approaches incorporated the enthalpy method to magma simulations enabling melting and freezing rates to be computed from 
 equilibrium phase diagrams. In these formulations, the liquid velocity was often not solved directly but inferred from the 
-solid velocity through relative Darcy's law,
-with phase diagrams parametrized with polynomial functions commonly employed
+solid velocity through a relative Darcy's law,
+with phase diagrams commonly parametrized with polynomial functions
 (\cite{MagmaDynamicsEnthalpyMethod};
 \cite{PartialMeltinginUpwellingMantleColumn}).
 
@@ -94,25 +94,25 @@ Finite difference and finite volume methods remain widely used among geophysicis
 For example, \cite{flowindeformableporousp2} analyzed numerical convergence of finite difference schemes for solitary-wave solutions.
 More advanced approaches, such as total variation diminishing (TVD) flux-limiting schemes, were later applied to magma dynamics in
 ~\cite{10.1111/j.1365-246X.2010.04528.x} and~\cite{KATZ2012226}.
-A high performance parallel implementation of finite difference method using PETSc is presented in~\cite{KATZ200752}.
+A high performance parallel implementation of the finite difference method using PETSc is presented in~\cite{KATZ200752}.
 Finite element methods have also been employed in magma simulations.
 Convergence and preconditioners for iterative solution 
 of finite element discretizations of the magma dynamics equations are presented in \cite{doi:10.1137/130946678} and 
 \cite{doi:10.1137/14099718X}. 
-Applications built with TerraFerma~(\cite{TerraFerma}) of finite elements to subduction-zone modeling were 
+Applications of finite elements to subduction-zone modeling were 
 demonstrated in~\cite{WILSON2014261}.
 However, most existing formulations do not account for the degeneracy that arises in melt-free regions.
 
-The treatment of melt-free regions has been approached in several ways. 
+The treatment of melt-free regions has been approached in some works using several strategies. 
 One strategy introduces a cutoff for material properties or primary variables 
-(e.g. \cite{10.1093/gji/ggt306};\cite{10.1093/gji/ggw329}). 
+(e.g. \cite{10.1093/gji/ggt306}; \cite{10.1093/gji/ggw329}). 
 A different approach was proposed by~\cite{10.1093/gji/ggz190}, in which a threshold scale is defined and 
 compared with the Darcy coefficient at quadrature points. At each time step, computational cells are classified as 
 either a ``melt" or a ``no melt" cell based on this threshold: the full two-phase system is solved in ``melt" cells, 
 while the Stokes system is solved in ``no melt" cells. Although effective in practice, this method is less 
-mathematically rigorous and classifying 
+mathematically rigorous in that it classifies 
 regions with actual melt as melt-free due to the imposed threshold.
-Moreover, the coexistence of two distinct governing equations may require different finite element spaces or 
+Moreover, the coexistence of two distinct sets of governing equations in melt and melt-free regions may require different finite element spaces or 
 cause a loss of optimal convergence rates.
 
 \iffalse
@@ -131,8 +131,7 @@ non-oscillatory (WENO) method.
 \section{Related Software}
 
 We review some existing software packages that address related aspects of the 
-problem,
-but differ in scope and methodology from our approach.
+problem.
 
 \subsection{General Purpose Software}
 \iffalse
@@ -177,7 +176,8 @@ For this reason, we directly implement the finite element assembly and couple it
 for novel discretization strategies with the scalability of PETSc’s linear algebra and solver infrastructure. This ensures both methodological innovation and computational efficiency in large-scale geophysical simulations.
 
 \subsection{Software for Mantle Dynamics}
-We now review several software frameworks specifically developed for simulations of mantle dynamics.
+We now review several software frameworks specifically developed for simulations of mantle dynamics,
+but differ in scope and methodology from our approach.
 
 \vspace*{-6pt}\begin{description}
 \item [\ \ ASPECT:] One of the most advanced solvers based on deal.II, featuring excellent mesh 
@@ -202,7 +202,7 @@ species transport are not explicitly represented.
 \item [\ \ TerraFERMA:] A high level wrapper for FEniCS,  PETSc and SPuD (a science 
 		  neural options handling system) developed by \cite{TerraFerma}. The primary aim 
 of this framework is to enable rapid and reproducible construction of 
-multi-physics model arising in geophysics scenarios. These packages do
+multi-physics models arising in geophysics scenarios. These packages do
 not handle the complexities of mantle convection in any direct way.
 
 \item [\ \ MELTS:] The MELTS software family, originated by~\cite{MELTS},
@@ -227,35 +227,39 @@ and static mechanical system through enthalpy method.
 \end{itemize}
 
 We develop a local mass conservative numerical framework to address this 
-complicated multiphysics system. 
-For the static mechanics system, we introduce an $H(\text{div})$-and an $H^1$- 
-conforming mixed finite element spaces for Darcy and Stokes subproblems 
+complicated multiphysics system using a logically rectangular computational mesh of quadrilaterals. 
+For the static mechanics system, we introduce $H(\text{div})$-and an $H^1$- 
+conforming mixed finite element spaces for Darcy and Stokes subproblems,
 respectively. The mixed finite element spaces are constructed using a noval 
-direct serendipity space tailored for quadrilateral mesh.  
+direct serendipity space tailored for a quadrilateral mesh.  
 A modified Bernardi–Raugel element is developed and analyzed. 
 We provide detailed proofs of its stability and approximation properties.
-A new modified uzawa iterative method is implemented to solve the 
+A new modified Uzawa iterative method is implemented to solve the 
 singular saddle 
 point problem induced by this degenerate coupled system. 
 
 To address the nonlinear transport of chemical species and energy in the 
 presence of porous media, we study and modify the weighted essentially 
-non-oscillatory (WENO) method originally by~\cite{Shu1998}.
+non-oscillatory (WENO) method, described in detail by~\cite{Shu1998}.
 We propose two simple alternatives to accelerate the evaluation of the 
 smoothness indicator. Additionally, we develop a new multilevel WENO weighting 
 scheme that is more versatile and flexible, allowing the combination of 
-arbitrary stencils of different orders.
+arbitrary stencils of different sizes.
 
-We advance the multiphysics system by incorporating a eutectic phase module that
+We advance the multiphysics system in time by incorporating a eutectic phase module that
  couples compositional and thermal information with porosity, thereby capturing 
 the evolution of porosity and phase transitions.
 
 The code is implemented in C/C++ along with PETSc, 
 and is designed to be easily adapted 
-for large-scale parallel execution on supercomputers,
- with the potential to support general unstructured meshes.
-Our code enables the simulation of degeneracy in no melt regions and 
-advances transport processes in the presence of such regions.
+for large-scale parallel execution on supercomputers.
+% with the potential to support general unstructured meshes.
+Our code enables an accurate simulation of the degeneracy of the no melt regions.
+That is, the equations are solved irrespective of the value of the porosity,
+including zero porosity.
+In this way, a proper handling of melt extraction and chemical species segration are 
+modeled by our code, leading to a computational framework for invectigating 
+complex geologies settings involving melting and magmatism.
 
 \section{Outline}
 The rest of the dissertation is organized as follows.
