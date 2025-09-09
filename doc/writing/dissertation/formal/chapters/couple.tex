@@ -62,10 +62,10 @@ We formally formulate an overall explicit coupled solver as shown in algorithm~\
 \end{algorithm}
 
 \subsection{Discontinuous Porosity}
-Due to the presence of no melt region and different phase regions, 
-we may obtain different reconstructed dimensionless enthalpy and 
-mass concentration values from two 
-sides of an edge shared by two elements and thus two different phase calculation results. 
+Due to the presence of no melt regions and different phase regions, 
+we may obtain different reconstructed values of dimensionless enthalpy and 
+mass concentration from two 
+sides of an edge shared by two elements and thus two different calculated porosities. 
 However, it is crucial to have one compatible and appropriate porosity value used 
 on the element edge in the conforming MFEM scheme. 
 
@@ -83,15 +83,15 @@ for the continuous compaction equation in Darcy equation~\eqref{eq:weak_continuo
 When the porosity on one side equal zero, the geometric average of the porosity equals zero as well, which
 highlights the fact that there is no liquid flow should travel through this edge.
 
-\subsection{Compaction Length}
-In simulation of magma dynamics, compaction length is an important 
-length scale 
-
 \section{Pseudo One-Dimensional Column Tests}
 In this section, we first test our coupled algorithm on a 2D $M\times N$ grid with a pseudo-1D column problem.
-We test two different scenarios, one couples MFEM and FVM solver without phase computation but a simple 
+We test two different scenarios, one couples MFEM and FVM solver without phase computation but with a simple 
 prescribed melting function $\Gamma(\mathbf{x})$ instead. The other one exhibits a fully coupled scenario where phase transition
 and porosity evolution present.
+
+For the two tests presented below, we fix mesh resolution as $M=2$ and $N=100$. Following the 
+
+
 
 \subsection{Prescribed Melting Case}
 Before fully coupled computation, 
@@ -109,7 +109,7 @@ melting term $\Gamma$~\eqref{eq:gamma} as
 \end{equation}
 where diffusion effect is being dropped for simplicity in this case.
 
-We perform a quasi-1D column test on a $2\times40$ rectangular physical domain $\Omega \in [-0.05,0.05] \times [-0.4,0]$.
+%We perform a quasi-1D column test on a $2\times40$ rectangular physical domain $\Omega \in [-0.05,0.05] \times [-0.4,0]$.
 We prescribe the following boundary conditions for MFEM and FVM solver respectively.
 \iffalse
 \begin{itemize}
@@ -142,7 +142,6 @@ indicating no melting penetrating bottom of the computational domain;
 					 \end{itemize}
 \end{itemize}
 \fi
-
 For the Darcy-Stokes MFEM solver:
 \begin{itemize}
 		  \item Bottom Edge $y = 0$ and $y=-0.4$;
