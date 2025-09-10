@@ -88,10 +88,12 @@ In this section, we first test our coupled algorithm on a 2D $M\times N$ grid wi
 We test two different scenarios, one couples MFEM and FVM solver without phase computation but with a simple 
 prescribed melting function $\Gamma(\mathbf{x})$ instead. The other one exhibits a fully coupled scenario where phase transition
 and porosity evolution present.
+For the two tests presented below, we fix mesh resolution as $M=2$ and $N=100$.
+We fix the parameter $\Theta = 0$ as well. 
 
-For the two tests presented below, we fix mesh resolution as $M=2$ and $N=100$. Following the 
+\subsection{One-Dimensional Stencils}
 
-
+\input chapters/tikz/1dstencils.tex
 
 \subsection{Prescribed Melting Case}
 Before fully coupled computation, 
