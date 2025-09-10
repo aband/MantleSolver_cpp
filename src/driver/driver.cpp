@@ -179,6 +179,46 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     // Compute bottom fixed value
     HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});
 
+    CDbottom = 0.08;
+
+    return 1;
+}
+
+int Driver::PrepareTransport2D(double (*funcHD)(const valarray<double>& point, 
+                                                const vector<double>& param),
+                               double (*funcCD)(const valarray<double>& point, 
+                                                const vector<double>& param)){
+
+    // Prepare a 2D reconstruction levels
+    PetscCall(DMCreateGlobalVector(dmu, &globalCD));
+    PetscCall(DMCreateGlobalVector(dmu, &globalHD));
+
+    // Assign cell averaged values as initial condition
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalCD, {H_,0.0}, funcCD);
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &globalHD, {myPhase->pp->l0*H_,-0.7*H_}, funcHD);
+
+    // Initialization of multi level weno and corresponding usage
+    ml = multilevel(); 
+
+    ml.addLevel("(3,3)", {3,3}, mi);
+    ml.addLevel("(2,2)", {2,2}, mi);
+
+    // Area scale
+    h0 = sqrt((L_*H_)/
+         (double)(mi.MPIglobalCellSize[0]*mi.MPIglobalCellSize[1]));
+
+    advection = mluse();
+
+    unordered_map<std::string, vector<indice>> method;
+    method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+
+    advection.setmethod("all", method);
+    advection.setbias("all");
+
+    // Compute bottom fixed value
+    HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});
+
     CDbottom = 0.1;
 
     return 1;

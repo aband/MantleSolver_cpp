@@ -313,11 +313,11 @@ int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa, int int
         VecAXPY(globalHD, -0.5*dt, fHD2);
         VecAXPY(globalCD, -0.5*dt, fCD2); 
 
-        if (t%interval == 0){
+        if (t%1 == 0){
 
             printCellAve(mark, &globalHD, mi, "HD");
             printCellAve(mark, &globalCD, mi, "CD");
-            PrintFlowEvent(mark);
+            //PrintFlowEvent(mark);
             PrintPhaseEvent(mark);
             PrintPressureSerialApprox(mark);
 
@@ -326,9 +326,9 @@ int Driver::SSP2RK(double dt, double Tmax, int maxIter, double tolUzawa, int int
 
     }
 
-    mark ++;
-    printCellAve(mark, &globalHD, mi, "HD");
-    printCellAve(mark, &globalCD, mi, "CD");
+    //mark ++;
+    //printCellAve(mark, &globalHD, mi, "HD");
+    //printCellAve(mark, &globalCD, mi, "CD");
 
     return 1;
 }

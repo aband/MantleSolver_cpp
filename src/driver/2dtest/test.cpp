@@ -38,7 +38,7 @@ int main(int argc, char **argv){
 
     int maxIter = 100; 
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL));        
-    double tolUzawa = 10e-16; 
+    double tolUzawa = 10e-17; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
 
     double Tmax = 20; // Stop at the first step 
@@ -71,7 +71,7 @@ int main(int argc, char **argv){
      * Initialize global cell averaged value vectors.
      * Initialize multi level reconstruction objects
      */
-    driver->PrepareTransport(InitHD, InitCD);
+    driver->PrepareTransport2D(InitHD, InitCD);
 
     printCellCenterGrid(driver->mi);
     printCellAve(1, &driver->globalHD, driver->mi, "HD");
@@ -90,73 +90,8 @@ int main(int argc, char **argv){
 
     driver->start = 0;
 
-/*
-    // Solve for initial velocity
-    Vec localHD, localCD;
-    double ** lHD;
-    double ** lCD;
 
-    PetscCall(DMGetLocalVector(driver->dmu, &localHD)); 
 
-    PetscCall(DMGlobalToLocalBegin(driver->dmu, driver->globalHD, INSERT_VALUES, localHD));
-    PetscCall(DMGlobalToLocalEnd(driver->dmu, driver->globalHD, INSERT_VALUES, localHD));
 
-    PetscCall(DMDAVecGetArray(driver->dmu, localHD, &lHD));
-
-    PetscCall(DMGetLocalVector(driver->dmu, &localCD)); 
-
-    PetscCall(DMGlobalToLocalBegin(driver->dmu, driver->globalCD, INSERT_VALUES, localCD));
-    PetscCall(DMGlobalToLocalEnd(driver->dmu, driver->globalCD, INSERT_VALUES, localCD));
-
-    PetscCall(DMDAVecGetArray(driver->dmu, localCD, &lCD));
-
-    driver->ml.updatesigma(lHD);
-    Tensor<weights> allwgtsHD;
-    driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgtsHD, location);
-
-    driver->ml.updatesigma(lCD);
-    Tensor<weights> allwgtsCD;
-    driver->advection.computeWgts(driver->ml, driver->mi, h0, allwgtsCD, location);
-
-    driver->V0 = driver->myPhase->pp->V0 / driver->myPhase->pPtr->u0;
-    cout << driver->V0 << endl;
-
-    driver->SolveFlow(maxIter, tolUzawa, allwgtsHD, lHD, allwgtsCD, lCD);
-
-    driver->PrintFlowEvent(1);
-    //driver->PrintFlowEventTransform(1);
-
-    //driver->PrintPhaseEvent(1);
-
-    driver->PrintEffVel(1, 2, allwgtsHD, lHD, allwgtsCD, lCD);
-
-    DMDAVecRestoreArray(driver->dmu,localHD,&lHD);
-    DMRestoreLocalVector(driver->dmu, &localHD); 
-    DMDAVecRestoreArray(driver->dmu,localCD,&lCD);
-    DMRestoreLocalVector(driver->dmu, &localCD); 
-
-    driver->PrintPressureSerialApprox(1);
-*/
-    /**!
-     * Actual time stepping.
-     */
-    driver->RK(dt, Tmax, maxIter, tolUzawa);
-    //driver->SSP2RK(dt, Tmax, maxIter, tolUzawa, interval);
-    //driver->SSP2RK_Pause(dt, Tmax, maxIter, tolUzawa, interval);
-    //driver->RK_Pause(dt, Tmax, maxIter, tolUzawa, interval);
-
-    //std::vector<double> test; test.resize(M*N);
-    //ReadValues("CD", 10, test);
-//cout << endl;
-    //ReadValues("restart.dat", test);
-
-    VecDestroy(&driver->globalmesh);
-    VecDestroy(&driver->globalHD);
-    VecDestroy(&driver->globalCD);
-    DMDestroy(&driver->dmu);
-    DMDestroy(&driver->dmMesh);
-
-    PetscFinalize();
-
-    return 0;
+    return 1;
 }

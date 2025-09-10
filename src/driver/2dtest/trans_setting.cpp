@@ -88,14 +88,7 @@ std::string location(const MeshInfo& mi,
 
     }
 */
-
-    if (top(globalCell, mi)){
-       loc = "top";
-    } else {
-       loc = "all";
-    }
-    return loc;
-    //return "all";
+    return "all";
 }
 
 // Initialize dimensionless composition and enthalpy
@@ -103,7 +96,7 @@ double InitCD(const valarray<double>& point,
               const vector<double>& param){
 
     // Constant composition value 
-    return 0.08;
+    return 0.1;
 }
 
 double InitHD(const valarray<double>& point,
@@ -113,12 +106,11 @@ double InitHD(const valarray<double>& point,
 	 // We pass nondimensionalize normalization factor in param.at(0)
     //double HD = 0.01;
 
-    double cut = -1.5;
-    double slop = 2.75;
+    double cut = -0.25;
 
-    double HD = 2.9 - slop*cut -slop*pow(point[1]-cut,1);
+    double HD = 2.9 - 2.5*cut -2.5*pow(point[1]-cut,1);
 
-    if (point[1] < cut){HD = 2.9 - slop*cut;}
+    if (point[1] < cut){HD = 2.9 - 2.5*cut;}
 
     return HD;
 }

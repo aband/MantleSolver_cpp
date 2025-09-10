@@ -79,6 +79,11 @@ class Driver {
                              double (*funcCD)(const valarray<double>& point, 
                                               const vector<double>& param));
 
+        int PrepareTransport2D(double (*funcHD)(const valarray<double>& point, 
+                                                const vector<double>& param),
+                               double (*funcCD)(const valarray<double>& point, 
+                                                const vector<double>& param));
+
         int PrepareTransport(const std::vector<double>& restartHD,
                              const std::vector<double>& restartCD,
                              double (*funcHD)(const valarray<double>& point, 
