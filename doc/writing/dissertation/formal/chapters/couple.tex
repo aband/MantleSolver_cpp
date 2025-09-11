@@ -104,7 +104,12 @@ We fix the parameter $\Theta = 0$ as well.
 
 \subsection{One-Dimensional Stencils}
 
+\begin{figure}[htb]
+\centering
 \input chapters/tikz/1dstencils.tex
+\caption{An exhibition of a set of 1D WENO stencils.}
+\label{fig:1dsten}
+\end{figure}
 
 \subsection{Prescribed Melting Case}
 Before fully coupled computation, 
@@ -157,11 +162,11 @@ indicating no melting penetrating bottom of the computational domain;
 \fi
 For the Darcy-Stokes MFEM solver:
 \begin{itemize}
-		  \item Bottom Edge $y = 0$ and $y=-0.4$;
+		  \item Bottom Edge $y=-H$;
 					 \begin{itemize}
 								\item Normal Stokes velocity and supplemental edge averaged flux are prescribed with essential boundary conditions:
 						  \begin{equation*}
-									 \check{\mathbf{v}}_s \cdot \pmb{\nu} = v = 0,\, \lvert e \rvert^{-1}\int_e \mathbf{b}\cdot \pmb{\nu}\, ds = 0.
+									 \check{\mathbf{v}}_s \cdot \pmb{\nu} = v,\, \lvert e \rvert^{-1}\int_e \mathbf{b}\cdot \pmb{\nu}\, ds = \lvert e \rvert^{-1}\int_e v \, ds.
 						  \end{equation*}
 				\item Tangential Stokes velocity is prescribed with essential boundary condition:
 						  \begin{equation*}
@@ -173,7 +178,20 @@ For the Darcy-Stokes MFEM solver:
 										  \end{equation*}
 					 \end{itemize}
 		  \item Top Edge $y=0$;
-
+					 \begin{itemize}
+								\item Normal Stokes velocity and supplemental edge averaged flux are prescribed with natural boundary conditions: traction free
+						  \begin{equation*}
+						  t_0 = 0;
+						  \end{equation*}
+				\item Tangential Stokes velocity is prescribed with zero essential boundary condition:
+						  \begin{equation*}
+									 \check{\mathbf{v}}_s \cdot \pmb{\tau} = 0.
+						  \end{equation*}
+								\item Normal Darcy flux is prescribed with natural boundary condition:
+										  \begin{equation*}
+													 \lvert e \rvert^{-1} \int_e \phi\check{\mathbf{v}}_r\cdot \pmb{\nu}\, ds = \lvert e \rvert^{-1} \int_e u\, ds = 0.
+										  \end{equation*}
+					 \end{itemize}
 		  \item Left and Right Edges $x=\pm L$;
 					 \begin{itemize}
 								\item Normal Stokes velocity and supplemental edge averaged flux are prescribed with essential boundary conditions:
@@ -184,7 +202,7 @@ For the Darcy-Stokes MFEM solver:
 						  \begin{equation*}
 									 t_0 = 0;
 						  \end{equation*}
-								\item Normal Darcy flux is prescribed with essential boundary condition:
+								\item Normal Darcy flux is prescribed with non-permeable essential boundary condition:
 										  \begin{equation*}
 													 \lvert e \rvert^{-1} \int_e \phi\check{\mathbf{v}}_r\cdot \pmb{\nu}\, ds = \lvert e \rvert^{-1} \int_e u\, ds = 0.
 										  \end{equation*}
@@ -194,11 +212,16 @@ For the Darcy-Stokes MFEM solver:
 
 For FVM solver:
 \begin{itemize}
-		  \item Bottom boundary;
+		  \item Bottom Edge $y = -H$:
+		  A Dirichlet boundary condition is prescribed as inflow;
+        \item Top Edge $y=0$:
+		  A free outflow boundary condition is prescribed;
+        \item Left and Right Edges $x = \pm L$:
+        A no flow boundary condition is prescribed.
 \end{itemize}
 
-For simplicity and efficiency in computation, we use $1\times 3$ and $1\times 2$ for our
-ML-WENO(3,2) stencils, since we don't need resolution and high order accuracy in x direction.
+For simplicity and efficiency in computation, we use one-dimensional
+ML-WENO(3,2) stencils as depicted in~\ref{fig:1dsten}, since we don't need resolution and high order accuracy in x direction.
 We show two different melting source scenarios. One of which is a piece wise constant
 stair function:
 \begin{equation}

@@ -183,7 +183,9 @@ double melting(const MeshInfo& mi,
     }
 */
 
-    if (mapped[1] >= -0.25){
+    double cut = -1.5;
+
+    if (mapped[1] >= cut){
         return 0.00025;
     }else {
         return 0.0;
