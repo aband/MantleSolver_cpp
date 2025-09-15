@@ -746,17 +746,25 @@ int Driver::SSP2RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
         DMDAVecRestoreArray(dmu, localphi2, &lphi2);
         DMRestoreLocalVector(dmu, &localphi2);
  
-
         VecScale(globalCD, 0.5);
 
         VecAXPY(globalCD, 0.5, temp); 
 
         VecAXPY(globalCD, -0.5*dt, fluxphi2);
 
-        printCellAve(mark, &globalCD, mi, "porosity");
-        PrintFlowEvent(mark);
-        mark ++;
+        if (t%5 == 0){
 
+            Vec darcyp, stokesp;
+            PetscCall(VecNestGetSubVec(Result_->y, 0, &stokesp)); 
+            PetscCall(VecNestGetSubVec(Result_->y, 1, &darcyp)); 
+
+            printCellAve(mark, &globalCD, mi, "porosity");
+            PrintFlowEvent(mark);
+		      printCellAve(mark, &darcyp, mi, "darcypressure");
+            printCellAve(mark, &stokesp, mi, "stokespressure");
+
+        mark ++;
+	     }
     }
 
     return 1;

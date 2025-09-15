@@ -1,3 +1,8 @@
+\definecolor{myBlue}{RGB}{190,203,211}
+\definecolor{myRed}{RGB}{244,186,175}
+\definecolor{myGreen}{RGB}{114,138,122}
+\definecolor{myYellow}{RGB}{241,208,157}
+
 \chapter{Coupled Simulation}
 Now we couple locally mass conserved MFEM and FVM method together in this chapter and perform coupled numerical simulation for partially molten mantle.
 We discuss implementation details and coupling strategy combining MFEM, FVM and eutectic phase
@@ -83,6 +88,12 @@ for the continuous compaction equation in Darcy equation~\eqref{eq:weak_continuo
 When the porosity on one side equal zero, the geometric average of the porosity equals zero as well, which
 highlights the fact that there is no liquid flow should travel through this edge.
 
+\subsection{Compaction Length}
+The concept of compaction length was first proposed by~\cite{MagmaPhysics}.
+The phenomenon of compaction is due to the pressure difference between phases,
+which is commonly parametrized by bulk viscosity $\zeta \sim \frac{\eta}{\phi}$.
+
+
 \subsection{Some Simplifications}
 We solve a simplified equation for the following sections.
 
@@ -104,19 +115,24 @@ We fix the parameter $\Theta = 0$ as well.
 
 \subsection{One-Dimensional Stencils}
 
+In the following pseudo-1D problems, we emloy a set of one-dimensional ML-WENO(3,2) stencils as shown 
+in Figure~\ref{fig:1dsten}.
 \begin{figure}[htb]
 \centering
 \input chapters/tikz/1dstencils.tex
-\caption{An exhibition of a set of 1D WENO stencils.}
+		  \caption{An exhibition of a set of 1D ML-WENO (3,2) stencils on a rectagular
+		  mesh.}
 \label{fig:1dsten}
 \end{figure}
 
 \subsection{Prescribed Melting Case}
-Before fully coupled computation, 
-we illustrate a simpler model coupling case coupling MFEM and FVM
-solver. Instead of deciding porosity with phase package computation,
+Before coupling mechanical, transport and phase package altogeter into 
+one full computation, 
+we illustrate a simpler model coupling MFEM and FVM
+solver without involving phase package. 
+Instead of using phase package computation to decide porosity distribution,
 we prescribe the melting rate or the change of porosity as a 
-fixed function distributed in space as
+fixed source function distributed in space as
 \begin{equation}\label{eq:gamma}
 \phi(t) = \Gamma(\mathbf{x}).
 \end{equation}
@@ -125,7 +141,7 @@ melting term $\Gamma$~\eqref{eq:gamma} as
 \begin{equation}
 		  \frac{\partial \phi}{\partial t} + \nabla \cdot (\phi \mathbf{v}_l) = \Gamma,
 \end{equation}
-where diffusion effect is being dropped for simplicity in this case.
+where the diffusion term is being dropped for simplicity in this case.
 
 %We perform a quasi-1D column test on a $2\times40$ rectangular physical domain $\Omega \in [-0.05,0.05] \times [-0.4,0]$.
 We prescribe the following boundary conditions for MFEM and FVM solver respectively.
@@ -221,7 +237,8 @@ For FVM solver:
 \end{itemize}
 
 For simplicity and efficiency in computation, we use one-dimensional
-ML-WENO(3,2) stencils as depicted in~\ref{fig:1dsten}, since we don't need resolution and high order accuracy in x direction.
+ML-WENO(3,2) stencils as depicted in Figure~\ref{fig:1dsten}, since we don't need 
+excessive resolution and high order accuracy in x direction.
 We show two different melting source scenarios. One of which is a piece wise constant
 stair function:
 \begin{equation}

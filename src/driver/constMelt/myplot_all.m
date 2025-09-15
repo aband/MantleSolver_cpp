@@ -30,9 +30,38 @@ for k=1:loops
 filename = strcat(folder, '/porosity');
 filename = strcat(filename, string(k));
 filename = strcat(filename, '.dat');
-fileID = fscanf(fileID);
-porosity = fopen(fileID, '%f', [1,Inf]);
+fileID = fopen(filename, 'r');
+porosity = fscanf(fileID, '%f ', [1, Inf]);
+porosity = reshape(porosity, M, N);
 
+subplot(1,3,1)
+plot(porosity(2,:), pY(2,:));
+title('porosity')
+ylabel('Depth');
+
+filename = strcat(folder, '/darcypressure');
+filename = strcat(filename, string(k));
+filename = strcat(filename, '.dat');
+fileID = fopen(filename, 'r');
+darcypressure = fscanf(fileID, '%f ', [1, Inf]);
+darcypressure = reshape(darcypressure, M, N);
+
+subplot(1,3,2)
+plot(darcypressure(2,:), pY(2,:));
+title('darcypressure')
+ylabel('Depth');
+
+filename = strcat(folder, '/stokespressure');
+filename = strcat(filename, string(k));
+filename = strcat(filename, '.dat');
+fileID = fopen(filename, 'r');
+stokespressure = fscanf(fileID, '%f ', [1, Inf]);
+stokespressure = reshape(stokespressure, M, N);
+
+subplot(1,3,3)
+plot(stokespressure(2,:), pY(2,:));
+title('stokespressure')
+ylabel('Depth');
 
 pause
 G = getframe(gcf);

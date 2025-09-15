@@ -90,7 +90,7 @@ double edgefluxintegral(const vertexSet& edge,
 
         double LF = abs(vel.at(g)[0]*unitNormal[0] + vel.at(g)[1]*unitNormal[1]);
         LF = find_max(abs(dfduin.at(g)), abs(dfduout.at(g))) * LF;
-cout << LF << endl;
+//cout << LF << endl;
         work += gwe[g] * LFflux(uin.at(g),  uout.at(g), 
                                 advfunc(valin.at(g) , vel.at(g), unitNormal),
                                 advfunc(valout.at(g), vel.at(g), unitNormal), 

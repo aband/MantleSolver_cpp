@@ -375,6 +375,7 @@ int Driver::CreateScatterVec(){
 
     return 1;
 }
+
 /*
 int Driver::check(){
 

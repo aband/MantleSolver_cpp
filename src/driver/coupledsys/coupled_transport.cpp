@@ -447,7 +447,7 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
             //                          effvel, ml, advection, lCD);
 //printf("%.16f, \n", fluxCD);
             // Nonlinear transport method
-cout << "N cells : " <<  j << endl;
+//cout << "N cells : " <<  j << endl;
             fluxCD = edgefluxintegral(hori, nonlinuin, nonlinuout, nonlinfin, nonlinfout, nonlindfduin, nonlindfduout, nonlinvel);
             // =========================================================
             fluxHD = edgefluxintegral(hori, HDin, HDout, TDin, TDout, 
