@@ -30,7 +30,6 @@ filename = strcat(folder1, filename);
 fstruct1 = dir(filename);
 fcell1 = struct2cell(fstruct1);
 
-
 filename = strcat(folder2, '/*temperature*.dat');
 filename = strcat('/', folder2);
 filename = strcat(folder1, filename);

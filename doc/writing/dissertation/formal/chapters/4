@@ -4,7 +4,6 @@
 \definecolor{myYellow}{RGB}{241,208,157}
 
 \chapter{Coupled Simulation}
-\iffalse
 Now we couple locally mass conserved MFEM and FVM method together in this chapter and perform coupled numerical simulation for partially molten mantle.
 We discuss implementation details and coupling strategy combining MFEM, FVM and eutectic phase
 package.
@@ -14,26 +13,13 @@ We test another porosity evolution scenario with a more straightforward prescrib
 Then we will show an example combining MFEM, FVM and eutectic phase package
 altogether and perform coupled computation. We start with pseudo 1D scenarios and 
 then proceed to perform full 2D simulation.
-\fi
-
-In this chapter, we couple the locally mass-conserving MFEM and FVM methods
-to perform numerical simulations of a partially molten mantle. We describe
-the implementation details and coupling strategy that integrate the MFEM,
-FVM, and the eutectic phase package, with the remaining uncertainty in 
-porosity $\phi$ addressed through phase package evaluation.
-Before tackling the fully coupled problem, we first examine an alternative
-porosity evolution scenario based on a prescribed melting rate. We then 
-present an example that combines the MFEM, FVM, and eutectic phase package
-into a fully coupled computation. The discussion begins with pseudo-1D
-scenarios and subsequently extends to full 2D simulations.
 
 \section{Coupled Algorithm}
 Let $\mathcal{U}^n=(C^n, H^n)$ be the cell-averaged solution to the transport system~\eqref{dimensionlesstransport} at time $t^n$. 
 Let $\mathcal{V}^n=(\check{\mathbf{v}}_{r}^n,\check{\mathbf{v}}_{s}^n,\check{q}_{l}^n,\check{q}_s^n)$ 
 denote the solution to the Darcy-Stokes system at the same time step $t^n$. Moreover, let 
 $\mathcal{W}^n=(\phi^n, \phi_1^n, \check{T}^n, c_{s}^n, c_{l}^n)$ 
-denote the output of the phase calculation at $t^n$ given the transport result 
-$\mathcal{U}^n$. 
+denote the output of the phase calculation at $t^n$ given the transport result $U^n$. 
 
 For each time step $t^n$, we reconstruct dimensionless mass composition
 and enthalpy from the cell-averaged solution $\mathcal{U}^n$ with ML-WENO reconstruction at each data points. 
@@ -240,37 +226,26 @@ For FVM solver:
 \begin{figure}[htb]
 \centering
 \input chapters/tikz/1dstencils.tex
-		  \caption{An exhibition of a set of 1D ML-WENO (3,2) stencils on a 
-		  rectagular mesh.}
+		  \caption{An exhibition of a set of 1D ML-WENO (3,2) stencils on a rectagular
+		  mesh.}
 \label{fig:1dsten}
 \end{figure}
 
 For simplicity and efficiency in computation, we use one-dimensional
 ML-WENO(3,2) stencils as depicted in Figure~\ref{fig:1dsten}, since we don't need 
-excessive resolution and high order accuracy in x direction. We use second order 
-SSP Runge-Kutta time integral scheme.
-We show two different scenarios equipped with different melting source 
-and initial conditions:
+excessive resolution and high order accuracy in x direction.
+We show two different melting source scenarios:
 
 Case 1: A piece-wise constant source function.
 \begin{equation}
 \Gamma_1(z) = \left \{ 
-		  \begin{alignedat}{2}
-					 &2.5e-3, \quad &&-1.5 < z\leq 0,\\
-					 &0, \quad   &&-2.0 \leq z\leq -1.5.
-\end{alignedat}
+\begin{aligned}
+&2.5e-3, \hspace{0.2cm} -1.5 < z\leq 0,\\
+&0, \hspace{1.13cm}   -2.0 \leq z\leq -1.5.
+\end{aligned}
 		  \right.
 		  \label{eq:stair_source}
 \end{equation}
-We assign a zero initial condition here as
-\begin{equation}
-\phi_1(z,0) =  0.0 , \quad z \in [-2.0, 0.0],
-\end{equation}
-
-Figure~\ref{fig:constmelt_stairmelting} shows the evolution of porosity, 
-stokes and darcy velocities, stokes and darcy pressure and effective pressure,
-which is defined as $p_{\text{eff}} = p_s - p_l$. The third plot at time 
-1325 shows the steady state reached after some time.
 
 \begin{figure}[htb]
 \centering
@@ -284,24 +259,27 @@ where the system reaches steady state at the time = 1325.}
 								\label{fig:constmelt_stairmelting}
 \end{figure}
 
-Case 2: We examine a slightly more compicated case where a melting source 
-trapped under the bottom of the upwelling column as
+Case 2: Melting source trapped in the middle of the melting column as
 \begin{equation}
 \Gamma_2(z) = \left \{ 
-		  \begin{alignedat}{2}
-					 &0, \hspace{1.13cm} &&-1.5 < z\leq 0,\\
-					 &1.5e-3,\hspace{0.2cm} &&-1.8 < z\leq -1.5,\\
-					 &0, \hspace{1.13cm}   &&-2.0 \leq z\leq -1.8,
-\end{alignedat}
+\begin{aligned}
+&0, \hspace{1.13cm} -0.2 < z\leq 0,\\
+&5e-4,\hspace{0.2cm} -0.3 < z\leq -0.2,\\
+&0, \hspace{1.13cm}   -0.4 \leq z\leq -0.3,
+\end{aligned}
 		  \right.
 \end{equation}
-where we assign a initial condition with a porosity channel as
+We assign different initial conditions to these two scenarios as
+\begin{equation}
+\phi_1(z,0) =  0.0 , \quad z \in [-0.4,0.0],
+\end{equation}
+and
 \begin{equation}
 \phi_2(z,0) = \left \{ 
-		  \begin{alignedat}{2}
-					 &5e-2, \quad &&-1.5 < z\leq 0,\\
-					 &0, \quad   &&-2.0 \leq z\leq -1.5.
-\end{alignedat}
+\begin{aligned}
+&1e-2, \hspace{0.2cm} -0.2 < z\leq 0,\\
+&0, \hspace{1.13cm}   -0.4 \leq z\leq -0.2.
+\end{aligned}
 		  \right.
 \end{equation}
 

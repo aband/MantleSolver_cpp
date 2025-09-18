@@ -11,7 +11,7 @@ pY = fscanf(fileID, '%f', [1, Inf]);
 pX = reshape(pX, M, N);
 pY = reshape(pY, M, N);
 
-v = VideoWriter('video.avi','Motion JPEG AVI');
+v = VideoWriter('videoall.avi','Motion JPEG AVI');
 open(v);
 
 fullname = strcat(folder, '/porosity');
@@ -25,6 +25,8 @@ h = figure;
 
 set(gcf, 'Position',[50 50 1800 700]);
 
+cut = 80 - 80*1.8/2 + 1;
+
 for k=1:loops
 
 filename = strcat(folder, '/porosity');
@@ -34,34 +36,83 @@ fileID = fopen(filename, 'r');
 porosity = fscanf(fileID, '%f ', [1, Inf]);
 porosity = reshape(porosity, M, N);
 
-subplot(1,3,1)
-plot(porosity(2,:), pY(2,:));
+subplot(1,4,1)
+plot(porosity(2,:), pY(2,:), 'LineWidth',3);
+xlim([0,0.1])
 title('porosity')
 ylabel('Depth');
 
-filename = strcat(folder, '/darcypressure');
+filename = strcat(folder, '/qf');
 filename = strcat(filename, string(k));
 filename = strcat(filename, '.dat');
 fileID = fopen(filename, 'r');
 darcypressure = fscanf(fileID, '%f ', [1, Inf]);
 darcypressure = reshape(darcypressure, M, N);
 
-subplot(1,3,2)
-plot(darcypressure(2,:), pY(2,:));
-title('darcypressure')
-ylabel('Depth');
-
-filename = strcat(folder, '/stokespressure');
+filename = strcat(folder, '/qs');
 filename = strcat(filename, string(k));
 filename = strcat(filename, '.dat');
 fileID = fopen(filename, 'r');
 stokespressure = fscanf(fileID, '%f ', [1, Inf]);
 stokespressure = reshape(stokespressure, M, N);
 
-subplot(1,3,3)
-plot(stokespressure(2,:), pY(2,:));
-title('stokespressure')
+subplot(1,4,3)
+plot(-darcypressure(2,:), pY(2,:), 'LineWidth',3);
+hold on
+plot(stokespressure(2,:), pY(2,:),'--','LineWidth',3);
+hold off
+title('Pressure')
 ylabel('Depth');
+legend('Darcy Pressure','Stokes Pressure');
+
+subplot(1,4,4)
+plot(stokespressure(2,cut:end)+darcypressure(2,cut:end), pY(2,cut:end), 'LineWidth', 3);
+title('Effective Pressure')
+ylabel('Depth')
+
+filename = strcat(folder, '/stokesVx',string(k));
+filename = strcat(filename, '.dat');
+fileID = fopen(filename, 'r');
+stokesx = fscanf(fileID, '%f', [1, Inf]);
+
+filename = strcat(folder, '/stokesVy',string(k));
+filename = strcat(filename, '.dat');
+fileID = fopen(filename, 'r');
+stokesy = fscanf(fileID, '%f', [1, Inf]);
+
+stokesx = reshape(stokesx, M, N);
+stokesy = reshape(stokesy, M, N);
+
+filename = strcat(folder, '/darcyVx',string(k));
+filename = strcat(filename, '.dat');
+fileID = fopen(filename, 'r');
+darcyx = fscanf(fileID, '%f', [1, Inf]);
+
+filename = strcat(folder, '/darcyVy',string(k));
+filename = strcat(filename, '.dat');
+fileID = fopen(filename, 'r');
+darcyy = fscanf(fileID, '%f', [1, Inf]);
+
+darcyx = reshape(darcyx, M, N);
+darcyy = reshape(darcyy, M, N);
+
+unscaleddarcyy = darcyy.*porosity;
+
+subplot(1,4,2)
+plot(stokesy(2,:), pY(2,:),'LineWidth',3);
+hold on
+plot(unscaleddarcyy(2,:), pY(2,:),'--','LineWidth',3);
+hold off
+title('Velocity')
+xlim([-5e-3, 5e-3])
+ylabel('Depth')
+legend('Stokes Vel','Darcy Vel','Location','southeast')
+
+time = k*5*5
+
+mytitle = strcat('Time =  ', string(time));
+
+sgtitle(mytitle);
 
 pause
 G = getframe(gcf);

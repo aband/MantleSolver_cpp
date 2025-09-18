@@ -236,6 +236,8 @@ class Driver {
 
        int printSimplePressure_case(int mark, PhysProperty * pp);
 
+       int printCorrectedPressure(int mark, PhysProperty * pp, Vec * globalCD);
+
        int printShiftedPressure_case(int mark, PhysProperty * pp);
 
        double errorNorm(int mark, PhysProperty * pp, int norm);

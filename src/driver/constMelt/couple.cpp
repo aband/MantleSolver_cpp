@@ -183,6 +183,8 @@ double melting(const MeshInfo& mi,
     }
 */
 
+/*
+    // stair piece-wise constant melting source case 
     double cut = -1.5;
 
     if (mapped[1] >= cut){
@@ -190,7 +192,7 @@ double melting(const MeshInfo& mi,
     }else {
         return 0.0;
     }
-
+*/
 
 /*
     if (mapped[1] >= -0.2){
@@ -201,6 +203,13 @@ double melting(const MeshInfo& mi,
         return 0.0;
     }
 */
+
+    // Trapped case
+    if (mapped[1]<-1.5 && mapped[1]>-1.8){
+        return 0.0001;
+	 } else {
+        return 0.0;
+    }
 
     return rate;
 }
@@ -762,6 +771,8 @@ int Driver::SSP2RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
             PrintFlowEvent(mark);
 		      printCellAve(mark, &darcyp, mi, "darcypressure");
             printCellAve(mark, &stokesp, mi, "stokespressure");
+
+            printCorrectedPressure(mark, myPhase->pp, &globalCD);
 
         mark ++;
 	     }

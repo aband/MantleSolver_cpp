@@ -620,4 +620,95 @@ int reconPlot(const MeshInfo& mi, multilevel& ml, mluse& use, int mark, Vec * gl
     return 1;
 }
 
+double averagePhi(PhysProperty * pp, int i, int j, const MeshInfo& mi){
 
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>&   gpf = GaussPointsFace;
+
+    double work = 0.0;
+    double area = 0.0;
+
+    for (unsigned int g=0; g<gwf.size(); g++){
+        vector<vertex> corners = extractCorners(mi, {i,j});
+        vertex mapped = GaussMapPointsFace(gpf[g],corners);
+
+        // Get HD and CD from reconstruction at this gaussian point
+        double phif = 0.0;
+
+        phif = AssignPorosity(mapped, pp); 
+//cout << phif << endl;
+        // ======================================================
+
+        double jac = abs(GaussJacobian(gpf[g],corners));
+        double gw = gwf[g];
+        work += gw * jac * phif;
+        area += gw * jac; 
+    }
+
+    work /= area;
+
+    return work;
+}
+
+
+
+int Driver::printCorrectedPressure(int mark, PhysProperty * pp, Vec * global){
+
+    Vec vectildeqf;
+    Vec vecq;
+
+    Vec temp = *global;
+
+    PetscCall(VecNestGetSubVec(Result_->y, 0, &vecq));   
+    PetscCall(VecNestGetSubVec(Result_->y, 1, &vectildeqf));
+
+    FILE * fqs = fopen(GetFilename("qs", mark), "w");
+    FILE * fqf = fopen(GetFilename("qf", mark), "w");
+
+    FILE * fstokes = fopen(GetFilename("rawstokesq", mark), "w"); 
+    FILE * fdarcy  = fopen(GetFilename("rawdarcyq", mark), "w");
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+
+        indice globalcell {i,j};
+        int nelem = FlatIndic(mi, globalcell);
+        double q, tildeqf;
+
+        PetscCall(VecGetValues(vectildeqf, 1, &nelem, &tildeqf));
+        PetscCall(VecGetValues(vecq, 1, &nelem, &q));
+
+        // Get Porosity
+        vertex local {0.0,0.0};
+
+        basis_->GetCorners(mi, globalcell);
+
+        vertex global = GaussMapPointsFace(local, basis_->corners());
+
+        double phif = 0.0;
+
+        //double phif = AssignPorosity(global, pp);
+		  //double avephi = averagePhi(pp, i, j, mi);
+	     PetscCall(VecGetValues(temp, 1, &nelem, &phif));	
+		 
+		  double coef = 0.0;
+        // Adjust phif
+        if (phif > 1e-16) {
+            coef = 1.0/sqrt(phif);
+        }
+
+        // Reterive original physical variables with physical units
+        double qf = tildeqf *coef;
+        double qs = -qf - 1.0/(1-phif)*(-qf-q);
+
+        fprintf(fqs, "%.16f ", qs);
+        fprintf(fqf, "%.16f ", qf);
+        fprintf(fstokes, "%.16f ", q);
+        fprintf(fdarcy, "%.16f ", tildeqf);
+    }fprintf(fqs, "\n");
+     fprintf(fqf, "\n");
+     fprintf(fstokes, "\n");
+     fprintf(fdarcy, "\n");}
+
+    return 1;
+}
