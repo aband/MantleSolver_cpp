@@ -28,21 +28,21 @@ into a fully coupled computation. The discussion begins with pseudo-1D
 scenarios and subsequently extends to full 2D simulations.
 
 \section{Coupled Algorithm}
-Let $\mathcal{U}^n=(C^n, H^n)$ be the cell-averaged solution to the transport system~\eqref{dimensionlesstransport} at time $t^n$. 
-Let $\mathcal{V}^n=(\check{\mathbf{v}}_{r}^n,\check{\mathbf{v}}_{s}^n,\check{q}_{l}^n,\check{q}_s^n)$ 
-denote the solution to the Darcy-Stokes system at the same time step $t^n$. Moreover, let 
+Let $\mathcal{U}^n=(C^n, H^n)$ denote the cell-averaged solution to the transport system~\eqref{dimensionlesstransport} at time $t^n$. 
+Similarly, Let $\mathcal{V}^n=(\check{\mathbf{v}}_{r}^n,\check{\mathbf{v}}_{s}^n,\check{q}_{l}^n,\check{q}_s^n)$ 
+represent the solution to the Darcy-Stokes system at the same time step $t^n$. Finally, let 
 $\mathcal{W}^n=(\phi^n, \phi_1^n, \check{T}^n, c_{s}^n, c_{l}^n)$ 
-denote the output of the phase calculation at $t^n$ given the transport result 
+denote the output of the phase calculation at $t^n$ obtained from the transport result 
 $\mathcal{U}^n$. 
 
-For each time step $t^n$, we reconstruct dimensionless mass composition
-and enthalpy from the cell-averaged solution $\mathcal{U}^n$ with ML-WENO reconstruction at each data points. 
-The eutectic phase package gives corresponding phase parameters $\mathcal{W}^n$ according
-to these point wise values. Once we know $\mathcal{W}^n$, we solve a fixed in time Darcy-Stokes
-system at this time step $t^n$ for $\mathcal{V}^n$. The 
-cell-averaged solution $\mathcal{U}^{n+1}$ of the next time 
-step $t^{n+1}$ is then obtained by forward marching the system explicitly.
-We formally formulate an overall explicit coupled solver as shown in algorithm~\ref{alg:coupled}.
+For each time step $t^n$, we first reconstruct dimensionless mass composition
+and enthalpy from the cell-averaged solution $\mathcal{U}^n$ using ML-WENO reconstruction at each data points. 
+The eutectic phase package then provides the corresponding phase parameters $\mathcal{W}^n$ 
+based on these pointwise values. With $\mathcal{W}^n$ determined, we solve the Darcy-Stokes
+system at the fixed time $t^n$ to obtain $\mathcal{V}^n$. Finally, the
+cell-averaged solution $\mathcal{U}^{n+1}$ at the next time 
+step $t^{n+1}$ is then obtained by forward marching of the transport system.
+The complete procedure is summarized as an coupled solver in algorithm~\ref{alg:coupled}.
 
 \begin{algorithm}[htb]
 \caption{Sequential Coupled Solver\label{alg:coupled}}
@@ -245,11 +245,11 @@ For FVM solver:
 \label{fig:1dsten}
 \end{figure}
 
-For simplicity and efficiency in computation, we use one-dimensional
+For simplicity and efficiency in implementation and implementation and computation, we use one-dimensional
 ML-WENO(3,2) stencils as depicted in Figure~\ref{fig:1dsten}, since we don't need 
-excessive resolution and high order accuracy in x direction. We use second order 
-SSP Runge-Kutta time integral scheme.
-We show two different scenarios equipped with different melting source 
+excessive resolution and order of accuracy higher than one in x direction. We use second order 
+SSP Runge-Kutta time integration scheme.
+We show two different scenarios equipped with different melting functions
 and initial conditions:
 
 Case 1: A piece-wise constant source function.
@@ -267,10 +267,10 @@ We assign a zero initial condition here as
 \phi_1(z,0) =  0.0 , \quad z \in [-2.0, 0.0],
 \end{equation}
 
-Figure~\ref{fig:constmelt_stairmelting} shows the evolution of porosity, 
-stokes and darcy velocities, stokes and darcy pressure and effective pressure,
-which is defined as $p_{\text{eff}} = p_s - p_l$. The third plot at time 
-1325 shows the steady state reached after some time.
+Figure~\ref{fig:constmelt_stairmelting} illustrates the evolution of porosity, 
+Stokes and Darcy velocities, Stokes and Darcy pressure, as well as the effective pressure,
+defined as $p_{\text{eff}} = p_s - p_l$. The third figure, corresponding to time 
+1325, demonstrates that the system has reached a steady state after a period of evolution.
 
 \begin{figure}[htb]
 \centering
@@ -284,8 +284,8 @@ where the system reaches steady state at the time = 1325.}
 								\label{fig:constmelt_stairmelting}
 \end{figure}
 
-Case 2: We examine a slightly more compicated case where a melting source 
-trapped under the bottom of the upwelling column as
+Case 2: We examine a slightly more complicated case where a melting source 
+trapped under the bottom of the upwelling mantle column as
 \begin{equation}
 \Gamma_2(z) = \left \{ 
 		  \begin{alignedat}{2}
@@ -295,7 +295,7 @@ trapped under the bottom of the upwelling column as
 \end{alignedat}
 		  \right.
 \end{equation}
-where we assign a initial condition with a porosity channel as
+where we assign an initial condition with a porosity channel as
 \begin{equation}
 \phi_2(z,0) = \left \{ 
 		  \begin{alignedat}{2}
