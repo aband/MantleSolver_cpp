@@ -761,7 +761,7 @@ int Driver::SSP2RK_case(double dt, double Tmax, int maxIter, double tolUzawa){
 
         VecAXPY(globalCD, -0.5*dt, fluxphi2);
 
-        if (t%5 == 0){
+        if (t%10 == 0){
 
             Vec darcyp, stokesp;
             PetscCall(VecNestGetSubVec(Result_->y, 0, &stokesp)); 

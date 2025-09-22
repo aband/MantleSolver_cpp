@@ -650,8 +650,6 @@ double averagePhi(PhysProperty * pp, int i, int j, const MeshInfo& mi){
     return work;
 }
 
-
-
 int Driver::printCorrectedPressure(int mark, PhysProperty * pp, Vec * global){
 
     Vec vectildeqf;
@@ -693,7 +691,7 @@ int Driver::printCorrectedPressure(int mark, PhysProperty * pp, Vec * global){
 		 
 		  double coef = 0.0;
         // Adjust phif
-        if (phif > 1e-16) {
+        if (phif > 1e-14) {
             coef = 1.0/sqrt(phif);
         }
 
