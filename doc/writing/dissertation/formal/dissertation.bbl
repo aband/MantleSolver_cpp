@@ -5,9 +5,10 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Mckenzie(1984)]{MagmaPhysics}
-Dan Mckenzie.
-\newblock The generation and compaction of partially molten rock.
-\newblock \emph{Journal of Petrology}, 25:\penalty0 713--765, 1984.
+\bibitem[Katz(2022)]{DynamicsPartiallyMoltenRock}
+Richard~F. Katz.
+\newblock \emph{The Dynamics of Partially Molten Rock}.
+\newblock Princeton University Press, 1st edition, 2022.
+\newblock ISBN 9780691232645.
 
 \end{thebibliography}

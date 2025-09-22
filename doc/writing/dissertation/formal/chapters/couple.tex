@@ -35,10 +35,10 @@ $\mathcal{W}^n=(\phi^n, \phi_1^n, \check{T}^n, c_{s}^n, c_{l}^n)$
 denote the output of the phase calculation at $t^n$ obtained from the transport result 
 $\mathcal{U}^n$. 
 
-For each time step $t^n$, we first reconstruct dimensionless mass composition
+For each time step $t^n$, we begin by reconstructing the dimensionless mass composition
 and enthalpy from the cell-averaged solution $\mathcal{U}^n$ using ML-WENO reconstruction at each data points. 
 The eutectic phase package then provides the corresponding phase parameters $\mathcal{W}^n$ 
-based on these pointwise values. With $\mathcal{W}^n$ determined, we solve the Darcy-Stokes
+based on these point wise values. With $\mathcal{W}^n$ determined, we solve the Darcy-Stokes
 system at the fixed time $t^n$ to obtain $\mathcal{V}^n$. Finally, the
 cell-averaged solution $\mathcal{U}^{n+1}$ at the next time 
 step $t^{n+1}$ is then obtained by forward marching of the transport system.
@@ -81,12 +81,14 @@ The complete procedure is summarized as an coupled solver in algorithm~\ref{alg:
 \end{algorithm}
 
 \subsection{Discontinuous Porosity}
-Due to the presence of no melt regions and different phase regions, 
-we may obtain different reconstructed values of dimensionless enthalpy and 
-mass concentration from two 
-sides of an edge shared by two elements and thus two different calculated porosities. 
-However, it is crucial to have one compatible and appropriate porosity value used 
-on the element edge in the conforming MFEM scheme. 
+Due to the presence of no melt regions and distinct phase regions, 
+the reconstructed values of the dimensionless enthalpy and mass concentration may 
+differ on the two sides of an edge shared by adjacent elements.
+This, in turn, can lead to two different porosity values being computed for the same edge.
+%However, it is crucial to have one compatible and appropriate porosity value used 
+%on the element edge in the conforming MFEM scheme. 
+However, in a conforming MFEM scheme, it is essential to assign a single consistent 
+and physically appropriate porosity value on each element edge.
 
 Therefore, we evaluate the geometric average of the two values of porosity 
 $\phi_e^+$ and $\phi_e^-$ at each quadrature points on both sides 
@@ -96,11 +98,15 @@ of an element edge $e$ as
 \end{equation}
 where $\phi_e^{+}$ and $\phi_e^{-}$ are porosity evaluated from two 
 sides of the element edge $e$.
-The geometric averaged porosity $\overline{\phi}_e$ is required 
-for the continuous compaction equation in Darcy equation~\eqref{eq:weak_continuous} 
-, where face integral is replaced with edge integral through divergence theorem.
-When the porosity on one side equal zero, the geometric average of the porosity equals zero as well, which
-highlights the fact that there is no liquid flow should travel through this edge.
+The geometric averaged porosity $\overline{\phi}_e$ is then used in
+the continuous compaction equation~\eqref{eq:weak_continuous} 
+, where the face integral is converted to an edge integral via the divergence theorem.
+
+%When the porosity on one side equal zero, the geometric average of the porosity equals zero as well, which
+%highlights the fact that there is no liquid flow should travel through this edge.
+Importantly, when the porosity on one side of the edge vanishes, 
+the geometric average also becomes zero. This property enforces the physical condition 
+that no liquid flow can pass through an edge adjacent to a no-melt region.
 
 \iffalse
 \subsection{Details of Compaction Length}
@@ -121,33 +127,45 @@ We solve a simplified equation for the following sections.
 \fi
 
 \section{Pseudo One-Dimensional Column Tests}
-In this section, we first test our coupled algorithm on a 2D $M\times N$ grid with a pseudo-1D column problem.
-We test two different scenarios, one couples MFEM and FVM solver without phase computation but with a simple 
-prescribed melting function $\Gamma(\mathbf{x})$ instead. The other one exhibits a fully coupled scenario where phase transition
-and porosity evolution present.
-For the two tests presented below, we fix mesh resolution as $M=2$ and $N=100$.
-We fix the parameter $\Theta = 0$ as well. 
+In this section, we test the coupled algorithm on a two-dimensional $M\times N$ grid with a pseudo one-dimensional 
+compaction column problem.
+We study a compacting column aligned along the y-direction, defined over the domain $y\in[-H,0]$ and
+$x\in [-L,L]$.
+Two scenarios are investigated:
+\begin{itemize}
+\item Prescribed melting case: The MFEM and FVM solvers are coupled without phase computation.
+Instead, a simple 
+prescribed melting function $\Gamma(\mathbf{x})$ is used; 
+\item Phase calculation case: Phase transition and porosity evolution are computed simultaneously, 
+providing a complete coupling between the MFEM, FVM, and eutectic phase package. 
+\end{itemize}
 
-\subsection{Prescribed Melting Case}
-Before coupling mechanical, transport and phase package altogeter into 
-one full computation, 
-we illustrate a simpler model coupling MFEM and FVM
-solver without involving phase package. 
-Instead of using phase package computation to decide porosity distribution,
-we prescribe the melting rate or the change of porosity as a 
-fixed source function distributed in space as
+For the two tests presented below, we take domain dimensions $H=2$ and  $L = 0.1$.
+We fix mesh resolution in x-direction as $M=2$ and pick different resolutions in y-direction.
+We fix the parameter $\Theta = 0$ as well. 
+The code is implemented in PETSc/C++, with implementation details attached as appendix.
+
+\subsection{Prescribed Melting Cases}
+Before coupling mechanical, transport and phase package altogether into 
+one integrated computation, 
+we first illustrate a simpler model that couples MFEM and FVM
+solvers without involving the phase package.
+In this reduced setting, the porosity distribution is not determined by phase-splitting calculations. 
+Instead, we prescribe the melting rate or equivalently, the porosity evolution through a fixed source function distributed in space as
 \begin{equation}\label{eq:gamma}
 \phi(t) = \Gamma(\mathbf{x}).
 \end{equation}
-We write conservation of liquid mass with the prescribed 
-melting term $\Gamma$~\eqref{eq:gamma} as
+We express conservation of liquid mass by introducing the prescribed 
+melting term $\Gamma(\mathbf{x})$ as a source term on the right-hand
+side of the advection equation as
 \begin{equation}
 		  \frac{\partial \phi}{\partial t} + \nabla \cdot (\phi \mathbf{v}_l) = \Gamma,
 \end{equation}
 where the diffusion term is being dropped for simplicity in this case.
 
 %We perform a quasi-1D column test on a $2\times40$ rectangular physical domain $\Omega \in [-0.05,0.05] \times [-0.4,0]$.
-We prescribe the following boundary conditions for MFEM and FVM solver respectively.
+We prescribe the following boundary conditions for the MFEM and the FVM solvers respectively to replicate the behavior of the one-dimensional
+problem within the two-dimensional grid.
 \iffalse
 \begin{itemize}
 		  \item Bottom side;
@@ -179,11 +197,13 @@ indicating no melting penetrating bottom of the computational domain;
 					 \end{itemize}
 \end{itemize}
 \fi
-For the Darcy-Stokes MFEM solver:
+
+\noindent For the Darcy-Stokes MFEM solver:
 \begin{itemize}
 		  \item Bottom Edge $y=-H$;
 					 \begin{itemize}
-								\item Normal Stokes velocity and supplemental edge averaged flux are prescribed with essential boundary conditions:
+								\item Normal Stokes velocity and supplemental edge averaged flux are prescribed 
+								with essential boundary conditions with a constant upwelling velocity $v$:
 						  \begin{equation*}
 									 \check{\mathbf{v}}_s \cdot \pmb{\nu} = v,\, \lvert e \rvert^{-1}\int_e \mathbf{b}\cdot \pmb{\nu}\, ds = \lvert e \rvert^{-1}\int_e v \, ds.
 						  \end{equation*}
@@ -229,14 +249,22 @@ For the Darcy-Stokes MFEM solver:
 
 \end{itemize}
 
-For FVM solver:
+\noindent For the transport FVM solver:
 \begin{itemize}
-		  \item Bottom Edge $y = -H$:
-		  A Dirichlet boundary condition is prescribed as inflow;
-        \item Top Edge $y=0$:
-		  A free outflow boundary condition is prescribed;
-        \item Left and Right Edges $x = \pm L$:
-        A no flow boundary condition is prescribed.
+		  \item Bottom Edge $y = -H$;
+		  \begin{itemize}
+		  \item A corresponding Dirichlet boundary condition is prescribed on the inflow boundary 
+		  aligning with the essential boundary
+		  condition specified in the MFEM solver;
+		  \end{itemize}
+        \item Top Edge $y=0$;
+		  \begin{itemize}
+		  \item A free outflow boundary condition is imposed, consistent with the free traction boundary condition applied in the MFEM solver;
+		  \end{itemize}
+        \item Left and Right Edges $x = \pm L$;
+		  \begin{itemize}
+        \item A no-flow boundary condition is prescribed in consistence with the zero-flow Dirichlet boundary used in the MFEM solver.
+		  \end{itemize}
 \end{itemize}
 
 \begin{figure}[htb]
@@ -247,11 +275,13 @@ For FVM solver:
 \label{fig:1dsten}
 \end{figure}
 
-For simplicity and efficiency in implementation and implementation and computation, we use one-dimensional
-ML-WENO(3,2) stencils as depicted in Figure~\ref{fig:1dsten}, since we don't need 
-excessive resolution and order of accuracy higher than one in x direction. We use second order 
-SSP Runge-Kutta time integration scheme.
-We show two different scenarios equipped with different melting functions
+For simplicity and efficiency in implementation and computation, we employ one-dimensional
+ML-WENO(3,2) stencils as illustrated in Figure~\ref{fig:1dsten}, 
+since higher-order accuracy in the xx-direction is unnecessary for this problem.
+We use second order 
+SSP Runge-Kutta time integration scheme defined in~\ref{eq:2ndrk}.
+
+We consider two different scenarios, each characterized by distinct  prescribed melting functions
 and initial conditions:
 
 Case 1: A piece-wise constant source function.
@@ -264,15 +294,15 @@ Case 1: A piece-wise constant source function.
 		  \right.
 		  \label{eq:stair_source}
 \end{equation}
-We assign a zero initial condition here as
+We assign an initial condition of no melting everywhere as
 \begin{equation}
 \phi_1(z,0) =  0.0 , \quad z \in [-2.0, 0.0],
 \end{equation}
 
-Figure~\ref{fig:constmelt_stairmelting} illustrates the evolution of porosity, 
-Stokes and Darcy velocities, Stokes and Darcy pressure, as well as the effective pressure,
-defined as $p_{\text{eff}} = p_s - p_l$. The third figure, corresponding to time 
-1325, demonstrates that the system has reached a steady state after a period of evolution.
+Figure~\ref{fig:constmelt_stairmelting} illustrates the temporal evolution of porosity, 
+Stokes and Darcy velocities, Stokes and Darcy pressures, as well as the effective pressure,
+defined as $p_{\text{eff}} = p_s - p_l$. The third panel, corresponding to 
+dimensionless time $\check{t} = 1325$, demonstrates that the system has reached a steady state after sufficient evolution.
 
 \begin{figure}[htb]
 \centering
@@ -286,8 +316,10 @@ where the system reaches steady state at the time = 1325.}
 								\label{fig:constmelt_stairmelting}
 \end{figure}
 
-Case 2: We examine a slightly more complicated case where a melting source 
-trapped under the bottom of the upwelling mantle column as
+Case 2: We next consider a slightly more complicated scenario in which a melting source 
+is trapped beneath the bottom of an existing porosity channel. The trapped melting
+source produces a step in porosity, thereby induces an instantaneous perturbation
+in the compaction rate.
 \begin{equation}
 \Gamma_2(z) = \left \{ 
 		  \begin{alignedat}{2}
@@ -296,8 +328,9 @@ trapped under the bottom of the upwelling mantle column as
 					 &0, \hspace{1.13cm}   &&-2.0 \leq z\leq -1.8,
 \end{alignedat}
 		  \right.
+		  \label{eq:trapped}
 \end{equation}
-where we assign an initial condition with a porosity channel as
+where we assign an initial condition with an existing porosity channel as
 \begin{equation}
 \phi_2(z,0) = \left \{ 
 		  \begin{alignedat}{2}
@@ -307,6 +340,143 @@ where we assign an initial condition with a porosity channel as
 		  \right.
 \end{equation}
 
-\subsection{Phase Transition Case}
+Figure~\ref{fig:poroevo},~\ref{fig:veloevo} and~\ref{fig:pressevo} 
+illustrate the temporal evolution of porosity, Stokes and Darcy velocities and 
+Stokes and Darcy pressures. A propagating discontinuity in porosity (solitary-wave) 
+forms when the porosity profile decreased upward~\cite{DynamicsPartiallyMoltenRock}. Eventually, the system 
+reaches a steady state, characterized by a narrower porosity channel. 
+The simulation demonstrates robust and stable evolution, despite the presence of a
+highly complicated porosity profile.
 
-\section{Two-Dimensional Test}
+\begin{figure}[htb]
+\centering
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro20.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro200.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro400.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro800.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro1000.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro1200.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro1400.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro1600.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro2000.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro2200.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro2400.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/poro3000.eps}
+\end{subfigure}
+\caption{Prescribed melting case with trapped melting source term~\ref{eq:trapped}. 
+Temporal evolution of porosity shown at different time steps.}
+\label{fig:poroevo}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel20.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel200.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel400.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel800.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel1000.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel1200.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel1400.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel1600.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel2000.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel2200.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel2400.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/vel3000.eps}
+\end{subfigure}
+\caption{Prescribed melting case with trapped melting source term~\ref{eq:trapped}.
+Temporal evolution of velocities shown at different time steps.}
+\label{fig:veloevo}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure20.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure200.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure400.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure800.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure1000.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure1200.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure1400.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure1600.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure2000.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure2200.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure2400.eps}
+\end{subfigure}
+\begin{subfigure}[t]{.21\textwidth}
+\includegraphics[width=3cm,height=6.5cm]{chapters/pics/pressure3000.eps}
+\end{subfigure}
+\caption{Prescribed melting case with trapped melting source term~\ref{eq:trapped}. 
+Temporal evolution of pressures shown at different time steps.}
+\label{fig:pressevo}
+\end{figure}
+
+%\subsection{Phase Transition Case}
+
+%\section{Two-Dimensional Test}
