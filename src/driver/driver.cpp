@@ -307,7 +307,7 @@ int Driver::PrepareTransport(const std::vector<double>& restartHD,
 
     // Compute bottom fixed value
     HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});
-    CDbottom = 0.04;
+    CDbottom = 0.15;
 
     return 1;
 }
