@@ -179,7 +179,7 @@ int Driver::PrepareTransport(double (*funcHD)(const valarray<double>& point,
     // Compute bottom fixed value
     HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});
 
-    CDbottom = 0.08;
+    CDbottom = 0.15;
 
     return 1;
 }
@@ -308,7 +308,6 @@ int Driver::PrepareTransport(const std::vector<double>& restartHD,
     // Compute bottom fixed value
     HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});
     CDbottom = 0.15;
-
     return 1;
 }
 

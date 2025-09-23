@@ -342,7 +342,7 @@ where we assign an initial condition with an existing porosity channel as
 
 Figure~\ref{fig:poroevo},~\ref{fig:veloevo} and~\ref{fig:pressevo} 
 illustrate the temporal evolution of porosity, Stokes and Darcy velocities and 
-Stokes and Darcy pressures. A propagating discontinuity in porosity (solitary-wave) 
+Stokes and Darcy pressures. A propagating discontinuity in porosity  
 forms when the porosity profile decreased upward~\cite{DynamicsPartiallyMoltenRock}. Eventually, the system 
 reaches a steady state, characterized by a narrower porosity channel. 
 The simulation demonstrates robust and stable evolution, despite the presence of a
@@ -478,5 +478,9 @@ Temporal evolution of pressures shown at different time steps.}
 \end{figure}
 
 \subsection{Phase Coupled Case}
+
+In this section, we couple the simulation with the eutectic phase package calculation. 
+In this scenario, we transport nondimensional bulk composition and enthalpy
+instead of transporting porosity directly, but compute porosity from the transport variables.
 
 %\section{Two-Dimensional Test}
