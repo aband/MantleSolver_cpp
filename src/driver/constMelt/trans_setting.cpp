@@ -106,13 +106,22 @@ double InitCD(const valarray<double>& point,
     }
 */
 
+/*
     if (point[1] >= -1.5){
         return 0.05;
     }else {
         return 0.0;
     }
+*/
 
-    return 0.0;
+
+    if (point[1] >= -15){
+        return 0.05;
+    }else {
+        return 0.1;
+    }
+
+    //return 0.0;
 }
 
 double InitHD(const valarray<double>& point,

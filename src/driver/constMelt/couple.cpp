@@ -119,9 +119,7 @@ int Driver::updateEdgeFlux_case(Tensor<double>& vertedge, Tensor<double>& horied
         if (j==0){
            
            computeEffVel_case(gaussp, hori, gcell, allwgts, lphi, effvel);
-
            flux = edgefluxintegral(hori, CDbottom ,effvel);
-
         } else {
 
            cellout = gcell + mi.faceNormal[0];

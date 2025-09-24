@@ -38,7 +38,7 @@ porosity = reshape(porosity, M, N);
 
 subplot(1,4,1)
 plot(porosity(2,:), pY(2,:), 'LineWidth',3);
-xlim([0,0.1])
+%xlim([0,0.1])
 title('porosity')
 ylabel('Depth');
 
@@ -104,7 +104,7 @@ hold on
 plot(unscaleddarcyy(2,:), pY(2,:),'--','LineWidth',3);
 hold off
 title('Velocity')
-xlim([-5e-3, 5e-3])
+%xlim([-5e-3, 5e-3])
 ylabel('Depth')
 legend('Stokes Vel','Darcy Vel','Location','southeast')
 

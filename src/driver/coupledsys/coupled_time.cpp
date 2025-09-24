@@ -78,6 +78,7 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         PrintPressureSerialApprox(mark);
 
         mark ++;
+		  cout << "Output mark = " << mark << endl;
         }
 
         VecAXPY(globalHD, -1*dt, fluxHD);

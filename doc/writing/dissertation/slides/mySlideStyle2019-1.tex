@@ -89,6 +89,12 @@
 \def\PineGreen{\textcolor{PineGreen}}
 \def\OliveGreen{\textcolor{myolivegreen}}
 
+\definecolor{myBlue}{RGB}{190,203,211}
+\definecolor{myRed}{RGB}{244,186,175}
+\definecolor{myGreen}{RGB}{114,138,122}
+\definecolor{myYellow}{RGB}{241,208,157}
+
+
 \excludecomment{SKIP}
 %\includecomment{SKIP}
 
@@ -284,3 +290,8 @@
 \def\threeVec(#1,#2,#3){\left(\begin{matrix}#1\\#2\\#3\end{matrix}\right)}
 
 \newcommand\qed{\qquad\Blue{\mbox{$\Box$}}}%QED}}
+
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
