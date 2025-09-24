@@ -16,8 +16,6 @@
 %\usepackage{wallpaper}
 		  \usepackage{mathtools}
 
-
-
 \newcounter{outlineNumber}\setcounter{outlineNumber}{0}
 \def\outno{\stepcounter{outlineNumber}\Blue{\theoutlineNumber. }}
 
@@ -81,7 +79,7 @@ Marc A. Hesse, Oden Institute \& Geosciences, University of Texas at Austin\\
 \begin{myslide}
 \heading{Introduction}
 
-\Oblue{Mantle melting}
+\Oblue{Mantle melting}:
 \begin{nlist}
 \item Mantle melting is a crucial geophysical process in lithospheric evolution and plate tectonics.
 \item Geophysical evidence indicates that the asthenosphere is often partially molten.
@@ -91,7 +89,76 @@ magmatism.
 
 \vspace{20pt}
 
-\Oblue{Partial Melting}
+\Oblue{Partial Melting}:
+		  \begin{nlist}
+		  \item Modeled as a two-phase flow framework.
+		  \item Coupled with complicated chemical interactions.
+		  \item Compaction is essential in deciding melt extraction and segregation.
+		  \end{nlist}
+
+\vspace{20pt}
+
+		  {\Oorange{Challenge}}:
+\begin{nlist}
+\item Degenercy caused by no-melt regions poses mathematical and numerical difficulties.  
+\end{nlist}
+
+\end{myslide}
+
+% ===========================================
+
+\begin{myslide}
+\heading{New framework}
+
+\Oblue{Model}
+\begin{nlist}
+\item A degenerate two-phase Darcy–Stokes system describing the coupled interaction
+between the solid matrix and the interstitial melt.
+\item A nonlinear system governing the transport of chemical species and thermal
+energy.
+\item A eutectic phase relation characterizing the melting processes and connecting
+the transport and static mechanical system through enthalpy method.
+\end{nlist}
+
+\vspace{20pt}
+\Oblue{Numerics}
+\begin{nlist}
+\item $H(\text{div})$-and $H^1$- conforming mixed finite element spaces for Darcy and Stokes subproblems.
+\item A more versatile and flexible multilevel WENO weighting scheme to address the nonlinear transport of chemical species and energy in the 
+presence of porous media.
+\end{nlist}
+
+\end{myslide}
+
+% ===========================================
+\begin{myslide}
+\heading{Darcy-Stokes System}
+
+		  \Oblue{Full static system}:
+\begin{alignat}{2}
+    \label{eq:darcy}
+		  &\phi_l (\mathbf{v}_l - \mathbf{v}_s)
+		  + \frac{k_{\phi_l}}{\mu_l}(\nabla p_l - \rho_f\mathbf{g})
+	    &&= 0,\\
+	\label{eq:continuous}
+		  &\nabla \cdot (\phi_l\mathbf{v}_l + \phi_s\mathbf{v}_s) &&=0,\\
+	\label{eq:stokes}
+		  &\nabla\bar p - \nabla \cdot \pmb{\tau}(\mathbf{v}_s) + \overline{\rho}\mathbf{g}&&= 0,\\
+	\label{eq:compaction}
+		  &\mu_s\nabla \cdot \mathbf{v}_s - \phi_l(p_l - p_s) &&=0, 
+\end{alignat}
+
+		  \vspace{20pt}
+		  \Oblue{Deviatoric stress}: 
+\begin{equation}\label{eq:deviatoricstress}
+		  \pmb{\tau}(\mathbf{v}_s)
+		  = 2\mu_s\phi_s\big(\mathcal{D} \mathbf{v}_s - \tfrac{1}{3}\nabla \cdot \mathbf{v}_s \mathbf{I}\big),
+\end{equation}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{}
 
 \end{myslide}
 
