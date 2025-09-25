@@ -323,6 +323,33 @@ where $\overline{K} = \phi_l K_l + \phi_s K_s$ is the phase averaged thermal con
 \end{myslide}
 
 \begin{myslide}
+\heading{Scaled Hilbert Space}
+Let
+\begin{equation}\label{eq:scaledHspace}
+		  H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
+		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v})
+		  \in L^2(\Omega) \Big\}.
+\end{equation}
+This is a Hilbert space equipped with the inner product
+\begin{equation}\label{eq:scaledinnerp}
+		  (\mathbf{u}, \mathbf{v})_{H_\phi(\text{div};\Omega)} = 
+		  (\mathbf{u}, \mathbf{v}) + 
+		  (\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{u}), \phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\mathbf{v})).
+\end{equation}
+The normal trace on $\partial \Omega$ is well-defined by
+		  \begin{equation}\label{eq:scaledtraceoperator}
+		  \langle \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu}, \psi \rangle = \big(\mathbf{v}, \phi^{1+\Theta}\nabla(\phi^{-1/2}\psi)\big) + 
+		  \big(\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}),\psi \big), \quad \forall \psi \in H^1(\Omega),
+\end{equation}
+		  using~\eqref{eq:phiboundness}, moreover,
+\begin{equation}\label{eq:tracescaled}
+		  \norm{\phi^{1/2+\Theta}\mathbf{v}\cdot \pmb{\nu}}_{H^{-1/2}(\partial \Omega)} < C_{\Omega} \Big\{ \norm{\mathbf{v}}_{L^2(\Omega)} + \norm{\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v})}_{L^2(\Omega)} \Big\}.
+\end{equation}
+ Subsequently, we have the space $H_\phi^{-1/2}(\text{div};\partial \Omega)$ understood as the image of the normal trace operator on $H_\phi(\text{div};\Omega)$.
+
+\end{myslide}
+
+\begin{myslide}
 \heading{Weak formulation}
 Find $\check{\mathbf{v}}_r \in \mathbb{U}^{\phi}_D$,
 $\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{U}_S$, and $\check{q}\in \mathbb{W}_S$ such that
@@ -426,6 +453,31 @@ $\check{\mathbf{v}}_{s,h} \in \mathbf{V}_{S,h,\mathbf{0}} + \hat{\mathbf{g}}_s$ 
 
 \end{myslide}
 
+\begin{myslide}
+\heading{Error Estimate}
+
+\begin{lemma}
+Assume that~\eqref{eq:phiboundness} holds on the porosity, $0\leq \phi \leq \phi^* <1$, and the mesh
+is quasiuniform. Then the difference of the solution to the scaled formulation~\eqref{eq:weak_stokes}--\eqref{eq:weak_continuous},
+and its finite elment approximation satisfy
+\begin{equation}
+\begin{aligned}
+&\norm{\tilde{\mathbf{v}}_r - \tilde{\mathbf{v}}_{r,h}}_{L^2(\Omega)} + 
+\norm{\mathcal{P}_{\mathbb{W}_{D,h}}\big[\phi^{-1/2}\nabla \cdot(\phi^{1+\Theta}(\tilde{\mathbf{v}}_r - \tilde{\mathbf{v}}_{r,h})
+)\big]}_{L^{2}(\Omega)} + \norm{\mathbf{v}_s - \mathbf{v}_{s,h}}_{H^1(\Omega)} \\
+&+ \norm{\tilde{q}_l - \tilde{q}_{l,h}}_{L^2(\Omega)} + \norm{q - q_h}_{L^2(\Omega)} \\
+&\leq C \bigg\{\norm{\tilde{\mathbf{v}}_r - \pi_{\mathbb{V}_1^0} \tilde{\mathbf{v}}_r}_{L^2(\Omega)}  + 
+\norm{\mathcal{P}_{\mathbb{W}_{D.h}}[\phi^{-1/2}\nabla\cdot(\phi^{1+\Theta}(\tilde{\mathbf{v}}_r - \pi_{\mathbb{V}_1^0}\tilde{\mathbf{v}}_r))]}_{L^2(\Omega)}  \\
+&+\norm{\pi_{\mathbb{V}_1^0}\tilde{\mathbf{g}}_r - \hat{\mathbf{g}}_r}_{L^2(\Omega)} + 
+\norm{\tilde{q}_l - \mathcal{P}_{\mathbb{W}_{D,h}}\tilde{q}_l}_{L^2(\Omega)} + \norm{q - \mathcal{P}_{\mathbb{W}_{S,h}}q}_{L^2(\Omega)}\\ 
+&+ \norm{\mathbf{v}_s - \pi_{\mathbb{V}_\mathcal{BR}}\mathbf{v}_s}_{H^1(\Omega)} + \norm{\pi_{\mathbb{V}_\mathcal{BR}}\tilde{\mathbf{g}}_s - \hat{\mathbf{g}}_s }_{H^1(\Omega)} \bigg\},
+\end{aligned}
+\end{equation}
+where $\pi_{\mathbb{V}_{1}^0}$ and $\pi_{\mathbb{V}_\mathcal{BR}}$ are projection operators corresponding to different MFEM spaces.
+\end{lemma}
+
+\end{myslide}
+
 % ======================================================
 \begin{myslide}
 \heading{Local mass conservation}
@@ -482,6 +534,13 @@ $\check{\mathbf{v}}_{s,h} \in \mathbf{V}_{S,h,\mathbf{0}} + \hat{\mathbf{g}}_s$ 
 \end{bmatrix},
 \end{equation}
 
+\vspace{20pt}
+
+\Oorange{Modified Uzawa Iteration}
+\vspace{10pt}
+
+\centering
+\includegraphics[width=15cm,height=9cm]{modified_Uzawa.png}
 
 \end{myslide}
 
@@ -655,6 +714,23 @@ n(r_l) = n_l = \begin{cases}
 \end{myslide}
 
 \begin{myslide}
+\heading{Error Estimation}
+
+\vspace{50pt}
+
+\begin{lemma}
+		  Let $\mathcal{R}(\mathbf{x})$ be the reconstruction. Assuming a 
+		  qusi-uniform mesh, $h_0 = \Theta(h)$, there exists a constant $C>0$
+		  such that for any $\mathbf{x} \in E_0$, 
+		  \begin{equation}\label{eq:errorestimate}
+					 \lvert u(\mathbf{x}) - \mathcal{R}(\mathbf{x}) \rvert \leq C h^{r_{\max}},
+		  \end{equation}
+		  where $r_{\max}$ is defined as $\max(r_x, r_y)$.
+\end{lemma}
+
+\end{myslide}
+
+\begin{myslide}
 
 \heading{Time stepping}
 
@@ -728,6 +804,35 @@ u(x,y,t) = \left \{
 \centering
 \includegraphics[width=12cm,height=10cm]{../formal/chapters/pics/rarefraction_1.eps}
 \includegraphics[width=12cm,height=10cm]{../formal/chapters/pics/rarefraction_2.eps}
+
+\end{myslide}
+
+\separatorHeading{\outno Let's couple them together}
+
+\begin{myslide}
+\heading{Coupled Solver}
+
+\vspace{50pt}
+
+\centering
+\includegraphics[width=22cm,height=15cm]{coupled_algo.png}
+
+\end{myslide}
+
+\begin{myslide}
+
+\heading{Simplified Case}
+
+\centering
+\includegraphics[width=14cm,height=6.5cm]{../formal/chapters/pics/constmelt_t125.eps}
+\includegraphics[width=14cm,height=6.5cm]{../formal/chapters/pics/constmelt_t275.eps}
+\includegraphics[width=14cm,height=6.5cm]{../formal/chapters/pics/constmelt_t1325.eps}
+
+\end{myslide}
+
+\begin{myslide}
+
+Let's see some videos.
 
 \end{myslide}
 
