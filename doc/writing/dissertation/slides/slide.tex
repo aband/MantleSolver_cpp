@@ -675,9 +675,59 @@ where $\sum_{j}^{i-1} \alpha_{i,j} = 1$.
 \begin{myslide}
 \heading{Reconstruction example}
 
+\begin{equation}
+u(x,y) = \left \{ 
+		  \begin{alignedat}{2}
+		  &\sin(x) \cos(y)  \quad && x\leq 0.5,\\
+		  &\sin\bigg(\frac{(x+0.3)\pi}{2}\bigg)^6 \cos\bigg(\frac{(y-0.6)\pi}{2}\bigg)^6 + 0.5  \quad && x>0.5.
+		  \end{alignedat}
+		  \right.
+\end{equation}
+
 \vspace{50pt}
 \centering
-\includegraphics[width=22cm, height=13cm]{../formal/chapters/pics/53reconstruction.eps}
+\includegraphics[width=20cm, height=11cm]{../formal/chapters/pics/53reconstruction.eps}
+
+\end{myslide}
+
+\begin{myslide}
+		  \heading{Inflow boundary stabilization}
+\begin{equation}
+\label{eq:inflowtest}
+u_D(0,y,t) = \left\{\begin{alignedat}{2}
+&\sin^2(2\pi y),\quad &&y\leq0.25, y\geq 0.75,\\
+&1,             \quad &&0.25 < y < 0.75.
+\end{alignedat}
+\right.
+\end{equation}
+
+		  \vspace{50pt}
+
+\centering
+\includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow005.eps}
+\includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow0125.eps}
+\includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow025.eps}
+\includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow05.eps}
+\includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow075.eps}
+
+\end{myslide}
+
+\begin{myslide}
+		  \heading{Rarefaction example}
+
+\begin{equation}\label{eq:truesolutionrarefaction}
+u(x,y,t) = \left \{ 
+\begin{aligned}
+&0, \hspace{2.2cm} x<0.5, x\geq 0.5t+1.5,\\
+&(x-0.5)/t,\hspace{0.5cm} 0.5\leq x <t+0.5,\\
+&1, \hspace{2.2cm} t+0.5 \leq x < 0.5t+1.5.
+\end{aligned}
+		  \right.
+\end{equation}
+
+\centering
+\includegraphics[width=12cm,height=10cm]{../formal/chapters/pics/rarefraction_1.eps}
+\includegraphics[width=12cm,height=10cm]{../formal/chapters/pics/rarefraction_2.eps}
 
 \end{myslide}
 
