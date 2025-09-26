@@ -1,25 +1,6 @@
-%\chapter{Introduction}
-\iffalse
-First paragraph:
-
-Tian's thesis addresses three different aspects: 
-1. Development of a multiphysics model 
-describing a two-phase partial melting mantle. 
-2. Development and analysis of a local mass conservative
-numerical framework catering to this multiphysics problem. 
-3. Development of a code implementing the new numerical scheme.
-implement. He exhibits outstanding ability in understanding 
-a complex multiphysics system, developing and performing mathematical
-analysis of numerical schemes and implementing complex numerical scheme
-with an efficient code individually.
-
-Tian’s thesis addresses three key aspects: (1) the development of a multiphysics model describing a two-phase partially molten mantle; (2) the development and analysis of a locally mass-conservative numerical framework tailored to this multiphysics problem; and (3) the implementation of an efficient code realizing the new numerical scheme. He demonstrates outstanding ability to comprehend complex multiphysics systems, perform rigorous mathematical analysis of numerical methods, and independently develop efficient, robust computational implementations.
-
-\fi
-
 \chapter{Conclusion and Future Work}
 
-
+\section{Conclusion}
 In this work, we present a physics model capturing three key aspects of a 
 two-phase partially molten mantle: (1) a degenerate Darcy–Stokes system 
 describing the static mechanical behavior, (2) a nonlinear  
@@ -54,3 +35,12 @@ The code is implemented in C/C++ along with PETSc,
 and is designed to be easily adapted 
 for large-scale parallel execution on supercomputers,
  with the potential to support general unstructured meshes.
+
+\section{Future Work}
+
+We propose to use the new framework to sovle some important problem, 
+targeting applicatoins in simulation of partial melting materials, not 
+partial molten mantle but glacier as well.
+
+We also propose to extend our framework to three-dimensional and 
+general unstructured mesh.

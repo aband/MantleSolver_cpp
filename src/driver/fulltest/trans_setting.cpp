@@ -114,8 +114,8 @@ double InitHD(const valarray<double>& point,
     //double HD = 0.01;
 
     double cut  = -1.5;
-    double slop = 2.75;
-    double head = 3.0;
+    double slop = 2.8;
+    double head = 2.9;
 
     double HD = head - slop*cut -slop*pow(point[1]-cut,1);
 

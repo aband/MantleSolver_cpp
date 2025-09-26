@@ -75,7 +75,7 @@ mT = reshape(mT, M, N);
 subplot(1,6,2)
 plot(data(mid,:),pY(mid,:));
 hold on 
-plot(mT(mid,:),pY(mid,:), '*');
+plot(mT(mid,:),pY(mid,:), 'o');
 hold off
 title("Temperature");
 ylabel("Depth");
