@@ -113,7 +113,7 @@ double InitHD(const valarray<double>& point,
 	 // We pass nondimensionalize normalization factor in param.at(0)
     //double HD = 0.01;
 
-    double cut  = -1.5;
+    double cut  = -0.2;
     double slop = 2.8;
     double head = 2.9;
 
