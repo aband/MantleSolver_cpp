@@ -474,6 +474,20 @@ Temporal evolution of pressures shown at different time steps.}
 In this section, we couple the simulation with the eutectic phase package calculation. 
 In this scenario, we transport nondimensional bulk composition and enthalpy
 instead of transporting porosity directly, but compute porosity from the transport variables.
-First of all, we propose some simplification to our simulation as a pseudo one-dimensional
+First of all, we propose some simplification to our simulation as the pseudo one-dimensional
 case.
 %\section{Two-Dimensional Test}
+
+Now we reconsider the transport equation~\eqref{dimensionlesstransport} and 
+the simplified version is shown as
+\begin{equation}
+\label{eq:dlessadvecnodiff}
+		  \begin{aligned}
+					 \frac{\partial C}{\partial \check{t}} + \nabla \cdot \check{\mathbf{v}}_{\text{eff}} C &= 0,\\
+					 \frac{\partial H}{\partial \check{t}} + \nabla \cdot (\check{\overline{\mathbf{v}}} \check{T}) - 
+					 \check{L} \nabla \cdot ((1-\phi) \check{\mathbf{v}}_s) -  
+					 \frac{\alpha_\rho l_0}{c_p} \check{T} \check{\overline{\mathbf{v}}} \cdot \mathbf{g} &= 0,
+		  \end{aligned}
+\end{equation}
+where the diffusion terms are dropped.
+We drop the liquid diffusion term due to porosity being small and 
