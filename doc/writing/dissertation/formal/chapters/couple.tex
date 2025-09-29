@@ -469,15 +469,16 @@ Temporal evolution of pressures shown at different time steps.}
 \label{fig:pressevo}
 \end{figure}
 
-\subsection{Phase Coupled Case}
+\subsection{Phase Coupled Calculation}
 
-In this section, we couple the simulation with the eutectic phase package calculation. 
+In the following sections, we couple the simulation with the eutectic phase package calculation. 
 In this scenario, we transport nondimensional bulk composition and enthalpy
-instead of transporting porosity directly, but compute porosity from the transport variables.
+instead of prescribing melting source directly, but compute porosity from the transport variables.
 First of all, we propose some simplification to our simulation as the pseudo one-dimensional
 case.
 %\section{Two-Dimensional Test}
 
+\subsubsection{Model Setup and Some Simplifications}
 Now we reconsider the transport equation~\eqref{dimensionlesstransport} and 
 the simplified version is shown as
 \begin{equation}
@@ -490,4 +491,21 @@ the simplified version is shown as
 		  \end{aligned}
 \end{equation}
 where the diffusion terms are dropped.
-We drop the liquid diffusion term due to porosity being small and 
+We drop the liquid diffusion term due to the porosity being small and small diffusivity coefficient.
+We also drop the diffusion term in energy for the fact that we are asigning constant or linear initial
+conditions.
+
+We fix the pressure to be lithostatic pressure when used in the determination of current melting points.
+
+\subsubsection{Boundary conditions}
+
+\subsubsection{Discontinuous Phase Variables}
+In the phase coupled calculation case, besides the values of porosity, the primary transport variables are 
+also reconstructed differently due to no melt regions and distinct eutectic phase regions. 
+We view it as a nonlinear transport problem and thus employ the local Lax-Friedrich stabilization scheme.
+
+\subsubsection{Melt Instability}
+
+\subsubsection{Two results}
+
+

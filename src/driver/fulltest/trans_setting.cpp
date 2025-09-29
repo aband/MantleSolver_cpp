@@ -114,6 +114,7 @@ double InitHD(const valarray<double>& point,
     //double HD = 0.01;
 
     double cut  = -0.2;
+    cut = -1.5;
     double slop = 2.8;
     double head = 2.9;
 

@@ -59,7 +59,7 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
 
         getflux(allwgtsHD, lHD, allwgtsCD, lCD, lfHD, lfCD);
 
-        if (t % 400 ==0){
+        if (t % 200 ==0){
         PrintEffVel(mark, 2, allwgtsHD, lHD, allwgtsCD, lCD);
         }
 
@@ -70,7 +70,7 @@ int Driver::RK(double dt, double Tmax, int maxIter, double tolUzawa){
         DMRestoreLocalVector(dmu, &localHD);
         DMRestoreLocalVector(dmu, &localCD);
 
-        if (t % 400 == 0){
+        if (t % 200 == 0){
         printCellAve(mark, &globalHD, mi, "HD");
         printCellAve(mark, &globalCD, mi, "CD");
         //PrintFlowEvent(mark);
