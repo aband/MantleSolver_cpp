@@ -145,6 +145,7 @@ We fix the parameter $\Theta = 0$ as well.
 The code is implemented in PETSc/C++, with implementation details given in the appendix.
 
 \subsection{Prescribed Melting Cases}
+\label{subsec:prescribed}
 Before coupling the mechanical, transport and phase packages together into 
 one integrated computation, 
 we first illustrate a simpler model that couples MFEM and FVM
@@ -469,19 +470,30 @@ Temporal evolution of pressures shown at different time steps.}
 \label{fig:pressevo}
 \end{figure}
 
+\clearpage
+
 \subsection{Phase Coupled Calculation}
 
-In the following sections, we couple the simulation with the eutectic phase package calculation. 
-In this scenario, we transport nondimensional bulk composition and enthalpy
-instead of prescribing melting source directly, but compute porosity from the transport variables.
-First of all, we propose some simplification to our simulation as the pseudo one-dimensional
-case.
-%\section{Two-Dimensional Test}
+\iffalse
+In the following sections, we couple the MFEM and FVM solver with the eutectic phase package calculation
+and complete the simulation.
+In this setup, porosity is no longer prescribed through a melting source function; instead,
+it is computed from the transport of nondimensional bulk composition and enthalpy.
+We consider a simple upwelling mantle column while neglecting corner flow near the surface,
+assuming that the mantle column continues to ascend vertically through the Earth's surface.
+This configuration provides a minimal yet representative case for testing the coupled solver, 
+while still capturing the essential physics of melt generation and transport.
+\fi
+In the subsequent sections, we couple the MFEM and FVM solvers with the eutectic phase package to complete the 
+fully integrated simulation framework. In this setting, porosity is no longer prescribed through an externally 
+imposed melting function but is instead computed consistently from the transported nondimensional bulk composition and enthalpy. 
+The computational domain represents an upwelling mantle column, with corner flow neglected near the surface under the 
+simplifying assumption that the column continues its vertical ascent through the lithosphere. This configuration constitutes 
+a minimal yet dynamically representative test case for assessing the stability and accuracy of the coupled algorithm in the 
+presence of phase transitions and melt–solid interactions.
 
-\subsubsection{Model Setup and Some Simplifications}
-In this setup, we consider an upwelling column and neglect the corner flow of the matrix near the surface.
-We assume that the mantle column conntinues to move vertically through the surface of the earth.
-Now we reconsider the transport equation~\eqref{dimensionlesstransport} and 
+We then propose some simplifications to our simulations.
+First of all, we reconsider the transport equations~\eqref{dimensionlesstransport} and 
 the simplified version is shown as
 \begin{equation}
 \label{eq:dlessadvecnodiff}
@@ -489,26 +501,108 @@ the simplified version is shown as
 					 \frac{\partial C}{\partial \check{t}} + \nabla \cdot \check{\mathbf{v}}_{\text{eff}} C &= 0,\\
 					 \frac{\partial H}{\partial \check{t}} + \nabla \cdot (\check{\overline{\mathbf{v}}} \check{T}) - 
 					 \check{L} \nabla \cdot ((1-\phi) \check{\mathbf{v}}_s) -  
-					 \frac{\alpha_\rho l_0}{c_p} \check{T} \check{\overline{\mathbf{v}}} \cdot \mathbf{g} &= 0,
+					 \frac{\alpha_\rho l_0}{c_p} \check{T} \check{\overline{\mathbf{v}}} \cdot \mathbf{g} &= 0.
 		  \end{aligned}
 \end{equation}
-where the diffusion terms are dropped.
-We drop the liquid diffusion term due to the porosity being small and relatively small diffusivity coefficient.
-We also drop the diffusion term in energy transport equation for the fact that we are asigning constant or linear initial
+\iffalse
+%where the diffusion terms in both mass composition and enthalpy are dropped.
+We drop the diffusion term  in liquid phase due to the porosity being small and relatively small diffusivity coefficient.
+We also drop the diffusion term $\frac{\kappa}{u_0l_0} \nabla^2 \check{T}$
+in energy transport equation for the fact that we are assigning constant or linear initial
 conditions.
+\fi
+In this formulation, the diffusive contributions in both the mass composition and enthalpy equations are neglected.
+Specifically, the diffusion term $\frac{\phi \mathcal{D}_l}{u_0l_0} \nabla c_l$ in the liquid phase is omitted
+due to the fact that the porosity $\phi$ remains small ($\phi \ll 1$) and the associated diffusivity coefficient $\mathcal{D}_l$
+is comparatively negligible (on the order of $10^{-10}$ to $10^{-9}$ $m^2/s$) compared to effective advective velocities.
+\iffalse
+Likewise, while thermal conduction is a important process in mantle convection on geological timescales, its role in the present 
+simulations is minimal for two reasons. First, the initial thermal state is chosen to be either constant or linear in space,
+in which case the Laplacian vanishes or remains small throughout the evolution
+Second, we are not enforcing a non-permeable solidification boundary on the top.
+\fi
 
-Taking into consideration that 
+Likewise, while thermal conduction is an important mechanism in mantle convection over geological timescales, 
+its influence on the present simulations is negligible. Two considerations motivate this simplification. First,
+the temperature profile maintains either constant or linear, such that the Laplacian of temperature vanishes or remains small 
+throughout the evolution. Second, we do not impose a non-permeable solidification boundary at the surface, 
+which would otherwise establish sharp thermal gradients and necessitate conductive heat transport across a boundary layer,
+in which case the diffusivity is no longer negligible (see~\cite{PartialMeltinginUpwellingMantleColumn}). 
+
+\iffalse
+Additionally, taking into consideration that the we primarily research the phenomenon of partial melting 
+and the porosity being small,
 We fix the pressure to be lithostatic pressure when used in the determination of current melting points.
+When the mantle column ascend from deeper mantle, the pressure release causes drop in melting point and 
+results in some degrees of corresponding melting.
+\fi
+Additionally, given that the primary focus of this study is the phenomenon of partial melting under small-porosity conditions, 
+we adopt the lithostatic pressure as the reference pressure in determining the local melting point 
+(see~\cite{MagmaDynamicsEnthalpyMethod}). 
+This approximation is 
+justified because the dynamic pressure perturbations associated with porous flow are small compared to the background 
+lithostatic gradient. As the mantle column ascends from depth, the concomitant reduction in lithostatic pressure leads to 
+a decrease in the solidus temperature, thereby inducing some degrees of melting in proportion to the degree of decompression.
 
 \subsubsection{Boundary conditions}
+\iffalse
+%e propose a test case showing the coupling of all three components of our code.
+In this simulation, we do not discuss actual physical compatible boundary conditions given the complicity of the nature of 
+the physics and chemical.
+For example, Hewitt and Fowler discussed
+a boundary condition considering conservation laws and thermodynamic equilibrium 
+at the top (See~\cite{PartialMeltinginUpwellingMantleColumn}).
+\fi
 
-\subsubsection{Discontinuous Phase Variables}
+In this set of simulations, we do not attempt to prescribe fully physically consistent boundary conditions, 
+owing to the inherent complexity of capturing both the mechanical and thermochemical constraints at the 
+mantle–lithosphere interface. For example,~\cite{PartialMeltinginUpwellingMantleColumn} formulated boundary conditions that 
+simultaneously satisfy conservation laws and thermodynamic equilibrium at the surface. 
+These constraints introduce additional complexity to model and numerical scheme that is not central 
+to the phenomena under investigation here.
+
+\iffalse
+Here, we consider a more straightforward boundary condition regulating mechanical behaviors at the top and the bottom.
+We prescribe the same boundary conditions for the Darcy-Stokes MFEM solver as shown in the 
+subsection~\ref{subsec:prescribed}, essential boundary conditions on the bottom and two sides of
+the domain with a natural (free fraction) boundary condition on the top edge indicating
+a free outflow.
+For the transport FVM solver, we again follow the same discussion presented in the subsection~\ref{subsec:prescribed}
+but prescribe Dirichlet boundary conditions for dimensionless mass composition and enthalpy respectively on the bottom
+edge implying constant supply of chemical species and energy and a free outflow boundary condition on the top edge.
+\fi
+By prescribing essential boundary conditions on the bottom and the lateral edges and a natural (free-traction) boundary at the top 
+for the Darcy–Stokes MFEM solver, the simulations allow for mechanically reasonable mantle upwelling without artificial confinement.
+Similarly, the Dirichlet inflow and free outflow conditions for the transport solver ensure a constant supply of chemical species 
+and energy while permitting realistic advective transport, without imposing restrictive thermodynamic constraints.
+This approach maintains the internal consistency of the coupled MFEM–FVM solver and captures the key dynamics of 
+melt migration, porosity evolution and phase transitions, while reducing computational complexity.
+
+\subsubsection{Numerical Flux}
+We modify the semi-discretized formulation shown in equation~\eqref{eq:fvdis} to include the ``Source" term $S$ as
+\begin{equation}\label{eq:fvdis}
+		  \frac{\partial \overline{u}_{E}}{\partial t} + \sum_{i=0}^4\frac{\lvert e_i \rvert}{\lvert E \rvert}
+		  \sum_{g=0}^G \omega_{i,g} \mathbf{F}(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-)\cdot \pmb{\nu}_i  
+		  + \sum^H_{h=0}\xi_{h} S(\mathcal{R}_h) = 0,
+\end{equation}
+where $\omega_{i,g}$ represents the weight associated to the $g\textsuperscript{th}$ quadrature points on edge $e_i$ and
+$\xi_{h}$ represents the weight associated to the $h\textsuperscript{th}$ quadrature points on face.
+In addition, we can simplify the numerical integration by using mid-point rule and directly using the cell-averaged transport
+variable for second order accuracy.
+
+We then write the corresponding Lax-Friedrich numerical flux of mass composition and enthalpy across the edges 
+in terms of ML-WENO reconstructed values $\mathcal{R}_C$ and $\mathcal{R}_H$ as:
+\begin{equation}
+\begin{aligned}
+\mathbf{F}_C(\mathcal{R}^+_C, \mathcal{R}^-_C) &= \frac{1}{2} \check{\mathbf{v}}_{\text{eff}}\cdot \pmb{\nu}\\
+\mathbf{F}_H(\mathcal{R}^+_H, \mathcal{R}^-_H) &=
+\end{aligned}
+\end{equation}
+
 In the phase coupled calculation case, besides the values of porosity, the primary transport variables are 
 also reconstructed differently due to no melt regions and distinct eutectic phase regions. 
 We view it as a nonlinear transport problem and thus employ the local Lax-Friedrich stabilization scheme.
 
-\subsubsection{Melt Instability}
-
-\subsubsection{Two results}
-
+\subsubsection{Two cases}
+In this section, We presenting two results with different domain lengths and initial conditions
 

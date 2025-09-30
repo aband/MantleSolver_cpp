@@ -1,9 +1,20 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{3}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Hewitt and Fowler(2008)]{PartialMeltinginUpwellingMantleColumn}
+I.J Hewitt and A.C Fowler.
+\newblock Partial melting in an upwelling mantle column.
+\newblock \emph{Proc. R. Soc. A}, 464:\penalty0 2467--2491, 2008.
+
+\bibitem[Katz(2008)]{MagmaDynamicsEnthalpyMethod}
+Richard~F. Katz.
+\newblock Magma dynamics with the enthalpy method: Benchmark solutions and
+  magmatic focusing at mid-ocean ridges.
+\newblock \emph{Journal of Petrology}, 49:\penalty0 2099--2121, 2008.
 
 \bibitem[Katz(2022)]{DynamicsPartiallyMoltenRock}
 Richard~F. Katz.
