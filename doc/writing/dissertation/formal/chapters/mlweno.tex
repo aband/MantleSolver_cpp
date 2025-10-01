@@ -51,6 +51,7 @@ Depending on the available information about the solution, there are two possibl
 					 \end{equation*}
 		  \item The local Lax-Friedrichs Stabilizer:
 					 \begin{equation*}
+					 \label{eq:loclf}
 								\alpha_{LF} = \max_{\text{edges}\,e}\Bigg(\bigg\lvert \frac{\partial \mathbf{f}(u^+;\mathbf{x},t) \cdot \pmb{\nu}}{\partial u}\Big\vert_e \bigg\rvert,
 								\bigg\lvert \frac{\partial \mathbf{f}(u^-;\mathbf{x},t) \cdot \pmb{\nu}}{\partial u}\Big\vert_e \bigg\rvert \Bigg).
 \end{equation*}
@@ -68,7 +69,7 @@ Assuming a quadrature rule with $G$ point per edge, the semi-discretized formula
 		  \frac{\partial \overline{u}_{E}}{\partial t} + \sum_{i=0}^4\frac{\lvert e_i \rvert}{\lvert E \rvert}
 		  \sum_{g=0}^G \omega_{i,g} F(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-) = 0,
 \end{equation}
-where $\omega_{i,g}$ represents the weight associated to the $g\textsuperscript{th}$ quadrature points on edge $e_i$.
+where $\omega_{i,g}$ represents the weight associated to the $g-th$ quadrature points on edge $e_i$.
 
 \section[ML-WENO]{The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}
 \label{sec:mlweno}

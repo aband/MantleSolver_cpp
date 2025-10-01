@@ -40,10 +40,11 @@ vy = reshape(vy, M, N);
 
 subplot(2,3,1)
 quiver(pX, pY, vx, vy);
-title(["Effective velocity", num2str(k)])
+%title(["Effective velocity", num2str(k)])
+title(["Effective velocity"])
 
 subplot(2,3,4)
-plot(vy(4,:), pY(4,:));
+plot(vy(4,:), pY(4,:), 'LineWidth', 3);
 
 filename = strcat('build/phasevelx',string(k));
 filename = strcat(filename,'.dat')
@@ -59,10 +60,11 @@ vy = reshape(vy, M, N);
 
 subplot(2,3,2)
 quiver(pX, pY, vx, vy);
-title(["Phase averaged velocity", num2str(k)])
+%title(["Phase averaged velocity", num2str(k)])
+title(["Phase averaged velocity"])
 
 subplot(2,3,5)
-plot(vy(4,:), pY(4,:));
+plot(vy(4,:), pY(4,:), 'LineWidth', 3);
 xlim([-1,1])
 
 filename = strcat('build/solidvely',string(k));
@@ -73,10 +75,17 @@ vy = reshape(vy, M, N);
 
 subplot(2,3,3)
 quiver(pX, pY, vx, vy);
-title(["Solid velocity", num2str(k)])
+%title(["Solid velocity", num2str(k)])
+title(["Solid velocity"])
 
 subplot(2,3,6)
-plot(vy(4,:), pY(4,:));
+plot(vy(4,:), pY(4,:), 'LineWidth', 3);
+
+time = 0.01*k*400;
+
+mytitle = strcat('Time = ', string(time));
+
+sgtitle(mytitle);
 
 %set(gcf, 'Position',[50 50 1800 700]);
 pause

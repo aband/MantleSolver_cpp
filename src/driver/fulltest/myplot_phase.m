@@ -47,8 +47,8 @@ porosity = reshape(porosity, M, N);
 
 % Add 1D plot
 subplot(1,6,1)
-plot(porosity(mid,:),pY(mid,:));
-title("Porosity");
+plot(porosity(mid,:),pY(mid,:),'LineWidth', 3);
+%title("Porosity");
 ylabel("Depth");
 xlabel("Porosity");
 
@@ -73,13 +73,14 @@ mT = reshape(mT, M, N);
 
 % Add 1D plot
 subplot(1,6,2)
-plot(data(mid,:),pY(mid,:));
+plot(data(mid,:),pY(mid,:), 'LineWidth', 3);
 hold on 
-plot(mT(mid,:),pY(mid,:), 'o');
+plot(mT(mid,:),pY(mid,:), '--', 'LineWidth', 3);
 hold off
-title("Temperature");
-ylabel("Depth");
+%title("Temperature");
+%ylabel("Depth");
 xlabel("Temperature");
+legend('$T$', '$T_e$','Interpreter','latex')
 
 %plot of HD
 filename = strcat('build/HD',string(k));
@@ -97,10 +98,10 @@ data = reshape(data, M, N);
 
 % Add 1D plot
 subplot(1,6,3)
-plot(data(mid,:),pY(mid,:));
-title("HD Distribution");
-ylabel("Depth");
-xlabel("HD");
+plot(data(mid,:),pY(mid,:),'LineWidth',3);
+%title("HD Distribution");
+%ylabel("Depth");
+xlabel("H");
 
 % Plot of CD
 filename = strcat('build/CD',string(k));
@@ -118,11 +119,11 @@ data = reshape(data, M, N);
 
 % Add 1D plot
 subplot(1,6,4)
-plot(data(mid,:),pY(mid,:));
+plot(data(mid,:),pY(mid,:),'LineWidth', 3);
 axis([0.00,0.2, -1*L, 0.0])
-title("CD Distribution");
-ylabel("Depth");
-xlabel("CD");
+%title("CD Distribution");
+%ylabel("Depth");
+xlabel("C");
 
 % Plot of phase split region
 filename = strcat('build/phase', string(k));
@@ -133,9 +134,11 @@ data = reshape(data, M, N);
 
 subplot(1,6,5);
 %contourf(pX, pY, data, 3);
-stairs(data(mid,:), pY(mid,:));
+stairs(data(mid,:), pY(mid,:), 'LineWidth', 3);
 axis([0, 4, -1*L,0.0])
-title(strcat('Phase split'));
+%title(strcat('Phase split'));
+%ylabel('Depth')
+xlabel('Phase')
 
 % Plot of phase split region
 filename = strcat('build/opx', string(k));
@@ -145,15 +148,22 @@ data     = fscanf(fileID, '%f', [1, Inf]);
 data = reshape(data, M, N);
 
 subplot(1,6,6);
-plot(data(mid,:),pY(mid,:));
+plot(data(mid,:),pY(mid,:), 'LineWidth', 3);
 ylim([-1*L,0.0])
 xlim([0.00, 0.2])
-title(filename);
-ylabel("Depth");
+%title(filename);
+%ylabel("Depth");
 xlabel("opx");
+
+time = 0.01*k*400;
+
+mytitle = strcat('Time = ', string(time));
+
+sgtitle(mytitle);
 
 pause
 F= getframe(gcf);
+
 
 writeVideo(v,F);
 

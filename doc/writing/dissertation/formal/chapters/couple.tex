@@ -140,8 +140,9 @@ prescribed melting function $\Gamma(\mathbf{x})$ is used.
 providing a complete coupling between the MFEM, FVM, and eutectic phase package. 
 \end{itemize}
 
-For the two tests presented below, we take domain dimensions $H=2$ and  $L = 0.1$.
+For the two tests presented below, we fix the domain dimension in $x$-direction $L = 0.1$.
 We fix mesh resolution in the $x$-direction as $M=2$ and pick different resolutions in $y$-direction.
+The domain dimension and mesh resolution in $y$-direction are chosen accordingly.
 We fix the parameter $\Theta = 0$ as well. 
 The code is implemented in PETSc/C++, with implementation details given in the appendix.
 
@@ -580,22 +581,27 @@ This approach maintains the internal consistency of the coupled MFEM–FVM solve
 melt migration, porosity evolution and phase transitions, while reducing computational complexity.
 
 \subsubsection{Numerical Flux}
-We modify the semi-discretized formulation of a general conservation law shown in equation~\eqref{eq:fvdis} to include the ``Source" term $S$ as
+We modify the semi-discretized formulation of a general conservation law, as presented in equation~\eqref{eq:fvdis},
+to incorporate a ``Source" term $S$. The resulting expression can be written as
 \begin{equation}\label{eq:fvdis}
 		  \frac{\partial \overline{u}_{E}}{\partial t} + \sum_{i=0}^4\frac{\lvert e_i \rvert}{\lvert E \rvert}
-		  \sum_{g=0}^G \omega_{i,g} F(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-)\cdot \pmb{\nu}_i  
+		  \sum_{g=0}^G \omega_{i,g} F(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-)  
 		  + \sum^H_{h=0}\xi_{h} S(\mathcal{R}_h) = 0,
 \end{equation}
-where $\omega_{i,g}$ represents the weight associated to the $g\textsuperscript{th}$ quadrature points on edge $e_i$ and
-$\xi_{h}$ represents the weight associated to the $h\textsuperscript{th}$ quadrature points on face.
-In practice, we can simplify the numerical face integration by using mid-point rule and directly using the cell-averaged transport
-variable for second order accuracy.
+where $\omega_{i,g}$ represents the weight associated to the $g-th$ quadrature points on edge $e_i$ and
+$\xi_{h}$ represents the weight associated to the $h-th$ quadrature points on the cell face.
+In practice, we employ the midpoint rule for the numerical integration over faces.
+This allows us to approximate the face contributions using the cell-averaged transport variables while 
+retaining second-order accuracy.
 
-The adiabatic cooling term is regarded as the ``source" term and is 
-straightforward to implement.
-We then write the corresponding Lax-Friedrich numerical flux of mass composition and enthalpy across the edges 
-in terms of ML-WENO reconstructed values $\mathcal{R}_C$ and $\mathcal{R}_H$ as:
+The adiabatic cooling term $\frac{\alpha_\rho l_0}{c_p} \check{T} \check{\overline{\mathbf{v}}} \cdot \mathbf{g}$ is 
+treated as a ``source" term, which is 
+straightforward to implement within the semi-discretized formulation.
+The corresponding Lax-Friedrichs numerical fluxes of the mass composition and the enthalpy across
+element edges are expressed 
+in terms of the ML-WENO reconstructed values $\mathcal{R}_C$ and $\mathcal{R}_H$ as
 \begin{equation}
+\label{eq:numflux}
 \begin{aligned}
 		  F_C(\mathcal{R}^+_C, \mathcal{R}^-_C) &= \frac{1}{2}\check{\mathbf{v}}_{\text{eff}}\cdot \pmb{\nu}
 		  \Big[\mathcal{R}^+_C + \mathcal{R}^-_C - \alpha_C\big(\mathcal{R}^+_C - \mathcal{R}^-_C\big)\Big],\\
@@ -604,22 +610,193 @@ in terms of ML-WENO reconstructed values $\mathcal{R}_C$ and $\mathcal{R}_H$ as:
 		  \Big[\check{T}^+ + \check{T}^- - \alpha_T \big(\check{T}^+ - \check{T}^-\big)  \Big] - \check{L} (1-\phi)\check{\mathbf{v}}_s\cdot\pmb{\nu},
 \end{aligned}
 \end{equation}
-where $\check{T}^+ = \check{T}(\mathcal{R}^+_H, \mathcal{R}^+_C)$ 
+where $\pmb{\nu}$ is the ourward unit normal of the edge, and $\check{\mathbf{v}}_{\text{eff}}$ and $\check{\overline{\mathbf{v}}}$ 
+denote the effective velocity and phase averaged velocity continuous across the edges.
+The terms $\check{T}^+ = \check{T}(\mathcal{R}^+_H, \mathcal{R}^+_C)$ 
 and $\check{T}^- = \check{T}(\mathcal{R}^+_H, \mathcal{R}^+_C)$ 
-are two temperatures evaluated at both sides of the edge with
-phase package using the reconstructed pointwise mass composition and enthalpy
-values. 
+are temperatures evaluated on both sides of the edge using eutectic
+phase package, based on the reconstructed pointwise the mass composition and the enthalpy
+. The stabilizers $\alpha_C$ and $\alpha_T$ use the local Lax-Friedrich scheme as shown in equation~\eqref{eq:loclf}
+ensuring stability of the flux discretization.
 
-Following the disscussion of obatining a compatible porosity on the edge 
-in section~\ref{sec:disporo}.
+The calculation of the numerical flux~\eqref{eq:numflux} of the mass composition is not 
+entirely straightforward.
+\iffalse
+The primary transport variables of the mass composition and the enthalpy may be
+reconstructed differently due to the presence of discontinuity and distinct phase regions,
+which results in different values of porosity $\phi$ on both sides of the edges.
+In the following simulations, we evaluate porosity on both sides as $\phi^+$ and $\phi^-$ and use
+the harmonic average $\overline{\phi}$ on the edge as the compatible porosity as discussed in section~\ref{sec:disporo}.
+\fi
+The primary transport variables—mass composition and enthalpy—may undergo distinct reconstructions across an edge due 
+to discontinuities and the presence of multiple phase regions. As a consequence,
+the porosity $\phi$ can take different values, denoted $\phi^+ = \phi(\mathcal{R}^+_H, \mathcal{R}^-_C)$ and $\phi^- = \phi(\mathcal{R}^-_H,
+\mathcal{R}^-_C)$.
+To ensure compatibility in the MFEM discretization, we adopt the harmonic average of the two values, as discussed
+previously in Section~\ref{sec:disporo}, and defined the compatible porosity on the edge as
+\begin{equation*}
+		  \overline{\phi}_e = \frac{2\phi_e^{+}\phi_e^{-}}{\phi_e^{+} + \phi_e^{-}}.
+\end{equation*}
+In contrast, the transport of bulk mass compositions represent a relatively smooth advected quantity. 
+A harmonic average would add artificial damping and suppress mixing, while an arithmetic average
+is more suitable without over-penalizing discontinuities. Therefore, we adopt
+\begin{equation}
+c^e = (c^+ + c^-)/2.
+\end{equation}
+We now revisit the definition of effective velocity defined in equation~\eqref{eq:definitioneffvel} 
+with these interface definitions as
+\begin{equation}
+\bold{v}_{\text{eff}} = \frac{c^e_l \overline{\phi} \bold{v}_l + 
+c^e_s(1-\overline{\phi}) \bold{v}_s}{c^e_l\overline{\phi} + c^e_s (1-\overline{\phi})},
+\end{equation}
+where $\overline{\phi}$ is the harmonic-averaged porosity and $c^e_s$, $c^e_l$ are the arithmetic averaged
+mass compositions. 
 
-Some discussion on effective velocity $\mathbf{v}_{\text{eff}}$:
-We now 
+Similarly, the phase averaged velocity required in the enthalpy flux is expressed without ambiguity as
+\begin{equation}
+\check{\overline{\mathbf{v}}} = \overline{\phi}\mathbf{v}_l  + (1-\overline{\phi})\mathbf{v}_s,
+\end{equation}
+where the same harmonic averaged porosity is employed.
+This guarantees that in the limiting case $\phi^+ = 0$ or $\phi^- = 0$, the phase-averaged velocity reduces
+to the solid velocity, thereby preserving the correct physical behavior and preventing artificial
+transport of enthalpy associated with liquid in no-melt regions.
 
-In the phase coupled calculation case, besides the values of porosity, the primary transport variables are 
-also reconstructed differently due to no melt regions and distinct eutectic phase regions. 
-We view it as a nonlinear transport problem and thus employ the local Lax-Friedrich stabilization scheme.
+\subsubsection{Test results}
+Again, for simplicity and efficiency in implementation and computation, we employ
+one-dimensional ML-WENO(3,2) stencils as illustrated in Figure~\ref{fig:1dsten} for 
+both the mass composition and the enthalpy. We use second order SSP Runge-Kutta time
+integration scheme defined in Equation~\eqref{eq:2ndrk} as well.
 
-\subsubsection{Two cases}
-In this section, We presenting two results with different domain lengths and initial conditions
+Case 1: the domain in $y$-direction spans two compaction length $H=2$ with mesh resolution $N=80$.
+We assign an initial condition of the bulk dimensionless mass composition and the bulk dimensionless enthalpy as
+\begin{equation}
+\begin{aligned}
+H &= \left \{ 
+		  \begin{alignedat}{2}
+&2.9 - 2.8y, \quad &&-1.5\leq y < 0,\\
+&2.9 + 2.8\times 1.5, \quad &&-2\leq y < -1.5.
+		  \end{alignedat}
+		  \right.\\
+C &= 0.15 \quad .
+\end{aligned}
+\end{equation}
+Figure~\ref{fig:fullcoupledH2} illustrates the temporal evolution of the primary transport variables - bulk dimensionless
+mass composition and bulk dimensionless enthalpy - along with the corresponding phase calculation determined from 
+the phase package.
+From time $t=2$ to time $t=6$ we observe a transition from phase region $3$ (eutectic melting) to phase region $2$ 
+(solid, no melting phase) 
+near the cut $y=-1.5$.
+The porosity field appears to be highly sensitive to these changes in bulk enthalpy and mass composition, 
+leading to the development of a porosity wave near the upper boundary. This wave subsequently amplifies and 
+ultimately results in an unstable outcome in the numerical solution.
+%We observe that the porosity is very sensitive to
+%the changes in bulk enthalpy and bulk mass composition, and a ``porosity wave" forms near the top boundary and eventually 
+%causes unstable result.
+
+Figure~\ref{fig:fullvelH2} shows three characteristic velocities defined on the element edges: the effective velocity transporting
+chemical species, the phase averaged velocity governing the advection of enthalpy and the solid velocity carrying latent heat.
+The result confirms that
+the local mass conservation is well-preserved as evidenced by the phase averaged velocity remains constant
+under the Boussinesq approximation.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase2t2.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase2t6.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase2t16.eps}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase2t36.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase2t62.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase2t102.eps}
+\caption{Full coupled column testing case $H=2$. Shown at time = 2, 6, 16, 36, 62 and 102. We 
+present porosity, temperature, dimensionless enthalpy, dimensionless mass composition, phase regions and Opx percentage from left to right.}
+\label{fig:fullcoupledH2}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel2t2.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel2t6.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel2t16.eps}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel2t36.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel2t62.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel2t102.eps}
+\caption{Full coupled column testing case $H=2$. Shown at time = 2, 6, 16, 36, 62 and 102. We 
+present effective velocity, phase averaged velocity and solid velocity from left to right.}
+\label{fig:fullvelH2}
+\end{figure}
+
+\clearpage
+
+Case 2: the domain in $y$-direction spans $0.25$ compaction length $H=0.25$ with mesh resolution $N=80$. 
+We assign the same initial condition of the bulk dimensionless mass composition and a similar initial condition
+of the bulk dimensionless enthalpy with different cutoff as
+\begin{equation}
+\begin{aligned}
+H &= \left \{ 
+		  \begin{alignedat}{2}
+&2.9 - 2.8y, \quad &&-0.2\leq y < 0,\\
+&2.9 + 2.8\times 0.2, \quad &&-0.25\leq y < -0.2.
+		  \end{alignedat}
+		  \right.\\
+C &= 0.15 \quad .
+\end{aligned}
+\end{equation}
+Figure~\ref{fig:fullcoupledH025} illustrates the temporal evolution of the primary transport variables - bulk dimensionless
+mass composition and bulk dimensionless enthalpy - along with the corresponding phase calculation determined from 
+the phase package. Between time $t=10$, time $t=26$ and time $t=40$, the system undergoes successive transitions:
+initially from Phase Region 3 to Phase Region 2, and subsequently returning to Phase Region 3.
+These transitions occur while maintaining numerical stability throughout the simulation, illustrating the ability of our framework
+to handle transition between melting and no melting zones.
+%we observe transition form phase region $3$ to phase region $2$
+%then back to phase region $3$ again while maintain stable solutions.
+The system reaches steady state at time $t = 240$, while a notable accumulation of porosity remains concentrated near 
+the top boundary.
+
+Figure~\ref{fig:fullvelH025} again presents the three characteristic velocities defined on the element edges: the effective 
+velocity transporting
+chemical species, the phase averaged velocity governing the advection of enthalpy and the solid velocity carrying latent heat.
+As the simulation progresses, the effective velocity exhibits a marked increase near the top boundary, consistent with the 
+porosity accumulation observed in Figure~\ref{fig:fullcoupledH025}.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase025t2.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase025t10.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase025t26.eps}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase025t40.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase025t240.eps}
+\caption{Full coupled column testing case $H=0.25$. Shown at time = 2, 10, 26, 40, and 240. We 
+present porosity, temperature, dimensionless enthalpy, dimensionless mass composition, phase regions and Opx percentage from left to right.}
+\label{fig:fullcoupledH025}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel025t2.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel025t10.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel025t26.eps}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel025t40.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/vel025t240.eps}
+\caption{Full coupled column testing case $H=0.25$. Shown at time = 2, 10, 26, 40, and 240. We 
+present effective velocity, phase averaged velocity and solid velocity from left to right.}
+\label{fig:fullvelH025}
+\end{figure}
 
