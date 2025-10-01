@@ -25,7 +25,7 @@ where we assume the domain $\Omega \subset \mathbb{R}^2$. The term $\mathbf{f}$ 
 the flux transporting the scalar variable $u$.
 The basic semi-discretized formulation of the finite volume method can be written as
 \begin{equation}
-		  \frac{\partial \overline{u}_E}{\partial t} + \frac{1}{\lvert E \rvert}\int_{\partial E} \mathbf{F}(\mathbf{x},t) \cdot \pmb{\nu}\, d\mathbf{x} = 0,
+		  \frac{\partial \overline{u}_E}{\partial t} + \frac{1}{\lvert E \rvert}\int_{\partial E} F(\mathbf{x},t)\, d\mathbf{x} = 0,
 \end{equation}
 where the cell-averaged value $\overline{u}$ is calculated as
 \begin{equation}\label{eq:cellaveval}
@@ -33,10 +33,10 @@ where the cell-averaged value $\overline{u}$ is calculated as
 		  d\mathbf{x},
 \end{equation}
 where $\lvert E \rvert$ denote the area of the cell $E$.
-Here, $\mathbf{F}(\mathbf{x},t)$ denotes the approximated numerical flux. 
+Here, $F(\mathbf{x},t)$ denotes the approximated numerical flux. 
 We employ the Lax-Friedrichs numerical flux
 \begin{equation}\label{eq:LFflux}
-		  \mathbf{F}(u^+, u^-) = \frac{1}{2}\Big[\big(\mathbf{f}(u^+)+\mathbf{f}(u^-)\big)\cdot \pmb{\nu} - \alpha_{LF}(u^+-u^-)\Big],
+		  F(u^+, u^-) = \frac{1}{2}\Big[\big(\mathbf{f}(u^+)+\mathbf{f}(u^-)\big)\cdot \pmb{\nu} - \alpha_{LF}(u^+-u^-)\Big],
 \end{equation}
 where $u^+$ and $u^-$ denote the values approximated from the perspective of element 
 $E^+ \in \mathcal{T}_h$ and $E^- \in \mathcal{T}_h$ respectively, where
@@ -55,10 +55,10 @@ Depending on the available information about the solution, there are two possibl
 								\bigg\lvert \frac{\partial \mathbf{f}(u^-;\mathbf{x},t) \cdot \pmb{\nu}}{\partial u}\Big\vert_e \bigg\rvert \Bigg).
 \end{equation*}
 \end{itemize}
-The numerical flux $\mathbf{F}$, as defined in equation~\eqref{eq:LFflux}, is consistent and conservative across element interfaces. 
+The numerical flux $F$, as defined in equation~\eqref{eq:LFflux}, is consistent and conservative across element interfaces. 
 We now replace the $u^+$ and $u^-$ with reconstructed values $\mathcal{R}^+$ and $\mathcal{R}^-$ and express the numerical flux as
 \begin{equation}\label{eq:reconstructionflux}
-		  \mathbf{F}(\mathcal{R}^+, \mathcal{R}-) = \frac{1}{2}[(\mathbf{f}(\mathcal{R}^+)+\mathbf{f}(\mathcal{R}^-)\cdot \pmb{\nu} - \alpha_{LF}(\mathcal{R}^+-\mathcal{R}^-)].
+		  F(\mathcal{R}^+, \mathcal{R}-) = \frac{1}{2}[(\mathbf{f}(\mathcal{R}^+)+\mathbf{f}(\mathcal{R}^-)\cdot \pmb{\nu} - \alpha_{LF}(\mathcal{R}^+-\mathcal{R}^-)].
 \end{equation}
 Here, the reconstructed value $\mathcal{R}$ is of higher-order accuracy. We evaluate the
 integrals over each edge $e_i \in \partial E$ with a suitable quadrature rule. 
@@ -66,7 +66,7 @@ Let $\lvert e_i \rvert$ denote the length of edge $e_i$.
 Assuming a quadrature rule with $G$ point per edge, the semi-discretized formulation becomes:
 \begin{equation}\label{eq:fvdis}
 		  \frac{\partial \overline{u}_{E}}{\partial t} + \sum_{i=0}^4\frac{\lvert e_i \rvert}{\lvert E \rvert}
-		  \sum_{g=0}^G \omega_{i,g} \mathbf{F}(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-)\cdot \pmb{\nu}_i = 0,
+		  \sum_{g=0}^G \omega_{i,g} F(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-) = 0,
 \end{equation}
 where $\omega_{i,g}$ represents the weight associated to the $g\textsuperscript{th}$ quadrature points on edge $e_i$.
 

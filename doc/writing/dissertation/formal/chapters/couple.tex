@@ -80,6 +80,7 @@ The complete procedure is summarized as a coupled solver in Algorithm~\ref{alg:c
 \end{algorithm}
 
 \subsection{Discontinuous Porosity}
+\label{sec:disporo}
 Due to the presence of no melt regions and distinct eutectic phase regions, 
 the reconstructed values of the dimensionless enthalpy and mass concentration may 
 differ on the two sides of an edge shared by adjacent elements.
@@ -579,25 +580,41 @@ This approach maintains the internal consistency of the coupled MFEM–FVM solve
 melt migration, porosity evolution and phase transitions, while reducing computational complexity.
 
 \subsubsection{Numerical Flux}
-We modify the semi-discretized formulation shown in equation~\eqref{eq:fvdis} to include the ``Source" term $S$ as
+We modify the semi-discretized formulation of a general conservation law shown in equation~\eqref{eq:fvdis} to include the ``Source" term $S$ as
 \begin{equation}\label{eq:fvdis}
 		  \frac{\partial \overline{u}_{E}}{\partial t} + \sum_{i=0}^4\frac{\lvert e_i \rvert}{\lvert E \rvert}
-		  \sum_{g=0}^G \omega_{i,g} \mathbf{F}(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-)\cdot \pmb{\nu}_i  
+		  \sum_{g=0}^G \omega_{i,g} F(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-)\cdot \pmb{\nu}_i  
 		  + \sum^H_{h=0}\xi_{h} S(\mathcal{R}_h) = 0,
 \end{equation}
 where $\omega_{i,g}$ represents the weight associated to the $g\textsuperscript{th}$ quadrature points on edge $e_i$ and
 $\xi_{h}$ represents the weight associated to the $h\textsuperscript{th}$ quadrature points on face.
-In addition, we can simplify the numerical integration by using mid-point rule and directly using the cell-averaged transport
+In practice, we can simplify the numerical face integration by using mid-point rule and directly using the cell-averaged transport
 variable for second order accuracy.
 
+The adiabatic cooling term is regarded as the ``source" term and is 
+straightforward to implement.
 We then write the corresponding Lax-Friedrich numerical flux of mass composition and enthalpy across the edges 
 in terms of ML-WENO reconstructed values $\mathcal{R}_C$ and $\mathcal{R}_H$ as:
 \begin{equation}
 \begin{aligned}
-\mathbf{F}_C(\mathcal{R}^+_C, \mathcal{R}^-_C) &= \frac{1}{2} \check{\mathbf{v}}_{\text{eff}}\cdot \pmb{\nu}\\
-\mathbf{F}_H(\mathcal{R}^+_H, \mathcal{R}^-_H) &=
+		  F_C(\mathcal{R}^+_C, \mathcal{R}^-_C) &= \frac{1}{2}\check{\mathbf{v}}_{\text{eff}}\cdot \pmb{\nu}
+		  \Big[\mathcal{R}^+_C + \mathcal{R}^-_C - \alpha_C\big(\mathcal{R}^+_C - \mathcal{R}^-_C\big)\Big],\\
+		  F_H(\mathcal{R}^+_H, \mathcal{R}^-_H) &= 
+		  \frac{1}{2}\check{\overline{\mathbf{v}}}\cdot \pmb{\nu}
+		  \Big[\check{T}^+ + \check{T}^- - \alpha_T \big(\check{T}^+ - \check{T}^-\big)  \Big] - \check{L} (1-\phi)\check{\mathbf{v}}_s\cdot\pmb{\nu},
 \end{aligned}
 \end{equation}
+where $\check{T}^+ = \check{T}(\mathcal{R}^+_H, \mathcal{R}^+_C)$ 
+and $\check{T}^- = \check{T}(\mathcal{R}^+_H, \mathcal{R}^+_C)$ 
+are two temperatures evaluated at both sides of the edge with
+phase package using the reconstructed pointwise mass composition and enthalpy
+values. 
+
+Following the disscussion of obatining a compatible porosity on the edge 
+in section~\ref{sec:disporo}.
+
+Some discussion on effective velocity $\mathbf{v}_{\text{eff}}$:
+We now 
 
 In the phase coupled calculation case, besides the values of porosity, the primary transport variables are 
 also reconstructed differently due to no melt regions and distinct eutectic phase regions. 
