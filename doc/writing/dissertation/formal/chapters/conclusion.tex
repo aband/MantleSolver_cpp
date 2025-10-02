@@ -1,46 +1,85 @@
 \chapter{Conclusion and Future Work}
 
 \section{Conclusion}
-In this work, we present a physics model capturing three key aspects of a 
-two-phase partially molten mantle: (1) a degenerate Darcy–Stokes system 
+In this work, we first present a physics model capturing three key aspects of a 
+two-phase, partially molten mantle system: (1) a degenerate Darcy–Stokes system 
 describing the static mechanical behavior, (2) a nonlinear  
 system governing the transport of chemical species and thermal energy, 
-and (3) a eutectic phase relation characterizing melting processes.
-We develop a local mass conservative numerical framework to address this 
-complicated multiphysics system. 
+and (3) a eutectic phase relation characterizing phase transitions.
+Building upon these governing principles, we develop a locally mass conservative 
+numerical framework that is capable of resolving the coupled multiphysics interactions, 
+with particular emphasis on accurately modeling melt extraction and properly handling degeneracies in regions devoid of melt.
 
-For the static mechanics system, we introduce an $H(\text{div})$-and an $H^1$- 
-conforming mixed finite element spaces for Darcy and Stokes subproblems 
-respectively. The mixed finite element spaces are constructed using a noval 
-direct serendipity space tailored for quadrilateral mesh.  
-A modified Bernardi–Raugel element is developed and analyzed. 
-We provide detailed proofs of its stability and approximation properties.
-A new modified uzawa iterative method is implemented to solve the 
-singular saddle 
-point problem induced by this degenerate coupled system. 
+For the degenerate Darcy-Stokes system describing the static mechanics system, 
+we introduce an $H(\text{div})$-and an $H^1$- 
+conforming mixed finite element spaces for the Darcy and the Stokes subproblems 
+respectively based on the mathematical theory developed in~\cite{DegenerateDarcy}. 
+\iffalse
+We construct the mixed finite element spaces with the first and second
+order direct serendipity space designed for quadrilateral mesh.
+The $H(\text{div}$ conforming space relates to the direct serendipity space
+by de Rham theory.
+We proposed a new modified Bernardi-Raugel element for the $H^1$ conforming mixed space.
+We prove the stability and approximation properties for this new modified mixed finite element.
+The resulting saddle point system induced by this degenerate Darcy-Stokes system is 
+solved by a modified Uzawa iterative solver.
+\fi
+Specifically, we employ the first- and second-order direct serendipity spaces designed for the quadrilateral mesh.
+The $H(\text{div})$-conforming space relates to the direct serendipity space through the de Rham complex. 
+For the $H^1$-conforming component, 
+we propose a modified Bernardi–Raugel element. We prove the stability and approximation properties of this 
+new element. The resulting saddle point system, arising from the coupling of the 
+degenerate Darcy–Stokes equations, is solved using a modified Uzawa iterative method. 
 
 To address the nonlinear transport of chemical species and energy in the 
-presence of porous media, we study and modify the weighted essentially 
-non-oscillatory (WENO) method.
-We propose two simple alternatives to accelerate the evaluation of the 
-smoothness indicator. Additionally, we develop a new multilevel WENO weighting 
-scheme that is more versatile and flexible, allowing the combination of 
-arbitrary stencils of different orders.
+presence of a porous media, we adopt and modify the weighted essentially 
+non-oscillatory (WENO) method. In particular, 
+we propose two alternatives to the classic Jiang-Shu smoothness indicator in order to 
+reduce computational cost (see~\cite{WENOAOSimplifiedSmoothness} and~\cite{sigmaP}. 
+Furthermore, we introduce a novel multilevel WENO weighting 
+scheme (see~\cite{MultiLevelWeno}) that is more versatile and flexible, allowing the combination of 
+arbitrary stencils of different orders and thus be more capable of dealing with the complicated
+multiphysics problems encountered and coupling with MFEM solver on the same mesh.
 
-We advance the multiphysics system by incorporating a eutectic phase module that
- couples compositional and thermal information with porosity, thereby capturing 
-the evolution of porosity and phase transitions.
+Finally, we connect and advance the multiphysics system by incorporating a eutectic phase module that
+ couples bulk mass composition and thermal energy information with porosity to dynamically capture
+both the evolution of porosity and phase transitions.
+This module closes the feedback loop between mechanical, transport, and phase processes, 
+enabling fully coupled simulations of partially molten mantle dynamics.
 
-The code is implemented in C/C++ along with PETSc, 
-and is designed to be easily adapted 
-for large-scale parallel execution on supercomputers,
- with the potential to support general unstructured meshes.
+The computational framework is implemented in C/C++ with PETSc, where, apart from basic linear solvers and 
+standard data management utilities, all components of the numerical algorithms and multiphysics coupling 
+strategies were designed and coded by the author.
 
 \section{Future Work}
 
-We propose to use the new framework to sovle some important problem, 
-targeting applicatoins in simulation of partial melting materials, not 
-partial molten mantle but glacier as well.
+\iffalse
+We propose to further polish and complete the numerical framework to make it more stable, versatile 
+and user-friendly. This numerical framework has the potential to be combined with high performance 
+computing and be extended to a more general mesh that can handle more complicated geometry.
+We propose to complete large scale simulations in the future.
 
-We also propose to extend our framework to three-dimensional and 
-general unstructured mesh.
+In the future, we also propose to use this new framework to further investigate geological meaningful problems.
+We propose to apply this numerical framework to a more complicated geophysical settings, e.g., the style of
+melt extraction in subduction zones are less known than at mid ocean ridges.
+This code can also be extended to more two-phase partial melting materials such as glacier and metal 
+casting problems with different phase package and constitutive laws.
+\fi
+We propose to enhance the stability, versatility, and usability of the framework. This may include incorporating 
+additional stabilization techniques, improving the coupling strategies between multiphysics components, and extending 
+the implementation to general unstructured meshes. Such improvements will enable the framework to address problems 
+involving complex geological geometries. Furthermore, integration with high-performance computing architectures will 
+allow large-scale simulations.
+
+Moreover, the framework opens the possibility of addressing geologically significant problems that remain poorly understood. 
+For example, while melt extraction at mid-ocean ridges has been extensively studied, the style and spatial 
+variability of melt extraction in subduction zones are less constrained. Applying the present framework to such 
+settings may provide new insights into problems like the relationship between melt generation and devolatilization of the slab
+and melt migration pathways,thereby contributing to a more complete understanding of volatile cycling and magma genesis in 
+subduction settings.
+
+Finally, the generality of the framework lends itself to applications beyond mantle dynamics. 
+With appropriate modifications to the phase relations and constitutive laws, it can be adapted to study a wide range 
+of two-phase partially molten systems, including problems such as glacial melting, and industrial processes such as 
+eutectic alloy solidification. Such extensions would further demonstrate the flexibility and broad applicability of the numerical 
+methodology developed in this work.
