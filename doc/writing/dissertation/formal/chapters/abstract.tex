@@ -1,1 +1,15 @@
-Your abstract goes here. Do not use \verb|\abstract|!
+This dissertation develops a multiphysics framework for modeling two-phase mantle dynamics with partial melting, 
+emphasizing the handling of the degeneracy arising in no-melt regions and the relative movement between solid mantle and liquid magma. 
+The model couples a degenerate Darcy–Stokes system describing static mechanics, a nonlinear transport system for 
+chemical species and thermal energy, and a eutectic phase relation.
+
+New mixed finite element spaces are introduced for the Darcy-Stokes system, including an $H(\text{div})$-conforming finite element space 
+for the Darcy flow and a 
+modified Bernardi–Raugel finite element for the Stokes flow. Stability and approximation properties are established. The resulting saddle point system 
+is solved by a modified Uzawa method. For nonlinear transport, we propose a new multilevel weighted essentially non-oscillatory (ML-WENO) reconstruction
+scheme.
+Coupling with the eutectic phase module links composition and enthalpy to porosity evolution, which closes the feedback loop between mechanical, transport,
+and phase processes.
+
+Numerical experiments validate the method. Simplified melting functions reproduce compaction-driven porosity waves, while fully coupled simulations capture 
+phase transitions and porosity channel formation in upwelling columns, demonstrating both stability and accuracy of the approach.
