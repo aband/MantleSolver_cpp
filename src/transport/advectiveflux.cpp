@@ -108,6 +108,7 @@ double edgefluxintegral(const MeshInfo& mi,
                         multilevel& ml,
                         mluse& use,
                         double ** lu){
+    // This function was used at the outflow boundary
 
     double work = 0.0;
 
@@ -118,7 +119,7 @@ double edgefluxintegral(const MeshInfo& mi,
     // Get edge lendth and unit vector normal to the given edge
     double len = length(edge);
     vertex unitNormal = UnitNormal(edge,len);
-
+//cout << "Unit normal vector computed as : " << unitNormal[0] << "  " << unitNormal[1] << endl;
     for (int g=0; g<gpe.size(); g++){
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
         double u  = use.eval(mapped, ml, location(mi,gcell), 

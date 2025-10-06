@@ -53,6 +53,7 @@ standard data management utilities, all components of the numerical algorithms a
 strategies were designed and coded by the author.
 
 \section{Conclusions}
+\iffalse
 In this dissertation, we exhibited that the $H(\text{div})$- and $H^1$- conforming MFEM solver 
 seemlessly handles no-melt regions stable and efficiently. Numerical experiment shows 
 second order accuracy in velocity and first order convergence in pressure.
@@ -64,6 +65,41 @@ The boundary condition was important for physical results and numerical stabilit
 When phase package was involved in the calculation of porosity, it was very sensitive to
 the changes in mass composition and enthalpy, which result in time step smaller than 
 usual. Complicated porosity was simulated accuratly.
+
+In this dissertation,
+the new Bernardi-Raugel element achieved the correct rate of convergence on non-rectangular grids.
+We then demonstrated that the $H(\text{div})$- and $H^1$-conforming mixed finite element 
+two-phase Darcy-Stokes solver can seamlessly 
+and robustly handle degeneracy induced by the no-melt regions with both stability and efficiency.
+Numerical experiments confirmed the second-order accuracy in velocity and the first-order accuracy in pressure
+with manufactured pseudo one-dimension problems. 
+We further showed that the newly developed multilevel WENO (ML-WENO) reconstruction scheme effectively 
+captures complex transport phenomena and handles different boundary conditions stably. 
+\fi
+In this dissertation, we developed and analyzed a new Bernardi–Raugel element that achieves the correct 
+rate of convergence on a non-rectangular quadrilateral mesh. We then demonstrated that the $H(\text{div})$- and $H^1$-conforming 
+mixed finite element two-phase Darcy–Stokes solver can seamlessly and robustly handle the degeneracy induced by no-melt regions 
+while maintaining both stability and computational efficiency. Numerical experiments using manufactured pseudo–one-dimensional 
+problems confirmed second-order accuracy in velocity and first-order accuracy in pressure. Furthermore, we showed that the newly 
+developed multilevel weighted essentially non-oscillatory (ML-WENO) reconstruction scheme 
+effectively captures complex transport phenomena and handles diverse boundary conditions with stability and accuracy.
+
+\iffalse
+The proposed coupling strategy of the MFEM and the FVM solvers proved to be accurate, stable, and computationally efficient
+with or without the involvement of phase package. 
+The new ML-WENO reconstruction scheme can be stably and efficiently coupled with the Darcy-Stokes MFEM solver. 
+When the phase package was incorporated into the porosity computation, porosity exhibited high sensitivity 
+to variations in mass composition and enthalpy, necessitating smaller time steps. Nevertheless, the 
+framework accurately resolved complex porosity structures and demonstrated robust performance across all tested scenarios.
+Boundary conditions were found to play a critical role in both physical realism and numerical stability.
+\fi
+The proposed coupling strategy between the MFEM and FVM solvers proved to be accurate, stable, and computationally efficient, 
+both with and without the involvement of the phase package. The new ML-WENO reconstruction scheme was shown to couple stably 
+and efficiently with the Darcy–Stokes MFEM solver. When the phase package was incorporated into the porosity computation, porosity 
+exhibited strong sensitivity to variations in mass composition and enthalpy, requiring smaller time steps for stability. 
+Nonetheless, the coupled framework accurately resolved complex porosity structures and demonstrated robust performance across 
+all tested scenarios. Boundary conditions were found to play a critical role in ensuring both the physical realism of the 
+simulations and the numerical stability of the solver.
 
 \section{Future Work}
 
@@ -82,7 +118,7 @@ casting problems with different phase package and constitutive laws.
 We propose to enhance the stability, versatility, and usability of the framework. This may include incorporating 
 additional stabilization techniques, improving the coupling strategies between multiphysics components, and extending 
 the implementation to general unstructured meshes. Such improvements will enable the framework to address problems 
-involving complex geological geometries. Furthermore, integration with high-performance parallel computing architectures will 
+involving complex geological geometries. Furthermore, integration and modification with high-performance parallel computing architectures will 
 allow large-scale simulations.
 
 Moreover, the framework opens the possibility of addressing geologically significant problems that remain poorly understood. 

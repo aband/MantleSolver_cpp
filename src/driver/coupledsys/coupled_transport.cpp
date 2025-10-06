@@ -454,6 +454,7 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
                                       dTdHin, dTdHout, phasevel);
             fluxL  = myPhase->pPtr->LD * edgefluxintegral(hori, 1, solidvel);
         }
+		  //cout << fluxHD << "  " << fluxL << endl;
         horiedgeCD({i,j}) = fluxCD;
         horiedgeHD({i,j}) = fluxHD - fluxL;
 
@@ -524,10 +525,26 @@ int Driver::updateEdgeFlux(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeH
 
         horiedgeCD({i, mi.MPIglobalCellSize[1]}) = fluxCD; 
 
-        double fluxHD = edgefluxintegral(hori, HDin, HDin, TDin, TDin, 
-                                       dTdHin, dTdHin, phasevel) - 
-        myPhase->pPtr->LD * edgefluxintegral(hori, 1, solidvel);
-  
+//        double fluxHD = edgefluxintegral(hori, HDin, HDin, TDin, TDin, 
+//                                       dTdHin, dTdHin, phasevel) - 
+//        myPhase->pPtr->LD * edgefluxintegral(hori, 1, solidvel);
+ 
+        double advectHD = edgefluxintegral(hori, HDin, HDin, TDin, TDin, 
+                                           dTdHin, dTdHin, phasevel);
+        double latent   = myPhase->pPtr->LD * edgefluxintegral(hori, 1, solidvel);
+
+        //cout << advectHD << "  " << latent << endl; 
+
+        double fluxHD = advectHD - latent;
+
+        if (advectHD > 0){
+            advectHD = 0.0;
+        }
+
+        if (latent > 0){
+            latent = 0.0;
+        }
+
         if (fluxHD > 0){
             fluxHD = 0.0;
         }
@@ -668,6 +685,7 @@ int Driver::updateEdgeFlux(const Tensor<vertexSet>& phasevel_vert,
         computephase(gaussp, hori, gcell, allwgtsHD, lHD, allwgtsCD, lCD, 
                      dummy, dummy, dummy, TDin, dTdHin, CDin, HDin);
 
+        cout << mi.MPIglobalCellSize[1] << endl;
         double fluxCD = edgefluxintegral(mi, gcell, hori, allwgtsCD, 
                effvel_hori({i,mi.MPIglobalCellSize[1]}), ml, advection, lCD);
 
