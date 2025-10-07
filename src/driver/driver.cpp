@@ -216,6 +216,14 @@ int Driver::PrepareTransport2D(double (*funcHD)(const valarray<double>& point,
     advection.setmethod("all", method);
     advection.setbias("all");
 
+
+    unordered_map<std::string, vector<indice>> top;
+    top.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    top.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1}, {0,-1}, {0,0}, {-1,0} }));
+
+    advection.setmethod("top", top);
+    advection.setbias("top");
+
     // Compute bottom fixed value
     HDbottom = funcHD({0.0,-1*H_},{myPhase->pp->l0*H_,-0.7*H_});
 

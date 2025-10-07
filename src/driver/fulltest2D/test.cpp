@@ -12,11 +12,11 @@ int main(int argc, char **argv){
     MPI_Comm_rank(PETSC_COMM_WORLD,&rank);
 
     // Input mesh parameter =========================================================
-    int M=4, N=20;
+    int M=20, N=20;
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
-    double L = 0.1, H = 0.4;
+    double L = 0.4, H = 0.4;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
 
@@ -71,7 +71,7 @@ int main(int argc, char **argv){
      * Initialize global cell averaged value vectors.
      * Initialize multi level reconstruction objects
      */
-    driver->PrepareTransport(InitHD, InitCD);
+    driver->PrepareTransport2D(InitHD, InitCD);
 
     printCellCenterGrid(driver->mi);
     printCellAve(1, &driver->globalHD, driver->mi, "HD");

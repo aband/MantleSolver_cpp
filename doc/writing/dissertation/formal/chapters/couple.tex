@@ -3,7 +3,7 @@
 \definecolor{myGreen}{RGB}{114,138,122}
 \definecolor{myYellow}{RGB}{241,208,157}
 
-\chapter{Coupled Simulation}
+\chapter{Coupled Numerical Experiments}
 \iffalse
 Now we couple locally mass conserved MFEM and FVM method together in this chapter and perform coupled numerical simulation for partially molten mantle.
 We discuss implementation details and coupling strategy combining MFEM, FVM and eutectic phase
@@ -107,24 +107,6 @@ where the face integral is converted to an edge integral via the divergence theo
 Importantly, when the porosity on one side of the edge vanishes, 
 the geometric average also becomes zero. This property enforces the physical condition 
 that no liquid can pass directly through an edge adjacent to a no-melt region.
-
-\iffalse
-\subsection{Details of Compaction Length}
-The concept of compaction length was first proposed by~\cite{MagmaPhysics}.
-The phenomenon of compaction is due to the pressure difference between phases,
-which is commonly parametrized by bulk viscosity $\zeta \sim \frac{\eta}{\phi}$.
-
-\subsection{Some Simplifications}
-We solve a simplified equation for the following sections.
-
-\begin{itemize}
-
-\item lithostatic pressure.
-
-\item Ommiting diffusion term for now.
-
-\end{itemize}
-\fi
 
 \section{Pseudo One-Dimensional Column Tests}
 In this section, we test the coupled algorithm on a two-dimensional $M\times N$ grid with a pseudo one-dimensional 
@@ -586,6 +568,27 @@ and energy while permitting realistic advective transport, without imposing rest
 This approach maintains the internal consistency of the coupled MFEM–FVM solver and captures the key dynamics of 
 melt migration, porosity evolution and phase transitions, while reducing computational complexity.
 
+\subsubsection{Compaction Length}
+The compaction length is typically defined as
+\begin{equation}
+\delta_c = \sqrt{\frac{\kappa_\phi(\zeta + 4\eta/3)}{\mu_l}},
+\end{equation}
+where $\zeta$ and $\eta$ are bulk and shear viscosities of the solid mantle, respectively.
+The compaction length an important intrinsic length scale that characterize the interaction between the
+pressure difference and variations in fluid flux (see~\cite{MagmaPhysics} and~\cite{flowindeformableporousp1}).
+
+In this work, we pick a simple constitutive relationship as shown in equation~\eqref{eq:bulkviscosity},
+which is $\zeta = \mu_s/\phi$ in the notation of this section
+and a power-law permeability as $\kappa_\phi = \kappa_0 \phi^2$.
+Assuming that the shear viscosity $\eta$ is much smaller than the bulk viscosity $\zeta$, 
+the appropriately scaled compaction length can be written in terms of the nondimensionalization length scale 
+as
+\begin{equation}
+\label{eq:scaledcompactionl}
+\delta_c = \sqrt{\frac{\kappa_0 \mu_s}{\mu_l} \phi} = l_0 \sqrt{\phi},
+\end{equation}
+where $l_0$ represents the characteristic length scale used in the nondimensionalization.
+
 \subsubsection{Numerical Flux}
 We modify the semi-discretized formulation of a general conservation law, as presented in equation~\eqref{eq:fvdis},
 to incorporate a ``source" term $S$. The resulting expression can be written as
@@ -673,7 +676,7 @@ one-dimensional ML-WENO(3,2) stencils as illustrated in Figure~\ref{fig:1dsten} 
 both the mass composition and the enthalpy. We use second order SSP Runge-Kutta time
 integration scheme defined in Equation~\eqref{eq:2ndrk} as well.
 
-Full coupled column testing case $H=2$: the domain in $y$-direction spans two compaction length $H=2$ with mesh resolution $N=80$.
+Full coupled column testing case $H=2$: the domain in $y$-direction spans two dimensionless length $H=2$ with mesh resolution $N=80$.
 We assign an initial condition of the bulk dimensionless mass composition and the bulk dimensionless enthalpy as
 \begin{equation}
 \begin{aligned}
@@ -694,17 +697,15 @@ From time $t=2$ to time $t=6$ we observe a transition from phase region $3$ (eut
 (solid, no melting phase) 
 near the cut $y=-1.5$.
 The porosity field appears to be highly sensitive to these changes in bulk enthalpy and mass composition, 
-leading to the development of a porosity wave near the upper boundary. This wave- 
-shaped pattern arises from porosity accumulation near boundary, which 
-depletes the mass composition more rapidly than it can be replenished 
-from below. This
-in turn reduces porosity locally and blocks the draining of liquid further down.
-This wave-shaped pattern near the top boundry subsequently amplifies and 
+leading to the development of a porosity wave near the upper boundary. This wave-shaped
+pattern arises from the accumulation of porosity near the top boundary, where the local depletion of mass 
+composition occurs more rapidly than it can be replenished from below.
+This in turn reduces porosity locally and blocks the draining of liquid further down.
+This wave-shaped pattern near the top boundary subsequently amplifies and 
 ultimately results in an unstable outcome in the numerical solution around 
-time $t=120$. The wave-shaped pattern preserves under mesh refinement.
-%We observe that the porosity is very sensitive to
-%the changes in bulk enthalpy and bulk mass composition, and a ``porosity wave" forms near the top boundary and eventually 
-%causes unstable result.
+time $t=130$. 
+The wave-shaped pattern persists under mesh refinement, indicating that it reflects a physical feature of the 
+model, which uses a nonphysical BC, rather than a numerical artifact.
 
 Figure~\ref{fig:fullvelH2} shows three characteristic velocities defined on the element edges: the effective velocity transporting
 chemical species, the phase averaged velocity governing the advection of enthalpy,
@@ -723,6 +724,7 @@ under the Boussinesq approximation.
 \begin{figure}[htb]
 \centering
 \includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase2t36.eps}
+\vspace*{-0.2cm}
 \includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase2t62.eps}
 \includegraphics[width=15cm,height=6.5cm]{chapters/pics/phase2t102.eps}
 \caption{Full coupled column testing case $H=2$. Shown at time = 2, 6, 16, 36, 62 and 102. We 
@@ -749,7 +751,7 @@ present effective velocity, phase averaged velocity and solid velocity from left
 
 \clearpage
 
-Case 2: the domain in $y$-direction spans $0.25$ compaction length $H=0.25$ with mesh resolution $N=80$. 
+Case 2: the domain in $y$-direction spans $0.25$ dimensionless length $H=0.25$ with mesh resolution $N=80$. 
 We assign the same initial condition of the bulk dimensionless mass composition and a similar initial condition
 of the bulk dimensionless enthalpy with different cutoff as
 \begin{equation}
@@ -763,8 +765,9 @@ H &= \left \{
 C &= 0.15 \quad .
 \end{aligned}
 \end{equation}
-Figure~\ref{fig:fullcoupledH025} illustrates the temporal evolution of the primary transport variables - bulk dimensionless
-mass composition and bulk dimensionless enthalpy - along with the corresponding phase calculation determined from 
+
+Figure~\ref{fig:fullcoupledH025} illustrates the temporal evolution of the primary transport variables, bulk dimensionless
+mass composition and bulk dimensionless enthalpy, along with the corresponding phase calculation determined from 
 the phase package. Between time $t=10$, time $t=26$ and time $t=40$, the system undergoes successive transitions:
 initially from Phase Region 3 to Phase Region 2, and subsequently returning to Phase Region 3.
 These transitions occur while maintaining numerical stability throughout the simulation, illustrating the ability of our framework
@@ -772,7 +775,8 @@ to handle transition between melting and no melting zones.
 %we observe transition form phase region $3$ to phase region $2$
 %then back to phase region $3$ again while maintain stable solutions.
 The system reaches steady state at time $t = 240$, while a notable accumulation of porosity remains concentrated near 
-the top boundary.
+the top boundary. The instability encountered in the previous larger domain does not arise in this case, as the overall
+porosity is smaller.
 
 Figure~\ref{fig:fullvelH025} again presents the three characteristic velocities defined on the element edges: the effective 
 velocity transporting

@@ -1,41 +1,14 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Arbogast et~al.(2017)Arbogast, Hesse, and Taicher]{DegenerateDarcy}
-T.~Arbogast, M.~A. Hesse, and A.~L. Taicher.
-\newblock Mixed methods for two-phase {D}arcy-{S}tokes mixtures of partially
-  melted materials with regions of zero porosity.
-\newblock \emph{SIAM J. Sci. Comput.}, 39\penalty0 (2):\penalty0 B375--B402,
-  2017.
-\newblock {DOI} 10.1137/16M1091095.
-
-\bibitem[Arbogast et~al.(2024)Arbogast, Huang, and Tian]{MultiLevelWeno}
-Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian.
-\newblock A finite volume multilevel weno scheme for multidimensional scalar
-  conservation laws.
-\newblock \emph{Comput. Methods Appl. Mech. Engrg.}, 421, 2024.
-
-\bibitem[Arbogast et~al.(2025)Arbogast, Huang, Tian, and M.Gray]{sigmaP}
-Todd Arbogast, Chieh-Sen Huang, Chenyu Tian, and Gabirel M.Gray.
-\newblock An efficient and accurate approximation to the classic polynomial
-  smoothness indicator.
-\newblock \emph{Submitted.}, 2025.
-
 \bibitem[Hewitt and Fowler(2008)]{PartialMeltinginUpwellingMantleColumn}
 I.J Hewitt and A.C Fowler.
 \newblock Partial melting in an upwelling mantle column.
 \newblock \emph{Proc. R. Soc. A}, 464:\penalty0 2467--2491, 2008.
-
-\bibitem[Huang et~al.(2023)Huang, Arbogast, and
-  Tian]{WENOAOSimplifiedSmoothness}
-Chieh-Sen Huang, Todd Arbogast, and Chenyu Tian.
-\newblock Multidimensional weno-ao reconstructions using a simplified
-  smoothness indicator and applications to conservation laws.
-\newblock \emph{J. Sci. Comput.}, 97, 2023.
 
 \bibitem[Katz(2008)]{MagmaDynamicsEnthalpyMethod}
 Richard~F. Katz.
@@ -48,5 +21,21 @@ Richard~F. Katz.
 \newblock \emph{The Dynamics of Partially Molten Rock}.
 \newblock Princeton University Press, 1st edition, 2022.
 \newblock ISBN 9780691232645.
+
+\bibitem[Mckenzie(1984)]{MagmaPhysics}
+Dan Mckenzie.
+\newblock The generation and compaction of partially molten rock.
+\newblock \emph{Journal of Petrology}, 25:\penalty0 713--765, 1984.
+
+\bibitem[Spiegelman(1993)]{flowindeformableporousp1}
+Marc Spiegelman.
+\newblock Flow in deformabla porous media. part 1. simple analysis.
+\newblock \emph{Journal of Fluid Mechanics}, 247:\penalty0 17--38, 1993.
+
+\bibitem[Spiegelman(1996)]{GeochemicalConsequence}
+Marc Spiegelman.
+\newblock Geochemical consequences of melt transport in 2-d: The sensitivity of
+  trace elements to mantle dynamics.
+\newblock \emph{Earth and Planetary Science Letters}, pages 115--132, 1996.
 
 \end{thebibliography}
