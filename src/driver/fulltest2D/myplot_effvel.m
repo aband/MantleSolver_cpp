@@ -38,13 +38,13 @@ fileID = fopen(filename, 'r');
 vy = fscanf(fileID, '%f', [1,Inf]);
 vy = reshape(vy, M, N);
 
-subplot(2,3,1)
+subplot(1,3,1)
 quiver(pX, pY, vx, vy);
 %title(["Effective velocity", num2str(k)])
 title(["Effective velocity"])
 
-subplot(2,3,4)
-plot(vy(4,:), pY(4,:), 'LineWidth', 3);
+%subplot(2,3,4)
+%plot(vy(4,:), pY(4,:), 'LineWidth', 3);
 
 filename = strcat('build/phasevelx',string(k));
 filename = strcat(filename,'.dat')
@@ -58,14 +58,14 @@ fileID = fopen(filename, 'r');
 vy = fscanf(fileID, '%f', [1,Inf]);
 vy = reshape(vy, M, N);
 
-subplot(2,3,2)
+subplot(1,3,2)
 quiver(pX, pY, vx, vy);
 %title(["Phase averaged velocity", num2str(k)])
 title(["Phase averaged velocity"])
 
-subplot(2,3,5)
-plot(vy(4,:), pY(4,:), 'LineWidth', 3);
-xlim([-1,1])
+%subplot(2,3,5)
+%plot(vy(4,:), pY(4,:), 'LineWidth', 3);
+%xlim([-1,1])
 
 filename = strcat('build/solidvely',string(k));
 filename = strcat(filename,'.dat');
@@ -73,15 +73,15 @@ fileID = fopen(filename, 'r');
 vy = fscanf(fileID, '%f', [1,Inf]);
 vy = reshape(vy, M, N);
 
-subplot(2,3,3)
+subplot(1,3,3)
 quiver(pX, pY, vx, vy);
 %title(["Solid velocity", num2str(k)])
 title(["Solid velocity"])
 
-subplot(2,3,6)
-plot(vy(4,:), pY(4,:), 'LineWidth', 3);
+%subplot(2,3,6)
+%plot(vy(4,:), pY(4,:), 'LineWidth', 3);
 
-time = 0.01*k*400;
+time = 0.1*k*10;
 
 mytitle = strcat('Time = ', string(time));
 

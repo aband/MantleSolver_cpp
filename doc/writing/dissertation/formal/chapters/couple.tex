@@ -4,6 +4,7 @@
 \definecolor{myYellow}{RGB}{241,208,157}
 
 \chapter{Coupled Numerical Experiments}
+\label{chap:coupled}
 \iffalse
 Now we couple locally mass conserved MFEM and FVM method together in this chapter and perform coupled numerical simulation for partially molten mantle.
 We discuss implementation details and coupling strategy combining MFEM, FVM and eutectic phase
@@ -23,10 +24,11 @@ We describe the implementation details and coupling strategy that integrate the 
 FVM, and the eutectic phase package. Before tackling the fully coupled problem, we first examine an alternative
 porosity evolution scenario based on a prescribed melting rate. We then 
 present an example that combines the MFEM, FVM, and eutectic phase package
-into a fully coupled computation. The discussion begins with pseudo-1D
-scenarios and subsequently extends to full 2D simulations.
+into a fully coupled computation. The discussion restricts to pseudo-1D
+scenarios and subsequently extends to full 2D simulations in the future work.
 
 \section{Coupled Algorithm}
+\label{sec:coupledalgo}
 Let $\mathcal{U}^n=(C^n, H^n)$ denote the cell-averaged solution to the transport system~\eqref{dimensionlesstransport} at time $t^n$. 
 Similarly, let $\mathcal{V}^n=(\check{\mathbf{v}}_{r}^n,\check{\mathbf{v}}_{s}^n,\check{q}_{l}^n,\check{q}_s^n)$ 
 represent the solution to the Darcy-Stokes system at the same time $t^n$. Finally, let 
@@ -109,6 +111,7 @@ the geometric average also becomes zero. This property enforces the physical con
 that no liquid can pass directly through an edge adjacent to a no-melt region.
 
 \section{Pseudo One-Dimensional Column Tests}
+\label{sec:pseudo1d}
 In this section, we test the coupled algorithm on a two-dimensional $M\times N$ grid with a pseudo one-dimensional 
 compaction column problem.
 We study a compacting column aligned along the $y$-direction, defined over the domain $y\in[-H,0]$ and

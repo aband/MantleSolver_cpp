@@ -16,7 +16,7 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
-    double L = 0.4, H = 0.4;
+    double L = 2, H = 2;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
 
@@ -140,7 +140,7 @@ int main(int argc, char **argv){
     /**!
      * Actual time stepping.
      */
-    driver->RK(dt, Tmax, maxIter, tolUzawa);
+    driver->RK2D(dt, Tmax, maxIter, tolUzawa);
     //driver->SSP2RK(dt, Tmax, maxIter, tolUzawa, interval);
     //driver->SSP2RK_Pause(dt, Tmax, maxIter, tolUzawa, interval);
     //driver->RK_Pause(dt, Tmax, maxIter, tolUzawa, interval);

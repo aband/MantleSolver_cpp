@@ -135,6 +135,8 @@ class Driver {
          */
        int RK(double dt, double Tmax, int maxIter, double tolUzawa);
 
+       int RK2D(double dt, double Tmax, int maxIter, double tolUzawa);
+
        int RK_Pause(double dt, double Tmax, int maxIter, 
                     double tolUzawa, int interval);
 
@@ -433,6 +435,11 @@ class Driver {
                           const Tensor<weights>& allwgtsHD, double ** lHD,
                           const Tensor<weights>& allwgtsCD, double ** lCD);
 
+       int updateEdgeFlux2D(Tensor<double>& vertedgeHD, Tensor<double>& horiedgeHD,
+                            Tensor<double>& vertedgeCD, Tensor<double>& horiedgeCD,
+                            const Tensor<weights>& allwgtsHD, double ** lHD,
+                            const Tensor<weights>& allwgtsCD, double ** lCD);
+
        int updateEdgeFlux(const Tensor<vertexSet>& phasevel_vert, 
                           const Tensor<vertexSet>& phasevel_hori, 
                           const Tensor<vertexSet>& effvel_vert, 
@@ -471,6 +478,10 @@ class Driver {
        int getflux(const Tensor<weights>& allwgtsHD, double ** lHD, 
                    const Tensor<weights>& allwgtsCD, double ** lCD, 
                    double **lfHD, double** lfCD);
+
+       int getflux2D(const Tensor<weights>& allwgtsHD, double ** lHD, 
+                     const Tensor<weights>& allwgtsCD, double ** lCD, 
+                     double **lfHD, double** lfCD);
 
        int getflux(const Tensor<vertexSet>& phasevel_vert, 
                    const Tensor<vertexSet>& phasevel_hori, 
