@@ -588,6 +588,10 @@ as
 \delta_c = \sqrt{\frac{\kappa_0 \mu_s}{\mu_l} \phi} = l_0 \sqrt{\phi},
 \end{equation}
 where $l_0$ represents the characteristic length scale used in the nondimensionalization.
+Thus $\delta_c = \delta(\phi)$ depends on the (evolving) porosity. 
+In geological settings, a constant reference porosity is typically prescribed to define the compaction length. 
+However, this assumption is not adopted in the present study, hence we use dimensionless length in the 
+subsequent plots.
 
 \subsubsection{Numerical Flux}
 We modify the semi-discretized formulation of a general conservation law, as presented in equation~\eqref{eq:fvdis},
@@ -676,7 +680,7 @@ one-dimensional ML-WENO(3,2) stencils as illustrated in Figure~\ref{fig:1dsten} 
 both the mass composition and the enthalpy. We use second order SSP Runge-Kutta time
 integration scheme defined in Equation~\eqref{eq:2ndrk} as well.
 
-Full coupled column testing case $H=2$: the domain in $y$-direction spans two dimensionless length $H=2$ with mesh resolution $N=80$.
+Full coupled column testing case $H=2$: The domain in the $y$-direction spans two dimensionless length $H=2$ with mesh resolution $N=80$.
 We assign an initial condition of the bulk dimensionless mass composition and the bulk dimensionless enthalpy as
 \begin{equation}
 \begin{aligned}
@@ -751,7 +755,7 @@ present effective velocity, phase averaged velocity and solid velocity from left
 
 \clearpage
 
-Case 2: the domain in $y$-direction spans $0.25$ dimensionless length $H=0.25$ with mesh resolution $N=80$. 
+Full coupled column testing case $H=0.25$: The domain in the $y$-direction spans $0.25$ dimensionless length $H=0.25$ with mesh resolution $N=80$. 
 We assign the same initial condition of the bulk dimensionless mass composition and a similar initial condition
 of the bulk dimensionless enthalpy with different cutoff as
 \begin{equation}
@@ -768,7 +772,7 @@ C &= 0.15 \quad .
 
 Figure~\ref{fig:fullcoupledH025} illustrates the temporal evolution of the primary transport variables, bulk dimensionless
 mass composition and bulk dimensionless enthalpy, along with the corresponding phase calculation determined from 
-the phase package. Between time $t=10$, time $t=26$ and time $t=40$, the system undergoes successive transitions:
+the phase package. Between time $t=10$, $26$ and $40$, the system undergoes successive transitions:
 initially from Phase Region 3 to Phase Region 2, and subsequently returning to Phase Region 3.
 These transitions occur while maintaining numerical stability throughout the simulation, illustrating the ability of our framework
 to handle transition between melting and no melting zones.
