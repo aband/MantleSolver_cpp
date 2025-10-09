@@ -685,7 +685,7 @@ int Driver::updateEdgeFlux2D(Tensor<double>& vertedgeHD, Tensor<double>& horiedg
                           TDin, TDout, dTdHin, dTdHout, CDin, CDout, HDin, HDout,
 								  nonlinuin, nonlinuout, nonlinfin, nonlinfout, nonlindfduin, nonlindfduout, nonlinvel);
 
-            fluxCD = edgefluxintegral(hori, nonlinuin, nonlinuout, nonlinfin, nonlinfout, nonlindfduin, nonlindfduout, nonlinvel);
+            fluxCD = edgefluxintegral(vert, nonlinuin, nonlinuout, nonlinfin, nonlinfout, nonlindfduin, nonlindfduout, nonlinvel);
 
             fluxHD = edgefluxintegral(vert, HDin, HDout, TDin, TDout, 
                                       dTdHin, dTdHout, phasevel);

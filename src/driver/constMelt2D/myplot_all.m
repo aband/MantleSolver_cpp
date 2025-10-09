@@ -39,7 +39,7 @@ porosity = reshape(porosity, M, N);
 subplot(1,3,1)
 %plot(porosity(2,:), pY(2,:), 'LineWidth',3);
 %xlim([0,0.1])
-surf(porosity,pX,pY)
+surf(pX, pY, porosity)
 title('porosity')
 ylabel('Depth');
 
@@ -59,16 +59,16 @@ stokespressure = reshape(stokespressure, M, N);
 
 subplot(1,3,2)
 %plot(-darcypressure(2,:), pY(2,:), 'LineWidth',3);
-surf(darcypressure,pX,pY);
+surf(pX, pY, darcypressure);
 title('Darcy Pressure')
 %hold on
 subplot(1,3,2)
-surf(stokespressure,pX,pY);
+surf(pX, pY, stokespressure);
 %plot(stokespressure(2,:), pY(2,:),'--','LineWidth',3);
 %hold off
 title('Stokes Pressure')
 ylabel('Depth');
-legend('Darcy Pressure','Stokes Pressure');
+%legend('Darcy Pressure','Stokes Pressure');
 
 %subplot(1,4,4)
 %plot(stokespressure(2,cut:end)+darcypressure(2,cut:end), pY(2,cut:end), 'LineWidth', 3);

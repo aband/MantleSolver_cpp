@@ -132,9 +132,22 @@ int Driver::updateEdgeFlux_case(Tensor<double>& vertedge, Tensor<double>& horied
 
         horiedge({i,j}) = flux;
 
-        // 1D problem
-        vertedge({i,j}) = 0.0;   
+        vertexSet vert {corners.at(3), corners.at(0)};
 
+        // 2D problem
+        if (i==0){
+            flux = 0.0;
+        } else { 
+
+           cellout = gcell + mi.faceNormal[3];
+ 
+           computeEffVel_case(gaussp, vert, gcell, cellout, allwgts, lphi, effvel);
+
+           flux = edgefluxintegral(mi, gcell, cellout, vert, allwgts, effvel, ml, advection, lphi);
+           
+        }
+
+        vertedge({i,j}) = flux;   
     }}
 
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
@@ -203,7 +216,7 @@ double melting(const MeshInfo& mi,
 */
 
     // Trapped case
-    if (mapped[1]<-1.5 && mapped[1]>-1.8){
+    if (mapped[1]<-1.5 && mapped[1]>-1.8 && mapped[0] > -0.2 && mapped[0] < 0.2){
         return 0.0001;
 	 } else {
         return 0.0;

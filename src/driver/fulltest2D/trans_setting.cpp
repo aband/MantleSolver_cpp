@@ -131,6 +131,8 @@ double InitHD(const valarray<double>& point,
 
     if (point[1] < cut){HD = head - slop*cut;}
 
+    //if (point[0]>-0.2 && point[0] <0.2) {HD += 0.1;}
+
     return HD;
 }
 

@@ -155,7 +155,7 @@ xlim([0.00, 0.2])
 %ylabel("Depth");
 xlabel("opx");
 
-time = 0.01*k*200;
+time = 0.01*k*400;
 
 mytitle = strcat('Time = ', string(time));
 
