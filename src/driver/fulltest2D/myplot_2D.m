@@ -1,10 +1,12 @@
-function [] = myplot_2D(M, N, start)
+function [] = myplot_2D(M, N, start, folder)
 
 % Input grid files
-fileID = fopen('build/gridCellX.dat','r');
+filename = strcat(folder, '/gridCellX.dat');
+fileID = fopen(filename,'r');
 pX = fscanf(fileID, '%f', [1,Inf]);
 
-fileID = fopen('build/gridCellY.dat','r');
+filename = strcat(folder, '/gridCellY.dat')
+fileID = fopen(filename,'r');
 pY = fscanf(fileID, '%f', [1,Inf]);
 
 pX = reshape(pX, M, N);
@@ -15,11 +17,12 @@ mid = floor(M/2) + 1;
 v = VideoWriter('phase.avi','Motion JPEG AVI');
 open(v);
 
-fstruct1 = dir('build/*porosity*.dat');
+filename = strcat(folder, '/*porosity*.dat');
+fstruct1 = dir(filename);
 fcell1 = struct2cell(fstruct1);
 
-fstruct2 = dir('build/*temperature*.dat');
-fcell2 = struct2cell(fstruct2);
+%fstruct2 = dir('build/*temperature*.dat');
+%fcell2 = struct2cell(fstruct2);
 
 loops = numel(fstruct1)
 
@@ -28,10 +31,12 @@ h = figure;
 set(gcf, 'Position',[100 100 1210 693])
 
 % Read grid files
-fileID = fopen('build/gaussgridx.dat','r');
+filename = strcat(folder,'/gaussgridx.dat')
+fileID = fopen(filename,'r');
 ppX = fscanf(fileID, '%f', [1,Inf]);
 
-fileID = fopen('build/gaussgridy.dat','r');
+filename = strcat(folder,'/gaussgridy.dat')
+fileID = fopen(filename,'r');
 ppY = fscanf(fileID, '%f', [1,Inf]);
 
 MM = 3*M;
@@ -44,27 +49,33 @@ for kk=1:loops
 
 k = kk + start;
 
-filename = strcat('build/porosity',string(k));
+filename = strcat(folder, '/porosity')
+filename = strcat(filename,string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 porosity = fscanf(fileID, '%f', [1,Inf]);
 porosity = reshape(porosity, M, N);
 
+
 subplot(1,4,1)
 surf(pX, pY, porosity);
+view(2)
 colormap turbo
 shading interp
+colorbar
 %title("Porosity");
-ylabel("Depth");
-xlabel("Porosity");
+%ylabel("Depth");
+title(["porosity"])
 
-filename = strcat('build/effvelx',string(k));
+filename = strcat(folder, '/effvelx');
+filename = strcat(filename,string(k));
 filename = strcat(filename,'.dat')
 fileID = fopen(filename, 'r');
 vx = fscanf(fileID, '%f', [1,Inf]);
 vx = reshape(vx, MM, N+1);
 
-filename = strcat('build/effvely',string(k));
+filename = strcat(folder, '/effvely');
+filename = strcat(filename,string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 vy = fscanf(fileID, '%f', [1,Inf]);
@@ -99,13 +110,15 @@ title(["Phase averaged velocity"])
 
 %}
 
-filename = strcat('build/solidvelx',string(k));
+filename = strcat(folder, '/solidvelx');
+filename = strcat(filename,string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 vx = fscanf(fileID, '%f', [1,Inf]);
 vx = reshape(vx, MM, N+1);
 
-filename = strcat('build/solidvely',string(k));
+filename = strcat(folder, '/solidvely');
+filename = strcat(filename,string(k));
 filename = strcat(filename,'.dat');
 fileID = fopen(filename, 'r');
 vy = fscanf(fileID, '%f', [1,Inf]);
@@ -116,17 +129,30 @@ quiver(ppX, ppY, vx, vy);
 %title(["Solid velocity", num2str(k)])
 title(["Solid velocity"])
 
-filename = strcat('build/phase', string(k));
+filename = strcat(folder, '/phase');
+filename = strcat(filename, string(k));
 filename = strcat(filename, '.dat');
 fileID   = fopen(filename, 'r');
 data     = fscanf(fileID, '%f', [1, Inf]);
 data = reshape(data, M, N);
 
-subplot(1,6,5);
-surf(pX, pY, phase)
+data = [data, ones(N,1);
+        ones(1,M), 1];
+
+subplot(1,4,4);
+pcolor(data'-1)
+colormap turbo
+colorbar
+clim([0,3.1])
+title('phase')
+
+time = 0.1*k*10;
+mytitle= strcat('Time = ', string(time));
+sgtitle(mytitle);
 
 pause
+G = getframe(gcf);
+
+writeVideo(v,G);
 
 end
-
-

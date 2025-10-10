@@ -110,7 +110,7 @@ double InitCD(const valarray<double>& point,
 
     } else {
 
-        return 0.15;
+        return 0.1;
     }
 
 }

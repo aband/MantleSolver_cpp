@@ -25,7 +25,7 @@ FVM, and the eutectic phase package. Before tackling the fully coupled problem, 
 porosity evolution scenario based on a prescribed melting rate. We then 
 present an example that combines the MFEM, FVM, and eutectic phase package
 into a fully coupled computation. The discussion restricts to pseudo-1D
-scenarios and subsequently extends to full 2D simulations in the future work.
+scenarios and subsequently extends to full 2D simulations.
 
 \section{Coupled Algorithm}
 \label{sec:coupledalgo}
@@ -73,7 +73,7 @@ The complete procedure is summarized as a coupled solver in Algorithm~\ref{alg:c
 		  \check{\mathbf{v}}_r + \check{\mathbf{v}}_s.
 \end{equation*}
 		  \vspace{0.2cm}
-		  \State Marching forward the transport system~\eqref{eq:transportFV} to the next time $n+1$ for $\mathcal{U}^{n+1}$.
+		  \State Marching forward the transport system~\eqref{dimensionlesstransport} to the next time $n+1$ for $\mathcal{U}^{n+1}$.
 		  %\State Given $\mathcal{U}^{n+1}$, compute $\mathcal{W}^{n+1}$ by the eutecetic phase package.
 		  %\State Given $\phi_f^{n+1}$ in $\mathcal{W}^{n+1}$, solve the Darcy-Stokes system \eqref{eq:darcy_flow_sc_fem}--\eqref{eq:compaction_flow_sc_fem} for $V^{n+1}$.
 		  \vspace{0.3cm}
@@ -831,7 +831,7 @@ present effective velocity, phase averaged velocity and solid velocity from left
 \label{sec:twodexp}
 In this section, we test the fully coupled algorithm on a 
 two-dimensional $M\times N$
-grid with a full two-dimensional problem.
+grid. %with a full two-dimensional problem.
 The computational domain is defined with dimensions $L=2$ 
 in the $x$-direction and $H=2$ in the $y$-direction. 
 We reuse the boundary conditions from the pseudo–one-dimensional 
@@ -842,7 +842,7 @@ no-flow conditions are applied on the lateral boundaries.
 The two-dimensional ML-WENO(3,2) stencils, illustrated in 
 Figure~\ref{fig:quadmesh}, 
 are employed without including the constant stencil.
-We assign the initial condition of the bulk dimensionless mass
+We assign a similar initial condition of the bulk dimensionless mass
 composition and a similar initial condition of the bulk 
 dimensionless enthalpy as
 \begin{equation}
@@ -850,20 +850,27 @@ dimensionless enthalpy as
 H &= \left \{ 
 		  \begin{alignedat}{2}
 &2.9 - 2.8y, \quad &&-1.5\leq y < 0,\\
-&2.9 + 2.8\times 1.5, \quad &&-2\leq y < -1.5.
+&2.9 + 2.8\times 1.5, \quad &&-2\leq y < -1.5,
 		  \end{alignedat}
 		  \right.\\
-		  C &= \left \{
-					 \begin{alignedat}{2}
-								&0.15,\quad && -0.2 \leq x < 0.2,\\
-								&0.10,\quad && -1 \leq x <-0.2,\, 0.2 \leq x \leq 1.
-					 \end{alignedat}
-					 \right. 
+		  C &= 0.1.
 \end{aligned}
 \end{equation}
-
 This numerical experiment is designed to demonstrate the capability of 
 our solver to handle a fully two-dimensional configuration, although the 
 setup itself is not physically meaningful.
 
+\begin{figure}[htb]
+\centering
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/flow2dt1.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/flow2dt10.eps}
+\includegraphics[width=15cm,height=6.5cm]{chapters/pics/flow2dt20.eps}
+\caption{Full two-dimensional test case. Shown at time = 1, 10 and 20. We 
+present porosity, effective velocity, solid velocity and phase split.}
+\label{fig:full2d}
+\end{figure}
 
+Figure~\ref{fig:full2d} illustrates a simple two-dimensional simulation incorporating
+phase calculations. As porosity is drained, the system undergoes stable phase transitions from 
+phase 2 (eutectic melting) to phase 1 (no melting) and from phase 2 (eutectic melting)
+to phase 3 (super-eutectic melting), without exhibiting numerical instability.
