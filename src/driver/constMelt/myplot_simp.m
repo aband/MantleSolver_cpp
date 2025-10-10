@@ -13,8 +13,8 @@ pY = fscanf(fileID, '%f', [1,Inf]);
 pX = reshape(pX, M, N)%;
 pY = reshape(pY, M, N);
 
-v = VideoWriter('video.avi','Motion JPEG AVI');
-open(v);
+%v = VideoWriter('video.avi','Motion JPEG AVI');
+%open(v);
 
 fullname = strcat(folder, name);
 fullname = strcat(fullname, '*.dat');
@@ -46,9 +46,9 @@ title(filename)
 ylabel("Depth");
 
 pause
-G = getframe(gcf);
+%G = getframe(gcf);
 
-writeVideo(v,G);
+%writeVideo(v,G);
 end
 
-close(v);
+%close(v);

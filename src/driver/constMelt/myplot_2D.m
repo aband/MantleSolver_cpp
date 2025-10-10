@@ -36,13 +36,58 @@ fileID = fopen(filename, 'r');
 porosity = fscanf(fileID, '%f ', [1, Inf]);
 porosity = reshape(porosity, M, N);
 
-subplot(1,3,1)
+subplot(1,3,1) 
 %plot(porosity(2,:), pY(2,:), 'LineWidth',3);
-%xlim([0,0.1])
 surf(pX, pY, porosity)
+colormap turbo
+shading interp
+%xlim([0,0.1])
 title('porosity')
 ylabel('Depth');
 
+filename = strcat('build/stokesVx',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+stokesx = fscanf(fileID, '%f', [1,Inf]);
+
+filename = strcat('build/stokesVy',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+stokesy = fscanf(fileID, '%f', [1,Inf]);
+
+filename = strcat('build/darcyVx',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+darcyx = fscanf(fileID, '%f', [1,Inf]);
+
+filename = strcat('build/darcyVy',string(k));
+filename = strcat(filename,'.dat');
+fileID = fopen(filename, 'r');
+darcyy = fscanf(fileID, '%f', [1,Inf]);
+
+%filename = strcat('build/porosity',string(k));
+%filename = strcat(filename,'.dat');
+%fileID = fopen(filename, 'r');
+%poro   = fscanf(fileID, '%f', [1,Inf]);
+%
+stokesx = reshape(stokesx, M, N);
+stokesy = reshape(stokesy, M, N);
+darcyx = reshape(darcyx, M, N);
+darcyy = reshape(darcyy, M, N);
+%poro   = reshape(poro,M,N);
+
+subplot(1,3,2)
+quiver(pX, pY, stokesx, stokesy);
+title(["Stokes Velocity",num2str(k)])
+
+unscaleddarcyy = darcyy.*porosity;
+
+%subplot(2,3,3)
+subplot(1,3,3)
+quiver(pX, pY, darcyx.*porosity, unscaleddarcyy);
+title(["Darcy Velocity",num2str(k)])
+
+%{
 filename = strcat(folder, '/qf');
 filename = strcat(filename, string(k));
 filename = strcat(filename, '.dat');
@@ -57,23 +102,19 @@ fileID = fopen(filename, 'r');
 stokespressure = fscanf(fileID, '%f ', [1, Inf]);
 stokespressure = reshape(stokespressure, M, N);
 
-subplot(1,3,2)
-%plot(-darcypressure(2,:), pY(2,:), 'LineWidth',3);
-surf(pX, pY, darcypressure);
-title('Darcy Pressure')
-%hold on
-subplot(1,3,2)
-surf(pX, pY, stokespressure);
-%plot(stokespressure(2,:), pY(2,:),'--','LineWidth',3);
-%hold off
-title('Stokes Pressure')
+subplot(1,4,3)
+plot(-darcypressure(2,:), pY(2,:), 'LineWidth',3);
+hold on
+plot(stokespressure(2,:), pY(2,:),'--','LineWidth',3);
+hold off
+title('Pressure')
 ylabel('Depth');
-%legend('Darcy Pressure','Stokes Pressure');
+legend('Darcy Pressure','Stokes Pressure');
 
-%subplot(1,4,4)
-%plot(stokespressure(2,cut:end)+darcypressure(2,cut:end), pY(2,cut:end), 'LineWidth', 3);
-%title('Effective Pressure')
-%ylabel('Depth')
+subplot(1,4,4)
+plot(stokespressure(2,cut:end)+darcypressure(2,cut:end), pY(2,cut:end), 'LineWidth', 3);
+title('Effective Pressure')
+ylabel('Depth')
 
 filename = strcat(folder, '/stokesVx',string(k));
 filename = strcat(filename, '.dat');
@@ -102,19 +143,18 @@ darcyx = reshape(darcyx, M, N);
 darcyy = reshape(darcyy, M, N);
 
 unscaleddarcyy = darcyy.*porosity;
-unscaleddarcyx = darcyx.*porosity;
 
-%subplot(1,3,2)
-%plot(stokesy(2,:), pY(2,:),'LineWidth',3);
-%hold on
-%plot(unscaleddarcyy(2,:), pY(2,:),'--','LineWidth',3);
-%hold off
-%title('Velocity')
+subplot(1,4,2)
+plot(stokesy(2,:), pY(2,:),'LineWidth',3);
+hold on
+plot(unscaleddarcyy(2,:), pY(2,:),'--','LineWidth',3);
+hold off
+title('Velocity')
 %xlim([-5e-3, 5e-3])
-%ylabel('Depth')
-%legend('Stokes Vel','Darcy Vel','Location','southeast')
-
-time = k*5*5
+ylabel('Depth')
+legend('Stokes Vel','Darcy Vel','Location','southeast')
+%}
+time = k*10*1
 
 mytitle = strcat('Time =  ', string(time));
 

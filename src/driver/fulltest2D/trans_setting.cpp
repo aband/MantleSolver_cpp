@@ -106,11 +106,11 @@ double InitCD(const valarray<double>& point,
 
     if (point[0]>-0.2 && point[0] < 0.2){
 
-        return 0.15;
+        return 0.1;
 
     } else {
 
-        return 0.1;
+        return 0.15;
     }
 
 }

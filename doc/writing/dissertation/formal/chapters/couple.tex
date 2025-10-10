@@ -460,7 +460,7 @@ Temporal evolution of pressures shown at different time steps.}
 \clearpage
 
 \subsection{Phase Coupled Calculation}
-
+\label{sec:phasecoupled}
 \iffalse
 In this section, we test the MFEM and FVM solver combined with the eutectic phase package calculation
 and complete the simulation.
@@ -769,7 +769,7 @@ H &= \left \{
 &2.9 + 2.8\times 0.2, \quad &&-0.25\leq y < -0.2.
 		  \end{alignedat}
 		  \right.\\
-C &= 0.15 \quad .
+C &= 0.15.
 \end{aligned}
 \end{equation}
 
@@ -824,4 +824,46 @@ present porosity, temperature, dimensionless enthalpy, dimensionless mass compos
 present effective velocity, phase averaged velocity and solid velocity from left to right.}
 \label{fig:fullvelH025}
 \end{figure}
+
+\clearpage
+
+\section{Two-Dimensional Test}
+\label{sec:twodexp}
+In this section, we test the fully coupled algorithm on a 
+two-dimensional $M\times N$
+grid with a full two-dimensional problem.
+The computational domain is defined with dimensions $L=2$ 
+in the $x$-direction and $H=2$ in the $y$-direction. 
+We reuse the boundary conditions from the pseudo–one-dimensional 
+case described in Section~\ref{sec:phasecoupled}:
+outflow is permitted only through the top boundary, a constant 
+upwelling velocity is imposed at the bottom boundary, and 
+no-flow conditions are applied on the lateral boundaries.
+The two-dimensional ML-WENO(3,2) stencils, illustrated in 
+Figure~\ref{fig:quadmesh}, 
+are employed without including the constant stencil.
+We assign the initial condition of the bulk dimensionless mass
+composition and a similar initial condition of the bulk 
+dimensionless enthalpy as
+\begin{equation}
+\begin{aligned}
+H &= \left \{ 
+		  \begin{alignedat}{2}
+&2.9 - 2.8y, \quad &&-1.5\leq y < 0,\\
+&2.9 + 2.8\times 1.5, \quad &&-2\leq y < -1.5.
+		  \end{alignedat}
+		  \right.\\
+		  C &= \left \{
+					 \begin{alignedat}{2}
+								&0.15,\quad && -0.2 \leq x < 0.2,\\
+								&0.10,\quad && -1 \leq x <-0.2,\, 0.2 \leq x \leq 1.
+					 \end{alignedat}
+					 \right. 
+\end{aligned}
+\end{equation}
+
+This numerical experiment is designed to demonstrate the capability of 
+our solver to handle a fully two-dimensional configuration, although the 
+setup itself is not physically meaningful.
+
 

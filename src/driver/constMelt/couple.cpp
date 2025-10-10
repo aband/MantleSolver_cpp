@@ -133,7 +133,25 @@ int Driver::updateEdgeFlux_case(Tensor<double>& vertedge, Tensor<double>& horied
         horiedge({i,j}) = flux;
 
         // 1D problem
-        vertedge({i,j}) = 0.0;   
+	     vertexSet vert {corners.at(3), corners.at(0)};
+	 
+        if (i==0){
+          
+           flux = 0.0;
+
+        } else {
+
+           cellout = gcell + mi.faceNormal[3];
+ 
+           computeEffVel_case(gaussp, vert, gcell, cellout, allwgts, lphi, effvel);
+
+           flux = edgefluxintegral(mi, gcell, cellout, vert, allwgts, effvel, ml, advection, lphi);
+
+        }        
+
+        vertedge({i,j}) = flux;
+
+        //vertedge({i,j}) = 0.0;   
 
     }}
 
@@ -203,7 +221,7 @@ double melting(const MeshInfo& mi,
 */
 
     // Trapped case
-    if (mapped[1]<-1.5 && mapped[1]>-1.8){
+    if (mapped[1]<-1.5 && mapped[1]>-1.8 && mapped[0] > -0.2 && mapped[0] < 0.2){
         return 0.0001;
 	 } else {
         return 0.0;
@@ -607,8 +625,10 @@ int Driver::PrepareTransport_case(double (*func)(const valarray<double>& point,
     // Initialization of multi level weno and corresponding usage
     ml = multilevel(); 
 
-    ml.addLevel("(1,3)", {1,3}, mi);
-    ml.addLevel("(1,2)", {1,2}, mi);
+//    ml.addLevel("(1,3)", {1,3}, mi);
+//    ml.addLevel("(1,2)", {1,2}, mi);
+    ml.addLevel("(3,3)", {3,3}, mi);
+    ml.addLevel("(2,2)", {2,2}, mi);
 
     // Area scale
     h0 = sqrt((L_*H_)/
@@ -617,8 +637,10 @@ int Driver::PrepareTransport_case(double (*func)(const valarray<double>& point,
     advection = mluse();
 
     unordered_map<std::string, vector<indice>> method;
-    method.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-1} }));
-    method.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1} , {0,0} }));
+//    method.insert(std::make_pair<std::string, vector<indice>>("(1,3)", { {0,-1} }));
+//    method.insert(std::make_pair<std::string, vector<indice>>("(1,2)", { {0,-1} , {0,0} }));
+    method.insert(std::make_pair<std::string, vector<indice>>("(3,3)", { {-1,-1} }));
+    method.insert(std::make_pair<std::string, vector<indice>>("(2,2)", { {-1,-1} , {0,0}, {0,-1}, {-1,0} }));
 
     advection.setmethod("all", method);
     advection.setbias("all");
