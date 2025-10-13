@@ -1,0 +1,138 @@
+\documentclass[usenames,dvipsnames,letterpaper,landscape,final]{slides}
+
+\def\fileHome{.}
+\def\icons{\fileHome/icons}
+
+\input mySlideStyle2019-1.tex
+\def\myfboxBlack#1{\fboxrule2pt\fbox{$\ds#1$}}
+\newcommand\topSeparatorHeading[1]{\noPagetrue\begin{myslide}\headingline\vbox to5.5in{%
+\vfil\begin{center}{{\large\myfboxBlack{\myfboxBlack{%
+\text{\ \ \bf\Blue{\begin{tabular}{c}#1\end{tabular}\ \ }}}}}}%
+\end{center}\vfil}\end{myslide}\noPagefalse}
+
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage[ruled,vlined]{algorithm2e}
+%\usepackage{wallpaper}
+		  \usepackage{mathtools}
+
+\newcounter{outlineNumber}\setcounter{outlineNumber}{0}
+\def\outno{\stepcounter{outlineNumber}\Blue{\theoutlineNumber. }}
+
+\definecolor{boxColor}{rgb}{.4, .05, .2}
+
+%------------------------------------------------------------------------------
+\tikzset{cross/.style={cross out, draw=black, minimum size=2*(#1-\pgflinewidth), inner sep=0pt, outer sep=0pt},cross/.default={1pt}}
+
+\renewcommand\floatpagefraction{0}
+\renewcommand\textfraction{0}
+\renewcommand\topfraction{1}
+\renewcommand\bottomfraction{1}
+\setcounter{topnumber}{10}
+\setcounter{bottomnumber}{10}
+\setcounter{totalnumber}{10}
+
+\def\picWidth#1#2{\includegraphics[clip=true,keepaspectratio=true,width=#1]{#2}}
+\def\picHeight#1#2{\includegraphics[clip=true,keepaspectratio=true,height=#1]{#2}}
+\def\picWidthHeight#1#2#3{\includegraphics[clip=true,width=#1,height=#2]{#3}}
+
+%\let\itemOld=\item
+%\def\item{\parskip=0pt\itemsep=0pt\itemOld}
+\begin{document}
+
+% ===========================================
+
+\begin{myslide}
+\headingline
+		  %\vspace*{-30pt}
+		  {\bf\Large\begin{center}
+					 %Simulation of Partial Melting Mantle
+Simulation of Flow and Transport in the Partially Molten Mantle of the Earth
+		  \end{center}}
+
+\vfill
+
+\begin{center}{\small\obeylines
+Chenyu Tian
+\bigskip
+%		  {\it\OliveGreen{CSEM} 
+%		  \Blue{\it Oden Institute}}
+%\BurntOrange{The University of Texas at Austin}}
+		  {Oden Institute, University of Texas at Austin}}
+\end{center}
+
+\vfill
+
+{\small\begin{center}
+					 Todd Arbogast, Oden Institute \& Mathematics, University of Texas at Austin\\
+Marc A. Hesse, Oden Institute \& Geosciences, University of Texas at Austin\\
+		  \end{center}}
+
+		  \vspace*{40pt}
+
+\end{myslide}
+
+% =============================================
+\begin{myslide}
+		  \heading{Motivation}
+Model relative motion between solid and liquid.
+
+		  Deal with zero porosity (no melting) region mathematically sound.
+
+Transport capturing discontinuity.
+\end{myslide}
+
+\begin{myslide}
+		  \heading{McKenzie Equations}
+conservation laws and compaction equation
+\end{myslide}
+
+\begin{myslide}
+		  \heading{Alternative Formulation}
+		  Spiegelman.
+
+		  Aspect
+
+        Rhoberg
+
+		  CitcomS
+\end{myslide}
+
+\begin{myslide}
+		  \heading{transport}
+
+		  Two options
+
+		  \subhead{melting function}
+
+		  \subhead{Phase calculation}
+\end{myslide}
+
+\begin{myslide}
+
+\end{myslide}
+
+% ===========================================
+
+\begin{myslide}
+		  \heading{Numerical framework}
+
+\end{myslide}
+
+\begin{myslide}
+		  \heading{MFEM}
+
+\end{myslide}
+
+\begin{myslide}
+		  \heading{H(div)- and H1- conforming}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{FVM}
+
+\end{myslide}
+
+
+\end{document}
