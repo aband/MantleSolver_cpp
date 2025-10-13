@@ -220,6 +220,9 @@ $\alpha_\rho$ Thermal expansion.
 \end{myslide}
 
 % ===================================================
+
+\separatorHeading{\outno Static System}
+
 \begin{myslide}
 \heading{Degenerate Darcy-Stokes System}
 \subhead{Pressure Potentials.}
@@ -235,47 +238,223 @@ Then
 		  &\mu_s\nabla \cdot (\phi\mathbf{v}_r) + \frac{\phi}{1-\phi}(q_l-q) &&=0,
 &&\Maroon{(\text{Conservation}}\\[-20pt]
 & && &&\Maroon{\text{/Compaction})}\\[8pt]
-  		  &\nabla q - \nabla \cdot \tau(\mathbf{v}_s) &&= -(1-\phi)\rho_r\mathbf{g},&&\Maroon{(\text{Stokes Flow})}\\
+  		  &\nabla q - \nabla \cdot \tau(\mathbf{v}_s) &&= -(1-\phi)\rho_r\mathbf{g}, \quad && \Maroon{(\text{Stokes Flow})}\\
 		  &\mu_s\nabla \cdot \mathbf{v}_s - \frac{\phi}{1-\phi}(q_l-q) &&=0, &&\Maroon{(\text{Compaction})}
 \end{alignat}
-\end{myslide}
 
-\begin{myslide}
-\heading{Scaled Variables}
 \subhead{Problems.} When no melt, $\phi = 0$, 
 \begin{nlist}
 \item Darcy system degenerates when $\phi$ vanishes, lose bound on $q_l$.
 \item Lose the conservation equation.
-\item The condition number grows as $\phi \rightarrow 0$
+\item The condition number grows as $\phi \rightarrow 0$.
 \end{nlist}
-         \subhead{Scaled Variables}\newline
-          Define by Arbogast and Taicher [1]:
-		  \begin{equation*}\label{eq:scaledVariables}
-	\tilde{\mathbf{v}}_r = \phi_f^{-\Theta}\mathbf{v}_r
+
+\end{myslide}
+
+\begin{myslide}
+
+\heading{Scaled Variables}
+\subhead{Scaled Variables}\newline
+Define by Arbogast and Taicher [1]:
+\begin{equation*}\label{eq:scaledVariables}
+	\tilde{\mathbf{v}}_r = \phi^{-\Theta}\mathbf{v}_r
 	\quad\text{and}\quad
 	\tilde{q} = \phi^{1/2}q_l,
 \end{equation*}
 \subhead{The Space $H_{\phi}(\text{div})$}\newline
-		  \Purple{$H_\phi(\Div;\Omega)$} is a \Cyan{Hilbert space} equipped with the \Maroon{weighted inner-product\vspace*{-6pt}}
+		  \Purple{$H_\phi(\Div;\Omega)$} is a \Cyan{Hilbert space} 
+\begin{equation*}\label{eq:scaledHspace}
+		  H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
+		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v})
+		  \in L^2(\Omega) \Big\}.
+\end{equation*}
+		  equipped with the \Maroon{weighted inner-product\vspace*{-6pt}}
 \begin{equation*}
 (\mathbf{u},\mathbf{v})_{H_\phi(\Div)} = (\mathbf{u},\mathbf{v}) + \big(\phi^{-1/2}\div(\phi^{1+\Theta}\mathbf{u}),\phi^{-1/2}\div(\phi^{1+\Theta}\mathbf{v})\big).
 \end{equation*}\vspace*{-20pt}\newline
 Moreover, $H(\Div;\Omega) = H_1(\Div;\Omega) \subset H_\phi(\Div;\Omega)$.
+
+\bigskip
+The \Oblue{normal trace} on $\partial \Omega$ is well-defined by
+		  \begin{equation*}\label{eq:scaledtraceoperator}
+		  \langle \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu}, \psi \rangle = \big(\mathbf{v}, \phi^{1+\Theta}\nabla(\phi^{-1/2}\psi)\big) + 
+		  \big(\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}),\psi \big), \quad \forall \psi \in H^1(\Omega),
+\end{equation*}
+
+\end{myslide}
+
+%\begin{myslide}
+%\heading{Scaled Weak Formulation}
+%
+%
+%\end{myslide}
+
+\begin{myslide}
+\heading{A Dimensionless Boundary Value Problem}
+Find two velocity-pressure potential pairs \Oorange{$(\check{\mathbf{v}}_r, \check{q}_l)$} and 
+\Oorange{$(\check{\mathbf{v}}_s, \check{q})$} such that 
+\begin{alignat}{2}
+\label{eq:dimensionlessdarcy_flow_sc_bv}
+		  &\check{\mathbf{v}}_r
+		  + \phi^{1+\Theta}\nabla(\phi^{-1/2}\check{q}_l)
+        &&= 0,\\
+\label{eq:dimensionlessconsMass_flow_sc_bv}
+		  &\phi^{-1/2}\nabla \cdot(\phi^{1+\Theta}\check{\mathbf{v}}_r)
+        + \frac{1}{1-\phi}(\check{q}_l - \phi^{1/2}\check{q}) &&=0,\\
+\label{eq:dimensionlessstokes_flow_sc_bv}
+		  &\nabla \check{q} - \nabla \cdot \check{\tau}(\check{\mathbf{v}}_s) &&= -(1-\phi)\mathbf{n},\\
+\label{eq:dimensionlesscompaction_flow_sc_bv}
+		  &\nabla \cdot \check{\mathbf{v}}_s
+        - \frac{\phi^{1/2}}{1-\phi}(\check{q}_l - \phi^{1/2}\check{q}) &&=0,
+\end{alignat}
+and
+\begin{equation}\label{eq:bv}
+		  \begin{alignedat}{2}
+					 \phi^{1+\Theta}\check{\mathbf{v}}_r\cdot \pmb{\nu} &= g_{r} \quad &&\text{on} \hspace{0.2cm} \Gamma_{u,D}, \\
+					 \check{\mathbf{v}}_s &= \mathbf{g}_{s} \quad &&\text{on} \hspace{0.2cm} \Gamma_{u,S}, \\
+					 \check{q}_l &= \phi^{1/2}q_{l,0} \quad &&\text{on} \hspace{0.2cm} \Gamma_{i,D}, \\
+					 \pmb{\tau}\cdot \pmb{\nu} - q &= t_0  \quad &&\text{on} \hspace{0.2cm} \Gamma_{i,S}.
+		  \end{alignedat}
+\end{equation}
+
+\parbox{0.5\textwidth}{\raggedright
+\subhead{Characteristic Scales.}\\
+\begin{blist}
+\item $l_0 = \Big( \frac{k_0 \mu_s}{\mu_l} \Big)^{1/2}$,\quad $u_0 = \frac{k_0 \rho_r g}{\mu_l}$.
+\item $t_0 = l_0/u_0$,\quad $p_0 = \rho g l_0$.
+\end{blist}
+}\parbox{0.5\textwidth}{\raggedright
+\subhead{Dimensionless Variables.}
+\begin{blist}
+\item $\check{\mathbf{v}}_r = \frac{\tilde{\mathbf{v}}_r}{u_0}$,\quad $\check{\mathbf{v}}_s = \frac{\mathbf{v}_s}{u_0}$, 
+\item $\check{q} = \frac{q}{p_0}$,\quad $\check{q_l} = \frac{\tilde{q}_l}{p_0}$.
+\end{blist}
+}
+
 \end{myslide}
 
 \begin{myslide}
-\heading{Scaled Locally Mass Conservative Formulation}
+\heading{Scaled Weak Formulation}
+\subhead{Element averaged variable}:
 
+\begin{equation*}\label{eq:averaged_phi}
+		  \phi_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x})\, d\mathbf{x},
+\end{equation*}
+
+\vspace{20pt}
+
+\subhead{Scaled weak form} Modified to be locally mass conservative:
+
+\begin{equation*}
+\begin{alignedat}{2}
+%		  \label{eq:weak_stokes_mass}
+		  &(\pmb{\tau}(\check{\bold{v}}_{s,h}),\nabla \pmb{\psi}_{s,h}) - (\check{q}_h, \nabla \cdot \pmb{\psi}_{s,h}) = -((1-\phi)\bold{n}, \pmb{\psi}_{s,h}) &&\forall\pmb{\psi}_{s,h}, \in \mathbb{V}_{S,h,\mathbf{0}},\\
+%		  \label{eq:weak_compaction_mass}
+		  &(\nabla \cdot \check{\bold{v}}_{s,h}, \omega_h)  - \Big(\frac{\Red{\phi\phi_E^{-1/2}}}{1-\phi} (\check{q}_{l,h} - \Red{\phi_E^{1/2}}\check{q}_h), \omega_h \Big) = 0, &&\forall \omega_h \in \mathbb{W}_{S,h},\\
+%					\label{eq:weak_darcy_mass}
+					 &(\bold{\check{v}}_{r,h},\pmb{\psi}_{r,h})  - (\check{q}_{l,h},\Red{\phi_E^{-1/2}} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_{r,h})) = 0, &&\forall \pmb{\psi}_{r,h} \in \mathbb{V}_{D,h,0},\\
+					 \nonumber
+					 &(\Red{\phi_E^{-1/2}} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_{r,h}),\omega_{l,h}) + \Big(\frac{\Red{\phi\phi^{-1}_E}}{1-\phi}(\check{q}_{l,h} - \Red{\phi_E^{1/2}}\check{q}_h),\omega_{l,h} \Big) &&= 0, \\
+%					 \label{eq:weak_continuous_mass}
+		  &					 &&\forall \omega_{l,h} \in 
+		  \mathbb{W}_{D,h}.
+\end{alignedat}
+\end{equation*}
 
 \end{myslide}
+
+\begin{myslide}
+\heading{MFEM}
+
+\end{myslide}
+
+\separatorHeading{\outno Transport System}
 
 \begin{myslide}
 \heading{Transport of Chemical Species}
+
+\subhead{An advection-diffusion model}
+\begin{equation*} \label{eq:specietransport}
+		  \frac{\partial \overline{\rho c_{i}}}{\partial t} + \nabla \cdot \big( \overline{\rho c_{i} \mathbf{v}} - \phi_l \rho_l \mathcal{D}_{i,l} \nabla c_{i,l} \big) = 0,
+\end{equation*}
+
+\vspace{20pt}
+
+\Oorange{Phase averaged} quantities:
+\begin{equation*}
+\overline{\rho c_i} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j}, \quad 
+\overline{\rho c_i \mathbf{v}} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j} \mathbf{v}_j.
+\end{equation*}
+
+\subhead{Separate phase averaged concentration}
+\begin{equation*}
+\label{eq:effectivevel}
+		  \overline{c_{i}\bold{v}} = \phi_s \bold{v}_s c_{i,s} + \phi_l \bold{v}_l c_{i,l} = 
+		  \bigg( \frac{\phi \bold{v}_l + D(1-\phi) \bold{v}_s}{\phi + (1-\phi) D} \bigg) \overline{c}_i.
+\end{equation*}
+The partition coefficient \Oorange{$D = c_{i,s}/c_{i,l}$}. 
+
+\subhead{Effective Velocity}
+\begin{equation*}
+\mathbf{v}_{\text{eff}} = \frac{\phi \bold{v}_l + D(1-\phi) \bold{v}_s}{\phi + (1-\phi) D} 
+\end{equation*}
 
 \end{myslide}
 
 \begin{myslide}
 \heading{Transport of Energy}
+
+\subhead{Specific internal energy formulation}:
+\begin{equation*}\label{eq:energybalanceinternalenergy}
+\frac{\partial \overline{\rho u}}{\partial t} + \nabla \cdot \overline{\rho u \mathbf{v}} = 
+		  \overline{\rho \mathcal{Q}} + \nabla \cdot \overline{K} \nabla T + \nabla \cdot \overline{\pmb{\sigma} \cdot \mathbf{v}} +
+		  \overline{\rho \mathbf{v}} \cdot \mathbf{g},
+\end{equation*}
+where $\overline{K} = \phi_l K_l + \phi_s K_s$ is the phase averaged thermal conductivity.
+
+\vspace{20pt}
+
+\subhead{Temperature formulation}:
+\begin{equation*}\label{eq:normalizedenthalpy}
+		  \frac{\partial \overline{H}}{\partial t} + \nabla \cdot (\overline{\mathbf{v}} T) = 
+		  \frac{L}{c_p} \nabla \cdot (\phi_s \mathbf{v}_s) + \kappa \nabla^2 T + 
+		  \frac{\alpha_\rho}{c_p} T \overline{\mathbf{v}} \cdot \mathbf{g},
+\end{equation*}
+
+\vspace{20pt}
+
+\Oorange{Specific enthalpy}:
+\begin{equation*}\label{eq:specificenthalpy}
+		  h_i = u_i + p_i\tilde{V}_i = u_i + P/\rho_i,
+\end{equation*}
+
+\vspace{20pt}
+
+\Oorange{Bulk specific enthalpy}:
+\begin{equation*}
+\overline{H} = \overline{\rho h}/\rho c_p = \overline{h}/c_p
+\end{equation*} 
+
+\end{myslide}
+
+\begin{myslide}
+\heading{FVM for General Conservation Law}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{ML-WENO}
+
+\end{myslide}
+
+\separatorHeading{\outno Coupling Strategy}
+
+\begin{myslide}
+\heading
+
+\end{myslide}
+
+\begin{myslide}
 
 \end{myslide}
 
