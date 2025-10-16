@@ -8,6 +8,8 @@
 \newcounter{pageCount}
 \setcounter{pageCount}{0}
 \usepackage[ruled,vlined]{algorithm2e}
+\usepackage{xmpmulti}
+\usepackage{animate}
 %---------------------------------------------------------------------
 
 \usepackage{amsfonts,amscd}
@@ -162,7 +164,8 @@
 
 \def\writePage{\ifnoPage\else\stepcounter{pageCount}\thepageCount\ of \pageref{LastPage}\fi}
 
-\def\myFooterText{\quad Center for Subsurface Modeling}
+%\def\myFooterText{\quad Center for Subsurface Modeling}
+		  \def\myFooterText{\centering\tiny{ SIAM Conference on Mathematical \& Computational Issues in the Geosciences, 2025, Oct 14-17}}
 
 \def\lFooterSymbol{%
   \parbox{3.5in}{\includegraphics[clip=true,keepaspectratio=true, height=0.5in]{\icons/RGB_formal_Oden_ICES.png}}}
@@ -171,16 +174,17 @@
   \else\quad%
   \fi}
 \def\footerText{%
-  \ifcsmFooter\parbox{4.2in}{\tiny\myFooterText}%
+  \ifcsmFooter\parbox{5.4in}{\tiny\myFooterText}%
   \else\quad\hfill{\BurntOrange{\bf{\tiny\myFooterText}\quad}}%
   \fi}
 \def\footerPage{%
-  \ifcsmFooter\parbox{1.25in}{\centerline{\quad{\small\writePage}\qquad}}%
-  \else\raisebox{2pt}{\tiny\writePage}%
+  \ifcsmFooter\parbox{1.5in}{\centerline{\quad{\small\writePage}\qquad}}%
+  \else\raisebox{2pt}{\centering\tiny\writePage}%
   \fi}
 
 \def\myFooter{\medskip\vfil\raisebox{22pt}{\parbox{\textwidth}{\headingline\vskip-4pt%
-  \parbox{10.25in}{\lFooterSymbol\footerText\footerPage\rFooterSymbol}}}}
+%  \parbox{10.25in}{\lFooterSymbol\footerText\footerPage\rFooterSymbol}}}}
+  \parbox{10.25in}{\lFooterSymbol\footerText\footerPage}}}}
 \def\myNoFooter{\medskip\vfil\hbox to\textwidth{\raisebox{5pt}{\hbox to \ifnoPage\else0.85\fi
 \textwidth{\ifcsmFooter\BurntOrange{\linefill}\else\TealBlue{\linefill}\fi}}\ {\small\writePage}\hss}}
 
