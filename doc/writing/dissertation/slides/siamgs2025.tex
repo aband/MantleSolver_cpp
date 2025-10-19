@@ -325,8 +325,8 @@ Then
 	\quad\text{and}\quad
 	\tilde{q}_l = \phi^{1/2}q_l,
 \end{equation*}
-\subhead{The Space $H_{\phi}(\text{div})$}\newline
-		  \Purple{$H_\phi(\Div;\Omega)$} is a \Cyan{Hilbert space} 
+\subhead{The Scaled Space $H_{\phi}(\text{div})$}\newline
+%		  \Purple{$H_\phi(\Div;\Omega)$} is a \Cyan{Hilbert space} 
 \begin{equation*}\label{eq:scaledHspace}
 		  H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
 		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v})
@@ -406,7 +406,7 @@ For a polygonal domain $\Omega \subset \Re^2$.
 \subhead{For Darcy.} $\mathbb{V}_{\D} \times \W_{\D} \subset H_0(\Div;\Omega)\times L^2(\Omega)$.
 		  \\[8pt]
 \parbox{.7\textwidth}{\raggedright
-		  Lowest order reduced $H$(div)-conforming mixed space.
+		  First order reduced $H$(div)-conforming mixed space.
 \begin{equation*}
 \begin{aligned}
 		  \bbV_{D,h}(E) &= \bbV_1^0(E) = \mathbb{P}^2_1\oplus\textrm{curl}\,\mathbb{S}^{\mathcal{DS}}_2(E)\\
@@ -701,7 +701,7 @@ where $\overline{K} = \phi_l K_l + \phi_s K_s$ is the phase averaged thermal con
 
 \bigskip
 
-		  \subhead{Application to Mass and Energy transport}
+		  \subhead{Application to Chemical Species and Energy transport}
 \begin{equation*}
 \label{eq:numflux}
 \begin{aligned}
@@ -718,50 +718,6 @@ where $\overline{K} = \phi_l K_l + \phi_s K_s$ is the phase averaged thermal con
 		  \item Diffusion terms are being dropped.
 		  \item Velocities are continuous across edges.
 		  \end{blist}
-
-\end{myslide}
-
-\begin{myslide}
-		  \heading{Stencil Polynomial and Smoothness Indicator}
-
-\subhead{Represent Stencil Polynomial with Basis polynomials}:
-
-\begin{equation*}\label{eq:basispoly}
-		  \frac{1}{\lvert E_{i',j'}\rvert } \iint_{E_{i',j'}} \phi^{i,j}_{s,t} (x,y)\, dxdy = 
-		  %\frac{1}{\lvert \hat{E}_{k'}\rvert} \iint_{\hat{E}_{k'}}\hat{\phi}^k_{s,t}(\xi, \eta) d\xi d\eta = 
-		  \left \{
-					 \begin{aligned}
-								&1 \quad  (i',j') = (i,j)\\
-								&0 \quad  (i',j') \neq (i,j)
-					 \end{aligned}
-					 \right. 
-					 ,\quad \forall E_{i',j'} \in \mathcal{S}.
-\end{equation*}
-Then
-		  \parbox{0.6\textwidth}{\raggedright
-\begin{equation*}\label{eq:normalizedstencilpoly}
-		  \hat{Q}^{\mathcal{S}}_{s,t}(\xi, \eta) = \sum_{i,j} \overline{u}_k \hat{\phi}_{s,t}^{i,j}(\xi, \eta).
-\end{equation*}
-		  }\parbox{0.4\textwidth}{\raggedright
-		  \Oblue{Normalized coordinate.}
-\begin{equation*}
-\xi = \frac{x-x_\mathcal{S}}{h_\mathcal{S}},\quad \text{and} \quad \eta = \frac{y-y_\mathcal{S}}{h_\mathcal{S}}.
-\end{equation*}
-		  }
-
-		  \subhead{Jiang-Shu Smoothness Indicator}
-\begin{equation*}\label{eq:JSsmoothnessIC}
-\begin{aligned}
-		  \sigma_{JS} &= \sum_{1\leq \lvert \alpha \rvert \leq r}  \frac{h_\mathcal{S}^{2\lvert\alpha\rvert}}{\lvert E_0 \rvert} 
-		  \iint_{E_0} (\mathcal{D}^\alpha Q(x,y))^2 dx dy\\
-%					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{1\leq \lvert \alpha \rvert \leq r} \iint_{\hat{E}_0} (\mathcal{D}^\alpha\hat{Q}(\xi, \eta))^2 d\xi d\eta \\
-					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{1\leq \lvert \alpha \rvert \leq r} \iint_{\hat{E}_0} \big( \sum_{ij} \overline{u}_{ij} \mathcal{D}^\alpha \hat{\phi}_{i,j}(\xi, \eta) \big)^2 d\xi d\eta \\
-					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'j'} \sum_{1\leq \lvert \alpha \rvert \leq r} 
-					  \iint_{\hat{E}_{ij}} \mathcal{D}^\alpha \hat{\phi}_{ij}(\xi, \eta) 
-					  \mathcal{D}^\alpha \hat{\phi}_{i'j'}(\xi, \eta) d\xi d\eta \\
-					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'j'} \sigma^{i'j'}_{ij},
-\end{aligned}
-\end{equation*}
 
 \end{myslide}
 
@@ -830,6 +786,50 @@ n(r_l) = n_l = \begin{cases}
 		  A \Oblue{(3,2,1)} ML-WENO stencil with two shock present.
 
 		  }
+\end{myslide}
+
+\begin{myslide}
+		  \heading{Stencil Polynomial and Smoothness Indicator}
+
+\subhead{Represent Stencil Polynomial with Basis polynomials}:
+
+\begin{equation*}\label{eq:basispoly}
+		  \frac{1}{\lvert E_{i',j'}\rvert } \iint_{E_{i',j'}} \phi^{i,j}_{s,t} (x,y)\, dxdy = 
+		  %\frac{1}{\lvert \hat{E}_{k'}\rvert} \iint_{\hat{E}_{k'}}\hat{\phi}^k_{s,t}(\xi, \eta) d\xi d\eta = 
+		  \left \{
+					 \begin{aligned}
+								&1 \quad  (i',j') = (i,j)\\
+								&0 \quad  (i',j') \neq (i,j)
+					 \end{aligned}
+					 \right. 
+					 ,\quad \forall E_{i',j'} \in \mathcal{S}.
+\end{equation*}
+Then
+		  \parbox{0.6\textwidth}{\raggedright
+\begin{equation*}\label{eq:normalizedstencilpoly}
+		  \hat{Q}^{\mathcal{S}}_{s,t}(\xi, \eta) = \sum_{i,j} \overline{u}_k \hat{\phi}_{s,t}^{i,j}(\xi, \eta).
+\end{equation*}
+		  }\parbox{0.4\textwidth}{\raggedright
+		  \Oblue{Normalized coordinate.}
+\begin{equation*}
+\xi = \frac{x-x_\mathcal{S}}{h_\mathcal{S}},\quad \text{and} \quad \eta = \frac{y-y_\mathcal{S}}{h_\mathcal{S}}.
+\end{equation*}
+		  }
+
+		  \subhead{Jiang-Shu Smoothness Indicator}
+\begin{equation*}\label{eq:JSsmoothnessIC}
+\begin{aligned}
+		  \sigma_{JS} &= \sum_{1\leq \lvert \alpha \rvert \leq r}  \frac{h_\mathcal{S}^{2\lvert\alpha\rvert}}{\lvert E_0 \rvert} 
+		  \iint_{E_0} (\mathcal{D}^\alpha Q(x,y))^2 dx dy\\
+%					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{1\leq \lvert \alpha \rvert \leq r} \iint_{\hat{E}_0} (\mathcal{D}^\alpha\hat{Q}(\xi, \eta))^2 d\xi d\eta \\
+					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{1\leq \lvert \alpha \rvert \leq r} \iint_{\hat{E}_0} \big( \sum_{ij} \overline{u}_{ij} \mathcal{D}^\alpha \hat{\phi}_{i,j}(\xi, \eta) \big)^2 d\xi d\eta \\
+					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'j'} \sum_{1\leq \lvert \alpha \rvert \leq r} 
+					  \iint_{\hat{E}_{ij}} \mathcal{D}^\alpha \hat{\phi}_{ij}(\xi, \eta) 
+					  \mathcal{D}^\alpha \hat{\phi}_{i'j'}(\xi, \eta) d\xi d\eta \\
+					  &= \frac{h_\mathcal{S}^2}{\lvert E_0 \rvert}\sum_{ij} \sum_{i'j'} \overline{u}_{ij} \overline{u}_{i'j'} \sigma^{i'j'}_{ij},
+\end{aligned}
+\end{equation*}
+
 \end{myslide}
 
 \separatorHeading{\outno Coupling Strategy}
@@ -923,6 +923,7 @@ the geometric average also becomes zero.
 \end{center}
 
 		  }\parbox{0.5\textwidth}{\raggedright
+		  \Oblue{Phase Regions Split.}
 		  \begin{blist}
 		  \item Region I: Single-phase sub-solidus.
 		  \item Region II: Two-phase sub-solidus.
@@ -933,31 +934,120 @@ the geometric average also becomes zero.
 
 		  \bigskip
 
-		  Melting starts from Point \Oorange{a}, to Point \Oorange{b}. 
-		  Melting with a fixed ratio of eutectic ratio to Point \Oorange{$3$}
-		  then climb up to Point \Oorange{c}.
+        \Oblue{Eutectic Melting Path.}
+
+        \begin{nlist}
+		  \item Melting begins at Point \Oorange{a} and progresses toward Point \Oorange{b}.
+
+		  \item It melts with a fixed eutectic ratio up to Point \Oorange{$3$}, then continues upward to Point \Oorange{c}.
+					 \end{nlist}
+		  }
+
+\end{myslide}
+
+\begin{myslide}
+		  \heading{Coupled Procedure}
+
+		  \vspace{3cm}
+
+		  \parbox{0.8\textwidth}{\raggedright
+		  \begin{center}
+		  \commentedbox{\text{Obtain distribution of bulk Composition and Enthalpy.}}{$\downarrow$}
+		  \commentedbox{\text{Compute porosity disribution wiht phase behavior.}}{$\downarrow$}
+		  \commentedbox{\text{Solve for velocities and pressures.}}{$\downarrow$}
+					 \commentedbox{\text{Evolve the system with transport equations.}}
+
+		  \end{center}
+}\parbox{0.2\textwidth}{\raggedright
+
+\begin{tikzpicture}[scale=0.8]
+    \draw [thick] (-2,0) -- (2,0) -- (2,10);
+		  \draw[thick,->] (2,10) -- (0,10);
+\end{tikzpicture}
+}
+%%		  }\parbox{0.1\textwidth}{
+%					 \vspace{7cm}
+%%%					 $\longrightarrow$
+%		  }\parbox{0.1\textwidth}{
+%
+%					 $\Bigg\uparrow$
+%		  }
+%
+
+\end{myslide}
+
+\begin{myslide}
+
+		  \parbox{0.3\textwidth}{\raggedright
+		  \subhead{Test Case 1}.
+
+		  H = 0.25
+		  }\parbox{0.7\textwidth}{\raggedright
+  \centering
+  \animategraphics[width=0.7\textwidth, loop, autoplay]{5}{frame_short_vel/frame-}{1}{60}
+
+  \centering
+  \animategraphics[width=0.7\textwidth, loop, autoplay]{5}{frame_short/frame-}{1}{60}
 		  }
 
 \end{myslide}
 
 \begin{myslide}
 
-  \centering
-  \animategraphics[width=0.7\textwidth, loop, autoplay]{5}{frame_short_vel/frame-}{1}{60}
+		  \parbox{0.3\textwidth}{\raggedright
+		  \subhead{Test Case 2}.
+
+		  H = 2
+		  }\parbox{0.7\textwidth}{\raggedright
 
   \centering
-  \animategraphics[width=0.7\textwidth, loop, autoplay]{5}{frame_short/frame-}{1}{60}
+  \animategraphics[width=0.7\textwidth, loop, autoplay]{5}{frame_long_vel/frame-}{1}{55}
+
+  \centering
+  \animategraphics[width=0.7\textwidth, loop, autoplay]{5}{frame_long/frame-}{1}{55}
+		  }
 
 \end{myslide}
 
 \begin{myslide}
+		  \heading{Summary}
 
-  \centering
-  \animategraphics[width=0.7\textwidth, loop, autoplay]{5}{frame_long_vel/frame-}{1}{60}
+		  \begin{nlist}
+		  \item We present a modified physics model based on the original McKenzie equations.
 
-  \centering
-  \animategraphics[width=0.7\textwidth, loop, autoplay]{5}{frame_long/frame-}{1}{60}
+		  \item We develop a locally mass-conservative numerical framework, emphasizing melt extraction and the treatment of degeneracies in no-melt regions.
 
+		  \item We demonstrate numerical results that verify successful coupling.
+
+		  \end{nlist}
+
+		  \bigskip
+		  \subhead{Future Work.}
+		  \begin{blist}
+		  \item Investigate more physically consistent boundary conditions and improve stability near the boundaries.
+        \item Perform larger-scale simulations.
+		  \end{blist}
+
+\end{myslide}
+
+\begin{myslide}
+		  \heading{References}
+
+1. T. Arbogast, M. A. Hesse, and A. L. Taicher. Mixed methods for two-phase
+Darcy-Stokes mixtures of partially melted materials with regions of zero porosity.
+SIAM J. Sci. Comput., 39(2):B375–B402, 2017. DOI 10.1137/16M1091095.
+
+\bigskip
+
+2. Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian. A finite volume multilevel
+weno scheme for multidimensional scalar conservation laws. Comput. Methods
+Appl. Mech. Engrg., 421, 2024.
+
+\bigskip
+\bigskip
+
+\centering 
+Thank you!
 \end{myslide}
 
 \end{document}
