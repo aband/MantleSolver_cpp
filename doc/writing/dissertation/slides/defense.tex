@@ -117,7 +117,7 @@
 		  %\vspace*{-30pt}
 		  {\bf\Large\begin{center}
 					 %Simulation of Partial Melting Mantle
-Simulation of Flow and Transport in the Partially Molten Mantle of the Earth
+Simulation of a partial melting Mantle
 		  \end{center}}
 
 \vfill
@@ -227,7 +227,7 @@ Define the \Maroon{mixture variable} (phase averaged) as:
 Density difference between phases are neglected expect
 in the \Oorange{body force term}.
 
-\subhead{Notation.}
+\subhead{Notations.}
 \vspace{0.3cm}
 
 \parbox{0.32\textwidth}{\raggedright
@@ -292,19 +292,30 @@ $\alpha_\rho$ Thermal expansion.
 
 \end{myslide}
 
+\iffalse
 \begin{myslide}
-\heading{Alternative Formulations}
-		  \subhead{Pressure Formuation}
+\heading{What's missing in existing models?}
+		  \subhead{A Stokes Flow Formulation} (Schubert et al. [2001])
 
-		  \subhead{ASPECT}
+		  \begin{equation*}
+					 \begin{aligned}
+								-\nabla \cdot \pmb{\sigma} (\mathbf{u}) + \nabla p  &= \rho \mathbf{g}\\
+								\nabla \cdot (\rho \mathbf{u}) &= 0
+					 \end{aligned}
+		  \end{equation*}
 
-		  \subhead{Citcom}
+		  \begin{equation*}
+					 \begin{aligned}
+					 \rho C_p (\frac{\partial T}{\partial t} + \mathbf{u}\cdot \nabla T) - \nabla \cdot \kappa \nabla T &= \rho H \\
+					 \end{aligned}
+		  \end{equation*}
 
 \end{myslide}
+\fi
 
 % ===================================================
 
-\separatorHeading{\outno Physics Model}
+\separatorHeading{\outno Static System}
 
 \begin{myslide}
 \heading{Degenerate Darcy-Stokes System}
@@ -363,7 +374,7 @@ Moreover, $H(\Div;\Omega) = H_1(\Div;\Omega) \subset H_\phi(\Div;\Omega)$.
 The \Oblue{normal trace} on $\partial \Omega$ is well-defined by
 		  \begin{equation*}\label{eq:scaledtraceoperator}
 		  \langle \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu}, \psi \rangle = \big(\mathbf{v}, \phi^{1+\Theta}\nabla(\phi^{-1/2}\psi)\big) + 
-		  \big(\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}),\psi \big), \quad \forall \psi \in H^1(\Omega),
+		  \big(\phi^{-1/2}\nabla \cdot (\phi^{1+\Theta}\mathbf{v}),\psi \big), \, \forall \psi \in H^1(\Omega)
 \end{equation*}
 
 \end{myslide}
@@ -1022,7 +1033,9 @@ the geometric average also becomes zero.
 \begin{myslide}
 		  \heading{Coupling With Phase Calculation}
 
-		  \vspace{3cm}
+		  \subhead{Coupling Procedure}
+
+		  \vspace*{0.5cm}
 
 		  \parbox{0.8\textwidth}{\raggedright
 		  \begin{center}
@@ -1047,6 +1060,8 @@ the geometric average also becomes zero.
 %					 $\Bigg\uparrow$
 %		  }
 %
+
+		  \subhead{Continuous Flux}
 
 \end{myslide}
 
