@@ -120,14 +120,14 @@
 		  {\bf\Large\begin{center}
 					 %Simulation of Partial Melting Mantle
 					 Numerical Framework for 
-Simulation of a partial melting Mantle
+Simulation of a Partial Melting Mantle
 		  \end{center}}
 
 \vfill
 
 \begin{center}{\small\obeylines
 Chenyu Tian
-\bigskip
+%\bigskip
 %		  {\it\OliveGreen{CSEM} 
 %		  \Blue{\it Oden Institute}}
 %\BurntOrange{The University of Texas at Austin}}
@@ -136,10 +136,26 @@ Chenyu Tian
 
 \vfill
 
-{\small\begin{center}
-					 Todd Arbogast, Oden Institute \& Mathematics, University of Texas at Austin\\
-Marc A. Hesse, Oden Institute \& Geosciences, University of Texas at Austin\\
-		  \end{center}}
+%		  \parbox{0.65\textwidth}{
+%\quad
+%		  }\parbox{0.35\textwidth}{\begin{flushleft}
+%					 \bf Committee:
+%		  \end{flushleft}
+%					 }
+		  \vspace{0.5cm}
+		  \parbox{0.5\textwidth}{
+\quad
+		  }\parbox{0.5\textwidth}{\small\begin{flushright}
+					 Todd Arbogast, Supervisor\\
+					 \bigskip
+Marc Hesse, Co-supervisor\\
+\bigskip
+		  Omar Ghattas \\
+					 \bigskip
+			Patrick Heimback \\
+					 \bigskip
+					 Thorsten Becker
+		  \end{flushright}}
 
 		  \vspace*{40pt}
 
@@ -154,7 +170,7 @@ Marc A. Hesse, Oden Institute \& Geosciences, University of Texas at Austin\\
           \parbox{0.6\textwidth}{\raggedright
           %\subhead{Partial Melting in the Asthenosphere.}
           %\begin{blist}
-          \Oorange{Partial melting} in the Asthenosphere is a crucial geophysical process in the lithospheric evolution and plate tectonics.
+          \Oorange{Partial melting} in the asthenosphere is a crucial geophysical process in lithospheric evolution and plate tectonics.
           %\item Determines the large-scale chemical evolution of the Earth.
           %\item Similar process may occur on extraterrestrial planets.
           %\end{blist}
@@ -174,7 +190,7 @@ Marc A. Hesse, Oden Institute \& Geosciences, University of Texas at Austin\\
           \item The mechanics of a deformable solid matrix that is possibly partially molten.
           \item The transport phenomena of chemical species and energy in the presence of
 porous media.
-%\item Connecting the mechanics and the transport phenomena.
+\item Phase behavior assumed to be in local equilibrium.
           \end{blist}
         %  \item Perform numerical simulation increase understanding of the physics.
           
@@ -231,7 +247,7 @@ Define the \Maroon{mixture variable} (phase averaged) as:
 \begin{blist}
 \item Density difference between phases are neglected expect
 in the \Oorange{body force term}.
-\item Constant and uniform material thermodynamics porperties among phases.
+\item Constant and uniform material thermodynamics properties among phases.
 \end{blist}
 
 \end{myslide}
@@ -262,17 +278,17 @@ $\alpha_\rho$ Thermal expansion.
 \begin{tabular}{c | c c}
 Quantity & Value & Units \\
 \hline
-$\rho$       & $3000$           & $kg\cdot m^{-3}$              \\
-$\rho_r$       & $600$           & $kg\cdot m^{-3}$              \\
-$\alpha_\rho$  & $3\times10^{-5}$ & $K^{-1}$                      \\
-$c_p$          & $1200$           & $J\cdot kg^{-1} \cdot K^{-1}$ \\
-$L$            & $5\times10^{5}$  & $J\cdot kg^{-1}$              \\
-$\mu_l$        & $1$              & $\text{Pascal} \cdot s$       \\
-$\mu_s$        & $10^{19}$        & $\text{Pascal} \cdot s$       \\
-$k_0$          & $10^{-8}$        & $m^2$                         \\
-$T_{e0}$       & $1480$           & $K$                           \\
-$T_{m0}$       & $2000$           & $K$                           \\
-$\nu$          & $6.5\times10^6$  & $\text{Pascal} \cdot K^{-1}$
+		  $\rho$       & $3000$           & $\text{kg}\cdot \text{m}^{-3}$              \\
+		  $\rho_r$       & $600$           & $\text{kg}\cdot \text{m}^{-3}$              \\
+		  $\alpha_\rho$  & $3\times10^{-5}$ & $\text{K}^{-1}$                      \\
+		  $c_p$          & $1200$           & $\text{J}\cdot \text{kg}^{-1} \cdot \text{K}^{-1}$ \\
+		  $L$            & $5\times10^{5}$  & $\text{J}\cdot \text{kg}^{-1}$              \\
+		  $\mu_l$        & $1$              & $\text{Pascal} \cdot \text{s}$       \\
+		  $\mu_s$        & $10^{19}$        & $\text{Pascal} \cdot \text{s}$       \\
+		  $k_0$          & $10^{-8}$        & $\text{m}^2$                         \\
+		  $T_{e0}$       & $1480$           & $\text{K}$                           \\
+		  $T_{m0}$       & $2000$           & $\text{K}$                           \\
+		  $\nu$          & $6.5\times10^6$  & $\text{Pascal} \cdot \text{K}^{-1}$
 \end{tabular}
 %\caption[Parameters Table]{Flow Mechanics and Thermodynamics Parameters}
 \end{center}
@@ -294,9 +310,10 @@ We use permeability \Oorange{$k_0$} not scaled by porosity for these characteris
 
 \begin{myslide}
 \heading{McKenzie Equations}
-
+		  \begin{center}
+					 \OliveGreen{\small(McKenzie 1984)}
+		  \end{center}
 \subhead{A two-phase formulation of a viscous mantle.}
-
 \begin{equation*}
 \begin{alignedat}{3}
 		  &\phi_l (\mathbf{v}_l - \mathbf{v}_s)
@@ -357,7 +374,7 @@ We use permeability \Oorange{$k_0$} not scaled by porosity for these characteris
 
 % ===================================================
 
-\separatorHeading{\outno Static System}
+\separatorHeading{\outno Static Mechanics System}
 
 \begin{myslide}
 \heading{A Degenerate Darcy-Stokes System}
@@ -398,12 +415,12 @@ interfaces, allowing smooth porosity evolution.
 \subhead{How others address this problem?} 
 \begin{nlist}
 \item Introducing a cut-off for certain material properties. 
-\item Introducing a threshold switch between Stokes and Darcy/Stokes equations among cells. 
+\item Introducing a threshold switch between Stokes and Darcy/Stokes equations among cells. \OliveGreen{\small(Dannberg, Gassmöller, Grove and Heister, 2019)} 
 \end{nlist}
 Both involves a selected threshold value.
 Mass is not \Oorange{locally conserved}.
 
-\subhead{What we do?}
+		  \subhead{What we do?} \OliveGreen{\small(Arbogast, Hesse and Taicher, 2017)}
 \begin{nlist}
 \item Scale the variables. Bound in scaled energy space when $\phi \rightarrow 0$.
 \item Modified the weak form to achieve local mass conservation.
@@ -493,7 +510,8 @@ and
 
 \begin{myslide}
 \heading{The Scaled Weak Formulation}
-\subhead{Function Spaces.}
+%\subhead{Function Spaces.}
+		  \vspace*{-0.4cm}
 \begin{equation*}\label{eq:spaces}
 		  \begin{aligned}
 					 \mathbb{V}^\phi_D &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = 0 \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\},\\
@@ -519,9 +537,7 @@ $\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{U}_S$, and $\c
 %					 \label{eq:weak_coupled_3}
 					 &(\bold{\check{v}}_{r},\pmb{\psi}_r)  - (\check{q}_{l},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_r)) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_D^\phi,\\
 					 \nonumber
-					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r),\omega_l) + \Big(\frac{1}{1-\phi}(\check{q}_{l} - \phi^{1/2}\check{q}),\omega_l \Big) &&= 0 \\
-%					 \label{eq:weak_coupled_4}
-		  &					 &&\forall \omega_f \in 
+					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r),\omega_l) + \Big(\frac{1}{1-\phi}(\check{q}_{l} - \phi^{1/2}\check{q}),\omega_l \Big) = 0 \,&&\forall \omega_f \in 
 		  \mathbb{W}_D.
 \end{alignedat}
 \end{equation*}
@@ -553,10 +569,11 @@ Varying linearly along the edge.
 \heading{Mixed Finite Elements}
 For a polygonal domain $\Omega \subset \Re^2$. 
 
-\subhead{For Darcy.} $\mathbb{V}_{\D} \times \W_{\D} \subset H_0(\Div;\Omega)\times L^2(\Omega)$.
+		  \subhead{For Darcy.} $\mathbb{V}_{\D} \times \W_{\D} \subset H_0(\Div;\Omega)\times L^2(\Omega)$.
 		  \\[8pt]
 \parbox{.7\textwidth}{\raggedright
-		  First order reduced $H$(div)-conforming mixed space.
+	  First order reduced $H$(div)-conforming mixed space.
+\OliveGreen{\small(Arbogast, Tao and Wang, 2022)}
 \begin{equation*}
 \begin{aligned}
 		  \bbV_{D,h}(E) &= \bbV_1^0(E) = \mathbb{P}^2_1\oplus\textrm{curl}\,\mathbb{S}^{\mathcal{DS}}_2(E)\\
@@ -599,7 +616,7 @@ For a polygonal domain $\Omega \subset \Re^2$.
 \subhead{For Stokes.} $\V_{\St} \times \W_{\St} \subset (H_0^1(\Omega))^2\times L^2(\Omega)$
 		  \\[8pt]
 \parbox{.7\textwidth}{\raggedright
-		  \Oblue{Modified Bernardi-Raugel element}.
+		  \Oblue{A New Modified Bernardi-Raugel element}.
 \begin{equation*}
 \begin{aligned}
     \bbV_{S,h}(E) &= \mathcal{DS}_1^2(E)\oplus \text{span}\{\mathbf{b}_1, \mathbf{b}_2,\mathbf{b}_3, \mathbf{b}_4\}\\
@@ -950,8 +967,6 @@ where $\overline{K} = \phi_l K_l + \phi_s K_s$ is the phase averaged thermal con
 		  \sum_{g=0}^G \omega_{i,g} F(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-) = 0,
 \end{equation*}
 
-\bigskip
-
 		  \subhead{Application to Chemical Species and Energy transport}
 \begin{equation*}
 \label{eq:numflux}
@@ -964,12 +979,67 @@ where $\overline{K} = \phi_l K_l + \phi_s K_s$ is the phase averaged thermal con
 \end{aligned}
 \end{equation*}
 
+		  \parbox{0.7\textwidth}{\raggedright
 		  \Oblue{Note.}
 		  \begin{blist}
 		  \item Diffusion terms are being dropped.
 		  \item Velocities are continuous across edges.
+		  \item Values are reconstructed on both sides of the edges.
 		  \end{blist}
+		  }\parbox{0.3\textwidth}{\raggedright
+\begin{tikzpicture}[xscale=0.3,yscale=0.3]
+    \coordinate(P5) at (-0.5,-1);
+    \coordinate(P6) at (1.5,3);
 
+    \coordinate(P7) at (-8,-3);
+    \coordinate(P8) at (-4,-4);
+    \coordinate(P9) at (-2,-5);
+    \coordinate(P10) at (3,-4);
+    \coordinate(P11) at (7,-2);
+    \coordinate(P12) at (9,1);
+    \coordinate(P13) at (8,5);
+    \coordinate(P14) at (3,7);
+    \coordinate(P15) at (2,8);
+    \coordinate(P16) at (-2,8);
+    \coordinate(P17) at (-4,6);
+    \coordinate(P18) at (-6,6);
+    \coordinate(P19) at (-8,2);
+
+    \coordinate(P20) at (-4,-1);
+    \coordinate(P21) at (1,-2);
+    \coordinate(P22) at (5,0);
+    \coordinate(P23) at (4,3);
+    \coordinate(P24) at (-1.5,5);
+
+    \draw [thick,-] (P7)--(P8)--(P9)--(P10)--(P11)--(P12)--(P13)--(P14)--(P15)--(P16)--(P17)--(P18)--(P19)--(P7);
+    \draw [thick,-] (P8)--(P20)--(P19);
+    \draw [thick,-] (P9)--(P21)--(P10);
+    \draw [thick,-] (P11)--(P22);
+    \draw [thick,-] (P13)--(P23)--(P14)--(P24)--(P17);
+    \draw [thick,-] (-9,-4)--(P7)--(-9,-2);
+    \draw [thick,-] (-6,-6)--(P8);
+    \draw [thick,-] (-2,-6)--(P9);
+    \draw [thick,-] (4,-6)--(P10);
+    \draw [thick,-] (8,-6)--(9,-4)--(P11);
+    \draw [thick,-] (9,-4)--(10,-4);
+    \draw [thick,-] (P12)--(10,1);
+    \draw [thick,-] (P13)--(10,6);
+    \draw [thick,-] (P14)--(6,8)--(6,9);
+    \draw [thick,-] (6,8)--(10,6);
+    \draw [thick,-] (P15)--(2,9);
+    \draw [thick,-] (P16)--(-3,9);
+    \draw [thick,-] (P18)--(-8,8)--(-9,8);
+    \draw [thick,-] (-8,8)--(-7,9);
+    \draw [thick,-] (-9,2)--(P19);
+
+    \draw [thick,-,fill=blue, fill opacity=0.2] (P20)--(P5)--(P21)--(P22)--(P23)--(P6)--(P24)--(P20);
+    \draw [thick,-] (P5)--(P6);
+   
+    \draw [thick] (-1,3) node[]{\tiny${E^-}$};
+    \draw [thick] (3,0) node[]{\tiny${E^+}$};
+    \draw [thick] (1.35,1.75) node[]{\tiny$e$};
+  \end{tikzpicture}
+		  }
 \end{myslide}
 
 \iffalse
@@ -1003,6 +1073,61 @@ The reconstruction of $u$ on $E_0$ for a given collection of stencils is then:
 		  \end{equation*}
 \end{myslide}
 \fi
+
+\begin{myslide}
+		  \heading{New Numerical Scheme for Transport System}
+		  \subhead{What we need?}
+		  \begin{blist}\raggedright
+		  \item Maintain local mass conservation.
+		  \item Employ a high-order reconstruction scheme capable of recovering 
+					 pointwise values for phase evaluation.
+		  \item Provides enhanced flexibility and numerical robustness 
+					 near boundaries.
+		  \item Allow straightforward coupling with an MFEM solver on a 
+					 fixed domain.
+		  \item Robust in capturing complex discontinuities associated with the 
+					 transition between melt and no-melt regions.
+		  \end{blist}
+
+\end{myslide}
+
+
+\begin{myslide}
+		  \heading{A New ML-WENO Weighting}
+		  \begin{center}
+					 \OliveGreen{\small(Arbogast, Huang and Tian, 2024)}
+		  \end{center}
+		  \parbox{0.4\textwidth}{\raggedright
+		  \subhead{ML-WENO Reconstruction.}
+		  \begin{equation*}\label{eq:reconstruction}
+\mathcal{R}(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q^{\mathcal{S}_l}(\mathbf{x}), \quad \mathbf{x} \in E_{i,j},
+		  \end{equation*}
+
+		  \begin{equation*}\label{eq:nonlinearwgts}
+\hat{\omega}_l = \frac{\omega_l}{(\sigma_l + \epsilon h_0^2)^{ar_l + n_l}},
+		  \end{equation*}
+
+\Oblue{Biasing factor}
+		  \begin{equation*}\label{eq:biasingfctor}
+n(r_l) = n_l = \begin{cases}
+1, \quad &\text{if} \quad r_l = 1,\\
+3, \quad &\text{if} \quad r_l = 2,\\
+4, \quad &\text{if} \quad r_l \geq 3.
+\end{cases}
+		  \end{equation*}
+
+\Oblue{Renormalized nonlinear weights}
+		  \begin{equation*}\label{eq:normalizednonlinearwgts}
+\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}}.
+		  \end{equation*}
+		  }\parbox{0.6\textwidth}{
+\centering
+\input ../formal/chapters/tikz/stencilsplit.tex
+
+		  A \Oblue{(3,2,1)} ML-WENO reconstruction with two shocks present.
+
+		  }
+\end{myslide}
 
 \begin{myslide}
 		  \heading{Stencil Polynomial and Smoothness Indicator}
@@ -1049,9 +1174,10 @@ Then
 \end{myslide}
 
 \begin{myslide}
-		  \heading{Two Alternatives of Smoothness Indicator}
+		  \heading{Two New Alternatives of Smoothness Indicator}
 \begin{itemize}
-\item \textit{Simple smoothness indicator}%~\cite{WENOAOSimplifiedSmoothness}
+		  \item \textit{Simple smoothness indicator}\OliveGreen{\small(Huang, Arbogast and Tian, 2023)}
+%~\cite{WENOAOSimplifiedSmoothness}
 \begin{equation*}\label{eq:simpsmoothnessIC}
 \sigma_{\text{simp}} = \frac{1}{N_\mathcal{S} -1 } \sum_k (\overline{u}_k - \overline{u}_0)^2,
 \end{equation*}
@@ -1062,7 +1188,8 @@ as the classic Jiang-Shu smoothness indicator.
 
 \vspace{0.5cm}
 
-\item \textit{Polynomial smoothness indicator}%~\cite{sigmaP}
+\item \textit{Polynomial smoothness indicator}\OliveGreen{\small(Arbogast, Huang, Tian and Gray, 2025)}
+		  %~\cite{sigmaP}
 		  \begin{equation*}\label{eq:polysigma}
 					 \sigma_{P} = \sum_{\alpha} \zeta_{\alpha, \alpha} c_{\alpha}^2
 		  \end{equation*}
@@ -1073,40 +1200,7 @@ as the classic Jiang-Shu smoothness indicator.
 
 \end{myslide}
 
-\begin{myslide}
-		  \heading{ML-WENO Weighting}
 
-		  \parbox{0.4\textwidth}{\raggedright
-		  \subhead{ML-WENO Reconstruction.}
-		  \begin{equation*}\label{eq:reconstruction}
-\mathcal{R}(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q^{\mathcal{S}_l}(\mathbf{x}), \quad \mathbf{x} \in E_{i,j},
-		  \end{equation*}
-
-		  \begin{equation*}\label{eq:nonlinearwgts}
-\hat{\omega}_l = \frac{\omega_l}{(\sigma_l + \epsilon h_0^2)^{ar_l + n_l}},
-		  \end{equation*}
-
-\Oblue{Biasing factor}
-		  \begin{equation*}\label{eq:biasingfctor}
-n(r_l) = n_l = \begin{cases}
-1, \quad &\text{if} \quad r_l = 1,\\
-3, \quad &\text{if} \quad r_l = 2,\\
-4, \quad &\text{if} \quad r_l \geq 3.
-\end{cases}
-		  \end{equation*}
-
-\Oblue{Renormalized nonlinear weights}
-		  \begin{equation*}\label{eq:normalizednonlinearwgts}
-\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}}.
-		  \end{equation*}
-		  }\parbox{0.6\textwidth}{
-\centering
-\input ../formal/chapters/tikz/stencilsplit.tex
-
-		  A \Oblue{(3,2,1)} ML-WENO stencil with two shock present.
-
-		  }
-\end{myslide}
 
 \begin{myslide}
 \heading{Reconstruciton Error}
@@ -1186,14 +1280,15 @@ u_D(0,y,t) = \left\{\begin{alignedat}{2}
 \right.
 \end{equation*}
 
-\vspace{0.5cm}
-
 \centering
 \includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow005.eps}
 \includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow0125.eps}
 \includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow025.eps}
 \includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow05.eps}
 \includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow075.eps}
+		  \vspace*{-0.2cm}
+
+Without the ``constant" stencil, the solution blows up.
 
 \end{myslide}
 
