@@ -34,8 +34,10 @@
 \setcounter{totalnumber}{10}
 
 \newtheorem{thm}{Theorem}
+\newtheorem*{thm*}{Theorem}
 \newtheorem{cor}[thm]{Corollary}
 \newtheorem{lem}[thm]{Lemma}
+\newtheorem*{lem*}{Lemma}
 \newtheorem{prop}[thm]{Proposition}
 \newtheorem{ax}{Axiom}
 
@@ -117,6 +119,7 @@
 		  %\vspace*{-30pt}
 		  {\bf\Large\begin{center}
 					 %Simulation of Partial Melting Mantle
+					 Numerical Framework for 
 Simulation of a partial melting Mantle
 		  \end{center}}
 
@@ -207,6 +210,7 @@ porous media.
 \end{tikzpicture}
 }
 \parbox{0.46\textwidth}{\raggedright
+\vspace{0.6cm}
 \subheading{Mixture Theory} %\Gray{(McKenzie 1984)}}
 \vspace*{-0.3cm}
 Both liquid ($l$) and solid ($s$) phases
@@ -223,13 +227,18 @@ Define the \Maroon{mixture variable} (phase averaged) as:
 }
 
 \bigskip
-\subhead{Extended Boussinesq Approximation.}
-Density difference between phases are neglected expect
+\subhead{Some assumptions.}
+\begin{blist}
+\item Density difference between phases are neglected expect
 in the \Oorange{body force term}.
+\item Constant and uniform material thermodynamics porperties among phases.
+\end{blist}
 
-\subhead{Notations.}
-\vspace{0.3cm}
+\end{myslide}
 
+\begin{myslide}
+\heading{Material Properties and Characteristic Scales}
+\iffalse
 \parbox{0.32\textwidth}{\raggedright
 $c$ Mass concentration.\\
 $\rho$ Density.\\
@@ -246,6 +255,39 @@ $L$ Latent heat.
 $c_p$ Specifc heat.\\
 $\mathbf{g}$ Gravity.\\
 $\alpha_\rho$ Thermal expansion.
+}
+\fi
+
+\begin{center}
+\begin{tabular}{c | c c}
+Quantity & Value & Units \\
+\hline
+$\rho$       & $3000$           & $kg\cdot m^{-3}$              \\
+$\rho_r$       & $600$           & $kg\cdot m^{-3}$              \\
+$\alpha_\rho$  & $3\times10^{-5}$ & $K^{-1}$                      \\
+$c_p$          & $1200$           & $J\cdot kg^{-1} \cdot K^{-1}$ \\
+$L$            & $5\times10^{5}$  & $J\cdot kg^{-1}$              \\
+$\mu_l$        & $1$              & $\text{Pascal} \cdot s$       \\
+$\mu_s$        & $10^{19}$        & $\text{Pascal} \cdot s$       \\
+$k_0$          & $10^{-8}$        & $m^2$                         \\
+$T_{e0}$       & $1480$           & $K$                           \\
+$T_{m0}$       & $2000$           & $K$                           \\
+$\nu$          & $6.5\times10^6$  & $\text{Pascal} \cdot K^{-1}$
+\end{tabular}
+%\caption[Parameters Table]{Flow Mechanics and Thermodynamics Parameters}
+\end{center}
+
+\parbox{0.5\textwidth}{\raggedright
+\subhead{Characteristic Scales.}
+\begin{blist}
+\item $l_0 = \Big( \frac{k_0 \mu_s}{\mu_l} \Big)^{1/2}$,
+\item $u_0 = \frac{k_0 \rho_r g}{\mu_l}$,
+\item $t_0 = l_0/u_0$,
+\item $p_0 = \rho g l_0$.
+\end{blist}
+}\parbox{0.5\textwidth}{\raggedright
+\subhead{Note.}
+We use permeability \Oorange{$k_0$} not scaled by porosity for these characteristic scales.
 }
 
 \end{myslide}
@@ -318,7 +360,7 @@ $\alpha_\rho$ Thermal expansion.
 \separatorHeading{\outno Static System}
 
 \begin{myslide}
-\heading{Degenerate Darcy-Stokes System}
+\heading{A Degenerate Darcy-Stokes System}
 \subhead{Pressure Potentials.}
 \begin{equation*}
 	q_l = p_l - \rho_l g z\quad\text{and}\quad q_s = p_s - \rho_l g z,
@@ -334,9 +376,17 @@ Then
 &&\Maroon{(\text{Conservation}}\\[-20pt]
 & && &&\Maroon{\text{/Compaction})}\\[8pt]
   		  &\nabla q - \nabla \cdot \tau(\mathbf{v}_s) &&= -(1-\phi)\rho_r\mathbf{g}, \quad && \Maroon{(\text{Stokes})}\\
-		  &\mu_s\nabla \cdot \mathbf{v}_s - \frac{\phi}{1-\phi}(q_l-q) &&=0, &&\Maroon{(\text{Compaction})}
+		  &\mu_s\nabla \cdot \mathbf{v}_s - \frac{\phi}{1-\phi}(q_l-q) &&=0. &&\Maroon{(\text{Compaction})}
 \end{alignedat}
 		  \end{equation*}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{Remarks.}
+
+\subhead{Advantages.} A unified two-phase framework handles both melting and solid regions without explicit 
+interfaces, allowing smooth porosity evolution.
 
 \subhead{Problems.} When no melt, $\phi = 0$, 
 \begin{nlist}
@@ -345,11 +395,25 @@ Then
 \item The condition number grows as $\phi \rightarrow 0$.
 \end{nlist}
 
+\subhead{How others address this problem?} 
+\begin{nlist}
+\item Introducing a cut-off for certain material properties. 
+\item Introducing a threshold switch between Stokes and Darcy/Stokes equations among cells. 
+\end{nlist}
+Both involves a selected threshold value.
+Mass is not \Oorange{locally conserved}.
+
+\subhead{What we do?}
+\begin{nlist}
+\item Scale the variables. Bound in scaled energy space when $\phi \rightarrow 0$.
+\item Modified the weak form to achieve local mass conservation.
+\end{nlist}
+
 \end{myslide}
 
 \begin{myslide}
 
-\heading{Scaled Variables}
+\heading{A Scaled Space $H_\phi(\text{div})$}
 \subhead{Scaled Variables}\newline
 %Define by Arbogast and Taicher [1]:
 \begin{equation*}\label{eq:scaledVariables}
@@ -357,8 +421,12 @@ Then
 	\quad\text{and}\quad
 	\tilde{q}_l = \phi^{1/2}q_l,
 \end{equation*}
-\subhead{The Scaled Space $H_{\phi}(\text{div})$}\newline
-%		  \Purple{$H_\phi(\Div;\Omega)$} is a \Cyan{Hilbert space} 
+\subhead{Assumption.} \begin{equation*}\label{eq:phiboundness}
+\phi \in L^{\infty}(\Omega) \quad \text{and} \quad
+		  \phi^{\Theta - 1/2} \nabla \phi \in (L^{\infty}(\Omega))^2.
+\end{equation*}
+
+\subhead{A Scaled Space $H_{\phi}(\text{div})$}
 \begin{equation*}\label{eq:scaledHspace}
 		  H_{\phi}(\text{div}; \Omega) = \Big\{ \mathbf{v} 
 		  \in (L^2(\Omega))^2: \phi^{-1/2}\nabla \cdot (\phi^{1+\Theta} \mathbf{v})
@@ -386,7 +454,7 @@ The \Oblue{normal trace} on $\partial \Omega$ is well-defined by
 %\end{myslide}
 
 \begin{myslide}
-\heading{A Dimensionless Boundary Value Problem}
+\heading{The Scaled Dimensionless Boundary Value Problem}
 Find two velocity-pressure potential pairs \Oorange{$(\check{\mathbf{v}}_r, \check{q}_l)$} and 
 \Oorange{$(\check{\mathbf{v}}_s, \check{q})$} such that 
 \begin{equation*}
@@ -415,32 +483,71 @@ and
 		  \end{alignedat}
 \end{equation*}
 
-\parbox{0.5\textwidth}{\raggedright
-\subhead{Characteristic Scales.}\\
-\begin{blist}
-\item $l_0 = \Big( \frac{k_0 \mu_s}{\mu_l} \Big)^{1/2}$,\quad $u_0 = \frac{k_0 \rho_r g}{\mu_l}$.
-\item $t_0 = l_0/u_0$,\quad $p_0 = \rho g l_0$.
-\end{blist}
-}\parbox{0.5\textwidth}{\raggedright
 \subhead{Dimensionless Variables.}
 \begin{blist}
 \item $\check{\mathbf{v}}_r = \frac{\tilde{\mathbf{v}}_r}{u_0}$,\quad $\check{\mathbf{v}}_s = \frac{\mathbf{v}_s}{u_0}$, 
 \item $\check{q} = \frac{q}{p_0}$,\quad $\check{q_l} = \frac{\tilde{q}_l}{p_0}$.
 \end{blist}
-}
 
 \end{myslide}
 
+\begin{myslide}
+\heading{The Scaled Weak Formulation}
+\subhead{Function Spaces.}
+\begin{equation*}\label{eq:spaces}
+		  \begin{aligned}
+					 \mathbb{V}^\phi_D &= \Big\{\mathbf{v}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{v}\cdot \pmb{\nu} = 0 \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\},\\
+					 \mathbb{U}^\phi_D &= \Big\{\mathbf{u}\in H_{\phi}(\text{div};\Omega): \phi^{1/2+\Theta} \mathbf{u}\cdot \pmb{\nu} = \phi^{-1/2}g_r \hspace{0.15cm} \text{on}\hspace{0.15cm} \Gamma_{u,D}  \Big\} = \tilde{\mathbf{g}}_r + \mathbb{V}^\phi_D,\\
+					 \mathbb{W}_D      &= L^2(\Omega),\\
+					 \mathbb{V}_S &= \Big\{\mathbf{v}\in (H^1(\Omega))^2 : \mathbf{v} = \mathbf{0} \hspace{0.15cm} \text{on}\hspace{0.15cm}  \Gamma_{u,S} \Big\},\\
+					 \mathbb{U}_S &= \Big\{\mathbf{u}\in (H^1(\Omega))^2 : \mathbf{u} = \mathbf{g}_s \hspace{0.15cm} \text{on}\hspace{0.15cm}  \Gamma_{u,S} \Big\} 
+					 = \tilde{\mathbf{g}}_s + \mathbb{V}_S,\\
+		  \mathbb{W}_S &= L^2(\Omega),
+		  \end{aligned}
+\end{equation*}
+
+\subhead{A Well-Posed Weak Form.}
+
+Find $\check{\mathbf{v}}_r \in \mathbb{U}^{\phi}_D$,
+$\check{q}_l \in \mathbb{W}_D$, $\check{\mathbf{v}}_s \in \mathbb{U}_S$, and $\check{q}\in \mathbb{W}_S$ such that
+\begin{equation*}
+\begin{alignedat}{2}
+%		  \label{eq:weak_coupled_1}
+		  &(\check{\pmb{\tau}}(\bold{v}_{s}),\nabla \pmb{\psi}_s) - (\check{q}, \nabla \cdot \pmb{\psi}_s) = -((1-\phi)\bold{n}, \pmb{\psi}_s) &&\forall\pmb{\psi}_s \in \mathbb{V}_S,\\
+%		  \label{eq:weak_coupled_2}
+					 &(\nabla \cdot \check{\bold{v}}_{s}, \omega)  + \Big(\frac{\phi^{1/2}}{1-\phi} (\check{q}_l - \phi^{1/2}\check{q}), \omega\Big) = 0 &&\forall \omega \in \mathbb{W}_S,\\
+%					 \label{eq:weak_coupled_3}
+					 &(\bold{\check{v}}_{r},\pmb{\psi}_r)  - (\check{q}_{l},\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\pmb{\psi}_r)) = 0, &&\forall \pmb{\psi}_r \in \mathbb{V}_D^\phi,\\
+					 \nonumber
+					 &(\phi^{-1/2} \nabla \cdot (\phi^{1+\Theta}\check{\bold{v}}_r),\omega_l) + \Big(\frac{1}{1-\phi}(\check{q}_{l} - \phi^{1/2}\check{q}),\omega_l \Big) &&= 0 \\
+%					 \label{eq:weak_coupled_4}
+		  &					 &&\forall \omega_f \in 
+		  \mathbb{W}_D.
+\end{alignedat}
+\end{equation*}
+
+\end{myslide}
+
+\iffalse
 \begin{myslide}
 		  \heading{Direct Serendipity $\mathcal{DS}$ Space}
 
 		  \subhead{First-order $\mathcal{DS}$ space}
 
+\parbox{0.4\textwidth}{\raggedright
+\includegraphics[width=6cm,height=4.5cm]{../formal/chapters/pics/phivds1_1.png}
+}\parbox{0.4\textwidth}{\raggedright
+Varying linearly along the edge.
+}
 
 		  \subhead{Second-order $\mathcal{DS}$ space}
 
+\includegraphics[width=6cm,height=4.5cm]{../formal/chapters/pics/phiv0_1.png}
+
+\includegraphics[width=6cm,height=4.5cm]{../formal/chapters/pics/phie0_2.png}
 
 \end{myslide}
+\fi
 
 \begin{myslide}
 \heading{Mixed Finite Elements}
@@ -499,9 +606,9 @@ For a polygonal domain $\Omega \subset \Re^2$.
     \bbW_{D,h}(E) &= \bbW_1^0(E) = \mathbb{P}_0,
     \end{aligned}
 \end{equation*}
-\Orange{Accuracy} $\cO(h^2)$ for $\v_s$ and $\cO(h)$ for $q_h$
+\Orange{Accuracy} $\cO(h^2)$ for $\v_s$ and $\cO(h)$ for $q_h$.
 
-\Orange{DOF} $12 + 1 = 13$
+\Orange{DOF} $12 + 1 = 13$.
 }\parbox{0.3\textwidth}{
 \centerline{\setlength\unitlength{4.5pt}
 %\begin{picture}(30,30)(-15,-15)
@@ -565,12 +672,74 @@ For a polygonal domain $\Omega \subset \Re^2$.
 \end{equation*}
 
 		  \subhead{An inf-sup Stable Pair $\mathbb{V}_1^{\mathcal{BR}} \times \mathbb{W}_0$}
-\begin{thm}
+\begin{thm*}
 		  For a convex domain $\Omega$, there exists a constant $\gamma > 0$ such that
 		  \begin{equation}
 					 \inf_{q_h \in \mathbb{W}_0} \sup_{\mathbf{v}_h \in \mathbb{V}_1^{\mathcal{BR}}} \frac{(\nabla \cdot \mathbf{v}_h, q_h)}{\norm{\mathbf{v}_h}_{H^1(\Omega)}\norm{q_h}_{L^2(\Omega)}} \geq \gamma >0.
 		  \end{equation}
-\end{thm}
+\end{thm*}
+
+\subhead{Idea of proof.} Define the global projection operator $\pi \in (H^1_0(\Omega))^2 \rightarrow \mathbb{V}_1^{\mathcal{BR}} \cap (H^1_0(\Omega))^2$ as a combination of local projection operators $\pi_E$ for each vertex and edge flux.
+
+\end{myslide}
+
+\begin{myslide}
+\heading{Numerical Test}
+Find the displacement $\mathbf{u}$ and pressure $p$ such that
+\begin{equation*}\label{eq:testbr}
+		  \begin{aligned}
+					 -\Delta \mathbf{u} + \nabla p &= \mathbf{f} \hspace{0.3cm} \text{in} \hspace{0.2cm} \Omega, \\
+					 \nabla \cdot \mathbf{u}  &= 0 \hspace{0.3cm} \text{in} \hspace{0.2cm} \Omega,\\
+					 \mathbf{u} &= \mathbf{g} \hspace{0.25cm} \text{on} \hspace{0.2cm} \partial \Omega.
+		  \end{aligned}
+\end{equation*}
+
+\subhead{Solutions.} On a square region $\Omega = [0,\pi] \times [0,2\pi]$,
+\begin{equation*}\label{eq:testproblem}
+		  \mathbf{u} = \begin{bmatrix}
+					 &\hspace{0.35cm}\cos(x)\sin(y) \\
+					 &-\sin(x)\cos(y)
+		  \end{bmatrix}, \quad  p =
+					 \sin(x)\sin(y),
+\end{equation*}
+
+\vspace{1cm}
+\centering
+    \includegraphics[width=9cm,height=7cm]{../formal/chapters/pics/ex2.eps}
+    \includegraphics[width=9cm,height=7cm]{../formal/chapters/pics/ex1.eps}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{Convergence Results}
+
+\begin{center}
+     \begin{tabular}{c | c c c c}
+     Grid size & $8\times8$ & $16\times 16$ & $32\times32$ & $64 \times 64$ \\
+     \hline
+     $L^2(\text{res}_u)$ & 4.502E$-$1 & 1.052E$-$1 & 2.513E$-$2 & 6.130E$-$3 \\
+				 $L^2(\text{res}_{du})$ & 1.039E+0 & 4.463E$-$1 & 2.093E$-$1 & 1.019E$-$1 \\
+     $L^2(\text{res}_{p})$ & 2.632E$+$0 & 5.845E$-$1 & 1.374E$-$1 & 3.330E$-$2 \\
+    \end{tabular}
+%    \caption{Rectangular Grids. $L^2$-error in the residual of the solution $u$ ($\text{res}_u$), the pressure $p$ ($\text{res}_p$), and the of derivatives of the solution $Du$ ($\text{res}_{du}$).}
+%    \label{tab:table2}
+\end{center}
+
+    \Oorange{Rectangular Grids.} $L^2$-error in the residual of the solution $u$ ($\text{res}_u$), the pressure $p$ ($\text{res}_p$), and the of derivatives of the solution $Du$ ($\text{res}_{du}$).
+
+\vspace{0.8cm}
+\begin{center}
+    \begin{tabular}{c | c c c c}
+     Grid size & $8\times8$ & $16\times 16$ & $32\times32$ & $64 \times 64$ \\
+     \hline
+     $L^2(\text{res}_u)$ & 4.603E$-$1 & 1.074E$-$2 & 2.567E$-$2 & 6.266E$-$3 \\
+				$L^2(\text{res}_{du})$ & 1.070E$+$0 & 4.670E$-$1 & 2.207E$-$1 & 1.078E$-$1 \\
+				$L^2(\text{res}_{p})$ & 2.685E$+$0 & 5.981E$-$1 & 1.525E$-$1 & 4.580E$-$2 \\
+    \end{tabular}
+	 \end{center}
+%    \caption{Distorted Grids. $L^2$-error in the residual of the solution $u$ ($\text{res}_u$), the pressure $p$ ($\text{res}_p$), and the of derivatives of the solution $Du$ ($\text{res}_{du}$).}
+%    \label{tab:table3}
+    \Oorange{Distorted Grids.} $L^2$-error in the residual of the solution $u$ ($\text{res}_u$), the pressure $p$ ($\text{res}_p$), and the of derivatives of the solution $Du$ ($\text{res}_{du}$).
 
 \end{myslide}
 
@@ -682,6 +851,8 @@ separately.
 
 \begin{myslide}
 		  \heading{Convergence Test}
+
+		  ???
 \end{myslide}
 
 \begin{myslide}
@@ -834,41 +1005,6 @@ The reconstruction of $u$ on $E_0$ for a given collection of stencils is then:
 \fi
 
 \begin{myslide}
-		  \heading{ML-WENO Weighting}
-
-		  \parbox{0.4\textwidth}{\raggedright
-		  \subhead{ML-WENO Reconstruction.}
-		  \begin{equation*}\label{eq:reconstruction}
-\mathcal{R}(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q^{\mathcal{S}_l}(\mathbf{x}), \quad \mathbf{x} \in E_{i,j},
-		  \end{equation*}
-
-		  \begin{equation*}\label{eq:nonlinearwgts}
-\hat{\omega}_l = \frac{\omega_l}{(\sigma_l + \epsilon h_0^2)^{ar_l + n_l}},
-		  \end{equation*}
-
-\Oblue{Biasing factor}
-		  \begin{equation*}\label{eq:biasingfctor}
-n(r_l) = n_l = \begin{cases}
-1, \quad &\text{if} \quad r_l = 1,\\
-3, \quad &\text{if} \quad r_l = 2,\\
-4, \quad &\text{if} \quad r_l \geq 3.
-\end{cases}
-		  \end{equation*}
-
-\Oblue{Renormalized nonlinear weights}
-		  \begin{equation*}\label{eq:normalizednonlinearwgts}
-\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}}.
-		  \end{equation*}
-		  }\parbox{0.6\textwidth}{
-\centering
-\input ../formal/chapters/tikz/stencilsplit.tex
-
-		  A \Oblue{(3,2,1)} ML-WENO stencil with two shock present.
-
-		  }
-\end{myslide}
-
-\begin{myslide}
 		  \heading{Stencil Polynomial and Smoothness Indicator}
 
 \subhead{Represent Stencil Polynomial with Basis polynomials}:
@@ -914,6 +1050,197 @@ Then
 
 \begin{myslide}
 		  \heading{Two Alternatives of Smoothness Indicator}
+\begin{itemize}
+\item \textit{Simple smoothness indicator}%~\cite{WENOAOSimplifiedSmoothness}
+\begin{equation*}\label{eq:simpsmoothnessIC}
+\sigma_{\text{simp}} = \frac{1}{N_\mathcal{S} -1 } \sum_k (\overline{u}_k - \overline{u}_0)^2,
+\end{equation*}
+where $\overline{u}_0$ is the cell averaged solution in the target cell.
+This simple smoothness indicator is designed to reduce the computational cost and to deal with
+distorted stencils on unstructured meshes. However, this simple smoothness indicator is not as robust
+as the classic Jiang-Shu smoothness indicator.
+
+\vspace{0.5cm}
+
+\item \textit{Polynomial smoothness indicator}%~\cite{sigmaP}
+		  \begin{equation*}\label{eq:polysigma}
+					 \sigma_{P} = \sum_{\alpha} \zeta_{\alpha, \alpha} c_{\alpha}^2
+		  \end{equation*}
+		  which is obtained by dropping all the cross terms appeared in polynomial multiplication. %appeared in the formulation~\eqref{eq:cofformulation}.
+		  This alternative serves as a good approximation to the classic Jiang-Shu smoothness indicator while the 
+		  computing efficiency is greatly improved.
+\end{itemize}
+
+\end{myslide}
+
+\begin{myslide}
+		  \heading{ML-WENO Weighting}
+
+		  \parbox{0.4\textwidth}{\raggedright
+		  \subhead{ML-WENO Reconstruction.}
+		  \begin{equation*}\label{eq:reconstruction}
+\mathcal{R}(\mathbf{x}) = \sum_{l} \tilde{\omega_l} Q^{\mathcal{S}_l}(\mathbf{x}), \quad \mathbf{x} \in E_{i,j},
+		  \end{equation*}
+
+		  \begin{equation*}\label{eq:nonlinearwgts}
+\hat{\omega}_l = \frac{\omega_l}{(\sigma_l + \epsilon h_0^2)^{ar_l + n_l}},
+		  \end{equation*}
+
+\Oblue{Biasing factor}
+		  \begin{equation*}\label{eq:biasingfctor}
+n(r_l) = n_l = \begin{cases}
+1, \quad &\text{if} \quad r_l = 1,\\
+3, \quad &\text{if} \quad r_l = 2,\\
+4, \quad &\text{if} \quad r_l \geq 3.
+\end{cases}
+		  \end{equation*}
+
+\Oblue{Renormalized nonlinear weights}
+		  \begin{equation*}\label{eq:normalizednonlinearwgts}
+\tilde{\omega}_l = \frac{\hat{\omega}_l}{\sum_{l'} \hat{\omega}_{l'}}.
+		  \end{equation*}
+		  }\parbox{0.6\textwidth}{
+\centering
+\input ../formal/chapters/tikz/stencilsplit.tex
+
+		  A \Oblue{(3,2,1)} ML-WENO stencil with two shock present.
+
+		  }
+\end{myslide}
+
+\begin{myslide}
+\heading{Reconstruciton Error}
+\subhead{Two Groups of Stencils.}
+\begin{equation*}\label{eq:groupstencil}
+\begin{aligned}
+		  \text{Smooth} &= \{l:\hspace{0.2cm} \text{$u$ is smooth on $\mathcal{S}_l$}\},\\
+		  \text{Jump}   &= \{l:\hspace{0.2cm} \text{$u$ has a jump on $\mathcal{S}_l$}\},
+\end{aligned}
+\end{equation*}
+
+\vspace{0.5cm}
+
+\begin{blist}
+\item $l \in \text{Smooth}$, the smoothness indicator $\sigma_l = Ch^2 + \mathcal{O}(h^3)$; 
+\item $l \in \text{Jump}$, the smoothness indicator $\sigma_l = \Theta(1)$.
+\end{blist}
+
+\subhead{Define the maximum order $r_{\text{max}}$.} \begin{equation*}\label{eq:maxr}
+r_{\max} = \max\{r: \text{Smooth} \cap \mathcal{L}_{r,r}  \neq \O \}.
+\end{equation*}
+
+\begin{lem*}
+		  Let $\mathcal{R}(\mathbf{x})$ be the reconstruction. Assuming a 
+		  qusi-uniform mesh, $h_0 = \Theta(h)$, there exists a constant $C>0$
+		  such that for any $\mathbf{x} \in E_0$, 
+		  \begin{equation*}\label{eq:errorestimate}
+					 \lvert u(\mathbf{x}) - \mathcal{R}(\mathbf{x}) \rvert \leq C h^{r_{\max}}.
+		  \end{equation*}
+\end{lem*}
+
+\subhead{Idea of Proof.} Employ the asymptotic estimation result for stencils with jump or smooth.
+
+\end{myslide}
+
+\begin{myslide}
+\heading{Reconstruction example}
+An illustration of different cells using \Oorange{one} fifth-order stencil to avoid accuracy degeneracy.
+\begin{center}
+\input ../formal/chapters/tikz/mesh2.tex
+\end{center}
+
+\subhead{Reconstruction on distorted mesh}
+
+\parbox{0.5\textwidth}{\raggedright
+\includegraphics[width=14cm, height=8cm]{../formal/chapters/pics/53reconstruction.eps}
+}\parbox{0.5\textwidth}{\raggedright
+\includegraphics[width=10cm, height=8cm]{../formal/chapters/pics/effective_order2.eps}
+}
+
+\iffalse
+\begin{equation*}
+u(x,y) = \left \{ 
+		  \begin{alignedat}{2}
+		  &\sin(x) \cos(y)  \quad && x\leq 0.5,\\
+		  &\sin\bigg(\frac{(x+0.3)\pi}{2}\bigg)^6 \cos\bigg(\frac{(y-0.6)\pi}{2}\bigg)^6 + 0.5  \quad && x>0.5.
+		  \end{alignedat}
+		  \right.
+\end{equation*}
+\fi
+
+\end{myslide}
+
+\begin{myslide}
+\heading{Stabilization of Inflow}
+Adding additional ``constant" level to the inflow boundary in account for a shock wave traveling into the domain.
+
+\subhead{A High-order Burgers Example.}
+Consider a Burgers-like equation $u_t + u^3 u_x = 0$ with a fourth order flux $\mathbf{f}(u) = (u^4/4,0)$ in the 
+domain $[0,1]^2$. We impose Dirichlet boundary condition on the left boundary as
+\begin{equation*}
+\label{eq:inflowtest}
+u_D(0,y,t) = \left\{\begin{alignedat}{2}
+&\sin^2(2\pi y),\quad &&y\leq0.25, y\geq 0.75,\\
+&1,             \quad &&0.25 < y < 0.75.
+\end{alignedat}
+\right.
+\end{equation*}
+
+\vspace{0.5cm}
+
+\centering
+\includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow005.eps}
+\includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow0125.eps}
+\includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow025.eps}
+\includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow05.eps}
+\includegraphics[width=4cm, height=10cm]{../formal/chapters/pics/newinflow075.eps}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{Time Stepping}
+\subhead{A Multi-stage Explicit SSP Runge-Kutta method.}
+\begin{equation*}\label{eq:multistageSSP}
+\begin{aligned}
+		  u^{0} &= u^n ,\\
+		  u^{(i)}   &= \sum_{j=0}^{i-1} \alpha_{i,j}u^{(j)} + \Delta t \beta_{i,j} \tilde{\mathbf{F}}(u^{(j)}), \quad 1\leq i \leq m\\
+		  u^{n+1} &= u^m,
+\end{aligned}
+\end{equation*}
+where $\sum_{j}^{i-1} \alpha_{i,j} = 1$ for consistency. 
+
+\vspace{0.5cm}
+
+\subhead{A Second-order Two-stage Scheme.}
+\begin{equation*}\label{eq:2ndrk}
+\begin{aligned}
+		  u^{0}   &= u^n,\\
+		  u^{(1)} &= u^{(0)} + \Delta t \tilde{\mathbf{F}}(u^{(0)}),\\
+		  u^{n+1} &= u^{(0)} + \frac{1}{2} \Delta t \tilde{\mathbf{F}}(u^{(0)}) + \frac{1}{2} \Delta t \tilde{\mathbf{F}}(u^{(1)}),
+\end{aligned}
+\end{equation*}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{A Riemann Shock and Rarefaction Case}
+\subhead{True Solution}
+\begin{equation*}\label{eq:truesolutionrarefaction}
+u(x,y,t) = \left \{ 
+\begin{aligned}
+&0, \hspace{2.2cm} x<0.5, x\geq 0.5t+1.5,\\
+&(x-0.5)/t,\hspace{0.5cm} 0.5\leq x <t+0.5,\\
+&1, \hspace{2.2cm} t+0.5 \leq x < 0.5t+1.5.
+\end{aligned}
+		  \right.
+\end{equation*}
+
+\begin{center}
+\includegraphics[width=10cm,height=8cm]{../formal/chapters/pics/rarefraction_1.eps}
+\includegraphics[width=10cm,height=8cm]{../formal/chapters/pics/rarefraction_2.eps}
+\end{center}
+The reconstructed solution on the $180\times 60$ rectangular mesh at times 1.0 and 2.0. (The rarefaction 
+and shock meet at time 2.0.)
 
 \end{myslide}
 
@@ -1031,9 +1358,144 @@ the geometric average also becomes zero.
 \end{myslide}
 
 \begin{myslide}
+\heading{Phase Split Calculation}
+
+Region I. \Oblue{Pure olivine in the solid phase.} The melting of pure olivine does not follow the eutectic
+melting path. The conditions to be in the region I are
+\begin{equation*}
+		  C = 0,  \quad H \leq \check{T}_m,
+\end{equation*}
+and we can determine the phase fractions and the temperature as
+\begin{equation*}
+\phi_{1} = 1, \quad \phi_{2} = \phi_l = 0 \quad \text{and} 
+		  \quad \check{T} = H.
+\end{equation*}
+%We can determine partial derivatives of the temperature with respect to bulk enthalpy and bulk composition as
+%\begin{equation*}
+%\frac{\partial\check{T}}{\partial H} = 1 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
+%\end{equation*}
+
+\vspace{0.5cm}
+
+Region II. \Oblue{Sub-solidus: Olivine and opx coexist in the solid phase.}
+In this phase region, temperature hasn't reached the eutectic melting temperature.
+The conditions to be in the region II are
+\begin{equation*}
+		  C \neq 0, \quad H \leq \check{T}_e,
+\end{equation*}
+and we can determine the phase fractions and the temperature as
+\begin{equation*}
+\phi_{2} = C, \quad \phi_1 = 1-\phi_2,
+		  \quad \phi_l = 0 \quad \text{and} \quad 
+		  \check{T} = H .
+\end{equation*}
+%We can determine partial derivatives of the temperature with respect to the bulk enthalpy and the bulk composition as
+%\begin{equation}
+%\frac{\partial\check{T}}{\partial H} = 1 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
+%\end{equation}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{Phase Split Calculation Cont'd}
+Region III. \Oblue{Two-phase eutectic: The system starts melting at eutectic temperature
+with a fixed liquid concentration.}
+Both solid phase olivine and orthopyroxene and melt coexist at the same time.
+Temperature remains at the eutectic point until the opx is exhausted. 
+Concentration of the opx in the melt is also fixed equal to the eutectic composition.
+The conditions to be in the region III are
+\begin{equation*}
+		  C \leq C_e, \quad 
+		  \check{T}_e < H \leq \text{line}_{1-4},
+\end{equation*}
+where $\text{line}_{1-4}$ is defined as $H(C) = \check{T}_e + \check{L} C/C_e$.
+We can determine the phase fractions and the current temperature as
+\begin{equation*}
+		  \phi_l = \frac{H - \check{T}_e}{\check{L}}, \quad
+		  \phi_2 = C - \phi_l C_e, \quad
+		  \phi_1 = 1- \phi_l - \phi_2 \quad
+		  \text{and} \quad \check{T} = \check{T}_e.
+\end{equation*}
+%We can determine the partial derivatives of the temperature with respect to the bulk enthalpy and the bulk composition as
+%%\begin{equation*}
+%\frac{\partial\check{T}}{\partial H} = 0 \quad \text{and} \quad \frac{\partial\check{T}}{\partial C} = 0.
+%\end{equation*}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{Phase Split Calculation Cont'd}
+Region IV. \Oblue{Super-eutectic two phase region: All solid phase opx has
+been exhausted.} 
+The conditions to be in the region IV are
+\begin{equation*}
+		  C \leq C_e, \quad
+		  \text{line}_{1-4} < H \leq \text{line}_{2-4},
+\end{equation*}
+where $\text{line}_{2-4}$ is defined as $H(C) = H_m - c_l/C_e$,
+and we can determine phase fractions as 
+\begin{equation*}
+    \phi_2 = 0, \quad \phi_l = \frac{C}{c_l(\check{T})} \quad \text{and} \quad \phi_1 = 1- \phi_l.
+\end{equation*}
+%The corresponding temperature can be determined by solving the following equation
+%\begin{equation}
+%F(\check{T}) = H - \check{T} - 
+%		  \frac{C}{c_l(\check{T})} \check{L} = 0. 
+%\end{equation}
+Let $c_l = C_e (\check{T}_m - \check{T})$,   
+we can obtain a quadratic equation about temperature as
+\begin{equation*}
+		  \check{T}^2 - (H + \check{T}_m)\check{T} + 
+		  \check{T}_m H - C L/C_e = 0,
+\end{equation*}
+which can be solved with standard quadratic root finding formula.
+We omit the root that exceeding melting temperature, so
+\begin{equation*}
+		  \begin{aligned}
+		  \check{T} &= \frac{H + \check{T}_m - 
+		  \sqrt{ (H + \check{T}_m)^2 - 
+		  4(\check{T}_m H - C \check{L}/C_e)} }{2} \\
+					  &= 
+		  \frac{H + \check{T}_m - 
+		  \sqrt{ (H - \check{T}_m)^2 + 
+		  4C \check{L}/C_e} }{2}. 
+		  \end{aligned}
+\end{equation*}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{Continuous Velocities}
+
+The bulk mass composition represents a relatively smooth advected quantity.
+A harmonic average would add artificial damping and suppress mixing, while an arithmetic average
+is more suitable without over-penalizing discontinuities.
+
+\begin{equation*}
+c^e = (c^+ + c^-)/2.
+\end{equation*}
+
+\subhead{Effective Velocity}
+
+\begin{equation*}
+\bold{v}_{\text{eff}} = \frac{c^e_l \overline{\phi} \bold{v}_l + 
+c^e_s(1-\overline{\phi}) \bold{v}_s}{c^e_l\overline{\phi} + c^e_s (1-\overline{\phi})},
+\end{equation*}
+
+\subhead{Phase Averaged Velocity}
+
+\begin{equation*}
+\check{\overline{\mathbf{v}}} = \overline{\phi}\mathbf{v}_l  + (1-\overline{\phi})\mathbf{v}_s,
+\end{equation*}
+
+\end{myslide}
+
+\begin{myslide}
 		  \heading{Coupling With Phase Calculation}
 
-		  \subhead{Coupling Procedure}
+\vspace{2cm}
+
+		  %\subhead{Coupling Procedure}
 
 		  \vspace*{0.5cm}
 
@@ -1060,8 +1522,6 @@ the geometric average also becomes zero.
 %					 $\Bigg\uparrow$
 %		  }
 %
-
-		  \subhead{Continuous Flux}
 
 \end{myslide}
 
@@ -1117,8 +1577,14 @@ the geometric average also becomes zero.
         \item Perform larger-scale simulations.
 		  \end{blist}
 
+\vspace{2cm}
+
+\centering
+Thank you!
+
 \end{myslide}
 
+\iffalse
 \begin{myslide}
 		  \heading{References}
 
@@ -1138,5 +1604,8 @@ Appl. Mech. Engrg., 421, 2024.
 \centering 
 Thank you!
 \end{myslide}
+\fi
+
+
 
 \end{document}
