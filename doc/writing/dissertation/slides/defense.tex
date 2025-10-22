@@ -185,12 +185,15 @@ Marc Hesse, Co-supervisor\\
 \subhead{Goal.} Provide an \Oblue{accurate numerical approximation} of the time-dependent dynamics of a partially molten mantle.  
 
           \bigskip
-          \subhead{Objective.} Provide a \Oblue{locally mass conservative} numerical framework for
+          \subhead{Objective.}
           \begin{blist}
+			 \item Provide a \Oblue{locally mass conservative} numerical framework for
+						\begin{nlist}
           \item The mechanics of a deformable solid matrix that is possibly partially molten.
           \item The transport phenomena of chemical species and energy in the presence of
 porous media.
-\item Phase behavior assumed to be in local equilibrium.
+						\end{nlist}
+\item Connect static mechanical behavior and transport phenomena with proper phase behavior.
           \end{blist}
         %  \item Perform numerical simulation increase understanding of the physics.
           
@@ -248,6 +251,7 @@ Define the \Maroon{mixture variable} (phase averaged) as:
 \item Density difference between phases are neglected expect
 in the \Oorange{body force term}.
 \item Constant and uniform material thermodynamics properties among phases.
+\item Thermodynamical equilibrium is achieved at each time step.
 \end{blist}
 
 \end{myslide}
@@ -867,9 +871,60 @@ separately.
 \end{myslide}
 
 \begin{myslide}
-		  \heading{Convergence Test}
+		  \heading{Convergence Test Example}
+		  \subhead{Column Compaction with Discontinuous Porosity}
 
-		  ???
+					 \begin{equation*}\label{eq:phidiscon}
+								\phi(z) = \left \{
+										  \begin{alignedat}{2}
+													 &0 \hspace{0.6cm} &&\text{if}\hspace{0.2cm}  z> 0\\
+													 &\phi_0 \hspace{0.4cm} &&\text{if}\hspace{0.2cm} z\leq 0
+										  \end{alignedat}
+										  \right.
+					 \end{equation*}
+
+		  \subhead{Solution to the pseudo 1D problem}
+					 \begin{itemize}
+								\item When $y>0$,
+										  \begin{equation*}
+										  u=-v=0,
+													 \, q_l = 0,\,\text{and}\,\, q_s = z + c;
+										  \end{equation*}
+								\item When $y<0$ and $\phi_0 \neq 0$,
+					 \begin{equation*}
+								\begin{aligned}
+										  u &= \phi_0^2(1-\phi_0) \bigg[1 - \cosh(Ry) + \frac{1 - \cosh{(RL)}}{\sinh{(RL)}}\sinh{(Ry)} \bigg],\\
+								 v &= -u, \\
+										  q_l &= -(1-\phi_0)\bigg[z - \frac{1}{R}\sinh(Ry) + \frac{1-\cosh(RL)}{R\sinh(RL)}\cosh(Ry)\bigg] + c,\\
+										  q_s &= q_l + \frac{u'}{\phi_0} + c,
+								\end{aligned}
+					 \end{equation*}
+                where $c$ is a constant.
+                \end{itemize}
+
+\end{myslide}
+
+\begin{myslide}
+\heading{Convergence Test Result}
+\begin{center}
+\includegraphics[width=4.5cm,height=10cm]{../formal/chapters/pics/porosity_piececonst.eps}
+\includegraphics[width=4.5cm,height=10cm]{../formal/chapters/pics/vel_piececonst.eps}
+\includegraphics[width=4.5cm,height=10cm]{../formal/chapters/pics/vel_quiver_piececonst.eps}
+\includegraphics[width=4.5cm,height=10cm]{../formal/chapters/pics/q_piececonst.eps}
+\end{center}
+
+		  \resizebox{26cm}{!}{
+					\begin{tabular}{c || c | c || c | c || c | c || c | c }
+							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
+							  $M\times N$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
+							  \hline
+							  $2\times20$ & 2.980e-05 & - & 2.980e-05 & - & 3.794e-03 & - & 4.202e-05 & -\\
+							  $2\times40$ & 7.681e-06 & 1.96 & 7.681e-06 & 1.96 & 1.005e-03 & 1.92 & 1.114e-05 & 1.92\\
+							  $2\times80$ & 1.958e-06 & 1.97 & 1.958e-06 & 1.97 & 2.472e-04 & 2.02 & 2.738e-06 & 2.02\\
+							  $2\times160$ & 4.974e-07 & 1.98& 4.974e-07 & 1.98 & 5.972e-05 & 2.04 & 6.615e-07 & 2.05 
+					\end{tabular}
+		  }	
+
 \end{myslide}
 
 \begin{myslide}
@@ -1243,7 +1298,7 @@ An illustration of different cells using \Oorange{one} fifth-order stencil to av
 \input ../formal/chapters/tikz/mesh2.tex
 \end{center}
 
-\subhead{Reconstruction on distorted mesh}
+\subhead{Reconstruction on a distorted mesh} with a jump in the true solution.
 
 \parbox{0.5\textwidth}{\raggedright
 \includegraphics[width=14cm, height=8cm]{../formal/chapters/pics/53reconstruction.eps}
@@ -1361,7 +1416,7 @@ the geometric average also becomes zero.
 					 \begin{equation*}
 \Gamma_1(z) = \left \{ 
 		  \begin{alignedat}{2}
-					 &2.5e-3, &&-1.5 < z\leq 0,\\
+					 &2.5\times10^{-3}, &&-1.5 < z\leq 0,\\
 					 &0,    &&-2.0 \leq z\leq -1.5.
 \end{alignedat}
 		  \right.
@@ -1372,13 +1427,14 @@ the geometric average also becomes zero.
 \phi_1(z,0) =  0.0 , \quad z \in [-2.0, 0.0].
  \end{equation*}
 		  }\parbox{0.5\textwidth}{
+					 \vspace*{0.4cm}
 					 \subhead{Case 2.}
 		  \vspace*{-0.5cm}
 \begin{equation*}
 \Gamma_2(z) = \left \{ 
 		  \begin{alignedat}{2}
 					 &0, \hspace{1cm} &&-1.5 < z\leq 0,\\
-					 &1.5e-3,\hspace{0.2cm} &&-1.8 < z\leq -1.5,\\
+					 &1.5\times10^{-3},\hspace{0.2cm} &&-1.8 < z\leq -1.5,\\
 					 &0, \hspace{1cm}   &&-2.0 \leq z\leq -1.8,
 \end{alignedat}
 		  \right.
@@ -1388,7 +1444,7 @@ the geometric average also becomes zero.
 \begin{equation*}
 \phi_2(z,0) = \left \{ 
 		  \begin{alignedat}{2}
-					 &5e-2,  &&-1.5 < z\leq 0,\\
+					 &5\times10^{-2},  &&-1.5 < z\leq 0,\\
 					 &0,   &&-2.0 \leq z\leq -1.5.
 \end{alignedat}
 		  \right.
@@ -1421,8 +1477,6 @@ the geometric average also becomes zero.
 \includegraphics[width=10cm,height=7cm]{../formal/chapters/pics/zoom_eutectic.png}
 \end{center}
 
-		  \vspace{20pt}
-
 \subhead{Eutectic Enthalpy-Composition diagram}:
 
 \begin{center}
@@ -1430,6 +1484,7 @@ the geometric average also becomes zero.
 \end{center}
 
 		  }\parbox{0.5\textwidth}{\raggedright
+		  \vspace*{-2.7cm}
 		  \Oblue{Phase Regions Split.}
 		  \begin{blist}
 		  \item Region I: Single-phase sub-solidus.
@@ -1439,7 +1494,7 @@ the geometric average also becomes zero.
 		  \item Retion VI: Single-phase super-liquidus.
 		  \end{blist}
 
-		  \bigskip
+		  %\bigskip
 
         \Oblue{Eutectic Melting Path.}
 
@@ -1567,20 +1622,20 @@ A harmonic average would add artificial damping and suppress mixing, while an ar
 is more suitable without over-penalizing discontinuities.
 
 \begin{equation*}
-c^e = (c^+ + c^-)/2.
+c^e = (c^+ + c^-)/2
 \end{equation*}
 
 \subhead{Effective Velocity}
 
 \begin{equation*}
 \bold{v}_{\text{eff}} = \frac{c^e_l \overline{\phi} \bold{v}_l + 
-c^e_s(1-\overline{\phi}) \bold{v}_s}{c^e_l\overline{\phi} + c^e_s (1-\overline{\phi})},
+c^e_s(1-\overline{\phi}) \bold{v}_s}{c^e_l\overline{\phi} + c^e_s (1-\overline{\phi})}
 \end{equation*}
 
 \subhead{Phase Averaged Velocity}
 
 \begin{equation*}
-\check{\overline{\mathbf{v}}} = \overline{\phi}\mathbf{v}_l  + (1-\overline{\phi})\mathbf{v}_s,
+\check{\overline{\mathbf{v}}} = \overline{\phi}\mathbf{v}_l  + (1-\overline{\phi})\mathbf{v}_s
 \end{equation*}
 
 \end{myslide}
@@ -1596,17 +1651,19 @@ c^e_s(1-\overline{\phi}) \bold{v}_s}{c^e_l\overline{\phi} + c^e_s (1-\overline{\
 
 		  \parbox{0.8\textwidth}{\raggedright
 		  \begin{center}
-		  \commentedbox{\text{Obtain distribution of bulk Composition and Enthalpy.}}{$\downarrow$}
-		  \commentedbox{\text{Compute porosity disribution wiht phase behavior.}}{$\downarrow$}
-		  \commentedbox{\text{Solve for velocities and pressures.}}{$\downarrow$}
-					 \commentedbox{\text{Evolve the system with transport equations.}}
+		  \commentedbox{\text{Obtain distribution of bulk Composition and Enthalpy}}{$\downarrow$}
+		  \commentedbox{\text{Compute porosity disribution with phase behavior}}{$\downarrow$}
+		  \commentedbox{\text{Solve for velocities and pressures}}{$\downarrow$}
+					 \commentedbox{\text{Evolve the system with transport equations}}
 
 		  \end{center}
 }\parbox{0.2\textwidth}{\raggedright
 
+		  \vspace{2cm}
+
 \begin{tikzpicture}[scale=0.8]
-    \draw [thick] (-2,0) -- (2,0) -- (2,10);
-		  \draw[thick,->] (2,10) -- (0,10);
+    \draw [thick] (-2,0) -- (2,0) -- (2,6.3);
+		  \draw[thick,->] (2,6.3) -- (0,6.3);
 \end{tikzpicture}
 }
 %%		  }\parbox{0.1\textwidth}{
@@ -1657,19 +1714,20 @@ c^e_s(1-\overline{\phi}) \bold{v}_s}{c^e_l\overline{\phi} + c^e_s (1-\overline{\
 		  \heading{Summary}
 
 		  \begin{nlist}
-		  \item We present a modified physics model based on the original McKenzie equations.
+		  \item We presented a modified physics model based on the original McKenzie equations.
 
-		  \item We develop a locally mass-conservative numerical framework, emphasizing melt extraction and the treatment of degeneracies in no-melt regions.
+		  \item We developed a locally mass-conservative numerical framework, emphasizing melt extraction and the treatment of degeneracies in no-melt regions.
 
-		  \item We demonstrate numerical results that verify successful coupling.
+		  \item We demonstrated numerical results that verify successful coupling.
 
 		  \end{nlist}
 
 		  \bigskip
-		  \subhead{Future Work.}
+		  \subhead{Potential Future Work.}
 		  \begin{blist}
 		  \item Investigate more physically consistent boundary conditions and improve stability near the boundaries.
-        \item Perform larger-scale simulations.
+        \item Perform larger-scale simulations and apply to geological settings
+					 like Mid-Ocean Ridge.
 		  \end{blist}
 
 \vspace{2cm}
@@ -1679,28 +1737,46 @@ Thank you!
 
 \end{myslide}
 
-\iffalse
-\begin{myslide}
+\begin{myslideNoFooter}
 		  \heading{References}
+\small
 
-1. T. Arbogast, M. A. Hesse, and A. L. Taicher. Mixed methods for two-phase
+		  \begin{nlist}
+
+		  \item Dan McKenzie. The generation and compaction of partially molten rock. Jour-
+nal of Petrology, 25:713–765, 1984.
+
+					 \bigskip
+
+		  \item Juliane Dannberg, Rene Gassmöller, Ryan Grove, and Timo Heister.
+A new
+formulation for coupled magma/mantle dynamics. Geophysical Journal Inter-
+national, 219(1):94–107, 05 2019.
+
+\bigskip
+		  \item T. Arbogast, M. A. Hesse, and A. L. Taicher. Mixed methods for two-phase
 Darcy-Stokes mixtures of partially melted materials with regions of zero porosity.
 SIAM J. Sci. Comput., 39(2):B375–B402, 2017. DOI 10.1137/16M1091095.
 
 \bigskip
 
-2. Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian. A finite volume multilevel
+\item Chieh-Sen Huang, Todd Arbogast, and Chenyu Tian. Multidimensional weno-
+ao reconstructions using a simplified smoothness indicator and applications to
+conservation laws. J. Sci. Comput., 97, 2023.
+
+\bigskip
+
+\item Todd Arbogast, Chieh-Sen Huang, and Chenyu Tian. A finite volume multilevel
 weno scheme for multidimensional scalar conservation laws. Comput. Methods
 Appl. Mech. Engrg., 421, 2024.
 
 \bigskip
-\bigskip
 
-\centering 
-Thank you!
-\end{myslide}
-\fi
+\item Todd Arbogast, Chieh-Sen Huang, Chenyu Tian, and Gabirel M.Gray. An effi-
+cient and accurate approximation to the classic polynomial smoothness indicator.
+Submitted., 2025.
 
-
+		  \end{nlist}
+\end{myslideNoFooter}
 
 \end{document}
