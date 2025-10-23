@@ -326,14 +326,14 @@ We use permeability \Oorange{$k_0$} not scaled by porosity for these characteris
 %		  &\nabla \cdot (\phi_l\mathbf{v}_l + \phi_s\mathbf{v}_s) &&=0,\\
 		  &\nabla\bar p - \nabla \cdot \pmb{\tau}(\mathbf{v}_s) + \overline{\rho}\mathbf{g}&&= 0, \qquad &&\Maroon{\text{(Stokes)}}\\
 %		  &\mu_s\nabla \cdot \mathbf{v}_s - \phi_l(p_l - p_s) &&=0, 
-&\frac{\partial \rho_l \phi}{\partial t} + \nabla\cdot (\rho_l \phi \mathbf{v}_l) &&= \Oorange{\Gamma} , \qquad && \\
-&\frac{\partial \rho_s (1-\phi)}{\partial t} + \nabla\cdot (\rho_s (1-\phi) \mathbf{v}_s) &&= \Oorange{-\Gamma} , \qquad && 
+&\frac{\partial \rho_l \phi}{\partial t} + \nabla\cdot (\rho_l \phi \mathbf{v}_l) &&= \Oorange{\Gamma}  \qquad && \\
+&\frac{\partial \rho_s (1-\phi)}{\partial t} + \nabla\cdot (\rho_s (1-\phi) \mathbf{v}_s) &&= \Oorange{-\Gamma}  \qquad && 
 \end{alignedat}
 \end{equation*}
 \Oblue{Deviatoric stress of mixture}
 \begin{equation*}\label{eq:deviatoricstress}
 		  \pmb{\tau}(\mathbf{v}_s)
-		  = 2\mu_s\phi_s\big( \tfrac{1}{2}(\nabla \mathbf{v}_s + \nabla \mathbf{v}_s^T) - \tfrac{1}{3}\nabla \cdot \mathbf{v}_s \mathbf{I}\big),
+		  = 2\mu_s\phi_s\big( \tfrac{1}{2}(\nabla \mathbf{v}_s + \nabla \mathbf{v}_s^T) - \tfrac{1}{3}\nabla \cdot \mathbf{v}_s \mathbf{I}\big)
 \end{equation*}
 
 \parbox{0.5\textwidth}{\raggedright
@@ -506,7 +506,7 @@ and
 
 \subhead{Dimensionless Variables.}
 \begin{blist}
-\item $\check{\mathbf{v}}_r = \frac{\tilde{\mathbf{v}}_r}{u_0}$,\quad $\check{\mathbf{v}}_s = \frac{\mathbf{v}_s}{u_0}$, 
+\item $\check{\mathbf{v}}_r = \frac{\tilde{\mathbf{v}}_r}{u_0}$,\quad $\check{\mathbf{v}}_s = \frac{\mathbf{v}_s}{u_0}$. 
 \item $\check{q} = \frac{q}{p_0}$,\quad $\check{q_l} = \frac{\tilde{q}_l}{p_0}$.
 \end{blist}
 
@@ -683,13 +683,13 @@ For a polygonal domain $\Omega \subset \Re^2$.
 		  \heading{A New Modified Bernardi-Raugel Element}
 		  \subhead{Classical Bernardi-Raugel Element}
 \begin{equation*}
-		  (\mathbb{Q}_{1,1} (E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3 \} \subset (\mathbb{Q}_{2,2}(E))^2,
+		  (\mathbb{Q}_{1,1} (E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3 \} \subset (\mathbb{Q}_{2,2}(E))^2
 \end{equation*}
 
 
 		  \subhead{Modification with Direct Serendipity Space}
 \begin{equation*}\label{eq:br}
-		  (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3\} \subset (\mathcal{DS}_2(E))^2,
+		  (\mathcal{DS}_1(E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3\} \subset (\mathcal{DS}_2(E))^2
 \end{equation*}
 
 		  \subhead{An inf-sup Stable Pair $\mathbb{V}_1^{\mathcal{BR}} \times \mathbb{W}_0$}
@@ -874,7 +874,7 @@ separately.
 		  \end{bmatrix} = \begin{bmatrix}
 					 -\mathbf{S}_S & \mathbf{0}\\
 					 \mathbf{0} & -\mathbf{S}_D
-		  \end{bmatrix}.
+		  \end{bmatrix}
 \end{equation*}
 
 \end{myslide}
@@ -1729,15 +1729,15 @@ c^e_s(1-\overline{\phi}) \bold{v}_s}{c^e_l\overline{\phi} + c^e_s (1-\overline{\
 \end{myslide}
 
 \begin{myslide}
-		  \heading{Remarks.}
+		  \heading{Final Remarks}
 
 		  \subhead{Advantages.}
 		  \begin{blist}
 		  \item Maintain overall local mass conservation in both mechanical and transport systems
 					 \vspace{0.5cm}
 		  \item Mathematically and physically more rigorous compared to other formulations
-					 \vspace{0.5cm}
-		  \item Easily coupled with phase behaviors, exhibiting stable phase transitions
+		%			 \vspace{0.5cm}
+		  %\item Easily coupled with phase behaviors, exhibiting stable phase transitions
 					 \vspace{0.5cm}
 		  \item Simultaneously solve solid and liquid velocities and pressures without approximation, providing higher accuracy than alternative approaches
 					 \vspace{0.5cm}
