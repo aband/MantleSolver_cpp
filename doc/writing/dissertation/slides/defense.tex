@@ -762,6 +762,10 @@ Find the displacement $\mathbf{u}$ and pressure $p$ such that
 %    \label{tab:table3}
     \Oorange{Distorted Grids.} $L^2$-error in the residual of the solution $u$ ($\text{res}_u$), the pressure $p$ ($\text{res}_p$), and the of derivatives of the solution $Du$ ($\text{res}_{du}$).
 
+	 \centering
+\includegraphics[width=6.5cm,height=6cm]{conv_rect.eps}
+\includegraphics[width=6.5cm,height=6cm]{conv_dist.eps}
+
 \end{myslide}
 
 \begin{myslide}
@@ -1133,15 +1137,15 @@ The reconstruction of $u$ on $E_0$ for a given collection of stencils is then:
 		  \heading{New Numerical Scheme for Transport System}
 		  \subhead{What we need?}
 		  \begin{blist}\raggedright
-		  \item Maintain local mass conservation.
-		  \item Employ a high-order reconstruction scheme capable of recovering 
-					 pointwise values for phase evaluation.
-		  \item Provides enhanced flexibility and numerical robustness 
-					 near boundaries.
-		  \item Allow straightforward coupling with an MFEM solver on a 
-					 fixed domain.
-		  \item Robust in capturing complex discontinuities associated with the 
-					 transition between melt and no-melt regions.
+		  \item Maintain local mass conservation
+					 \vspace{0.5cm}
+		  \item Employ a high-order reconstruction scheme capable of recovering pointwise values for phase evaluation
+                \vspace{0.5cm}
+		  \item Provides flexibility and numerical robustness near boundaries
+					 \vspace{0.5cm}
+		  \item Allow straightforward coupling with an MFEM solver on a fixed domain
+					 \vspace{0.5cm}
+		  \item Robust in capturing complex discontinuities associated with the transition between melt and no-melt regions
 		  \end{blist}
 
 \end{myslide}
@@ -1711,6 +1715,24 @@ c^e_s(1-\overline{\phi}) \bold{v}_s}{c^e_l\overline{\phi} + c^e_s (1-\overline{\
 \end{myslide}
 
 \begin{myslide}
+		  \heading{Remarks.}
+
+		  \subhead{Advantages.}
+		  \begin{blist}
+		  \item Maintain overall local mass conservation in both mechanical and transport systems
+					 \vspace{0.5cm}
+		  \item Mathematically and physically more rigorous compared to other formulations
+					 \vspace{0.5cm}
+		  \item Easily coupled with phase behaviors, exhibiting stable phase transitions
+					 \vspace{0.5cm}
+		  \item Simultaneously solve solid and liquid velocities and pressures without approximation, providing higher accuracy than alternative approaches
+					 \vspace{0.5cm}
+		  \item When coupled with the transport model, it enables a more accurate representation of melt extraction and porosity evolution
+		  \end{blist}
+
+\end{myslide}
+
+\begin{myslide}
 		  \heading{Summary}
 
 		  \begin{nlist}
@@ -1723,7 +1745,7 @@ c^e_s(1-\overline{\phi}) \bold{v}_s}{c^e_l\overline{\phi} + c^e_s (1-\overline{\
 		  \end{nlist}
 
 		  \bigskip
-		  \subhead{Potential Future Work.}
+		  \subhead{Potential Future Work and Applications.}
 		  \begin{blist}
 		  \item Investigate more physically consistent boundary conditions and improve stability near the boundaries.
         \item Perform larger-scale simulations and apply to geological settings
