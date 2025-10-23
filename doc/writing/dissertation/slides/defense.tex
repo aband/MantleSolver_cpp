@@ -680,7 +680,7 @@ For a polygonal domain $\Omega \subset \Re^2$.
 \end{myslide}
 
 \begin{myslide}
-		  \heading{Modified Bernardi-Raugel Element}
+		  \heading{A New Modified Bernardi-Raugel Element}
 		  \subhead{Classical Bernardi-Raugel Element}
 \begin{equation*}
 		  (\mathbb{Q}_{1,1} (E))^2 \oplus \text{span}\{\mathbf{b}_0, \mathbf{b}_1, \mathbf{b}_2, \mathbf{b}_3 \} \subset (\mathbb{Q}_{2,2}(E))^2,
@@ -715,7 +715,7 @@ Find the displacement $\mathbf{u}$ and pressure $p$ such that
 		  \end{aligned}
 \end{equation*}
 
-\subhead{Solutions.} On a square region $\Omega = [0,\pi] \times [0,2\pi]$,
+\subhead{Solutions.} On a rectangular region $\Omega = [0,\pi] \times [0,2\pi]$,
 \begin{equation*}\label{eq:testproblem}
 		  \mathbf{u} = \begin{bmatrix}
 					 &\hspace{0.35cm}\cos(x)\sin(y) \\
@@ -735,15 +735,20 @@ Find the displacement $\mathbf{u}$ and pressure $p$ such that
 \heading{Convergence Results}
 
 \begin{center}
+%     \begin{tabular}{c | c c c c}
+%%     Grid size & $8\times8$ & $16\times 16$ & $32\times32$ & $64 \times 64$ \\
+%     \hline
+%     $L^2(\text{res}_u)$ & 4.502E$-$1 & 1.052E$-$1 & 2.513E$-$2 & 6.130E$-$3 \\
+%				 $L^2(\text{res}_{du})$ & 1.039E+0 & 4.463E$-$1 & 2.093E$-$1 & 1.019E$-$1 \\
+%     $L^2(\text{res}_{p})$ & 2.632E$+$0 & 5.845E$-$1 & 1.374E$-$1 & 3.330E$-$2 \\
+%    \end{tabular}
      \begin{tabular}{c | c c c c}
      Grid size & $8\times8$ & $16\times 16$ & $32\times32$ & $64 \times 64$ \\
      \hline
-     $L^2(\text{res}_u)$ & 4.502E$-$1 & 1.052E$-$1 & 2.513E$-$2 & 6.130E$-$3 \\
-				 $L^2(\text{res}_{du})$ & 1.039E+0 & 4.463E$-$1 & 2.093E$-$1 & 1.019E$-$1 \\
-     $L^2(\text{res}_{p})$ & 2.632E$+$0 & 5.845E$-$1 & 1.374E$-$1 & 3.330E$-$2 \\
+     $L^2(\text{res}_u)$ & 4.502$\times10^{-1}$ & 1.052$\times10^{-1}$ & 2.513$\times10^{-2}$ & 6.130$\times10^{-3}$ \\
+				 $L^2(\text{res}_{du})$ & 1.039$\times10^0$ & 4.463$\times10^{-1}$ & 2.093$\times10^{-1}$ & 1.019$\times10^{-1}$ \\
+     $L^2(\text{res}_{p})$ & 2.632$\times10^0$ & 5.845$\times10^{-1}$ & 1.374$\times10^{-1}$ & 3.330$\times10^{-2}$ \\
     \end{tabular}
-%    \caption{Rectangular Grids. $L^2$-error in the residual of the solution $u$ ($\text{res}_u$), the pressure $p$ ($\text{res}_p$), and the of derivatives of the solution $Du$ ($\text{res}_{du}$).}
-%    \label{tab:table2}
 \end{center}
 
     \Oorange{Rectangular Grids.} $L^2$-error in the residual of the solution $u$ ($\text{res}_u$), the pressure $p$ ($\text{res}_p$), and the of derivatives of the solution $Du$ ($\text{res}_{du}$).
@@ -753,9 +758,9 @@ Find the displacement $\mathbf{u}$ and pressure $p$ such that
     \begin{tabular}{c | c c c c}
      Grid size & $8\times8$ & $16\times 16$ & $32\times32$ & $64 \times 64$ \\
      \hline
-     $L^2(\text{res}_u)$ & 4.603E$-$1 & 1.074E$-$2 & 2.567E$-$2 & 6.266E$-$3 \\
-				$L^2(\text{res}_{du})$ & 1.070E$+$0 & 4.670E$-$1 & 2.207E$-$1 & 1.078E$-$1 \\
-				$L^2(\text{res}_{p})$ & 2.685E$+$0 & 5.981E$-$1 & 1.525E$-$1 & 4.580E$-$2 \\
+     $L^2(\text{res}_u)$ & 4.603$\times10^{-1}$ & 1.074$\times10^{-1}$ & 2.567$\times10^{-2}$ & 6.266$\times10^{-3}$ \\
+				$L^2(\text{res}_{du})$ & 1.070$\times10^0$ & 4.670$\times10^{-1}$ & 2.207$\times10^{-1}$ & 1.078$\times10^{-1}$ \\
+				$L^2(\text{res}_{p})$ & 2.685$\times10^0$ & 5.981$\times10^{-1}$ & 1.525$\times10^{-1}$ & 4.580$\times10^{-2}$ \\
     \end{tabular}
 	 \end{center}
 %    \caption{Distorted Grids. $L^2$-error in the residual of the solution $u$ ($\text{res}_u$), the pressure $p$ ($\text{res}_p$), and the of derivatives of the solution $Du$ ($\text{res}_{du}$).}
@@ -773,7 +778,7 @@ Find the displacement $\mathbf{u}$ and pressure $p$ such that
 \subhead{Element averaged porosity}:
 
 \begin{equation*}\label{eq:averaged_phi}
-		  \phi_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x})\, d\mathbf{x},
+		  \phi_E = \frac{1}{\lvert E \rvert} \int_E \phi(\mathbf{x})\, d\mathbf{x}
 \end{equation*}
 
 \vspace{20pt}
@@ -852,8 +857,8 @@ $\rightarrow$
 		  \subhead{Uzawa Iteration}
 \begin{equation*}\label{eq:uzawasystem}
 		  \begin{aligned}
-					 \mathbf{x}_k &= \mathbf{x}_{k-1} + \mathbf{Q}_A^{-1} \big[\mathbf{F} - (\mathbf{A}\mathbf{x}_{k-1} + \mathbf{B}\mathbf{y}_{k-1})\big],\\
-					 \mathbf{y}_k &= \mathbf{y}_{k-1} + \mathbf{Q}_B^{-1}\big(\mathbf{B}^T\mathbf{x}_{k} - \mathbf{C}\mathbf{y}_{k-1} -\mathbf{G}\big),
+					 \mathbf{x}_k &= \mathbf{x}_{k-1} + \mathbf{Q}_A^{-1} \big[\mathbf{F} - (\mathbf{A}\mathbf{x}_{k-1} + \mathbf{B}\mathbf{y}_{k-1})\big]\\
+					 \mathbf{y}_k &= \mathbf{y}_{k-1} + \mathbf{Q}_B^{-1}\big(\mathbf{B}^T\mathbf{x}_{k} - \mathbf{C}\mathbf{y}_{k-1} -\mathbf{G}\big)
 		  \end{aligned}
 \end{equation*}
 
@@ -918,14 +923,23 @@ separately.
 \end{center}
 
 		  \resizebox{26cm}{!}{
+%					\begin{tabular}{c || c | c || c | c || c | c || c | c }
+%							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
+%							  $M\times N$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
+%							  \hline
+%%							  $2\times20$ & 2.980e-05 & - & 2.980e-05 & - & 3.794e-03 & - & 4.202e-05 & -\\
+%							  $2\times40$ & 7.681e-06 & 1.96 & 7.681e-06 & 1.96 & 1.005e-03 & 1.92 & 1.114e-05 & 1.92\\
+%							  $2\times80$ & 1.958e-06 & 1.97 & 1.958e-06 & 1.97 & 2.472e-04 & 2.02 & 2.738e-06 & 2.02\\
+%							  $2\times160$ & 4.974e-07 & 1.98& 4.974e-07 & 1.98 & 5.972e-05 & 2.04 & 6.615e-07 & 2.05 
+%					\end{tabular}
 					\begin{tabular}{c || c | c || c | c || c | c || c | c }
 							  \quad & \multicolumn{2}{c||}{$u$} & \multicolumn{2}{c||}{$v$}& \multicolumn{2}{c||}{$q_l$} & \multicolumn{2}{c}{$q_s$} \\
 							  $M\times N$ & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate & $L^2$ error & rate \\
 							  \hline
-							  $2\times20$ & 2.980e-05 & - & 2.980e-05 & - & 3.794e-03 & - & 4.202e-05 & -\\
-							  $2\times40$ & 7.681e-06 & 1.96 & 7.681e-06 & 1.96 & 1.005e-03 & 1.92 & 1.114e-05 & 1.92\\
-							  $2\times80$ & 1.958e-06 & 1.97 & 1.958e-06 & 1.97 & 2.472e-04 & 2.02 & 2.738e-06 & 2.02\\
-							  $2\times160$ & 4.974e-07 & 1.98& 4.974e-07 & 1.98 & 5.972e-05 & 2.04 & 6.615e-07 & 2.05 
+							  $2\times20$ & 2.980$\times10^{-5}$ & - & 2.980$\times10^{-5}$ & - & 3.794$\times10^{-3}$ & - & 4.202$\times10^{-5}$ & -\\
+							  $2\times40$ & 7.681$\times10^{-6}$ & 1.96 & 7.681$\times10{-6}$ & 1.96 & 1.005$\times10^{-3}$ & 1.92 & 1.114$\times10^{-5}$ & 1.92\\
+							  $2\times80$ & 1.958$\times10^{-6}$ & 1.97 & 1.958$\times10^{-6}$ & 1.97 & 2.472$\times10^{-4}$ & 2.02 & 2.738$\times10^{-6}$ & 2.02\\
+							  $2\times160$ & 4.974$\times10^{-7}$ & 1.98& 4.974$\times10^{-7}$ & 1.98 & 5.972$\times10^{-5}$ & 2.04 & 6.615$\times10^{-7}$ & 2.05 
 					\end{tabular}
 		  }	
 
