@@ -215,7 +215,7 @@ However, mechanical behaviors and transport are not included.
 
 \section{New Framework}
 In this dissertation, we extend the classical two-phase Darcy-Stokes framework
-by emphasizing compaction and by a rigorous mathematically treatment of the degeneracy in no melt regions.
+by emphasizing compaction and by a rigorous mathematical treatment of the degeneracy in no melt regions.
 Our model includes three key components:
 \begin{itemize}
 \item A degenerate two-phase Darcy–Stokes system 
@@ -223,12 +223,12 @@ describing the coupled interaction between the solid matrix and the interstitial
 \item A nonlinear  
 system governing the transport of chemical species and thermal energy; 
 \item A eutectic phase relation characterizing the melting processes and connecting the transport 
-and static mechanical system through enthalpy method.
+and static mechanical system through the enthalpy method.
 \end{itemize}
 
 We develop a local mass conservative numerical framework to address this 
 complicated multiphysics system using a logically rectangular computational mesh of quadrilaterals. 
-For the static mechanics system, we introduce $H(\text{div})$-and an $H^1$- 
+For the static mechanics system, we introduce $H(\text{div})$-and $H^1$- 
 conforming mixed finite element spaces for Darcy and Stokes subproblems,
 respectively. The mixed finite element spaces are constructed using a noval 
 direct serendipity space tailored for a quadrilateral mesh.  
@@ -258,7 +258,7 @@ Our code enables an accurate simulation of the degeneracy of the no melt regions
 That is, the equations are solved irrespective of the value of the porosity,
 including zero porosity.
 In this way, a proper handling of melt extraction and chemical species segration are 
-modeled by our code, leading to a computational framework for invectigating 
+modeled by our code, leading to a computational framework for investigating 
 complex geologies settings involving melting and magmatism.
 
 \section{Outline}
@@ -276,7 +276,7 @@ within partial molten mantle. Section~\ref{sec:phase} introduces a simplified
 linearized parameterized two-component 
 eutectic phase diagram. Finally, Section~\ref{sec:nondim} presents a 
 nondimensionalization of the physical model with carefully selected
-characteristic physical scales and formally present the nondimensional
+characteristic physical scales and formally presents the nondimensional
 governing equations.
 
 \iffalse

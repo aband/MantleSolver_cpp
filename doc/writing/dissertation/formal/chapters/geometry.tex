@@ -62,8 +62,8 @@ mapping within each geometric entity.
 In both FEM and FVM solvers, an element object $F_i$ (mesh cell or ``faces") 
 serves as the fundamental geometry entity.
 These elements will be assumed to be strictly convex polygons,
-tessellating space , and sharing complete edges.
-we start with a brief analysis of the information each face
+tessellating space, and sharing complete edges.
+We start with a brief analysis of the information each face
 should access from its local perspective.
 Each element $F_i$ should have the access to the following geometric
 objects:
@@ -131,7 +131,7 @@ In practice,
 it is often reshaped into a 1D array for more efficient
 computational handling. We introduce a general reshape function
 that projects $N$-dimensional data to a one-dimensional data. 
-This reshape function can also be used for tensor data, e.g., The Jiang-Shu smoothness
+This reshape function can also be used for tensor data, e.g., the Jiang-Shu smoothness
 indicators~\eqref{eq:JSsmoothnessIC}.
 
 Consider a bijective map between $N$-dimensional data and its one-dimensional data representation as
@@ -165,8 +165,8 @@ Let $I=0$ be the variable storing the output, and $a=1$ be the intermediate mult
 \end{algorithm}
 
 Throughout this work, we use these two index representations interchangeably.
-To emphasize the relation between N-dimensional
-and its one-dimensional representation, we introduce the following notation as
+To emphasize the relation between $N$-dimensional
+and its one-dimensional representation in Algorithm~\ref{alg:reshape}, we introduce the following notation as
 \begin{equation}\label{eq:reshapenotation}
 		  i(i_0, i_1, \ldots, i_{N_1})_{n_0, n_1, \ldots, n_{N-1}},
 \end{equation}
@@ -180,7 +180,7 @@ For any vertex, we can represent its local index as
 \begin{equation}
 		  a(a_0,a_1)_{2,2},
 \end{equation}
-where $a_0, a_1 \in \{0,1\}$. We can link to the next point simply by
+where $a_0, a_1 \in \{0,1\}$. We can link to the next point $b$ simply by
 adding $1$ to the one-dimensional index under the understanding of modulo as
 \begin{equation}
 		  b \equiv a+1 \Mod{4},
@@ -189,12 +189,12 @@ which is a simple half-edge data representation.
 The direction is naturally defined by this addition operation.
 
 \subsection{Local to Global Index Convention}
-Recall that local vertices and edges are indexed starting from bottom left corner, 
+Recall that local vertices and edges are indexed starting from the bottom left corner, 
 as illustrated in Figure~\ref{fig:meshexample}.
 We now define the local to global index mapping with the help of the new notation~\eqref{eq:reshapenotation}.
 Consider any local vertex $v_i$ associated to a quadrilateral element $F_{I(I_0,I_1)_{M,N}}$ with the local index
 \begin{equation}
-id_v \ni i(i_0, i_1)_{2,2}.
+id_v \ni i(i_0, i_1)_{2,2} = i_0 + 2i_1.
 \end{equation}
 We find the corresponding global index with ease as
 %Consider the mapping from the local vertex $v_i$ within the 
@@ -205,7 +205,7 @@ We find the corresponding global index with ease as
 %We write the mapped global index with the reshape 
 %notation~\eqref{eq:reshapenotation} as
 \begin{equation}
-		  ID_V \ni I(I_0+i_0, I_1+i_1)_{M+1,N+1}.
+		  ID_V \ni I(I_0+i_0, I_1+i_1)_{M+1,N+1} = I_0 + i_0 + (M+1)(I_1+i_1).
 \end{equation}
 %Note that the global index of the bottom left corner vertex share the 
 %same N-dimensional index as the global index of the cell.
@@ -226,7 +226,7 @@ Consider edge $e_i$ defined by the vertex $id_v \ni i(i_0,i_1)$ and its half-edg
 In FEM and FVM computations, it is necessary to associate geometrical entities with
 degrees of freedom (dofs). For FVM schemes, the dofs associated with
 edge fluxes are straightforward. However, in MFEM, the treatment of dofs requires
-more carefully handling, particularly for those located on the boundary. 
+more careful handling, particularly for those located on the boundary. 
 Following the approach of~\cite{FEMHughes}, we employ three data processing arrays: ID, IEN and LM
 arrays.
 We begin by the introduction of these three arrays as:
@@ -254,8 +254,8 @@ We begin by the introduction of these three arrays as:
 								\text{LM} = \text{ID}(\text{IEN}(a,e)).
 					 \end{equation}
 \end{itemize}
-In actual code implementation, we create LM array by screening all dofs prior 
-to computation, while IEN and ID array are not stored explicitly.
+In actual code implementation, we create the LM array by screening all dofs prior 
+to computation, while the IEN and ID arrays are not stored explicitly.
 
 \subsection{MFEM Indexing Example}
 For a first order $H(\text{div})$ conforming element, the velocity dofs are primarily associated with edges, 

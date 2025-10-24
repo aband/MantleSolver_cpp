@@ -64,12 +64,12 @@ We now replace the $u^+$ and $u^-$ with reconstructed values $\mathcal{R}^+$ and
 Here, the reconstructed value $\mathcal{R}$ is of higher-order accuracy. We evaluate the
 integrals over each edge $e_i \in \partial E$ with a suitable quadrature rule. 
 Let $\lvert e_i \rvert$ denote the length of edge $e_i$. 
-Assuming a quadrature rule with $G$ point per edge, the semi-discretized formulation becomes:
+Assuming a quadrature rule with $G$ points per edge, the semi-discretized formulation becomes:
 \begin{equation}\label{eq:fvdis}
 		  \frac{\partial \overline{u}_{E}}{\partial t} + \sum_{i=0}^4\frac{\lvert e_i \rvert}{\lvert E \rvert}
 		  \sum_{g=0}^G \omega_{i,g} F(\mathcal{R}_{i,g}^+, \mathcal{R}_{i,g}^-) = 0,
 \end{equation}
-where $\omega_{i,g}$ represents the weight associated to the $g-th$ quadrature points on edge $e_i$.
+where $\omega_{i,g}$ represents the weight associated to the $g$-th quadrature point on edge $e_i$.
 
 \section[ML-WENO]{The Multi-level Weighted Essentially Non-Oscillatory (ML-WENO) Method}
 \label{sec:mlweno}
@@ -99,12 +99,12 @@ $\mathcal{S}$. We choose the stencil ``center" point: the intersection point of 
 and top right, bottom left corners.
 Assuming that each cell $E_{i,j} \in \mathcal{S} \subset \mathcal{T}_h$ is shape regular as in Definition~\ref{def:shaperegularity},
 we define the stencil scale parameter $h_\mathcal{S} = 
-\sum_{i\leq s, j\leq t}E_{i,j}/(s t)$ as the average diameter of all cells in the stencil. 
-Introducing the normalized coordinates
+\sum_{i\leq s, j\leq t}\text{diam}(E_{i,j})/(s t)$ as the average diameter of all cells in the stencil. 
+Introduce the normalized coordinates
 \begin{equation}
-\xi = \frac{x-x_\mathcal{S}}{h_\mathcal{S}},\quad \text{and} \quad \eta = \frac{y-y_\mathcal{S}}{h_\mathcal{S}}.
+\xi = \frac{x-x_\mathcal{S}}{h_\mathcal{S}}\quad \text{and} \quad \eta = \frac{y-y_\mathcal{S}}{h_\mathcal{S}}.
 \end{equation}
-We can rewrite equation~\eqref{eq:stencilpolynomial} in normalized coordinates as
+We can rewrite equation~\eqref{eq:stencilpolynomial} in the normalized coordinates as
 \begin{equation}\label{eq:stencilpolynomialscaled}
 		  \hat{Q}^{\mathcal{S}}_{s,t}(\xi, \eta) = \sum_{p<s,\ q<t} c_{p,q} \xi^p \eta^q.
 \end{equation}
@@ -144,8 +144,8 @@ rewrite them as
 \begin{equation}\label{eq:normalizedstencilpoly}
 \hat{Q}^{\mathcal{S}}_{s,t}(\xi, \eta) = \sum_{i,j} \overline{u}_k \hat{\phi}_{s,t}^{i,j}(\xi, \eta).
 \end{equation}
-The approxmatibility of a tensor product polynomial is related to the associated complete polynomial 
-, as discussed by~\cite{ddd3654d-28ed-3763-8d70-a82ea44a3d31}.
+The approxmatibility of a tensor product polynomial is related to the associated complete polynomial, 
+as discussed by~\cite{ddd3654d-28ed-3763-8d70-a82ea44a3d31}.
 Given a bounded interpolation projection operator $\mathcal{Q}$, for all $\mathbf{x} \in E \in \mathcal{S}$, we have
 \begin{equation}
 \lvert D^\alpha u(\mathbf{x}) - D^\alpha \big(\mathcal{Q} u(\mathbf{x})\big) \rvert \leq \left \{ 
@@ -202,7 +202,7 @@ a Sobolev seminorm as
 		  (\mathcal{D}^\alpha Q(x,y))^2 dxdy,
 \end{equation}
 where $E_0$ can be any cell $E \in \mathcal{S}$, and is usually referred to as
-the target cell, i.e., the cell $E$ form witch $(x,y)$ is taken in $Q^\mathcal{S}_{r,r}(x,y)$.
+the target cell, i.e., the cell $E$ from which $(x,y)$ is taken in $Q^\mathcal{S}_{r,r}(x,y)$.
 
 %where $\alpha = (\alpha_1, \alpha_2)$ is a multi-index in two dimension, $\lvert \alpha \rvert = \alpha_1 + \alpha_2$, 
 %and $\mathcal{D}$ is the derivative operator $\mathcal{D}^\alpha = \partial^{\lvert \alpha \rvert} / \partial x^{\alpha_1} \partial y^{\alpha_2}$.
@@ -318,7 +318,7 @@ one containing the stencils identified as smooth, and the other containing those
 		  \text{Jump}   &= \{l:\hspace{0.2cm} \text{$u$ has a jump on $\mathcal{S}_l$}\},
 \end{aligned}
 \end{equation}
-where $\text{Smooth} \cup \text{Jump} = \mathcal{L}$ and $\text{Smooth} \cap \text{Jump} = \O$. Moreover, we assume $\text{Smooth}\neq \O$
+where $\text{Smooth} \cup \text{Jump} = \mathcal{L}$ and $\text{Smooth} \cap \text{Jump} = \O$. Moreover, we assume $\text{Smooth}\neq \O$.
 %We represent the set of indices of stencils of size $(s\times t)$ that is smooth as $\mathcal{L}_{s,t} \cap \text{Smooth}$,
 %and the set of stencils of size $(s\times t)$ that has a jump as $\mathcal{L}_{s,t} \cap \text{Jump}$.
 %For convenience, we assume square stencils, where $r=s=t$. 
@@ -423,7 +423,7 @@ Now we can estimate the reconstruction error as
 &\leq \sum_{l \in \text{Smooth}} \tilde{\omega}_l \lvert u(\mathbf{x}) - Q_l(\mathbf{x}) \rvert + \sum_{l \in \text{Jump}} \tilde{\omega}_l \lvert u(\mathbf{x}) - Q_l(\mathbf{x}) \rvert \\
 &\leq \sum_r \sum_{\substack{l\in \text{Smooth}_r}} \Theta(h^{2[a(r_{\max} - r) + (\eta(r_{\max}) - \eta(r))]}) \mathcal{O}(h^r) \\
 &\quad \qquad + \sum_{l\in \text{Jump}} \Theta (h^{2(ar_{\max}+\eta(r_{\max}))}) \mathcal{O}(1) \\
-&= \mathcal{O}(h^{r_{\max}})
+&= \mathcal{O}(h^{r_{\max}}).
 \end{aligned}
 \end{equation}
 Combining everything above and~\eqref{eq:reconstruction}, we arrive at 
@@ -602,7 +602,7 @@ logically rectangular quadrilateral mesh.}
 However, when the cell $E_{i,j}$ located within the two-cell distance from any boundary, the large stencil 
 becomes unavailable, leading to a degeneracy in the order of accuracy near the boundary. 
 In this case, ML-WENO grants flexibility of associating an additional large stencil to the cells within 
-the two-cell distance from boundary.
+the two-cell distance from the boundary.
 
 Figure~\ref{fig:fullmesh2} illustrates a case where a fifth-order stencil centered at cell $E_{i,j}$
 can be used 
@@ -653,9 +653,9 @@ added near the top right boundary.}
 
 \subsection{Stabilization of a inflow boundary}
 We present another example demonstrating that adding a ``constant" level on the boundary stabilize problems with complex inflow
-boundary condition.
+boundary conditions.
 For this case, we consider a Burgers-like equation $u_t + u^3 u_x = 0$ with a fourth order flux $\mathbf{f}(u) = (u^4/4,0)$
-in the domain $[0,1]^2$. We impose Dirichlet boundary condition on the left boundary  as
+in the domain $[0,1]^2$. We impose a Dirichlet boundary condition on the left boundary  as
 \begin{equation}
 \label{eq:inflowtest}
 u_D(0,y,t) = \left\{\begin{alignedat}{2}
@@ -697,7 +697,7 @@ We test our ML-WENO algorithm with a Riemann shock and rarefaction.
 Let $\mathbf{f}(u) = (u^2/2, 0)$ be the Burgers flux function. 
 In this example,
 we take the initial condition $u_0(x,y) = 1$ in the strip $0.5<x<1.5$ and 0 elsewhere within the computational domain $\Omega = [0,3] \times [0,1]$.
-We assign zero flux boundary condition on the two sides $y=0$ and $y=1$.
+We assign a zero flux boundary condition on the two sides $y=0$ and $y=1$.
 
 The true solution is 
 \begin{equation}\label{eq:truesolutionrarefaction}

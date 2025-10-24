@@ -39,7 +39,7 @@ $\mathcal{U}^n$.
 For each time step the time $t^n$, we begin by reconstructing the dimensionless mass composition
 and enthalpy from the cell-averaged solution $\mathcal{U}^n$ using ML-WENO reconstruction at each data point of interest. 
 The eutectic phase package then provides the corresponding phase parameters $\mathcal{W}^n$ 
-based on these point wise values. With $\mathcal{W}^n$ determinedin particular with $\phi^n$, we solve the Darcy-Stokes
+based on these point wise values. With $\mathcal{W}^n$ determined in particular with $\phi^n$, we solve the Darcy-Stokes
 system at the fixed time $t^n$ to obtain $\mathcal{V}^n$. Finally, the
 cell-averaged solution $\mathcal{U}^{n+1}$ at the next time 
 $t^{n+1}$ is then obtained by forward marching of the transport system.
@@ -63,7 +63,7 @@ The complete procedure is summarized as a coupled solver in Algorithm~\ref{alg:c
 		  \vspace{0.3cm}
 		  \State Given $\mathcal{U}^n$, compute $\mathcal{W}^n$ by the eutectic phase package.
 		  \vspace{0.2cm}
-\State Using $\phi^n$ in $W^n$, solve the Darcy-Stokes system 
+\State Using $\phi^n$ in $\mathcal{W}^n$, solve the Darcy-Stokes system 
 		  \eqref{eq:dimensionlessdarcy_flow_sc}--\eqref{eq:dimensionlesscompaction_flow_sc} for $\mathcal{V}^{n}$.
 		  \vspace{0.2cm}
 		  \State Given $\mathcal{W}^n$ and $\mathcal{V}^{n}$, compute dimensionless effective 
@@ -73,7 +73,7 @@ The complete procedure is summarized as a coupled solver in Algorithm~\ref{alg:c
 		  \check{\mathbf{v}}_r + \check{\mathbf{v}}_s.
 \end{equation*}
 		  \vspace{0.2cm}
-		  \State Marching forward the transport system~\eqref{dimensionlesstransport} to the next time $n+1$ for $\mathcal{U}^{n+1}$.
+		  \State March forward the transport system~\eqref{dimensionlesstransport} to the next time for $\mathcal{U}^{n+1}$.
 		  %\State Given $\mathcal{U}^{n+1}$, compute $\mathcal{W}^{n+1}$ by the eutecetic phase package.
 		  %\State Given $\phi_f^{n+1}$ in $\mathcal{W}^{n+1}$, solve the Darcy-Stokes system \eqref{eq:darcy_flow_sc_fem}--\eqref{eq:compaction_flow_sc_fem} for $V^{n+1}$.
 		  \vspace{0.3cm}
@@ -107,7 +107,7 @@ where the face integral is converted to an edge integral via the divergence theo
 %When the porosity on one side equal zero, the geometric average of the porosity equals zero as well, which
 %highlights the fact that there is no liquid flow should travel through this edge.
 Importantly, when the porosity on one side of the edge vanishes, 
-the geometric average also becomes zero. This property enforces the physical condition 
+the harmonic average also becomes zero. This property enforces the physical condition 
 that no liquid can pass directly through an edge adjacent to a no-melt region.
 
 \section{Pseudo One-Dimensional Column Tests}
@@ -125,9 +125,9 @@ prescribed melting function $\Gamma(\mathbf{x})$ is used.
 providing a complete coupling between the MFEM, FVM, and eutectic phase package. 
 \end{itemize}
 
-For the two tests presented below, we fix the domain dimension in $x$-direction $L = 0.1$.
-We fix mesh resolution in the $x$-direction as $M=2$ and pick different resolutions in $y$-direction.
-The domain dimension and mesh resolution in $y$-direction are chosen accordingly.
+For the two tests presented below, we fix the domain dimension in the $x$-direction $L = 0.1$.
+We fix mesh resolution in the $x$-direction as $M=2$ and pick different resolutions in the $y$-direction.
+The domain dimension and mesh resolution in the $y$-direction are chosen accordingly.
 We fix the parameter $\Theta = 0$ as well. 
 The code is implemented in PETSc/C++, with implementation details given in the appendix.
 
@@ -139,9 +139,10 @@ we first illustrate a simpler model that couples MFEM and FVM
 solvers without involving the phase package.
 In this reduced setting, the porosity distribution is not determined by phase-splitting calculations. 
 Instead, we prescribe the melting rate or, equivalently, the porosity evolution through a fixed source function distributed in space as
-\begin{equation}\label{eq:gamma}
-\phi(t) = \Gamma(\mathbf{x}).
-\end{equation}
+%\begin{equation}\label{eq:gamma}
+$\Gamma(\mathbf{x})$.
+%\end{equation}
+
 We express conservation of liquid mass by introducing the prescribed 
 melting term $\Gamma(\mathbf{x})$ as a source term on the right-hand
 side of the advection equation as
@@ -151,7 +152,7 @@ side of the advection equation as
 where the diffusion term is being dropped for simplicity in this case.
 
 %We perform a quasi-1D column test on a $2\times40$ rectangular physical domain $\Omega \in [-0.05,0.05] \times [-0.4,0]$.
-We prescribe the following boundary conditions for the MFEM and the FVM solvers respectively to replicate the behavior of the one-dimensional
+We prescribe the following boundary conditions for the MFEM and the FVM solvers, respectively, to replicate the behavior of the one-dimensional
 problem within the two-dimensional grid.
 \iffalse
 \begin{itemize}
@@ -260,7 +261,7 @@ On the  left and right Edges $x=\pm L$, impose that:
 For simplicity and efficiency in implementation and computation, we employ one-dimensional
 ML-WENO(3,2) stencils as illustrated in Figure~\ref{fig:1dsten}, 
 since higher-order accuracy in the $x$-direction is unnecessary for this problem.
-We use second order 
+We use the second order 
 SSP Runge-Kutta time integration scheme defined in Equation~\eqref{eq:2ndrk}.
 
 We consider two different scenarios, each characterized by distinct  prescribed melting functions
@@ -268,17 +269,17 @@ and initial conditions:
 
 Case 1: A piece-wise constant source function.
 \begin{equation}
-\Gamma_1(z) = \left \{ 
+\Gamma_1(y) = \left \{ 
 		  \begin{alignedat}{2}
-					 &2.5e-3, \quad &&-1.5 < z\leq 0,\\
-					 &0, \quad   &&-2.0 \leq z\leq -1.5.
+					 &2.5\time10^{-3}, \quad &&-1.5 < y\leq 0,\\
+					 &0, \quad   &&-2.0 \leq y\leq -1.5.
 \end{alignedat}
 		  \right.
 		  \label{eq:stair_source}
 \end{equation}
 We assign an initial condition of no melting everywhere as
 \begin{equation}
-\phi_1(z,0) =  0.0 , \quad z \in [-2.0, 0.0].
+\phi_1(y,0) =  0.0 , \quad y \in [-2.0, 0.0].
 \end{equation}
 Figure~\ref{fig:constmelt_stairmelting} illustrates the temporal evolution of porosity, 
 Stokes and Darcy velocities, Stokes and Darcy pressures, as well as the effective pressure,
@@ -302,28 +303,28 @@ is trapped beneath the bottom of an existing porosity channel. The trapped melti
 source produces a step in porosity, thereby induces an instantaneous perturbation
 in the compaction rate. The source function is
 \begin{equation}
-\Gamma_2(z) = \left \{ 
+\Gamma_2(y) = \left \{ 
 		  \begin{alignedat}{2}
-					 &0, \hspace{1.13cm} &&-1.5 < z\leq 0,\\
-					 &1.5e-3,\hspace{0.2cm} &&-1.8 < z\leq -1.5,\\
-					 &0, \hspace{1.13cm}   &&-2.0 \leq z\leq -1.8,
+					 &0, \hspace{1.13cm} &&-1.5 < y\leq 0,\\
+					 &1.5\times10^{-3},\hspace{0.2cm} &&-1.8 < y\leq -1.5,\\
+					 &0, \hspace{1.13cm}   &&-2.0 \leq y\leq -1.8,
 \end{alignedat}
 		  \right.
 		  \label{eq:trapped}
 \end{equation}
 where we assign an initial condition with an existing porosity channel as
 \begin{equation}
-\phi_2(z,0) = \left \{ 
+\phi_2(y,0) = \left \{ 
 		  \begin{alignedat}{2}
-					 &5e-2, \quad &&-1.5 < z\leq 0,\\
-					 &0, \quad   &&-2.0 \leq z\leq -1.5.
+					 &5\times10^{-2}, \quad &&-1.5 < y\leq 0,\\
+					 &0, \quad   &&-2.0 \leq y\leq -1.5.
 \end{alignedat}
 		  \right.
 \end{equation}
-Figure~\ref{fig:poroevo},~\ref{fig:veloevo} and~\ref{fig:pressevo} 
+Figures~\ref{fig:poroevo},~\ref{fig:veloevo} and~\ref{fig:pressevo} 
 illustrate the temporal evolution of porosity, Stokes and Darcy velocities and 
 Stokes and Darcy pressures. A propagating discontinuity in porosity  
-forms when the porosity profile decreased upward~(See \cite{DynamicsPartiallyMoltenRock}). Eventually, the system 
+forms when the porosity profile decreases upward~(see \cite{DynamicsPartiallyMoltenRock}). Eventually, the system 
 reaches a steady state, characterized by a narrower porosity channel. 
 The simulation demonstrates robust and stable evolution, despite the presence of a
 highly complicated porosity profile. The solution preserves its overall structure under mesh refinement.
@@ -527,7 +528,7 @@ Additionally, taking into consideration that the we primarily research the pheno
 and the porosity being small,
 We fix the pressure to be lithostatic pressure when used in the determination of current melting points.
 When the mantle column ascend from deeper mantle, the pressure release causes drop in melting point and 
-results in some degrees of corresponding melting.
+results in some degree of corresponding melting.
 \fi
 Additionally, given that the primary focus of this study is the phenomenon of partial melting under small-porosity conditions, 
 we adopt the lithostatic pressure as the reference pressure in determining the local melting point 
@@ -535,7 +536,7 @@ we adopt the lithostatic pressure as the reference pressure in determining the l
 This approximation is 
 justified because the dynamic pressure perturbations associated with porous flow are small compared to the background 
 lithostatic gradient. As the mantle column ascends from depth, the concomitant reduction in lithostatic pressure leads to 
-a decrease in the solidus temperature, thereby inducing some degrees of melting in proportion to the degree of decompression.
+a decrease in the solidus temperature, thereby inducing some degree of melting in proportion to the degree of decompression.
 
 \subsubsection{Boundary conditions}
 \iffalse
@@ -577,7 +578,7 @@ The compaction length is typically defined as
 \delta_c = \sqrt{\frac{\kappa_\phi(\zeta + 4\eta/3)}{\mu_l}},
 \end{equation}
 where $\zeta$ and $\eta$ are bulk and shear viscosities of the solid mantle, respectively.
-The compaction length an important intrinsic length scale that characterize the interaction between the
+The compaction length is an important intrinsic length scale that characterize the interaction between the
 pressure difference and variations in fluid flux (see~\cite{MagmaPhysics} and~\cite{flowindeformableporousp1}).
 
 In this work, we pick a simple constitutive relationship as shown in equation~\eqref{eq:bulkviscosity},
@@ -631,8 +632,8 @@ denote the effective velocity and phase averaged velocity continuous across the 
 The terms $\check{T}^+ = \check{T}(\mathcal{R}^+_H, \mathcal{R}^+_C)$ 
 and $\check{T}^- = \check{T}(\mathcal{R}^+_H, \mathcal{R}^+_C)$ 
 are temperatures evaluated on both sides of the edge using the eutectic
-phase package, based on the reconstructed pointwise mass composition and enthalpy
-. The stabilizers $\alpha_C$ and $\alpha_T$ use the local Lax-Friedrich scheme as shown in equation~\eqref{eq:loclf},
+phase package, based on the reconstructed pointwise mass composition and enthalpy. 
+The stabilizers $\alpha_C$ and $\alpha_T$ use the local Lax-Friedrich scheme as shown in equation~\eqref{eq:loclf},
 ensuring stability of the flux discretization.
 
 The calculation of the numerical flux~\eqref{eq:numflux} of the mass composition is not 
@@ -683,14 +684,14 @@ one-dimensional ML-WENO(3,2) stencils as illustrated in Figure~\ref{fig:1dsten} 
 both the mass composition and the enthalpy. We use second order SSP Runge-Kutta time
 integration scheme defined in Equation~\eqref{eq:2ndrk} as well.
 
-Full coupled column testing case $H=2$: The domain in the $y$-direction spans two dimensionless length $H=2$ with mesh resolution $N=80$.
+Full coupled column testing case $H=2$: The domain in the $y$-direction spans two dimensionless lengths $H=2$ with mesh resolution $N=80$.
 We assign an initial condition of the bulk dimensionless mass composition and the bulk dimensionless enthalpy as
 \begin{equation}
 \begin{aligned}
 H &= \left \{ 
 		  \begin{alignedat}{2}
 &2.9 - 2.8y, \quad &&-1.5\leq y < 0,\\
-&2.9 + 2.8\times 1.5, \quad &&-2\leq y < -1.5.
+&2.9 + 2.8\times 1.5, \quad &&-2\leq y < -1.5,
 		  \end{alignedat}
 		  \right.\\
 C &= 0.15. 
@@ -758,7 +759,7 @@ present effective velocity, phase averaged velocity and solid velocity from left
 
 \clearpage
 
-Full coupled column testing case $H=0.25$: The domain in the $y$-direction spans $0.25$ dimensionless length $H=0.25$ with mesh resolution $N=80$. 
+Full coupled column testing case $H=0.25$: The domain in the $y$-direction spans $0.25$ dimensionless lengths $H=0.25$ with mesh resolution $N=80$. 
 We assign the same initial condition of the bulk dimensionless mass composition and a similar initial condition
 of the bulk dimensionless enthalpy with different cutoff as
 \begin{equation}
@@ -766,7 +767,7 @@ of the bulk dimensionless enthalpy with different cutoff as
 H &= \left \{ 
 		  \begin{alignedat}{2}
 &2.9 - 2.8y, \quad &&-0.2\leq y < 0,\\
-&2.9 + 2.8\times 0.2, \quad &&-0.25\leq y < -0.2.
+&2.9 + 2.8\times 0.2, \quad &&-0.25\leq y < -0.2,
 		  \end{alignedat}
 		  \right.\\
 C &= 0.15.

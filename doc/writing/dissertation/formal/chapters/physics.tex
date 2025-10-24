@@ -195,7 +195,7 @@ where the deviatoric stress of the solid is
 		  = 2\mu_s\phi_s\big(\mathcal{D} \mathbf{v}_s - \tfrac{1}{3}\nabla \cdot \mathbf{v}_s \mathbf{I}\big),
 \end{equation}
 and $\mathcal{D} \mathbf{v}_s=\frac{1}{2}(\nabla\mathbf{v}_s + \nabla\mathbf{v}_s^T)$ is the symmetric gradient.
-Moreover, we adjust the relative permeability 
+Moreover, we set the relative permeability 
 $k_{\phi_l} = k_0 \phi_l^{2+2\Theta}$ with constant 
 $\Theta \in [0,1/2]$ . Here $\mu_s$ 
 and $\mu_l$ are dynamic viscosities for solid and liquid respectively.
@@ -253,7 +253,7 @@ and the problem is reformulated as
 		  &\mu_s\nabla \cdot \mathbf{v}_s
         - \frac{\phi^{1/2}}{1-\phi}(\tilde{q}_l - \phi^{1/2}q) &&=0,
 \end{alignat}
-where the new scaled relative velocity maintains numerical stability in the zero prosority regions.
+where the new scaled relative velocity maintains numerical stability in the zero porosity regions.
 
 \section{Transport of Chemical Species and Energy}
 \label{sec:transport}
@@ -327,7 +327,7 @@ we obtain an advection-diffusion equation as
 where the phase averaged quantities are 
 $\overline{\rho c_i} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j}$ 
 and $\overline{\rho c_i \mathbf{v}} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j} \mathbf{v}_j$.
-The subscript $i$ will be omitted, as only one chemical species needs to be
+The subscript $i$ will be omitted as only one chemical species needs to be
 explicitly computed
 in this two-species system.
 By extending the Boussinessq approximation such that 
@@ -449,7 +449,7 @@ where $\nabla h_i = c_p \nabla T + \frac{1-\alpha_{\rho}T}{\rho_i} \nabla p_i$. 
 term $\nabla h_i$ with the relation~\eqref{eq:thermoexpansion} as
 \begin{equation}\label{eq:sum}
 \nabla \cdot \overline{\rho h \mathbf{v}} = (h_l - h_s) \nabla \cdot (\phi_l \rho_l \mathbf{v}_l) + h_s \nabla \cdot 
-\overline{\rho \mathbf{v}} + c_p \overline{\rho \mathbf{v}} \cdot \nabla T + (1-\alpha_{\rho}T)\overline{\mathbf{v}} \cdot \nabla p_i,
+\overline{\rho \mathbf{v}} + c_p \overline{\rho \mathbf{v}} \cdot \nabla T + (1-\alpha_{\rho}T)\overline{\mathbf{v}} \cdot \nabla p_i.
 \end{equation}
 We substitute the new formulation back to the equation~\eqref{eq:enthalpyequation} and again use lithostatic pressure for 
 approximation as
@@ -653,7 +653,7 @@ Consequently, we focus in the part of the phase diagram Figure~\ref{fig:fullphas
 less than the eutectic composition, which is illustrated in the Figure~\ref{fig:phase_zoom}.
 
 Melting in the eutectic system is illustrated with the green line in the Figure~\ref{fig:phase_zoom}.
-Now imagining a system containing $17\%$ opx that starts to melting. Starting with all solid phase at
+Now imagining a system containing $17\%$ opx that starts melting. Starting with all solid phase at
 Point $a$, the 
 system temperature increase linearly in response to the enthalpy rise. When the temperature reaches the 
 eutectic temperature, at Point $b$, both components of the system start melting 
@@ -668,10 +668,10 @@ of equilibrium crystallization.
 A detailed description of the phase-splitting calculations is provided for the regions I, II, III, and IV
 in this chapter. Regions V and VI are not considered in this study, as we assume that the opx 
 composition remains below the eutectic composition and that only partial melting occurs within the system. 
-We draw a Enthalpy-Composition diagram including the effect of latent heat in the Figure~\ref{fig:HC}.
+We draw an Enthalpy-Composition diagram including the effect of latent heat in the Figure~\ref{fig:HC}.
 Again, we plot against the renormalized enthalpy $H - T_e/\Delta T$ for simplicity.
 The individual concentration and temperature are determined using equations~\eqref{eq:bulkmassfraction} 
-and~\eqref{eq:enthalpydimensionlessrenormalized}. Follow the previous discussion, we denote the 
+and~\eqref{eq:enthalpydimensionlessrenormalized}. Following the previous discussion, we denote the 
 phase fraction of solid olivine as $\phi_1$ and
 the phase fraction of solid opx as $\phi_2$, such that $\phi_1 + \phi_2 = \phi_s$.
 \begin{figure}[htb]
@@ -759,7 +759,7 @@ we can obtain a quadratic equation about temperature as
 		  \check{T}_m H - C L/C_e = 0,
 \end{equation}
 which can be solved with standard quadratic root finding formula.
-We omit the root that exceeding melting temperature, so
+We omit the root that exceeds the melting temperature, so
 \begin{equation}
 		  \begin{aligned}
 		  \check{T} &= \frac{H + \check{T}_m - 
@@ -825,7 +825,7 @@ variables as
 Parameters used in the flow mechanics and thermodynamic computations are listed in Table \ref{tab:parameters}. 
 The characteristic values are calculated as
 \begin{equation}\label{eq:characteristic}
-l_0 = 3.16\times10^5 \text{m}, \quad u_0 = 5.88\times10^{-5} \text{m/s}, \quad t_0 = 5.38\times10^6 \text{s}, \quad \text{and} \quad p_0 = 9.30\times10^9 \text{Pascal},
+l_0 = 3.16\times10^5 \text{m}, \hspace{0.2cm} u_0 = 5.88\times10^{-5} \text{m/s}, \hspace{0.2cm} t_0 = 5.38\times10^6 \text{s}, \hspace{0.2cm} p_0 = 9.30\times10^9 \text{Pascal},
 \end{equation}
 which are 
 \begin{equation}\label{eq:characteristic_geounit}

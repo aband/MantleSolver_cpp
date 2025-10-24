@@ -50,7 +50,7 @@ The dimension of the second-order polynomials in two dimension is calculated by~
 2
 		  \end{pmatrix} = \frac{(4)!}{2!2!} = 6,
 \end{equation}
-while a quadrilateral element requires a minimum of $4$ vertex dofs and $4$ edge 
+while a quadrilateral element requires a minimum of $4$ vertex degrees of freedom (dofs) and $4$ edge 
 dofs. Therefore, we supplement polynomial space $\mathbb{P}_2(E)$ 
 with two linearly independent
 functions, $\phi_{s,1}(\mathbf{x})$ and $\phi_{s,2}(\mathbf{x})$, 
@@ -644,7 +644,7 @@ We choose the nodal basis function on vertex $v_i$ in two Cartesian directions a
 where $\varphi^{(1)}_{v,i}$ is the vertex nodal shape function in $\mathcal{DS}_1(E)$.
 We choose the edge basis function on edge $e_i$ as~$\eqref{eq:bubble}$, i.e.,
 \begin{equation}
-		  N_{e,i} = \mathbf{b}_i(\mathbf{x}) = \varphi^{(2)}_{e,i}\pmb{\nu}_i
+		  N_{e,i} = \mathbf{b}_i(\mathbf{x}) = \varphi^{(2)}_{e,i}\pmb{\nu}_i.
 \end{equation}
 Note that bubble functions are quadratic when restricted to edge $e_i$, while
 nodal basis functions are linear when restricted to edge $e_i$. Therefore 

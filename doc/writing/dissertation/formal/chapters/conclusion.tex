@@ -11,7 +11,7 @@ numerical framework that is capable of resolving the coupled multiphysics intera
 with particular emphasis on accurately modeling melt extraction and properly handling degeneracies in regions devoid of melt.
 
 For the degenerate Darcy-Stokes system describing the static mechanics system, 
-we introduced $H(\text{div})$-and $H^1$- 
+we introduced $H(\text{div})$-space and $H^1$-
 conforming mixed finite element spaces for the Darcy and the Stokes subproblems,
 respectively, based on the mathematical theory developed in~\cite{DegenerateDarcy}. 
 \iffalse
@@ -24,7 +24,7 @@ We prove the stability and approximation properties for this new modified mixed 
 The resulting saddle point system induced by this degenerate Darcy-Stokes system is 
 solved by a modified Uzawa iterative solver.
 \fi
-Specifically, we employed the first- and second-order direct serendipity spaces designed for the quadrilateral mesh.
+Specifically, we employed the first- and second-order direct serendipity spaces designed for a quadrilateral mesh.
 The $H(\text{div})$-conforming space relates to the direct serendipity space through the de Rham complex. 
 For the $H^1$-conforming component, 
 we proposed a modified Bernardi–Raugel element. We proved the stability and approximation properties of this 
@@ -32,13 +32,13 @@ new element. The resulting saddle point system, arising from the coupling of the
 degenerate Darcy–Stokes equations, was solved using a modified Uzawa iterative method. 
 
 To address the nonlinear transport of chemical species and energy in the 
-presence of a porous media, we adopted and modified the weighted essentially 
+presence of a porous medium, we adopted and modified the weighted essentially 
 non-oscillatory (WENO) method. In particular, 
 we proposed two alternatives to the classic Jiang-Shu smoothness indicator in order to 
-reduce computational cost (see~\cite{WENOAOSimplifiedSmoothness} and~\cite{sigmaP}. 
+reduce computational cost (see~\cite{WENOAOSimplifiedSmoothness} and~\cite{sigmaP}). 
 Furthermore, we introduce a novel multilevel WENO reconstruction 
 scheme (see~\cite{MultiLevelWeno}) that is more versatile and flexible, allowing the combination of 
-arbitrary stencils of different orders in the reconstruction. This allowed us to be more deal 
+arbitrary stencils of different orders in the reconstruction. This allowed us to deal 
 with the complicated
 multiphysics problems encountered.
 
