@@ -324,9 +324,10 @@ we obtain an advection-diffusion equation as
 \begin{equation} \label{eq:specietransport}
 		  \frac{\partial \overline{\rho c_{i}}}{\partial t} + \nabla \cdot \big( \overline{\rho c_{i} \mathbf{v}} - \phi_l \rho_l \mathcal{D}_{i,l} \nabla c_{i,l} \big) = 0,
 \end{equation}
-where the phase averaged quantities are 
+where  
 $\overline{\rho c_i} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j}$ 
-and $\overline{\rho c_i \mathbf{v}} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j} \mathbf{v}_j$.
+and $\overline{\rho c_i \mathbf{v}} = \sum_{j\in \{s,l\}} \phi_j \rho_j c_{i,j} \mathbf{v}_j$
+are the phase averaged quantities.
 The subscript $i$ will be omitted as only one chemical species needs to be
 explicitly computed
 in this two-species system.
