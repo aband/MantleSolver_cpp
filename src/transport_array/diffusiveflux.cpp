@@ -4,6 +4,7 @@ double edgefluxintegral(const reconstruction& recon_neg,
                         const reconstruction& recon_pos,
                         const vector<tensorstencilpoly>& sten_lg,
                         const vector<tensorstencilpoly>& sten_sm,
+                        const int sampleSize, 
                         double ** localvals,
                         const vertexSet& edge){
 
@@ -14,6 +15,8 @@ double edgefluxintegral(const reconstruction& recon_neg,
 
     double len = length(edge);
     vertex unitNormal = UnitNormal(edge, len);
+
+    int degree = gwe.size() + 1;
 
 
 
