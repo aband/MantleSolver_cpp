@@ -23,6 +23,7 @@ double edgefluxintegral(const reconstruction& recon_neg,
     const int halfPts = std::ceil((degree+1)/2.0);
     const int numPts =  halfPts * 2;
 
+    // Get sample interval
     const double hIn  = mi.cellArea.at(FlatIndic(mi,gcellin));
     const double hOut = mi.cellArea.at(FlatIndic(mi,gcellout));
 
@@ -37,12 +38,24 @@ double edgefluxintegral(const reconstruction& recon_neg,
     for (int g=0; g<gwe.size(); g++){
         vertex mapped = GaussMapPointsEdge({gpe[g], edge});
 
+        // Evaluate sampling points into each cell
+        for (int s=0; s<halfPts; s++){
+            vertex point0 = mapped - (halfnumPts - 0.5)*dx*unitNormal; 
+            vertex point1 = mapped + 0.5*dx*unitNormal;
 
+            double u0 = use.eval(point0, ml, loc, 
+                                 allwgts({gcellin[0] , gcellin[1]}), gcellin, localvals);
 
-		  for (int i=0; i<numPts; i++){
+            double u1 = use.eval(point1, ml, loc,
+                                 allwgts({gcellout[0], gcellout[1]}), gcellout, localvals);
+
+            samples.at(s)            = diffunc(u0);
+            samples.at(s+halfnumPts) = diffunc(u1);
+        }
+
+        for (int i=0; i<numPts; i++){
             work -= lagDer.middle(numPts-1, i)/dx * gwe[g] * len/2.0 * samples.at(i);
-		  } 
-
+        } 
     }
 
     return work;
