@@ -4,6 +4,7 @@
 #include "util.h"
 #include "reconstruction.h"
 #include "advectiveflux.h"
+#include "diffusiveflux.h"
 
 // This is the only costumized function in simulation
 // Transport functions
@@ -22,5 +23,12 @@ int computeEdgeFlux(vector<double>& edgeflux, double t,
 						  const vector<tensorstencilpoly>& sten_lg,
 						  const vector<tensorstencilpoly>& sten_sm);
 
+// Take into a velocity field that transport the phenomenon
+int computeEdgeFlux(const vector<vertex>& velocityField,
+                    vector<double>& edgeflux, double t,
+                    const MeshInfo& mi, double ** localvals,
+                    const vector<reconstruction>& my_recon,
+                    const vector<tensorstencilpoly>& sten_lg,
+                    const vector<tensorstencilpoly>& sten_sm);
 
 #endif
