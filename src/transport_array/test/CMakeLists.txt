@@ -99,6 +99,7 @@ target_link_libraries(mlweno_lib
 add_library(transport_lib
 		  ${SRC}/transport_array/advectiveflux.cpp
 		  ${SRC}/transport_array/rk.cpp
+		  ${SRC}/transport_array/extractvel.cpp
 )
 
 # Specify any additional include directories if needed
@@ -123,6 +124,18 @@ add_executable(test
 )
 
 target_link_libraries(test
+		  general_lib
+		  io_lib
+		  mlweno_lib
+		  transport_lib
+		  PkgConfig::LAPACKE
+)
+
+add_executable(testextractvel
+testextractvel.cpp
+)
+
+target_link_libraries(testextractvel
 		  general_lib
 		  io_lib
 		  mlweno_lib
