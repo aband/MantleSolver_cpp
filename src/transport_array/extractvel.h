@@ -8,7 +8,9 @@
 int constVelField(vector<vertex>& velocityField, int M, int N);
 
 // Print the velocity field to a txt file
-int printVelField(const vector<vertex>& velocityField, int M, int N);
+int printVelField(const vector<vertex>& velocityField, int M, int N, int mark, const char * fieldname);
+
+int printGaussGrid(int M, int N, const MeshInfo& mi);
 
 // Extract velocity on quadrature points on a vertical edge
 int getQuadVelVert(vertexSet& quadvel, 
