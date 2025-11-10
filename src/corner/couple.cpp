@@ -1,4 +1,5 @@
 // Another coupling method
+#include "couple.h"
 
 int couple::CreatePhase(){
 
@@ -93,14 +94,10 @@ int couple::CreateMesh(const int& M, const int& N,
 
     AssignValuesMeshInfo(mi, dmMesh, dmu);
 
+
+    // Compute and store all the gauss points
+
+
+
     return 1;
 }
-
-
-int couple::computePorosity(){
-
-    return 1;
-}
-
-
-

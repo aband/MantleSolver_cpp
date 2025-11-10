@@ -11,13 +11,14 @@
 #include "input.h"
 #include "util.h"
 
-//#define COUPLED
-#include "passemble.h"
-#include "Hdivmixed.h"
-#include "brmixed.h"
-#include "bndry.h"
-#include "preconst.h"
-#include "psolve.h"
+extern "C"{
+#include "mesh.h"
+#include "output.h"
+//#include "cgns_io.h"
+}
+
+// MFEM parameter header file
+#include "myFunc.h"
 
 // Coupling require the following values evaluated on the cell edges and cell
 // face quadrature points
@@ -78,6 +79,9 @@ class couple {
          */
         int CreateScatterVec();
 
+        // Actual coupling functions
+        int computePorosity();
+
     private:
         // Parameters
         double L_, H_;
@@ -86,17 +90,17 @@ class couple {
         
 
         // Coupling variables
-        vector<vertex>& edgegauss;
-        vector<vertex>& cellgauss;
+        vector<vertex> edgegauss;
+        vector<vertex> cellgauss;
 
-        vector<double>& edgeporo;
-        vector<double>& cellporo;
-        vector<double>& average_poro;
+        vector<double> edgeporo;
+        vector<double> cellporo;
+        vector<double> average_poro;
 
-        vector<vertex>& phasevel;
-        vector<vertex>& effvel;
-        vector<vertex>& solidvel;
-        vector<vertex>& liquidvel;
+        vector<vertex> phasevel;
+        vector<vertex> effvel;
+        vector<vertex> solidvel;
+        vector<vertex> liquidvel;
 };
 
 int computePorosity(vector<double>& edgeporo, 
