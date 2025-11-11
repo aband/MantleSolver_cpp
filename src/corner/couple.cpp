@@ -94,10 +94,46 @@ int couple::CreateMesh(const int& M, const int& N,
 
     AssignValuesMeshInfo(mi, dmMesh, dmu);
 
-
     // Compute and store all the gauss points
+    // Calculate total dofs    
+    // Edge dofs are always vertical edges counted first
+ 
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
 
+    // ==================================================
 
+    int toledgegauss = ((M+1)*N + (N+1)*M)*3;
+
+    edgegauss.resize(toledgegauss);
+
+    int tolcellgauss = M*N*9;
+
+    cellgauss.resize(tolcellgauss);
+
+    vertexSet vertedge;
+    vertexSet horiedge;
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        indice gcell {i,j};
+        vertexSet corners = extractCorners(mi, gcell);
+
+        vertedge = {corners.at(0), corners.at(3)};
+        horiedge = {corners.at(0), corners.at(1)};
+
+        for (int g=0; g<gpe.size(); g++){
+            vertgaussp.at(g) = GaussMapPointsEdge({gpe[g]},vertedge);
+            horigaussp.at(g) = GaussMapPointsEdge({gpe[g]},horiedge);
+        }   
+
+        for (int g=0; g<gpe.size(); g++){
+
+            edgegauss.at() = vertgaussp.at(g); 
+            edgegauss.at() = horigaussp.at(g);
+        }
+ 
+    }}
 
     return 1;
 }
