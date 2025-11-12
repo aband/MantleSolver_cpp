@@ -103,7 +103,10 @@ int couple::CreateMesh(const int& M, const int& N,
 
     // ==================================================
 
-    int toledgegauss = ((M+1)*N + (N+1)*M)*3;
+    int tolvertgauss = (M+1)*N*gpe.size();
+    int tolhorigauss = N*(N+1)*gpe.size();
+
+    int toledgegauss = tolvertgauss + tolhorigauss;
 
     edgegauss.resize(toledgegauss);
 
@@ -114,6 +117,9 @@ int couple::CreateMesh(const int& M, const int& N,
     vertexSet vertedge;
     vertexSet horiedge;
 
+    int indexvert = 0;
+    int indexhori = 0;
+
     for (int j=0; j<N; j++){
     for (int i=0; i<M; i++){
         indice gcell {i,j};
@@ -122,14 +128,47 @@ int couple::CreateMesh(const int& M, const int& N,
         vertedge = {corners.at(0), corners.at(3)};
         horiedge = {corners.at(0), corners.at(1)};
 
-        int prevert = ;
-        int prehori = ;
+        indexvert = (j*(M+1) + i)*gpe.size();
+        indexhori = tolvertgauss + (j*M + i)*gpe.size();
         for (int g=0; g<gpe.size(); g++){
-            vertgaussp.at() = GaussMapPointsEdge({gpe[g]},vertedge);
-            horigaussp.at() = GaussMapPointsEdge({gpe[g]},horiedge);
+            edgegauss.at(indexvert + g) = GaussMapPointsEdge({gpe[g]},vertedge);
+            edgegauss.at(indexhori + g) = GaussMapPointsEdge({gpe[g]},horiedge);
         }   
  
     }}
 
+    // Top horizontal edge
+    for (int i=0; i<M; i++){
+
+        indice gcell {i, N-1};
+        vertexSet corners = extractCorners(mi, gcell);
+        horiedge = {corners.at(3), corners.at(2)};
+
+        indexhori = (N*M + i)*gpe.size();
+
+        for (int g=0; g<gpe.size(); g++){
+            edgegauss.at(indexhori + g) = GaussMapPointsEdge({gpe[g]}, horiedge);
+        }
+
+    }
+
+    // right vertical edge
+    for (int j=0; j<N; j++){
+
+        indice gcell {M-1, j};
+        vertexSet corners = extractCorners(mi, gcell);
+        vertedge = {corners.at(3), corners.at(2)};
+
+        indexhori = tolvertgauss + (j*(M+1))*gpe.size();
+
+        for (int g=0; g<gpe.size(); g++){
+            edgegauss.at(indexhori + g) = GaussMapPointsEdge({gpe[g]}, vertedge);
+        }
+
+    }
+
     return 1;
 }
+
+
+

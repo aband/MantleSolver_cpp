@@ -60,7 +60,9 @@ class couple {
                         const int& stencilWidthU,
                         const bool& physicsScale,
                         const int& meshType); 
- 
+
+         int printGaussPoints();
+
          Vec globalCD, globalHD;
 
         /**!
@@ -85,6 +87,7 @@ class couple {
     private:
         // Parameters
         double L_, H_;
+        int M_, N_;
 
         // Primary variables
         

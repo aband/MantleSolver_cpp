@@ -69,6 +69,7 @@ int main(int argc, char **argv){
                          stencilWidthMesh, stencilWidthU,
                          physicsScale, meshType);
 
+    mycouple->printGaussPoints();
 
     return 1;
 }
