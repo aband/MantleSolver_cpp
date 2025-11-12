@@ -122,16 +122,12 @@ int couple::CreateMesh(const int& M, const int& N,
         vertedge = {corners.at(0), corners.at(3)};
         horiedge = {corners.at(0), corners.at(1)};
 
+        int prevert = ;
+        int prehori = ;
         for (int g=0; g<gpe.size(); g++){
-            vertgaussp.at(g) = GaussMapPointsEdge({gpe[g]},vertedge);
-            horigaussp.at(g) = GaussMapPointsEdge({gpe[g]},horiedge);
+            vertgaussp.at() = GaussMapPointsEdge({gpe[g]},vertedge);
+            horigaussp.at() = GaussMapPointsEdge({gpe[g]},horiedge);
         }   
-
-        for (int g=0; g<gpe.size(); g++){
-
-            edgegauss.at() = vertgaussp.at(g); 
-            edgegauss.at() = horigaussp.at(g);
-        }
  
     }}
 
