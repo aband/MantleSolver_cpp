@@ -107,10 +107,10 @@ int couple::CreateMesh(const int& M, const int& N,
     // ==================================================
 
     int tolvertgauss = (M+1)*N*gpe.size();
-    int tolhorigauss = N*(N+1)*gpe.size();
+    int tolhorigauss = M*(N+1)*gpe.size();
 
     int toledgegauss = tolvertgauss + tolhorigauss;
-cout << toledgegauss << endl;
+
     edgegauss.resize(toledgegauss);
 
     int tolcellgauss = M*N*9;
@@ -133,6 +133,7 @@ cout << toledgegauss << endl;
 
         indexvert = (j*(M+1) + i)*gpe.size();
         indexhori = tolvertgauss + (j*M + i)*gpe.size();
+
         for (int g=0; g<gpe.size(); g++){
             edgegauss.at(indexvert + g) = GaussMapPointsEdge({gpe[g]},vertedge);
             edgegauss.at(indexhori + g) = GaussMapPointsEdge({gpe[g]},horiedge);
@@ -140,32 +141,33 @@ cout << toledgegauss << endl;
  
     }}
 
-    // Top horizontal edge
-    for (int i=0; i<M; i++){
-
-        indice gcell {i, N-1};
-        vertexSet corners = extractCorners(mi, gcell);
-        horiedge = {corners.at(3), corners.at(2)};
-
-        indexhori = (N*M + i)*gpe.size();
-
-        for (int g=0; g<gpe.size(); g++){
-            edgegauss.at(indexhori + g) = GaussMapPointsEdge({gpe[g]}, horiedge);
-        }
-
-    }
-
     // right vertical edge
     for (int j=0; j<N; j++){
 
         indice gcell {M-1, j};
         vertexSet corners = extractCorners(mi, gcell);
-        vertedge = {corners.at(3), corners.at(2)};
 
-        indexhori = tolvertgauss + (j*(M+1))*gpe.size();
+        vertedge = {corners.at(1), corners.at(2)};
+
+        indexvert = (j*(M+1) + M)*gpe.size();
+        for (int g=0; g<gpe.size(); g++){
+            edgegauss.at(indexvert + g) = GaussMapPointsEdge({gpe[g]}, vertedge);
+        }
+
+    }
+
+    // Top horizontal edge
+    for (int i=0; i<M; i++){
+
+        indice gcell {i, N-1};
+        vertexSet corners = extractCorners(mi, gcell);
+
+        horiedge = {corners.at(3), corners.at(2)};
+
+        indexhori = tolvertgauss + (N*M + i)*gpe.size();
 
         for (int g=0; g<gpe.size(); g++){
-            edgegauss.at(indexhori + g) = GaussMapPointsEdge({gpe[g]}, vertedge);
+            edgegauss.at(indexhori + g) = GaussMapPointsEdge({gpe[g]}, horiedge);
         }
 
     }

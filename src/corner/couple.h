@@ -84,6 +84,8 @@ class couple {
         // Actual coupling functions
         int computePorosity();
 
+        int computePorosity_phase();
+
     private:
         // Parameters
         double L_, H_;
@@ -105,9 +107,5 @@ class couple {
         vector<vertex> solidvel;
         vector<vertex> liquidvel;
 };
-
-int computePorosity(vector<double>& edgeporo, 
-                    vector<double>& cellporo,
-                    vector<double>& cellaverporo);
 
 #endif

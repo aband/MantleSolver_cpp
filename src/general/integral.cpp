@@ -48,7 +48,7 @@ valarray<double> GaussMapPointsEdge(valarray<double> ref,
     double len = sqrt(temp.sum());
 
     valarray<double> mapped = mid + abs(temp)/len*ref[0]/2;
-     
+
     return mapped;
 }
 
