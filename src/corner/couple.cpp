@@ -80,6 +80,9 @@ int couple::CreateMesh(const int& M, const int& N,
     L_ = L;
     H_ = H;
 
+    N_ = N;
+    M_ = M;
+
     // Create global vector containing mesh
     PetscCall(DMCreateGlobalVector(dmMesh, &globalmesh));
     switch(meshType){
@@ -107,7 +110,7 @@ int couple::CreateMesh(const int& M, const int& N,
     int tolhorigauss = N*(N+1)*gpe.size();
 
     int toledgegauss = tolvertgauss + tolhorigauss;
-
+cout << toledgegauss << endl;
     edgegauss.resize(toledgegauss);
 
     int tolcellgauss = M*N*9;

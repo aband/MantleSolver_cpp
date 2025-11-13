@@ -116,6 +116,7 @@ target_link_libraries(mfem_lib
 # ===================================================================
 add_library(couple_lib
 		  ${SRC}/corner/couple.cpp
+		  ${SRC}/corner/print.cpp
 		  porosity.cpp
 		  flow.cpp
 		  )
