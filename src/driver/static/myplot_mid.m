@@ -15,6 +15,7 @@ fileID = fopen(filename, 'r');
 poro = fscanf(fileID, '%f', [1,Inf]);
 poro = reshape(poro, M, N);
 
+
 figure
 set(gcf,'Position',[50 50 1000 500])
 %x2 = linspace(min(min(cX)),max(max(cX)),200);
@@ -30,6 +31,7 @@ colorbar
 title("Porosity Distrubition")
 xlabel('x')
 ylabel('y')
+
 
 filename = strcat('build/qs1.dat');
 fileID = fopen(filename, 'r');
@@ -95,9 +97,9 @@ phasex  = phasex(2:3:end, :);
 phasey  = phasey(2:3:end, :);
 
 figure
-set(gcf,'Position',[50 50 1000 500])
-surf(cX,cY,qs,'LineStyle','none');
-hold on
+set(gcf,'Position',[50 50 1000 800])
+%surf(cX,cY,qs,'LineStyle','none');
+%hold on
 quiver(pX, pY, ux, uy);
 
 %[startx, starty] = meshgrid( 0.005,-0.08:0.004:-0.01)
@@ -116,12 +118,14 @@ hold off
 colormap(turbo)
 view([0,90])
 colorbar
-title("Solid Pressure Potential and Velocity")
+title("Solid Velocity")
 xlabel('x')
 ylabel('y')
-xlim([-0.5,0.5])
+%xlim([-0.5,0.5])
+xlim([0.0,0.5])
 ylim([-0.5,0.0])
 
+%{
 figure
 set(gcf,'Position',[50 50 1000 500])
 surf(cX,cY,qs,'LineStyle','none');
@@ -147,7 +151,8 @@ colorbar
 title("Phase averaged velocity")
 xlabel('x')
 ylabel('y')
-xlim([-0.5,0.5])
+%xlim([-0.5,0.5])
+xlim([0.0,0.5])
 ylim([-0.5,0.0])
 
 figure
@@ -164,3 +169,4 @@ colorbar
 title("Liquid Pressure Potential and Velocity")
 xlabel('x')
 ylabel('y')
+%}

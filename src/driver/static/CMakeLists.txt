@@ -28,7 +28,7 @@ if (FORTRAN_COMPILER)
 endif (FORTRAN_COMPILER)
 
 # Set Optimization flags
-#set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
 #set(CMAKE_CXX_FLAGS "-g")
 
 project(test)
@@ -219,6 +219,12 @@ add_executable(midRidge
       trans_setting.cpp
 )
 
+add_executable(half
+		test.cpp
+      half.cpp 
+      trans_setting.cpp
+)
+
 target_include_directories(test
 		  PUBLIC ${SRC}/coupledSys
 		  )
@@ -232,6 +238,10 @@ target_include_directories(convTest
 		  )
 
 target_include_directories(midRidge
+		  PUBLIC ${SRC}/coupledSys
+		  )
+
+target_include_directories(half
 		  PUBLIC ${SRC}/coupledSys
 		  )
 
@@ -272,6 +282,17 @@ target_link_libraries(convTest
 )
 
 target_link_libraries(midRidge
+		  io_lib
+		  phase_lib
+		  mfem_lib
+		  mlweno_lib
+		  driver_lib
+		  transport_lib
+		  PkgConfig::LAPACKE
+		  phase_lib
+)
+
+target_link_libraries(half
 		  io_lib
 		  phase_lib
 		  mfem_lib
