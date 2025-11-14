@@ -71,5 +71,8 @@ int main(int argc, char **argv){
 
     mycouple->printGaussPoints();
 
+    mycouple->computePorosity();
+    mycouple->printedgeporosity(1);
+
     return 1;
 }

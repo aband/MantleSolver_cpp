@@ -620,7 +620,7 @@ int reconPlot(const MeshInfo& mi, multilevel& ml, mluse& use, int mark, Vec * gl
     return 1;
 }
 
-double averagePhi(PhysProperty * pp, int i, int j, const MeshInfo& mi){
+double printaveragePhi(PhysProperty * pp, int i, int j, const MeshInfo& mi){
 
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>&   gpf = GaussPointsFace;

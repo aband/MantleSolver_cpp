@@ -86,6 +86,8 @@ class couple {
 
         int computePorosity_phase();
 
+		  int printedgeporosity(int mark);
+
     private:
         // Parameters
         double L_, H_;
@@ -106,6 +108,12 @@ class couple {
         vector<vertex> effvel;
         vector<vertex> solidvel;
         vector<vertex> liquidvel;
+
+        int printedgeval(int mark, const vector<double>& val,
+                                   const char * fieldname);
+
+        int printedgeval(int mark, const vector<vertex>& val,
+                                   const char * fieldname);
 };
 
 #endif

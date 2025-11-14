@@ -47,9 +47,62 @@ int couple::printGaussPoints(){
     return 1;
 }
 
-int couple::printPorosity(){
+char * GetFilename(const char * fieldname, int mark){
 
-    // Print porosity on gauss quadrature points
+    char * filename = (char *)malloc(strlen(fieldname)+10+4);
+
+    char n_char[10];
+    std::sprintf(n_char,"%d",mark);
+    strcpy(filename, fieldname);
+    strcat(filename, n_char);
+    strcat(filename, ".dat");
+
+    return filename;
+}
+
+int couple::printedgeval(int mark, const vector<double>& val,
+                                   const char * fieldname){
+
+    FILE * file = fopen(GetFilename(fieldname, mark), "w");
+
+    // Print scalar values on gauss quadrature points
+    for (int j=0; j<N_  ; j++){
+    for (int i=0; i<M_+1; i++){
+
+        int dof = (j*(M_+1) + i)*3;
+
+        for (int g=0; g<3; g++){
+            fprintf(file,"%12f ", val.at(dof+g));
+        }
+
+    }}
+
+    int tolvert = N_*(M_+1)*3;
+
+    // Horizontal points second
+    for (int j=0; j<N_+1; j++){
+    for (int i=0; i<M_;   i++){
+
+        int dof = tolvert + (j*M_ + i)*3;
+        for (int g=0; g<3; g++){
+            fprintf(file, "%e ", val.at(dof+g));
+        }
+    }}
+
+    return 1;
+}
+
+int couple::printedgeval(int mark, const vector<vertex>& val,
+                                   const char * fieldname){
+
+
+
+    return 1;
+}
+
+int couple::printedgeporosity(int mark){
+
+    printedgeval(mark, edgeporo, "porosity");
 
     return 1;
 }
