@@ -32,6 +32,9 @@ function [] = drawedgescalar(M, N, mark, folder, name)
         valvert = val(1:vertdof);
 		  valvert = reshape(valvert, (M+1)*3,N)
 
+        % Rearrange vertical grid points and values
+		   
+
 		  valhori = val(vertdof+1 : vertdof+horidof);
 		  valhori = reshape(valhori, M*3,N+1);
 
