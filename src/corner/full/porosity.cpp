@@ -4,15 +4,7 @@ static double AssignPorosity(const vertex& point){
 
     // used to identify incorrect porosity
 
-    if (point[1] > -0.05){
-        return 0.1;
-    }else if (point[1] > -0.15 && point[1] < -0.05){
-        return 0.05;
-    }else if (point[1] > -0.25 && point[1] < -0.15){
-        return 0.05;
-    } else {
-        return 0.0;
-    }
+    return point[1];
 
 }
 
