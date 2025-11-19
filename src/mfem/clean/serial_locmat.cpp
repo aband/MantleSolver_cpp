@@ -1,4 +1,4 @@
-#include "clean_locmat.h"
+#include "serial_solver.h"
 
 static int clearLocMat(int size,
                        LocMat& loc){
@@ -132,6 +132,17 @@ int AssignLocMatDarcy(const MeshInfo& mi,
         loc.C += gw*jac*scaletmp/phi_s*
                  hdiv_->Pressure()*hdiv_->Pressure();
     }
+
+
+
+    return 1;
+}
+
+int AssignLocMatCouple(const MeshInfo& mi,
+                       basis& basis_,
+                       LocMat& loc,
+                       double theta,
+                       const poroSet& poro){
 
 
 
