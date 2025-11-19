@@ -118,3 +118,15 @@ target_include_directories(phase_lib
 )
 
 # Add to excutable
+add_executable(test
+		  test.cpp
+		  temp.cpp
+)
+
+target_link_libraries(test
+		  clean_mfem_lib
+		  phase_lib
+		  general_lib
+		  io_lib
+)
+

@@ -5,6 +5,7 @@
 #include "Hdivmixed.h"
 #include "brmixed.h"
 #include "util.h"
+#include "serial_solver.h"
 #include "myFunc.h"
 
 extern "C"{
@@ -52,10 +53,10 @@ int main(int argc, char **argv){
     AssignPhyProperties(physproperty);
 
     double physscale = physproperty->L0/physproperty->l0;
-    double L = 2*physscale, H = 1*physscale;
-    double xstart = -1*physscale, ystart = -1.001*physscale;
-//    double L = 2, H = 1;
-//    double xstart = -1, ystart = -1.1;
+//    double L = 2*physscale, H = 1*physscale;
+//    double xstart = -1*physscale, ystart = -1.001*physscale;
+    double L = 1, H = 1;
+    double xstart = 0.0, ystart = 0.0;
 
     ierr = PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL); CHKERRQ(ierr);
     ierr = PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL); CHKERRQ(ierr);
@@ -147,6 +148,10 @@ int main(int argc, char **argv){
     mi.localVals = lu;
 
     AssignValuesMeshInfo(mi,dm,dmu); 
+
+    DarcyStokes * ds = new DarcyStokes(); 
+
+
 
 
 // ====================================================================================================================================

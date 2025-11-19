@@ -32,6 +32,39 @@ int DarcyStokes::MarkBndryDOFStokes(const MeshInfo& mi,
                                     PhysProperty * pp,
                                     const std::vector<double>& param){
 
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    int jstart = mi.MPIlocalCellStart[1];
+    int istart = mi.MPIlocalCellStart[0];
+
+    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
+    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
+
+        // Global element index
+        indice global{i,j};
+
+        // Extract corners of this element
+        basis_.GetCorners(mi, global);
+
+        vertexSet fullCorners = basis_.corners();
+
+        // Get global numbering of the dofs associating with this element
+        std::array<int, 12> elementDOF = br_.LocalToGlobal(mi, global);
+
+        // Mark all the edges of this element that laying on the boundary
+        vector<int> edges;
+
+        markBndryEdge(mi, edges, i, j); 
+
+        for (const auto& edge: edges){
+            // Get corners corresponding to this boundary edge
+
+
+        }
+
+    }}
+
     return 1;
 }
 
