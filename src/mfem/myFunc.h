@@ -89,6 +89,9 @@ vertex bndryVs(const vertex& point, PhysProperty * pp);
 
 vertex bndryVs(const vertex& point, Phase * phase);
 
+vertex essenbndryVs(const vertex& point, PhysProperty * pp);
+vertex naturbndryVs(const vertex& point, PhysPorperty * pp);
+
 vertex bndryu(const vertex& point, PhysProperty * pp);
 
 vertex bndryu(const vertex& point, Phase * phase);

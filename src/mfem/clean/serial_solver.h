@@ -22,11 +22,16 @@
 // 2. a pair object pairing local degree of freedom and value
 struct bndryInfo{
     int        localDOF;
-    double     val;  
     indice     globalElem;
+
+    double     essenval;
+    double     naturval;
 };
 
+// Map global indice with boundary values
 using bndryVal = std::unordered_map<int, bndryInfo>;
+
+using bndryValGroup = std::unordered_map<std::string, std::vector<bndryVal>>;
 
 typedef struct{
 
@@ -71,6 +76,8 @@ class DarcyStokes{
         int AssignLocMatDarcy(LocMat& loc, double theta);
         int AssignLocMatStokes(LocMat& loc, double theta);
         int AssignLocMatCouple(LocMat& loc, double theta);
+
+        
 
         // Function basis
         basis     * basis_;
