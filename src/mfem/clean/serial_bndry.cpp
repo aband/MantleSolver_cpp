@@ -115,7 +115,7 @@ int DarcyStokes::MarkBndryDOFStokes(const MeshInfo& mi,
 
             std::array<double,3> tmpVal {bndryVal[0], bndryVal[1], supVal};
 
-            double neumVal = naturbndryVs(edgeCorners[1], pp);
+            double neumVal = naturbndryVs(edgeCorners, pp);
 
         }
     }}
