@@ -68,6 +68,21 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
     return work;
 }
 
+double AssignNaturBndryVal(const vertexSet& edgeCorner,
+                           const vertex& nu,
+                           const valarray<double>& gwe,
+                           const valarray<double>& gpe,
+                           PhysProperty * pp){
+
+    double work = 0.0;
+
+    double midheight = 0.5 * (edgeCorner[0][1] + edgeCorner[1][1]);  
+
+
+
+    return work;
+}
+
 // Create full list of essential and natural boundary 
 // without differentiation of actual boundary type
 int DarcyStokes::MarkBndryDOFStokes(const MeshInfo& mi, 
@@ -115,7 +130,7 @@ int DarcyStokes::MarkBndryDOFStokes(const MeshInfo& mi,
 
             std::array<double,3> tmpVal {bndryVal[0], bndryVal[1], supVal};
 
-            double neumVal = naturbndryVs(edgeCorners, pp);
+            double neumVal = AssignNaturBndryVal(edgeCorners, nu, gwe, gpe, pp);
 
         }
     }}
