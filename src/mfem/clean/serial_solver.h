@@ -63,15 +63,33 @@ class DarcyStokes{
         DarcyStokes() {};
         ~DarcyStokes() {};
 
-        int MarkBndryDOFStokes(const MeshInfo& mi,
-                               PhysProperty * pp,
-                               const std::vector<double>& param);
+        int init(const MeshInfo& mi,
+                 PhysProperty * pp,
+                 const std::vector<double>& param);
 
-        int MarkBndryDOFDarcy(const MeshInfo& mi,
-                              PhysProperty * pp,
-                              const std::vector<double>& param);
+        int printBndryAll();
 
     private:
+
+        int ComputeEssenBndryAll(const MeshInfo& mi,
+                                 PhysProperty * pp,
+                                 const std::vector<double>& param);
+
+        int ComputeNaturBndryAll(const MeshInfo& mi,
+                                 PhysProperty * pp,
+                                 const std::vector<double>& param);
+
+        double AssignBndrySupVal(const vertexSet& edgeCorner,
+                                 const vertex& nu,
+                                 PhysProperty * pp);
+
+        std::array<double, 2> AssignBndryValsDarcy(const vertexSet& edgeCorner,
+                                                   const vertex& nu,
+                                                   const double& len,
+                                                   const int& edge,
+                                                   PhysProperty * pp);
+
+        int computeEssenVals(const MeshInfo& mi, int i, int j, int edge, PhysProperty * pp);
 
         int AssignLocMatDarcy(LocMat& loc, double theta);
         int AssignLocMatStokes(LocMat& loc, double theta);
@@ -90,9 +108,9 @@ class DarcyStokes{
         std::set<int> bottom_tang {0,1};
 
         // Function basis
-        basis     * basis_;
-        Hdivmixed * hdiv_;
-        BRMixed   * br_;
+        basis     basis_;
+        Hdivmixed hdiv_;
+        BRMixed   br_;
 
         // Cleared boundary values 
         bndryVal bndryStokesEssen_;

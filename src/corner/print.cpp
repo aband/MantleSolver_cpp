@@ -168,5 +168,7 @@ int couple::printedgeporosity(int mark){
 
     printedgeval(mark, edgeporo, "porosity");
 
+    printcellval(mark, average_poro, "aveporo");
+
     return 1;
 }

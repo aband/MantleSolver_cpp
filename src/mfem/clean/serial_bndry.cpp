@@ -1,10 +1,11 @@
 #include "serial_solver.h"
 
-double AssignBndrySupVal(const vertexSet& edgeCorner,
-                         const vertex& nu,
-                         const valarray<double>& gwe,
-                         const valarray<double>& gpe,
-                         PhysProperty * pp){
+double DarcyStokes::AssignBndrySupVal(const vertexSet& edgeCorner,
+                                      const vertex& nu,
+                                      PhysProperty * pp){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
 
     // Assign value to the degree of freedom of 
     // the supplemental function on the edge
@@ -40,6 +41,110 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
     return work;
 }
 
+std::array<double, 2> DarcyStokes::AssignBndryValsDarcy(const vertexSet& edgeCorner,
+                                                        const vertex& nu,
+                                                        const double& len,
+                                                        const int& edge,
+                                                        PhysProperty * pp){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    std::array<double, 2> work;
+
+    // Initialize the local linear system variables
+    double a = 0, b = 0, d = 0;
+
+    // Initialize the right hand side vector components
+    double l0 = 0, l1 = 0;
+
+    // Assign Dirichlet boundary values to Darcy problem
+    // requires a L2 projection.
+    // Vector based basis function cannot assign Dirichlet 
+    // boundary condition directly.
+    // A first order approximation minimization L2 error.
+
+    for (int g=0; g<gwe.size(); g++){
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edgeCorner);
+
+        std::array<vertex, 2> vals = hdiv_.ComputeHdivmixed(basis_, mapped, edge); 
+
+        a += len/2.0*gwe[g]*(vals[0][0]*vals[0][0]*nu[0]*nu[0] + 
+                             vals[0][1]*vals[0][1]*nu[1]*nu[1]);
+        b += len/2.0*gwe[g]*(vals[0][0]*vals[1][0]*nu[0]*nu[0] + 
+                             vals[0][1]*vals[1][1]*nu[1]*nu[1]);
+        d += len/2.0*gwe[g]*(vals[1][0]*vals[1][0]*nu[0]*nu[0] + 
+                             vals[1][1]*vals[1][1]*nu[1]*nu[1]);
+
+        // Get local Dirichlet vector value
+        //vertex DiriVal = Dirichlet_val(mapped); 
+        vertex DiriVal = bndryu(mapped,pp);
+
+        l0 += len/2.0*gwe[g]*(DiriVal[0]*vals[0][0]*nu[0]*nu[0] + 
+                              DiriVal[1]*vals[0][1]*nu[1]*nu[1]);
+        l1 += len/2.0*gwe[g]*(DiriVal[0]*vals[1][0]*nu[0]*nu[0] + 
+                              DiriVal[1]*vals[1][1]*nu[1]*nu[1]);
+
+    }
+
+    work[0] = (d*l0-b*l1)/(a*d-b*b);
+    work[1] = (a*l1-b*l0)/(a*d-b*b);
+
+    return work;
+}
+
+int DarcyStokes::computeEssenVals(const MeshInfo& mi,
+                                  int i, int j, int edge, PhysProperty * pp){
+
+    // Get global cell index
+    indice gcell {i,j};
+
+    // Extract corners of this element
+    basis_.GetCorners(mi, gcell);
+    vertexSet fullCorners = basis_.corners();
+
+    // Extract edge corners and its corresponding normal vector
+    vertexSet edgeCorners = {fullCorners.at((edge+3)%4), 
+                             fullCorners.at(edge)};
+
+    vertex nu = basis_.unitnormal(edge);
+
+    double len = length(edgeCorners);
+
+    // Stokes ================================================================================
+
+    std::array<int, 12>  elementDOF = br_.LocalToGlobal(mi, gcell);
+
+    vertex essenVal = bndryVs(edgeCorners.at(1), pp);
+
+    double supVal = AssignBndrySupVal(edgeCorners, nu, pp);
+
+    std::array<double,3> tmpVal {essenVal[0], essenVal[1], supVal};
+
+    // Store three values
+    for (int d=0; d<3; d++){
+        int locd = edge + d*4;
+
+        bndryStokesEssenAll.insert(std::make_pair<int, bndryInfo>
+                                   ((int)elementDOF[locd], {locd, gcell, tmpVal[d], 0}));
+    }
+
+    // Darcy  ================================================================================
+
+    std::array<int, 8> elementDOFDarcy = hdiv_.LocalToGlobal(mi, gcell);
+
+    // Get dirichlet boundary value assigned to boundary dofs
+    std::array<double, 2> dVals = AssignBndryValsDarcy(edgeCorners, nu, len, edge, pp);
+ 
+    bndryDarcyEssenAll.insert(std::make_pair<int, bndryInfo>
+                              ((int)elementDOFDarcy[edge], {edge, gcell, dVals[0], 0})); 
+
+    bndryDarcyEssenAll.insert(std::make_pair<int, bndryInfo>
+                              ((int)elementDOFDarcy[edge+4], {edge+4, gcell, dVals[1], 0})); 
+
+    return 1;
+}
+
 int DarcyStokes::ComputeEssenBndryAll(const MeshInfo& mi,
                                       PhysProperty * pp,
                                       const std::vector<double>& param){
@@ -47,34 +152,21 @@ int DarcyStokes::ComputeEssenBndryAll(const MeshInfo& mi,
     // Compute essential boundary condition on every dofs
     // store "right" and supp dof only on each edge
 
-    // left edge
+    // left and right edges
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
-       // Global element index
-       int gcell {0,j};
 
-       // Extract corners of this element
-       basis_.GetCorners(mi, cell);
-       vertexSet fullCorners = basis_.corners();
-
-       // Get global numbering of the dofs associating with this element
-       std::array<int, 12> elementDOF = br_.LocalToGlobal(mi, gcell);
-
-       vertexSet edgeCorners = {fullCorners.at(3), 
-                                fullCorners.at(0)};
-
-       vertex nu = basis_.unitnormal(0);
-
-             
+       computeEssenVals(mi, 0,j,0, pp); 
+       computeEssenVals(mi, mi.MPIglobalCellSize[0]-1,j,2,pp);
 
     }
 
-    // bottom edge
+    // bottom and top edges
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+      
+       computeEssenVals(mi, i,0,1, pp);
+       computeEssenVals(mi, i,mi.MPIglobalCellSize[1]-1,3,pp);
 
-
-    // right edge
-
-
-    // top edge
+    }
 
     return 1;
 }
@@ -82,87 +174,6 @@ int DarcyStokes::ComputeEssenBndryAll(const MeshInfo& mi,
 int DarcyStokes::ComputeNaturBndryAll(const MeshInfo& mi,
                                       PhysProperty * pp,
                                       const std::vector<double>& param){
-
-    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
-        // Global element index
-        int gcell {0,j};
-
-        // Extract corners of this element
-        basis_.GetCorners(mi, cell);
-        vertexSet fullCorners = basis_.corners();
-
-        // Get global numbering of the dofs associating with this element
-        std::array<int, 12> elementDOF = br_.LocalToGlobal(mi, gcell);
-
-        vertexSet edgeCorners = {fullCorners.at(3), 
-                                 fullCorners.at(0)};
-
-         
-
-    }	
-
-    return 1;
-}
-
-// Create full list of essential and natural boundary 
-// without differentiation of actual boundary type
-int DarcyStokes::MarkBndryDOFStokes(const MeshInfo& mi, 
-                                    PhysProperty * pp,
-                                    const std::vector<double>& param){
-
-    const valarray<double>& gwe = GaussWeightsEdge;
-    const valarray<double>& gpe = GaussPointsEdge;
-
-    int jstart = mi.MPIlocalCellStart[1];
-    int istart = mi.MPIlocalCellStart[0];
-
-    for (int j=jstart; j<jstart + mi.MPIlocalCellSize[1]; j++){
-    for (int i=istart; i<istart + mi.MPIlocalCellSize[0]; i++){
-
-        // Global element index
-        indice global{i,j};
-
-        // Extract corners of this element
-        basis_->GetCorners(mi, global);
-
-        vertexSet fullCorners = basis_->corners();
-
-        // Get global numbering of the dofs associating with this element
-        std::array<int, 12> elementDOF = br_->LocalToGlobal(mi, global);
-
-        // Mark all the edges of this element that laying on the boundary
-        vector<int> edges;
-
-        markBndryEdge(mi, edges, i, j); 
-
-        for (const auto& edge: edges){
-            // Get corners corresponding to this boundary edge
-            vertexSet edgeCorners = {fullCorners.at((edge+3)%4),
-                                     fullCorners.at(edge)};
-
-            // Get unit normal vector to this boundary edge
-            vertex nu = basis_->unitnormal(edge);
-
-            // Get dirichlet boundary nodal value
-            // and supplemental bubble function value
-            vertex bndryVal = essenbndryVs(edgeCorners[1], pp);
-
-            double supVal = AssignBndrySupVal(edgeCorners, nu, gwe, gpe, pp);
-
-            std::array<double,3> tmpVal {bndryVal[0], bndryVal[1], supVal};
-
-            double neumVal = AssignNaturBndryVal(edgeCorners, nu, gwe, gpe, pp);
-
-        }
-    }}
-
-    return 1;
-}
-
-int DarcyStokes::MarkBndryDOFDarcy(const MeshInfo& mi,
-                                   PhysProperty * pp,
-                                    const std::vector<double>& parame){
-
 
     return 1;
 }

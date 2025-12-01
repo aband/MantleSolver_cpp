@@ -32,16 +32,16 @@ int AssignLocMatStokes(const MeshInfo& mi,
 
     for (int g=0; g<gwf.size(); g++){
         // Calculate mapped gauss points and jacobian
-        vertex mapped = GaussMapPointsFace(gpf[g],basis_->corners());
-        double jac = abs(GaussJacobian(gpf[g],basis_->corners()));
+        vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
+        double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
 
         std::array<std::array<double,4>, 12> brwork = 
-                           br_->ComputeGradBRmixed(*basis_, mapped);
+                           br_.ComputeGradBRmixed(*basis_, mapped);
 
-        std::array<vertex, 12> brval = br_->ComputeBRmixed(*basis_, mapped);
+        std::array<vertex, 12> brval = br_.ComputeBRmixed(*basis_, mapped);
 
-        vertex stokesforce = stokesForce(mapped,myPhase->pp); 
+        vertex stokesforce = stokesForce(mapped,myPhase.pp); 
 
         double phif = poro.cellporo.at(g); 
         double phis = 1-phif;
@@ -64,7 +64,7 @@ int AssignLocMatStokes(const MeshInfo& mi,
                                       (A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
             }
             // With dimension version
-            loc.B.at(j) += gw*jac*div1 * br_->Pressure();
+            loc.B.at(j) += gw*jac*div1 * br_.Pressure();
 
             // Non dimensionalized version
             // Attention, porosity has been multiplied to right hand side force term
@@ -77,7 +77,7 @@ int AssignLocMatStokes(const MeshInfo& mi,
 //        loc->C += gw*jac*phi_f_hat/phi_s*
 //                  br_->Pressure()*br_->Pressure();
         loc.C += gw*jac*phif/phis*
-                 br_->Pressure()*br_->Pressure();
+                 br_.Pressure()*br_.Pressure();
     }
 
     return 1;
@@ -100,16 +100,16 @@ int AssignLocMatDarcy(const MeshInfo& mi,
 
     for (unsigned int g=0; g<gwf.size(); g++){
         // Calculate mapped gauss points and jacobian
-        vertex mapped = GaussMapPointsFace(gpf[g],basis_->corners());
-        double jac = abs(GaussJacobian(gpf[g],basis_->corners()));
+        vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
+        double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
         double gw = gwf[g];
 
         double phif = poro.cellporo.at(g); 
         double phis = 1-phif;
 
-        std::array<vertex, 8> hdivwork = hdiv_->ComputeHdivmixed(*basis_,mapped);
+        std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(*basis_,mapped);
 
-        vertex darcyforce = darcyForce(mapped,myPhase->pp);
+        vertex darcyforce = darcyForce(mapped,myPhase.pp);
 
         for (unsigned int j=0; j<8; j++){
             for (unsigned int i=0; i<8; i++){
@@ -130,7 +130,7 @@ int AssignLocMatDarcy(const MeshInfo& mi,
             scaletmp = phif/poro.phihat;
         }
         loc.C += gw*jac*scaletmp/phi_s*
-                 hdiv_->Pressure()*hdiv_->Pressure();
+                 hdiv_.Pressure()*hdiv_.Pressure();
     }
 
 

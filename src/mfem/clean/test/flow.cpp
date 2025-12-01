@@ -29,4 +29,20 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->l = 20/pp->l0;
 }
 
+// Essential boundary Boundary values
+// Constant upwelling velocity ascending model
+vertex bndryVs(const vertex& point, PhysProperty * pp){
 
+    // Stokes
+    double V0 = pp->V0 / pp->u0 * -1;
+
+    return {0.0,V0};
+    //return {0.0, 1.0};
+}
+
+vertex bndryu(const vertex& point, PhysProperty * pp){
+
+    // Darcy
+
+    return {0.0,0.0};
+}

@@ -74,6 +74,7 @@ add_library(clean_mfem_lib
 		  #${SRC}/mfem/parallel/locmat.cpp
 		  #${SRC}/mfem/parallel/psolve.cpp
 		  #${SRC}/mfem/parallel/preconst.cpp
+		  ${SRC}/mfem/clean/serial_init.cpp
 		  ${SRC}/mfem/clean/serial_bndry.cpp
 )
 

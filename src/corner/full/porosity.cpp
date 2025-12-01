@@ -4,7 +4,7 @@ static double AssignPorosity(const vertex& point){
 
     // used to identify incorrect porosity
 
-    return point[1];
+    return abs(point[1]);
 
 }
 
@@ -41,10 +41,20 @@ int couple::computePorosity(){
         work = 0.0;
         area = 0.0;
 
+        vector<vertex> corners = extractCorners(mi, {i,j});
+
         for (int g=0; g<gwf.size(); g++){
 
-            double jac = 1;
+            vertex mapped = GaussMapPointsFace(gpf[g], corners);
+
+            double jac = abs(GaussJacobian(gpf[g], corners));
+            double gw = gwf[g];
+
+            work += gw*jac*AssignPorosity(mapped);
+            area += gw*jac;
         }
+
+        average_poro.at(j*M_+i) = work/area; 
 
     }}
 
