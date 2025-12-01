@@ -104,6 +104,9 @@ int couple::CreateMesh(const int& M, const int& N,
     const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
 
+    const valarray<double>& gwf = GaussWeightsFace; 
+    const vector<vertex>& gpf = GaussPointsFace;
+
     // ==================================================
 
     int tolvertgauss = (M+1)*N*gpe.size();
@@ -113,9 +116,11 @@ int couple::CreateMesh(const int& M, const int& N,
 
     edgegauss.resize(toledgegauss);
 
-    int tolcellgauss = M*N*9;
+    int tolcellgauss = M*N*gwf.size();
 
     cellgauss.resize(tolcellgauss);
+
+    cellcenter.resize(M*N);
 
     vertexSet vertedge;
     vertexSet horiedge;
@@ -138,7 +143,16 @@ int couple::CreateMesh(const int& M, const int& N,
             edgegauss.at(indexvert + g) = GaussMapPointsEdge({gpe[g]},vertedge);
             edgegauss.at(indexhori + g) = GaussMapPointsEdge({gpe[g]},horiedge);
         }   
- 
+
+        // cell centered and cell gauss points
+        cellcenter.at(j*M+i) = (corners.at(0) + corners.at(1) + 
+                                corners.at(2) + corners.at(3))/4.0;
+
+        for (int g=0; g<gwf.size(); g++){
+            cellgauss.at(gwf.size()*(j*M+i) + g) = 
+                         GaussMapPointsFace(gpf[g],corners); 
+        }
+
     }}
 
     // right vertical edge
@@ -174,6 +188,3 @@ int couple::CreateMesh(const int& M, const int& N,
 
     return 1;
 }
-
-
-

@@ -99,6 +99,7 @@ class couple {
         // Coupling variables
         vector<vertex> edgegauss;
         vector<vertex> cellgauss;
+        vector<vertex> cellcenter;
 
         vector<double> edgeporo;
         vector<double> cellporo;
@@ -109,10 +110,16 @@ class couple {
         vector<vertex> solidvel;
         vector<vertex> liquidvel;
 
+        // scalar values on edges
         int printedgeval(int mark, const vector<double>& val,
                                    const char * fieldname);
 
+        // vector on edges
         int printedgeval(int mark, const vector<vertex>& val,
+                                   const char * fieldname);
+
+        // cell center values
+        int printcellval(int mark, const vector<double>& val,
                                    const char * fieldname);
 };
 

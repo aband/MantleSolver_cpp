@@ -77,18 +77,43 @@ class DarcyStokes{
         int AssignLocMatStokes(LocMat& loc, double theta);
         int AssignLocMatCouple(LocMat& loc, double theta);
 
-        
+        // normal dof 
+        std::set<int> top_normal {11,7,6};
+        std::set<int> left_normal {0,3,8};
+        std::set<int> right_normal {1,2,10};
+        std::set<int> bottom_normal {4,5,9};
+
+        // tangent dof
+        std::set<int> top_tang {3,2};
+        std::set<int> left_tang {7,4};
+        std::set<int> right_tang {5,6};
+        std::set<int> bottom_tang {0,1};
 
         // Function basis
         basis     * basis_;
         Hdivmixed * hdiv_;
         BRMixed   * br_;
 
-        // Boundary values
+        // Cleared boundary values 
         bndryVal bndryStokesEssen_;
         bndryVal bndryStokesNatur_;
         bndryVal bndryDarcyEssen_;
         bndryVal bndryDarcyNatur_;
+
+        /* ====================================================  
+         Boundary values containing four edges numberred 0-3
+         The numbering order is the same as the element edge number
+		   0 -- left
+		   1 -- bottom
+		   2 -- right
+		   3 -- top
+			The corner dofs are defined and dealt with separately
+		  ==================================================== */ 
+
+        bndryVal bndryStokesEssenAll;
+        bndryVal bndryStokesNaturAll;
+        bndryVal bndryDarcyEssenAll;
+        bndryVal bndryDarcyNaturAll;
 
         /**!
          * Reduced linear system excluding essential boundary conditions

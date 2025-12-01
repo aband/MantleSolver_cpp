@@ -1,33 +1,5 @@
 #include "serial_solver.h"
 
-static int markBndryEdge(const MeshInfo& mi, 
-                         vector<int>& edges,
-                         int i, int j){
-
-    if (i==0){
-        // Count left bottom vertex dof
-        // Count left side
-        edges.push_back(0); 
-    } 
-    if (j==0){
-        // Count right bottom vertex dof
-        // Count bottom side
-        edges.push_back(1);
-    } 
-    if (i==mi.MPIglobalCellSize[0]-1){
-        // Count right top vertex dof 
-        // Count right side
-        edges.push_back(2); 
-    }
-    if (j==mi.MPIglobalCellSize[1]-1){
-        // Count left top vertex dof
-        // Count top side
-        edges.push_back(3);
-    }
-
-    return 1;
-}
-
 double AssignBndrySupVal(const vertexSet& edgeCorner,
                          const vertex& nu,
                          const valarray<double>& gwe,
@@ -68,19 +40,68 @@ double AssignBndrySupVal(const vertexSet& edgeCorner,
     return work;
 }
 
-double AssignNaturBndryVal(const vertexSet& edgeCorner,
-                           const vertex& nu,
-                           const valarray<double>& gwe,
-                           const valarray<double>& gpe,
-                           PhysProperty * pp){
+int DarcyStokes::ComputeEssenBndryAll(const MeshInfo& mi,
+                                      PhysProperty * pp,
+                                      const std::vector<double>& param){
 
-    double work = 0.0;
+    // Compute essential boundary condition on every dofs
+    // store "right" and supp dof only on each edge
 
-    double midheight = 0.5 * (edgeCorner[0][1] + edgeCorner[1][1]);  
+    // left edge
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+       // Global element index
+       int gcell {0,j};
+
+       // Extract corners of this element
+       basis_.GetCorners(mi, cell);
+       vertexSet fullCorners = basis_.corners();
+
+       // Get global numbering of the dofs associating with this element
+       std::array<int, 12> elementDOF = br_.LocalToGlobal(mi, gcell);
+
+       vertexSet edgeCorners = {fullCorners.at(3), 
+                                fullCorners.at(0)};
+
+       vertex nu = basis_.unitnormal(0);
+
+             
+
+    }
+
+    // bottom edge
 
 
+    // right edge
 
-    return work;
+
+    // top edge
+
+    return 1;
+}
+
+int DarcyStokes::ComputeNaturBndryAll(const MeshInfo& mi,
+                                      PhysProperty * pp,
+                                      const std::vector<double>& param){
+
+    for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
+        // Global element index
+        int gcell {0,j};
+
+        // Extract corners of this element
+        basis_.GetCorners(mi, cell);
+        vertexSet fullCorners = basis_.corners();
+
+        // Get global numbering of the dofs associating with this element
+        std::array<int, 12> elementDOF = br_.LocalToGlobal(mi, gcell);
+
+        vertexSet edgeCorners = {fullCorners.at(3), 
+                                 fullCorners.at(0)};
+
+         
+
+    }	
+
+    return 1;
 }
 
 // Create full list of essential and natural boundary 
