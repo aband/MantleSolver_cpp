@@ -17,16 +17,23 @@ int DarcyStokes::init(const MeshInfo& mi, PhysProperty * pp, const std::vector<d
 int DarcyStokes::printBndryAll(){
 
     // All the assigned values for essential Stokes boundary values
+	 cout << "Essential boundary condition for Stokes." << endl;
     for (auto& it: bndryStokesEssenAll){
 
-        cout << "Global dof : " << it->first << it-><< ; 
-
+        printf("g dof : %d , l dof : %d, g cell : (%d, %d), essen val : %e \n", 
+               it.first, it.second.localDOF, it.second.globalElem[0], 
+               it.second.globalElem[1], it.second.essenval);
 
     }
 
+    cout << endl;
+
     // All the assigned values for essential Darcy boundary values
+    cout << "Essential boundary condition for Darcy." << endl;
     for (auto& it: bndryDarcyEssenAll){
 
+        cout << "Global dof : " << it.first << 
+                " local dof : " << it.second.localDOF << endl;
 
     }
 

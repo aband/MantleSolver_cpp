@@ -5,6 +5,7 @@
 #include <iostream>
 #include <ctime>
 #include <chrono>
+#include <map>
 #include "integral.h"
 //#include "input.h"
 #include "util.h"
@@ -29,9 +30,9 @@ struct bndryInfo{
 };
 
 // Map global indice with boundary values
-using bndryVal = std::unordered_map<int, bndryInfo>;
+using bndryVal = std::map<int, bndryInfo>;
 
-using bndryValGroup = std::unordered_map<std::string, std::vector<bndryVal>>;
+using bndryValGroup = std::map<std::string, std::vector<bndryVal>>;
 
 typedef struct{
 

@@ -34,7 +34,7 @@ void AssignPhyProperties(PhysProperty * pp){
 vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     // Stokes
-    double V0 = pp->V0 / pp->u0 * -1;
+    double V0 = pp->U0 / pp->u0 * -1;
 
     return {0.0,V0};
     //return {0.0, 1.0};
