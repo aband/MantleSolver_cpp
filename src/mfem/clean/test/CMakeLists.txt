@@ -30,8 +30,8 @@ if (FORTRAN_COMPILER)
 endif (FORTRAN_COMPILER)
 
 # Set Optimization flags
-#set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
-set(CMAKE_CXX_FLAGS "-g")
+set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
+#set(CMAKE_CXX_FLAGS "-g")
 
 project(test)
 
@@ -60,6 +60,15 @@ target_link_libraries(general_lib
     PkgConfig::PETSC
 )
 
+add_library(phase_lib
+        ${SRC}/phase/eutectic.cpp
+)
+
+target_include_directories(phase_lib
+        PUBLIC ${SRC}/phase
+		  PUBLIC ${SRC}/include
+)
+
 #Create a library from files in mfem file
 add_library(clean_mfem_lib
         ${SRC}/mfem/basis.cpp
@@ -76,6 +85,7 @@ add_library(clean_mfem_lib
 		  #${SRC}/mfem/parallel/preconst.cpp
 		  ${SRC}/mfem/clean/serial_util.cpp
 		  ${SRC}/mfem/clean/serial_bndry.cpp
+		  ${SRC}/mfem/clean/serial_locmat.cpp
 )
 
 target_include_directories(clean_mfem_lib
@@ -107,15 +117,6 @@ target_link_libraries(io_lib
     PkgConfig::HDF5
 	 #     ${CGNS}/libcgns.a
 #    PkgConfig::CGNS
-)
-
-add_library(phase_lib
-        ${SRC}/phase/eutectic.cpp
-)
-
-target_include_directories(phase_lib
-        PUBLIC ${SRC}/phase
-		  PUBLIC ${SRC}/include
 )
 
 # Add to excutable

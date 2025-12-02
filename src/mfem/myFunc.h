@@ -44,7 +44,7 @@ typedef struct {
 class Phase {
     public:
         Phase() {};
-        ~Phase();
+        ~Phase() {delete pp; delete pPtr;};
 
         PhysProperty * pp;
         EUTECTIC::phase * pPtr;

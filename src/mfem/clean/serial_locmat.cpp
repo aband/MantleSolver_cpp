@@ -15,12 +15,10 @@ static int clearLocMat(int size,
     return 1;
 }
 
-int AssignLocMatStokes(const MeshInfo& mi,
-                       BRMixed& br_,
-                       basis& basis_,
-                       LocMat& loc,
-                       double theta, 
-                       const poroSet& poro){
+int DarcyStokes::AssignLocMatStokes(const MeshInfo& mi,
+                                    LocMat& loc,
+                                    double theta, 
+                                    const poroSet& poro){
 
     clearLocMat(12, loc);
    
@@ -37,9 +35,9 @@ int AssignLocMatStokes(const MeshInfo& mi,
         double gw = gwf[g];
 
         std::array<std::array<double,4>, 12> brwork = 
-                           br_.ComputeGradBRmixed(*basis_, mapped);
+                           br_.ComputeGradBRmixed(basis_, mapped);
 
-        std::array<vertex, 12> brval = br_.ComputeBRmixed(*basis_, mapped);
+        std::array<vertex, 12> brval = br_.ComputeBRmixed(basis_, mapped);
 
         vertex stokesforce = stokesForce(mapped,myPhase.pp); 
 
@@ -60,7 +58,7 @@ int AssignLocMatStokes(const MeshInfo& mi,
                 double div2 = brwork[i][0] + brwork[i][3];
 
                 // Symmetrical formulation of A matrix
-                loc.A.at(i+j*12) += 2*phi_s*gw*jac*
+                loc.A.at(i+j*12) += 2*phis*gw*jac*
                                       (A1*A2+B1*B2*2+C1*C2 - (1.0/3.0)*div1*div2);
             }
             // With dimension version
@@ -69,12 +67,12 @@ int AssignLocMatStokes(const MeshInfo& mi,
             // Non dimensionalized version
             // Attention, porosity has been multiplied to right hand side force term
             loc.f.at(j) += gw*jac* phis*(stokesforce[0]*brval[j][0] + 
-                                          stokesforce[1]*brval[j][1]);
+                                         stokesforce[1]*brval[j][1]);
 
         }
 
         // Non dimensionalized version
-//        loc->C += gw*jac*phi_f_hat/phi_s*
+//        loc->C += gw*jac*phi_f_hat/phis*
 //                  br_->Pressure()*br_->Pressure();
         loc.C += gw*jac*phif/phis*
                  br_.Pressure()*br_.Pressure();
@@ -83,12 +81,10 @@ int AssignLocMatStokes(const MeshInfo& mi,
     return 1;
 }
 
-int AssignLocMatDarcy(const MeshInfo& mi,
-                      Hdivmixed& hdiv_,
-                      basis& basis_,
-                      LocMat& loc,
-                      double theta,
-                      const poroSet& poro){
+int DarcyStokes::AssignLocMatDarcy(const MeshInfo& mi,
+                                   LocMat& loc,
+                                   double theta,
+                                   const poroSet& poro){
 
     // copy gaussian quadrature points
     const valarray<double>& gwe = GaussWeightsEdge;
@@ -107,7 +103,7 @@ int AssignLocMatDarcy(const MeshInfo& mi,
         double phif = poro.cellporo.at(g); 
         double phis = 1-phif;
 
-        std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(*basis_,mapped);
+        std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
 
         vertex darcyforce = darcyForce(mapped,myPhase.pp);
 
@@ -126,10 +122,10 @@ int AssignLocMatDarcy(const MeshInfo& mi,
 
         // Compaction matrix
         double scaletmp = 1.0;
-        if (poro.phihat > 1e-15){
-            scaletmp = phif/poro.phihat;
+        if (poro.aveporo > 1e-15){
+            scaletmp = phif/poro.aveporo;
         }
-        loc.C += gw*jac*scaletmp/phi_s*
+        loc.C += gw*jac*scaletmp/phis*
                  hdiv_.Pressure()*hdiv_.Pressure();
     }
 
@@ -138,11 +134,10 @@ int AssignLocMatDarcy(const MeshInfo& mi,
     return 1;
 }
 
-int AssignLocMatCouple(const MeshInfo& mi,
-                       basis& basis_,
-                       LocMat& loc,
-                       double theta,
-                       const poroSet& poro){
+int DarcyStokes::AssignLocMatCouple(const MeshInfo& mi,
+                                    LocMat& loc,
+                                    double theta,
+                                    const poroSet& poro){
 
 
 

@@ -1,4 +1,5 @@
 #include "myFunc.h"
+
 void AssignPhyProperties(PhysProperty * pp){
 
     pp->theta = 0.0;
@@ -44,5 +45,5 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
 
     // Darcy
 
-    return {0.0,0.0};
+    return {abs(point[1]), 0.0};
 }

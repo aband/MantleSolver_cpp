@@ -7,6 +7,7 @@
 #include <chrono>
 #include <map>
 #include "integral.h"
+#include "eutectic_rescaled.h"
 //#include "input.h"
 #include "util.h"
 
@@ -70,6 +71,8 @@ class DarcyStokes{
 
         int printBndryAll();
 
+        Phase myPhase;
+
     private:
 
         int ComputeEssenBndryAll(const MeshInfo& mi,
@@ -92,9 +95,9 @@ class DarcyStokes{
 
         int computeEssenVals(const MeshInfo& mi, int i, int j, int edge, PhysProperty * pp);
 
-        int AssignLocMatDarcy(LocMat& loc, double theta);
-        int AssignLocMatStokes(LocMat& loc, double theta);
-        int AssignLocMatCouple(LocMat& loc, double theta);
+        int AssignLocMatDarcy(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
+        int AssignLocMatStokes(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
+        int AssignLocMatCouple(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
 
         // normal dof 
         std::set<int> top_normal {11,7,6};
@@ -162,7 +165,6 @@ class DarcyStokes{
  
         unordered_map<int,int> refArrayStokesNatur_;
         unordered_map<int,int> refArrayDarcyNatur_;
- 
 };
 
 #endif
