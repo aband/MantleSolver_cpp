@@ -125,8 +125,8 @@ int DarcyStokes::computeEssenVals(const MeshInfo& mi,
     for (int d=0; d<3; d++){
         int locd = edge + d*4;
 
-        bndryStokesEssenAll.insert(std::make_pair<int, bndryInfo>
-                                   ((int)elementDOF[locd], {locd, gcell, tmpVal[d], 0}));
+        bndryStokesAll.insert(std::make_pair<int, bndryInfo>
+                              ((int)elementDOF[locd], {locd, gcell, tmpVal[d], 0}));
     }
 
     // Darcy  ================================================================================
@@ -136,11 +136,11 @@ int DarcyStokes::computeEssenVals(const MeshInfo& mi,
     // Get dirichlet boundary value assigned to boundary dofs
     std::array<double, 2> dVals = AssignBndryValsDarcy(edgeCorners, nu, len, edge, pp);
  
-    bndryDarcyEssenAll.insert(std::make_pair<int, bndryInfo>
-                              ((int)elementDOFDarcy[edge], {edge, gcell, dVals[0], 0})); 
+    bndryDarcyAll.insert(std::make_pair<int, bndryInfo>
+                         ((int)elementDOFDarcy[edge], {edge, gcell, dVals[0], 0})); 
 
-    bndryDarcyEssenAll.insert(std::make_pair<int, bndryInfo>
-                              ((int)elementDOFDarcy[edge+4], {edge+4, gcell, dVals[1], 0})); 
+    bndryDarcyAll.insert(std::make_pair<int, bndryInfo>
+                         ((int)elementDOFDarcy[edge+4], {edge+4, gcell, dVals[1], 0})); 
 
     return 1;
 }

@@ -18,7 +18,7 @@ int DarcyStokes::printBndryAll(){
 
     // All the assigned values for essential Stokes boundary values
 	 cout << "Essential boundary condition for Stokes." << endl;
-    for (auto& it: bndryStokesEssenAll){
+    for (auto& it: bndryStokesAll){
 
         printf("g dof : %d , l dof : %d, g cell : (%d, %d), essen val : %e , natur val : %e \n", 
                it.first, it.second.localDOF, it.second.globalElem[0], 
@@ -30,7 +30,7 @@ int DarcyStokes::printBndryAll(){
 
     // All the assigned values for essential Darcy boundary values
     cout << "Essential boundary condition for Darcy." << endl;
-    for (auto& it: bndryDarcyEssenAll){
+    for (auto& it: bndryDarcyAll){
 
         printf("g dof : %d , l dof : %d, g cell : (%d, %d), essen val : %e , natur val : %e \n", 
                it.first, it.second.localDOF, it.second.globalElem[0], 

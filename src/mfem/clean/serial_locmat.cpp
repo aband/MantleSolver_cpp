@@ -1,5 +1,8 @@
 #include "serial_solver.h"
 
+// Porosity will not be treated or averaged here, 
+// but in separate porosity function instead
+
 static int clearLocMat(int size,
                        LocMat& loc){
 
@@ -117,7 +120,7 @@ int DarcyStokes::AssignLocMatDarcy(const MeshInfo& mi,
             }
             // darctforce is set to be zero here
             loc.f.at(j) += gw*jac*(darcyforce[0]*hdivwork[j][0] + 
-                                 darcyforce[1]*hdivwork[j][1]);
+                                   darcyforce[1]*hdivwork[j][1]);
         }
 
         // Compaction matrix
@@ -129,17 +132,73 @@ int DarcyStokes::AssignLocMatDarcy(const MeshInfo& mi,
                  hdiv_.Pressure()*hdiv_.Pressure();
     }
 
+    double phif_hat = (poro.aveporo == 0.0 ? 1.0 : poro.aveporo);
 
+    vertexSet corners = basis_.corners();
+
+    for (int e =0; e<4; e++){
+
+        vertexSet corner = {corners.at((e+3)%4),
+                            corners.at(e)};
+
+        double len = length(corner);
+
+        for (int g=0; g<gpe.size(); g++){
+
+            vertex mapped = GaussMapPointsEdge({gpe[g]},corner);
+            std::array<vertex, 8>  hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
+            // Zeroth order constant pressure basis is always 1
+            vertex nu = basis_.unitnormal(e);
+
+            for (int j=0; j<8; j++){
+                // With dimension version
+                loc.B[j] += len/2.0*gwe[g]*
+                            pow(phif_hat,-0.5) * pow(poro.edgeporo.at(e*gpe.size()+g), 1+theta) *
+                            (hdivwork[j][0] * nu[0]+
+                             hdivwork[j][1] * nu[1]);
+            } 
+        }
+    }
 
     return 1;
 }
 
 int DarcyStokes::AssignLocMatCouple(const MeshInfo& mi,
-                                    LocMat& loc,
+                                    double& k,
                                     double theta,
                                     const poroSet& poro){
 
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>&   gpf = GaussPointsFace;
 
+    k = 0.0;
+
+    double phi_f = 0.0;
+    double phi_s = 0.0;
+
+    for (unsigned int g=0; g<gwf.size(); g++){
+        // Calculate mapped gauss points and jacobian
+        vertex mapped = GaussMapPointsFace(gpf[g],basis_.corners());
+        double jac = abs(GaussJacobian(gpf[g],basis_.corners()));
+        double gw = gwf[g];
+
+        // Reconstruction of point wise value of HD and CD
+
+        phi_f = poro.cellporo.at(g);
+
+        phi_s = 1.0-phi_f;
+
+        //k -= gw*jac*pow(phi_f_hat,0.5)/phi_s * br_->Pressure() * 
+        //                                       hdiv_->Pressure();
+
+        double scaletmp = 0.0;
+        if (poro.aveporo > 1e-16){
+            scaletmp = phi_f/sqrt(poro.aveporo);
+        }
+
+        k -= gw*jac*scaletmp/phi_s * br_.Pressure() * 
+                                     hdiv_.Pressure();
+    }
 
     return 1;
 }

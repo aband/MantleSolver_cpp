@@ -37,18 +37,18 @@ using bndryValGroup = std::map<std::string, std::vector<bndryVal>>;
 
 typedef struct{
 
-  std::vector<double> A;
-  std::vector<double> B;
-  double C;
-  std::vector<double> f;
+    std::vector<double> A;
+    std::vector<double> B;
+    double C;
+    std::vector<double> f;
 
 } LocMat;
 
 typedef struct{
 
-  std::vector<double> edgeporo;
-  std::vector<double> cellporo;
-  double aveporo;
+    std::vector<double> edgeporo;
+    std::vector<double> cellporo;
+    double aveporo;
 
 } poroSet;
 
@@ -75,6 +75,11 @@ class DarcyStokes{
 
     private:
 
+        int totalElem;
+        int bndry 
+        int reducedDOFStokes;
+        int reducedDOFDarcy;
+
         int ComputeEssenBndryAll(const MeshInfo& mi,
                                  PhysProperty * pp,
                                  const std::vector<double>& param);
@@ -97,7 +102,7 @@ class DarcyStokes{
 
         int AssignLocMatDarcy(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
         int AssignLocMatStokes(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
-        int AssignLocMatCouple(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
+        int AssignLocMatCouple(const MeshInfo& mi, double& k, double theta, const poroSet& poro);
 
         // normal dof 
         std::set<int> top_normal {11,7,6};
@@ -116,12 +121,6 @@ class DarcyStokes{
         Hdivmixed hdiv_;
         BRMixed   br_;
 
-        // Cleared boundary values 
-        bndryVal bndryStokesEssen_;
-        bndryVal bndryStokesNatur_;
-        bndryVal bndryDarcyEssen_;
-        bndryVal bndryDarcyNatur_;
-
         /* ====================================================  
          Boundary values containing four edges numberred 0-3
          The numbering order is the same as the element edge number
@@ -132,10 +131,8 @@ class DarcyStokes{
 			The corner dofs are defined and dealt with separately
 		  ==================================================== */ 
 
-        bndryVal bndryStokesEssenAll;
-        bndryVal bndryStokesNaturAll;
-        bndryVal bndryDarcyEssenAll;
-        bndryVal bndryDarcyNaturAll;
+        bndryVal bndryStokesAll;
+        bndryVal bndryDarcyAll;
 
         /**!
          * Reduced linear system excluding essential boundary conditions
