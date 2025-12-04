@@ -69,14 +69,26 @@ class DarcyStokes{
                  PhysProperty * pp,
                  const std::vector<double>& param);
 
+        int Assemble(const MeshInfo& mi,
+                     const vector<double>& edgeporo,
+                     const vector<double>& cellporo,
+                     const vector<double>& averporo,
+                     double theta);
+
         int printBndryAll();
 
         Phase myPhase;
 
     private:
 
+        // Total number of elements
         int totalElem;
-        int bndry 
+
+        // Size of essential boundary dofs
+        int bndryDOFStokes;
+        int bndryDOFDarcy;
+
+        // Size of the remaining dofs
         int reducedDOFStokes;
         int reducedDOFDarcy;
 
@@ -103,6 +115,20 @@ class DarcyStokes{
         int AssignLocMatDarcy(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
         int AssignLocMatStokes(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
         int AssignLocMatCouple(const MeshInfo& mi, double& k, double theta, const poroSet& poro);
+
+        int AssignLocRedSysDarcy(LocMat& loc,
+                                 int * ref,
+                                 const MeshInfo& mi,
+                                 const indice& global);
+
+        int AssignLocRedSysStokes(LocMat& loc,
+                                  int * ref,
+                                  const MeshInfo& mi,
+                                  const indice& global);
+
+        int PrepareReducedSys(ReducedSys& redsys, 
+                              int reducedDOF, int bndrySize, 
+                              int Adnz, int Aonz, int Bdnz, int Bonz);
 
         // normal dof 
         std::set<int> top_normal {11,7,6};
@@ -137,8 +163,8 @@ class DarcyStokes{
         /**!
          * Reduced linear system excluding essential boundary conditions
          */
-        ReducedSys * reducedDarcy_;
-        ReducedSys * reducedStokes_;
+        ReducedSys reducedDarcy_;
+        ReducedSys reducedStokes_;
 
         /**!
          * Coupling matrix.

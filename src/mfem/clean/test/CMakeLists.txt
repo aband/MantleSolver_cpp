@@ -86,6 +86,7 @@ add_library(clean_mfem_lib
 		  ${SRC}/mfem/clean/serial_util.cpp
 		  ${SRC}/mfem/clean/serial_bndry.cpp
 		  ${SRC}/mfem/clean/serial_locmat.cpp
+		  ${SRC}/mfem/clean/serial_assemble.cpp
 )
 
 target_include_directories(clean_mfem_lib
