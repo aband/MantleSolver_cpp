@@ -197,14 +197,41 @@ int DarcyStokes::AssignLocRedSysStokes(LocMat& loc,
     return 0;
 }
 
-int DarcyStokes::AssignLocRedSys(LocMat& loc, 
-                                 int * ref, 
-                                 const MeshInfo& mi, 
-                                 const bndryVal& bndryAll, 
-                                 const indice& global,
-                                 shape){
+// Assembler including cells on the boundary
+int DarcyStokes::AssignLocRedSysDarcy(LocMat& loc, 
+                                      int * ref, 
+                                      const MeshInfo& mi, 
+                                      const bndryVal& bndryAll, 
+                                      const indice& global){
 
-    const std::vector<int> elemDofs = funcSp.LocalToGlobal(mi, global);
+    const int idxn = FlatIndic(mi, global);   
+
+    for (int row = 0; row<elemDofs.size(); row++){
+
+        const int    idxm = ref[elemDofs.at(row)];
+        const double valB = loc.B.at(row);
+
+        if (){
+
+            PetscCall(MatSetValues(reducedDarcy_.Bg, 1, &idxm, 1, &idxn, &valB, ADD_VALUES));
+
+
+        } else {
+
+
+        }
+
+    }
+
+    return 1;
+}
+
+int DarcyStokes::AssignLocRedSysStokes(LocMat& loc, 
+                                       int * ref, 
+                                       const MeshInfo& mi, 
+                                       const bndryVal& bndryAll, 
+                                       const indice& global){
+
 
     return 1;
 }

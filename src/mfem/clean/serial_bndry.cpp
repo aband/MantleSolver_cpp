@@ -1,5 +1,31 @@
 #include "serial_solver.h"
 
+bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
+                  const std::string& name,
+                  const std::vector<double>& parameter){
+
+    bndryType type = missed;
+
+    if (work[0] != -1){
+
+        if (name == "BDM"){
+
+            // Bndry dof
+            indice globalCell = Bend(mi,work[0]); 
+            int edge = work[1]%4;
+            type = bndryTypeMarkerDarcy(mi, globalCell, edge);
+
+        } else if (name == "BR"){
+
+            indice globalCell = Bend(mi,work[0]);
+            type = bndryTypeMarker(mi, globalCell, work[1], parameter);
+        }
+
+    }
+
+    return type;
+}
+
 double DarcyStokes::AssignBndrySupVal(const vertexSet& edgeCorner,
                                       const vertex& nu,
                                       PhysProperty * pp){

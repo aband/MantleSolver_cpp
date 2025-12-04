@@ -17,6 +17,7 @@
 #include "basis.h"
 #include "Hdivmixed.h"
 #include "brmixed.h"
+#include "shape.h"
 
 // =========================================================================
 // The boundary value data structure contains
@@ -59,6 +60,59 @@ typedef struct{
     Vec F, G;
     Vec x, y;
 } ReducedSys;
+
+bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
+                  const std::string& name,
+                  const std::vector<double>& parameter);
+
+template <typename T>
+inline int CreateRefMap(T& funcSp, 
+                        const MeshInfo& mi, 
+                        int * refArray,
+                        std::map<int, int>& refMapNatur,
+                        int& EssenDOFCount,
+                        int& NaturDOFCount,
+                        const std::vector<double>& parameter){
+
+    int essenCount = 0; 
+    int naturCount = 0;
+    int interCount = 0;
+
+    // ! loop through all dofs 
+    // Natural boundary dofs are different from Essential boundary dofs
+    // For the fact that natrual boundary dofs participate in the left hand side matrix
+    // and also right hand side vector
+    // Hence it requires two different index system.
+
+    for (int dof=0; dof<funcSp.getDOF(); dof++){
+
+        std::vector<int> work = funcSp.GlobalToLocalMapBndry(mi, dof);
+
+        bndryType bt = bMarker(mi, work, funcSp.name, parameter);
+
+        if (bt == dirichlet){
+            refArray[dof] = essenCount;
+            essenCount ++;
+        } else if (bt == neumann){
+            refArray[dof] = interCount;
+            interCount ++;
+            refMapNatur.insert(std::make_pair(dof, naturCount));
+            naturCount ++;
+        } else {
+            // bt == missed
+            // Currently only mixing essential and natural bondary conditions
+            // Hence, essential and natural boundary should consists of all the boundarys
+            refArray[dof] = interCount;
+            interCount ++;
+        }
+
+    }
+
+    EssenDOFCount = essenCount;
+    NaturDOFCount = naturCount;
+
+    return 1;
+}
 
 class DarcyStokes{
     public:
@@ -112,10 +166,11 @@ class DarcyStokes{
 
         int computeEssenVals(const MeshInfo& mi, int i, int j, int edge, PhysProperty * pp);
 
-        int AssignLocMatDarcy(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
+        int AssignLocMatDarcy(const MeshInfo& mi,  LocMat& loc, double theta, const poroSet& poro);
         int AssignLocMatStokes(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
-        int AssignLocMatCouple(const MeshInfo& mi, double& k, double theta, const poroSet& poro);
+        int AssignLocMatCouple(const MeshInfo& mi, double& k,   double theta, const poroSet& poro);
 
+        // Assembler for the interior cells
         int AssignLocRedSysDarcy(LocMat& loc,
                                  int * ref,
                                  const MeshInfo& mi,
@@ -124,6 +179,19 @@ class DarcyStokes{
         int AssignLocRedSysStokes(LocMat& loc,
                                   int * ref,
                                   const MeshInfo& mi,
+                                  const indice& global);
+
+        // Assembler for the boundary cells
+        int AssignLocRedSysDarcy(LocMat& loc,
+                                 int * ref,
+                                 const MeshInfo& mi,
+                                 const bndryVal& bndryAll,
+                                 const indice& global);
+
+        int AssignLocRedSysStokes(LocMat& loc,
+                                  int * ref,
+                                  const MeshInfo& mi,
+                                  const bndryVal& bndryAll,
                                   const indice& global);
 
         int PrepareReducedSys(ReducedSys& redsys, 

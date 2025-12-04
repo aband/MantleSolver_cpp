@@ -47,3 +47,17 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
 
     return {abs(point[1]), 0.0};
 }
+
+const bndryType bndryTypeMarkerStokes(const MeshInfo& mi,
+                                      const indice& global,
+                                      const int& local){
+
+    return dirichlet;
+}
+
+const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
+                                     const indice& global,
+                                     const int& edge){
+
+    return dirichlet;
+}
