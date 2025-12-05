@@ -204,24 +204,24 @@ int DarcyStokes::AssignLocRedSysDarcy(LocMat& loc,
                                       const bndryVal& bndryAll, 
                                       const indice& global){
 
-    const int idxn = FlatIndic(mi, global);   
+//    const int idxn = FlatIndic(mi, global);   
 
-    for (int row = 0; row<elemDofs.size(); row++){
+//    for (int row = 0; row<elemDofs.size(); row++){
 
-        const int    idxm = ref[elemDofs.at(row)];
-        const double valB = loc.B.at(row);
+//        const int    idxm = ref[elemDofs.at(row)];
+//        const double valB = loc.B.at(row);
 
-        if (){
+//        if (){
 
-            PetscCall(MatSetValues(reducedDarcy_.Bg, 1, &idxm, 1, &idxn, &valB, ADD_VALUES));
-
-
-        } else {
+//            PetscCall(MatSetValues(reducedDarcy_.Bg, 1, &idxm, 1, &idxn, &valB, ADD_VALUES));
 
 
-        }
+//        } else {
 
-    }
+
+//        }
+
+ //   }
 
     return 1;
 }
@@ -258,14 +258,14 @@ int DarcyStokes::Assemble(const MeshInfo& mi,
     // Calculate dofs 
     totalElem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
 
-    reducedDOFStokes = br_.getDOF() - bndryDOFStokes_;
+    reducedDOFStokes = br_.getDOF() - bndryDOFStokesEssen_;
 
-    reducedDOFDarcy = hdiv_.getDOF() - bndryDOFDarcy_;
+    reducedDOFDarcy = hdiv_.getDOF() - bndryDOFDarcyEssen_;
 
     // Initialize reduced linear system
-    PrepareReducedSys(reducedStokes_, reducedDOFStokes, bndryDOFStokes, 
+    PrepareReducedSys(reducedStokes_, reducedDOFStokes, bndryDOFStokesEssen_, 
                       30, 30, 4, 4);
-    PrepareReducedSys(reducedDarcy_, reducedDOFDarcy, bndryDOFDarcy, 
+    PrepareReducedSys(reducedDarcy_, reducedDOFDarcy, bndryDOFDarcyEssen_, 
                       14, 14, 2, 2);
 
     PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE, 

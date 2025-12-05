@@ -11,10 +11,20 @@ int DarcyStokes::init(const MeshInfo& mi, PhysProperty * pp, const std::vector<d
 
     ComputeEssenBndryAll(mi,pp,param);
 
+    // Mark different types of boundary dofs
+    refArrayStokesEssen_ = new int[br_.getDOF()];
+    CreateRefMap(br_, mi, refArrayStokesEssen_, refArrayStokesNatur_, bndryDOFStokesEssen_, bndryDOFStokesNatur_, {0.0});
+
+    refArrayDarcyEssen_ = new int[hdiv_.getDOF()];
+    CreateRefMap(hdiv_, mi, refArrayDarcyEssen_, refArrayDarcyNatur_, bndryDOFDarcyEssen_, bndryDOFDarcyNatur_, {0.0});
+
     return 1;
 }
 
 int DarcyStokes::printBndryAll(){
+
+    // Make sure all the boundary information are computed correctly
+    printf("essential count Stokes: %d, Darcy: %d, natural count Stokes: %d, Darcy: %d \n", bndryDOFStokesEssen_, bndryDOFDarcyEssen_, bndryDOFStokesNatur_, bndryDOFDarcyNatur_);
 
     // All the assigned values for essential Stokes boundary values
 	 cout << "Essential boundary condition for Stokes." << endl;

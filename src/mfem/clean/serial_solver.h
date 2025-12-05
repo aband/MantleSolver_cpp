@@ -66,13 +66,13 @@ bndryType bMarker(const MeshInfo& mi, std::vector<int> work,
                   const std::vector<double>& parameter);
 
 template <typename T>
-inline int CreateRefMap(T& funcSp, 
-                        const MeshInfo& mi, 
-                        int * refArray,
-                        std::map<int, int>& refMapNatur,
-                        int& EssenDOFCount,
-                        int& NaturDOFCount,
-                        const std::vector<double>& parameter){
+int CreateRefMap(T& funcSp, 
+                 const MeshInfo& mi, 
+                 int * refArray,
+                 std::map<int, int>& refMapNatur,
+                 int& EssenDOFCount,
+                 int& NaturDOFCount,
+                 const std::vector<double>& parameter){
 
     int essenCount = 0; 
     int naturCount = 0;
@@ -137,14 +137,6 @@ class DarcyStokes{
 
         // Total number of elements
         int totalElem;
-
-        // Size of essential boundary dofs
-        int bndryDOFStokes;
-        int bndryDOFDarcy;
-
-        // Size of the remaining dofs
-        int reducedDOFStokes;
-        int reducedDOFDarcy;
 
         int ComputeEssenBndryAll(const MeshInfo& mi,
                                  PhysProperty * pp,
@@ -242,8 +234,8 @@ class DarcyStokes{
         /**!
          * Create boundary dof reference mapping
          */
-        int bndryDOFStokes_ = 0.0;
-        int bndryDOFDarcy_  = 0.0;
+        int bndryDOFStokesEssen_ = 0.0;
+        int bndryDOFDarcyEssen_  = 0.0;
  
         int bndryDOFStokesNatur_ = 0.0;
         int bndryDOFDarcyNatur_ = 0.0;
@@ -254,8 +246,12 @@ class DarcyStokes{
         int * refArrayStokesEssen_;
         int * refArrayDarcyEssen_;
  
-        unordered_map<int,int> refArrayStokesNatur_;
-        unordered_map<int,int> refArrayDarcyNatur_;
+        map<int,int> refArrayStokesNatur_;
+        map<int,int> refArrayDarcyNatur_;
+
+        // Size of the remaining dofs
+        int reducedDOFStokes;
+        int reducedDOFDarcy;
 };
 
 #endif

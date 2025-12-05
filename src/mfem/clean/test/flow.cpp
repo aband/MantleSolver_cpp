@@ -48,9 +48,10 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     return {abs(point[1]), 0.0};
 }
 
-const bndryType bndryTypeMarkerStokes(const MeshInfo& mi,
-                                      const indice& global,
-                                      const int& local){
+const bndryType bndryTypeMarker(const MeshInfo& mi,
+                                const indice& global,
+                                const int& local,
+                                const std::vector<double>& parameter){
 
     return dirichlet;
 }

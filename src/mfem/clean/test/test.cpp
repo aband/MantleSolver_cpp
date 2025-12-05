@@ -155,6 +155,8 @@ int main(int argc, char **argv){
 
     ds->printBndryAll();
 
+
+
     // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);
