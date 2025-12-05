@@ -27,6 +27,8 @@ class Hdivmixed{
 
         void ComputeTotalDOF(const MeshInfo& mi);
 
+        std::string Name() const{return name;}
+
         int getDOF() const {return totalDOF_;};
 
         //! Divergence of the constant part

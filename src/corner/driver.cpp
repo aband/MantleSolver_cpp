@@ -75,5 +75,7 @@ int main(int argc, char **argv){
 
     mycouple->printedgeporosity(1);
 
+    mycouple->PrepareFlow();
+
     return 1;
 }

@@ -11,6 +11,8 @@
 #include "input.h"
 #include "util.h"
 
+#include "serial_solver.h"
+
 extern "C"{
 #include "mesh.h"
 #include "output.h"
@@ -40,6 +42,8 @@ class couple {
         DM dmMesh;
         DM dmu;
         Vec globalmesh;  
+
+        DarcyStokes ds;
 
         /**!
          * Initialize phase package

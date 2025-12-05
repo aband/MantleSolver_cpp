@@ -114,6 +114,85 @@ int CreateRefMap(T& funcSp,
     return 1;
 }
 
+template <typename T>
+int AssignLocRedSys(ReducedSys& redsys,
+                    LocMat& loc,
+                    int * ref,
+                    const map<int, int>& refNatur,
+                    const MeshInfo& mi,
+                    const bndryVal& bndryAll,
+                    const indice& global,
+                    T& funcSp,
+                    const std::vector<double>& parameter){
+
+    // ! Get global index of local dofs 
+    //const std::vector<int> elemDofs = funcSp.LocalToGlobal(mi, global);
+    const std::vector<int> elemDofs = funcSp.LocalGlobalMap(mi, global);
+
+    const int idxn = FlatIndic(mi, global);
+
+    for (int row=0; row<elemDofs.size(); row++){
+        // View it as the row index
+        const int idxm = ref[elemDofs.at(row)];
+        const double valB = loc.B.at(row);
+
+//        if (funcSp.onBndry(mi, elemDofs.at(row))){
+        if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(row)),funcSp.Name(),parameter) == dirichlet){
+
+            // This dof is a dirichlet dof on the boundary
+            // Should be assign to Bg
+            PetscCall(MatSetValues(redsys.Bg, 1, &idxm, 1, &idxn, &valB, 
+                                   ADD_VALUES));
+
+            // At the same time insert essential boundary value to rhs vector
+            auto itFind = bndryAll.find(elemDofs.at(row));
+            if (itFind != bndryAll.end()){
+                const bndryInfo& tmp = bndryAll.at(elemDofs.at(row));
+                PetscCall(VecSetValues(redsys.g, 1, &idxm, &tmp.essenval, INSERT_VALUES));
+            }
+        } else {
+            // This dof is not on the boundary
+            // Should be assigned to B instead
+            PetscCall(MatSetValues(redsys.B , 1, &idxm, 1, &idxn, &valB, 
+                                   ADD_VALUES));
+
+            // This dof is not on the boundary
+            // This dof will contribute to source term
+            double vals = loc.f.at(row);
+            PetscCall(VecSetValues(redsys.source, 1, &idxm, &vals, ADD_VALUES));
+
+            for (int col=0; col<elemDofs.size(); col++){
+                const int cidxn  = ref[elemDofs.at(col)];
+                const double val = loc.A.at(row+col*elemDofs.size()); 
+
+//                if (funcSp.onBndry(mi,elemDofs.at(col))){
+                  if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(col)),funcSp.Name(),parameter) == dirichlet){
+
+                    // It is a non bndry dof - bndry dof interaction
+                    // Val assigned to M
+                    PetscCall(MatSetValues(redsys.Kg, 1, &idxm, 1, &cidxn, 
+                                           &val, ADD_VALUES));
+                } else {
+                    // It is a non bndry dof - non bndry dof interaction
+                    // Val assigned to M
+                    PetscCall(MatSetValues(redsys.M, 1, &idxm, 1, &cidxn, 
+                                           &val, ADD_VALUES));
+                }
+            }
+
+            // Add correction to natural dof ============================================================================
+            auto itFind = refNatur.find(elemDofs.at(row)); 
+            if (itFind != refNatur.end()){
+                const bndryInfo& tmp = bndryAll.at(elemDofs.at(row));
+                PetscCall(VecSetValues(redsys.neum, 1, &idxm, &tmp.naturval, INSERT_VALUES));
+            }
+            // ==========================================================================================================
+        }
+    }
+
+    return 1;
+}
+
 class DarcyStokes{
     public:
         DarcyStokes() {};
@@ -174,17 +253,17 @@ class DarcyStokes{
                                   const indice& global);
 
         // Assembler for the boundary cells
-        int AssignLocRedSysDarcy(LocMat& loc,
-                                 int * ref,
-                                 const MeshInfo& mi,
-                                 const bndryVal& bndryAll,
-                                 const indice& global);
+//        int AssignLocRedSysDarcy(LocMat& loc,
+//                                 int * ref,
+//                                 const MeshInfo& mi,
+//                                 const bndryVal& bndryAll,
+//                                 const indice& global);
 
-        int AssignLocRedSysStokes(LocMat& loc,
-                                  int * ref,
-                                  const MeshInfo& mi,
-                                  const bndryVal& bndryAll,
-                                  const indice& global);
+//        int AssignLocRedSysStokes(LocMat& loc,
+//                                  int * ref,
+//                                  const MeshInfo& mi,
+//                                  const bndryVal& bndryAll,
+//                                  const indice& global);
 
         int PrepareReducedSys(ReducedSys& redsys, 
                               int reducedDOF, int bndrySize, 

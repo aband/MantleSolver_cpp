@@ -16,22 +16,21 @@ poro = fscanf(fileID, '%f', [1,Inf]);
 poro = reshape(poro, M, N);
 
 
-figure
-set(gcf,'Position',[50 50 1000 500])
+%figure
+%set(gcf,'Position',[50 50 1000 500])
 %x2 = linspace(min(min(cX)),max(max(cX)),200);
 %y2 = linspace(min(min(cY)),max(max(cY)),200);
 %[X2,Y2] = meshgrid(y2, x2);
 %newporo = interp2(cX',cY',poro',X2,Y2);
 %imagesc(X2,Y2,newporo')
-surf(cX,cY,poro,'LineStyle','none', 'FaceColor', 'interp');
+%surf(cX,cY,poro,'LineStyle','none', 'FaceColor', 'interp');
 %surf(cX,cY,poro,'LineStyle','none');
-colormap(turbo)
-view([0,90])
-colorbar
-title("Porosity Distrubition")
-xlabel('x')
-ylabel('y')
-
+%colormap(turbo)
+%view([0,90])
+%colorbar
+%title("Porosity Distrubition")
+%xlabel('x')
+%ylabel('y')
 
 filename = strcat('build/qs1.dat');
 fileID = fopen(filename, 'r');
@@ -115,9 +114,9 @@ set(l,'LineWidth',2);
 set(l,'Color','k')
 
 hold off
-colormap(turbo)
-view([0,90])
-colorbar
+%colormap(turbo)
+%view([0,90])
+%colorbar
 title("Solid Velocity")
 xlabel('x')
 ylabel('y')

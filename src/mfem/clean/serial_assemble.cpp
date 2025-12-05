@@ -197,41 +197,29 @@ int DarcyStokes::AssignLocRedSysStokes(LocMat& loc,
     return 0;
 }
 
-// Assembler including cells on the boundary
-int DarcyStokes::AssignLocRedSysDarcy(LocMat& loc, 
-                                      int * ref, 
-                                      const MeshInfo& mi, 
-                                      const bndryVal& bndryAll, 
-                                      const indice& global){
+inline int AssembleReducedSys(ReducedSys& redsys){
 
-//    const int idxn = FlatIndic(mi, global);   
+    PetscCall(MatAssemblyBegin(redsys.M, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(redsys.M, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin(redsys.Kg, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(redsys.Kg, MAT_FINAL_ASSEMBLY));
 
-//    for (int row = 0; row<elemDofs.size(); row++){
+    PetscCall(MatAssemblyBegin(redsys.B, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(redsys.B, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyBegin(redsys.Bg, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(redsys.Bg, MAT_FINAL_ASSEMBLY));
 
-//        const int    idxm = ref[elemDofs.at(row)];
-//        const double valB = loc.B.at(row);
+    PetscCall(MatAssemblyBegin(redsys.C, MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(redsys.C, MAT_FINAL_ASSEMBLY));
 
-//        if (){
+    PetscCall(VecAssemblyBegin(redsys.g));
+    PetscCall(VecAssemblyEnd(redsys.g));
 
-//            PetscCall(MatSetValues(reducedDarcy_.Bg, 1, &idxm, 1, &idxn, &valB, ADD_VALUES));
+    PetscCall(VecAssemblyBegin(redsys.source));
+    PetscCall(VecAssemblyEnd(redsys.source));
 
-
-//        } else {
-
-
-//        }
-
- //   }
-
-    return 1;
-}
-
-int DarcyStokes::AssignLocRedSysStokes(LocMat& loc, 
-                                       int * ref, 
-                                       const MeshInfo& mi, 
-                                       const bndryVal& bndryAll, 
-                                       const indice& global){
-
+    PetscCall(VecAssemblyBegin(redsys.neum));
+    PetscCall(VecAssemblyEnd(redsys.neum));
 
     return 1;
 }
@@ -285,7 +273,7 @@ int DarcyStokes::Assemble(const MeshInfo& mi,
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
         indice global {i,j};
-		  int nElem = FlatIndic(mi, global); 
+        int nElem = FlatIndic(mi, global); 
         basis_.GetCorners(mi, global);
 
         ExtractCellPorosity(edgeporo, cellporo, averporo, 
@@ -298,14 +286,15 @@ int DarcyStokes::Assemble(const MeshInfo& mi,
 
         if (elemOnBndry(mi, global)){
 
-            //AssignLocRedSysBndry(redsysStokes_, locmatS, refArrayStokes, mi, 
-            //                     bndryEssenStokesAll, );
-            //AssignLocRedSysBndry();
+            AssignLocRedSys(reducedStokes_, locmatS, refArrayStokesEssen_, refArrayStokesNatur_,  
+                            mi, bndryStokesAll, global, br_, {0.0});
+            AssignLocRedSys(reducedDarcy_, locmatD, refArrayDarcyEssen_, refArrayDarcyNatur_,
+                            mi, bndryDarcyAll, global, hdiv_, {0.0});
 
         } else {
 
-            //AssignLocRedSys();
-            //AssignLocRedSys();
+            AssignLocRedSysStokes(locmatS, refArrayStokesEssen_, mi, global);
+            AssignLocRedSysDarcy( locmatD, refArrayDarcyEssen_ , mi, global);
         }
 
         // Assign coupling K matrix and two C matrices
@@ -315,6 +304,12 @@ int DarcyStokes::Assemble(const MeshInfo& mi,
         PetscCall(MatSetValue(reducedDarcy_.C, nElem, nElem, locmatD.C, ADD_VALUES));
 
     }}
+
+    AssembleReducedSys(reducedStokes_);
+    AssembleReducedSys(reducedDarcy_);
+
+    PetscCall(MatAssemblyBegin(K,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(K,MAT_FINAL_ASSEMBLY));
 
     return 1;
 }

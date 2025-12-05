@@ -153,9 +153,9 @@ int main(int argc, char **argv){
 
     ds->init(mi, physproperty, {0.0});
 
-    ds->printBndryAll();
+    //ds->printBndryAll();
 
-
+    ds->Assemble(mi, , , , 0.0);
 
     // ====================================================================================================================================
     // Clear used objects

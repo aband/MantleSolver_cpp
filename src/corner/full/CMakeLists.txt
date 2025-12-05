@@ -92,20 +92,24 @@ add_library(mfem_lib
         ${SRC}/mfem/basis.cpp
         ${SRC}/mfem/Hdivmixed.cpp
         ${SRC}/mfem/brmixed.cpp
-        ${SRC}/mfem/assemble.cpp
-        ${SRC}/mfem/bndry.cpp
-        ${SRC}/mfem/solve.cpp
-        ${SRC}/mfem/error.cpp
-		  ${SRC}/mfem/shape.tpp
-		  ${SRC}/mfem/parallel/passemble.cpp
-		  ${SRC}/mfem/parallel/locmat.cpp
-		  ${SRC}/mfem/parallel/psolve.cpp
-		  ${SRC}/mfem/parallel/preconst.cpp
+        #${SRC}/mfem/assemble.cpp
+        #${SRC}/mfem/bndry.cpp
+        #${SRC}/mfem/solve.cpp
+        #${SRC}/mfem/error.cpp
+		  #${SRC}/mfem/shape.tpp
+		  #${SRC}/mfem/parallel/passemble.cpp
+		  #${SRC}/mfem/parallel/locmat.cpp
+		  #${SRC}/mfem/parallel/psolve.cpp
+		  #${SRC}/mfem/parallel/preconst.cpp
+		  ${SRC}/mfem/clean/serial_util.cpp
+		  ${SRC}/mfem/clean/serial_bndry.cpp
+		  ${SRC}/mfem/clean/serial_locmat.cpp
+		  ${SRC}/mfem/clean/serial_assemble.cpp
 )
 
 target_include_directories(mfem_lib
 		  PUBLIC ${SRC}/mfem
-		  PUBLIC ${SRC}/mfem/parallel
+		  PUBLIC ${SRC}/mfem/clean
 )
 
 target_link_libraries(mfem_lib
@@ -125,6 +129,7 @@ target_include_directories(couple_lib
 		  PUBLIC ${SRC}/phase
 		  PUBLIC ${SRC}/general
 		  PUBLIC ${SRC}/mfem
+		  PUBLIC ${SRC}/mfem/clean
 		  PUBLIC ${SRC}/corner
 )
 

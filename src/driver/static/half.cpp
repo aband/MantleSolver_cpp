@@ -34,8 +34,8 @@ double AssignPorosity(const vertex& point, PhysProperty * pp){
         double value = 0.05*pow((120*1000/pp->l0 - abs(point[1]))/(120*1000/pp->l0),2) * 
                                (1-abs(point[0])/(abs(point[1])+pp->l));
 
-        return value;
-        //return 0.0;
+        //return value;
+        return 0.0;
     } else {
         return 0.0;
     }
@@ -88,12 +88,30 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     return work; 
 */
     double V0 = pp->V0 / pp->u0 * -1;
-
+/*
     if (point[1] < -0.1){
-        return {0.0, -V0}; 
+        if (point[0]<0.05){
+            //return {0.0, -V0 * sin(point[0]/0.05*3.14159265358979323846/2.0)};
+				return {0.0, -V0};
+        }else{
+            return {0.0, -V0}; 
+        }
     } else {
         return {0.0,0.0};
     }
+*/
+
+    if (point[1] > -0.0005){
+        if (point[0]<0.05){
+            //return {-V0 * sin(point[0]/0.05*3.14159265358979323846/2.0), 0.0};
+				return {1, 0.0};
+        }else{
+            return {1, 0.0}; 
+        }
+    } else {
+        return {0.0,0.0};
+    }
+
 //    return {0.0, -V0};
 
 }
@@ -149,8 +167,13 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
 	 // porosity scale will be added in another function
 double V0 = pp->V0 / pp->u0;	
     //return {0.0, -1.0/V0};
-    //return {0.0,-1.0};
-    return {0.0, 0.0};
+
+    if (point[1]<-0.49){
+        return {0.0,0.0};
+    } else {
+        return {0.0,-1.0}; 
+    }
+    //return {0.0, 0.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
@@ -168,6 +191,7 @@ const vertex traction(const vertex& point, PhysProperty * pp){
 }
 
 // Mark boundary type for stokes
+/*
 const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global,
                                 const int& local,
@@ -229,6 +253,69 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 
     return type;
 }
+*/
+
+const bndryType bndryTypeMarker(const MeshInfo& mi,
+                                const indice& global,
+                                const int& local,
+                                const std::vector<double>& parameter){
+
+    bndryType type = missed;
+
+    // normal dof 
+    std::set<int> top_normal {11,7,6};
+    std::set<int> left_normal {0,3,8};
+    std::set<int> right_normal {1,2,10};
+    std::set<int> bottom_normal {4,5,9};
+
+    // tangent dof
+    std::set<int> top_tang {3,2};
+    std::set<int> left_tang {7,4};
+    std::set<int> right_tang {5,6};
+    std::set<int> bottom_tang {0,1};
+
+    std::set<int>::iterator it;
+
+    type = dirichlet;
+
+    // All dirichlet at top
+    if (global[1] == mi.MPIglobalCellSize[1]-1){
+        //it = top_normal.find(local);
+        //it = top_tang.find(local);
+        //if (it != top_tang.end()){
+        //    type = neumann;
+        //}
+        type = dirichlet;
+    } 
+
+    // left side symmetrical condition
+    // no normal flux
+
+    // right side free outflow
+    if (global[0] == 0) {
+        it = left_tang.find(local);
+        if (it != left_tang.end()){
+            type = neumann;
+        }
+		  //type = dirichlet;
+    } 
+ 
+    if (global[0] == mi.MPIglobalCellSize[0]-1){
+//        it = right_tang.find(local);
+//        if (it != right_tang.end()){
+//            type = neumann;
+//        }
+        type = neumann;
+        //type = dirichlet;
+    }
+
+    if (global[1] == 0 ){
+        type = neumann;
+    }
+
+    return type;
+}
+
 
 // Mark boundary type for darcy
 const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
