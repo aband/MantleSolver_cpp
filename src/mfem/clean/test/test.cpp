@@ -149,14 +149,14 @@ int main(int argc, char **argv){
 
     AssignValuesMeshInfo(mi,dm,dmu); 
 
-    DarcyStokes * ds = new DarcyStokes(); 
+    //DarcyStokes * ds = new DarcyStokes(); 
+    DarcyStokes ds = DarcyStokes(); 
 
-    ds->init(mi, physproperty, {0.0});
+    ds.init(mi, physproperty, {0.0});
 
     //ds->printBndryAll();
 
-    ds->Assemble(mi, , , , 0.0);
-
+    //delete ds;
     // ====================================================================================================================================
     // Clear used objects
     DMDAVecRestoreArray(dmu,localu,&lu);

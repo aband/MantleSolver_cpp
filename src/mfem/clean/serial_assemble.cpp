@@ -228,7 +228,8 @@ int DarcyStokes::Assemble(const MeshInfo& mi,
                           const vector<double>& edgeporo,
                           const vector<double>& cellporo,
                           const vector<double>& averporo,
-                          double theta){
+                          double theta,
+                          PhysProperty * pp){
 
     PetscMPIInt size, rank;
 
@@ -280,9 +281,9 @@ int DarcyStokes::Assemble(const MeshInfo& mi,
                             i, j, mi.MPIglobalCellSize[0], mi.MPIglobalCellSize[1], 
                             locporo);        
 
-        AssignLocMatStokes(mi, locmatS, theta, locporo);
-        AssignLocMatDarcy(mi, locmatD, theta, locporo);
-        AssignLocMatCouple(mi, k, theta, locporo);
+        AssignLocMatStokes(mi, locmatS, theta, locporo, pp);
+        AssignLocMatDarcy(mi, locmatD, theta, locporo, pp);
+        AssignLocMatCouple(mi, k, theta, locporo, pp);
 
         if (elemOnBndry(mi, global)){
 

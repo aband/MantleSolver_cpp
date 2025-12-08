@@ -195,8 +195,10 @@ int AssignLocRedSys(ReducedSys& redsys,
 
 class DarcyStokes{
     public:
-        DarcyStokes() {};
-        ~DarcyStokes() {};
+        DarcyStokes(const MeshInfo& mi, PhysProperty * pp, const std::vector<double>& param) {init(mi, pp, param);};
+        ~DarcyStokes() 
+         {delete refArrayStokesEssen_; 
+          delete refArrayDarcyEssen_;};
 
         int init(const MeshInfo& mi,
                  PhysProperty * pp,
@@ -206,11 +208,10 @@ class DarcyStokes{
                      const vector<double>& edgeporo,
                      const vector<double>& cellporo,
                      const vector<double>& averporo,
-                     double theta);
+                     double theta,
+                     PhysProperty * pp);
 
         int printBndryAll();
-
-        Phase myPhase;
 
     private:
 
@@ -237,9 +238,9 @@ class DarcyStokes{
 
         int computeEssenVals(const MeshInfo& mi, int i, int j, int edge, PhysProperty * pp);
 
-        int AssignLocMatDarcy(const MeshInfo& mi,  LocMat& loc, double theta, const poroSet& poro);
-        int AssignLocMatStokes(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro);
-        int AssignLocMatCouple(const MeshInfo& mi, double& k,   double theta, const poroSet& poro);
+        int AssignLocMatDarcy(const MeshInfo& mi,  LocMat& loc, double theta, const poroSet& poro, PhysProperty * pp);
+        int AssignLocMatStokes(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro, PhysProperty * pp);
+        int AssignLocMatCouple(const MeshInfo& mi, double& k,   double theta, const poroSet& poro, PhysProperty * pp);
 
         // Assembler for the interior cells
         int AssignLocRedSysDarcy(LocMat& loc,

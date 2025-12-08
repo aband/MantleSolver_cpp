@@ -21,7 +21,8 @@ static int clearLocMat(int size,
 int DarcyStokes::AssignLocMatStokes(const MeshInfo& mi,
                                     LocMat& loc,
                                     double theta, 
-                                    const poroSet& poro){
+                                    const poroSet& poro,
+                                    PhysProperty * pp){
 
     clearLocMat(12, loc);
    
@@ -42,7 +43,7 @@ int DarcyStokes::AssignLocMatStokes(const MeshInfo& mi,
 
         std::array<vertex, 12> brval = br_.ComputeBRmixed(basis_, mapped);
 
-        vertex stokesforce = stokesForce(mapped,myPhase.pp); 
+        vertex stokesforce = stokesForce(mapped,pp); 
 
         double phif = poro.cellporo.at(g); 
         double phis = 1-phif;
@@ -87,7 +88,8 @@ int DarcyStokes::AssignLocMatStokes(const MeshInfo& mi,
 int DarcyStokes::AssignLocMatDarcy(const MeshInfo& mi,
                                    LocMat& loc,
                                    double theta,
-                                   const poroSet& poro){
+                                   const poroSet& poro,
+                                   PhysProperty * pp){
 
     // copy gaussian quadrature points
     const valarray<double>& gwe = GaussWeightsEdge;
@@ -108,7 +110,7 @@ int DarcyStokes::AssignLocMatDarcy(const MeshInfo& mi,
 
         std::array<vertex, 8> hdivwork = hdiv_.ComputeHdivmixed(basis_,mapped);
 
-        vertex darcyforce = darcyForce(mapped,myPhase.pp);
+        vertex darcyforce = darcyForce(mapped,pp);
 
         for (unsigned int j=0; j<8; j++){
             for (unsigned int i=0; i<8; i++){
@@ -166,7 +168,8 @@ int DarcyStokes::AssignLocMatDarcy(const MeshInfo& mi,
 int DarcyStokes::AssignLocMatCouple(const MeshInfo& mi,
                                     double& k,
                                     double theta,
-                                    const poroSet& poro){
+                                    const poroSet& poro,
+                                    PhysProperty * pp){
 
     const valarray<double>& gwf = GaussWeightsFace;
     const vector<vertex>&   gpf = GaussPointsFace;

@@ -3,12 +3,12 @@
 
 int couple::CreatePhase(){
 
-    myPhase = new Phase();
-    myPhase->pp = (PhysProperty *)malloc(sizeof(PhysProperty));
+    myPhase = Phase();
+    myPhase.pp = (PhysProperty *)malloc(sizeof(PhysProperty));
 
-    AssignPhyProperties(myPhase->pp);
+    AssignPhyProperties(myPhase.pp);
 
-    myPhase->pPtr = new EUTECTIC::phase();
+    myPhase.pPtr = new EUTECTIC::phase();
 
     return 1;
 }
@@ -19,17 +19,17 @@ int couple::ShowPhase(){
     cout << " ========================================================= " << endl;
     cout << "Phase attributes defined in eutectic phase class ...       " << endl;
 
-    myPhase->pPtr->printInfo();
+    myPhase.pPtr->printInfo();
 
     cout << " ========================================================= " << endl;
     cout << "Phase attributes defined in AssignPhyProperties function .." << endl;
-    cout << "Compaction length        : " << myPhase->pp->l0 << " m" << endl;
-    cout << "Upwelling solid velocity : " << myPhase->pp->V0 <<" m/s, " << 
-            myPhase->pp->V0*365*24*3600*100 << " cm/yrs "<< endl;
-    cout << "Characteristic velocity  : " << -1 *myPhase->pp->u0 << " m/s" << endl;
-    cout << "characteristic time step : " << abs(myPhase->pp->l0 / myPhase->pp->u0) << " s , " 
-                                          << abs(myPhase->pp->l0/myPhase->pp->u0 /365/24/3600) << " yrs"<< endl;
-    cout << "Characteristic permeability: " << 1.0/myPhase->pp->invk0 << " m^2" << endl;
+    cout << "Compaction length        : " << myPhase.pp->l0 << " m" << endl;
+    cout << "Upwelling solid velocity : " << myPhase.pp->V0 <<" m/s, " << 
+            myPhase.pp->V0*365*24*3600*100 << " cm/yrs "<< endl;
+    cout << "Characteristic velocity  : " << -1 *myPhase.pp->u0 << " m/s" << endl;
+    cout << "characteristic time step : " << abs(myPhase.pp->l0 / myPhase.pp->u0) << " s , " 
+                                          << abs(myPhase.pp->l0/myPhase.pp->u0 /365/24/3600) << " yrs"<< endl;
+    cout << "Characteristic permeability: " << 1.0/myPhase.pp->invk0 << " m^2" << endl;
     cout << "Scaled characteristic permeability: "     << endl;
     cout << " ========================================================= " << endl;
 
@@ -45,7 +45,7 @@ int couple::CreateMesh(const int& M, const int& N,
                        const int& meshType){
 
     if (physicsScale){
-        double physscale = myPhase->pp->L0/myPhase->pp->l0;
+        double physscale = myPhase.pp->L0/myPhase.pp->l0;
         L = L*physscale;
         H = H*physscale;
         xstart = xstart*physscale, 
@@ -189,7 +189,7 @@ int couple::CreateMesh(const int& M, const int& N,
     return 1;
 }
 
-int couple::PrepareFlow(){
+//int couple::PrepareFlow(){
 
     //ds = DarcyStokes();
 
@@ -197,5 +197,5 @@ int couple::PrepareFlow(){
 
     //ds.Assemble(mi, edgeporo, cellporo, average_poro, {0.0});
 
-    return 1;
-}
+    //return 1;
+//}

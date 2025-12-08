@@ -33,7 +33,7 @@ class couple {
     public:
 
         couple() {};
-        ~couple() {delete myPhase;}
+        ~couple() {}
 
         /**! 
          * Mesh parameters 
@@ -43,12 +43,10 @@ class couple {
         DM dmu;
         Vec globalmesh;  
 
-        DarcyStokes ds;
-
         /**!
          * Initialize phase package
          */
-        Phase * myPhase;
+        Phase myPhase;
         int CreatePhase();
         int ShowPhase();
         int withUnit; 

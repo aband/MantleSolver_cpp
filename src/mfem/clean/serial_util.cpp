@@ -9,6 +9,7 @@ int DarcyStokes::init(const MeshInfo& mi, PhysProperty * pp, const std::vector<d
     br_.ComputeTotalDOF(mi);
     hdiv_.ComputeTotalDOF(mi);
 
+    // Compute boundary conditions
     ComputeEssenBndryAll(mi,pp,param);
 
     // Mark different types of boundary dofs

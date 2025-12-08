@@ -75,7 +75,9 @@ int main(int argc, char **argv){
 
     mycouple->printedgeporosity(1);
 
-    mycouple->PrepareFlow();
+    //mycouple->PrepareFlow();
+
+    DarcyStokes ds = DarcyStokes(mycouple->mi, mycouple->myPhase.pp, {0.0});
 
     return 1;
 }
