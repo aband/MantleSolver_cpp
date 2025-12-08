@@ -191,11 +191,11 @@ int couple::CreateMesh(const int& M, const int& N,
 
 int couple::PrepareFlow(){
 
-    ds = DarcyStokes();
+    //ds = DarcyStokes();
 
-    ds.init(mi, myPhase->pp, {0.0});
+    //ds.init(mi, myPhase->pp, {0.0});
 
-    ds.Assemble(mi, edgeporo, cellporo, average_poro, {0.0});
+    //ds.Assemble(mi, edgeporo, cellporo, average_poro, {0.0});
 
     return 1;
 }
