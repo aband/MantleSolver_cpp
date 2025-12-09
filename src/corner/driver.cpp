@@ -62,6 +62,7 @@ int main(int argc, char **argv){
 
     couple * mycouple = new couple(); 
 
+    // Initialize coupling variables
     mycouple->withUnit = withUnit;
     mycouple->CreatePhase();
     mycouple->ShowPhase();
@@ -75,9 +76,15 @@ int main(int argc, char **argv){
 
     mycouple->printedgeporosity(1);
 
-    //mycouple->PrepareFlow();
-
+    // Initialize darcy stokes solver
     DarcyStokes ds = DarcyStokes(mycouple->mi, mycouple->myPhase.pp, {0.0});
+
+    ds.Assemble(mycouple->mi, 
+                mycouple->edgeporo,
+                mycouple->cellporo,
+                mycouple->average_poro,
+                0.0,
+                mycouple->myPhase.pp);
 
     return 1;
 }

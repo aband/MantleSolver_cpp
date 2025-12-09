@@ -51,3 +51,17 @@ int DarcyStokes::printBndryAll(){
 
     return 1;
 }
+
+static int printRedSys(ReducedSys& redsys){
+
+    // Print a reduced system
+
+    return 1;
+}
+
+int DarcyStokes::showMatrix(){
+
+     
+
+    return 1;
+}

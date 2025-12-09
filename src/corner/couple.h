@@ -90,14 +90,6 @@ class couple {
 
 		  int printedgeporosity(int mark);
 
-    private:
-        // Parameters
-        double L_, H_;
-        int M_, N_;
-
-        // Primary variables
-        
-
         // Coupling variables
         vector<vertex> edgegauss;
         vector<vertex> cellgauss;
@@ -111,6 +103,14 @@ class couple {
         vector<vertex> effvel;
         vector<vertex> solidvel;
         vector<vertex> liquidvel;
+
+    private:
+        // Parameters
+        double L_, H_;
+        int M_, N_;
+
+        // Primary variables
+        
 
         // scalar values on edges
         int printedgeval(int mark, const vector<double>& val,

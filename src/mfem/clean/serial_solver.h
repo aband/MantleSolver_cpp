@@ -213,6 +213,8 @@ class DarcyStokes{
 
         int printBndryAll();
 
+        int showMatrix();
+
     private:
 
         // Total number of elements
