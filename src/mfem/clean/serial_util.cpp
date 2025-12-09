@@ -55,13 +55,18 @@ int DarcyStokes::printBndryAll(){
 static int printRedSys(ReducedSys& redsys){
 
     // Print a reduced system
+    cout << "Matrix M : " << endl;
+    MatView(redsys.M, PETSC_VIEWER_STDOUT_WORLD);
+
+    cout << "Essen boundary : " << endl;    
+    VecView(redsys.g, PETSC_VIEWER_STDOUT_WORLD);
 
     return 1;
 }
 
 int DarcyStokes::showMatrix(){
 
-     
+    printRedSys(reducedDarcy_); 
 
     return 1;
 }

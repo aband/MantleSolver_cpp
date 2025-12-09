@@ -314,3 +314,5 @@ int DarcyStokes::Assemble(const MeshInfo& mi,
 
     return 1;
 }
+
+int DarcyStokes::

@@ -211,6 +211,7 @@ class DarcyStokes{
                      double theta,
                      PhysProperty * pp);
 
+        // Printing functions
         int printBndryAll();
 
         int showMatrix();
