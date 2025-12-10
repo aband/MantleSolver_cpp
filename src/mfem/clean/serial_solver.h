@@ -308,6 +308,7 @@ class DarcyStokes{
          */
         ReducedSys reducedDarcy_;
         ReducedSys reducedStokes_;
+        ReducedSys result;
 
         /**!
          * Coupling matrix.

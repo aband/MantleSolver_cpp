@@ -315,4 +315,34 @@ int DarcyStokes::Assemble(const MeshInfo& mi,
     return 1;
 }
 
-int DarcyStokes::
+static int RearrangeLinearSys(ReducedSys& redsys, const int& nelem){
+
+    // Right hand side F
+    PetscCall(VecDuplicate(redsys.source, &redsys.F));
+    PetscCall(MatMult(redsys.Kg, redsys.g, redsys.F));
+
+    PetscCall(VecAYPX(redsys.F, -1, redsys.source));
+
+    // Right hand side G
+    PetscCall(VecCreateMPI(PETSC_COMM_WORLD, PETSC_DECIDE, nelem, &redsys.G));
+
+    Mat BgT;
+    PetscCall(MatCreateTranspose(redsys.Bg, &BgT));
+    PetscCall(MatMult(BgT, redsys.g, redsys.G));
+    PetscCall(VecScale(redsys.G, -1));
+
+    return 1;
+}
+
+int DarcyStokes::CreateCoupledSystem(){
+
+    int M1, N1, M2, N2;
+    PetscCall(VecGetSize(redsys1->F, &M1)); 
+    PetscCall(VecGetSize(redsys1->G, &N1));
+    PetscCall(VecGetSize(redsys2->F, &M2)); 
+    PetscCall(VecGetSize(redsys2->G, &N2));
+
+
+
+    return 1;
+}
