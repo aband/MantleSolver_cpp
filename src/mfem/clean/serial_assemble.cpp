@@ -336,11 +336,243 @@ static int RearrangeLinearSys(ReducedSys& redsys, const int& nelem){
 
 int DarcyStokes::CreateCoupledSystem(){
 
+    // Create linear system
+    RearrangeLinearSys(reducedStokes_, totalElem);
+    RearrangeLinearSys(reducedDarcy_, totalElem);
+
     int M1, N1, M2, N2;
-    PetscCall(VecGetSize(redsys1->F, &M1)); 
-    PetscCall(VecGetSize(redsys1->G, &N1));
-    PetscCall(VecGetSize(redsys2->F, &M2)); 
-    PetscCall(VecGetSize(redsys2->G, &N2));
+    PetscCall(VecGetSize(reducedStokes_.F, &M1)); 
+    PetscCall(VecGetSize(reducedStokes_.G, &N1));
+    PetscCall(VecGetSize(reducedDarcy_.F, &M2)); 
+    PetscCall(VecGetSize(reducedDarcy_.G, &N2));
+
+    // Create a Coupled A matrix
+    Mat arrayA[4], Z, ZT;
+
+    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE,
+                           M1, M2, 0, NULL, 0, NULL, &Z));
+    PetscCall(MatSetUp(Z));
+
+    PetscCall(MatAssemblyBegin(Z,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(Z,MAT_FINAL_ASSEMBLY));
+ 
+    PetscCall(MatCreateTranspose(Z,&ZT));
+ 
+    arrayA[0] = reducedStokes_.M;
+    arrayA[1] = Z;
+    arrayA[2] = ZT;
+    arrayA[3] = reducedDarcy_.M;
+
+    PetscCall(MatCreateNest(PETSC_COMM_WORLD,2, NULL, 2, NULL, arrayA, 
+                            &result.M));
+
+    // Create Coupled B matrix 
+    Mat arrayB[4], Zb1, Zb2;
+    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE,
+                           M1, N2, 0, NULL, 0, NULL, &Zb1));
+    PetscCall(MatSetUp(Zb1));
+
+    PetscCall(MatAssemblyBegin(Zb1,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(Zb1,MAT_FINAL_ASSEMBLY));
+ 
+    PetscCall(MatCreateAIJ(PETSC_COMM_WORLD, PETSC_DECIDE, PETSC_DECIDE,
+                           M2, N1, 0, NULL, 0, NULL, &Zb2));
+    PetscCall(MatSetUp(Zb2));
+
+    PetscCall(MatAssemblyBegin(Zb2,MAT_FINAL_ASSEMBLY));
+    PetscCall(MatAssemblyEnd(Zb2,MAT_FINAL_ASSEMBLY));
+ 
+    arrayB[0] = reducedStokes_.B;
+    arrayB[1] = Zb1;
+    arrayB[2] = Zb2;
+    arrayB[3] = reducedDarcy_.B;
+
+    PetscCall(MatCreateNest(PETSC_COMM_WORLD,2,NULL,2,NULL,arrayB, &result.B));
+
+    // Create Coupled C matrix
+    Mat arrayC[4];
+
+    arrayC[0] = reducedStokes_.C;
+    arrayC[1] = K;
+    arrayC[2] = K;
+    arrayC[3] = reducedDarcy_.C;
+
+    PetscCall(MatCreateNest(PETSC_COMM_WORLD,2,NULL,2,NULL,arrayC, &result.C));
+
+    // Create right hand side and solution nested vectors
+    Vec arrayx[2], arrayy[2], arrayf[2], arrayg[2];
+
+    arrayf[0] = reducedStokes_.F;
+    arrayf[1] = reducedDarcy_.F;
+
+    arrayg[0] = reducedStokes_.G;
+    arrayg[1] = reducedDarcy_.G;
+
+    PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayf,&result.F));
+    PetscCall(VecCreateNest(PETSC_COMM_WORLD,2,NULL,arrayg,&result.G));
+
+    PetscCall(VecDuplicate(result.F, &result.x));
+    PetscCall(VecDuplicate(result.G, &result.y));
+
+    return 1;
+}
+
+int DarcyStokes::Solve(int MaxIter, double tol){
+
+    // final form of the coupled uzawa iteration
+    // no need of tau1 and tau2 parameter
+
+    MatScale(result.B, -1);
+    MatScale(result.C, -1);
+    VecScale(result.G, -1);
+
+    // ===========================================================
+    KSP kspCG;
+    PC  pcCG; 
+    PetscCall(KSPCreate(PETSC_COMM_WORLD, &kspCG));
+    PetscCall(KSPSetOperators(kspCG, result.M, result.M));
+    PetscCall(KSPSetType(kspCG, KSPCG));
+    PetscCall(KSPCGSetType(kspCG, KSP_CG_SYMMETRIC));
+    PetscCall(KSPSetInitialGuessNonzero(kspCG, PETSC_FALSE));
+    PetscCall(KSPSetTolerances(kspCG, 1e-25, 10e-20, 10, 2000));
+
+    // Create B transpose
+    Mat BT;
+    PetscCall(MatCreateTranspose(result.B, &BT));
+
+    // Define KSP for schur complement for Darcy part
+    KSP kspMINRESd, kspSchurd, kspMINRESs, kspSchurs;
+    Mat Sd, Ad, Bd, BdT, Cd;
+    Mat Ss, As, Bs, BsT, Cs;
+
+    PetscCall(MatNestGetSubMat(result.M, 1, 1, &Ad));
+    PetscCall(MatNestGetSubMat(result.B, 1, 1, &Bd));
+    PetscCall(MatNestGetSubMat(result.C, 1, 1, &Cd));
+    PetscCall(MatCreateTranspose(Bd, &BdT));
+
+    PetscCall(KSPCreate(PETSC_COMM_WORLD, &kspMINRESd));
+    PetscCall(MatCreateSchurComplement(Ad, Ad, Bd, BdT, Cd, &Sd));
+    
+    PetscCall(MatSchurComplementGetKSP(Sd, &kspSchurd));
+    PetscCall(KSPSetType(kspSchurd, KSPCG));
+    PetscCall(KSPCGSetType(kspSchurd, KSP_CG_SYMMETRIC));
+    PetscCall(KSPSetInitialGuessNonzero(kspSchurd, PETSC_FALSE));
+    PetscCall(KSPSetTolerances(kspSchurd, 1e-25, 10e-20, 10, 2000));
+
+    PetscCall(KSPSetOperators(kspMINRESd, Sd, Sd));
+    PetscCall(KSPSetType(kspMINRESd, KSPMINRES)); 
+    PetscCall(KSPSetInitialGuessNonzero(kspMINRESd, PETSC_FALSE));
+    PetscCall(KSPSetTolerances(kspMINRESd, 1e-25, 10e-20, 10, 2000));
+
+    // ===================================================================
+    PetscCall(MatNestGetSubMat(result.M, 0, 0, &As));
+    PetscCall(MatNestGetSubMat(result.B, 0, 0, &Bs));
+    PetscCall(MatNestGetSubMat(result.C, 0, 0, &Cs));
+    PetscCall(MatCreateTranspose(Bs, &BsT));
+
+    PetscCall(KSPCreate(PETSC_COMM_WORLD, &kspMINRESs));
+    PetscCall(MatCreateSchurComplement(As, As, Bs, BsT, Cs, &Ss));
+    
+    PetscCall(MatSchurComplementGetKSP(Ss, &kspSchurs));
+    PetscCall(KSPSetType(kspSchurs, KSPCG));
+    PetscCall(KSPCGSetType(kspSchurs, KSP_CG_SYMMETRIC));
+    PetscCall(KSPSetInitialGuessNonzero(kspSchurs, PETSC_FALSE));
+    PetscCall(KSPSetTolerances(kspSchurs, 1e-25, 10e-20, 10, 2000));
+
+    PetscCall(KSPSetOperators(kspMINRESs, Ss, Ss));
+    PetscCall(KSPSetType(kspMINRESs, KSPMINRES)); 
+    PetscCall(KSPSetInitialGuessNonzero(kspMINRESs, PETSC_FALSE));
+    PetscCall(KSPSetTolerances(kspMINRESs, 1e-25, 10e-20, 10, 2000));
+
+    double r = 1.0;
+    int    iter = 0;
+
+    Vec tmp1, tmp2, tmp3, tmp4;
+
+    PetscCall(VecDuplicate(result.F, &tmp1));
+    PetscCall(VecDuplicate(result.F, &tmp2));
+    PetscCall(VecDuplicate(result.G, &tmp3));
+    PetscCall(VecDuplicate(result.G, &tmp4));
+
+    PetscCall(VecZeroEntries(tmp1));
+    PetscCall(VecZeroEntries(tmp2));
+    PetscCall(VecZeroEntries(tmp3));
+    PetscCall(VecZeroEntries(tmp4));
+
+    PetscCall(VecZeroEntries(result.x));
+    PetscCall(VecZeroEntries(result.y));
+
+    Vec tmp31, tmp32;
+
+    // Iteration starts here
+
+    while(r>tol && iter < MaxIter){
+ 
+        PetscCall(MatMult(result.B, result.y, tmp1));
+
+        PetscCall(MatMult(result.M, result.x, tmp2));
+
+        // tmp2 = ls-f - (Ax + B'y)
+        PetscCall(VecAXPBYPCZ(tmp2, 1.0, -1.0, -1.0, result.F, tmp1));
+
+        // tmp1 = A^-1 tmp2
+        PetscCall(KSPSolve(kspCG,tmp2,tmp1));
+
+        PetscCall(VecAXPY(result.x,1,tmp1)); 
+
+        PetscCall(MatMult(BT,result.x,tmp3));
+        PetscCall(MatMult(result.C,result.y,tmp4));
+
+        // tmp3 = Bx + Cy - G
+        PetscCall(VecAXPBYPCZ(tmp3, -1.0, 1.0, 1.0, result.G, tmp4));
+
+        // Use MINRES to calculate Darcy part 
+        PetscCall(VecNestGetSubVec(tmp3, 0, &tmp31));
+        PetscCall(VecNestGetSubVec(tmp3, 1, &tmp32));
+                  
+        KSPSolve(kspMINRESs, tmp31, tmp31);
+        KSPSolve(kspMINRESd, tmp32, tmp32);
+
+        PetscCall(VecAXPY(result.y,-1.0,tmp3));
+
+        // Check norm of increment
+        PetscReal val1, val2;
+        PetscCall(VecNorm(tmp1,NORM_2,&val1));
+        PetscCall(VecNorm(tmp3,NORM_2,&val2));
+        r = val1 + val2; 
+
+        iter++;
+
+/*
+    Vec tmpStokesq;
+    PetscCall(VecNestGetSubVec(result.y, 0, &tmpStokesq));
+    double mean = 0.0;
+    PetscCall(VecMean(tmpStokesq, &mean));
+    Vec add;
+    PetscCall(VecDuplicate(tmpStokesq, &add));
+
+    double * arraytmp; 
+    int size;
+    VecGetSize(tmpStokesq,&size);
+    PetscCall(VecGetArray(tmpStokesq, &arraytmp));
+    for (unsigned int k=0; k<size; k++){
+        arraytmp[k] -= mean;
+    }
+    PetscCall(VecRestoreArray(tmpStokesq, &arraytmp));
+*/
+    }
+
+    Vec tmpDarcy;
+    PetscCall(VecNestGetSubVec(result.x, 1, &tmpDarcy));
+    VecScale(tmpDarcy, -1);  
+
+    if (iter < MaxIter){
+        printf("Uzawa converged successfully! r = %.3e, Used %d iterations. \n", r, iter);
+        return 0;
+    } else {
+        printf("Uzawa failed to converge! r = %.3e \n", r);
+        return -1;
+    }
 
 
 

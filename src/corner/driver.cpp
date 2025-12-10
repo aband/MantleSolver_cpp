@@ -88,5 +88,9 @@ int main(int argc, char **argv){
 
     //ds.showMatrix();
 
+    ds.CreateCoupledSystem();
+
+    ds.Solve(10, 1e-7);
+
     return 1;
 }

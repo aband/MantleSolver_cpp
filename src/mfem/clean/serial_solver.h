@@ -211,10 +211,27 @@ class DarcyStokes{
                      double theta,
                      PhysProperty * pp);
 
+        int CreateCoupledSystem();
+
+        int Solve(int maxIter, double tolUzawa);
+
         // Printing functions
         int printBndryAll();
 
         int showMatrix();
+
+        // Some supplemental set for local dofs
+        // normal dof 
+        std::set<int> top_normal {11,7,6};
+        std::set<int> left_normal {0,3,8};
+        std::set<int> right_normal {1,2,10};
+        std::set<int> bottom_normal {4,5,9};
+
+        // tangent dof
+        std::set<int> top_tang {3,2};
+        std::set<int> left_tang {7,4};
+        std::set<int> right_tang {5,6};
+        std::set<int> bottom_tang {0,1};
 
     private:
 
@@ -273,18 +290,6 @@ class DarcyStokes{
                               int reducedDOF, int bndrySize, 
                               int Adnz, int Aonz, int Bdnz, int Bonz);
 
-        // normal dof 
-        std::set<int> top_normal {11,7,6};
-        std::set<int> left_normal {0,3,8};
-        std::set<int> right_normal {1,2,10};
-        std::set<int> bottom_normal {4,5,9};
-
-        // tangent dof
-        std::set<int> top_tang {3,2};
-        std::set<int> left_tang {7,4};
-        std::set<int> right_tang {5,6};
-        std::set<int> bottom_tang {0,1};
-
         // Function basis
         basis     basis_;
         Hdivmixed hdiv_;
@@ -308,7 +313,10 @@ class DarcyStokes{
          */
         ReducedSys reducedDarcy_;
         ReducedSys reducedStokes_;
+
+        // Struct holding computed result
         ReducedSys result;
+
 
         /**!
          * Coupling matrix.

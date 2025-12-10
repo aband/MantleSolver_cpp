@@ -9,6 +9,8 @@ int DarcyStokes::init(const MeshInfo& mi, PhysProperty * pp, const std::vector<d
     br_.ComputeTotalDOF(mi);
     hdiv_.ComputeTotalDOF(mi);
 
+    totalElem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
+
     // Compute boundary conditions
     ComputeEssenBndryAll(mi,pp,param);
 
@@ -60,6 +62,9 @@ static int printRedSys(ReducedSys& redsys){
 
     cout << "Essen boundary : " << endl;    
     VecView(redsys.g, PETSC_VIEWER_STDOUT_WORLD);
+
+    cout << "Natural boundary : " << endl;
+    VecView(redsys.neum, PETSC_VIEWER_STDOUT_WORLD);
 
     return 1;
 }
