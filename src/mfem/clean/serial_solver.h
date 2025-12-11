@@ -193,12 +193,126 @@ int AssignLocRedSys(ReducedSys& redsys,
     return 1;
 }
 
+template <typename T>
+vector<vertex> ExtractVelocity(Vec * sol, Vec * g,
+                               int *refmap,
+                               const MeshInfo& mi,
+                               vector<vertex> points,
+                               const indice& gCell,
+                               T& funcSp,
+                               basis& mybasis,
+                               const std::vector<double>& parameter){
+
+    std::vector<vertex> work;
+    work.resize(points.size());
+
+    //PetscScalar *valuesSol;
+    //PetscScalar *valuesg;
+
+    double *valuesSol;
+    double *valuesg;
+
+    VecGetArray(*sol, &valuesSol);
+    VecGetArray(*g, &valuesg);
+
+    mybasis.GetCorners(mi, gCell);
+
+    // !Get global indiex of the local dofs in specific and correct order
+    const std::vector<int> elemDofs = funcSp.LocalGlobalMap(mi, gCell);
+
+    for (int g=0; g<points.size(); g++){
+
+        // Initialize interpolated value
+        work.at(g) = {0.0,0.0};
+
+        std::vector<vertex> basisVal = funcSp.EvaluateAll(mybasis, points.at(g));
+
+        // Reconstruction of value with element basis
+        for (int k=0; k<elemDofs.size(); k++){
+
+            if (bMarker(mi,funcSp.GlobalToLocalMapBndry(mi,elemDofs.at(k)),funcSp.name, parameter) == dirichlet){
+                work.at(g) += valuesg[refmap[elemDofs.at(k)]] * basisVal.at(k);
+            } else {
+                work.at(g) += valuesSol[refmap[elemDofs.at(k)]] * basisVal.at(k);
+            }
+        }
+    }
+
+    VecRestoreArray(*sol, &valuesSol);
+    VecRestoreArray(*g, &valuesg);
+
+    return work;
+}
+
+// Extract velocity on given edge gauss points set
+// Vertical and Horizontal edges
+template <typename T>
+int ExtractVelocityEdge(vector<vertex>& edgeVelocity,
+                        const vector<vertex>& edgegaussp,
+                        const MeshInfo& mi,
+                        const int* refmap, 
+                        Vec * sol, Vec * g, 
+                        T& funcSp, basis& mybasis){
+
+    indice gCell;
+
+    edgeEnds<vertex> edgeEndsVertex;
+    edgeEnds<indice> edgeEndsIndice;
+
+    vector<vertex> gaussp;
+    gaussp.resize(3);
+
+    vector<vertex> velgauss;
+    velgauss.resize(3);
+
+    int M = mi.MPIglobalCellSize[0];
+    int N = mi.MPIglobalCellSize[1];
+
+    int tolvertgauss = (M+1)*N*3;
+    int tolhorigauss = M*(N+1)*3;
+
+    int toledgegauss = tolvertgauss + tolhorigauss;
+
+    // Vertical points first
+    for (int j=0; j<N  ; j++){
+    for (int i=0; i<M+1; i++){
+
+        int dof = (j*(M+1) + i)*3;
+
+        velgauss.clear();
+        velgauss.resize(3);
+
+        if (i == M){
+            // Right boundary
+            gCell = {i-1,j};
+        } else {
+            gCell = {i,j};
+        }
+
+        for (int g=0; g<3; g++){
+            gaussp.at(g) = edgegaussp.at(dof+g);
+        }
+
+        velgauss = ExtractVelocity(sol, g, refmap, mi, gaussp, gCell, funcSp, mybasis, {1});
+
+        for (int g=0; g<3; g++){
+            edgeVelocity.at(dof+g) = velgauss.at(g);
+        }
+
+    }}
+
+    return 1;
+}
+
 class DarcyStokes{
     public:
         DarcyStokes(const MeshInfo& mi, PhysProperty * pp, const std::vector<double>& param) {init(mi, pp, param);};
         ~DarcyStokes() 
          {delete refArrayStokesEssen_; 
           delete refArrayDarcyEssen_;};
+
+        vector<vertex> StokesVel; 
+        vector<vertex> DarcyVel;
 
         int init(const MeshInfo& mi,
                  PhysProperty * pp,
@@ -214,6 +328,8 @@ class DarcyStokes{
         int CreateCoupledSystem();
 
         int Solve(int maxIter, double tolUzawa);
+
+        int ReconstructEdgeVel();
 
         // Printing functions
         int printBndryAll();
@@ -316,7 +432,6 @@ class DarcyStokes{
 
         // Struct holding computed result
         ReducedSys result;
-
 
         /**!
          * Coupling matrix.

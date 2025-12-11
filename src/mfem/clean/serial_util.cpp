@@ -24,11 +24,6 @@ int DarcyStokes::init(const MeshInfo& mi, PhysProperty * pp, const std::vector<d
     return 1;
 }
 
-int DarcyStokes::ExtractVelocity(){
-
-
-}
-
 int DarcyStokes::printBndryAll(){
 
     // Make sure all the boundary information are computed correctly
@@ -77,6 +72,15 @@ static int printRedSys(ReducedSys& redsys){
 int DarcyStokes::showMatrix(){
 
     printRedSys(reducedDarcy_); 
+
+    return 1;
+}
+
+int DarcyStokes::ReconstructEdgeVel(const vector<vertex>& edgegaussp,
+                                    const MeshInfo& mi){
+
+    ExtractVelocityEdge(StokesVel, edgegaussp, mi, , &result., &result.g);
+
 
     return 1;
 }
