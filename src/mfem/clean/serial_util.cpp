@@ -24,6 +24,11 @@ int DarcyStokes::init(const MeshInfo& mi, PhysProperty * pp, const std::vector<d
     return 1;
 }
 
+int DarcyStokes::ExtractVelocity(){
+
+
+}
+
 int DarcyStokes::printBndryAll(){
 
     // Make sure all the boundary information are computed correctly

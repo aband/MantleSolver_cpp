@@ -40,7 +40,7 @@ int main(int argc, char **argv){
     int maxIter = 100; 
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-maxIter", &maxIter, NULL));    
 
-    double tolUzawa = 10e-16; 
+    double tolUzawa = 10e-14; 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tol", &tolUzawa, NULL)); 
 
     double Tmax = 20; // Stop at the first step 
@@ -90,7 +90,7 @@ int main(int argc, char **argv){
 
     ds.CreateCoupledSystem();
 
-    ds.Solve(10, 1e-7);
+    ds.Solve(maxIter, tolUzawa);
 
     return 1;
 }
