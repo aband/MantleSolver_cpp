@@ -250,7 +250,7 @@ template <typename T>
 int ExtractVelocityEdge(vector<vertex>& edgeVelocity,
                         const vector<vertex>& edgegaussp,
                         const MeshInfo& mi,
-                        const int* refmap, 
+                        int* refmap, 
                         Vec * sol, Vec * g, 
                         T& funcSp, basis& mybasis){
 
@@ -268,10 +268,10 @@ int ExtractVelocityEdge(vector<vertex>& edgeVelocity,
     int M = mi.MPIglobalCellSize[0];
     int N = mi.MPIglobalCellSize[1];
 
-    int tolvertgauss = (M+1)*N*3;
-    int tolhorigauss = M*(N+1)*3;
+    int tolvert = (M+1)*N*3;
+    int tolhori = M*(N+1)*3;
 
-    int toledgegauss = tolvertgauss + tolhorigauss;
+    int toledgegauss = tolvert + tolhori;
 
     // Vertical points first
     for (int j=0; j<N  ; j++){
@@ -281,10 +281,41 @@ int ExtractVelocityEdge(vector<vertex>& edgeVelocity,
 
         velgauss.clear();
         velgauss.resize(3);
+        gaussp.clear();
+        gaussp.resize(3);
 
         if (i == M){
             // Right boundary
             gCell = {i-1,j};
+        } else {
+            gCell = {i,j};
+        }
+
+        for (int g=0; g<3; g++){
+            gaussp.at(g) = edgegaussp.at(dof+g);
+        }
+
+        velgauss = ExtractVelocity(sol, g, refmap, mi, gaussp, gCell, funcSp, mybasis, {1});
+
+        for (int g=0; g<3; g++){
+            edgeVelocity.at(dof+g) = velgauss.at(g);
+        }
+
+    }}
+
+    for (int j=0; j<N+1; j++){
+    for (int i=0; i<M  ; i++){
+
+        int dof = tolvert + (j*M+i)*3;
+
+        velgauss.clear();
+        velgauss.resize(3);
+        gaussp.clear();
+        gaussp.resize(3);
+
+        if (j == N){
+            // Right boundary
+            gCell = {i,j-1};
         } else {
             gCell = {i,j};
         }
@@ -329,7 +360,8 @@ class DarcyStokes{
 
         int Solve(int maxIter, double tolUzawa);
 
-        int ReconstructEdgeVel();
+        int ReconstructEdgeVel(const vector<vertex>& edgegaussp,
+                               const MeshInfo& mi);
 
         // Printing functions
         int printBndryAll();

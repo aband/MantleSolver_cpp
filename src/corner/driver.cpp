@@ -92,5 +92,7 @@ int main(int argc, char **argv){
 
     ds.Solve(maxIter, tolUzawa);
 
+    ds.ReconstructEdgeVel(mycouple->edgegauss, mycouple->mi);
+
     return 1;
 }

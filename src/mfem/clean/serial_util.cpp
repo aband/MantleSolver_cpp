@@ -9,7 +9,15 @@ int DarcyStokes::init(const MeshInfo& mi, PhysProperty * pp, const std::vector<d
     br_.ComputeTotalDOF(mi);
     hdiv_.ComputeTotalDOF(mi);
 
-    totalElem = mi.MPIglobalCellSize[0] * mi.MPIglobalCellSize[1];
+    int M = mi.MPIglobalCellSize[0];
+    int N = mi.MPIglobalCellSize[1];
+
+    totalElem = M * N;
+
+    int tolgauss = ((M+1)*N + M*(N+1))*3;
+
+    StokesVel.resize(tolgauss);
+    DarcyVel.resize(tolgauss);
 
     // Compute boundary conditions
     ComputeEssenBndryAll(mi,pp,param);
@@ -79,8 +87,16 @@ int DarcyStokes::showMatrix(){
 int DarcyStokes::ReconstructEdgeVel(const vector<vertex>& edgegaussp,
                                     const MeshInfo& mi){
 
-    ExtractVelocityEdge(StokesVel, edgegaussp, mi, , &result., &result.g);
+    // Extract nest vectors
+    Vec stokesv, darcyv;
+    PetscCall(VecNestGetSubVec(result.x, 0, &stokesv));
+    PetscCall(VecNestGetSubVec(result.x, 1, &darcyv));
 
+    ExtractVelocityEdge(StokesVel, edgegaussp, mi, refArrayStokesEssen_ , 
+                      &stokesv, &reducedStokes_.g, br_, basis_);
+
+    ExtractVelocityEdge(DarcyVel, edgegaussp, mi, refArrayDarcyEssen_, 
+						    &darcyv, &reducedDarcy_.g, hdiv_, basis_);
 
     return 1;
 }
