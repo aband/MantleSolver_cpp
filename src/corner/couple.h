@@ -88,7 +88,11 @@ class couple {
 
         int computePorosity_phase();
 
-		  int printedgeporosity(int mark);
+        int printedgeporosity(int mark);
+
+        // edge velocity
+        int printedgevel(int mark, const vector<vertex>& stokesvel,
+                                   const vector<vertex>& darcyvel);
 
         // Coupling variables
         vector<vertex> edgegauss;
@@ -110,7 +114,6 @@ class couple {
         int M_, N_;
 
         // Primary variables
-        
 
         // scalar values on edges
         int printedgeval(int mark, const vector<double>& val,
@@ -123,6 +126,7 @@ class couple {
         // cell center values
         int printcellval(int mark, const vector<double>& val,
                                    const char * fieldname);
+
 };
 
 #endif

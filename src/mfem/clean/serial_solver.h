@@ -54,11 +54,14 @@ typedef struct{
 } poroSet;
 
 typedef struct{
+
     Mat M, Kg, B, Bg, C;
     Vec g, source, neum;
+
     // Later added vectors
     Vec F, G;
     Vec x, y;
+
 } ReducedSys;
 
 bndryType bMarker(const MeshInfo& mi, std::vector<int> work,

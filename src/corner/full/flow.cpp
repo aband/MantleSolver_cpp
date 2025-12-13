@@ -41,7 +41,8 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
 
     // Darcy
 
-    return {abs(point[1]), 0.0};
+    //return {abs(point[1]), 0.0};
+    return {0.0,0.0};
 }
 
 // ====================================================================

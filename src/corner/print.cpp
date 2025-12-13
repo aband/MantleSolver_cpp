@@ -132,7 +132,7 @@ int couple::printedgeval(int mark, const vector<vertex>& val,
     FILE * filey = fopen(GetFilenameAdd(fieldname, "y", mark), "w");
 
     // Print scalar values on gauss quadrature points
-	 // Vertical points first
+    // Vertical points first
     for (int j=0; j<N_  ; j++){
     for (int i=0; i<M_+1; i++){
 
@@ -169,6 +169,16 @@ int couple::printedgeporosity(int mark){
     printedgeval(mark, edgeporo, "porosity");
 
     printcellval(mark, average_poro, "aveporo");
+
+    return 1;
+}
+
+int couple::printedgevel(int mark, const vector<vertex>& stokesvel,
+                                   const vector<vertex>& darcyvel){
+
+    printedgeval(mark, stokesvel, "edgevel_stokes"); 
+
+    printedgeval(mark, darcyvel , "edgevel_darcy");
 
     return 1;
 }

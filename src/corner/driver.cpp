@@ -94,5 +94,7 @@ int main(int argc, char **argv){
 
     ds.ReconstructEdgeVel(mycouple->edgegauss, mycouple->mi);
 
+    mycouple->printedgevel(1, ds.StokesVel, ds.DarcyVel);
+
     return 1;
 }

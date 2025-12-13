@@ -758,15 +758,17 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
 
             gaussp.at(g) = GaussMapPointsEdge({gpe[g]}, edge);
 
-        vector<vertex> vel_relative = 
-        ExtractVelocity(&sresult_->vel_darcy, &sresult_->g_darcy,
-                    refArrayDarcyEssen_,mi,
-                    gaussp, gcell,*hdiv_,*basis_,{1});
+            vector<vertex> vel_relative = 
+            ExtractVelocity(&sresult_->vel_darcy, 
+                            &sresult_->g_darcy,
+                            refArrayDarcyEssen_,mi,
+                            gaussp, gcell,*hdiv_,*basis_,{1});
     
-        vector<vertex> vel_stokes = 
-        ExtractVelocity(&sresult_->vel_stokes, &sresult_->g_stokes,
-                    refArrayStokesEssen_,mi,
-                    gaussp, gcell,*br_,*basis_,{1});
+            vector<vertex> vel_stokes = 
+            ExtractVelocity(&sresult_->vel_stokes, 
+                            &sresult_->g_stokes,
+                            refArrayStokesEssen_,mi,
+                            gaussp, gcell,*br_,*basis_,{1});
 
             darcyvel.at(g) = AssignPorosity(gaussp.at(g),pp) * vel_relative.at(g);
             stokesvel.at(g) = vel_stokes.at(g);
@@ -805,7 +807,7 @@ int Driver::printVelEdgeGauss_case(int mark, PhysProperty * pp){
       fclose(gaussgridy);
       fclose(exactv);
       fclose(phasevx);
-		fclose(phasevy);
+      fclose(phasevy);
 
     return 1;
 }
@@ -1871,6 +1873,38 @@ if (phi_f < 1e-16) {phi_f = 0.0;}
 
     return 1;
 }
+
+/*
+int Driver::AssignNeumannVector(const indice& gcell,
+                                const int& edge,
+                                const Tensor<weights>& allwgts,
+                                double ** lphi,
+                                double& k){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    vertexSet corners = basis_->corners();
+
+    for (int g=0; g<gpe.size(); g++){
+
+        vertexSet corner = {corners.at((edge+3)%4),
+                            corners.at(edge)};
+        double len = length(corner);
+ 
+        for (int g=0; g<gpe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]},corner);
+
+            // Evaluate bernardi raugel basis functions at each given points
+            std::array<vertex, 12> brval = br_->ComputeBRmixed(*basis_, mapped);
+
+            vertex nu = basis_->unitnormal(edge);
+
+    }
+
+    return 1;
+}
+*/
 
 int Driver::PrepareTransport_case(double (*func)(const valarray<double>& point,
                                                  const vector<double>& param) ){

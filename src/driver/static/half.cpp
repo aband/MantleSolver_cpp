@@ -3,7 +3,7 @@
 void AssignPhyProperties(PhysProperty * pp){
 
     pp->theta = 0.0;
-    pp->mu_s  = 1e19;
+    pp->mu_s  = 1e15;
     pp->mu_f  = 1.0;
     pp->rho_f = 2800;
     pp->rho_s = 3300;
@@ -101,16 +101,28 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     }
 */
 
+    //double velhead = -1*V0;
+    double velhead = 1;
+
+    vertex work {0.0,0.0};
+
     if (point[1] > -0.0005){
         if (point[0]<0.05){
-            //return {-V0 * sin(point[0]/0.05*3.14159265358979323846/2.0), 0.0};
-				return {1, 0.0};
+            work =  {velhead * sin(point[0]/0.05*3.14159265358979323846/2.0), 0.0};
+				//return {1, 0.0};
         }else{
-            return {1, 0.0}; 
+            work = {velhead, 0.0}; 
         }
+    } else if (point[1] < -0.495){
+ 
+        work = {0.0,velhead};
+
     } else {
-        return {0.0,0.0};
+        work = {0.0,0.0};
     }
+
+    return work; 
+
 
 //    return {0.0, -V0};
 
@@ -168,12 +180,15 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
 double V0 = pp->V0 / pp->u0;	
     //return {0.0, -1.0/V0};
 
+
     if (point[1]<-0.49){
         return {0.0,0.0};
     } else {
         return {0.0,-1.0}; 
     }
-    //return {0.0, 0.0};
+
+
+//    return {0.0, 0.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
@@ -310,7 +325,17 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
     }
 
     if (global[1] == 0 ){
-        type = neumann;
+
+        if (global[0] < mi.MPIglobalCellSize[0]/6*5){
+            type = neumann;  
+        }else {
+            it = bottom_normal.find(local);
+            if (it != bottom_normal.end()) {
+                type = dirichlet;
+            } else {
+                type = neumann;
+            }
+        }
     }
 
     return type;
