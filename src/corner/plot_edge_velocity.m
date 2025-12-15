@@ -34,25 +34,38 @@ function [] = drawedgevelocity(M, N, mark, folder, name)
         horidof = M*(N+1)*3;
 
         % Get x component
-		  filename = strcat(folder,'/build/',name, string(mark),'.dat');
+		  filename = strcat(folder,'/build/',name,'x', string(mark),'.dat');
 		  fileID = fopen(filename, 'r');
 		  val = fscanf(fileID, '%f', [1,Inf]);
         valvert = val(1:vertdof);
 		  valvert = reshape(valvert, 3, N*(M+1));
-        revalvert = valvert(:,1:M+1);
+        revalvertx = valvert(:,1:M+1);
         for i= 1:N-1 
-        		 revalvert = [revalvert;valvert(:,i*(M+1)+1:(i+1)*(M+1))];
+        		 revalvertx = [revalvertx;valvert(:,i*(M+1)+1:(i+1)*(M+1))];
         end
+
+        valhorix = val(vertdof+1 : vertdof+horidof);
+		  valhorix = reshape(valhorix, M*3,N+1);
 
         % Get y component
-		  filename = strcat(folder,'/build/',name, string(mark),'.dat');
+		  filename = strcat(folder,'/build/',name,'y', string(mark),'.dat');
 		  fileID = fopen(filename, 'r');
 		  val = fscanf(fileID, '%f', [1,Inf]);
         valvert = val(1:vertdof);
 		  valvert = reshape(valvert, 3, N*(M+1));
-        revalvert = valvert(:,1:M+1);
+        revalverty = valvert(:,1:M+1);
         for i= 1:N-1 
-        		 revalvert = [revalvert;valvert(:,i*(M+1)+1:(i+1)*(M+1))];
+        		 revalverty = [revalverty;valvert(:,i*(M+1)+1:(i+1)*(M+1))];
         end
 
+        valhoriy = val(vertdof+1 : vertdof+horidof);
+		  valhoriy = reshape(valhoriy, M*3,N+1);
+
+		  figure
+        quiver(revertgx, revertgy, revalvertx, revalverty); 
+		  title('Vertical Gauss Points');
+		  figure
+        surf(horigx, horigy, valhorix, valhoriy); 
+		  title('Horizontal Gauss Points');
+ 
 
