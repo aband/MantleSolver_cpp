@@ -52,9 +52,9 @@ double AssignPorosity(double phi_f){
 // Constant upwelling velocity ascending model
 vertex bndryVs(const vertex& point, PhysProperty * pp){
 
-/*
     // Stokes
-    double V0 = pp->V0 / pp->u0 * -1;
+    double V0 = pp->V0 / pp->u0;
+    //V0 = 1;
 
     vertex work = {0.0,0.0};
 
@@ -70,13 +70,14 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     z = point[1];
 
-    double coef = 2*pp->U0/(3.14159265358979323846*(x*x+z*z))/pp->u0;
+    double coef = 2*V0/(3.14159265358979323846*(x*x+z*z));
     //coef = 2/(3.14159265358979323846*(x*x+z*z));
 
     work =  {atan(x/(-1*z))*(x*x+z*z) + x*z, z*z};
 
     work *= coef;
 
+/*
     if (z == 0){
         if (point[0] < 0){
             work[0] = -1*pp->U0/pp->u0;
@@ -84,10 +85,14 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
             work[0] = pp->U0/pp->u0;
         }
     }
+*/
+
+    if (z==0){
+        work[0] = V0;
+    }
 
     return work; 
-*/
-    double V0 = pp->V0 / pp->u0 * -1;
+
 /*
     if (point[1] < -0.1){
         if (point[0]<0.05){
@@ -100,7 +105,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
         return {0.0,0.0};
     }
 */
-
+/*
     //double velhead = -1*V0;
     double velhead = 1;
 
@@ -122,7 +127,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     }
 
     return work; 
-
+*/
 
 //    return {0.0, -V0};
 
@@ -180,21 +185,23 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
 double V0 = pp->V0 / pp->u0;	
     //return {0.0, -1.0/V0};
 
-
+/*
     if (point[1]<-0.49){
         return {0.0,0.0};
     } else {
         return {0.0,-1.0}; 
     }
+*/
 
-
-//    return {0.0, 0.0};
+    return {0.0, -1.0};
+	 //return {0.0,0.0};
 }
 
 const vertex traction(const vertex& point, PhysProperty * pp){
     // return traction defined on the boundary
     // zero traction situation
 
+/*
     if (point[0] > 0.1){
 
         return {1.0,0.0}; // free stress
@@ -202,6 +209,9 @@ const vertex traction(const vertex& point, PhysProperty * pp){
     } else {
         return {0.0,0.0};
     }
+*/
+
+return {0.0,0.0};
 
 }
 
@@ -312,9 +322,10 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         if (it != left_tang.end()){
             type = neumann;
         }
-		  //type = dirichlet;
+		  type = dirichlet;
     } 
- 
+
+    // Symmetry condition
     if (global[0] == mi.MPIglobalCellSize[0]-1){
 //        it = right_tang.find(local);
 //        if (it != right_tang.end()){
@@ -324,6 +335,7 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         //type = dirichlet;
     }
 
+/*
     if (global[1] == 0 ){
 
         if (global[0] < mi.MPIglobalCellSize[0]/6*5){
@@ -337,8 +349,14 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
             }
         }
     }
+*/
+
+    if (global[1] == 0 ){
+        type = dirichlet;
+    }
 
     return type;
+	 //return dirichlet;
 }
 
 

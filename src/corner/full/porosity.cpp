@@ -4,7 +4,22 @@ static double AssignPorosity(const vertex& point){
 
     // used to identify incorrect porosity
 
-    return abs(point[1]);
+    //return abs(point[1]);
+
+    //return 0.2;
+
+    double l0 = 316228;
+    double l = 20/l0;
+
+    if (abs(point[1]) < 120*1000/l0 && abs(point[0]) < abs(point[1]) + 20/l0){
+
+        double value = 0.05*pow((120*1000/l0 - abs(point[1]))/(120*1000/l0),2) * 
+                               (1-abs(point[0])/(abs(point[1])+l));
+
+        return value;
+    } else {
+        return 0.0;
+    }
 
 }
 

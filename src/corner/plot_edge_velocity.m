@@ -65,7 +65,7 @@ function [] = drawedgevelocity(M, N, mark, folder, name)
         quiver(revertgx, revertgy, revalvertx, revalverty); 
 		  title('Vertical Gauss Points');
 		  figure
-        surf(horigx, horigy, valhorix, valhoriy); 
+        quiver(horigx, horigy, valhorix, valhoriy); 
 		  title('Horizontal Gauss Points');
  
 
