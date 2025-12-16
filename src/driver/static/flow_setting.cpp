@@ -89,7 +89,7 @@ const vertex stokesForce(const vertex& point, PhysProperty * pp){
 
     // Returns nondimensionalized gravity.
     // Attention!!! It should not be scaled by porosity
-	 // porosity scale will be added in another function
+    // porosity scale will be added in another function
 double V0 = pp->V0 / pp->u0;	
     //return {0.0, -1.0/V0};
     return {0.0,-1.0};

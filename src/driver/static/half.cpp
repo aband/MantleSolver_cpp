@@ -3,7 +3,7 @@
 void AssignPhyProperties(PhysProperty * pp){
 
     pp->theta = 0.0;
-    pp->mu_s  = 1e15;
+    pp->mu_s  = 1e19;
     pp->mu_f  = 1.0;
     pp->rho_f = 2800;
     pp->rho_s = 3300;
@@ -13,7 +13,7 @@ void AssignPhyProperties(PhysProperty * pp){
     pp->phi0  = 0.4;
     pp->U0    = 1e-9;
     pp->L0    = 160*1000;
-    pp->V0    = 3.2/100/(365*24*60*60); //3.2 (cm/y)
+    pp->V0    = 20/100/(365*24*60*60); //3.2 (cm/y)
 
     // Non dimensionalization parameters
 
@@ -87,8 +87,14 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     }
 */
 
+    double cut = 0.08;
+
     if (z==0){
-        work[0] = V0;
+        if (point[0]<cut){
+            work[0] = V0 * sin(point[0]/cut*3.14159265358979323846/2.0);
+        } else {
+            work[0] = V0;
+        }
     }
 
     return work; 

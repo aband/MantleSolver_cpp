@@ -108,7 +108,8 @@ quiver(pX, pY, ux, uy);
 %[startx, starty] = meshgrid(-0.005,-0.08:0.004:-0.01)
 %verts = stream2(pX',pY',ux',uy',startx,starty);
 %streamline(verts)
-l = streamslice(pX',pY',ux',uy',1.2);
+l = streamslice(pX',pY',ux',uy',1);
+%l = streamslice(pX',pY',ux',uy');
 
 set(l,'LineWidth',2);
 set(l,'Color','k')
@@ -120,8 +121,8 @@ hold off
 title("Solid Velocity")
 xlabel('x')
 ylabel('y')
-%xlim([-0.5,0.5])
-xlim([0.0,0.5])
+xlim([-0.5,0.5])
+%xlim([0.0,0.5])
 ylim([-0.5,0.0])
 
 %{

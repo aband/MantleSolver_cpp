@@ -2096,6 +2096,17 @@ int Driver::SolveFlow_case(int maxIter, double tolUzawa,
     CreateLinearSys(reducedStokes_, nelem);
     CreateLinearSys(reducedDarcy_, nelem);
 
+    // Check manufactured Darcy system
+    PetscCall(MatView(reducedDarcy_->M,  PETSC_VIEWER_STDOUT_WORLD));
+	 cout << endl << endl;
+    PetscCall(MatView(reducedDarcy_->Kg, PETSC_VIEWER_STDOUT_WORLD));
+	 cout << endl << endl;
+    PetscCall(MatView(reducedDarcy_->B,  PETSC_VIEWER_STDOUT_WORLD));
+	 cout << endl << endl;
+    PetscCall(MatView(reducedDarcy_->Bg, PETSC_VIEWER_STDOUT_WORLD));
+	 cout << endl << endl;
+    PetscCall(MatView(reducedDarcy_->C,  PETSC_VIEWER_STDOUT_WORLD));
+
     CreateCoupledSystem(reducedStokes_, reducedDarcy_, Result_, &K);
 
     CoupledUzawa(Result_, tolUzawa, maxIter);
