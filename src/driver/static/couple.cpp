@@ -1813,6 +1813,8 @@ if (phi_f_e < 1e-16) {phi_f_e = 0.0;}
 //cout << gcell[0] << "  " << gcell[1] << "  " << e << "  " <<  phi_f_e << "  " << endl;
             // =========================================================
 
+//cout <<"Edge : " << e << "  porosity : " << g << " is : " <<  phi_f_e << endl;
+
             for (int j=0; j<8; j++){
                 // With dimension version
                 loc->B[j] += len/2.0*gwe[g]*
@@ -2097,16 +2099,16 @@ int Driver::SolveFlow_case(int maxIter, double tolUzawa,
     CreateLinearSys(reducedDarcy_, nelem);
 
     // Check manufactured Darcy system
-	 cout << "Matrix M : " << endl;
-    PetscCall(MatView(reducedDarcy_->M,  PETSC_VIEWER_STDOUT_WORLD));
-	 cout << endl << endl;
-    PetscCall(MatView(reducedDarcy_->Kg, PETSC_VIEWER_STDOUT_WORLD));
-	 cout << endl << endl;
-    PetscCall(MatView(reducedDarcy_->B,  PETSC_VIEWER_STDOUT_WORLD));
-	 cout << endl << endl;
-    PetscCall(MatView(reducedDarcy_->Bg, PETSC_VIEWER_STDOUT_WORLD));
-	 cout << endl << endl;
-    PetscCall(MatView(reducedDarcy_->C,  PETSC_VIEWER_STDOUT_WORLD));
+	 //cout << "Matrix M : " << endl;
+    //PetscCall(MatView(reducedDarcy_->M,  PETSC_VIEWER_STDOUT_WORLD));
+	 //cout << endl  << "Matrix Kg : "<< endl;
+    //PetscCall(MatView(reducedDarcy_->Kg, PETSC_VIEWER_STDOUT_WORLD));
+	 //cout << endl  << "Matrix B :" << endl;
+    //PetscCall(MatView(reducedDarcy_->B,  PETSC_VIEWER_STDOUT_WORLD));
+	 //cout << endl  << "Matrix Bg : "<< endl;
+    //PetscCall(MatView(reducedDarcy_->Bg, PETSC_VIEWER_STDOUT_WORLD));
+	 //cout << endl << "Matrix C : " << endl;
+    //PetscCall(MatView(reducedDarcy_->C,  PETSC_VIEWER_STDOUT_WORLD));
 
     CreateCoupledSystem(reducedStokes_, reducedDarcy_, Result_, &K);
 

@@ -328,7 +328,7 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         if (it != left_tang.end()){
             type = neumann;
         }
-		  type = dirichlet;
+//		  type = dirichlet;
     } 
 
     // Symmetry condition

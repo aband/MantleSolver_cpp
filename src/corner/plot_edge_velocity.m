@@ -63,9 +63,26 @@ function [] = drawedgevelocity(M, N, mark, folder, name)
 
 		  figure
         quiver(revertgx, revertgy, revalvertx, revalverty); 
+		  hold on
+        l = streamslice(revertgx,revertgy,revalvertx,revalverty,1);
+        set(l,'LineWidth',2);
+        set(l,'Color','k')
+        hold off
 		  title('Vertical Gauss Points');
+
 		  figure
         quiver(horigx, horigy, valhorix, valhoriy); 
+		  hold on
+        l = streamslice(horigx',horigy',valhorix',valhoriy',1);
+        set(l,'LineWidth',2);
+        set(l,'Color','k')
+        hold off
+
 		  title('Horizontal Gauss Points');
  
-
+        figure
+        quiver(revertgx, revertgy, revalvertx, revalverty); 
+		  hold on
+        quiver(horigx, horigy, valhorix, valhoriy); 
+        hold off	
+		  title('Plot Velocities on Gauss Points All together');

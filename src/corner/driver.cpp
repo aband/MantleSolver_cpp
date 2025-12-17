@@ -86,7 +86,7 @@ int main(int argc, char **argv){
                 0.0,
                 mycouple->myPhase.pp);
 
-    ds.showMatrix();
+    //ds.showMatrix();
 
     ds.CreateCoupledSystem();
 

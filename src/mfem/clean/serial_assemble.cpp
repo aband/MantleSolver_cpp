@@ -20,9 +20,11 @@ static int ExtractCellPorosity(const vector<double>& edgeporo,
     poro.edgeporo.clear();
     poro.edgeporo.resize(12);
 
+    int totalvert = (M+1)*N*3;
+
     // Create index set for four edges
-    vector<int> indexSet {(j*(M+1) + i)*3  , (j*M     + i)*3, 
-                          (j*(M+1) + i+1)*3, ((j+1)*M + i)*3}; 
+    vector<int> indexSet {(j*(M+1) + i)*3  , totalvert + (j*M     + i)*3, 
+                          (j*(M+1) + i+1)*3, totalvert + ((j+1)*M + i)*3}; 
 
     for (int e=0; e<4; e++){
     for (int g=0; g<3; g++){

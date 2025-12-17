@@ -152,6 +152,7 @@ int DarcyStokes::AssignLocMatDarcy(const MeshInfo& mi,
             // Zeroth order constant pressure basis is always 1
             vertex nu = basis_.unitnormal(e);
 
+//cout <<"Edge : " << e << "  porosity : " << g << " is : " <<  poro.edgeporo.at(e*gpe.size()+g) << endl;
             for (int j=0; j<8; j++){
                 // With dimension version
                 loc.B[j] += len/2.0*gwe[g]*

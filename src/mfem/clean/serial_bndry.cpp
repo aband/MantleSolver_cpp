@@ -197,9 +197,26 @@ int DarcyStokes::ComputeEssenBndryAll(const MeshInfo& mi,
     return 1;
 }
 
+// Compute Pressure correction on each normal dof
 int DarcyStokes::ComputeNaturBndryAll(const MeshInfo& mi,
                                       PhysProperty * pp,
                                       const std::vector<double>& param){
+
+    // Compute essential boundary condition on every dofs
+    // store "right" and supp dof only on each edge
+
+    // left and right edges
+    for (int j=0; j<mi. MPIglobalCellSize[1]; j++){
+
+
+    }
+
+
+    // bottom and top edges
+    for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
+ 
+
+    }
 
     return 1;
 }

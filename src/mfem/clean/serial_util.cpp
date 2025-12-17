@@ -68,6 +68,18 @@ static int printRedSys(ReducedSys& redsys){
     cout << "Matrix M : " << endl;
     MatView(redsys.M, PETSC_VIEWER_STDOUT_WORLD);
 
+    cout << "Matrix Kg : " << endl;
+    MatView(redsys.Kg, PETSC_VIEWER_STDOUT_WORLD);
+
+    cout << "Matrix B : " << endl;
+    MatView(redsys.B, PETSC_VIEWER_STDOUT_WORLD);
+
+    cout << "Matrix Bg : " << endl;
+    MatView(redsys.Bg, PETSC_VIEWER_STDOUT_WORLD);
+
+    cout << "Matrix C : " << endl;
+    MatView(redsys.C, PETSC_VIEWER_STDOUT_WORLD);
+
     cout << "Essen boundary : " << endl;    
     VecView(redsys.g, PETSC_VIEWER_STDOUT_WORLD);
 
