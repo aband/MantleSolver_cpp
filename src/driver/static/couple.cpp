@@ -2097,6 +2097,7 @@ int Driver::SolveFlow_case(int maxIter, double tolUzawa,
     CreateLinearSys(reducedDarcy_, nelem);
 
     // Check manufactured Darcy system
+	 cout << "Matrix M : " << endl;
     PetscCall(MatView(reducedDarcy_->M,  PETSC_VIEWER_STDOUT_WORLD));
 	 cout << endl << endl;
     PetscCall(MatView(reducedDarcy_->Kg, PETSC_VIEWER_STDOUT_WORLD));
