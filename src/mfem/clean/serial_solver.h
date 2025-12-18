@@ -373,16 +373,25 @@ class DarcyStokes{
 
         // Some supplemental set for local dofs
         // normal dof 
-        std::set<int> top_normal {11,7,6};
-        std::set<int> left_normal {0,3,8};
-        std::set<int> right_normal {1,2,10};
-        std::set<int> bottom_normal {4,5,9};
+        std::set<int> top_normal_stokes {11,7,6};
+        std::set<int> left_normal_stokes {0,3,8};
+        std::set<int> right_normal_stokes {1,2,10};
+        std::set<int> bottom_normal_stokes {4,5,9};
 
+        std::vector<std::set<int>> normal_stokes {left_normal_stokes,
+                                                  bottom_normal_stokes,
+                                                  right_normal_stokes,
+                                                  top_normal_stokes};
         // tangent dof
-        std::set<int> top_tang {3,2};
-        std::set<int> left_tang {7,4};
-        std::set<int> right_tang {5,6};
-        std::set<int> bottom_tang {0,1};
+        std::set<int> top_tang_stokes {3,2};
+        std::set<int> left_tang_stokes {7,4};
+        std::set<int> right_tang_stokes {5,6};
+        std::set<int> bottom_tang_stokes {0,1};
+
+        std::vector<std::set<int>> tang_stokes {left_tang_stokes,
+                                                bottom_tang_stokes,
+                                                right_tang_stokes,
+                                                top_tang_stokes};
 
     private:
 
@@ -408,6 +417,7 @@ class DarcyStokes{
                                                    PhysProperty * pp);
 
         int computeEssenVals(const MeshInfo& mi, int i, int j, int edge, PhysProperty * pp);
+        int computeNaturVals(const MeshInfo& mi, int i, int j, int edge, PhysProperty * pp);
 
         int AssignLocMatDarcy(const MeshInfo& mi,  LocMat& loc, double theta, const poroSet& poro, PhysProperty * pp);
         int AssignLocMatStokes(const MeshInfo& mi, LocMat& loc, double theta, const poroSet& poro, PhysProperty * pp);

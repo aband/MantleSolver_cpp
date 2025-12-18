@@ -197,6 +197,69 @@ int DarcyStokes::ComputeEssenBndryAll(const MeshInfo& mi,
     return 1;
 }
 
+int DarcyStokes::computeNaturVals(const MeshInfo& mi, 
+                                  int i, int j, int edge, PhysProperty * pp){
+
+    // Get glonal cell index
+    indice gcell {i,j};
+
+    // Extract corners of this element
+    basis_.GetCorners(mi, gcell);
+    vertexSet fullCorners = basis_.corners();
+
+    // Extract edge corners and its corresponding normal vector
+    vertexSet edgeCorners = {fullCorners.at((edge+3)%4), 
+                             fullCorners.at(edge)};
+
+    vertex nu = basis_.unitnormal(edge);
+
+    double len = length(edgeCorners);
+
+    // Stokes ================================================================================
+    // For Stokes part q = p_bar - rho_l g z
+    // At phi=0 , q_bar = q_s
+
+    // Evaluate all 12 dofs associated with this perticular cell
+    std::array<int, 12>  elementDOFStokes = br_.LocalToGlobal(mi, gcell);
+
+    // Darcy ================================================================================
+    // For Darcy part q_l = p_l - rho_l g z
+    // Hence it is always zero at natural boundary condition
+
+    std::array<int, 8> elementDOFDarcy = hdiv_.LocalToGlobal(mi, gcell);
+
+    // Integration over edge
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    double work = 0.0;
+    int globaldof;
+
+    // Only compute normal local dofs
+    for (int dof : normal_stokes.at(edge)){
+
+        work = 0.0;
+
+        for (int g=0; g<gwe.size(); g++){
+            vertex mapped = GaussMapPointsEdge({gpe[g]},basis_.corners());
+ 
+            std::array<vertex, 12> brval = br_.ComputeBRmixed(basis_, mapped);
+
+            work += len/2.0*gwe[g]*(brval.at(dof)[0]*nu[0]+
+                                    brval.at(dof)[1]*nu[1])
+                                  * naturvalStokes(mapped, pp);
+        }
+
+        // Assign this value to corresponding position
+        globaldof = elementDOFStokes.at(dof);
+
+        bndryStokesAll.at(globaldof).naturval += work;     
+
+    }
+
+    return 1;
+}
+
 // Compute Pressure correction on each normal dof
 int DarcyStokes::ComputeNaturBndryAll(const MeshInfo& mi,
                                       PhysProperty * pp,
@@ -207,7 +270,9 @@ int DarcyStokes::ComputeNaturBndryAll(const MeshInfo& mi,
 
     // left and right edges
     for (int j=0; j<mi. MPIglobalCellSize[1]; j++){
-
+    
+        computeNaturVals(mi, 0, j, 0, pp);
+        computeNaturVals(mi, mi.MPIglobalCellSize[0]-1, j, 2, pp);
 
     }
 
@@ -215,6 +280,8 @@ int DarcyStokes::ComputeNaturBndryAll(const MeshInfo& mi,
     // bottom and top edges
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
  
+        computeNaturVals(mi, i, 0, 1, pp);
+        computeNaturVals(mi, i, mi.MPIglobalCellSize[1]-1, 3, pp);
 
     }
 
