@@ -324,6 +324,9 @@ static int RearrangeLinearSys(ReducedSys& redsys, const int& nelem){
     PetscCall(MatMult(redsys.Kg, redsys.g, redsys.F));
 
     PetscCall(VecAYPX(redsys.F, -1, redsys.source));
+    // Correct with Neumann boundary condition ====
+    PetscCall(VecAXPY(redsys.F, -1, redsys.neum));
+    // ============================================
 
     // Right hand side G
     PetscCall(VecCreateMPI(PETSC_COMM_WORLD, PETSC_DECIDE, nelem, &redsys.G));

@@ -21,6 +21,7 @@ int DarcyStokes::init(const MeshInfo& mi, PhysProperty * pp, const std::vector<d
 
     // Compute boundary conditions
     ComputeEssenBndryAll(mi,pp,param);
+    ComputeNaturBndryAll(mi,pp,param);
 
     // Mark different types of boundary dofs
     refArrayStokesEssen_ = new int[br_.getDOF()];

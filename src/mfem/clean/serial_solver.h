@@ -184,11 +184,13 @@ int AssignLocRedSys(ReducedSys& redsys,
             }
 
             // Add correction to natural dof ============================================================================
-            auto itFind = refNatur.find(elemDofs.at(row)); 
+            auto itFind = refNatur.find(elemDofs.at(row));
+
             if (itFind != refNatur.end()){
                 const bndryInfo& tmp = bndryAll.at(elemDofs.at(row));
                 PetscCall(VecSetValues(redsys.neum, 1, &idxm, &tmp.naturval, INSERT_VALUES));
             }
+
             // ==========================================================================================================
         }
     }

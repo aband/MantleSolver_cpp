@@ -241,7 +241,7 @@ int DarcyStokes::computeNaturVals(const MeshInfo& mi,
         work = 0.0;
 
         for (int g=0; g<gwe.size(); g++){
-            vertex mapped = GaussMapPointsEdge({gpe[g]},basis_.corners());
+            vertex mapped = GaussMapPointsEdge({gpe[g]},edgeCorners);
  
             std::array<vertex, 12> brval = br_.ComputeBRmixed(basis_, mapped);
 
@@ -252,7 +252,7 @@ int DarcyStokes::computeNaturVals(const MeshInfo& mi,
 
         // Assign this value to corresponding position
         globaldof = elementDOFStokes.at(dof);
-
+//cout << globaldof << "  " << work << endl;
         bndryStokesAll.at(globaldof).naturval += work;     
 
     }

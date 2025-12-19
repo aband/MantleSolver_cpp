@@ -66,7 +66,6 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     }
 */
 
-    //V0 = 1.0;
 
     double cut = 0.1;
 
@@ -78,11 +77,12 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
             work[0] = V0;
         }
 
-    } else if (point[1] < -0.499995){
+    } else if (point[1] < -0.00005){
 
-       work[1] = V0;
+       work[1] = 100*V0;
 
     }
+
 
     return work; 
 }
@@ -140,6 +140,12 @@ double V0 = pp->V0 / pp->u0;
     //return {0.0,0.0};
 }
 
+double naturvalStokes(const vertex& point, PhysProperty * pp){
+
+    //return abs(point[1]);
+	 return 0.0;
+}
+
 // ====================================================================
 const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const indice& global,
@@ -162,7 +168,44 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
 
     bndryType type = dirichlet;
 
-    // Top edge all normal component are set free 
+    // Symmetrical boundary condition 
+    if (global[0] == 0) {
+
+        if (global[1]<mi.MPIglobalCellSize[1]-5){
+
+        it = left_tang.find(local);
+        if (it != left_tang.end()){
+            type = neumann;
+        }
+
+        } 
+		  //else {
+        
+		  //type = dirichlet;
+        
+		  //}
+		  
+		  //type = dirichlet;
+    } 
+
+    // Right side free outflow
+    if (global[0] == mi.MPIglobalCellSize[0]-1){
+
+        //if (global[1] > mi.MPIglobalCellSize[1]-5){
+        //    type = dirichlet;
+        //} else {
+        //   type = neumann;
+        //}
+
+        type = neumann;
+    }
+ 
+    // Bottom edge fixed inflow
+    if (global[1] == 0 ){
+        type = dirichlet;
+    }
+
+    // Top edge dirichlet
     if (global[1] == mi.MPIglobalCellSize[1]-1){
         //it = top_normal.find(local);
         //if (it != top_normal.end()){
@@ -170,26 +213,6 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         //}
         type = dirichlet;
     } 
-
-
-    if (global[0] == 0) {
-        it = left_tang.find(local);
-        if (it != left_tang.end()){
-            type = neumann;
-        }
-    } 
- 
-    if (global[0] == mi.MPIglobalCellSize[0]-1){
-        //it = right_tang.find(local);
-        //if (it != right_tang.end()){
-        //    type = neumann;
-        //}
-        type = neumann;
-    }
-
-    if (global[1] == 0 ){
-        type = dirichlet;
-    }
 
     return type;
 }

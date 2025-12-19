@@ -96,6 +96,8 @@ vertex bndryu(const vertex& point, PhysProperty * pp);
 
 vertex bndryu(const vertex& point, Phase * phase);
 
+double naturvalStokes(const vertex& point, PhysProperty * pp);
+
 const bndryType bndryTypeMarker(const MeshInfo& mi, 
                                 const indice& global,
                                 const int& local);

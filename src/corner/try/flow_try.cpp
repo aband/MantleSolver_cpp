@@ -33,10 +33,11 @@ void AssignPhyProperties(PhysProperty * pp){
 // Constant upwelling velocity ascending model
 vertex bndryVs(const vertex& point, PhysProperty * pp){
 
-    double V0 = pp->V0 / pp->u0 * -1;
+    double V0 = pp->V0 / pp->u0;
 
     vertex work = {0.0,0.0};
 
+/*
     // Test case 3:
     // Corner Flow
     double x, z;
@@ -62,6 +63,33 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
         } else {
             work[0] = pp->U0/pp->u0;
         }
+    }
+*/
+
+    //V0 = 1.0;
+
+    double cut = 0.1;
+
+    if (point[1] > -0.00005){
+
+       if (point[0]<cut){
+            work[0] = V0 * sin(point[0]/cut*3.14159265358979323846/2.0);
+        } else {
+            work[0] = V0;
+        }
+
+    } else if (point[1] < -0.499995){
+
+       if (point[0]<0.5){
+
+       work[1] = V0;
+
+       } else {
+
+       work[1] = -V0;
+
+       }
+
     }
 
     return work; 
@@ -100,7 +128,7 @@ vertex bndryu(const vertex& point, PhysProperty * pp){
     work[0] += coef1 * 0;
     work[1] += coef1 * 1;
 
-    return work;
+    return {0.0,0.0};
 }
 
 // ====================================================================
@@ -131,7 +159,61 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
                                 const int& local,
                                 const std::vector<double>& parameter){
 
-    return dirichlet;
+    // normal dof 
+    std::set<int> top_normal {11,7,6};
+    std::set<int> left_normal {0,3,8};
+    std::set<int> right_normal {1,2,10};
+    std::set<int> bottom_normal {4,5,9};
+
+    // tangent dof
+    std::set<int> top_tang {3,2};
+    std::set<int> left_tang {7,4};
+    std::set<int> right_tang {5,6};
+    std::set<int> bottom_tang {0,1};
+
+    std::set<int>::iterator it;
+
+    bndryType type = dirichlet;
+
+    // Symmetrical boundary condition 
+    if (global[0] == 0) {
+        it = left_tang.find(local);
+        if (it != left_tang.end()){
+            type = neumann;
+        }
+    } 
+
+    // 
+    if (global[0] == mi.MPIglobalCellSize[0]-1){
+        //it = right_tang.find(local);
+        //if (it != right_tang.end()){
+        //    type = neumann;
+        //}
+
+        it = left_tang.find(local);
+        if (it != left_tang.end()){
+            type = neumann;
+        }
+ 
+
+//        type = neumann;
+    }
+ 
+    // Bottom edge fixed inflow
+    if (global[1] == 0 ){
+        type = dirichlet;
+    }
+
+    // Top edge dirichlet
+    if (global[1] == mi.MPIglobalCellSize[1]-1){
+        //it = top_normal.find(local);
+        //if (it != top_normal.end()){
+        //    type = neumann;
+        //}
+        type = dirichlet;
+    } 
+
+    return type;
 }
 
 const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
