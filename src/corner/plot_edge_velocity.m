@@ -70,8 +70,8 @@ function [] = plot_edge_velocity(M, N, mark, folder, name)
 		  figure
         quiver(revertgx, revertgy, revalvertx, revalverty); 
 		  hold on
-        %l = streamslice(revertgx,revertgy,revalvertx,revalverty,1);
-        l = streamline(revertgx,revertgy,revalvertx,revalverty);
+        l = streamslice(revertgx,revertgy,revalvertx,revalverty,1);
+        %l = streamline(revertgx,revertgy,revalvertx,revalverty);
 
         set(l,'LineWidth',2);
         set(l,'Color','k')
@@ -81,8 +81,8 @@ function [] = plot_edge_velocity(M, N, mark, folder, name)
 		  figure
         quiver(horigx, horigy, valhorix, valhoriy); 
 		  hold on
-        %l = streamslice(horigx',horigy',valhorix',valhoriy',1);
-        l = streamline(horigx',horigy',valhorix',valhoriy');
+        l = streamslice(horigx',horigy',valhorix',valhoriy',1);
+        %l = streamline(horigx',horigy',valhorix',valhoriy');
 
         set(l,'LineWidth',2);
         set(l,'Color','k')

@@ -201,6 +201,11 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
  
     // Bottom edge fixed inflow
     if (global[1] == 0 ){
+        //it = bottom_tang.find(local);
+        //if (it != top_tang.end()){
+        //    type = neumann;
+        //}
+
         type = dirichlet;
     }
 
@@ -218,8 +223,10 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         global[1] == mi.MPIglobalCellSize[1]-1){
 
         if (local == 2){
-            type = neumann;
+            type = dirichlet;
         } else if (local == 6){
+            type = neumann;
+        } else if (local == 10){
             type = neumann;
         }
 
