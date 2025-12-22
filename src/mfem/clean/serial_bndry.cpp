@@ -43,10 +43,10 @@ double DarcyStokes::AssignBndrySupVal(const vertexSet& edgeCorner,
     //vertex DiriValR = Dirichlet_val(edgeCorner[1]);
     vertex DiriValL = bndryVs(edgeCorner[0], pp); 
     vertex DiriValR = bndryVs(edgeCorner[1], pp);
-
     // Calculate averaged unit normal component
     // of assigned dirichlet boundary values
     double averaged = 0.0;
+
     for (int g=0; g<gwe.size(); g++) {
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edgeCorner);
 
@@ -144,7 +144,7 @@ int DarcyStokes::computeEssenVals(const MeshInfo& mi,
     vertex essenVal = bndryVs(edgeCorners.at(1), pp);
 
     double supVal = AssignBndrySupVal(edgeCorners, nu, pp);
-
+//cout << i << "  " << j << "  "  << edge  << " " << supVal << endl << endl;
     std::array<double,3> tmpVal {essenVal[0], essenVal[1], supVal};
 
     // Store three values

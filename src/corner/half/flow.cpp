@@ -79,7 +79,7 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
 
     } else if (point[1] < -0.00005){
 
-       work[1] = 100*V0;
+       work[1] = V0;
 
     }
 
@@ -142,8 +142,7 @@ double V0 = pp->V0 / pp->u0;
 
 double naturvalStokes(const vertex& point, PhysProperty * pp){
 
-    //return abs(point[1]);
-	 return 0.0;
+    return abs(point[1]);
 }
 
 // ====================================================================
@@ -213,6 +212,18 @@ const bndryType bndryTypeMarker(const MeshInfo& mi,
         //}
         type = dirichlet;
     } 
+
+    // specificaly treat top right corner dof
+    if (global[0] == mi.MPIglobalCellSize[0]-1 && 
+        global[1] == mi.MPIglobalCellSize[1]-1){
+
+        if (local == 2){
+            type = neumann;
+        } else if (local == 6){
+            type = neumann;
+        }
+
+    }
 
     return type;
 }

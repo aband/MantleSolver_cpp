@@ -1,4 +1,6 @@
-function [] = drawedgevelocity(M, N, mark, folder, name)
+
+
+function [] = plot_edge_velocity(M, N, mark, folder, name)
 
         % Get gauss grids
         filename = strcat(folder, '/build/vertgaussgridx.dat');
@@ -34,7 +36,9 @@ function [] = drawedgevelocity(M, N, mark, folder, name)
         horidof = M*(N+1)*3;
 
         % Get x component
-		  filename = strcat(folder,'/build/',name,'x', string(mark),'.dat');
+		  %filename = strcat(folder,'/build/',name,'x', string(mark),'.dat');
+		  filename = strcat(folder,'/build/',name,'x', int2str(mark),'.dat');
+
 		  fileID = fopen(filename, 'r');
 		  val = fscanf(fileID, '%f', [1,Inf]);
         valvert = val(1:vertdof);
@@ -48,7 +52,9 @@ function [] = drawedgevelocity(M, N, mark, folder, name)
 		  valhorix = reshape(valhorix, M*3,N+1);
 
         % Get y component
-		  filename = strcat(folder,'/build/',name,'y', string(mark),'.dat');
+		  %filename = strcat(folder,'/build/',name,'y', string(mark),'.dat');
+		  filename = strcat(folder,'/build/',name,'y', int2str(mark),'.dat');
+
 		  fileID = fopen(filename, 'r');
 		  val = fscanf(fileID, '%f', [1,Inf]);
         valvert = val(1:vertdof);
@@ -64,7 +70,9 @@ function [] = drawedgevelocity(M, N, mark, folder, name)
 		  figure
         quiver(revertgx, revertgy, revalvertx, revalverty); 
 		  hold on
-        l = streamslice(revertgx,revertgy,revalvertx,revalverty,1);
+        %l = streamslice(revertgx,revertgy,revalvertx,revalverty,1);
+        l = streamline(revertgx,revertgy,revalvertx,revalverty);
+
         set(l,'LineWidth',2);
         set(l,'Color','k')
         hold off
@@ -73,7 +81,9 @@ function [] = drawedgevelocity(M, N, mark, folder, name)
 		  figure
         quiver(horigx, horigy, valhorix, valhoriy); 
 		  hold on
-        l = streamslice(horigx',horigy',valhorix',valhoriy',1);
+        %l = streamslice(horigx',horigy',valhorix',valhoriy',1);
+        l = streamline(horigx',horigy',valhorix',valhoriy');
+
         set(l,'LineWidth',2);
         set(l,'Color','k')
         hold off
