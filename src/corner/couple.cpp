@@ -199,3 +199,22 @@ int couple::CreateMesh(const int& M, const int& N,
 
     //return 1;
 //}
+
+int couple::PrepareTransport(TransportVariable& H,
+                             TransportVariable& C,
+                             double (*initHD)(const valarray<double>& point, 
+                                              const vector<double>& param),
+                             double (*initCD)(const valarray<double>& point, 
+                                              const vector<double>& param)){
+
+    // Create global solution vectors
+    PetscCall(DMCreateGlobalVector(dmu, &H.sol)); 
+    PetscCall(DMCreateGlobalVector(dmu, &C.sol)); 
+
+    // Assign cell averaged values as initial condition
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &H.sol, {H_,0.0}, initCD);
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &C.sol, {H_,0.0}, initHD);
+
+
+    return 1;
+}

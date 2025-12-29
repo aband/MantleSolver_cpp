@@ -12,6 +12,7 @@
 #include "util.h"
 
 #include "serial_solver.h"
+#include "transport.h"
 
 extern "C"{
 #include "mesh.h"
@@ -22,10 +23,21 @@ extern "C"{
 // MFEM parameter header file
 #include "myFunc.h"
 
+// MLWENO part
+#include "tensorstencilpoly.h"
+#include "reconstruction.h"
+
 // Coupling require the following values evaluated on the cell edges and cell
 // face quadrature points
 // This is a new strstegy. Everything evaluated at each gauss points, being 
 // stored and passed between flow and transport solver.
+
+// Initialization functions for composition and enthalpy
+double InitCD(const valarray<double>& point,
+              const vector<double>& param);
+
+double InitHD(const valarray<double>& point,
+              const vector<double>& param);
 
 // Edge values are always vertical edges first then horizontal edges
 class couple {
@@ -65,13 +77,20 @@ class couple {
 
          int printGaussPoints();
 
-         Vec globalCD, globalHD;
-
         /**!
          * Create boundary condition vectors
          */
         int PrepareFlow();
 
+        /**!
+         * Create two transport variables 
+         */
+        int PrepareTransport(TransportVariable& H,
+                             TransportVariable& C,
+                             double (*initHD)(const valarray<double>& point, 
+                                              const vector<double>& param),
+                             double (*initCD)(const valarray<double>& point, 
+                                              const vector<double>& param));
         /**!
          * Solve flow at the given time step.
          */

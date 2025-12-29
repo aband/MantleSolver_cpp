@@ -58,8 +58,10 @@ int main(int argc, char **argv){
     int interval = 1;
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-interval", &interval, NULL));
 
-    // ==============================================================================
+    int enable_transport = 0;
+    PetscCall(PetscOptionsGetInt(NULL, NULL, "-transport", &enable_transport, NULL));
 
+    // ==============================================================================
     couple * mycouple = new couple(); 
 
     // Initialize coupling variables
@@ -74,7 +76,7 @@ int main(int argc, char **argv){
 
     mycouple->computePorosity();
 
-    mycouple->printedgeporosity(1);
+    //mycouple->printedgeporosity(1);
 
     // Initialize darcy stokes solver
     DarcyStokes ds = DarcyStokes(mycouple->mi, mycouple->myPhase.pp, {0.0});
@@ -95,7 +97,17 @@ int main(int argc, char **argv){
 
     ds.ReconstructEdgeVel(mycouple->edgegauss, mycouple->mi);
 
-    mycouple->printedgevel(1, ds.StokesVel, ds.DarcyVel);
+    //mycouple->printedgevel(1, ds.StokesVel, ds.DarcyVel);
+
+    if (enable_transport){
+        cout << "Transport is enabled." << endl;
+
+        TransportVariable H = TransportVariable();
+        TransportVariable C = TransportVariable();
+
+        mycouple->PrepareTransport(H, C, InitHD, InitCD);       
+
+	 }
 
     return 1;
 }

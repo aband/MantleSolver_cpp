@@ -177,13 +177,15 @@ int printGaussGrid(int M, int N, const MeshInfo& mi){
 }
 
 int getQuadVelVert(vertexSet& quadvel, 
-                   const vector<vertex>& velocityField, int i, int j, int M, int N){
+                   const vector<vertex>& velocityField, 
+						 int i, int j, int M, int N){
 
     return 1;
 }
 
 int getQuadVelHori(vertexSet& quadvel, 
-                   const vector<vertex>& velocityField, int i, int j, int M, int N){
+                   const vector<vertex>& velocityField, 
+						 int i, int j, int M, int N){
 
     return 1;
 }

@@ -247,7 +247,6 @@ int Driver::computeEffVel_Nonlinear(const vector<vertex>& gaussp,
 												vector<double>& nonlindfduout,
 												vector<vertex>& nonlinvel){
 
-
     // Extract porosity on both sides of the edges
     vector<double> phiin ; phiin.resize(gaussp.size());
     vector<double> phiout; phiout.resize(gaussp.size());
