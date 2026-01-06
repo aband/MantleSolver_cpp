@@ -39,6 +39,11 @@ double InitCD(const valarray<double>& point,
 double InitHD(const valarray<double>& point,
               const vector<double>& param);
 
+// Create output filename 
+char * GetFilenameAdd(const char * fieldname, const char * add, int mark);
+
+char * GetFilename(const char * fieldname, int mark);
+
 // Edge values are always vertical edges first then horizontal edges
 class couple {
 

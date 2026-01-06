@@ -126,5 +126,3 @@ int rk2(double dt, int Nt, Vec * insol, const MeshInfo& mi,
 
     return 1;
 }
-
-

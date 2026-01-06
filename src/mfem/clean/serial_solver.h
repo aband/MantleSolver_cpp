@@ -343,9 +343,9 @@ int ExtractVelocityEdge(vector<vertex>& edgeVelocity,
 class DarcyStokes{
     public:
         DarcyStokes(const MeshInfo& mi, PhysProperty * pp, const std::vector<double>& param) {init(mi, pp, param);};
-        ~DarcyStokes() 
-         {delete refArrayStokesEssen_; 
-          delete refArrayDarcyEssen_;};
+        ~DarcyStokes() {};
+//         {delete refArrayStokesEssen_; 
+//          delete refArrayDarcyEssen_;};
 
         vector<vertex> StokesVel; 
         vector<vertex> DarcyVel;

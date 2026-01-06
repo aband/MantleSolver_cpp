@@ -1,4 +1,5 @@
 #include "couple.h"
+#include "transport.h"
 // Transport boundary  condition for thermal and compositional conditions
 
 // Initialize dimensionless composition and enthalpy
@@ -21,4 +22,9 @@ double InitHD(const valarray<double>& point,
     if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
 
     return HD;
+}
+
+double dfdu(double fneg, double fpos, double uneg, double upos, double alpha){
+    // linear transport
+    return 1.0;
 }

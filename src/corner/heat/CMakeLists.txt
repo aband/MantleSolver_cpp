@@ -140,6 +140,8 @@ target_link_libraries(mlweno_lib
 # ===================================================================
 add_library(transport_lib
 		  ${SRC}/transport_array/clean/advection.cpp
+		  ${SRC}/transport_array/clean/transport.cpp
+		  ${SRC}/transport_array/clean/print.cpp
 )
 
 # Specify any additional include directories if needed

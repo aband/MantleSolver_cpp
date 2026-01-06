@@ -100,14 +100,25 @@ int main(int argc, char **argv){
     //mycouple->printedgevel(1, ds.StokesVel, ds.DarcyVel);
 
     if (enable_transport){
-        cout << "Transport is enabled." << endl;
 
-        TransportVariable H = TransportVariable();
-        TransportVariable C = TransportVariable();
+        cout << "Transport is enabled here." << endl;
 
-        mycouple->PrepareTransport(H, C, InitHD, InitCD);       
+        TransportVariable myH = TransportVariable();
+        TransportVariable myC = TransportVariable();
 
-	 }
+        mycouple->PrepareTransport(myH, myC, InitHD, InitCD);       
+
+        myH.CreateDefaultReconstruction(mycouple->mi);
+        myC.CreateDefaultReconstruction(mycouple->mi);
+
+        myH.Evaluate(mycouple->mi,mycouple->dmu);        
+        myC.Evaluate(mycouple->mi,mycouple->dmu);
+
+        myH.Print(mycouple->mi, GetFilename("H", 1));
+        myC.Print(mycouple->mi, GetFilename("C", 1));
+
+    }
+
 
     return 1;
 }
