@@ -46,7 +46,7 @@ int main(int argc, char **argv){
     double Tmax = 20; // Stop at the first step 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tmax", &Tmax, NULL)); 
 
-    double dt = 1;
+    double dt = 0.0001;
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-dt", &dt, NULL));
 
     int showPhase = 0;
@@ -57,9 +57,6 @@ int main(int argc, char **argv){
 
     int interval = 1;
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-interval", &interval, NULL));
-
-    int enable_transport = 0;
-    PetscCall(PetscOptionsGetInt(NULL, NULL, "-transport", &enable_transport, NULL));
 
     // ==============================================================================
     couple * mycouple = new couple(); 
@@ -73,6 +70,7 @@ int main(int argc, char **argv){
                          physicsScale, meshType);
 
     mycouple->printGaussPoints();
+    mycouple->printCellGrids();
 
     mycouple->computePorosity();
 
@@ -99,25 +97,43 @@ int main(int argc, char **argv){
 
     mycouple->printedgevel(1, ds.StokesVel, ds.DarcyVel);
 
-    if (enable_transport){
+    cout << "Transport is enabled here." << endl;
 
-        cout << "Transport is enabled here." << endl;
+    TransportVariable myH = TransportVariable();
+    TransportVariable myC = TransportVariable();
 
-        TransportVariable myH = TransportVariable();
-        TransportVariable myC = TransportVariable();
+    mycouple->PrepareTransport(myH, myC, InitHD, InitCD);       
 
-        mycouple->PrepareTransport(myH, myC, InitHD, InitCD);       
+    myH.CreateDefaultReconstruction(mycouple->mi);
+    myC.CreateDefaultReconstruction(mycouple->mi);
 
-        myH.CreateDefaultReconstruction(mycouple->mi);
-        myC.CreateDefaultReconstruction(mycouple->mi);
+//    myH.Evaluate(mycouple->mi,mycouple->dmu);        
+//    myC.Evaluate(mycouple->mi,mycouple->dmu);
 
-        myH.Evaluate(mycouple->mi,mycouple->dmu);        
-        myC.Evaluate(mycouple->mi,mycouple->dmu);
+//    myH.Print(mycouple->mi, GetFilename("H", 1));
+//    myC.Print(mycouple->mi, GetFilename("C", 1));
 
-        myH.Print(mycouple->mi, GetFilename("H", 1));
-        myC.Print(mycouple->mi, GetFilename("C", 1));
+//    Vec fluxH;
+//    VecDuplicate(myH.sol,&fluxH);
+//    myH.cellflux_all(mycouple->mi, 1e-4, mycouple->dmu, mycouple->edgegauss, ds.StokesVel, false, 0, &fluxH);
 
+//    mycouple->printCellScalar(&myH.sol, "cellH", 1);
+//    mycouple->printCellScalar(&myH.sol, "cellH", 2);
+
+    int maxT = 1;
+
+    // Euler forwarding
+    for (int t=0; t<maxT; t++){
+        myH.Evaluate(mycouple->mi, mycouple->dmu);
+        Vec fluxH;
+        VecDuplicate(myH.sol, &fluxH);
+        myH.cellflux_all(mycouple->mi, 1e-4, mycouple->dmu, mycouple->edgegauss, ds.StokesVel, false, 0, &fluxH);
+        mycouple->printCellScalar(&fluxH, "fluxH", t+1);
+        PetscCall(VecAXPY(myH.sol, dt, fluxH)); 
+        //mycouple->printCellScalar(&myH.sol, "cellH", t+1);
     }
+
+    //VecView(fluxH, PETSC_VIEWER_STDOUT_WORLD);
 
     return 1;
 }

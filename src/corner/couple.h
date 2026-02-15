@@ -82,6 +82,8 @@ class couple {
 
          int printGaussPoints();
 
+         int printCellGrids();
+
         /**!
          * Create boundary condition vectors
          */
@@ -117,6 +119,9 @@ class couple {
         // edge velocity
         int printedgevel(int mark, const vector<vertex>& stokesvel,
                                    const vector<vertex>& darcyvel);
+
+        // cell center scalar
+        int printCellScalar(Vec * sol, const char * fieldname, int mark);
 
         // Coupling variables
         vector<vertex> edgegauss;

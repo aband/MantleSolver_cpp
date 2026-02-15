@@ -139,7 +139,7 @@ target_link_libraries(mlweno_lib
 
 # ===================================================================
 add_library(transport_lib
-		  #${SRC}/transport_array/clean/flux.cpp
+		  ${SRC}/transport_array/clean/flux.cpp
 		  ${SRC}/transport_array/clean/transport.cpp
 		  ${SRC}/transport_array/clean/print.cpp
 )
@@ -174,6 +174,8 @@ target_include_directories(couple_lib
 		  PUBLIC ${SRC}/mfem
 		  PUBLIC ${SRC}/mfem/clean
 		  PUBLIC ${SRC}/corner
+		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/transport_array/clean
 )
 
 target_link_libraries(couple_lib
@@ -186,7 +188,7 @@ target_link_libraries(couple_lib
 )
 
 add_executable(driver
-		  ${SRC}/corner/driver.cpp
+		  ${SRC}/corner/transport_alone.cpp
 )
 
 target_include_directories(driver

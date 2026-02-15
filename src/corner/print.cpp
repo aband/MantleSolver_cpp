@@ -47,6 +47,24 @@ int couple::printGaussPoints(){
     return 1;
 }
 
+int couple::printCellGrids(){
+
+    FILE * cellgridx = fopen("cellgridx.dat", "w");
+    FILE * cellgridy = fopen("cellgridy.dat", "w");
+
+    for (int j=0; j<N_; j++){
+    for (int i=0; i<M_; i++){
+
+        fprintf(cellgridx, "%e ", cellcenter.at(j*M_+i)[0]);
+        fprintf(cellgridy, "%e ", cellcenter.at(j*M_+i)[1]);
+
+    }}
+
+    fclose(cellgridx);
+    fclose(cellgridy);
+    return 1;
+}
+
 char * GetFilename(const char * fieldname, int mark){
 
     char * filename = (char *)malloc(strlen(fieldname)+10+4);
@@ -72,6 +90,31 @@ char * GetFilenameAdd(const char * fieldname, const char * add, int mark){
     strcat(filename, ".dat");
 
     return filename;
+}
+
+int couple::printCellScalar(Vec * sol, const char * fieldname, int mark){
+
+    Vec temp = *sol;
+
+    FILE * file = fopen(GetFilename(fieldname, mark), "w");
+
+    for(int j=0; j<N_; j++){
+    for(int i=0; i<M_; i++){
+
+        double val;
+        indice index {i,j};
+
+        int nelem = FlatIndic(mi, index);
+
+        PetscCall(VecGetValues(temp,1, &nelem, &val));
+
+        fprintf(file, "%.16f ", abs(val));
+
+    }fprintf(file, "\n");}
+
+    fclose(file);
+
+    return 1;
 }
 
 int couple::printedgeval(int mark, const vector<double>& val,

@@ -7,7 +7,8 @@ double InitCD(const valarray<double>& point,
               const vector<double>& param){
 
     // Constant composition value 
-    return 0.04;
+    return 0.00;
+	 //return 1.0; 
 }
 
 double InitHD(const valarray<double>& point,
@@ -53,8 +54,12 @@ int diriBndry(const vector<vertex>& points,
 
         if (flag == 0){
 
-            value.at(g) = 0.0;
- 
+            if (points.at(g)[1] == -0.5 && points.at(g)[0]>0.2 && points.at(g)[0]<0.3){
+                value.at(g) = 0.1;
+            } else {
+                value.at(g) = 0.0;
+            }
+
         } else {
 
             value.at(g) = 0.0;

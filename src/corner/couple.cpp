@@ -215,6 +215,5 @@ int couple::PrepareTransport(TransportVariable& H,
     SimpleInitialValue(dmMesh, dmu, &globalmesh, &H.sol, {H_,0.0}, initCD);
     SimpleInitialValue(dmMesh, dmu, &globalmesh, &C.sol, {H_,0.0}, initHD);
 
-
     return 1;
 }
