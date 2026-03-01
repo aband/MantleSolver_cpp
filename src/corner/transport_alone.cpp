@@ -120,18 +120,23 @@ int main(int argc, char **argv){
 //    mycouple->printCellScalar(&myH.sol, "cellH", 1);
 //    mycouple->printCellScalar(&myH.sol, "cellH", 2);
 
+    int mark = 1;
+
     // Euler forwarding
     for (int t=0; t<Tmax; t++){
-        myH.Evaluate(mycouple->mi, mycouple->dmu);
-        Vec fluxH;
-        VecDuplicate(myH.sol, &fluxH);
-        myH.cellflux_all(mycouple->mi, 1e-5, mycouple->dmu, mycouple->edgegauss, ds.StokesVel, true, 0, &fluxH);
-        //mycouple->printCellScalar(&fluxH, "fluxH", t+1);
-        PetscCall(VecAXPY(myH.sol, dt, fluxH));
-        mycouple->printCellScalar(&myH.sol, "cellH", t+1);
+        myC.Evaluate(mycouple->mi, mycouple->dmu);
+        Vec fluxC;
+        VecDuplicate(myC.sol, &fluxC);
+        myC.cellflux_all(mycouple->mi, 1e-5, mycouple->dmu, mycouple->edgegauss, ds.StokesVel, true, 0, &fluxC);
+
+        //VecView(fluxH, PETSC_VIEWER_STDOUT_WORLD);
+        PetscCall(VecAXPY(myC.sol, -1*dt, fluxC));
+		  if (t%50 == 0){
+            mycouple->printCellScalar(&myC.sol, "cellC", mark);
+				mark ++ ;
+		  }
     }
 
-    //VecView(fluxH, PETSC_VIEWER_STDOUT_WORLD);
 
     return 1;
 }

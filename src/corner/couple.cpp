@@ -212,8 +212,78 @@ int couple::PrepareTransport(TransportVariable& H,
     PetscCall(DMCreateGlobalVector(dmu, &C.sol)); 
 
     // Assign cell averaged values as initial condition
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &H.sol, {H_,0.0}, initCD);
-    SimpleInitialValue(dmMesh, dmu, &globalmesh, &C.sol, {H_,0.0}, initHD);
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &H.sol, {H_,0.0}, initHD);
+    SimpleInitialValue(dmMesh, dmu, &globalmesh, &C.sol, {H_,0.0}, initCD);
+
+    return 1;
+}
+
+int couple::PhaseSplit(TransportVariable& H, 
+                       TransportVariable& C){
+
+    double thisH = 0.0;
+    double thisC = 0.0;
+
+    // Pressure
+    double pressure = 0.0;
+
+    int celldof = 0;
+    int edgedof = 0;
+    int cellgaussdof = 0; 
+
+    // Clear all the phase variables 
+    edgeporo.clear();
+    edgeporo.resize(M_*N_*12);
+
+    cellporo.clear();
+    cellporo.resize(M_*N_*9);
+
+    average_poro.clear(); 
+    average_poro.resize(M_*N_);
+
+    for (int j=0; j<N_; j++){
+    for (int i=0; i<M_; i++){
+       
+        celldof = j*M_+i;
+
+        // Edge gauss points
+        for (int e=0; e<3*4; e++){
+            edgedof = celldof*12 + e;
+            vertex edgep = edgegauss.at(edgedof);
+
+            pressure = myPhase.pPtr->GetStaticP(-1*edgep[1], myPhase.pPtr->l0);
+
+            thisH = H.my_recon.at(celldof)->elem_val.at(e);
+            thisC = C.my_recon.at(celldof)->elem_val.at(e);
+
+            myPhase.pPtr->evalPhase(thisH, thisC, pressure);
+
+            // Store evaluated values
+            edgeporo.at(edgedof) = myPhase.pPtr->pc.phil;
+        }
+
+        // Cell gauss points
+        for (int g=0; g<9; g++){
+            cellgaussdof = celldof*9 + g;
+            vertex cellp = cellgauss.at(cellgaussdof);
+
+            pressure = myPhase.pPtr->GetStaticP(-1*cellp[1], myPhase.pPtr->l0);
+
+            thisH = H.cellgauss.at(cellgaussdof);
+            thisC = C.cellgauss.at(cellgaussdof);
+
+            myPhase.pPtr->evalPhase(thisH, thisC, pressure);
+            cellporo.at(cellgaussdof) = myPhase.pPtr->pc.phil; 
+        }
+
+        // Center point
+        vertex centerp = cellcenter.at(celldof);
+
+        pressure = myPhase.pPtr->GetStaticP(-1*centerp[1], myPhase.pPtr->l0);
+
+        thisH = H.cellcenter.at(celldof);
+        thisC = C.cellcenter.at(celldof);
+    }}
 
     return 1;
 }

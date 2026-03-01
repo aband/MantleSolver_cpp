@@ -109,6 +109,12 @@ class couple {
          */
         int CreateScatterVec();
 
+        /**!
+         * Split computational domain into different phase regions
+         */
+        int PhaseSplit(TransportVariable& H, 
+                       TransportVariable& C);
+
         // Actual coupling functions
         int computePorosity();
 
@@ -123,15 +129,23 @@ class couple {
         // cell center scalar
         int printCellScalar(Vec * sol, const char * fieldname, int mark);
 
-        // Coupling variables
+        /**!
+         * Coordinates evaluated at different positions
+         */
         vector<vertex> edgegauss;
         vector<vertex> cellgauss;
         vector<vertex> cellcenter;
 
+        /**!
+         * Porosity evaluated at different positions
+         */
         vector<double> edgeporo;
         vector<double> cellporo;
         vector<double> average_poro;
 
+        /**!
+         * Different velocities
+         */
         vector<vertex> phasevel;
         vector<vertex> effvel;
         vector<vertex> solidvel;
@@ -141,8 +155,6 @@ class couple {
         // Parameters
         double L_, H_;
         int M_, N_;
-
-        // Primary variables
 
         // scalar values on edges
         int printedgeval(int mark, const vector<double>& val,
@@ -155,7 +167,6 @@ class couple {
         // cell center values
         int printcellval(int mark, const vector<double>& val,
                                    const char * fieldname);
-
 };
 
 #endif

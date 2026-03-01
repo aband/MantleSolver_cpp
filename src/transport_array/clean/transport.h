@@ -28,6 +28,12 @@ class TransportVariable{
         // Global vector holding the solution
         Vec sol; 
 
+        // Extra evaluated values
+        vector<double> cellgauss;
+        vector<double> cellcenter;
+
+        vector<reconstruction*> my_recon;
+
         // Create Default (3,2) reconstruction
         int CreateDefaultReconstruction(const MeshInfo& mi);
 
@@ -58,13 +64,14 @@ class TransportVariable{
             vector<double> sigma_lg;
             vector<double> sigma_sm;
 
-            vector<reconstruction*> my_recon;
-
             // Update reconstruction nonlinear weights
             int UpdateRecon(const MeshInfo& mi, double ** locvals);	
 
             // Evaluate reconstruction at all the gauss points
             int EvaluateEdge(int i, int j, const MeshInfo& mi, double ** locvals);
+
+            // Evaluate reconstruction at other points
+            int EvaluateExtra(int i, int j, const MeshInfo& mi, double ** locvals);
 
             // Compute advective flux
             double advflux_edge(const MeshInfo& mi, 

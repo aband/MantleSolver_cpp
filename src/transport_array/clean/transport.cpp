@@ -77,6 +77,10 @@ int TransportVariable::CreateReconstruction(const MeshInfo& mi,
                              sten_lg_pre, sten_sm_pre, mi,{i,j});
     }}
 
+    // Allocate memory for extra evaluations
+    cellgauss.resize(M*N*9);
+    cellcenter.resize(M*N);
+
     return 1;
 }
 
@@ -126,7 +130,8 @@ int TransportVariable::Evaluate(const MeshInfo& mi, DM dmu){
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 
-        EvaluateEdge(i, j, mi, lu);
+        //EvaluateEdge(i, j, mi, lu);
+        EvaluateExtra(i, j, mi, lu);
 
     }}
 
@@ -160,6 +165,47 @@ int TransportVariable::EvaluateEdge(int i, int j, const MeshInfo& mi, double ** 
     }
 
     my_recon.at(j*mi.MPIglobalCellSize[0]+i)->eval(locvals, gaussp, stenlg, stensm); 
+
+    return 1;
+}
+
+// Evaluate gauss points on the edges and inside the cells
+int TransportVariable::EvaluateExtra(int i, int j, const MeshInfo& mi, double ** locvals){
+
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+    const valarray<double>& gwf = GaussWeightsFace;
+    const vector<vertex>&   gpf = GaussPointsFace;
+
+    vertexSet corners = extractCorners(mi, {i,j});
+
+    vector<vertex> gaussp;
+    gaussp.resize(4*gpe.size());
+
+    // Evaluate at edge points
+    vector<indice> edgeBound {{3,0},{0,1},{2,1},{3,2}};
+
+    for (int e=0; e<4; e++){
+        vertexSet edge = {corners.at(edgeBound.at(e)[0]), corners.at(edgeBound.at(e)[1])};
+
+        for (int g=0; g<gpe.size(); g++){
+            gaussp.at(e*gpe.size()+g) = GaussMapPointsEdge({gpe[g]}, edge);
+        }
+    }
+
+    my_recon.at(j*mi.MPIglobalCellSize[0]+i)->eval(locvals, gaussp, stenlg, stensm); 
+
+    // Evaluate at cell points
+    for (int g=0; g<(int)gwf.size(); g++){
+        vertex cellmapped = GaussMapPointsFace(gpf[g], corners);
+        cellgauss.at(j*mi.MPIglobalCellSize[0]+i) = 
+					 my_recon.at(j*mi.MPIglobalCellSize[0]+i)->eval(locvals,cellmapped,stenlg,stensm);
+    }	
+
+    // Evaluate at cell center
+    vertex cellcentergrid = GaussMapPointsFace({0.0,0.0}, corners);
+    cellcenter.at(j*mi.MPIglobalCellSize[0]+i) = 
+				my_recon.at(j*mi.MPIglobalCellSize[0]+i)->eval(locvals,cellcentergrid,stenlg,stensm);
 
     return 1;
 }

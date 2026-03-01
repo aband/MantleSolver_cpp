@@ -311,6 +311,9 @@ int DarcyStokes::Assemble(const MeshInfo& mi,
     AssembleReducedSys(reducedStokes_);
     AssembleReducedSys(reducedDarcy_);
 
+//    PetscCall(VecView(reducedDarcy_.neum, PETSC_VIEWER_STDOUT_WORLD));
+//    PetscCall(VecView(reducedStokes_.neum, PETSC_VIEWER_STDOUT_WORLD));
+
     PetscCall(MatAssemblyBegin(K,MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyEnd(K,MAT_FINAL_ASSEMBLY));
 

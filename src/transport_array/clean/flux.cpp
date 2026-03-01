@@ -165,8 +165,8 @@ double TransportVariable::advflux_edge(const MeshInfo& mi,
             gLF = find_max(abs(dfdu(uneg.at(g))),abs(dfdu(upos.at(g))))*gLF;
         }
 
-        //work += gwe[g] * LFflux(fpos, fneg, upos.at(g), uneg.at(g), gLF) * len/2.0;
-        work += gwe[g] * LFflux(fpos, fneg, fpos, fneg, gLF) * len/2.0;
+        work += gwe[g] * LFflux(fpos, fneg, upos.at(g), uneg.at(g), gLF) * len/2.0;
+        //work += gwe[g] * LFflux(fpos, fneg, fpos, fneg, gLF) * len/2.0;
     }
 
     return work;
@@ -303,7 +303,7 @@ int TransportVariable::advflux_edge_all(const MeshInfo& mi,
 						  // Assign inflow dirichlet values 
                     diriBndry(thisedgegaussp, uneg, bndryselect);
 
-						  thisflux = advflux_edge(mi, thisedgevel, uneg, uneg, uniformEdge, localLF, gLF); 
+						  thisflux = -1*advflux_edge(mi, thisedgevel, uneg, uneg, uniformEdge, localLF, gLF); 
 
 					 } else if (bndrytype == 2){
 
@@ -345,12 +345,8 @@ int TransportVariable::advflux_edge_all(const MeshInfo& mi,
 }
 
 // ======================================================================
-
 /*
-double TransportVariable::difflux_edge(const MeshInfo& mi,
-                                       const vector<double>& sampleneg,
-													const vector<double>& samplepos,
-													const ){
+double TransportVariable::difflux_edge(){
 
     double work  = 0.0;
 
@@ -358,7 +354,8 @@ double TransportVariable::difflux_edge(const MeshInfo& mi,
 
     return work;
 }
-
+*/
+/*
 int TransportVariable::difflux_edge_all(const MeshInfo& mi,
                                         int xSize, int ySize, int offset,
                                         int xMaxCell, int yMaxCell,
@@ -422,16 +419,19 @@ int TransportVariable::cellflux_all(const MeshInfo& mi,
        int left   = j*(M+1) + i;
        int right  = j*(M+1) + i+1;
 
-       f[j][i] = -1*(hori.at(bottom) - hori.at(top) + vert.at(left) - vert.at(right))/area;
+       f[j][i] = (hori.at(bottom) - hori.at(top) + vert.at(left) - vert.at(right))/area;
 
-//       cout << "This cell " << i << "  " << j << endl
-//					<<"Bottom : " << hori.at(bottom) << endl 
-//					<<"Top    : " << hori.at(top) << endl
-//					<<"Left   : " << vert.at(left) << endl
-//					<<"Right  : " << vert.at(right)<< endl
-//					<<"Total  : " << f[j][i] << endl << endl;
+/*
+       cout << "This cell " << i << "  " << j << endl
+					<<"Bottom : " << hori.at(bottom) << endl 
+					<<"Top    : " << hori.at(top) << endl
+					<<"Left   : " << vert.at(left) << endl
+					<<"Right  : " << vert.at(right)<< endl
+					<<"Total  : " << f[j][i] << endl << endl;
+
+    }cout << endl;}
+*/
       }}
-//    }cout << endl;}
 
     DMDAVecRestoreArray(dmu, flux, &f);
  

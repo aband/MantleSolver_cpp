@@ -42,7 +42,9 @@ double EUTECTIC::phase::GetTDp(const double& TD,
 }
 
 double EUTECTIC::phase::GetStaticP(const double& zD,
-                                   const double& l0) const{
+                                   const double& l0) {
+    lithoP = rho*g*zD*l0;
+
     return rho*g*zD*l0;
 }
 

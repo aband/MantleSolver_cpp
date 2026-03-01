@@ -276,7 +276,6 @@ int DarcyStokes::ComputeNaturBndryAll(const MeshInfo& mi,
 
     }
 
-
     // bottom and top edges
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
  

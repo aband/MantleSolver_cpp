@@ -174,7 +174,7 @@ target_include_directories(couple_lib
 		  PUBLIC ${SRC}/mfem
 		  PUBLIC ${SRC}/mfem/clean
 		  PUBLIC ${SRC}/corner
-		  PUBLIC ${SRC}/mlweno
+		  PUBLIC ${SRC}/mlweno_array
 		  PUBLIC ${SRC}/transport_array/clean
 )
 
@@ -183,6 +183,7 @@ target_link_libraries(couple_lib
 		  general_lib
 		  phase_lib
 		  mfem_lib
+		  mlweno_lib
 		  transport_lib
 		  PkgConfig::PETSC
 )

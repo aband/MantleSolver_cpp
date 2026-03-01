@@ -108,7 +108,7 @@ int couple::printCellScalar(Vec * sol, const char * fieldname, int mark){
 
         PetscCall(VecGetValues(temp,1, &nelem, &val));
 
-        fprintf(file, "%.16f ", abs(val));
+        fprintf(file, "%.16f ", val);
 
     }fprintf(file, "\n");}
 
@@ -222,6 +222,22 @@ int couple::printedgevel(int mark, const vector<vertex>& stokesvel,
     printedgeval(mark, stokesvel, "edgevel_stokes"); 
 
     printedgeval(mark, darcyvel , "edgevel_darcy");
+
+    // Print porosity corrected darcy velocity
+    vector<vertex> target;
+    target.resize(darcyvel.size());
+
+    for (int s=0; s<(int)darcyvel.size(); s++){
+        target.at(s) = darcyvel.at(s)*edgeporo.at(s);
+	 }
+
+    printedgeval(mark, target, "edgevel_darcy_porosity");
+
+    for (int s=0; s<(int)darcyvel.size(); s++){
+        target.at(s) = target.at(s) + stokesvel.at(s);
+	 }
+
+    printedgeval(mark, target, "phaseave_vel");
 
     return 1;
 }

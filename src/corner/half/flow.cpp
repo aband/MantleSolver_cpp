@@ -247,5 +247,13 @@ const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
                                      const indice& global,
                                      const int& edge){
 
-    return dirichlet;
+    bndryType type = dirichlet;
+
+    if (global[0] == mi.MPIglobalCellSize[0]-1){
+        if (edge == 2){
+            type = neumann;
+        }
+    }	
+
+    return type;
 }

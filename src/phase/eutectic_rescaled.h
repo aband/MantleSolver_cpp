@@ -45,10 +45,10 @@ namespace EUTECTIC{
             ~phase() {};
 
             double GetTDp(const double& T, 
-                          const double& P) const;      // Compute pressure corrected temperature points
+                          const double& P) const; // Compute pressure corrected temperature points
 
             double GetStaticP(const double& zD,
-                              const double& l0) const; // Compute static pressure with dimension 
+                              const double& l0) ; // Compute static pressure with dimension 
 
             int evalPhase(const double& HD,
                           const double& CD,
@@ -91,6 +91,8 @@ namespace EUTECTIC{
             double p0;
             double t0;
             double alpha0;
+
+            double lithoP;
     };
 
 }
