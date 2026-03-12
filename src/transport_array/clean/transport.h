@@ -5,6 +5,9 @@
 #include "reconstruction.h"
 #include "tensorstencilpoly.h"
 
+#include "lagrange_tmp.h"
+
+// Advection related functions
 double advfunc(const double& u, const vertex& vel, const vertex& unitnormal);
 
 double ufunc(double u);
@@ -19,6 +22,9 @@ bool isinflow(const double& flux);
 
 int diriBndry(const vector<vertex>& points, vector<double>& value, int flag);
 
+// Diffusion related functions
+double diffusionBndry(const vertex& point, const vector<double>& param);
+
 class TransportVariable{
 
     public:
@@ -28,9 +34,13 @@ class TransportVariable{
         // Global vector holding the solution
         Vec sol; 
 
+        bool diffusion = false;
+
         // Extra evaluated values
         vector<double> cellgauss;
         vector<double> cellcenter;
+
+        vector<vector<double>> samplingp;
 
         vector<reconstruction*> my_recon;
 
@@ -64,6 +74,23 @@ class TransportVariable{
             vector<double> sigma_lg;
             vector<double> sigma_sm;
 
+            // Auxilliary functions
+	         int getNeighbors(int xMaxCell,   int yMaxCell, 
+                             int xSize,      int ySize,
+                             int i, int j, int& edgepos, int& edgeneg,
+                             indice& cellpos, indice& cellneg,
+					              bool& onbndry);
+
+            int getUniformEdge(const vertexSet& edge, vertexSet& uniformEdge, const indice& cellid,
+									    int xSize, int ySize, int xMaxCell, int yMaxCell);
+				
+            // Diffusion sampling related variables
+			   int degree  = -1;	
+            int halfpts = -1;
+            int numpts  = -1;
+
+            LagrangeBasisDeriv lagDer;
+
             // Update reconstruction nonlinear weights
             int UpdateRecon(const MeshInfo& mi, double ** locvals);	
 
@@ -74,8 +101,7 @@ class TransportVariable{
             int EvaluateExtra(int i, int j, const MeshInfo& mi, double ** locvals);
 
             // Compute advective flux
-            double advflux_edge(const MeshInfo& mi, 
-                                const vector<vertex>& vel, 
+            double advflux_edge(const vector<vertex>& vel, 
                                 const vector<double>& uneg,
                                 const vector<double>& upos,
                                 const vertexSet& edge,
@@ -90,7 +116,11 @@ class TransportVariable{
 */
 
             // Compute diffusive flux
-
+            double difflux_edge(const vector<double>& sample,
+                                const vertexSet& edge,
+										  double len, vertex unitNormal,
+										  LagrangeBasisDeriv& lagDer, 
+										  double dx, int numPts);
 
             // =====================================================================
 
@@ -101,6 +131,26 @@ class TransportVariable{
                                 vector<double>& uneg,
                                 vector<double>& upos);
 
+            int EvaluateSamples(const vertexSet& edge,
+                                const vertex& unitNormal,
+                                double dx,
+										  int halfpts,
+										  int cellidneg, int cellidpos,
+										  double ** locvals,
+                                vector<double>& samples);
+
+            int EvaluateSamples(const MeshInfo& mi, 
+									     const indice& cellid,
+										  const vertexSet& edge,
+										  const vertex& unitNormal,
+										  int xSize, int ySize, 
+										  int xMaxCell, int yMaxCell);
+
+            int EvaluateSamplesEdge(const MeshInfo& mi,
+                                    int xSize, int ySize, int offset, 
+                                    int xMaxCell, int yMaxCell,
+					                     double ** locvals);
+
             int advflux_edge_all(const MeshInfo& mi, 
                                  int xSize, int ySize, int offset,
                                  int xMaxCell, int yMaxCell,
@@ -110,6 +160,11 @@ class TransportVariable{
                                  bool localLF, int bndryflag,
                                  double gLF);
 
+            int difflux_edge_all(const MeshInfo& mi, 
+                                 int xSize, int ySize, int offset,
+                                 int xMaxCell, int yMaxCell,
+                                 const vector<vertex>& edgegaussp,
+                                 vector<double>& edgeflux);
 };
 
 #endif

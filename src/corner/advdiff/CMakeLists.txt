@@ -190,7 +190,7 @@ target_link_libraries(couple_lib
 )
 
 add_executable(driver
-		  ${SRC}/corner/transport_alone.cpp
+		  ${SRC}/corner/advdiff.cpp
 )
 
 target_include_directories(driver

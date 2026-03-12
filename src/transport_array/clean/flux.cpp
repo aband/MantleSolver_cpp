@@ -29,75 +29,6 @@ int TransportVariable::ExtractThisEdge(const MeshInfo& mi,
     return 1;
 }
 
-static int getNeighbors(int xMaxCell,   int yMaxCell, 
-                        int xSize,      int ySize,
-                        int i, int j, int& edgepos, int& edgeneg,
-                        indice& cellpos, indice& cellneg,
-								bool& onbndry){
-
-    // Default setting that the edge locates not on boundary
-    onbndry = false;
-
-    if (xSize > xMaxCell){
-        // Vertical
-        if(i==0){
-            // left boundary
-            cellneg = {i,j};
-            cellpos = {i,j};
-            edgepos = 0;
-            edgeneg = 0;
-
-            onbndry = true;
-
-        } else if(i==xSize-1){
-            // right boundary
-            cellneg = {i-1,j};
-            cellpos = {i-1,j};
-            edgepos = 2;
-            edgeneg = 2;
-
-            onbndry = true;
-
-		  } else {
-            // interior
-            cellneg = {i-1,j};
-            cellpos = {i,j};
-            edgepos = 0;
-            edgeneg = 2;
-
-        }
-
-    } else {
-        // Horizontal
-        if (j==0){
-            // bottom
-            cellneg = {i,j};
-            cellpos = {i,j};
-            edgepos = 1;
-            edgeneg = 1;
-
-            onbndry = true;
-
-        } else if (j==ySize-1){
-            cellneg = {i,j-1};
-            cellpos = {i,j-1};
-            edgepos = 3;
-            edgeneg = 3;
-
-            onbndry = true;
-
-        } else {
-            cellneg = {i,j-1};
-            cellpos = {i,j};
-            edgepos = 1;
-            edgeneg = 3;
-        }
-
-    }
-
-    return 1;
-}
-
 static int checkEdgeFlux(int xMax, int yMax, const vector<double>& flux){
 
     for (int j=0; j<yMax; j++){
@@ -138,8 +69,7 @@ static int bndryType(const vertexSet& edge,
 }
 
 // advective flux computed at the interior edges
-double TransportVariable::advflux_edge(const MeshInfo& mi, 
-                                       const vector<vertex>& vel, 
+double TransportVariable::advflux_edge(const vector<vertex>& vel, 
                                        const vector<double>& uneg,
                                        const vector<double>& upos,
                                        const vertexSet& edge,
@@ -243,7 +173,7 @@ int TransportVariable::advflux_edge_all(const MeshInfo& mi,
     int bndrytype = 0;
 
     // Computed flux value
-    double thisflux = 0.0;
+    double advflux = 0.0;
 
     // Loop over all the edges
     for (int j=0; j<ySize; j++){
@@ -274,7 +204,8 @@ int TransportVariable::advflux_edge_all(const MeshInfo& mi,
 
         // Alter boundary vertex order if it is on boundary
         if (onbndry){
-            uniformEdge = {edge[1], edge[0]};
+           //uniformEdge = {edge[1], edge[0]};
+           getUniformEdge(edge, uniformEdge, cellpos, xSize, ySize, xMaxCell, yMaxCell); 	
         } else {
             uniformEdge = edge;
         }
@@ -285,7 +216,8 @@ int TransportVariable::advflux_edge_all(const MeshInfo& mi,
                             uneg, upos);
 
         // Use uniformEdge to calculate the edge flux
-        thisflux = advflux_edge(mi, thisedgevel, uneg, upos, uniformEdge, localLF, gLF);
+        //advflux = advflux_edge(mi, thisedgevel, uneg, upos, uniformEdge, localLF, gLF);
+        advflux = advflux_edge(thisedgevel, uneg, upos, uniformEdge, localLF, gLF);
 
         //edgeflux.at(dof-offset) = advflux_edge(mi, thisedgevel, 
         //                   uneg, upos, edge, localLF, gLF);
@@ -303,14 +235,16 @@ int TransportVariable::advflux_edge_all(const MeshInfo& mi,
 						  // Assign inflow dirichlet values 
                     diriBndry(thisedgegaussp, uneg, bndryselect);
 
-						  thisflux = -1*advflux_edge(mi, thisedgevel, uneg, uneg, uniformEdge, localLF, gLF); 
+						  //advflux = -1*advflux_edge(mi, thisedgevel, uneg, uneg, uniformEdge, localLF, gLF); 
+						  advflux = advflux_edge(thisedgevel, uneg, uneg, uniformEdge, localLF, gLF); 
 
 					 } else if (bndrytype == 2){
 
                     diriBndry(thisedgegaussp, uneg, bndryselect);
 
-						  thisflux = advflux_edge(mi, thisedgevel, uneg, uneg, uniformEdge, localLF, gLF); 
-	
+						  //advflux = advflux_edge(mi, thisedgevel, uneg, uneg, uniformEdge, localLF, gLF); 
+						  advflux = advflux_edge(thisedgevel, uneg, uneg, uniformEdge, localLF, gLF); 
+
                 }
         }
 
@@ -320,7 +254,7 @@ int TransportVariable::advflux_edge_all(const MeshInfo& mi,
 /*
         if (onbndry){
            cout <<"This edge " << i << ", " <<  j << " is a boundary edge."<< endl;
-				cout << "Evaluated flux equals " << thisflux << endl;
+				cout << "Evaluated flux equals " << advflux << endl;
 
             int tmpbt = bndryType(edge, thisedgevel);
 
@@ -337,7 +271,7 @@ int TransportVariable::advflux_edge_all(const MeshInfo& mi,
             //cout <<"This edge " << i << ", " <<  j << " is NOT a boundary edge."<< endl;
         }
 */
-        edgeflux.at(dof-offset) = thisflux;
+        edgeflux.at(dof-offset) = advflux;
 
     }}
 
@@ -345,29 +279,115 @@ int TransportVariable::advflux_edge_all(const MeshInfo& mi,
 }
 
 // ======================================================================
-/*
-double TransportVariable::difflux_edge(){
+
+double TransportVariable::difflux_edge(const vector<double>& sample, const vertexSet& edge,
+                                       double len, vertex unitNormal,
+                                       LagrangeBasisDeriv& lagDer, double dx, int numPts){
 
     double work  = 0.0;
 
-    double len = length
+    // Compute flux integration along the edge
+    const valarray<double>& gwe = GaussWeightsEdge;
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    for (int g=0; g<gpe.size(); g++){
+
+        double difflux = 0.0;
+
+        for (int i=0; i<numPts; i++){
+
+             difflux += lagDer.middle(numPts-1,i)/dx * sample.at(g*numPts + i);
+
+        }
+
+        work -= difflux* gwe[g] * len/2.0;
+    }
 
     return work;
 }
-*/
-/*
+
 int TransportVariable::difflux_edge_all(const MeshInfo& mi,
                                         int xSize, int ySize, int offset,
                                         int xMaxCell, int yMaxCell,
+													 const vector<vertex>& edgegaussp,
                                         vector<double>& edgeflux){
      
     const valarray<double>& gwe = GaussWeightsEdge;
 
-    
+    // Initializing lagrangian interpolation 
+    int degree  = gwe.size() + 1;
+    int halfPts = std::ceil((degree+1)/2.0);
+    int numPts  = halfPts * 2;
+
+    LagrangeBasisDeriv lagDer(numPts - 1);
+
+    int edgepos = 0;
+    int edgeneg = 0;
+
+    indice cellpos {0,0};
+    indice cellneg {0,0};
+
+    // Check if this edge is on the boundary or not
+    bool onbndry = false;
+    int bndrytype = 0;
+
+    double difflux = 0.0;
+
+    // Edge length
+    double len = 0.0;
+
+    // Unit outer normal vector
+    vertex unitNormal;
+
+    vector<double> thissample;
+    thissample.resize(gwe.size() * numPts); 
+
+    // Loop over all the edges
+    for (int j=0; j<ySize; j++){
+    for (int i=0; i<xSize; i++){
+
+        getNeighbors(xMaxCell, yMaxCell, xSize, ySize, i, j, 
+                     edgepos, edgeneg, cellpos, cellneg, onbndry);
+
+        int dof = j*xSize + i;
+        // Edge dof
+        dof += offset;
+
+    	  // Extract four corners vertex of this cell
+        vertexSet corners = extractCorners(mi, cellpos);
+        int start = (edgepos+3)%4;
+        int end   = edgepos;
+        // Original edge direction
+        vertexSet edge = {corners.at(start), corners.at(end)}; 
+
+        // Uniform edge direction
+        vertexSet uniformEdge;
+
+        // Alter boundary vertex order if it is on boundary
+        if (onbndry){
+            uniformEdge = {edge[1], edge[0]};
+        } else {
+            uniformEdge = edge;
+        }
+
+        len = length(uniformEdge);
+        unitNormal = UnitNormal(edge, len);
+
+        // Extract surface area 
+        double posh = sqrt(mi.cellArea.at(FlatIndic(mi, cellpos)));
+        double negh = sqrt(mi.cellArea.at(FlatIndic(mi, cellneg)));
+
+        double h = 2.0 * ((posh < negh) ? posh : negh);
+
+        // Compute sample interval
+        double dx = h /(double)(numPts - 1);
+
+
+
+    }}
 
     return 1;
 }
-*/
 
 int TransportVariable::cellflux_all(const MeshInfo& mi, 
                                     double maxv, DM dmu, 
