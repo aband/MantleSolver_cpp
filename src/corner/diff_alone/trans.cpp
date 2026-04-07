@@ -6,17 +6,19 @@
 double InitCD(const valarray<double>& point,
               const vector<double>& param){
 
-    // Constant composition value 
-    //return 0.00;
-	 //return 1.0; 
-	 //if (point[0] >= 0.2 && point[0] <= 0.3){
-    //    return 1.0;
-	 //} else {
-    //    return 0.0;
-	 //}
+    double D = 0.1;
+    int d = 2;
 
-    return 1.0;
+    double t0 = 0.5;
 
+//    return 1.0/pow(4*M_PI*D*t0,1) * 
+//           exp( -1.0*(point[0]*point[0]+point[1]*point[1]) / (4*D*t0) ) - 1;
+
+    if (point[0] < 0){ 
+        return 1.0;
+	 } else {
+        return 0.0;
+	 }
 }
 
 double InitHD(const valarray<double>& point,
@@ -85,14 +87,14 @@ double diffBndry(const vertex& points, const vector<double>& param){
 
     // A cooling surface diffusion boundary condition
 
-    if (points[1] > -0.0001){
+    if (points[1] > 0.9999){
   
-        return 0.0;
+        return 1.0;
 
 	 } else {
 
         //return 10 + points[1]* param.at(0);
-		  return 1.0;
+		  return 0.0;
 	 }
 
 }
@@ -102,11 +104,12 @@ int diffBndryType(const vertex& points){
     // 0: Zero diffusion boundary
     // 1: Dirichlet diffusion boundary
 
-    if (points[1] > -0.0001){
-        return 1;
-		  //return 0; 
+    if (points[1] > 0.9999){
+        return 0;
+  //return 0; 
     } else {
         return 0;
     }
 
+//    return 0;
 }

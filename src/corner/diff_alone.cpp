@@ -16,7 +16,7 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-M",&M,NULL));
     PetscCall(PetscOptionsGetInt(NULL,NULL,"-N",&N,NULL));
 
-    double L = 0.5, H = 0.5;
+    double L = 2.0, H = 2.0;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-L",&L,NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-H",&H,NULL));
 
@@ -24,7 +24,7 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-addy",&addy,NULL));
 
     //double xstart = -0.5*L, ystart = -1.0001*H - addy;
-    double xstart = 0.0, ystart = -1.000*H;
+    double xstart = -1.0, ystart = -1.0;
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-xstart", &xstart, NULL));
     PetscCall(PetscOptionsGetReal(NULL,NULL,"-ystart", &ystart, NULL));
 
@@ -100,46 +100,36 @@ int main(int argc, char **argv){
     cout << "Transport is enabled here." << endl;
 
     TransportVariable myH = TransportVariable();
-    TransportVariable myCAdv = TransportVariable();
+    TransportVariable myC = TransportVariable();
 
-    myCAdv.diffusion = false;
-    myH.diffusion = false;
+    myC.diffusion = true;
+    myH.diffusion = true;
 
-    mycouple->PrepareTransport(myH, myCAdv, InitHD, InitCD);       
+    mycouple->PrepareTransport(myH, myC, InitHD, InitCD);       
 
-    // Advection weno stencils
     myH.CreateDefaultReconstruction(mycouple->mi);
-    myCAdv.CreateDefaultReconstruction(mycouple->mi);
+    //myC.CreateDefaultReconstruction(mycouple->mi);
 
-    // =====================================================
+    int sizelgx = 5;
+    int sizelgy = 5;
+    int orderlg = 4;
 
-    TransportVariable myCDif = TransportVariable();
+    int sizesmx = 3;
+    int sizesmy = 3;
+    int ordersm = 2;
 
-    PetscCall(VecDuplicate(myCAdv.sol, &myCDif.sol));
-    PetscCall(VecCopy(myCAdv.sol, myCDif.sol));
-
-    myCDif.diffusion = true;
-    // Diffusion weno stencils
-    int sizelgx = 3;
-    int sizelgy = 3;
-    int orderlg = 2;
-
-    int sizesmx = 2;
-    int sizesmy = 2;
-    int ordersm = 1;
-
-    vector<indice> sten_lg_pre = {{-1,-1}};
-    vector<indice> sten_sm_pre = {{0,0}};
+    vector<indice> sten_lg_pre = {{-2,-2}};
+    vector<indice> sten_sm_pre = {{-2,-2},{-2,0},{0,-2}, {0,0}};
 
     vector<double> mylinwgts_lg = {0.0};
-	 vector<double> mylinwgts_sm = {0.0,};
-	 double mylinwgts_const = 1;
+	 vector<double> mylinwgts_sm = {0.0,0.0,0.0,0.0};
+	 double mylinwgts_const = 0.0001;
 
-    myCDif.CreateReconstruction(mycouple->mi, sizelgx, sizelgy, orderlg, 
-			     		                            sizesmx, sizesmy, ordersm,
-					                               sten_lg_pre, mylinwgts_lg,
-														    sten_sm_pre, mylinwgts_sm,
-					                               true, mylinwgts_const); 
+    myC.CreateReconstruction(mycouple->mi, sizelgx, sizelgy, orderlg, 
+					                            sizesmx, sizesmy, ordersm,
+					                            sten_lg_pre, mylinwgts_lg,
+														 sten_sm_pre, mylinwgts_sm,
+					                            true, mylinwgts_const); 
 
 //    myH.Evaluate(mycouple->mi,mycouple->dmu);        
 //    myC.Evaluate(mycouple->mi,mycouple->dmu);
@@ -156,37 +146,33 @@ int main(int argc, char **argv){
 
     int mark = 1;
 
-    int frame = 50;
+    mycouple->printCellScalar(&myC.sol, "Init", mark);
 
+    int frame = 1;
+//    int count = 0;
     // Euler forwarding
     for (int t=0; t<Tmax; t++){
-        myCAdv.Evaluate(mycouple->mi, mycouple->dmu);
-        myCDif.Evaluate(mycouple->mi, mycouple->dmu);
+        myC.Evaluate(mycouple->mi, mycouple->dmu);
         //myC.PrintSample(mycouple->mi);
 
-        Vec fluxCAdv;
-        PetscCall(VecDuplicate(myCAdv.sol, &fluxCAdv));
-        myCAdv.advflux_all(mycouple->mi, 1e-5, mycouple->dmu, mycouple->edgegauss, 
-								ds.StokesVel, true, 0, &fluxCAdv);
+        Vec fluxC;
+        VecDuplicate(myC.sol, &fluxC);
+        //myC.cellflux_all(mycouple->mi, 1e-5, mycouple->dmu, mycouple->edgegauss, ds.StokesVel, true, 0, &fluxC);
+        myC.difflux_all(mycouple->mi, mycouple->dmu, mycouple->edgegauss, &fluxC);
 
-        Vec fluxCDiv;
-        PetscCall(VecDuplicate(myCDif.sol, &fluxCDiv));
-        myCDif.difflux_all(mycouple->mi, mycouple->dmu, mycouple->edgegauss, &fluxCDiv);
+ //       myC.PrintSample(mycouple->mi, M+1, N, 0, "samplevert.dat", "samplevxvert.dat", "samplevyvert.dat");
+ //       myC.PrintSample(mycouple->mi, M, N+1, (M+1)*N, "samplehori.dat", "samplevxhori.dat", "samplevyhori.dat");
 
-        PetscCall(VecAXPY(fluxCAdv, 1.0, fluxCDiv));
+        myC.PrintEdgeSample(mycouple->mi, M+1, N, 0, "samplevert.dat", "samplevxvert.dat", "samplevyvert.dat");
+        mycouple->printCellScalar(&fluxC, "flux", mark);
 
         //VecView(fluxH, PETSC_VIEWER_STDOUT_WORLD);
-        PetscCall(VecAXPY(myCAdv.sol, -1*dt, fluxCAdv));
-
+        PetscCall(VecAXPY(myC.sol, -1*dt, fluxC));
 		  if (t%frame == 0){
-            mycouple->printCellScalar(&myCAdv.sol, "cellC", mark);
+            mycouple->printCellScalar(&myC.sol, "cellC", mark);
 				mark ++ ;
 		  }
 
-        PetscCall(VecCopy(myCAdv.sol, myCDif.sol));
-
     }
-
-
     return 1;
 }

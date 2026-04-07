@@ -280,28 +280,26 @@ int TransportVariable::advflux_edge_all(const MeshInfo& mi,
 
 // ======================================================================
 
-double TransportVariable::difflux_edge(const vector<double>& sample, const vertexSet& edge,
-                                       double len, vertex unitNormal,
-                                       LagrangeBasisDeriv& lagDer, double dx, int numPts){
+double TransportVariable::difflux_edge(const vector<double>& sample){
 
     double work  = 0.0;
 
     // Compute flux integration along the edge
     const valarray<double>& gwe = GaussWeightsEdge;
-    const valarray<double>& gpe = GaussPointsEdge;
 
-    for (int g=0; g<gpe.size(); g++){
+    for (int g=0; g<(int)gwe.size(); g++){
 
         double difflux = 0.0;
 
-        for (int i=0; i<numPts; i++){
+        for (int i=0; i<numpts; i++){
 
-             difflux += lagDer.middle(numPts-1,i)/dx * sample.at(g*numPts + i);
-
+             difflux += lagDer.middle(numpts-1,i) * sample.at(g*numpts + i);
         }
 
-        work -= difflux* gwe[g] * len/2.0;
+        work += difflux * gwe[g];
     }
+
+    if (work < 1e-15) {work == 0;}
 
     return work;
 }
@@ -313,13 +311,6 @@ int TransportVariable::difflux_edge_all(const MeshInfo& mi,
                                         vector<double>& edgeflux){
      
     const valarray<double>& gwe = GaussWeightsEdge;
-
-    // Initializing lagrangian interpolation 
-    int degree  = gwe.size() + 1;
-    int halfPts = std::ceil((degree+1)/2.0);
-    int numPts  = halfPts * 2;
-
-    LagrangeBasisDeriv lagDer(numPts - 1);
 
     int edgepos = 0;
     int edgeneg = 0;
@@ -333,57 +324,28 @@ int TransportVariable::difflux_edge_all(const MeshInfo& mi,
 
     double difflux = 0.0;
 
-    // Edge length
-    double len = 0.0;
+//    cout << "Test here " << samplingp.at(0).size()<< endl;
+//	 vector<double> testsample;
+//	 testsample.resize(18);
 
-    // Unit outer normal vector
-    vertex unitNormal;
+//    for (int g=0; g<3; g++){
+//    for (int i=0; i<3; i++){
+//    testsample.at(g*6+i) = i; 
+//	 testsample.at(g*6+3+i) = 0.0;
+//	 }}
 
-    vector<double> thissample;
-    thissample.resize(gwe.size() * numPts); 
+//    cout << difflux_edge(testsample) << endl;
 
     // Loop over all the edges
     for (int j=0; j<ySize; j++){
     for (int i=0; i<xSize; i++){
 
-        getNeighbors(xMaxCell, yMaxCell, xSize, ySize, i, j, 
-                     edgepos, edgeneg, cellpos, cellneg, onbndry);
-
         int dof = j*xSize + i;
         // Edge dof
         dof += offset;
 
-    	  // Extract four corners vertex of this cell
-        vertexSet corners = extractCorners(mi, cellpos);
-        int start = (edgepos+3)%4;
-        int end   = edgepos;
-        // Original edge direction
-        vertexSet edge = {corners.at(start), corners.at(end)}; 
-
-        // Uniform edge direction
-        vertexSet uniformEdge;
-
-        // Alter boundary vertex order if it is on boundary
-        if (onbndry){
-            uniformEdge = {edge[1], edge[0]};
-        } else {
-            uniformEdge = edge;
-        }
-
-        len = length(uniformEdge);
-        unitNormal = UnitNormal(edge, len);
-
-        // Extract surface area 
-        double posh = sqrt(mi.cellArea.at(FlatIndic(mi, cellpos)));
-        double negh = sqrt(mi.cellArea.at(FlatIndic(mi, cellneg)));
-
-        double h = 2.0 * ((posh < negh) ? posh : negh);
-
-        // Compute sample interval
-        double dx = h /(double)(numPts - 1);
-
-
-
+        edgeflux.at(dof-offset) = difflux_edge(samplingp.at(dof));
+//cout << edgeflux.at(dof-offset) << endl;
     }}
 
     return 1;
@@ -410,8 +372,48 @@ int TransportVariable::cellflux_all(const MeshInfo& mi,
     // Vertical flux first
     advflux_edge_all(mi, M+1, N, 0, M, N, edgegaussp, edgevel, vert, globalLF, bndryselect, maxv);
 
-    // horizontal flux next
+    // Horizontal flux next
     advflux_edge_all(mi, M, N+1, (M+1)*N, M, N, edgegaussp, edgevel, hori, globalLF, bndryselect, maxv);
+
+    vector<double> vertdifflux;
+    vertdifflux.resize(N*(M+1));
+
+    vector<double> horidifflux;
+    horidifflux.resize(M*(N+1));
+
+	 if (diffusion == true){
+        // Diffusion flux defined
+        //cout << "Diffusion defined " << endl;
+
+        // Vertical flux first
+        difflux_edge_all(mi, M+1, N, 0, M, N, edgegaussp, vertdifflux);
+
+        // Horizontal flux next
+        difflux_edge_all(mi, M, N+1, (M+1)*N, M, N, edgegaussp, horidifflux);
+
+        // Print vertical flux
+		  //
+//		  cout << "Print vertical flux : "  << endl;
+        for (int j=0; j<N; j++){
+        for (int i=0; i<M+1; i++){
+            //cout << vertdifflux.at(j*(M+1) + i) << "  ";
+            if (abs(vertdifflux.at(j*(M+1)+i))<1e-15){vertdifflux.at(j*(M+1)+i) = 0.0;}
+        }}
+//		  }cout << endl;}
+
+//        cout << "Print horizontal flux: " << endl;
+
+		  // Print horizontal flux 
+        for (int j=0; j<N+1; j++){
+        for (int i=0; i<M; i++){
+            if (abs(horidifflux.at(j*M+i))<1e-15){horidifflux.at(j*M+i) = 0.0;}
+//            cout << horidifflux.at(j*M+i) << "  " ;
+        }}
+//		  }cout << endl;}
+
+//        cout << endl;
+
+    }
 
     Vec flux = *influx;
 
@@ -439,7 +441,29 @@ int TransportVariable::cellflux_all(const MeshInfo& mi,
        int left   = j*(M+1) + i;
        int right  = j*(M+1) + i+1;
 
-       f[j][i] = (hori.at(bottom) - hori.at(top) + vert.at(left) - vert.at(right))/area;
+       if (diffusion == true){
+
+           double adv = (hori.at(bottom) - 
+							    hori.at(top)    + 
+							    vert.at(left)   - 
+							    vert.at(right)  );
+//adv = 0.0;
+           double diff = (horidifflux.at(bottom) - 
+ 							     horidifflux.at(top)    + 
+							     vertdifflux.at(left)   - 
+							     vertdifflux.at(right)  );
+
+//cout << diff << "  ";
+
+           f[j][i] = (adv+diff)/area;
+
+//           f[j][i] = ((hori.at(bottom) + horidifflux.at(bottom))  - 
+//							 (hori.at(top)    + horidifflux.at(top)   )  + 
+//							 (vert.at(left)   + vertdifflux.at(left)  )  - 
+//							 (vert.at(right)  + vertdifflux.at(right) ) )/area;
+       } else {
+           f[j][i] = (hori.at(bottom) - hori.at(top) + vert.at(left) - vert.at(right))/area;
+       }
 
 /*
        cout << "This cell " << i << "  " << j << endl
@@ -452,6 +476,100 @@ int TransportVariable::cellflux_all(const MeshInfo& mi,
     }cout << endl;}
 */
       }}
+
+    DMDAVecRestoreArray(dmu, flux, &f);
+ 
+    return 1;
+}
+
+int TransportVariable::advflux_all(const MeshInfo& mi, 
+                                   double maxv, DM dmu, 
+                                   const vector<vertex>& edgegaussp,
+                                   const vector<vertex>& edgevel,
+											  bool globalLF, int bndryselect,
+											  Vec * influx){
+
+    int N = mi.MPIglobalCellSize[1];
+    int M = mi.MPIglobalCellSize[0];
+
+    vector<double> vert;
+    vert.resize(N*(M+1));
+
+    vector<double> hori;
+    hori.resize(M*(N+1));
+
+    //tolvert = (M+1)*N*3;
+
+    // Vertical flux first
+    advflux_edge_all(mi, M+1, N, 0, M, N, edgegaussp, edgevel, vert, globalLF, bndryselect, maxv);
+
+    // Horizontal flux next
+    advflux_edge_all(mi, M, N+1, (M+1)*N, M, N, edgegaussp, edgevel, hori, globalLF, bndryselect, maxv);
+
+    Vec flux = *influx;
+
+    double ** f;
+    PetscCall(DMDAVecGetArray(dmu, flux, &f));
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+
+       double area = mi.cellArea.at(FlatIndic(mi, {i,j}));
+
+       int bottom = j*M+i;
+       int top    = (j+1)*M+i;
+       int left   = j*(M+1) + i;
+       int right  = j*(M+1) + i+1;
+
+       f[j][i] = (hori.at(bottom) - hori.at(top) + vert.at(left) - vert.at(right))/area;
+ 
+    }}
+
+    DMDAVecRestoreArray(dmu, flux, &f);
+ 
+    return 1;
+}
+
+int TransportVariable::difflux_all(const MeshInfo& mi, DM dmu, 
+					 const vector<vertex>& edgegaussp, 
+					 Vec * influx){
+
+    int N = mi.MPIglobalCellSize[1];
+    int M = mi.MPIglobalCellSize[0];
+
+    vector<double> vert;
+    vert.resize(N*(M+1));
+
+    vector<double> hori;
+    hori.resize(M*(N+1));
+
+    // Vertical flux first
+    difflux_edge_all(mi, M+1, N, 0, M, N, edgegaussp, vert);
+
+    // Horizontal flux next
+    difflux_edge_all(mi, M, N+1, (M+1)*N, M, N, edgegaussp, hori);
+
+    Vec flux = *influx;
+
+    double ** f;
+    PetscCall(DMDAVecGetArray(dmu, flux, &f));
+
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+
+       double area = mi.cellArea.at(FlatIndic(mi, {i,j}));
+
+       int bottom = j*M+i;
+       int top    = (j+1)*M+i;
+       int left   = j*(M+1) + i;
+       int right  = j*(M+1) + i+1;
+
+       f[j][i] = (hori.at(bottom) - hori.at(top) + vert.at(left) - vert.at(right))/area;
+
+//       cout << hori.at(bottom) << "  " << hori.at(top) << "  " << vert.at(left) << "  " << vert.at(right) << endl;
+
+//    }cout << endl;}
+    }}
 
     DMDAVecRestoreArray(dmu, flux, &f);
  

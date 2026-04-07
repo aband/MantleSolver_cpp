@@ -18,6 +18,16 @@ class reconstruction {
                  const vector<indice>& sten_sm_pre,
                  const MeshInfo& mi, indice start);
 
+        int init(int sizex_sm, int sizey_sm,
+                 int sizex_lg, int sizey_lg,
+					  int order_sm, int order_lg,
+					  const vector<indice>& sten_lg_pre,
+					  const vector<double>& mylinwgts_lg,
+                 const vector<indice>& sten_sm_pre,
+					  const vector<double>& mylinwgts_sm,
+                 const MeshInfo& mi, indice start,
+					  double myliwgts_const);
+
         int setWgts(double area);
 
         int extractsigma(const vector<double>& sigma_lg,
@@ -29,7 +39,8 @@ class reconstruction {
         // Stencils
         vector<indice> sten_lg;
         vector<indice> sten_sm;
-        int use_sten_const = 0;
+        //int use_sten_const = 0;
+        bool use_sten_const = false;
 
         vector<int> flat_sten_lg;
         vector<int> flat_sten_sm;

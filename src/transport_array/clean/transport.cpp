@@ -3,6 +3,7 @@
 // Create Default (3,2) reconstruction
 int TransportVariable::CreateDefaultReconstruction(const MeshInfo& mi){
 
+
 	 int sizelgx = 3;
     int sizelgy = 3;
     int orderlg = 2;
@@ -15,22 +16,25 @@ int TransportVariable::CreateDefaultReconstruction(const MeshInfo& mi){
     vector<indice> sten_lg_pre = {{-1,-1}};
     vector<indice> sten_sm_pre = {{0,-1}, {0,0}, {-1,-1}, {-1,0}};
 
+
+/*
+	 int sizelgx = 5;
+    int sizelgy = 5;
+    int orderlg = 4;
+
+	 int sizesmx = 3;
+    int sizesmy = 3;
+    int ordersm = 2;
+
+    // (3,2) reconstruction but 1D
+    vector<indice> sten_lg_pre = {{-2,-2}};
+    vector<indice> sten_sm_pre = {{0,-2}, {0,0}, {-2,-2}, {-2,0}};
+*/
+
     CreateReconstruction(mi, sizelgx, sizelgy, orderlg, 
                              sizesmx, sizesmy, ordersm,
-                             sten_lg_pre, sten_sm_pre); 
-
-    // Default diffusion is turned off
-    if (diffusion == true){
-        cout << "Diffusion is defined" << endl;
-        degree = 3 + 1; 
-        halfpts = std::ceil((degree+1)/2.0);
-        numpts  = halfpts * 2;
-
-        lagDer.init(numpts - 1);
-
-        samplingp.resize(((mi.MPIglobalCellSize[0]+1)*mi.MPIglobalCellSize[1]+
-                           mi.MPIglobalCellSize[0]*(mi.MPIglobalCellSize[1]+1))*numpts);
-	 }
+                             sten_lg_pre, sten_sm_pre,
+									  false); 
 
     return 1;
 }
@@ -39,7 +43,8 @@ int TransportVariable::CreateReconstruction(const MeshInfo& mi,
                                             int sizelgx, int sizelgy, int orderlg,
                                             int sizesmx, int sizesmy, int ordersm,
                                             vector<indice>& sten_lg_pre,
-                                            vector<indice>& sten_sm_pre){
+                                            vector<indice>& sten_sm_pre,
+														  bool use_sten_const){
 
     int M = mi.MPIglobalCellSize[0];
     int N = mi.MPIglobalCellSize[1];
@@ -84,6 +89,8 @@ int TransportVariable::CreateReconstruction(const MeshInfo& mi,
  
         my_recon.at(s) = new reconstruction();
 
+		  my_recon.at(s)->use_sten_const = use_sten_const;
+
         my_recon.at(s)->init(sizesmx,sizesmy,
                              sizelgx,sizelgy,
                              ordersm,orderlg,
@@ -93,6 +100,112 @@ int TransportVariable::CreateReconstruction(const MeshInfo& mi,
     // Allocate memory for extra evaluations
     cellgauss.resize(M*N*9);
     cellcenter.resize(M*N);
+
+    // Default diffusion is turned off
+    if (diffusion == true){
+//        cout << "Diffusion is defined" << endl;
+        //degree = 3 + 1;
+        degree = 2 + 1;
+        halfpts = std::ceil((degree+1)/2.0);
+        numpts  = halfpts * 2;
+
+        lagDer.init(numpts - 1);
+
+        samplingp.resize(((mi.MPIglobalCellSize[0]+1)*mi.MPIglobalCellSize[1]+
+                           mi.MPIglobalCellSize[0]*(mi.MPIglobalCellSize[1]+1))*numpts);
+
+        samplingv.resize(((mi.MPIglobalCellSize[0]+1)*mi.MPIglobalCellSize[1]+
+                           mi.MPIglobalCellSize[0]*(mi.MPIglobalCellSize[1]+1))*numpts);
+
+	 }
+
+    return 1;
+}
+
+int TransportVariable::CreateReconstruction(const MeshInfo& mi, 
+                                            int sizelgx, int sizelgy, int orderlg,
+                                            int sizesmx, int sizesmy, int ordersm,
+                                            vector<indice>& sten_lg_pre,
+														  vector<double>& mylinwgts_lg,
+                                            vector<indice>& sten_sm_pre,
+														  vector<double>& mylinwgts_sm,
+														  bool use_sten_const,
+														  double mylinwgts_const){
+
+    int M = mi.MPIglobalCellSize[0];
+    int N = mi.MPIglobalCellSize[1];
+
+    int Mlg = M-sizelgx+1;
+    int Nlg = N-sizelgy+1;
+
+    int Msm = M-sizesmx+1;
+    int Nsm = N-sizesmy+1;
+
+    stenlg.resize(Mlg*Nlg);
+
+    for (int j=0; j<Nlg; j++){
+    for (int i=0; i<Mlg; i++){
+        int s = j*Mlg+i;
+        stenlg.at(s) = tensorstencilpoly(orderlg, sizelgx, sizelgy);
+        stenlg.at(s).setCoef(mi,i,j);
+		  stenlg.at(s).setSigma();
+		  stenlg.at(s).startx = i;
+		  stenlg.at(s).starty = j;
+    }}
+
+    stensm.resize(Msm*Nsm);
+
+    for (int j=0; j<Nsm; j++){
+    for (int i=0; i<Msm; i++){
+        int s = j*Msm + i;
+        stensm.at(s) = tensorstencilpoly(ordersm, sizesmx, sizesmy);
+        stensm.at(s).setCoef(mi,i,j);
+		  stensm.at(s).setSigma();
+		  stensm.at(s).startx = i;
+		  stensm.at(s).starty = j;
+    }}
+
+    my_recon.resize(M*N);
+
+    // Initializing reconstrucitons for each cell
+	 // Change here to have sided reconstruction on the boundary
+    for (int j=0; j<N; j++){
+    for (int i=0; i<M; i++){
+        int s = j*M+i;
+ 
+        my_recon.at(s) = new reconstruction();
+
+		  my_recon.at(s)->use_sten_const = use_sten_const;
+
+        my_recon.at(s)->init(sizesmx,sizesmy,
+                             sizelgx,sizelgy,
+                             ordersm,orderlg,
+                             sten_lg_pre, mylinwgts_lg,
+									  sten_sm_pre, mylinwgts_sm, 
+									  mi,{i,j}, mylinwgts_const);
+    }}
+
+    // Allocate memory for extra evaluations
+    cellgauss.resize(M*N*9);
+    cellcenter.resize(M*N);
+
+    // Default diffusion is turned off
+    if (diffusion == true){
+//        cout << "Diffusion is defined" << endl;
+        //degree = 3 + 1;
+        degree = 3 + 1;
+        halfpts = std::ceil((degree+1)/2.0);
+        numpts  = halfpts * 2;
+
+        lagDer.init(numpts - 1);
+
+        samplingp.resize(((mi.MPIglobalCellSize[0]+1)*mi.MPIglobalCellSize[1]+
+                           mi.MPIglobalCellSize[0]*(mi.MPIglobalCellSize[1]+1))*numpts);
+
+        samplingv.resize(((mi.MPIglobalCellSize[0]+1)*mi.MPIglobalCellSize[1]+
+                           mi.MPIglobalCellSize[0]*(mi.MPIglobalCellSize[1]+1))*numpts);
+
+	 }
 
     return 1;
 }
@@ -155,6 +268,8 @@ int TransportVariable::Evaluate(const MeshInfo& mi, DM dmu){
        EvaluateSamplesEdge(mi, M+1, N  , 0      , M, N, lu);
        EvaluateSamplesEdge(mi, M  , N+1, (M+1)*N, M, N, lu);
 	 }
+
+    PrintPatch(mi, 10, 10, lu, "patch.dat", "patchx.dat", "patchy.dat");
 
     DMDAVecRestoreArray(dmu, localu, &lu);
     DMRestoreLocalVector(dmu, &localu);
@@ -250,11 +365,9 @@ int TransportVariable::getUniformEdge(const vertexSet& edge, vertexSet& uniformE
 		  }
 	 }
 
-
-
-    if (cellid[0] == 0 || cellid[1] == 0){
-	 } else {
-   }
+//    if (cellid[0] == 0 || cellid[1] == 0){
+//	 } else {
+//   }
 
     return 1;
 }
@@ -331,25 +444,39 @@ int TransportVariable::EvaluateExtra(int i, int j, const MeshInfo& mi, double **
 // Extract sampling values
 int TransportVariable::EvaluateSamples(const vertexSet& edge,
                                        const vertex& unitNormal,
-                                       double dx,
+                                       double dx, double len,
 										 		   int halfpts,
 										 		   int cellidneg, int cellidpos,
 										 		   double ** locvals,
-                                       vector<double>& samples){
+                                       vector<double>& samples,
+													vector<vertex>& samplesv){
 
-    const valarray<double>& gwe = GaussWeightsEdge;
+//    const valarray<double>& gwe = GaussWeightsEdge;
     const valarray<double>& gpe = GaussPointsEdge;
+    samples.clear();
+	 samples.resize((int)gpe.size() * numpts);
 
-    for (int g=0; g<(int) gwe.size(); g++){
+    samplesv.clear();
+	 samplesv.resize((int)gpe.size() * numpts);
+
+    for (int g=0; g<(int) gpe.size(); g++){
         vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
 
         for (int s=0; s<halfpts; s++){
 
-            vertex point0 = mapped - (halfpts - 0.5)*dx*unitNormal; 
-            vertex point1 = mapped + 0.5*dx*unitNormal;
+            //vertex point0 = mapped - (halfpts - 0.5 - s)*dx*unitNormal; 
+            //vertex point1 = mapped + (0.5+s)*dx*unitNormal;
+            vertex point0 = mapped - (halfpts - 0.5 - s)*dx*unitNormal; 
+            vertex point1 = mapped + (0.5+s)*dx*unitNormal;
 
-            samples.at(g*2*halfpts + s) = my_recon.at(cellidneg)->eval(locvals, point0, stenlg, stensm);
-            samples.at(g*2*halfpts + halfpts + s) = my_recon.at(cellidpos)->eval(locvals, point1, stenlg, stensm);
+            samples.at(g*2*halfpts + s) =  
+						  my_recon.at(cellidneg)->eval(locvals, point0, stenlg, stensm)/dx*len/2.0;
+            samples.at(g*2*halfpts + halfpts + s) = 
+						  my_recon.at(cellidpos)->eval(locvals, point1, stenlg, stensm)/dx*len/2.0;
+
+            samplesv.at(g*2*halfpts + s) = point0; 
+            samplesv.at(g*2*halfpts + halfpts + s) = point1; 
+
 		  }
 
 	 }
@@ -362,30 +489,99 @@ int TransportVariable::EvaluateSamples(const MeshInfo& mi,
                                        const indice& cellid,
 													const vertexSet& edge,
 													const vertex& unitNormal,
+													double dx, double len,
 													int xSize, int ySize, 
-													int xMaxCell, int yMaxCell){
+													int xMaxCell, int yMaxCell,
+													double ** locvals,
+													vector<double>& samples,
+													vector<vertex>& samplesv){
 
-    if (xSize > xMaxCell){
-        // Vertical
+    const valarray<double>& gpe = GaussPointsEdge;
+    samples.clear();
+	 samples.resize((int)gpe.size() * numpts);
 
-        if (cellid[0] == 0){
-            // Left sampling values should be replaced with dirichlet values
+    samplesv.clear();
+	 samplesv.resize((int)gpe.size() * numpts);
 
+    for (int g=0; g<(int)gpe.size(); g++){
+        vertex mapped = GaussMapPointsEdge({gpe[g]}, edge);
+
+
+        if (diffBndryType(mapped) == 1){
+
+            for (int s=0; s<halfpts; s++){
+                if (xSize > xMaxCell){
+                    // Vertical
+                    if (cellid[0] == 0){
+                        // Left sampling values should be replaced with dirichlet values
+                        vertex point0 = mapped - (halfpts - 0.5 - s)*dx*unitNormal; 
+                        vertex point1 = mapped + (0.5+(s-1))*dx*unitNormal;
+    
+                        samples.at(g*2*halfpts + s) = 
+		    			   	 my_recon.at(FlatIndic(mi,cellid))->eval(locvals, point0, stenlg, stensm)/dx*len/2.0;
+//                        samples.at(g*2*halfpts + halfpts + s) = my_recon.at(cellid)->eval(locvals, point1, stenlg, stensm);
+                        samples.at(g*2*halfpts + halfpts + s) = diffBndry(mapped,bndryparam)/dx*len/2.0;
+
+                        samplesv.at(g*2*halfpts + s) = point0; 
+                        samplesv.at(g*2*halfpts + halfpts + s) = point1;
+
+
+                    } else {
+                        vertex point0 = mapped - (halfpts - 0.5 - s)*dx*unitNormal; 
+                        vertex point1 = mapped + (0.5+s)*dx*unitNormal;
+
+                        samples.at(g*2*halfpts + s) = diffBndry(mapped,bndryparam)/dx*len/2.0;
+                        samples.at(g*2*halfpts + halfpts + s) = 
+		  						 my_recon.at(FlatIndic(mi,cellid))->eval(locvals, point1, stenlg, stensm)/dx*len/2.0;
+
+                        samplesv.at(g*2*halfpts + s) = point0;
+                        samplesv.at(g*2*halfpts + halfpts + s) = point1;
+
+	    	          }
+                } else {
+                    // Horizontal
+                    if (cellid[1] == 0){
+                        // Down sampling values should be replaced with dirichlet values
+                        vertex point0 = mapped - (halfpts - 0.5 - s)*dx*unitNormal; 
+                        vertex point1 = mapped + (0.5+(s-1))*dx*unitNormal;
+    
+                        samples.at(g*2*halfpts + s) = 
+		    					 my_recon.at(FlatIndic(mi,cellid))->eval(locvals, point0, stenlg, stensm)/dx*len/2.0;
+//                        samples.at(g*2*halfpts + halfpts + s) = my_recon.at(cellid)->eval(locvals, point1, stenlg, stensm);
+                        samples.at(g*2*halfpts + halfpts + s) = diffBndry(mapped,bndryparam)/dx*len/2.0;
+
+                        samplesv.at(g*2*halfpts + s) = point0; 
+                        samplesv.at(g*2*halfpts + halfpts + s) = point1;
+
+		              } else {
+                        vertex point0 = mapped - (halfpts - 0.5 - s)*dx*unitNormal; 
+                        vertex point1 = mapped + (0.5+s)*dx*unitNormal;
+
+//                        samples.at(g*2*halfpts + s) = diffBndry(mapped,bndryparam)/dx*len/2.0;
+//                        samples.at(g*2*halfpts + halfpts + s) = 
+//								 my_recon.at(FlatIndic(mi,cellid))->eval(locvals, point1, stenlg, stensm)/dx*len/2.0;
+                        samples.at(g*2*halfpts + halfpts + s) = diffBndry(mapped,bndryparam)/dx*len/2.0;
+                        samples.at(g*2*halfpts + s) = 
+								 my_recon.at(FlatIndic(mi,cellid))->eval(locvals, point1, stenlg, stensm)/dx*len/2.0;
+
+                        samplesv.at(g*2*halfpts + s) = point0; 
+                        samplesv.at(g*2*halfpts + halfpts + s) = point1;
+	    	          }
+	             }
+
+				}
         } else {
+            for (int s=0; s<halfpts; s++){
+                    vertex point0 = mapped - (halfpts - 0.5 - s)*dx*unitNormal; 
+                    vertex point1 = mapped + (0.5+s)*dx*unitNormal;
 
+                    samples.at(g*2*halfpts + s) = 0.0;
+                    samples.at(g*2*halfpts + halfpts + s) = 0.0;
 
+                    samplesv.at(g*2*halfpts + s) = point0; 
+                    samplesv.at(g*2*halfpts + halfpts + s) = point1;
+            } 
 		  }
-
-    } else {
-        // Horizontal
-        if (cellid[1] == 0){
-            // Down sampling values should be replaced with dirichlet values
-
-		  } else {
-
-
-		  }
-
 	 }
 
     return 1;
@@ -447,7 +643,7 @@ int TransportVariable::EvaluateSamplesEdge(const MeshInfo& mi,
         len = length(uniformEdge);
         unitNormal = UnitNormal(uniformEdge, len);
 
-            cout <<  " The normal vector is " << unitNormal[0] <<  "  "  << unitNormal[1] << endl;
+//           cout <<  " The normal vector is " << unitNormal[0] <<  "  "  << unitNormal[1] << endl;
 
         // Extract surface area 
         double posh = sqrt(mi.cellArea.at(FlatIndic(mi, cellpos)));
@@ -460,14 +656,16 @@ int TransportVariable::EvaluateSamplesEdge(const MeshInfo& mi,
 
         // Extract sample points
         if (onbndry){
-            cout << "This is a boundary edge" << endl;
-            cout << "The cell id is "  << cellpos[0] << "  " << cellpos[1] << " and  " 
-					  << cellneg[0] << "  " << cellneg[1] << endl;
-
+//            cout << "This is a boundary edge" << endl;
+//            cout << "The cell id is "  << cellpos[0] << "  " << cellpos[1] << " and  " 
+//					  << cellneg[0] << "  " << cellneg[1] << endl;
+            EvaluateSamples(mi, cellneg, uniformEdge, unitNormal, dx, len, xSize, ySize, xMaxCell, yMaxCell, 
+									 locvals, samplingp.at(dof), samplingv.at(dof));
 			
         } else {
-//            EvaluateSamples(uniformEdge, unitNormal, dx, halfpts, 
-//								    FlatIndic(mi,cellneg), FlatIndic(mi,cellpos), locvals, samplingp.at(dof));
+            EvaluateSamples(uniformEdge, unitNormal, dx, len, halfpts, 
+								    FlatIndic(mi,cellneg), FlatIndic(mi,cellpos), locvals, samplingp.at(dof),
+									 samplingv.at(dof));
         } 
 
 	 }}

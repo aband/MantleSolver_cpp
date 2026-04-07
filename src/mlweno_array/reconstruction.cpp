@@ -73,7 +73,7 @@ int reconstruction::init(int sizex_sm, int sizey_sm,
     if (use_sten_const){
         linwgts_const = 0.00001;
     } else {
-        linwgts_const = 0.0;
+        linwgts_const = 0.000;
     }
 
     // ===========================================================
@@ -87,6 +87,98 @@ int reconstruction::init(int sizex_sm, int sizey_sm,
     nonlinwgts_sm.resize(linwgts_sm.size());
 
     gstart = start;
+
+    return 1;
+}
+
+int reconstruction::init(int sizex_sm, int sizey_sm,
+                         int sizex_lg, int sizey_lg,
+					          int order_sm, int order_lg,
+					          const vector<indice>& sten_lg_pre,
+					          const vector<double>& mylinwgts_lg,
+                         const vector<indice>& sten_sm_pre,
+					          const vector<double>& mylinwgts_sm,
+                         const MeshInfo& mi, indice start,
+					          double mylinwgts_const){
+
+    sten_lg.clear();
+    sten_sm.clear();
+
+    stensizelgx = sizex_lg;
+    stensizelgy = sizey_lg;
+
+    stensizesmx = sizex_sm;
+    stensizesmy = sizey_sm;
+
+    allsize_lgx = mi.MPIglobalCellSize[0] - sizex_lg+1;
+    allsize_lgy = mi.MPIglobalCellSize[1] - sizey_lg+1;
+
+    allsize_smx = mi.MPIglobalCellSize[0] - sizex_sm+1;
+    allsize_smy = mi.MPIglobalCellSize[1] - sizey_sm+1;
+
+//    for (auto it: sten_lg_pre){
+//				indice now = start + it;
+//        if (validsten(sizex_lg, sizey_lg, mi, now)){
+//				sten_lg.push_back(it);
+//				linwgts_lg.push_back(1);
+//				flat_sten_lg.push_back(now[1]*allsize_lgx + now[0]);
+//        }
+//    }
+
+    for (int i=0; i<(int)sten_lg_pre.size(); i++){
+        indice now = start + sten_lg_pre.at(i);
+
+        if (validsten(sizex_lg, sizey_lg, mi, now)){
+
+				sten_lg.push_back(sten_lg_pre.at(i));
+				linwgts_lg.push_back(mylinwgts_lg.at(i));
+				flat_sten_lg.push_back(now[1]*allsize_lgx + now[0]);
+
+		  }
+	 }
+
+//    for (auto it: sten_sm_pre){
+//				indice now = start + it;
+//        if (validsten(sizex_sm, sizey_sm, mi, now)){
+//				sten_sm.push_back(it);
+//            linwgts_sm.push_back(1);
+//				flat_sten_sm.push_back(now[1]*allsize_smx + now[0]);
+//        }
+//    }
+
+    for (int i=0; i<(int)sten_sm_pre.size(); i++){
+        indice now = start + sten_sm_pre.at(i);
+
+        if (validsten(sizex_sm, sizey_sm, mi, now)){
+
+				sten_sm.push_back(sten_sm_pre.at(i));
+            linwgts_sm.push_back(mylinwgts_sm.at(i));
+				flat_sten_sm.push_back(now[1]*allsize_smx + now[0]);
+
+        }
+
+    }
+
+    if (use_sten_const){
+        linwgts_const = mylinwgts_const;
+    } else {
+        linwgts_const = 0.000;
+    }
+
+    // ===========================================================
+    r_lg = order_lg + 1;
+    r_sm = order_sm + 1;
+
+    stensigma_lg.resize(linwgts_lg.size());
+    stensigma_sm.resize(linwgts_sm.size());
+
+    nonlinwgts_lg.resize(linwgts_lg.size());
+    nonlinwgts_sm.resize(linwgts_sm.size());
+
+    gstart = start;
+
+       
+
 
     return 1;
 }

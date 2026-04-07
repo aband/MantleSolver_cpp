@@ -66,14 +66,13 @@ vertex bndryVs(const vertex& point, PhysProperty * pp){
     }
 */
 
-    // Two cells if 50*50
-    double cut = 0.04;
+
+    double cut = 0.1;
 
     if (point[1] > -0.00005){
 
        if (point[0]<cut){
-//            work[0] = V0 * sin(point[0]/cut*3.14159265358979323846/2.0);
-              work[0] = V0 * std::erf(point[0])/std::erf(cut); 
+            work[0] = V0 * sin(point[0]/cut*3.14159265358979323846/2.0);
         } else {
             work[0] = V0;
         }
@@ -248,14 +247,5 @@ const bndryType bndryTypeMarkerDarcy(const MeshInfo& mi,
                                      const indice& global,
                                      const int& edge){
 
-    bndryType type = dirichlet;
-
-    // Outflow on the right side
-    if (global[0] == mi.MPIglobalCellSize[0]-1){
-        if (edge == 2){
-            type = neumann;
-        }
-    }	
-
-    return type;
+    return dirichlet;
 }

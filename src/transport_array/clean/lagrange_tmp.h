@@ -10,10 +10,6 @@ using namespace std;
 static inline int combinatorial_monomial_map(int i, int j) { return (i+j)*(i+j+1)/2 + j; }
 
 class Combinatorials {
-  private:
-    static int my_num;
-    static std::vector<double> my_combinatorials;
-
   public:
     // Constructors
     void init(int new_num);
@@ -37,6 +33,11 @@ class Combinatorials {
     // Output for testing
     void write_raw(std::ofstream& fout) const;
     int write_raw(std::string& filename) const;
+
+  private:
+    static int my_num;
+    static std::vector<double> my_combinatorials;
+
   };
 
 // ================================================================================
@@ -45,11 +46,6 @@ static inline int lagrangeBasisDeriv_map(int n, int i) { return n*(n+1)/2 + i; }
 static inline int lagrangeBasisDeriv_map_odd(int n, int i) { return (n+1)*(n-1)/4 + i; }
 
 class LagrangeBasisDeriv {
-private:
-  static int max_degree;
-  static std::vector<double> my_lagrangeBasisDeriv_middle;
-  static std::vector<double> my_lagrangeBasisDeriv_endHi;
-
 public:
   // Constructors
   void init(int new_max_degree);
@@ -71,6 +67,12 @@ public:
 
   void write_raw(std::ofstream& fout) const;
   int write_raw(std::string& filename) const;
+
+private:
+  static int max_degree;
+  static std::vector<double> my_lagrangeBasisDeriv_middle;
+  static std::vector<double> my_lagrangeBasisDeriv_endHi;
+
 };
 
 #endif
