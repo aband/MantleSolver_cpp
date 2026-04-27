@@ -72,31 +72,6 @@ int main(int argc, char **argv){
     mycouple->printGaussPoints();
     mycouple->printCellGrids();
 
-    mycouple->computePorosity();
-
-    //mycouple->printedgeporosity(1);
-
-    // Initialize darcy stokes solver
-    DarcyStokes ds = DarcyStokes(mycouple->mi, mycouple->myPhase.pp, {0.0});
-
-    ds.Assemble(mycouple->mi, 
-                mycouple->edgeporo,
-                mycouple->cellporo,
-                mycouple->average_poro,
-                0.0,
-                mycouple->myPhase.pp);
-
-    //ds.showMatrix();
-    //ds.printBndryAll();
-
-    ds.CreateCoupledSystem();
-
-    ds.Solve(maxIter, tolUzawa);
-
-    ds.ReconstructEdgeVel(mycouple->edgegauss, mycouple->mi);
-
-    mycouple->printedgevel(1, ds.StokesVel, ds.DarcyVel);
-
     cout << "Transport is enabled here." << endl;
 
     TransportVariable myH = TransportVariable();
@@ -141,6 +116,39 @@ int main(int argc, char **argv){
 														    sten_sm_pre, mylinwgts_sm,
 					                               true, mylinwgts_const); 
 
+    myH.Evaluate(mycouple->mi, mycouple->dmu);
+    myCAdv.Evaluate(mycouple->mi, mycouple->dmu);
+    myCDif.Evaluate(mycouple->mi, mycouple->dmu);
+
+    mycouple->computePorosity_phase(myH, myCAdv);
+
+    //mycouple->computePorosity();
+
+    // Initialize darcy stokes solver
+    DarcyStokes ds = DarcyStokes(mycouple->mi, mycouple->myPhase.pp, {0.0});
+
+    ds.Assemble(mycouple->mi, 
+                mycouple->edgeporo,
+                mycouple->cellporo,
+                mycouple->average_poro,
+                0.0,
+                mycouple->myPhase.pp);
+
+    //ds.showMatrix();
+    //ds.printBndryAll();
+
+    ds.CreateCoupledSystem();
+
+    ds.Solve(maxIter, tolUzawa);
+
+    ds.ReconstructEdgeVel(mycouple->edgegauss, mycouple->mi);
+
+    mycouple->calculatePhaseVel(ds.StokesVel, ds.DarcyVel);
+
+    mycouple->printedgevel(1, mycouple->effvel, mycouple->phasevel);
+
+    mycouple->printedgeporosity(1);
+
 //    myH.Evaluate(mycouple->mi,mycouple->dmu);        
 //    myC.Evaluate(mycouple->mi,mycouple->dmu);
 
@@ -154,10 +162,12 @@ int main(int argc, char **argv){
 //    mycouple->printCellScalar(&myH.sol, "cellH", 1);
 //    mycouple->printCellScalar(&myH.sol, "cellH", 2);
 
+
+/*
     int mark = 1;
 
     int frame = 50;
-    PetscCall(PetscOptionsGetInt(NULL, NULL, "-frame", &frame, NULL)); 
+    PetscCall(PetscOptionsGetInt(NULL,NULL,"-frame",&frame,NULL));
 
     // Euler forwarding
     for (int t=0; t<Tmax; t++){
@@ -174,23 +184,24 @@ int main(int argc, char **argv){
         PetscCall(VecDuplicate(myCDif.sol, &fluxCDiv));
         myCDif.difflux_all(mycouple->mi, mycouple->dmu, mycouple->edgegauss, &fluxCDiv);
 
+
+//        PetscCall(VecView(fluxCAdv, PETSC_VIEWER_STDOUT_WORLD));
+//        PetscCall(VecView(fluxCDiv, PETSC_VIEWER_STDOUT_WORLD));
+
         PetscCall(VecAXPY(fluxCAdv, 0.8e-7, fluxCDiv));
 
         //VecView(fluxH, PETSC_VIEWER_STDOUT_WORLD);
         PetscCall(VecAXPY(myCAdv.sol, -1*dt, fluxCAdv));
 
-//		  if (t%frame == 0){
-//            mycouple->printCellScalar(&myCAdv.sol, "cellH", mark);
-//				mark ++ ;
-//		  }
+		  if (t%frame == 0){
+            mycouple->printCellScalar(&myCAdv.sol, "cellC", mark);
+				mark ++ ;
+		  }
 
         PetscCall(VecCopy(myCAdv.sol, myCDif.sol));
 
     }
-
-    cout << "Pre heating finished ... " << endl;
-    mycouple->printCellScalar(&myCAdv.sol, "cellH", 1);
-    mycouple->printCellScalar(&myH.sol, "cellC", 1);
+*/
 
     return 1;
 }

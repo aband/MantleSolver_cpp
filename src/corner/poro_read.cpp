@@ -1,5 +1,3 @@
-// Standardized driver function that activates all the function
-
 #include "couple.h"
 
 int main(int argc, char **argv){
@@ -46,7 +44,7 @@ int main(int argc, char **argv){
     double Tmax = 20; // Stop at the first step 
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-tmax", &Tmax, NULL)); 
 
-    double dt = 1;
+    double dt = 0;
     PetscCall(PetscOptionsGetReal(NULL, NULL, "-dt", &dt, NULL));
 
     int showPhase = 0;
@@ -58,10 +56,9 @@ int main(int argc, char **argv){
     int interval = 1;
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-interval", &interval, NULL));
 
-    int enable_transport = 0;
-    PetscCall(PetscOptionsGetInt(NULL, NULL, "-transport", &enable_transport, NULL));
+    // Read vector and assign as initial value
+    cout << "Initialize with vector output ...";
 
-    // ==============================================================================
     couple * mycouple = new couple(); 
 
     // Initialize coupling variables
@@ -72,16 +69,33 @@ int main(int argc, char **argv){
                          stencilWidthMesh, stencilWidthU,
                          physicsScale, meshType);
 
-    mycouple->printGaussPoints();
+	 // Define transport variables
+    TransportVariable myH = TransportVariable();
+    TransportVariable myC = TransportVariable();
 
-    mycouple->computePorosity();
+    myC.diffusion = false;
+    myH.diffusion = false;
 
-	 mycouple->printGaussPoints();
-    mycouple->printCellGrids();
+    mycouple->PrepareTransport(myH, myC, InitHD, InitCD);
 
+    mycouple->ReadVectorTransport(&myH.sol, &myC.sol, "cellH", "cellC", 1);
+
+    mycouple->printCellScalar(&myC.sol, "newcellC", 1);
+    mycouple->printCellScalar(&myH.sol, "newcellH", 1);
+
+    myH.CreateDefaultReconstruction(mycouple->mi);
+    myC.CreateDefaultReconstruction(mycouple->mi);
+
+    myH.Evaluate(mycouple->mi, mycouple->dmu);
+    myC.Evaluate(mycouple->mi, mycouple->dmu);
+
+    // Initialize porosity according to phase calculation
+    mycouple->computePorosity_phase(myH, myC);
     mycouple->printedgeporosity(1);
+    mycouple->printphase(1);
 
-    // Initialize darcy stokes solver
+    // Compute velocity
+	 cout << "Initialize Darcy-Stokes solver ... " << endl;
     DarcyStokes ds = DarcyStokes(mycouple->mi, mycouple->myPhase.pp, {0.0});
 
     ds.Assemble(mycouple->mi, 
@@ -91,36 +105,48 @@ int main(int argc, char **argv){
                 0.0,
                 mycouple->myPhase.pp);
 
-    //ds.showMatrix();
-    //ds.printBndryAll();
-
     ds.CreateCoupledSystem();
 
     ds.Solve(maxIter, tolUzawa);
 
     ds.ReconstructEdgeVel(mycouple->edgegauss, mycouple->mi);
 
-    mycouple->printedgevel(1, ds.StokesVel, ds.DarcyVel);
+    mycouple->calculatePhaseVel(ds.StokesVel, ds.DarcyVel);
 
-    if (enable_transport){
+    mycouple->printedgevel(1, mycouple->effvel, mycouple->phasevel);
 
-        cout << "Transport is enabled here." << endl;
+    // Define additional diffusion and latent heat transport term
+    TransportVariable myHdiff = TransportVariable();
+    TransportVariable myHLatent = TransportVariable();
 
-        TransportVariable myH = TransportVariable();
-        TransportVariable myC = TransportVariable();
+    myHLatent.diffusion = false;
+    myHLatent.CreateDefaultReconstruction(mycouple->mi);
 
-        mycouple->PrepareTransport(myH, myC, InitHD, InitCD);       
+	 myHdiff.diffusion = true;
 
-        myH.CreateDefaultReconstruction(mycouple->mi);
-        myC.CreateDefaultReconstruction(mycouple->mi);
+    // Diffusion weno stencils
+    int sizelgx = 3;
+    int sizelgy = 3;
+    int orderlg = 2;
 
-        myH.Evaluate(mycouple->mi,mycouple->dmu);        
-        myC.Evaluate(mycouple->mi,mycouple->dmu);
+    int sizesmx = 2;
+    int sizesmy = 2;
+    int ordersm = 1;
 
-        myH.Print(mycouple->mi, GetFilename("H", 1));
-        myC.Print(mycouple->mi, GetFilename("C", 1));
+    vector<indice> sten_lg_pre = {{-1,-1}};
+    vector<indice> sten_sm_pre = {{0,0}};
 
-    }
+    vector<double> mylinwgts_lg = {0.0};
+	 vector<double> mylinwgts_sm = {0.0,};
+	 double mylinwgts_const = 1;
 
+    myHdiff.CreateReconstruction(mycouple->mi, sizelgx, sizelgy, orderlg, 
+			     		                             sizesmx, sizesmy, ordersm,
+					                                sten_lg_pre, mylinwgts_lg,
+														     sten_sm_pre, mylinwgts_sm,
+					                                true, mylinwgts_const); 
+
+    // Coupled time stepping
+ 
     return 1;
 }

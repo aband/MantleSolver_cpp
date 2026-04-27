@@ -22,6 +22,7 @@ int TransportVariable::ExtractThisEdge(const MeshInfo& mi,
     int dofpos = cellpos[1]*mi.MPIglobalCellSize[0] + cellpos[0];
 
     for(int g=0; g<gsize; g++){
+
         uneg.at(g) = my_recon.at(dofneg)->elem_val.at(edgeneg*gsize+g); 
         upos.at(g) = my_recon.at(dofpos)->elem_val.at(edgepos*gsize+g); 
     }

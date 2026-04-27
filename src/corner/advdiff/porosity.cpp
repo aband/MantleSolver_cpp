@@ -80,11 +80,3 @@ int couple::computePorosity(){
 
     return 1;
 }
-
-int couple::computePorosity_phase(){
-
-    
-
-
-    return 1;
-}

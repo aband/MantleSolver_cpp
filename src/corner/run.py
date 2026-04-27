@@ -4,8 +4,21 @@ import myplot_scalar
 import myplot_sampleedge
 import myplot_single
 
-#myplot.plot_velocity(20,20,1,'advdiff','edgevel_stokes')
-#myplot.plot_velocity(40,40,1,'half','edgevel_darcy')
+#myplot.plot_velocity(20,20,1,'porochange','edgevel_stokes')
+#myplot.plot_velocity(20,20,1,'porochange','edgevel_darcy')
+myplot_scalar.plot_scalar(20,20,1,'porochange','aveporo')
+myplot_scalar.plot_scalar(20,20,1,'porochange','newcellC')
+myplot_scalar.plot_scalar(20,20,1,'porochange','newcellH')
+myplot.plot_velocity(20,20,1,'porochange','edgevel_darcy_porosity')
+myplot.plot_velocity(20,20,1,'porochange','phaseave_vel')
+
+#myplot.plot_velocity(20,20,1,'half','edgevel_darcy_porosity')
+#myplot.plot_velocity(20,20,1,'half','phaseave_vel')
+#myplot_scalar.plot_scalar(20,20,1,'half','aveporo')
+#myplot_scalar.plot_scalar(20,20,1,'porochange','cellC')
+#myplot_scalar.plot_scalar(20,20,1,'porochange','cellH')
+#myanime_scalar.anime_scalar(20,20,1,'porochange','cellC')
+
 #myplot.plot_velocity(40,40,1,'half','edgevel_darcy_porosity')
 #myplot.plot_velocity(40,40,1,'half','phaseave_vel')
 
@@ -27,12 +40,12 @@ import myplot_single
 #myplot_single.plot_single(400, 10,10,'diff_alone')
 
 # Plot flux and cell averaged solutions
-myplot_scalar.plot_scalar(20,20,1,'diff_alone','cellC')
-myplot_scalar.plot_scalar(20,20,1,'diff_alone','flux')
-
-myplot_scalar.plot_scalar(20,20,999,'diff_alone','cellC')
-myplot_scalar.plot_scalar(20,20,999,'diff_alone','flux')
+#myplot_scalar.plot_scalar(20,20,1,'diff_alone','cellC')
+#myplot_scalar.plot_scalar(20,20,1,'diff_alone','flux')
+#
+#myplot_scalar.plot_scalar(20,20,999,'diff_alone','cellC')
+#myplot_scalar.plot_scalar(20,20,999,'diff_alone','flux')
 
 #myanime_scalar.anime_scalar(20,20,1000,'diff_alone','cellC')
-myanime_scalar.anime_scalar(20,20,16,'advdiff','cellC')
+#myanime_scalar.anime_scalar(50,50,80,'advdiff','cellC')
 

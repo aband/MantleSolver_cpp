@@ -61,7 +61,7 @@ class TransportVariable{
                                  vector<indice>& sten_sm_pre,
 											bool use_sten_const);
 
-         int CreateReconstruction(const MeshInfo& mi, 
+        int CreateReconstruction(const MeshInfo& mi, 
                                  int sizelgx, int sizelgy, int orderlg,
                                  int sizesmx, int sizesmy, int ordersm,
                                  vector<indice>& sten_lg_pre,
@@ -73,6 +73,8 @@ class TransportVariable{
 
         // Evaluate reconstruction at a given point
         int Evaluate(const MeshInfo& mi, DM dmu);
+
+        int CellSol(const MeshInfo& mi, DM dmu);
 
         // Get cell flux vector
         int cellflux_all(const MeshInfo& mi, double maxv, DM dmu,
@@ -92,6 +94,20 @@ class TransportVariable{
 								const vector<vertex>& edgegaussp,
 								Vec * influx);
 
+        // Auxilliary functions
+        int getNeighbors(int xMaxCell,   int yMaxCell, 
+                         int xSize,      int ySize,
+                         int i, int j, int& edgepos, int& edgeneg,
+                         indice& cellpos, indice& cellneg,
+			                bool& onbndry);
+
+        int ExtractThisEdge(const MeshInfo& mi,
+                            indice cellneg, int edgeneg,
+  								    indice cellpos, int edgepos,
+                            int gsize,
+                            vector<double>& uneg,
+                            vector<double>& upos);
+
         // Print values at edge gauss points out
         int Print(const MeshInfo& mi, const char * fieldname);
 
@@ -110,13 +126,6 @@ class TransportVariable{
 
             vector<double> sigma_lg;
             vector<double> sigma_sm;
-
-            // Auxilliary functions
-	         int getNeighbors(int xMaxCell,   int yMaxCell, 
-                             int xSize,      int ySize,
-                             int i, int j, int& edgepos, int& edgeneg,
-                             indice& cellpos, indice& cellneg,
-					              bool& onbndry);
 
             int getUniformEdge(const vertexSet& edge, vertexSet& uniformEdge, const indice& cellid,
 									    int xSize, int ySize, int xMaxCell, int yMaxCell);
@@ -156,13 +165,6 @@ class TransportVariable{
             double difflux_edge(const vector<double>& sample);
 
             // =====================================================================
-
-            int ExtractThisEdge(const MeshInfo& mi,
-                                indice cellneg, int edgeneg,
-										  indice cellpos, int edgepos,
-                                int gsize,
-                                vector<double>& uneg,
-                                vector<double>& upos);
 
             int EvaluateSamples(const vertexSet& edge,
                                 const vertex& unitNormal,

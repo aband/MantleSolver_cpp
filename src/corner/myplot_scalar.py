@@ -22,8 +22,8 @@ def plot_scalar(M, N, mark, folder, name):
     #cellgy = cellgy.reshape((M, N), order='F')
     cellgy = cellgy.reshape((M, N))
 
-    print(cellgx)
-    print(cellgy)
+#    print(cellgx)
+#    print(cellgy)
 
     # ============================================================
     # Cell Scalar 

@@ -23,14 +23,8 @@ static double AssignPorosity(const vertex& point){
         value = 0.0;
 
     }
-/*
-    if (point[1] >-0.4 && point[1] < -0.3 && point[0]>0.4 && point[0]<0.51){
 
-        value = 0.01;
-	 }
-*/
-    return value;
-
+    return 0.0;
 }
 
 int couple::computePorosity(){
@@ -85,3 +79,5 @@ int couple::computePorosity(){
 
     return 1;
 }
+
+

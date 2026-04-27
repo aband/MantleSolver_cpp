@@ -17,7 +17,7 @@ double InitCD(const valarray<double>& point,
     if (point[0] < 0){ 
         return 1.0;
 	 } else {
-        return 0.0;
+        return 1.0;
 	 }
 }
 
@@ -89,7 +89,7 @@ double diffBndry(const vertex& points, const vector<double>& param){
 
     if (points[1] > 0.9999){
   
-        return 1.0;
+        return 0.0;
 
 	 } else {
 
@@ -105,7 +105,7 @@ int diffBndryType(const vertex& points){
     // 1: Dirichlet diffusion boundary
 
     if (points[1] > 0.9999){
-        return 0;
+        return 1;
   //return 0; 
     } else {
         return 0;

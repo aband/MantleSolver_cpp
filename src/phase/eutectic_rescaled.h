@@ -26,12 +26,16 @@ namespace EUTECTIC{
 
         // mass fraction
         double cl;
+        double cs;
 
         // Phase region
         int region;
 
-        // Melting temperature
+        // current temperature
         double TDp;
+
+        // Melting temperature
+		  double Tep;
 
         // Derivative
         double dTD_dCD;
@@ -53,6 +57,8 @@ namespace EUTECTIC{
             int evalPhase(const double& HD,
                           const double& CD,
                           const double& P);
+
+            int copyPhaseComp(PhaseComp& thispc);
 
             int phaseSplit(const double& inHD,
                            const double& inCD,

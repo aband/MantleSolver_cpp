@@ -271,7 +271,6 @@ int DarcyStokes::Assemble(const MeshInfo& mi,
     double k = 0.0;
 
     poroSet locporo; 
-
     for (int j=0; j<mi.MPIglobalCellSize[1]; j++){
     for (int i=0; i<mi.MPIglobalCellSize[0]; i++){
 

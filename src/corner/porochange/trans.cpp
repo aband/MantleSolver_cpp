@@ -15,8 +15,8 @@ double InitCD(const valarray<double>& point,
     //    return 0.0;
 	 //}
 
-    return 1.0;
-
+    //return 1.0;
+    return 3.35;
 }
 
 double InitHD(const valarray<double>& point,
@@ -26,9 +26,13 @@ double InitHD(const valarray<double>& point,
 	 // We pass nondimensionalize normalization factor in param.at(0)
     //double HD = 0.01;
 
-    double HD = 2.9-2.5*point[1];
+    //double HD = 2.9-2.5*point[1];
 
-    if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
+    //if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
+
+    double HD = 0.01 - point[1]*0.1;
+
+//    return 0.1;
 
     return HD;
 }
@@ -52,6 +56,7 @@ double dfdu(const double& u){
 // Boundary condition for transport problem
 
 // Check if it is outflow first then assign boundary condition to this transport problem
+// This is advection boundary
 int diriBndry(const vector<vertex>& points, 
                     vector<double>& value,
                     int flag){
@@ -64,14 +69,16 @@ int diriBndry(const vector<vertex>& points,
 
             //if (points.at(g)[1] == -0.5 && points.at(g)[0]>0.2 && points.at(g)[0]<0.3){
             if (points.at(g)[1] == -0.5){
-                value.at(g) = 1.0;
+                //value.at(g) = 1.0;
+                value.at(g) = 3.35;
+
             } else {
                 value.at(g) = 0.0;
             }
 
         } else {
 
-            value.at(g) = 0.0;
+            value.at(g) = 0.1;
 
         }
 

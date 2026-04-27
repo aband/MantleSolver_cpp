@@ -108,7 +108,7 @@ int couple::printCellScalar(Vec * sol, const char * fieldname, int mark){
 
         PetscCall(VecGetValues(temp,1, &nelem, &val));
 
-        fprintf(file, "%.16f ", val);
+        fprintf(file, "%.14lf ", val);
 
     }fprintf(file, "\n");}
 
@@ -212,6 +212,27 @@ int couple::printedgeporosity(int mark){
     printedgeval(mark, edgeporo, "porosity");
 
     printcellval(mark, average_poro, "aveporo");
+
+    return 1;
+}
+
+int couple::printphase(int mark){
+
+    FILE * file = fopen(GetFilename("phase", mark), "w");
+    FILE * filetdp = fopen(GetFilename("currentp", mark), "w");
+    FILE * filetmp = fopen(GetFilename("meltp", mark), "w");
+
+    for (int j=0; j<N_; j++){
+    for (int i=0; i<M_; i++){
+
+        fprintf(file, "%d ", cellphase.at(j*M_+i));
+        fprintf(filetdp, "%lf ", currentTemp.at(j*M_+i));
+        fprintf(filetmp, "%lf ", meltp.at(j*M_+i));
+	 }}
+
+    fclose(file);
+    fclose(filetdp);
+    fclose(filetmp);
 
     return 1;
 }

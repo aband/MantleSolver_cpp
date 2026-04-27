@@ -68,21 +68,41 @@ class couple {
         int ShowPhase();
         int withUnit; 
 
+        // Phase quantities on the edge
+        vector<EUTECTIC::PhaseComp> phasequantityedge;
+
+        // cell averaged phase quantities
+        vector<EUTECTIC::PhaseComp> phasequantitycell;
+
+        int computePorosityEdgePhase(const MeshInfo& mi, int xSize, int ySize, int offset,
+								             int xMaxCell, int yMaxCell, 
+												 TransportVariable& H, TransportVariable& C);
+
+        int ExtractThisEdgeGauss(vector<vertex>& thisedgegauss, int gsize, 
+								         int i, int j, int xSize, int ySize, int offset);
+
+        int EvaluateThisEdgePhase(int gsize, int i, int j, int xSize, int ySize, int offset, 
+								            const vector<double>& Hneg, const vector<double>& Cneg, 
+								            const vector<double>& Hpos, const vector<double>& Cpos);
+
+        int computePorosityCellPhase(TransportVariable& H,
+												 TransportVariable& C);
+
         /**!
          * Create Data management objects.
          * And Mesh vector.
          */
-         int CreateMesh(const int& M, const int& N,
-                        double L, double H, 
-                        double xstart, double ystart,
-                        const int& stencilWidthMesh, 
-                        const int& stencilWidthU,
-                        const bool& physicsScale,
-                        const int& meshType); 
+        int CreateMesh(const int& M, const int& N,
+                       double L, double H, 
+                       double xstart, double ystart,
+                       const int& stencilWidthMesh, 
+                       const int& stencilWidthU,
+                       const bool& physicsScale,
+                       const int& meshType); 
 
-         int printGaussPoints();
+        int printGaussPoints();
 
-         int printCellGrids();
+        int printCellGrids();
 
         /**!
          * Create boundary condition vectors
@@ -98,6 +118,15 @@ class couple {
                                               const vector<double>& param),
                              double (*initCD)(const valarray<double>& point, 
                                               const vector<double>& param));
+
+        /**!
+         * Read vector as input
+         */
+        int ReadVectorTransport(Vec * H, Vec * C, 
+                                const char * fileH, 
+										  const char * fileC,
+										  int mark);
+
         /**!
          * Solve flow at the given time step.
          */
@@ -112,15 +141,21 @@ class couple {
         /**!
          * Split computational domain into different phase regions
          */
-        int PhaseSplit(TransportVariable& H, 
-                       TransportVariable& C);
+        //int PhaseSplit(TransportVariable& H, 
+        //               TransportVariable& C);
 
         // Actual coupling functions
         int computePorosity();
 
-        int computePorosity_phase();
+        int computePorosity_phase(TransportVariable& H,
+                                  TransportVariable& C);
+
+        int calculatePhaseVel(const vector<vertex>& stokesvel,
+								      const vector<vertex>& relativevel);
 
         int printedgeporosity(int mark);
+
+        int printphase(int mark);
 
         // edge velocity
         int printedgevel(int mark, const vector<vertex>& stokesvel,
@@ -142,6 +177,10 @@ class couple {
         vector<double> edgeporo;
         vector<double> cellporo;
         vector<double> average_poro;
+
+        vector<int> cellphase;
+		  vector<double> meltp;
+        vector<double> currentTemp;
 
         /**!
          * Different velocities

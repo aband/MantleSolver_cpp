@@ -184,12 +184,36 @@ target_link_libraries(couple_lib
 		  general_lib
 		  phase_lib
 		  mfem_lib
+		  mlweno_lib
 		  transport_lib
 		  PkgConfig::PETSC
 )
 
+# ===================================================================
+add_executable(preheat
+		  #${SRC}/corner/poro.cpp
+		  #${SRC}/corner/poro_evolve.cpp
+		  ${SRC}/corner/advdiff.cpp
+)
+
+target_include_directories(preheat
+		  PUBLIC ${SRC}/corner
+		  )
+
+target_link_libraries(preheat
+		  io_lib
+		  phase_lib
+		  mfem_lib
+		  couple_lib
+		  mlweno_lib
+		  PkgConfig::LAPACKE
+		  PkgConfig::PETSC
+		  phase_lib
+)
+
+# ===================================================================
 add_executable(driver
-		  ${SRC}/corner/driver.cpp
+		  ${SRC}/corner/poro_read.cpp
 )
 
 target_include_directories(driver

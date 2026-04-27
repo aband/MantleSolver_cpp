@@ -137,6 +137,27 @@ int EUTECTIC::phase::evalPhase(const double& HD,
         break;
     }
 
+    pc.cs  = pc.phi2/ (pc.phi2 + pc.phi1);
+    pc.Tep = Tep;
+
+    return 1;
+}
+
+int EUTECTIC::phase::copyPhaseComp(PhaseComp& thispc){
+
+    thispc.phi1 = pc.phi1;
+    thispc.phi2 = pc.phi2;
+    thispc.phil = pc.phil;
+
+    thispc.cl = pc.cl;
+    thispc.cs = pc.cs;
+
+    thispc.region = pc.region;
+
+    thispc.TDp = pc.TDp;
+    thispc.dTD_dCD = pc.dTD_dCD;
+    thispc.dTD_dHD = pc.dTD_dHD;
+
     return 1;
 }
 

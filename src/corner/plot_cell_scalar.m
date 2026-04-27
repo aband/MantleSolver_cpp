@@ -10,5 +10,3 @@ function [] = drawcellscalar(M,N,mark,folder,name)
 		  fileID = fopen(filename, 'r');
 		  vertexy = fscanf(fileID, '%f', [1,Inf]);
 		  vertexy = reshape(vertexy, M, M);
-
-
