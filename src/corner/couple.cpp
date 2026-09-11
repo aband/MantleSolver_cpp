@@ -352,10 +352,10 @@ static int combineEdgePhase(EUTECTIC::PhaseComp& pcneg,
 				                EUTECTIC::PhaseComp& pcedge){
 
     // geometric average of phi
-	 if (pcneg.phil * pcpos.phil == 0.0){
-        pcedge.phil == 0.0;
+	 if (pcneg.phil * pcpos.phil < 1e-14){
+        pcedge.phil = 0.0;
 	 }	else {
-        pcedge.phil = harmonic_mean(pcneg.phil, pcneg.phil);
+        pcedge.phil = harmonic_mean(pcneg.phil, pcpos.phil);
 	 }
 
     pcedge.cl = (pcneg.cl + pcpos.cl)/2.0;
@@ -509,6 +509,9 @@ int couple::computePorosity_phase(TransportVariable& H,
 
 	 }
 
+    // Cell centerred phase quantities
+    computePorosityCellPhase(H, C); 
+
     cellporo.clear();
     cellporo.resize(M_*N_*9);
 
@@ -525,16 +528,161 @@ int couple::computePorosity_phase(TransportVariable& H,
             double thisC = C.cellgauss.at(gdof);
 
             myPhase.pPtr->evalPhase(thisH, thisC, lithop);
-            cellporo.at(gdof) = myPhase.pPtr->pc.phil;
+            //cellporo.at(gdof) = myPhase.pPtr->pc.phil;
+            cellporo.at(gdof) = average_poro.at(dof);
 
         }
     }}
 
-    // Cell centerred phase quantities
-    computePorosityCellPhase(H, C); 
+    return 1;
+}
+
+int couple::AssignPorosityVec(Vec * porovec){
+
+    // Assign computed cell porosity to a given vector
+    Vec newporo = *porovec;
+
+    for (int i=0; i<M_*N_; i++){
+
+        PetscCall(VecSetValue(newporo, i, cellporo.at(i), INSERT_VALUES));
+
+    }
 
     return 1;
 }
+
+int couple::expandporosity(TransportVariable& poroex, int xMaxCell, int yMaxCell, int xSize, int ySize, int offset){
+
+  	 const valarray<double>& gpe = GaussPointsEdge;
+
+    vector<vertex> thisedgegauss;
+    thisedgegauss.resize(gpe.size());
+
+    // Reconstruction values evaluated from neg cell
+    vector<double> poroneg;
+    // Reconstruction values evaluated from pos cell
+    vector<double> poropos;
+
+    bool onbndry = false;
+    int bndrytype = 0;
+
+    int edgepos = 0;
+    int edgeneg = 0;
+
+    indice cellpos {0,0};
+    indice cellneg {0,0};
+
+    double thisedgeporo = 0.0;
+
+    for (int j=0; j<ySize; j++){
+    for (int i=0; i<xSize; i++){
+        poroex.getNeighbors(xMaxCell, yMaxCell, xSize, ySize, i, j, edgepos, edgeneg, cellpos, cellneg, onbndry);
+
+        int dof = j*xSize + i;
+        // Edge dof
+        dof += offset;
+
+        poroex.ExtractThisEdge(mi, cellneg, edgeneg, 
+								           cellpos, edgepos, gpe.size(),
+											  poroneg, poropos); 
+
+        for (int g=0; g<(int)gpe.size(); g++){
+            vertex gaussp = edgegauss.at(dof*gpe.size() + g);
+
+            // Compute harmonic average
+            if (poroneg.at(g) * poropos.at(g) < 1e-14){
+					 thisedgeporo = 0.0;
+				}else {
+                thisedgeporo = harmonic_mean(poroneg.at(g), poropos.at(g));
+				} 
+
+            edgeporo.at(g) = thisedgeporo;
+
+		  }
+
+    }}
+
+    return 1;
+}
+
+int couple::expandporosity(){
+
+    vector<indice> neighbor;
+	 neighbor.resize(2);
+
+    for (int g=0; g<(int)edgegauss.size(); g++){
+        edgegaussToCellIndex(g, neighbor);
+
+         
+
+        edgeporo.at(g) = 0.0;
+	 }
+
+    return 1;
+}
+
+int couple::edgegaussToCellIndex(int index, vector<indice>& neighbor){
+
+    // for each index at edge return its neighbor cells    
+    
+    // Vertical index is counted first and horizontal index is counted the second 
+
+    neighbor.at(0) = {-1,-1};
+    neighbor.at(1) = {-1,-1};
+
+    const valarray<double>& gpe = GaussPointsEdge;
+
+    int tolvertgauss = (M_+1)*N_*gpe.size();
+	 int tolhorigauss = M_*(N_+1)*gpe.size();
+
+    // every edge have gpe.size() points
+    int edgeind = 0;
+    int i = 0;
+    int j = 0;
+
+    if (index < tolvertgauss){
+        // this index belongs to vertical edges 
+        edgeind = index/(int)gpe.size();
+        i = edgeind%(M_+1); // i
+        j = edgeind/(M_+1); // j
+
+        // now get neighbor, if boundary than neighbor being the same
+        neighbor.at(0) = {i-1,j};
+        neighbor.at(1) = {i,j};
+
+        // check if on the boundary
+        if (neighbor.at(0)[0] < 0){
+            neighbor.at(0)[0] = 0;
+		  }
+
+        if (neighbor.at(1)[0] == M_){
+            neighbor.at(1)[0] = M_-1;
+		  }
+
+	 } else {
+        // this index belongs to horizontal edges
+        edgeind = (index-tolvertgauss)/(int)gpe.size();
+        i = edgeind%(M_); // i
+        j = edgeind/(M_); // j
+
+        // now get neighbor, if boundary than neighbor being the same
+        neighbor.at(0) = {i,j-1};
+        neighbor.at(1) = {i,j};
+
+        // check if on the boundary
+        if (neighbor.at(0)[1] < 0){
+            neighbor.at(0)[1] = 0;
+		  }
+
+        if (neighbor.at(1)[1] == N_){
+            neighbor.at(1)[1] = N_-1;
+		  }
+
+	 }
+
+    return 1;
+}
+
 
 int couple::calculatePhaseVel(const vector<vertex>& stokesvel,
 					               const vector<vertex>& relativevel){
@@ -557,6 +705,76 @@ int couple::calculatePhaseVel(const vector<vertex>& stokesvel,
 
         solidvel.at(g) = (1-phil) * stokesvel.at(g);
 	 }
+
+    return 1;
+}
+
+int couple::alterporosity(double scale){
+
+    for (int i=0; i<edgeporo.size(); i++){
+        edgeporo[i] *= scale;
+	 }
+
+    for (int i=0; i<cellporo.size(); i++){
+        cellporo[i] *= scale;
+	 }
+
+    for (int i=0; i<average_poro.size(); i++){
+        average_poro[i] *= scale;
+	 }
+
+    return 1;
+}
+
+int couple::adjustEdgePorosity(){
+
+    int tolvert = N_*(M_+1);
+
+    // Adjust edge porosity values with reference to cellaveraged value
+    for (int j=0; j<N_; j++){
+    for (int i=0; i<M_; i++){
+
+        // four edges
+        int left  = j*(M_+1) + i;
+        int right = j*(M_+1) + i+1;
+
+        int bottom = tolvert + (j*M_ + i);
+		  int top    = tolvert + ((j+1)*M_ + i);
+
+        if (average_poro.at(j*M_+i) < 1e-14){
+
+            for(int g=0; g<3; g++){
+                edgeporo.at(left*3+g) = 0.0;
+                edgeporo.at(right*3+g) = 0.0;
+                edgeporo.at(bottom*3+g) = 0.0;
+                edgeporo.at(top*3+g) = 0.0;
+				}
+
+		  }
+
+	 }}
+
+    return 1;
+}
+
+int couple::assignTempVec(Vec * temp){
+
+    Vec mytemp = *temp;
+
+    for (int i=0; i<M_*N_; i++){
+        PetscCall(VecSetValue(mytemp, i, currentTemp.at(i), INSERT_VALUES));
+    }	
+
+    return 1;
+}
+
+int couple::setlatentVec(Vec * latent){
+
+    Vec mylatent = *latent;
+
+    for (int i=0; i<M_*N_; i++){
+        PetscCall(VecSetValue(mylatent, i, myPhase.pPtr->LD, INSERT_VALUES));
+    }	
 
     return 1;
 }

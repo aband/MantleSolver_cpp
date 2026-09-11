@@ -174,7 +174,8 @@ int main(int argc, char **argv){
         PetscCall(VecDuplicate(myCDif.sol, &fluxCDiv));
         myCDif.difflux_all(mycouple->mi, mycouple->dmu, mycouple->edgegauss, &fluxCDiv);
 
-        PetscCall(VecAXPY(fluxCAdv, 0.8e-7, fluxCDiv));
+        //PetscCall(VecAXPY(fluxCAdv, 5e-9, fluxCDiv));
+        PetscCall(VecAXPY(fluxCAdv, 8e-8, fluxCDiv));
 
         //VecView(fluxH, PETSC_VIEWER_STDOUT_WORLD);
         PetscCall(VecAXPY(myCAdv.sol, -1*dt, fluxCAdv));

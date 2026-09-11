@@ -153,9 +153,19 @@ class couple {
         int calculatePhaseVel(const vector<vertex>& stokesvel,
 								      const vector<vertex>& relativevel);
 
+        int alterporosity(double scale);
+
+        // Adjust edge porosity according to the cell-averaged porosity
+        int adjustEdgePorosity();
+
+        int edgegaussToCellIndex(int index, vector<indice>& neighbor);
+
         int printedgeporosity(int mark);
 
         int printphase(int mark);
+
+        int printpressure(int mark, Vec * sp, Vec * dp, bool printpressure, 
+								const char * spname, const char * dpname);
 
         // edge velocity
         int printedgevel(int mark, const vector<vertex>& stokesvel,
@@ -163,6 +173,17 @@ class couple {
 
         // cell center scalar
         int printCellScalar(Vec * sol, const char * fieldname, int mark);
+
+        int printdivmass(int mark, const char * fieldname, 
+								const vector<vertex>& stokesvel,
+								const vector<vertex>& darcyvel);
+
+        int printsepmass(int mark, const char * eq1, 
+					                    const char * eq2, 
+											  const vector<vertex>& stokesvel,
+											  const vector<vertex>& darcyvel,
+											  const vector<double>& stokesp,
+											  const vector<double>& darcyp);
 
         /**!
          * Coordinates evaluated at different positions
@@ -178,9 +199,21 @@ class couple {
         vector<double> cellporo;
         vector<double> average_poro;
 
+        int examineFullPorosity(int t);
+
         vector<int> cellphase;
 		  vector<double> meltp;
         vector<double> currentTemp;
+
+        int assignTempVec(Vec * temp);
+
+        int setlatentVec(Vec * latent);
+
+        int AssignPorosityVec(Vec * porovec);
+
+        int expandporosity(TransportVariable& poroex, int xMaxCell, int yMaxCell, int xSize, int ySize, int offset);
+
+        int expandporosity();
 
         /**!
          * Different velocities

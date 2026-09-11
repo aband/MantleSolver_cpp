@@ -58,10 +58,11 @@ int main(int argc, char **argv){
     PetscCall(PetscOptionsGetInt(NULL, NULL, "-interval", &interval, NULL));
 
     // ==============================================================================
+    cout << "Initialize with vector output ...";
+
     couple * mycouple = new couple(); 
 
     // Initialize coupling variables
-	 cout <<"Initialize coupling variables ..." << endl; 
     mycouple->withUnit = withUnit;
     mycouple->CreatePhase();
     mycouple->ShowPhase();
@@ -72,27 +73,47 @@ int main(int argc, char **argv){
     mycouple->printGaussPoints();
     mycouple->printCellGrids();
 
-    cout << "Define transport variables ... " << endl;
+	 // Define transport variables
+    TransportVariable myH = TransportVariable();
     TransportVariable myC = TransportVariable();
-    TransportVariable myHAdv = TransportVariable();
 
-    myHAdv.diffusion = false;
     myC.diffusion = false;
+    myH.diffusion = false;
 
-    mycouple->PrepareTransport(myHAdv, myC, InitHD, InitCD);       
+    mycouple->PrepareTransport(myH, myC, InitHD, InitCD);
 
-    // Advection weno stencils
+    // Read in preheating result
+    mycouple->ReadVectorTransport(&myH.sol, &myC.sol, "cellH", "cellC", 1);
+
+//    mycouple->printCellScalar(&myC.sol, "newcellC", 1);
+//    mycouple->printCellScalar(&myH.sol, "newcellH", 1);
+
+    myH.CreateDefaultReconstruction(mycouple->mi);
     myC.CreateDefaultReconstruction(mycouple->mi);
-    myHAdv.CreateDefaultReconstruction(mycouple->mi);
 
-    // =====================================================
+    myH.Evaluate(mycouple->mi, mycouple->dmu);
+    myC.Evaluate(mycouple->mi, mycouple->dmu);
+    // ======================================================================
+    // Define transport variable	of temperature
+    Vec Temp;
+	 PetscCall(VecDuplicate(myH.sol, &Temp));
+    PetscCall(VecCopy(myH.sol, Temp));
 
-    TransportVariable myHDif = TransportVariable();
+    // Compute porosity with phase package
+    mycouple->computePorosity_phase(myH, myC);
+    mycouple->adjustEdgePorosity();
+    mycouple->assignTempVec(&Temp);
 
-    PetscCall(VecDuplicate(myHAdv.sol, &myHDif.sol));
-    PetscCall(VecCopy(myHAdv.sol, myHDif.sol));
+    mycouple->printedgeporosity(1);
 
-    myHDif.diffusion = true;
+    // Diffusion 
+    TransportVariable myTempDif = TransportVariable();
+
+    PetscCall(VecDuplicate(Temp, &myTempDif.sol));
+    PetscCall(VecCopy(Temp, myTempDif.sol));
+
+    myTempDif.diffusion = true;
+
     // Diffusion weno stencils
     int sizelgx = 3;
     int sizelgy = 3;
@@ -109,118 +130,74 @@ int main(int argc, char **argv){
 	 vector<double> mylinwgts_sm = {0.0,};
 	 double mylinwgts_const = 1;
 
-    myHDif.CreateReconstruction(mycouple->mi, sizelgx, sizelgy, orderlg, 
-			     		                            sizesmx, sizesmy, ordersm,
-					                               sten_lg_pre, mylinwgts_lg,
-														    sten_sm_pre, mylinwgts_sm,
-					                               true, mylinwgts_const); 
+    myTempDif.CreateReconstruction(mycouple->mi, sizelgx, sizelgy, orderlg, 
+			       		                            sizesmx, sizesmy, ordersm,
+			    		                               sten_lg_pre, mylinwgts_lg,
+			    											    sten_sm_pre, mylinwgts_sm,
+			    		                               true, mylinwgts_const); 
 
-    myC.Evaluate(mycouple->mi, mycouple->dmu);
-    myHAdv.Evaluate(mycouple->mi, mycouple->dmu);
-    myHDif.Evaluate(mycouple->mi, mycouple->dmu);
+    // Advection
+    TransportVariable myTempAdv = TransportVariable();
+ 
+    PetscCall(VecDuplicate(Temp, &myTempAdv.sol));
+    PetscCall(VecCopy(Temp, myTempAdv.sol));
 
-//    cout << "Compute initial porosity distribution ... " << endl;
-//    mycouple->computePorosity_phase(myH, myCAdv);
+    myTempAdv.diffusion = false;
+    myTempAdv.CreateDefaultReconstruction(mycouple->mi);
 
-    cout << "Initialize Darcy-Stokes solver ... " << endl;
-    DarcyStokes ds = DarcyStokes(mycouple->mi, mycouple->myPhase.pp, {0.0});
+    // Evaluate both diffusion and advection
+    myTempDif.Evaluate(mycouple->mi, mycouple->dmu);
+	 myTempAdv.Evaluate(mycouple->mi, mycouple->dmu);
 
-    cout << "Start time evolution ... " << endl;
+    Vec latent;
+    PetscCall(VecDuplicate(myH.sol, &latent));
+	 PetscCall(VecCopy(myH.sol, latent));
 
-    int mark = 1;
-    int frame = 50;
-    PetscCall(PetscOptionsGetInt(NULL,NULL,"-frame",&frame,NULL));
+    mycouple->setlatentVec(&latent);
 
-	 // Solve static Stokes problem
-    mycouple->computePorosity();
+    Vec Hsol;
+    PetscCall(VecDuplicate(myH.sol, &Hsol));
+	 PetscCall(VecCopy(myH.sol, Hsol));
 
-    ds.Assemble(mycouple->mi, 
-                mycouple->edgeporo,
-                mycouple->cellporo,
-                mycouple->average_poro,
-                0.0,
-                mycouple->myPhase.pp);
-
-    ds.CreateCoupledSystem();
-
-    ds.Solve(maxIter, tolUzawa);
-
-    ds.ReconstructEdgeVel(mycouple->edgegauss, mycouple->mi);
-
-    mycouple->printedgevel(1, ds.StokesVel, ds.DarcyVel);
-
-// ===========================================================================
-    int mark = 1;
-
-    int frame = 50;
-    PetscCall(PetscOptionsGetInt(NULL,NULL,"-frame",&frame,NULL));
-
-    // Euler forwarding
-    for (int t=0; t<Tmax; t++){
-        myCAdv.Evaluate(mycouple->mi, mycouple->dmu);
-        myCDif.Evaluate(mycouple->mi, mycouple->dmu);
-        //myC.PrintSample(mycouple->mi);
-
-        Vec fluxCAdv;
-        PetscCall(VecDuplicate(myCAdv.sol, &fluxCAdv));
-        myCAdv.advflux_all(mycouple->mi, 1e-5, mycouple->dmu, mycouple->edgegauss, 
-								ds.StokesVel, true, 0, &fluxCAdv);
-
-        Vec fluxCDiv;
-        PetscCall(VecDuplicate(myCDif.sol, &fluxCDiv));
-        myCDif.difflux_all(mycouple->mi, mycouple->dmu, mycouple->edgegauss, &fluxCDiv);
-
-
-//        PetscCall(VecView(fluxCAdv, PETSC_VIEWER_STDOUT_WORLD));
-//        PetscCall(VecView(fluxCDiv, PETSC_VIEWER_STDOUT_WORLD));
-
-        PetscCall(VecAXPY(fluxCAdv, 0.8e-7, fluxCDiv));
-
-        //VecView(fluxH, PETSC_VIEWER_STDOUT_WORLD);
-        PetscCall(VecAXPY(myCAdv.sol, -1*dt, fluxCAdv));
-
-		  if (t%frame == 0){
-            mycouple->printCellScalar(&myCAdv.sol, "cellC", mark);
-				mark ++ ;
-		  }
-
-        PetscCall(VecCopy(myCAdv.sol, myCDif.sol));
-
-    }
-
+//    VecView(latent, PETSC_VIEWER_STDOUT_WORLD);
 
 	 /*
-    // Precompute the system
-    for (int t1=0; t1<100; t1++){
-        myHAdv.Evaluate(mycouple->mi, mycouple->dmu);
-        myHDif.Evaluate(mycouple->mi, mycouple->dmu);
- 
-        Vec fluxHAdv;
-        PetscCall(VecDuplicate(myHAdv.sol, &fluxHAdv));
-        myHAdv.advflux_all(mycouple->mi, 1e-5, mycouple->dmu, mycouple->edgegauss, 
-								ds.StokesVel, true, 0, &fluxHAdv);
+    TransportVariable expandporosity = TransportVariable();
 
-        Vec fluxHDiv;
-        PetscCall(VecDuplicate(myHDif.sol, &fluxHDiv));
-        myHDif.difflux_all(mycouple->mi, mycouple->dmu, mycouple->edgegauss, &fluxHDiv);
+	 PetscCall(VecDuplicate(myH.sol, &expandporosity.sol));
+    PetscCall(VecCopy(myH.sol, expandporosity.sol));
 
-        PetscCall(VecAXPY(fluxHAdv, 0.8e-7, fluxHDiv));
+	 mycouple->AssignPorosityVec(&expandporosity.sol);
 
-        PetscCall(VecAXPY(myHAdv.sol, -1*100, fluxHAdv));
+    expandporosity.diffusion = false;
+//    expandporosity.CreateDefaultReconstruction(mycouple->mi);
 
-        PetscCall(VecCopy(myHAdv.sol, myHDif.sol));
+    // Reuse former setup
 
-//        mycouple->printedgeporosity(mark);
-	     mycouple->printCellScalar(&myHAdv.sol, "cellH", mark);
-		  mark ++ ;
-	
-	 }
+    expandporosity.CreateReconstruction(mycouple->mi, sizelgx, sizelgy, orderlg, 
+			       		                            sizesmx, sizesmy, ordersm,
+			    		                               sten_lg_pre, mylinwgts_lg,
+			    											    sten_sm_pre, mylinwgts_sm,
+			    		                               true, mylinwgts_const); 
 
-	 for (int t=0; t<Tmax; t++){
+	 expandporosity.Evaluate(mycouple->mi, mycouple->dmu);
+    mycouple->expandporosity(expandporosity, M+1, N,  M, N, 0);
+	 mycouple->expandporosity(expandporosity, M,   N+1,M, N, (M+1)*N);
+*/
 
-        // Evaluate porosity distribution
-        mycouple->computePorosity_phase(myHAdv, myC);
+    // ======================================================================
+	 cout << "Initialize Darcy-Stokes solver ... " << endl;
+    DarcyStokes ds = DarcyStokes(mycouple->mi, mycouple->myPhase.pp, {0.0});
 
+    // ======================================================================
+    int mark = 1;
+    int frame = 50;
+    PetscCall(PetscOptionsGetInt(NULL, NULL, "-frame", &frame, NULL)); 
+
+    for (int t=0; t<Tmax; t++){
+
+        cout << "Time " << t << endl;
+        // Assemble linear system for every time step
         ds.Assemble(mycouple->mi, 
                     mycouple->edgeporo,
                     mycouple->cellporo,
@@ -236,39 +213,67 @@ int main(int argc, char **argv){
 
         mycouple->calculatePhaseVel(ds.StokesVel, ds.DarcyVel);
 
-//        mycouple->printedgevel(mark, mycouple->effvel, mycouple->phasevel);
+        if (t%frame ==0){
+            mycouple->printdivmass(mark,"massconsv",ds.StokesVel, ds.DarcyVel);
+            mycouple->printedgevel(mark, mycouple->effvel, mycouple->phasevel);
+				mycouple->printphase(mark);
+				mycouple->printedgeporosity(mark);
+				mark ++;
+        }
 
+        // Set temperature as transport solution and evaluate WENO coefficients
+        myC.Evaluate(mycouple->mi,mycouple->dmu);
 
-        // Initialize flux
-        Vec fluxHAdv;
-        PetscCall(VecDuplicate(myHAdv.sol, &fluxHAdv));
-        myHAdv.advflux_all(mycouple->mi, 1e-5, mycouple->dmu, mycouple->edgegauss, 
-								mycouple->phasevel, true, 0, &fluxHAdv);
+        // Advect composition
+        Vec fluxCAdv; 
+		  PetscCall(VecDuplicate(myC.sol, &fluxCAdv));
+        myC.advflux_all(mycouple->mi, 1e-5, 
+								mycouple->dmu, mycouple->edgegauss, 
+								mycouple->effvel, true, 1, &fluxCAdv);       
 
-        Vec fluxHDiv;
-        PetscCall(VecDuplicate(myHDif.sol, &fluxHDiv));
-        myHDif.difflux_all(mycouple->mi, mycouple->dmu, mycouple->edgegauss, &fluxHDiv);
+        // Advect-diffuse enthalpy
+        Vec tempfluxDif;
+		  PetscCall(VecDuplicate(myH.sol, &tempfluxDif));
 
-        Vec fluxC;
-        PetscCall(VecDuplicate(myC.sol, &fluxC));
-        myHAdv.advflux_all(mycouple->mi, 1e-5, mycouple->dmu, mycouple->edgegauss, 
-								mycouple->effvel, true, 1, &fluxC);
+        Vec tempfluxAdv;
+        PetscCall(VecDuplicate(myH.sol, &tempfluxAdv));
+        myTempAdv.advflux_all(mycouple->mi, 1e-5, 
+								      mycouple->dmu, mycouple->edgegauss, 
+										mycouple->phasevel, true, 0, &tempfluxAdv);
 
-        PetscCall(VecAXPY(fluxHAdv, 0.8e-7, fluxHDiv));
+        // Evolution in time
+        PetscCall(VecAXPY(myC.sol, -1*dt, fluxCAdv));
 
-        // Time stepping
-        PetscCall(VecAXPY(myHAdv.sol, -1*dt, fluxHAdv));
+        PetscCall(VecAXPY(tempfluxAdv, 8e-8, tempfluxDif)); 
+        PetscCall(VecAXPY(Temp, -1*dt, tempfluxAdv));
 
-        PetscCall(VecAXPY(myC.sol, -1*dt, fluxC));
-
-//		  if (t%frame == 0){
-//            mycouple->printCellScalar(&myHAdv.sol, "cellH", mark);
-//				mark ++ ;
-//		  }
-
-        PetscCall(VecCopy(myHAdv.sol, myHDif.sol));
-
-	 }	
+        // Compute phase variables and adjust porosity
+        mycouple->computePorosity_phase(myH, myC);
+        mycouple->adjustEdgePorosity();
+ 
+ /*		  
+		  // ===Expand cell centered porosity to edges 
+		  cout << "Check " << endl;
+        mycouple->AssignPorosityVec(&expandporosity.sol);
+        expandporosity.Evaluate(mycouple->mi, mycouple->dmu);
+        mycouple->expandporosity(expandporosity, M+1, N,  M, N, 0);
+		  mycouple->expandporosity(expandporosity, M,   N+1,M, N, (M+1)*N);
+        // ===========================================
 */
+
+        mycouple->assignTempVec(&Temp);
+
+        //mycouple->examineFullPorosity(t);
+
+        PetscCall(VecCopy(Temp, myTempDif.sol));
+        PetscCall(VecCopy(Temp, myTempAdv.sol));
+
+        // Evaluate new WENO coefficients
+        myC.Evaluate(mycouple->mi, mycouple->dmu);	
+
+        myTempAdv.Evaluate(mycouple->mi, mycouple->dmu);
+        myTempDif.Evaluate(mycouple->mi, mycouple->dmu);
+    }
+
     return 1;
 }

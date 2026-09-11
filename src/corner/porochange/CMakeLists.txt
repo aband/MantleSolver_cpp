@@ -212,6 +212,26 @@ target_link_libraries(preheat
 )
 
 # ===================================================================
+add_executable(teststatic
+		  ${SRC}/corner/no_evolve.cpp
+)
+
+target_include_directories(teststatic
+		  PUBLIC ${SRC}/corner
+		  )
+
+target_link_libraries(teststatic
+		  io_lib
+		  phase_lib
+		  mfem_lib
+		  couple_lib
+		  mlweno_lib
+		  PkgConfig::LAPACKE
+		  PkgConfig::PETSC
+		  phase_lib
+)
+
+# ===================================================================
 add_executable(driver
 		  ${SRC}/corner/poro_read.cpp
 )
@@ -230,3 +250,25 @@ target_link_libraries(driver
 		  PkgConfig::PETSC
 		  phase_lib
 )
+
+# ===================================================================
+add_executable(together
+		  ${SRC}/corner/poro_evolve.cpp
+)
+
+target_include_directories(together
+		  PUBLIC ${SRC}/corner
+		  )
+
+target_link_libraries(together
+		  io_lib
+		  phase_lib
+		  mfem_lib
+		  couple_lib
+		  mlweno_lib
+		  PkgConfig::LAPACKE
+		  PkgConfig::PETSC
+		  phase_lib
+)
+
+

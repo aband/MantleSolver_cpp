@@ -7,7 +7,7 @@ static double AssignPorosity(const vertex& point){
     //return abs(point[1]);
 
     //return 0.2;
-
+/*
     double l0 = 316228;
     double l = 20/l0;
 
@@ -23,8 +23,19 @@ static double AssignPorosity(const vertex& point){
         value = 0.0;
 
     }
+*/
 
-    return 0.0;
+    double value = 0.00;
+
+    // stair shape porosity
+    if (abs(point[1])<=0.25 && abs(point[1])>=0.15 && abs(point[0])<=0.25){
+        value = 0.1; 
+	 } else if(abs(point[1])<=0.35 && abs(point[1])>=0.25 && abs(point[0])<=0.35 && abs(point[0])>=0.25){
+        value = 0.1;
+	 }
+
+    //return value;
+	 return 0.0;
 }
 
 int couple::computePorosity(){

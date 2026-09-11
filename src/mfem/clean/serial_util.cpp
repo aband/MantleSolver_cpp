@@ -113,3 +113,11 @@ int DarcyStokes::ReconstructEdgeVel(const vector<vertex>& edgegaussp,
 
     return 1;
 }
+
+int DarcyStokes::PreparePressure(Vec * sp, Vec * dp){
+
+    PetscCall(VecNestGetSubVec(result.y, 0, sp));
+    PetscCall(VecNestGetSubVec(result.y, 1, dp));
+
+    return 1;
+}

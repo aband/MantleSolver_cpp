@@ -16,7 +16,8 @@ double InitCD(const valarray<double>& point,
 	 //}
 
     //return 1.0;
-    return 3.35;
+	 return 3.35;
+    //return 3.0 - point[1]*0.12;
 }
 
 double InitHD(const valarray<double>& point,
@@ -30,7 +31,7 @@ double InitHD(const valarray<double>& point,
 
     //if (point[1] < -0.20){HD = 2.9 + 2.5*0.20;}
 
-    double HD = 0.01 - point[1]*0.1;
+    double HD = 0.01 - point[1]*0.12;
 
 //    return 0.1;
 
@@ -78,7 +79,7 @@ int diriBndry(const vector<vertex>& points,
 
         } else {
 
-            value.at(g) = 0.1;
+            value.at(g) = 0.01;
 
         }
 
@@ -95,6 +96,7 @@ double diffBndry(const vertex& points, const vector<double>& param){
     if (points[1] > -0.0001){
   
         return 0.0;
+        //return -2.3; // Zero celcius
 
 	 } else {
 

@@ -113,16 +113,28 @@ int main(int argc, char **argv){
 
     mycouple->calculatePhaseVel(ds.StokesVel, ds.DarcyVel);
 
-    mycouple->printedgevel(1, mycouple->effvel, mycouple->phasevel);
+//    mycouple->printedgevel(1, mycouple->effvel, mycouple->phasevel);
+    mycouple->printedgevel(1, ds.StokesVel, ds.DarcyVel);
+
+    Vec sp, dp;
+    ds.PreparePressure(&sp, &dp);
 
     // Define additional diffusion and latent heat transport term
     TransportVariable myHdiff = TransportVariable();
     TransportVariable myHLatent = TransportVariable();
 
     myHLatent.diffusion = false;
-    myHLatent.CreateDefaultReconstruction(mycouple->mi);
 
 	 myHdiff.diffusion = true;
+
+    // Copy solution
+    PetscCall(VecDuplicate(myH.sol, &myHdiff.sol));
+    PetscCall(VecCopy(myH.sol, myHdiff.sol));
+
+    PetscCall(VecDuplicate(myH.sol, &myHLatent.sol));
+    PetscCall(VecCopy(myH.sol, myHLatent.sol));
+
+    myHLatent.CreateDefaultReconstruction(mycouple->mi);
 
     // Diffusion weno stencils
     int sizelgx = 3;
@@ -146,7 +158,33 @@ int main(int argc, char **argv){
 														     sten_sm_pre, mylinwgts_sm,
 					                                true, mylinwgts_const); 
 
+    int mark = 2;
+
+    Vec fluxC;
+    PetscCall(VecDuplicate(myC.sol, &fluxC));
+
+    Vec fluxH;
+    PetscCall(VecDuplicate(myH.sol, &fluxH));
+
+    Vec temp;
+    PetscCall(VecDuplicate(myH.sol, &temp));
+
     // Coupled time stepping
- 
+    for (int t=0; t<Tmax; t++){
+        myC.advflux_all(mycouple->mi, 1e-5, mycouple->dmu, mycouple->edgegauss, 
+								mycouple->effvel, true, 0, &fluxC);
+
+        myH.advflux_all(mycouple->mi, 1e-5, mycouple->dmu, mycouple->edgegauss, 
+								mycouple->phasevel, true, 0, &fluxH);
+
+//        myH.flux
+
+        mycouple->assignTempVec(&temp); 
+
+        myC.Evaluate(mycouple->mi, mycouple->dmu);
+        myH.Evaluate(mycouple->mi, mycouple->dmu);
+
+	 }
+
     return 1;
 }

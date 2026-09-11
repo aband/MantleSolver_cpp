@@ -395,6 +395,8 @@ class DarcyStokes{
                                                 right_tang_stokes,
                                                 top_tang_stokes};
 
+        int PreparePressure(Vec * sp, Vec * dp);
+
     private:
 
         // Total number of elements

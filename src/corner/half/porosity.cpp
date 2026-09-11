@@ -33,6 +33,39 @@ static double AssignPorosity(const vertex& point){
 
 }
 
+static double AssignPorosity2(const vertex& point){
+
+    // used to identify incorrect porosity
+
+    //return abs(point[1]);
+
+    //return 0.2;
+
+    double l0 = 316228;
+    double l = 20/l0;
+
+    double value = 0.0;
+
+    if (abs(point[1]) < 120*1000/l0 && abs(point[0]) < abs(point[1]) + 20/l0){
+
+        value = 0.05*pow((120*1000/l0 - abs(point[1]))/(120*1000/l0),2) * 
+                         (1-abs(point[0])/(abs(point[1])+l));
+
+    } else {
+
+        value = 0.0;
+
+    }
+/*
+    if (point[1] >-0.4 && point[1] < -0.3 && point[0]>0.4 && point[0]<0.51){
+
+        value = 0.01;
+	 }
+*/
+    return value;
+
+}
+
 int couple::computePorosity(){
 
     // Compute porosity on each gauss points 

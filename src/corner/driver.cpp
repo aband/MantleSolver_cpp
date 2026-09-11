@@ -102,6 +102,8 @@ int main(int argc, char **argv){
 
     mycouple->printedgevel(1, ds.StokesVel, ds.DarcyVel);
 
+    mycouple->printdivmass(1, "massconsv", ds.StokesVel, ds.DarcyVel);
+
     if (enable_transport){
 
         cout << "Transport is enabled here." << endl;
