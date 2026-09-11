@@ -37,6 +37,12 @@ int reconstruction::init(int sizex_sm, int sizey_sm,
                          const vector<indice>& sten_sm_pre,
                          const MeshInfo& mi, indice start){
 
+    // clear linear weights
+    linwgts_lg.clear();
+    linwgts_sm.clear();
+    flat_sten_lg.clear();
+    flat_sten_sm.clear();
+
     sten_lg.clear();
     sten_sm.clear();
 
@@ -100,6 +106,12 @@ int reconstruction::init(int sizex_sm, int sizey_sm,
 					          const vector<double>& mylinwgts_sm,
                          const MeshInfo& mi, indice start,
 					          double mylinwgts_const){
+
+    // clear linear weights
+    linwgts_lg.clear();
+    linwgts_sm.clear();
+    flat_sten_lg.clear();
+    flat_sten_sm.clear();
 
     sten_lg.clear();
     sten_sm.clear();
@@ -242,6 +254,7 @@ int reconstruction::setWgts(double area){
         sum += nonlinwgts_sm.at(l);
     }
 
+    // Initialize the const nonlinear weight
     if (use_sten_const){
         nonlinwgts_const = linwgts_const / pow(0.0 + epsilon*area, s*r_const + geteta(r_const));
 		  sum += nonlinwgts_const;
@@ -253,6 +266,10 @@ int reconstruction::setWgts(double area){
 
     for (int l=0; l<nonlinwgts_sm.size(); l++){
         nonlinwgts_sm.at(l) /= sum;
+    }
+
+    if (!(sum > 0.0) || !std::isfinite(sum)) {
+        throw std::runtime_error("Invalid WENO weight normalization.");
     }
 
     nonlinwgts_const /= sum;

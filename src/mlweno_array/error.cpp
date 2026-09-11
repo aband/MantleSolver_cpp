@@ -66,6 +66,11 @@ int printexactsol(const MeshInfo& mi, double t,
         }
     } 
 
+    fclose(sol);
+    fclose(exactgridx);
+    fclose(exactgridy);
+    free(filename);
+
     return 1;
 }
 
@@ -137,7 +142,7 @@ int printreconsol(vector<reconstruction>& my_recon, int M, int N, int mark,
         }
     }
 
-    return printreconsol(my_recon, M ,N, 1);
+    return printreconsol(my_recon, M ,N, mark);
 }
 
 int printreconsol2(vector<reconstruction>& my_recon, int M, int N, int mark, 
@@ -191,6 +196,9 @@ int printreconsol2(vector<reconstruction>& my_recon, int M, int N, int mark,
             }
         }
     } 
+
+    fclose(sol);
+    free(filename);
 
     return 1;
 

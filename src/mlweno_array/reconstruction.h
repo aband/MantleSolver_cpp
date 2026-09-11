@@ -2,6 +2,7 @@
 #define RECONSTRUCTION_H_
 
 #include "tensorstencilpoly.h"
+#include <stdexcept>
 
 // seriel version
 class reconstruction {
@@ -53,7 +54,7 @@ class reconstruction {
         // Nonlinear weights
         vector<double> nonlinwgts_lg;
         vector<double> nonlinwgts_sm;
-        double nonlinwgts_const;
+        double nonlinwgts_const = 0.0;
 
         // r = order + 1
         // used in weighting calculation

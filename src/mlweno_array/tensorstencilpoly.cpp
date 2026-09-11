@@ -145,7 +145,8 @@ static int tensorpoly_ders(int derX, int derY, int sizex, int sizey, double* val
   for(int dX = 0; dX <= derX; dX++) {
     horner_der(derY,valY,yy0,h,yCoef[dX],sizey-1);
     for(int dY = 0; dY <= derY; dY++) {
-      val[dX + sizex*dY] = valY[dY];
+      //val[dX + sizex*dY] = valY[dY];
+		val[dX + (derX + 1)*dY] = valY[dY];
     }
   }
 
@@ -314,6 +315,27 @@ static double complete_sum(double * deri, double * derj, int order,
         for (int i=istart; i<=order-j; i++){
             work += deri[i+(order+1)*j] *
                     derj[i+(order+1)*j] *gw*jac*pow(h*h,i+j);
+        }
+    }
+
+    return work;
+}
+
+// Suggested by Chatgpt
+static double complete_sum(
+    const double* deri, const double* derj,
+    int order, int sizex, int sizey,
+    double h, double gw, double jac)
+{
+    double work = 0.0;
+
+    for (int j = 0; j < sizey && j <= order; ++j) {
+        for (int i = 0; i < sizex && i + j <= order; ++i) {
+            if (i == 0 && j == 0) continue;
+
+            const int k = i + sizex * j;
+            work += deri[k] * derj[k]
+                  * gw * jac * pow(h * h, i + j);
         }
     }
 
