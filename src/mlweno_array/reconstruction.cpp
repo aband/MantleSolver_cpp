@@ -255,9 +255,14 @@ int reconstruction::setWgts(double area){
     }
 
     // Initialize the const nonlinear weight
+	 nonlinwgts_const = 0.0;
     if (use_sten_const){
         nonlinwgts_const = linwgts_const / pow(0.0 + epsilon*area, s*r_const + geteta(r_const));
 		  sum += nonlinwgts_const;
+    }
+
+    if (!(sum > 0.0) || !std::isfinite(sum)) {
+        throw std::runtime_error("Invalid WENO weight normalization.");
     }
 
     for (int l=0; l<nonlinwgts_lg.size(); l++){
@@ -266,10 +271,6 @@ int reconstruction::setWgts(double area){
 
     for (int l=0; l<nonlinwgts_sm.size(); l++){
         nonlinwgts_sm.at(l) /= sum;
-    }
-
-    if (!(sum > 0.0) || !std::isfinite(sum)) {
-        throw std::runtime_error("Invalid WENO weight normalization.");
     }
 
     nonlinwgts_const /= sum;

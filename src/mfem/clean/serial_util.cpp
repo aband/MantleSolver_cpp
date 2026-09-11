@@ -2,6 +2,14 @@
 
 int DarcyStokes::init(const MeshInfo& mi, PhysProperty * pp, const std::vector<double>& param){
 
+
+    // Clear boundary data from any previous initialization.
+    bndryStokesAll.clear();
+    bndryDarcyAll.clear();
+    refArrayStokesNatur_.clear();
+    refArrayDarcyNatur_.clear();
+
+    // Existing initialization continues here
     basis_ = basis();
     hdiv_  = Hdivmixed();
     br_    = BRMixed();

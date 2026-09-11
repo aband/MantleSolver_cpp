@@ -573,6 +573,10 @@ int DarcyStokes::Solve(int MaxIter, double tol){
     PetscCall(VecNestGetSubVec(result.x, 1, &tmpDarcy));
     VecScale(tmpDarcy, -1);  
 
+    PetscCall(KSPSetErrorIfNotConverged(kspMINRESs, PETSC_TRUE));
+    PetscCall(KSPSetErrorIfNotConverged(kspMINRESd, PETSC_TRUE));
+    PetscCall(KSPSetErrorIfNotConverged(kspCG, PETSC_TRUE));
+
     if (iter < MaxIter){
         printf("Uzawa converged successfully! r = %.3e, Used %d iterations. \n", r, iter);
         return 0;
@@ -580,8 +584,6 @@ int DarcyStokes::Solve(int MaxIter, double tol){
         printf("Uzawa failed to converge! r = %.3e \n", r);
         return -1;
     }
-
-
 
     return 1;
 }

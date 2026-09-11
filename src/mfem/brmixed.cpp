@@ -313,7 +313,7 @@ std::vector<int> BRMixed::GlobalToLocalMapBndry(const MeshInfo& mi,
             work.push_back(3+shift); 
 
         } else if(bend[1] == 0 &&
-                  bend[0] != mi.MPIglobalVertexSize[1]-1){
+                  bend[0] != mi.MPIglobalVertexSize[0]-1){
             // bottom left
             work.push_back(FlatIndic(mi,bend[0],bend[1]));
             work.push_back(0+shift); 
