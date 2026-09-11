@@ -513,6 +513,10 @@ int DarcyStokes::Solve(int MaxIter, double tol){
 
     // Iteration starts here
 
+    //PetscCall(KSPSetErrorIfNotConverged(kspMINRESs, PETSC_TRUE));
+    //PetscCall(KSPSetErrorIfNotConverged(kspMINRESd, PETSC_TRUE));
+    //PetscCall(KSPSetErrorIfNotConverged(kspCG, PETSC_TRUE));
+
     while(r>tol && iter < MaxIter){
  
         PetscCall(MatMult(result.B, result.y, tmp1));
@@ -537,8 +541,8 @@ int DarcyStokes::Solve(int MaxIter, double tol){
         PetscCall(VecNestGetSubVec(tmp3, 0, &tmp31));
         PetscCall(VecNestGetSubVec(tmp3, 1, &tmp32));
                   
-        KSPSolve(kspMINRESs, tmp31, tmp31);
-        KSPSolve(kspMINRESd, tmp32, tmp32);
+        PetscCall(KSPSolve(kspMINRESs, tmp31, tmp31));
+        PetscCall(KSPSolve(kspMINRESd, tmp32, tmp32));
 
         PetscCall(VecAXPY(result.y,-1.0,tmp3));
 
@@ -573,9 +577,9 @@ int DarcyStokes::Solve(int MaxIter, double tol){
     PetscCall(VecNestGetSubVec(result.x, 1, &tmpDarcy));
     VecScale(tmpDarcy, -1);  
 
-    PetscCall(KSPSetErrorIfNotConverged(kspMINRESs, PETSC_TRUE));
-    PetscCall(KSPSetErrorIfNotConverged(kspMINRESd, PETSC_TRUE));
-    PetscCall(KSPSetErrorIfNotConverged(kspCG, PETSC_TRUE));
+    if (!std::isfinite(r)){
+        return -1;
+	 }
 
     if (iter < MaxIter){
         printf("Uzawa converged successfully! r = %.3e, Used %d iterations. \n", r, iter);

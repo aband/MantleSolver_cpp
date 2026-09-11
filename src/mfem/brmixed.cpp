@@ -342,7 +342,8 @@ std::vector<int> BRMixed::GlobalToLocalMapBndry(const MeshInfo& mi,
         } 
 
         if (bend[0] == 0 &&
-            bend[1] == 1){
+            bend[1] == 1 &&
+				mi.MPIglobalCellSize[1] > 1){
             work[0] = mi.MPIglobalCellSize[0];
             work[1] = 0+shift;
         }
